@@ -61,7 +61,7 @@
     if(category){active=category.dataset.category;render();return}
     const detail=event.target.closest('[data-detail]');
     if(detail){openDetail(products.find(product=>product.id===detail.dataset.detail));return}
-    if(event.target.closest('[data-open-config]')){root.querySelector('.rt-product-dialog')?.close();document.querySelector('#matrix-configurator').scrollIntoView({behavior:'smooth',block:'start'})}
+    if(event.target.closest('[data-open-config]')){root.querySelector('.rt-product-dialog')?.close();if(globalThis.RtPortal)globalThis.RtPortal.navigate('/tools/matrix-configurator');else document.querySelector('#matrix-configurator').scrollIntoView({behavior:'smooth',block:'start'})}
   });
   root.addEventListener('input',event=>{if(!event.target.matches('.rt-library-search input'))return;query=event.target.value;if(query.trim())active='all';render();requestAnimationFrame(()=>{const input=root.querySelector('.rt-library-search input');input.focus();input.setSelectionRange(query.length,query.length)})});
   render();
