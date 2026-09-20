@@ -2,7 +2,7 @@
   const root=document.querySelector('#equipment-library');
   if(!root)return;
   const products=[
-    {id:'xdm',category:'matrix',name:'XDM Series',sub:'eXtreme Digital Matrix',image:'output/design/assets/xdm.jpg',page:'4-12',status:'매뉴얼 연동',features:['12x12부터 216x216까지 프레임 구성','4K60 4:4:4·심리스·비디오 월','HDMI·DP·12G-SDI·HDBaseT 3.0·광 카드'],config:true},
+    {id:'xdm',category:'matrix',name:'XDM Series',sub:'eXtreme Digital Matrix',image:'output/design/assets/xdm.jpg',page:'4-12',status:'매뉴얼·기술자료 연동',features:['12x12부터 216x216까지 프레임 구성','4K60 4:4:4·심리스·비디오 월','HDMI·DP·12G-SDI·HDBaseT 3.0·광 카드','커스텀 해상도 EDID 대응: LED 무손실 패스스루·4K 모니터 업스케일'],config:true},
     {id:'spx',category:'matrix',name:'SPX Series',sub:'Signal Processing eXpert',image:'output/design/assets/spx.jpg',page:'13-16',status:'카탈로그 수록',features:['8포트 입력·10/12포트 출력 카드','독립 스케일링·비디오 월·쿼드 뷰','5개 메인 프레임']},
     {id:'vdm',category:'matrix',name:'VDM Series',sub:'Variety Digital Matrix',image:'output/design/assets/vdm.jpg',page:'17-27',status:'카탈로그 수록',features:['8x8부터 288x288까지 9개 프레임','HDMI·CAT·광·3G-SDI 크로스 플랫폼','4K30·심리스·스케일링·비디오 월']},
 
