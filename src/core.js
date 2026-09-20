@@ -4,7 +4,8 @@
   const catalog = scope.RtCatalog;
   const catalogVersion = '2026-09-18-draft.1';
   const schemaVersion = 3;
-  const slotDirections = {'in-a':'input','in-b':'input','out-a':'output','out-b':'output','in-1':'input','in-2':'input','in-3':'input','out-1':'output','out-2':'output','out-3':'output'};
+  const slotDirections = {'in-a':'input','in-b':'input','out-a':'output','out-b':'output'};
+  for (let index=1;index<=54;index++) {slotDirections[`in-${index}`]='input';slotDirections[`out-${index}`]='output';}
   const signalTypes = ['HDMI','SDI','DP','CAT','FIBER','OTHER'];
   const plain = value => value !== null && typeof value === 'object' && !Array.isArray(value);
   const own = (obj, key) => Object.prototype.hasOwnProperty.call(obj, key);
@@ -17,10 +18,8 @@
     links:{},slot:'in-a',format:'PDF'
   });
   function slotsFor(state) {
-    if (state.family==='XDM'&&state.model==='XDM-12') return [
-      {id:'in-1',label:'입력 슬롯 1',dir:'input'},{id:'in-2',label:'입력 슬롯 2',dir:'input'},{id:'in-3',label:'입력 슬롯 3',dir:'input'},
-      {id:'out-1',label:'출력 슬롯 1',dir:'output'},{id:'out-2',label:'출력 슬롯 2',dir:'output'},{id:'out-3',label:'출력 슬롯 3',dir:'output'}
-    ];
+    const count=state.family==='XDM'?{'XDM-12':3,'XDM-20':5,'XDM-36':9,'XDM-72':18,'XDM-144':36,'XDM-216':54}[state.model]:0;
+    if (count) return ['input','output'].flatMap(dir=>Array.from({length:count},(_,index)=>({id:`${dir==='input'?'in':'out'}-${index+1}`,label:`${dir==='input'?'입력':'출력'} 슬롯 ${index+1}`,dir})));
     return [{id:'in-a',label:'입력 A',dir:'input'},{id:'in-b',label:'입력 B',dir:'input'},{id:'out-a',label:'출력 A',dir:'output'},{id:'out-b',label:'출력 B',dir:'output'}];
   }
   const card = (state, id) => [...catalog[state.family].input,...catalog[state.family].output].find(item=>item[0]===id);
@@ -79,7 +78,8 @@
     if (input.model!==null && !family.models.includes(input.model)) fail('제품군과 섀시 모델이 일치하지 않습니다.');
     result.model=input.model;
     if (!plain(input.placements) || !plain(input.links)) fail('카드 또는 전송기 데이터 형식이 잘못되었습니다.');
-    const legacySlots=result.family==='XDM'&&result.model==='XDM-12'?{'in-a':'in-1','in-b':'in-2','out-a':'out-1','out-b':'out-2'}:{};
+    const confirmedXdm=result.family==='XDM'&&['XDM-12','XDM-20','XDM-36','XDM-72','XDM-144','XDM-216'].includes(result.model);
+    const legacySlots=confirmedXdm?{'in-a':'in-1','in-b':'in-2','out-a':'out-1','out-b':'out-2'}:{};
     const allowedSlots=new Set(slotsFor(result).map(item=>item.id));
     for (const [id,value] of Object.entries(input.placements)) {
       const target=legacySlots[id]||id;
@@ -98,7 +98,7 @@
       result.links[target]={device:link.device,count:link.count,distance:link.distance};
     }
     result.requirements={inputs:[],outputs:[]};
-    result.physicalSlots=result.family==='XDM'&&result.model==='XDM-12'?{status:'user_confirmed',slots:slotsFor(result).map(item=>item.id)}:{status:'unknown',slots:[]};
+    result.physicalSlots=confirmedXdm?{status:'manual_documented',slots:slotsFor(result).map(item=>item.id)}:{status:'unknown',slots:[]};
     if (input.portAssignments!==undefined && !plain(input.portAssignments)) fail('포트 배정 데이터 형식이 잘못되었습니다.');
     const incomingPorts={};
     for (const [key,value] of Object.entries(input.portAssignments||{})) {
@@ -144,7 +144,8 @@
     const add=(code,level,message,evidence='')=>issues.push({code,level,message,evidence});
     if (!state.model) add('CHASSIS_REQUIRED','ERROR','섀시를 선택해 주세요.');
     for (const direction of ['input','output']) if (!Object.entries(state.placements).some(([id])=>slotDirections[id]===direction)) add('MISSING_'+direction.toUpperCase(),'WARNING',`${direction==='input'?'입력':'출력'} 카드가 선택되지 않았습니다.`);
-    if (state.family==='XDM'&&state.model==='XDM-12') add('XDM12_SLOT_LAYOUT','VALID','사용자 확인 기준으로 입력 카드 3장과 출력 카드 3장을 장착할 수 있습니다.','U01 · 사용자 확인');
+    const documentedSlots=state.family==='XDM'?{'XDM-12':3,'XDM-20':5,'XDM-36':9,'XDM-72':18,'XDM-144':36,'XDM-216':54}[state.model]:0;
+    if (documentedSlots) add('XDM_SLOT_LAYOUT','VALID',`매뉴얼 기준으로 입력 카드 ${documentedSlots}장과 출력 카드 ${documentedSlots}장을 장착할 수 있습니다.`,'M01 · XDM 국문 매뉴얼 pp.7–11');
     else add('PHYSICAL_LAYOUT_UNVERIFIED','UNVERIFIED','화면의 입력·출력 위치는 논리 구성입니다. 실제 슬롯 수와 카드 설치 허용표가 필요합니다.','G01 · G02');
     add('ACCESSORIES_UNVERIFIED','UNVERIFIED','기본 포함품, 케이블, 전원 및 필러 수량은 구매 목록에 포함되지 않았습니다.','G08 · G09 · G12');
     if (state.family==='SPX') add('SPX_CARD_ALLOWLIST','UNVERIFIED','SPX 프레임별 출력 카드 허용·혼합 조건과 전송기 판매 SKU를 확인해야 합니다.','G03 · G05');

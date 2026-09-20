@@ -4,7 +4,7 @@ require('../src/catalog.js');require('../src/core.js');
 const core=globalThis.RtCore;
 
 const configured=()=>{
-  const state={...core.initial(),model:'XDM-12',step:4,maxStep:4,slot:'in-1',placements:{'in-1':'XDM-CIS100','out-1':'XDM-COS100'},physicalSlots:{status:'user_confirmed',slots:['in-1','in-2','in-3','out-1','out-2','out-3']},links:{'in-1':{device:'XDM-CTR100 · TX',count:2,distance:'30'},'out-1':{device:'XDM-CTR100 · RX',count:3,distance:'50'}}};
+  const state={...core.initial(),model:'XDM-12',step:4,maxStep:4,slot:'in-1',placements:{'in-1':'XDM-CIS100','out-1':'XDM-COS100'},physicalSlots:{status:'manual_documented',slots:['in-1','in-2','in-3','out-1','out-2','out-3']},links:{'in-1':{device:'XDM-CTR100 · TX',count:2,distance:'30'},'out-1':{device:'XDM-CTR100 · RX',count:3,distance:'50'}}};
   state.portAssignments=core.syncPorts(state);
   return state;
 };
@@ -14,6 +14,15 @@ test('XDM-12 exposes three input and three output slots',()=>{
   assert.deepEqual(slots.map(slot=>slot.id),['in-1','in-2','in-3','out-1','out-2','out-3']);
   assert.equal(slots.filter(slot=>slot.dir==='input').length,3);
   assert.equal(slots.filter(slot=>slot.dir==='output').length,3);
+});
+
+test('manual slot counts are used for every documented XDM frame',()=>{
+  for(const [model,count] of Object.entries({'XDM-12':3,'XDM-20':5,'XDM-36':9,'XDM-72':18,'XDM-144':36,'XDM-216':54})){
+    const slots=core.slotsFor({...core.initial(),model});
+    assert.equal(slots.filter(slot=>slot.dir==='input').length,count,model+' input');
+    assert.equal(slots.filter(slot=>slot.dir==='output').length,count,model+' output');
+    assert.equal(slots.at(-1).id,`out-${count}`);
+  }
 });
 
 test('every XDM card supplies four channels',()=>{
@@ -27,6 +36,17 @@ test('XDM-12 accepts all six cards and totals twelve channels each way',()=>{
   const output=Object.entries(checked.placements).filter(([slot])=>slot.startsWith('out-')).reduce((sum,[,id])=>sum+RtCatalog.XDM.output.find(card=>card[0]===id)[2],0);
   assert.equal(input,12);assert.equal(output,12);
   assert.equal(core.bom(checked).filter(row=>row.category.includes('카드')).reduce((sum,row)=>sum+row.quantity,0),6);
+});
+
+test('XDM-36 fills nine cards per side and totals thirty-six channels',()=>{
+  const placements={};
+  for(let index=1;index<=9;index++){placements[`in-${index}`]='XDM-HI100';placements[`out-${index}`]='XDM-HOS100';}
+  const state=core.checkState({...core.initial(),model:'XDM-36',slot:'in-1',placements});
+  assert.equal(Object.keys(state.placements).length,18);
+  assert.equal(core.bom(state).find(row=>row.model==='XDM-HI100').quantity,9);
+  assert.equal(core.bom(state).find(row=>row.model==='XDM-HOS100').quantity,9);
+  assert.equal(Object.values(state.portAssignments).filter(port=>port.direction==='input').length,36);
+  assert.equal(Object.values(state.portAssignments).filter(port=>port.direction==='output').length,36);
 });
 
 test('round-trip preserves TX/RX roles and combines purchasing quantities',()=>{
@@ -86,7 +106,7 @@ test('empty and partly used slots produce no error',()=>{
   state.portAssignments=core.syncPorts(state);state.portAssignments['in-1:4'].quantity=0;
   const result=core.validate(state);
   assert(!result.issues.some(issue=>issue.level==='ERROR'));
-  assert(result.issues.some(issue=>issue.code==='XDM12_SLOT_LAYOUT'&&issue.level==='VALID'));
+  assert(result.issues.some(issue=>issue.code==='XDM_SLOT_LAYOUT'&&issue.level==='VALID'));
 });
 
 test('VDM Quad card remains two ports and unknown remote links stay unconfirmed',()=>{
