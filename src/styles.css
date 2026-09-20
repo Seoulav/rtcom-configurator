@@ -74,3 +74,18 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 @media(max-width:1050px){#rtcom-design .rt-top{flex-wrap:wrap}#rtcom-design .rt-global-nav{order:3;width:100%;justify-content:center}}
 @media(max-width:720px){#rtcom-design .rt-home{margin:8px;padding:14px;border-radius:22px}#rtcom-design .rt-home-hero{padding:32px 20px}#rtcom-design .rt-home-hero h1{font-size:36px;letter-spacing:-1.7px}#rtcom-design .rt-home-entry-grid{grid-template-columns:1fr}#rtcom-design .rt-home-entry{min-height:190px;padding:22px}#rtcom-design .rt-global-nav{overflow-x:auto;justify-content:flex-start}#rtcom-design .rt-global-nav a{white-space:nowrap}}
 @media(max-width:380px){#rtcom-design .rt-home-hero h1{font-size:31px}#rtcom-design .rt-top{padding:18px}#rtcom-design .rt-brand{font-size:18px;letter-spacing:-.5px}#rtcom-design .rt-brand-sub{font-size:7px;letter-spacing:.9px}#rtcom-design .rt-global-nav a{padding:8px 10px}}
+
+/* PHASE 2 catalog filters */
+#rtcom-design .rt-filter-panel{margin:18px 0 24px;padding:17px 19px;border:1px solid #e2e8f1;border-radius:18px;background:#f8faff}
+#rtcom-design .rt-filter-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}
+#rtcom-design .rt-filter-heading h3{margin:2px 0 0;font-size:16px;color:#273248}
+#rtcom-design .rt-filter-heading button{padding:7px 10px;border:1px solid #d8e0ec;border-radius:9px;background:#fff;color:#627087;font-size:10px}
+#rtcom-design .rt-filter-groups{display:flex;flex-wrap:wrap;gap:14px}
+#rtcom-design .rt-filter-groups fieldset{min-width:150px;margin:0;padding:0;border:0}
+#rtcom-design .rt-filter-groups legend{margin-bottom:6px;color:#6f7c91;font-size:10px;font-weight:800}
+#rtcom-design .rt-filter-groups fieldset>div{display:flex;flex-wrap:wrap;gap:6px}
+#rtcom-design .rt-filter-groups label{display:flex;align-items:center;gap:5px;padding:6px 8px;border:1px solid #e0e6f0;border-radius:8px;background:#fff;color:#516078;font-size:10px;cursor:pointer}
+#rtcom-design .rt-filter-groups input{accent-color:#3978ee}
+#rtcom-design .rt-result-bar{margin:0 0 13px;padding:9px 12px;border-radius:10px;background:#f1f5fb;color:#718097;font-size:11px}
+#rtcom-design .rt-result-bar b{color:#356bd0;font-size:15px}
+@media(max-width:620px){#rtcom-design .rt-filter-panel{padding:14px}#rtcom-design .rt-filter-heading{align-items:flex-start;flex-direction:column}#rtcom-design .rt-filter-heading button{align-self:flex-end}#rtcom-design .rt-filter-groups{display:grid;grid-template-columns:1fr 1fr;gap:12px}#rtcom-design .rt-filter-groups fieldset{min-width:0}}
