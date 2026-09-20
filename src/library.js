@@ -39,6 +39,7 @@
     {id:'umc',category:'cable',name:'UMC Locking Cable',sub:'Locking HDMI Cable',image:'output/design/assets/library/umc.jpg',page:'46',features:['슬라이딩 잠금 구조','최대 6kg 잠금','1m·2m·3m·5m·10m 구성']}
   ];
   const categories=[['all','전체 장비'],['matrix','모듈형 매트릭스'],['integrated','일체형 매트릭스'],['distribution','분배기·선택기'],['extender','전송기·확장'],['cable','케이블']];
+  const catalogPdf='output/design/assets/rtcom-catalog-2026.pdf';
   let active='all',query='';
   const esc=value=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
   const filtered=()=>products.filter(product=>(active==='all'||product.category===active)&&`${product.name} ${product.sub} ${product.features.join(' ')}`.toLowerCase().includes(query.toLowerCase()));
@@ -48,7 +49,9 @@
   }
   function openDetail(product){
     const dialog=root.querySelector('.rt-product-dialog');
-    dialog.innerHTML=`<button class="rt-dialog-close" type="button" aria-label="닫기">×</button><div class="rt-dialog-image"><img src="${product.image}" alt="${esc(product.name)} 장비 이미지"></div><div class="rt-dialog-copy"><span class="rt-kicker">CATALOG p.${product.page}</span><h2>${esc(product.name)}</h2><p>${esc(product.sub)}</p><h3>주요 특장점</h3><ul>${product.features.map(feature=>`<li>${esc(feature)}</li>`).join('')}</ul><div class="rt-source-note"><b>자료 기준</b><span>RTCom 48페이지 국문 종합 카탈로그 p.${product.page}</span>${product.status?`<em>${esc(product.status)}</em>`:''}</div>${product.config?'<button type="button" class="rt-dialog-config" data-open-config>매트릭스 구성기로 이동 →</button>':''}</div>`;
+    const pdf=product.pdf||catalogPdf;
+    const page=String(product.page).split('-')[0];
+    dialog.innerHTML=`<button class="rt-dialog-close" type="button" aria-label="닫기">×</button><div class="rt-dialog-image"><img src="${product.image}" alt="${esc(product.name)} 장비 이미지"></div><div class="rt-dialog-copy"><span class="rt-kicker">CATALOG p.${product.page}</span><h2>${esc(product.name)}</h2><p>${esc(product.sub)}</p><h3>주요 특장점</h3><ul>${product.features.map(feature=>`<li>${esc(feature)}</li>`).join('')}</ul><div class="rt-source-note"><b>제조사 원문</b><span>RTCom 48페이지 국문 종합 카탈로그 · p.${product.page}</span>${product.status?`<em>${esc(product.status)}</em>`:''}<div class="rt-source-actions"><a href="${pdf}#page=${page}" target="_blank" rel="noopener">원문 PDF 보기</a><a href="${pdf}" download>PDF 다운로드</a></div></div>${product.config?'<button type="button" class="rt-dialog-config" data-open-config>매트릭스 구성기로 이동 →</button>':''}</div>`;
     dialog.querySelector('.rt-dialog-close').addEventListener('click',()=>dialog.close());
     dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close()});
     dialog.showModal();
