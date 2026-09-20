@@ -1,11 +1,13 @@
 <!doctype html>
-<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RTCOM 매트릭스 구성기</title><meta name="description" content="RTCOM XDM, SPX, VDM 내부 검토용 매트릭스 구성기"></head><body><div id="rtcom-design" aria-label="RTCOM 매트릭스 구성기 디자인 초안">
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RTCOM AV Design Library</title><meta name="description" content="RTCOM 장비 라이브러리와 XDM, SPX, VDM 매트릭스 구성기"></head><body><div id="rtcom-design" aria-label="RTCOM AV 설계 라이브러리">
   <link rel="stylesheet" href="src/styles.css">
-  <header class="rt-top"><div class="rt-brand-lockup"><span class="rt-brand-mark" aria-hidden="true">▦</span><div><div class="rt-brand">RT<span>COM</span> Matrix Configurator</div><span class="rt-brand-sub">FRAME · CARD SLOT · SYSTEM CONFIGURATOR</span></div></div><div class="rt-meta"><b>매트릭스 구성하기</b><br>MANUAL BASED · 0.5</div></header>
+  <header class="rt-top"><div class="rt-brand-lockup"><span class="rt-brand-mark" aria-hidden="true">▦</span><div><div class="rt-brand">RT<span>COM</span> AV Design Library</div><span class="rt-brand-sub">EQUIPMENT · MANUAL · SYSTEM CONFIGURATOR</span></div></div><div class="rt-meta"><b>AV 시스템 설계 도구</b><br>CATALOG BASED · 0.6</div></header>
+  <section id="equipment-library" class="rt-library" aria-label="RTCOM 장비 라이브러리"></section>
+  <div id="matrix-configurator" class="rt-configurator-anchor"><div class="rt-configurator-title"><span>DESIGN TOOL · MATRIX</span><h2>매트릭스 구성기</h2><p>프레임을 선택하고 실제 슬롯 위치에 입력·출력 카드를 장착해 구성합니다.</p></div></div>
   <div class="rt-workspace"><div class="rt-tools"><button class="rt-button" data-tool="undo" disabled>↶ 실행 취소</button><button class="rt-button" data-tool="redo" disabled>↷ 다시 실행</button><button class="rt-button" data-tool="backup">JSON 백업</button><button class="rt-button" data-tool="import">불러오기</button><button class="rt-button" data-tool="reset">새 구성</button></div><p id="save-status" role="status" aria-live="polite">이 브라우저에 자동 저장됩니다.</p><input id="import-file" type="file" accept=".json,application/json" hidden></div><nav class="rt-nav" aria-label="구성 단계"></nav>
   <main class="rt-main" tabindex="-1"></main>
   <footer class="rt-footer"><div class="rt-summary" aria-live="polite"></div><div class="rt-actions"><button class="rt-button rt-quiet" data-action="back" type="button">← 이전</button><button class="rt-button rt-primary" data-action="next" type="button"><span>섀시 선택</span><span class="rt-arrow" aria-hidden="true">→</span></button></div></footer>
   <template id="rtcom-assets"><img data-family="XDM" src="output/design/assets/xdm.jpg" alt="XDM 제품군 카탈로그 사진"><img data-family="SPX" src="output/design/assets/spx.jpg" alt="SPX 제품군 카탈로그 사진"><img data-family="VDM" src="output/design/assets/vdm.jpg" alt="VDM 제품군 카탈로그 사진"></template>
-  <script src="src/catalog.js"></script><script src="src/core.js"></script><script src="src/app.js"></script>
+  <script src="src/catalog.js"></script><script src="src/core.js"></script><script src="src/app.js"></script><script src="src/library.js"></script>
 </div>
 <section id="print-report"></section></body></html>
