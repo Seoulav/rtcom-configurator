@@ -160,6 +160,8 @@
         add('LINK_CONDITIONS_'+slot,'UNVERIFIED',`${id}: 전원과 부속품 조건은 미검증입니다.`,'G08 · G09');
       }
     }
+    const ctrCount=Object.values(state.links).filter(link=>link.device?.startsWith('XDM-CTR100')).reduce((sum,link)=>sum+link.count,0);
+    if (ctrCount) add('CTR_POWER_REQUIRED','WARNING',`XDM-CTR100 ${ctrCount}대의 전원 공급을 위한 별도 POE Power Supply 장비가 필요합니다. 구매 전 현행 모델명과 포트 용량을 확인하세요.`,'사용자 제공 XDM POE 구성도 · G08');
     const status=issues.some(issue=>issue.level==='ERROR')?'ERROR':issues.some(issue=>issue.level==='UNVERIFIED')?'UNVERIFIED':issues.some(issue=>issue.level==='WARNING')?'WARNING':'VALID';
     return {status,exportStatus:'UNVERIFIED_DRAFT',canFinalize:status==='VALID',summary:requirementSummary(state),issues};
   }
@@ -172,6 +174,8 @@
       if (port.tx&&port.quantity) add('전송기',port.tx.split(' · ')[0],port.quantity);
       if (port.rx&&port.quantity) add('수신기',port.rx.split(' · ')[0],port.quantity);
     }
+    const ctrQuantity=rows.find(row=>row.model==='XDM-CTR100')?.quantity||0;
+    if (ctrQuantity) add('전원 장비','별도 POE Power Supply (현행 모델명 확인 필요)',Math.ceil(ctrQuantity/16));
     return rows;
   }
   function document(input) {

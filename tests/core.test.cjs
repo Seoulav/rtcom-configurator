@@ -54,6 +54,8 @@ test('round-trip preserves TX/RX roles and combines purchasing quantities',()=>{
   assert.equal(doc.schemaVersion,3);
   assert.deepEqual(restored,state);
   assert.equal(core.bom(state).find(row=>row.model==='XDM-CTR100').quantity,5);
+  assert.equal(core.bom(state).find(row=>row.category==='전원 장비').quantity,1);
+  assert(core.validate(state).issues.some(issue=>issue.code==='CTR_POWER_REQUIRED'));
   assert.equal(doc.validation.canFinalize,false);
 });
 
@@ -98,7 +100,7 @@ test('rejects malformed, oversized, stale and future documents',()=>{
 test('does not trust validation or BOM supplied in a file',()=>{
   const doc=core.document(configured());doc.validation={canFinalize:true,status:'VERIFIED'};doc.bom=[];
   const restored=core.document(core.parse(JSON.stringify(doc)));
-  assert.equal(restored.validation.canFinalize,false);assert.equal(restored.bom.length,4);
+  assert.equal(restored.validation.canFinalize,false);assert.equal(restored.bom.length,5);
 });
 
 test('empty and partly used slots produce no error',()=>{
@@ -118,5 +120,5 @@ test('VDM Quad card remains two ports and unknown remote links stay unconfirmed'
 
 test('CSV contains draft status, combined quantities and accessory limitation',()=>{
   const csv=core.csv(configured());
-  assert.match(csv,/UNVERIFIED_DRAFT/);assert.match(csv,/"XDM-CTR100","5"/);assert.match(csv,/기본 포함품 미확정/);
+  assert.match(csv,/UNVERIFIED_DRAFT/);assert.match(csv,/"XDM-CTR100","5"/);assert.match(csv,/"전원 장비"/);assert.match(csv,/기본 포함품 미확정/);
 });
