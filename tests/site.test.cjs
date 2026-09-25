@@ -14,6 +14,7 @@ test('index.html is a configurator-only page that keeps the legacy anchors',()=>
   for(const id of ['rtcom-design','matrix-configurator','print-report','rtcom-assets'])assert.match(html,new RegExp(`id="${id}"`));
   assert.deepEqual([...html.matchAll(/<script src="([^"]+)"/g)].map(match=>match[1]),runtimeScripts);
   assert.doesNotMatch(html,/data-route-view|data-route-link|equipment-library|\.pdf/);
+  assert.match(html,/<a class="rt-portal-link" href="https:\/\/seoulav\.github\.io\/AV-Portal\/" target="_blank" rel="noopener">/);
 });
 
 test('runtime code has no in-app navigation that would break relative asset paths',()=>{

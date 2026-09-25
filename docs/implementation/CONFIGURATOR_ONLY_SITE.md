@@ -47,7 +47,7 @@
 
 ## 남은 일
 
-- AV portal 주소를 받으면 구성기 헤더나 카드 설명에 제품 페이지 링크를 추가
+- AV Portal 헤더 링크는 추가했습니다(`https://seoulav.github.io/AV-Portal/`). 2026-09-25 기준 AV Portal `llms.txt`에 RTCOM 제품이 없어 제품별 연결은 RTCOM 제품 등록 후 진행합니다.
 - 모바일에서 XDM-72 이상 슬롯 라벨 잘림, 후면 사진 캡션 겹침(감사 문서 P2)
 - 공개 Pages 위치 정리: `seoulav.github.io/rtcom-configurator`와 `rtcom-av-design`
 - 원본 `docs/*.pdf`와 `rtcom-source.zip`을 저장소에서도 뺄지 결정(현재 배포에는 미포함)

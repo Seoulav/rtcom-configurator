@@ -63,3 +63,13 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 @media(max-width:1050px){#rtcom-design .rt-top{flex-wrap:wrap}}
 
 @media(max-width:380px){#rtcom-design .rt-top{padding:18px}#rtcom-design .rt-brand{font-size:18px;letter-spacing:-.5px}#rtcom-design .rt-brand-sub{font-size:7px;letter-spacing:.9px}}
+
+/* 0.7 AV Portal link */
+#rtcom-design .rt-top-links{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+#rtcom-design .rt-portal-link{display:inline-flex;align-items:center;gap:5px;padding:9px 14px;border:1px solid #d8e2f2;border-radius:999px;background:#fff;color:#2f63c8;font-size:12px;font-weight:800;text-decoration:none;white-space:nowrap}
+#rtcom-design .rt-portal-link:hover{border-color:#3978ee;background:#f3f7ff}
+#rtcom-design .rt-portal-link:focus-visible{outline:3px solid #3978ee55;outline-offset:2px}
+#rtcom-design .rt-visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media(max-width:1050px){#rtcom-design .rt-top-links{width:100%;justify-content:space-between}#rtcom-design .rt-top-links .rt-meta{width:auto;flex:1}}
+@media(max-width:480px){#rtcom-design .rt-top-links{flex-direction:column;align-items:stretch}#rtcom-design .rt-portal-link{justify-content:center}}
+@media print{#rtcom-design .rt-portal-link{display:none}}
