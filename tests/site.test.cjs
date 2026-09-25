@@ -31,7 +31,10 @@ test('every XDM card and documented rear photo has an image asset',()=>{
   const catalog=loadCatalog();
   const cards=[...catalog.XDM.input,...catalog.XDM.output];
   assert.ok(cards.length>0);
-  for(const card of cards){const id=Array.isArray(card)?card[0]:card.id;assert.ok(fs.existsSync(`output/design/assets/cards/${id}.jpg`),`missing card image for ${id}`)}
+  for(const card of cards){const id=Array.isArray(card)?card[0]:card.id;assert.ok(fs.existsSync(`output/design/assets/cards/${id}.webp`),`missing card faceplate for ${id}`)}
+  const frames=[...read('src/app.js').matchAll(/'(output\/design\/assets\/frames\/[^']+)'/g)].map(match=>match[1]);
+  assert.ok(frames.length>=2);
+  for(const frame of frames)assert.ok(fs.existsSync(frame),`missing frame photo ${frame}`);
   const photoPages=read('src/app.js').match(/photoPages=\{([^}]*)\}/)[1];
   for(const [,model] of photoPages.matchAll(/'([^']+)':\d+/g))assert.ok(fs.existsSync(`output/design/assets/${model.toLowerCase()}-rear.jpg`),`missing rear photo for ${model}`);
 });
@@ -46,6 +49,8 @@ test('static package ships only configurator files and redirects legacy portal U
   for(const file of ['index.html','.nojekyll',...runtimeScripts,'src/styles.css'])assert.ok(files.includes(file),`dist is missing ${file}`);
   const html=read('dist/index.html');
   for(const [,ref] of html.matchAll(/(?:src|href)="((?:src|output)\/[^"]+)"/g))assert.ok(files.includes(ref),`dist/index.html references missing ${ref}`);
+  for(const [,ref] of read('src/app.js').matchAll(/'(output\/design\/assets\/frames\/[^']+)'/g))assert.ok(files.includes(ref),`dist is missing ${ref}`);
+  assert.ok(files.some(file=>/^output\/design\/assets\/cards\/XDM-[A-Z]+100\.webp$/.test(file)),'dist must ship card faceplates');
   for(const [route,base] of [['products','../'],['tools/matrix-configurator','../../']]){
     const stub=read(`dist/${route}/index.html`);
     assert.match(stub,new RegExp(`url=${base.replaceAll('.','\\.')}`));
