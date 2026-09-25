@@ -29,18 +29,20 @@
 
 다음 항목은 명시적인 변경 계획과 검증 없이 바꾸지 않습니다.
 
-- 기존 제품·시리즈 31개와 데이터 카테고리 5개
 - 구성기 제품군·섀시·카드 3/21/26
 - `rtcom.configuration.v1` LocalStorage key
 - JSON schema 3
 - `catalogVersion`
 - 슬롯 ID와 기존 `#matrix-configurator` 주소
+- 0.6 포털 주소(`/products`, `/tools/matrix-configurator`)의 구성기 첫 화면 이동
+
+0.7부터 제품 라이브러리(31개 제품·5개 카테고리)와 카탈로그 PDF 배포는 AV portal과 중복되어 제거했습니다. 근거와 영향 범위는 `docs/audit/SITE_SCOPE_REVIEW.md`에 있습니다.
 
 ## 버전과 기록
 
 - 현재 화면 버전은 `index.html`의 우측 상단 표기와 `README.md`에 함께 기록합니다.
 - 원본 `main`에 기능 묶음을 병합할 때 마이너 버전을 올리고, 같은 커밋에서 `CHANGELOG.md`를 갱신합니다.
-- 다음 PHASE 2 병합 목표 버전은 `0.7.0`입니다. 실제 병합 전에는 검증된 canonical main commit을 확인합니다.
+- 구성기 단일 화면 전환은 `0.7.0`으로 기록했습니다. 다음 기능 묶음은 `0.8.0`을 목표로 하며, 실제 병합 전에는 검증된 canonical main commit을 확인합니다.
 - 모든 작업은 구현 문서, QA 문서 또는 감사 문서에 근거와 결과를 남깁니다.
 
 ## Git 명령 정책
@@ -54,8 +56,8 @@
 
 ```bash
 node --test tests/*.test.cjs
-node scripts/validate-catalog.cjs
 node scripts/package-site.cjs
+node scripts/e2e-smoke.cjs   # playwright가 있을 때 (없으면 exit 2로 건너뜀)
 git diff --check
 ```
 

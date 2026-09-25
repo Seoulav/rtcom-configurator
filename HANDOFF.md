@@ -6,6 +6,8 @@
 
 ## 현재 구현
 
+> 0.7.0부터 제품 라이브러리와 포털은 제거되었고 사이트는 매트릭스 구성기만 제공합니다. 최신 구조는 `docs/implementation/CONFIGURATOR_ONLY_SITE.md`를 먼저 읽으세요.
+
 원본 자료는 `docs/`, `output/design/`에 있습니다. 현재 앱은 루트 `index.html`과 `src/`입니다. 외부 라이브러리 없는 정적 HTML/CSS/JavaScript 앱입니다.
 
 - 6단계 구성, XDM/SPX/VDM 카탈로그와 프레임 중심 카드 슬롯 편집기.

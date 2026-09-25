@@ -1,6 +1,6 @@
 # ADR-001: 기존 사이트를 유지하는 통합 포털 정보구조
 
-- 상태: Proposed
+- 상태: Superseded (0.7.0, 2026-09-25) — 제품 라이브러리가 AV portal과 중복되어 제거되고 구성기 단일 사이트로 전환했습니다. `docs/implementation/CONFIGURATOR_ONLY_SITE.md` 참고. 아래 내용은 당시 기록입니다.
 - 결정일: 2026-09-20
 - 기준 커밋: `f7951ef0bb5a4294c9e68debc43de333a3bea707`
 

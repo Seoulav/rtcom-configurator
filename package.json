@@ -6,6 +6,6 @@
   "scripts": {
     "start": "node scripts/serve.cjs",
     "test": "node --test tests/*.test.cjs",
-    "validate:catalog": "node scripts/validate-catalog.cjs"
+    "e2e": "node scripts/package-site.cjs && node scripts/e2e-smoke.cjs"
   }
 }
