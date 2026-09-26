@@ -47,6 +47,80 @@
       const facts=[bandwidth&&{label:'대역폭',value:`${bandwidth.value}${bandwidth.unit?` ${bandwidth.unit}`:''}`},resolution&&{label:'해상도',value:resolution.value.split(',')[0].split('(')[0].trim()},hdmiPorts('IN')&&{label:'입력',value:hdmiPorts('IN')},hdmiPorts('OUT')&&{label:'출력',value:hdmiPorts('OUT')}].filter(Boolean);
       return facts.length>=2?facts.slice(0,4):[];
     }
+    // 연결 다이어그램(에이앤미디어 antez.co.kr 방식 참고, 2026-09-27 사용자 캡처 확인): 데이터(item.io)에서 자동으로 그린다.
+    // 분배기·스위처(단일 기기)와 전송기(TX/RX 쌍) 두 가지 형태를 지원한다. 케이블·시리즈(카드가 필요한 XDM·SPX·VDM)는 io가 비어 있어 그리지 않는다.
+    const COLOR_IN='#3978ee',COLOR_OUT='#a855c9',COLOR_FIBER='#1f9d7c',COLOR_COPPER='#c17a1f';
+    const svgEsc=value=>esc(value);
+    const monitorIcon=(cx,cy,label,scale=1)=>{
+      const w=44*scale,h=30*scale;
+      return `<g transform="translate(${cx-w/2} ${cy-h/2})"><rect x="0" y="0" width="${w}" height="${h}" rx="4" fill="#fff" stroke="#b9c3d6" stroke-width="2"/><rect x="${w*0.32}" y="${h}" width="${w*0.36}" height="${h*0.22}" fill="#c9d3e6"/><rect x="${w*0.18}" y="${h+h*0.22}" width="${w*0.64}" height="${h*0.14}" rx="2" fill="#c9d3e6"/>${label?`<text x="${w/2}" y="${h+h*0.55+13}" text-anchor="middle" font-size="10" fill="#687386">${svgEsc(label)}</text>`:''}</g>`;
+    };
+    const deviceBox=(x,y,w,h,label,sub)=>`<g><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="14" fill="#eef2f8" stroke="#c8d3e6" stroke-width="2"/><text x="${x+w/2}" y="${y+h/2-(sub?7:0)}" text-anchor="middle" font-size="13" font-weight="750" fill="#1f2532">${svgEsc(label)}</text>${sub?`<text x="${x+w/2}" y="${y+h/2+13}" text-anchor="middle" font-size="10" fill="#687386">${svgEsc(sub)}</text>`:''}</g>`;
+    const arrow=(x1,y1,x2,y2,color)=>{
+      const angle=Math.atan2(y2-y1,x2-x1),size=7;
+      const ax=x2-Math.cos(angle)*2,ay=y2-Math.sin(angle)*2;
+      const p1=[ax-size*Math.cos(angle-0.5),ay-size*Math.sin(angle-0.5)],p2=[ax-size*Math.cos(angle+0.5),ay-size*Math.sin(angle+0.5)];
+      return `<path d="M${x1} ${y1}L${x2} ${y2}" stroke="${color}" stroke-width="2.5" fill="none"/><polygon points="${ax},${ay} ${p1[0]},${p1[1]} ${p2[0]},${p2[1]}" fill="${color}"/>`;
+    };
+    const diagramWrap=(body,width,height,legendItems)=>`<div class="rt-product-diagram-canvas"><svg viewBox="0 0 ${width} ${height}" role="img" aria-label="연결 다이어그램" preserveAspectRatio="xMidYMid meet">${body}</svg></div>
+      <p class="rt-product-diagram-hint">좌우로 밀어서 볼 수 있습니다.</p>
+      <ul class="rt-product-diagram-legend">${legendItems.map(([color,label])=>`<li><span style="background:${color}"></span>${svgEsc(label)}</li>`).join('')}</ul>`;
+    function splitterDiagram(item){
+      const io=item.io||[];
+      const primary=direction=>{
+        const rows=io.filter(port=>port.direction===direction&&/^HDMI|^Female HDMI|^HDMI 19-Pin/i.test(port.connector||'')&&parseInt(port.quantity,10));
+        if(!rows.length)return null;
+        // 다이어그램에는 "HDMI"만 짧게 쓰고, 세부 커넥터 표기(Female·19-Pin 등)는 아래 입출력 표에 남긴다.
+        return {label:(rows[0].connector.match(/^[A-Za-z]+/)||['HDMI'])[0],total:rows.reduce((sum,port)=>sum+(parseInt(port.quantity,10)||0),0)};
+      };
+      const ins=primary('IN'),outs=primary('OUT');
+      if(!ins||!outs)return null;
+      const cap=n=>Math.min(n,4);
+      const inN=cap(ins.total),outN=cap(outs.total);
+      const rowH=64,height=Math.max(inN,outN)*rowH+80,width=780;
+      const midY=height/2,boxW=190,boxH=Math.min(height-40,Math.max(inN,outN)*30+40),boxX=width/2-boxW/2,boxY=midY-boxH/2;
+      let body=deviceBox(boxX,boxY,boxW,boxH,item.model,`${ins.total} ${ins.label} IN · ${outs.total} ${outs.label} OUT`);
+      for(let i=0;i<inN;i++){
+        const y=midY-(inN-1)*rowH/2+i*rowH;
+        const isLast=i===inN-1&&ins.total>inN;
+        body+=monitorIcon(70,y,inN===1?'소스 기기':`소스 ${i+1}${isLast?` 외 ${ins.total-inN}대`:''}`)+arrow(95,y,boxX-6,y,COLOR_IN);
+      }
+      for(let i=0;i<outN;i++){
+        const y=midY-(outN-1)*rowH/2+i*rowH,isLast=i===outN-1&&outs.total>outN;
+        body+=arrow(boxX+boxW+6,y,width-70-24,y,COLOR_OUT)+monitorIcon(width-70,y,`${i+1}. 디스플레이${isLast?` 외 ${outs.total-outN}대`:''}`);
+      }
+      return diagramWrap(body,width,height,[[COLOR_IN,`${ins.label} IN`],[COLOR_OUT,`${outs.label} OUT`]]);
+    }
+    function extenderDiagram(item){
+      const io=item.io||[];
+      if(!io.length)return null;
+      const isTransceiver=io.every(port=>!/^(TX|RX)\s*·/.test(port.group||''));
+      const side=(prefix,direction)=>io.find(port=>(isTransceiver?port.group==='Video':port.group.startsWith(prefix))&&port.direction===direction&&/HDMI/i.test(port.connector||''));
+      const txVideo=side('TX','IN'),rxVideo=side('RX','OUT');
+      const transmission=io.find(port=>/Transmission/.test(port.group||''));
+      if(!txVideo||!rxVideo||!transmission)return null;
+      const isFiber=/광|Fiber|SC|LC/i.test(`${transmission.connector} ${transmission.signal} ${transmission.protocol}`);
+      const cableColor=isFiber?COLOR_FIBER:COLOR_COPPER;
+      const distanceSpec=(item.specifications||[]).find(spec=>/전송거리/.test(spec.name));
+      const cableName=isFiber?'광케이블':'HDBaseT(CATx)';
+      const cableDistance=distanceSpec?`최대 ${distanceSpec.value}${distanceSpec.unit?` ${distanceSpec.unit}`:''}`:'';
+      const [txLabel,rxLabel]=isTransceiver?[item.model.split(' / ')[0],item.model.split(' / ')[0]]:(item.model.includes(' / ')?item.model.split(' / '):[item.model,item.model]);
+      const width=980,height=220,midY=110,boxW=170,boxH=76;
+      const srcX=60,txX=210,rxX=width-210-boxW,dstX=width-60;
+      let body=monitorIcon(srcX,midY,'소스 기기')+arrow(srcX+24,midY,txX-6,midY,COLOR_IN);
+      body+=deviceBox(txX,midY-boxH/2,boxW,boxH,txLabel,isTransceiver?'송신 모드':'송신기(TX)');
+      body+=`<path d="M${txX+boxW} ${midY}L${rxX} ${midY}" stroke="${cableColor}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/><text x="${(txX+boxW+rxX)/2}" y="${midY-20}" text-anchor="middle" font-size="11" font-weight="700" fill="${cableColor}">${svgEsc(cableName)}</text>${cableDistance?`<text x="${(txX+boxW+rxX)/2}" y="${midY-6}" text-anchor="middle" font-size="10" fill="${cableColor}">${svgEsc(cableDistance)}</text>`:''}`;
+      body+=deviceBox(rxX,midY-boxH/2,boxW,boxH,rxLabel,isTransceiver?'수신 모드':'수신기(RX)');
+      body+=arrow(rxX+boxW+6,midY,dstX-24,midY,COLOR_OUT)+monitorIcon(dstX,midY,'디스플레이');
+      const extras=io.filter(port=>port!==txVideo&&port!==rxVideo&&port!==transmission&&!/Transmission/.test(port.group||'')).map(port=>shortConnector(port.connector));
+      const note=extras.length?`<p class="rt-product-diagram-note">그 외 신호(${[...new Set(extras)].map(esc).join(', ')})는 위 입출력 표를 확인하세요.</p>`:'';
+      return diagramWrap(body,width,height,[[COLOR_IN,'입력(소스 → TX)'],[cableColor,cableName],[COLOR_OUT,'출력(RX → 디스플레이)']])+note;
+    }
+    function connectionDiagram(item){
+      if(item.group==='distribution'||item.group==='integrated')return splitterDiagram(item);
+      if(item.group==='extender')return extenderDiagram(item);
+      return null;
+    }
     function detailView(item){
       const byId=Object.fromEntries(index.products.map(product=>[product.id,product]));
       const images=item.images||[];
@@ -60,6 +134,7 @@
       const issues=(item.issues||[]);
       const sources=(item.sources||[]).map(source=>`${esc(source.name)}${source.page?` ${esc(source.page)}쪽`:''}${source.url&&/^https?:\/\//.test(source.url)?` — <a href="${esc(source.url)}" target="_blank" rel="noopener">열기 ↗</a>`:''}`);
       const facts=quickFacts(item);
+      const diagram=connectionDiagram(item);
       const overviewParagraphs=(item.overview||'').split(/\n{2,}/);
       const [headline,...restOfFirst]=overviewParagraphs[0]?.split(/(?<=[.다])\s+/)||[];
       return `<article class="rt-product-detail" aria-labelledby="rt-product-title">
@@ -76,6 +151,7 @@
         </div>`:''}
         ${lineup.length?`<section><h3>구성 제품</h3>${table(['모델','구분','요약'],lineup)}</section>`:''}
         ${specs.length?`<section><h3>제품 사양</h3>${table(['구분','사양','비고'],specs)}</section>`:''}
+        ${diagram?`<section class="rt-product-diagram"><h3>연결 다이어그램</h3>${diagram}</section>`:''}
         ${io.length?`<section><h3>입출력 단자</h3>${table(['분류','방향','단자','수량','신호','조건'],io)}</section>`:''}
         ${issues.length?`<section><h3>확인 사항</h3><ul class="rt-product-issues">${issues.map(issue=>`<li data-status="${esc(issue.status)}"><b>${esc(issue.title)}</b> ${esc(issue.detail)}</li>`).join('')}</ul></section>`:''}
         <section class="rt-product-source"><h3>출처</h3><p>${esc(item.verificationSummary)}</p>${sources.length?`<ul>${sources.map(source=>`<li>${source}</li>`).join('')}</ul>`:''}<p class="rt-product-note">공개 브로셔 수준 정보입니다. 최신 사양·납품 조건은 제조사 또는 서울영상테크에 확인하세요.</p></section>

@@ -202,6 +202,17 @@
       "verification": "VERIFIED"
     },
     {
+      "group": "TX · Transmission",
+      "connector": "LC connector (female)",
+      "signal": "Fiber",
+      "direction": "OUT",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "TX · 카탈로그 41쪽 입력단자·출력단자 표(HDMI+LC connector 병기)에서 TX 쪽 광 출력으로 추정",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
       "group": "RX · Video",
       "connector": "HDMI (female)",
       "signal": "HDMI",
@@ -209,6 +220,17 @@
       "quantity": "1",
       "protocol": "",
       "condition": "RX · 수량은 카탈로그 사진(HDMI OUT) 기준",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Transmission",
+      "connector": "LC connector (female)",
+      "signal": "Fiber",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "RX · 카탈로그 41쪽 입력단자·출력단자 표(HDMI+LC connector 병기)에서 RX 쪽 광 입력으로 추정",
       "source": "C",
       "verification": "VERIFIED"
     }
@@ -240,6 +262,12 @@
       "status": "INFO",
       "title": "이미지 역할 표기",
       "detail": "짝 제품이라 Main에는 송신기(TX), Other(기타)에는 수신기(RX) 사진을 넣었다. 각 이미지의 alt·note에 TX/RX를 적었다."
+    },
+    {
+      "code": "I2",
+      "status": "INFO",
+      "title": "광 커넥터 TX/RX 배정은 추정",
+      "detail": "카탈로그 41쪽은 입력단자·출력단자에 HDMI와 LC connector를 함께 표기하고 TX/RX를 구분하지 않는다. 광 파이버 익스텐더의 일반적 구조(TX가 HDMI를 광으로 변환해 내보내고 RX가 광을 받아 HDMI로 복원)에 따라 TX 출력·RX 입력으로 배정했다."
     }
   ]
 }
