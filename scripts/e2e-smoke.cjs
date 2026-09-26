@@ -20,7 +20,8 @@ const server=http.createServer((req,res)=>{
     if(!url.endsWith('/')){res.writeHead(301,{Location:`${url}/`}).end();return}
     file=path.join(file,'index.html');
   }
-  if(!fs.existsSync(file)){res.writeHead(404).end();return}
+  // GitHub Pages처럼 사이트 안의 없는 파일에는 404.html을 404 상태로 보여 준다.
+  if(!fs.existsSync(file)){const page=path.join(dist,'404.html');res.writeHead(404,{'Content-Type':'text/html; charset=utf-8'}).end(fs.existsSync(page)?fs.readFileSync(page):'');return}
   res.writeHead(200,{'Content-Type':types[path.extname(file)]||'application/octet-stream'}).end(fs.readFileSync(file));
 });
 const results=[];
@@ -34,7 +35,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     const context=await browser.newContext({viewport:{width:390,height:844}});
     const page=await context.newPage();
     const failed=[],errors=[];
-    page.on('response',response=>{if(response.status()>=400)failed.push(`${response.status()} ${response.url().replace(origin,'')}`)});
+    page.on('response',response=>{if(response.status()>=400&&!response.url().includes('/no-such-page/'))failed.push(`${response.status()} ${response.url().replace(origin,'')}`)});
     page.on('pageerror',error=>errors.push(error.message));
     page.on('dialog',dialog=>dialog.accept());
     const brokenImages=()=>page.$$eval('img',images=>images.filter(image=>image.complete&&image.naturalWidth===0&&image.loading!=='lazy').map(image=>image.getAttribute('src')));
@@ -101,6 +102,19 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('SPX-COS12 장착 시 SPX-RX가 12채널로 자동 연결됨',await page.locator('button[data-owner="out-1"][data-link-device="SPX-RX"][aria-pressed="true"]').count()===1&&await page.locator('select[data-owner="out-1"][data-link="count"]').inputValue()==='12');
     await page.evaluate(()=>localStorage.clear());
     await page.goto(home,{waitUntil:'networkidle'});
+    await page.click('button[data-family="XDM"]');
+    await page.click('[data-action="next"]');
+    await page.click('button[data-model="XDM-12"]');
+    await page.click('[data-action="next"]');
+    const cardsUrl=page.url();
+    await page.goBack();
+    const onChassis=await page.locator('.rt-step[aria-current="step"]').getAttribute('data-jump')==='1';
+    await page.goForward();
+    check('뒤로가기·앞으로가기로 이전·다음 단계를 오가며 주소는 바뀌지 않음',onChassis&&await page.locator('.rt-step[aria-current="step"]').getAttribute('data-jump')==='2'&&page.url()===cardsUrl);
+    const missing=await page.goto(home+'no-such-page/deep',{waitUntil:'networkidle'});
+    check('사이트 안의 없는 주소는 404.html이 구성기 첫 화면으로 보냄',missing&&page.url()===home&&await page.locator('#matrix-configurator').count()===1);
+    await page.evaluate(()=>localStorage.clear());
+    await page.goto(home,{waitUntil:'networkidle'});
     await page.click('button[data-family="SPX"]');
     await page.click('[data-action="next"]');
     check('SPX 섀시 5종 모두 매뉴얼 전면 사진이 표시됨',await page.$$eval('.rt-chassis-card img',images=>images.length===5&&images.every(image=>image.getAttribute('src').includes('/frames/spx-'))));
@@ -128,6 +142,19 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('404 요청 없음',failed.length===0,failed.join(', '));
     check('자바스크립트 오류 없음',errors.length===0,errors.join(' | '));
     await context.close();
+    // 터치 휴대폰(pointer:coarse)에서는 버튼 최소 높이 44px 규칙이 있다. 사진 슬롯이 겹치지 않고 판넬이 잘리지 않아야 한다.
+    const phone=await browser.newContext({viewport:{width:416,height:900},deviceScaleFactor:3,isMobile:true,hasTouch:true});
+    const mobile=await phone.newPage();
+    await mobile.goto(home,{waitUntil:'networkidle'});
+    await mobile.click('button[data-family="SPX"]');
+    await mobile.click('[data-action="next"]');
+    await mobile.click('button[data-model="SPX-M3236"]');
+    await mobile.click('[data-action="next"]');
+    await mobile.waitForLoadState('networkidle');
+    const rows=await mobile.$$eval('.rt-rack-zone-input .rt-rack-slot',slots=>slots.map(slot=>slot.getBoundingClientRect()).map(rect=>[rect.top,rect.bottom]));
+    const photoFits=await mobile.$eval('.rt-rack-photo',figure=>figure.getBoundingClientRect().right<=document.documentElement.clientWidth);
+    check('터치 휴대폰에서 SPX-M3236 입력 슬롯 4개가 겹치지 않고 사진이 화면 폭 안에 들어감',rows.length===4&&rows.every((row,index)=>index===0||row[0]>=rows[index-1][1]-0.5)&&photoFits,JSON.stringify(rows.map(row=>row.map(Math.round))));
+    await phone.close();
   }finally{
     await browser.close();
     server.close();

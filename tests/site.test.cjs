@@ -18,7 +18,11 @@ test('index.html is a configurator-only page that keeps the legacy anchors',()=>
 });
 
 test('runtime code has no in-app navigation that would break relative asset paths',()=>{
-  for(const file of runtimeScripts)assert.doesNotMatch(read(file),/pushState|replaceState/,`${file} must not change the document URL`);
+  // 뒤로가기용 방문 기록(0.14)은 허용하되, 주소는 항상 현재 주소(location.href) 그대로여야 한다.
+  for(const file of runtimeScripts){
+    const calls=[...read(file).matchAll(/(pushState|replaceState)\(([^)]*)\)/g)];
+    for(const call of calls)assert.match(call[2],/,'',location\.href$/,`${file} must keep the document URL (${call[0]})`);
+  }
 });
 
 test('product library sources and the catalog PDF are no longer part of the site',()=>{
