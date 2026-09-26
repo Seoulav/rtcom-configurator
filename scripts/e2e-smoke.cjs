@@ -98,6 +98,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('사진 슬롯 영역은 사진 높이 기준으로 배치됨(출력 영역 아래 끝 = 사진 677/772 지점)',await page.evaluate(()=>{const image=document.querySelector('.rt-rack-photo-image').getBoundingClientRect(),zone=document.querySelector('.rt-rack-zone-output').getBoundingClientRect();return Math.abs((zone.bottom-image.top)/image.height-677/772)<0.005}));
     await page.locator('button[data-slot="out-1"]').click();
     await page.locator('.rt-card-modal .rt-card-choice[data-card="SPX-COS12"]').click();
+    await page.mouse.move(2,2);
+    await page.evaluate(()=>document.activeElement?.blur());
+    check('장착한 카드 판넬 위의 슬롯 번호표는 숨겨져 첫 포트를 가리지 않음(빈 슬롯 번호표는 표시)',await page.evaluate(()=>{const filled=[...document.querySelectorAll('.rt-rack-slot-filled .rt-rack-slot-no')],blank=[...document.querySelectorAll('.rt-rack-slot-blank .rt-rack-slot-no')];return filled.length>0&&filled.every(label=>getComputedStyle(label).opacity==='0')&&blank.length>0&&blank.every(label=>getComputedStyle(label).opacity!=='0')}));
     await page.click('[data-action="next"]');
     check('SPX-COS12 장착 시 SPX-RX가 12채널로 자동 연결됨',await page.locator('button[data-owner="out-1"][data-link-device="SPX-RX"][aria-pressed="true"]').count()===1&&await page.locator('select[data-owner="out-1"][data-link="count"]').inputValue()==='12');
     await page.evaluate(()=>localStorage.clear());

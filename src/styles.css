@@ -256,3 +256,6 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-rack-photo .rt-rack-slot{aspect-ratio:auto}
 /* 터치 기기의 버튼 최소 높이(44px)가 사진·도면 슬롯에 적용되면 슬롯이 겹친다. 슬롯은 사진 속 판넬 크기를 따른다. */
 @media(pointer:coarse){#rtcom-design .rt-rack .rt-rack-slot,#rtcom-design .rt-rack-photo .rt-rack-slot{min-height:0}}
+/* 장착한 카드 판넬은 포트가 모두 보여야 한다. 슬롯 번호표가 첫 포트를 가리므로 장착 슬롯에서는 숨기고, 마우스를 올리거나 키보드로 선택하면 보인다. */
+#rtcom-design .rt-rack-slot-filled .rt-rack-slot-no{opacity:0;transition:opacity .15s}
+#rtcom-design .rt-rack-slot-filled:hover .rt-rack-slot-no,#rtcom-design .rt-rack-slot-filled:focus-visible .rt-rack-slot-no{opacity:1}
