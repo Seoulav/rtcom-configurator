@@ -13,16 +13,16 @@
     let changedSlot=null;
     // XDM 연동 전송기 정보(RTCom 종합 카탈로그 p.10~12). 키는 저장 파일·BOM에 쓰이는 전송기 이름과 같다.
     const extenderInfo={
-      'XDM-CTR100 · TX':{model:'XDM-CTR100',role:'HDBaseT 3.0 송·수신기 · 송신기(TX) 모드',image:'output/design/assets/extenders/xdm-ctr100.webp',specs:['4K60 4:4:4 · 최대 100m (CAT6a/CAT7)','HDMI 입력·출력 각 1 · RS-232+ · 오디오 출력','전원: 별도 전원 또는 XDM-CTR100 PSE의 POE'],pair:'XDM-CIS100',page:10,recommended:true},
-      'XDM-CTR100 · RX':{model:'XDM-CTR100',role:'HDBaseT 3.0 송·수신기 · 수신기(RX) 모드',image:'output/design/assets/extenders/xdm-ctr100.webp',specs:['4K60 4:4:4 · 최대 100m (CAT6a/CAT7)','HDMI 입력·출력 각 1 · RS-232+ · 오디오 출력','전원: 별도 전원 또는 XDM-CTR100 PSE의 POE'],pair:'XDM-COS100',page:10,recommended:true},
+      'XDM-CTR100 · TX':{model:'XDM-CTR100',role:'HDBaseT 3.0 송·수신기 · 송신기(TX) 모드',image:'output/design/assets/extenders/xdm-ctr100.webp',specs:['4K60 4:4:4 · 최대 100m (CAT6a/CAT7)','HDMI 입력·출력 각 1 · RS-232+ · 오디오 출력','전원: CTR100에 직접 연결 (매트릭스 카드 구성에서는 PSE 사용 불가)'],pair:'XDM-CIS100',page:10,recommended:true},
+      'XDM-CTR100 · RX':{model:'XDM-CTR100',role:'HDBaseT 3.0 송·수신기 · 수신기(RX) 모드',image:'output/design/assets/extenders/xdm-ctr100.webp',specs:['4K60 4:4:4 · 최대 100m (CAT6a/CAT7)','HDMI 입력·출력 각 1 · RS-232+ · 오디오 출력','전원: CTR100에 직접 연결 (매트릭스 카드 구성에서는 PSE 사용 불가)'],pair:'XDM-COS100',page:10,recommended:true},
       'XDM-CT103':{model:'XDM-CT103',role:'HDBaseT 3.0 1 Gang 벽부형 송신기',image:'output/design/assets/extenders/xdm-ct103.webp',specs:['4K60 4:4:4 · 최대 100m (CAT6a/CAT7)','HDMI 1 · 오디오 입력 1','XDM 슬롯 POE로 별도 전원 없이 사용'],pair:'XDM-CIS100',page:11},
       'XDM-CR103':{model:'XDM-CR103',role:'HDBaseT 3.0 1 Gang 벽부형 수신기',image:'output/design/assets/extenders/xdm-cr103.webp',specs:['4K60 4:4:4 · 최대 100m (CAT6a/CAT7)','HDMI 1 · 오디오 1','XDM 슬롯 POE로 별도 전원 없이 사용'],pair:'XDM-COS100',page:11},
       'XDM-FT101':{model:'XDM-FT101',role:'4K 광 송신기',image:'output/design/assets/extenders/xdm-ft101.webp',specs:['4K60 4:4:4 · HDMI 2.0','싱글모드 2km · 멀티모드 300m (LC 1)','오디오 삽입 · RS-232+'],pair:'XDM-FIS100',page:12,recommended:true},
       'XDM-FR101':{model:'XDM-FR101',role:'4K 광 수신기',image:'output/design/assets/extenders/xdm-fr101.webp',specs:['4K60 4:4:4 · HDMI 2.0','싱글모드 2km · 멀티모드 300m (LC 1)','오디오 추출 · RS-232+'],pair:'XDM-FOS100',page:12,recommended:true}
     };
     const extenderLineup=[
-      {model:'XDM-CTR100',role:'HDBaseT 3.0 송·수신기 (TX/RX 전환)',image:'output/design/assets/extenders/xdm-ctr100.webp',pair:'XDM-CIS100 · XDM-COS100',note:'송신기로 설정하면 CIS100, 수신기로 설정하면 COS100과 연동',page:10},
-      {model:'XDM-CTR100 PSE',role:'POE 전원 공급형 송·수신기',image:'output/design/assets/extenders/xdm-ctr100-pse.webp',pair:'XDM-CTR100 · XDM-CT/CR103',note:'CAT 케이블로 신호와 전원을 함께 공급(PSE). 이 구성기에서는 선택 항목이 아니며 전원 검토용으로 안내',page:10},
+      {model:'XDM-CTR100',role:'HDBaseT 3.0 송·수신기 (TX/RX 전환)',image:'output/design/assets/extenders/xdm-ctr100.webp',pair:'XDM-CIS100 · XDM-COS100',note:'송신기로 설정하면 CIS100, 수신기로 설정하면 COS100과 연동. 매트릭스 카드와 쓸 때는 CTR100에 전원을 직접 연결',page:10},
+      {model:'XDM-CTR100 PSE',role:'POE 전원 공급형 송·수신기',image:'output/design/assets/extenders/xdm-ctr100-pse.webp',pair:'XDM-CTR100 · XDM-CT/CR103 (1:1 연장)',note:'PSE 쪽에만 전원을 연결하면 짝을 이룬 CTR100·CT/CR103은 전원 연결 없이 동작합니다. 매트릭스 카드(CIS100·COS100) 구성에는 사용할 수 없습니다.',page:10},
       {model:'XDM-CT103',role:'1 Gang 벽부형 송신기',image:'output/design/assets/extenders/xdm-ct103.webp',pair:'XDM-CIS100',note:'XDM 슬롯 POE로 전원 공급',page:11},
       {model:'XDM-CR103',role:'1 Gang 벽부형 수신기',image:'output/design/assets/extenders/xdm-cr103.webp',pair:'XDM-COS100',note:'XDM 슬롯 POE로 전원 공급',page:11},
       {model:'XDM-FT101',role:'4K 광 송신기',image:'output/design/assets/extenders/xdm-ft101.webp',pair:'XDM-FIS100',note:'싱글모드 2km · 멀티모드 300m',page:12},
@@ -140,7 +140,7 @@
     }
     function powerNotice(){
       const count=Object.values(state.links).filter(link=>link.device?.startsWith('XDM-CTR100')).reduce((sum,link)=>sum+link.count,0);
-      return count?`<div class="rt-power-notice"><span>필수 전원 장비</span><div><strong>별도 POE Power Supply</strong><p>XDM-CTR100 ${count}대에 전원을 공급하는 별도 장비가 필요합니다. BOM에 자동 추가했으며, 현행 모델명과 포트 용량은 제조사 확인이 필요합니다.</p></div></div>`:'';
+      return count?`<div class="rt-power-notice"><span>필수 전원 연결</span><div><strong>XDM-CTR100 ${count}대에 전원 직접 연결</strong><p>매트릭스 카드(CIS100·COS100)에 연결하는 CTR100은 전원을 직접 연결해야 하며, 이 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다. 전원 공급 장비를 BOM에 자동 추가했습니다(제공 구성도 기준 16포트당 1대). 현행 모델명과 포트 용량은 제조사 확인이 필요합니다.</p></div></div>`:'';
     }
     function linksViewV3(){
       const remote=currentSlots().filter(slot=>['CAT','FIBER'].includes(slotCard(slot.id)?.[3]));

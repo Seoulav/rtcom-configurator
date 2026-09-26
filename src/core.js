@@ -167,7 +167,7 @@
       }
     }
     const ctrCount=Object.values(state.links).filter(link=>link.device?.startsWith('XDM-CTR100')).reduce((sum,link)=>sum+link.count,0);
-    if (ctrCount) add('CTR_POWER_REQUIRED','WARNING',`XDM-CTR100 ${ctrCount}대의 전원 공급을 위한 별도 POE Power Supply 장비가 필요합니다. 구매 전 현행 모델명과 포트 용량을 확인하세요.`,'사용자 제공 XDM POE 구성도 · G08');
+    if (ctrCount) add('CTR_POWER_REQUIRED','WARNING',`XDM-CTR100 ${ctrCount}대는 전원을 직접 연결해야 합니다. 매트릭스 카드(CIS100·COS100)에 연결하는 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다. 전원 공급 장비의 현행 모델명과 포트 용량을 확인하세요.`,'사용자 확인(2026-09-26) · 사용자 제공 XDM POE 구성도 · G08');
     const status=issues.some(issue=>issue.level==='ERROR')?'ERROR':issues.some(issue=>issue.level==='UNVERIFIED')?'UNVERIFIED':issues.some(issue=>issue.level==='WARNING')?'WARNING':'VALID';
     return {status,exportStatus:'UNVERIFIED_DRAFT',canFinalize:status==='VALID',summary:requirementSummary(state),issues};
   }
@@ -181,7 +181,7 @@
       if (port.rx&&port.quantity) add('수신기',port.rx.split(' · ')[0],port.quantity);
     }
     const ctrQuantity=rows.find(row=>row.model==='XDM-CTR100')?.quantity||0;
-    if (ctrQuantity) add('전원 장비','별도 POE Power Supply (현행 모델명 확인 필요)',Math.ceil(ctrQuantity/16));
+    if (ctrQuantity) add('전원 장비','XDM-CTR100 전원 공급 장비 (제공 구성도 기준 16포트당 1대, 현행 모델명 확인 필요)',Math.ceil(ctrQuantity/16));
     return rows;
   }
   function document(input) {

@@ -136,3 +136,14 @@ test('HDBaseT and fiber cards default to their catalog paired extenders',()=>{
   assert.equal(bom['XDM-CTR100'],4);
   assert.equal(bom['XDM-FR101'],4);
 });
+
+test('CTR100 linked to matrix cards needs its own power and cannot use CTR100 PSE',()=>{
+  const state=configured();
+  const issue=core.validate(state).issues.find(item=>item.code==='CTR_POWER_REQUIRED');
+  assert.ok(issue);
+  assert.match(issue.message,/전원을 직접 연결/);
+  assert.match(issue.message,/CTR100 PSE를 사용할 수 없습니다/);
+  const power=core.bom(state).find(row=>row.category==='전원 장비');
+  assert.match(power.model,/XDM-CTR100 전원 공급 장비/);
+  assert.equal(core.bom(state).some(row=>row.model==='XDM-CTR100 PSE'),false);
+});
