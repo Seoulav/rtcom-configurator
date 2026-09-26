@@ -9,7 +9,7 @@
 |---|---|
 | `node --test tests/*.test.cjs` | 21/21 통과 (카드 판넬 12종·프레임 사진 존재, 배포본 포함, 후면 사진 슬롯 좌표 범위·비율 검사 추가) |
 | `node scripts/package-site.cjs` | 성공 |
-| `node scripts/e2e-smoke.cjs` | 17/17 통과 |
+| `node scripts/e2e-smoke.cjs` | 19/19 통과 (블랭크 커버 72개, 장착 시 커버→판넬 전환 추가) |
 | `git diff --check` | 통과 |
 
 ## 브라우저 검사 (390px, `/rtcom-configurator/` 하위 경로)
@@ -27,6 +27,7 @@
 | XDM-72 후면 사진 | PASS | PASS |
 | XDM-144 후면 사진 4줄 | PASS | PASS |
 | XDM-216 그림 랙 (후면 사진 없음 안내) | PASS | PASS |
+| 블랭크 커버 (가로·세로 슬롯), 장착 직후 빛 번짐, 마우스 올림 시 "+" | PASS | - |
 | 카드 선택 팝업 | PASS | PASS |
 | 전송기·검토·내보내기 단계 | 깨진 이미지 0, 오류 0 | - |
 

@@ -186,3 +186,14 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-rack-photo figcaption{margin-top:6px;color:#56627a;font-size:10px;font-weight:700;text-align:left}
 #rtcom-design .rt-rack-note{margin:10px 0 0;color:#56627a;font-size:11px}
 @media(max-width:720px){#rtcom-design .rt-rack-scroll-hint{display:block}}
+/* 빈 슬롯 블랭크 커버와 장착 전환 효과 */
+#rtcom-design .rt-rack-slot-blank{border-color:#0f1318;border-style:solid;background:#1b1f25}
+#rtcom-design .rt-rack-slot-blank .rt-rack-slot-add{opacity:0;background:#1d3a7066;transition:opacity .15s}
+#rtcom-design .rt-rack-slot-blank:hover .rt-rack-slot-add,#rtcom-design .rt-rack-slot-blank:focus-visible .rt-rack-slot-add{opacity:1}
+#rtcom-design .rt-rack-slot-blank:hover .rt-blank-plate{filter:brightness(1.25)}
+#rtcom-design .rt-rack-slot-blank .rt-rack-slot-no{background:#0d1117a0;color:#9aa6b8}
+#rtcom-design .rt-rack-slot-changed{animation:rt-slot-glow .9s ease-out}
+#rtcom-design .rt-rack-slot-changed .rt-faceplate{animation:rt-plate-in .45s ease-out}
+@keyframes rt-slot-glow{0%{box-shadow:0 0 0 2px #8fb3ff,0 0 18px 4px #3978eecc}100%{box-shadow:0 0 0 0 #8fb3ff00,0 0 0 0 #3978ee00}}
+@keyframes rt-plate-in{0%{opacity:0;filter:brightness(1.8)}100%{opacity:1;filter:brightness(1)}}
+@media(prefers-reduced-motion:reduce){#rtcom-design .rt-rack-slot-changed,#rtcom-design .rt-rack-slot-changed .rt-faceplate{animation:none}}

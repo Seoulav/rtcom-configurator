@@ -4,12 +4,13 @@
 사용법: python3 scripts/tools/prepare_xdm_images.py <원본 폴더>
   <원본 폴더>/in/*.png, out/*.png  : 카드 후면 판넬 사진 (파일 이름 = 카드 모델명)
   <원본 폴더>/frame/XDM-12.png     : 프레임 전면 사진 (XDM-12만 사용)
-결과: output/design/assets/cards/<모델>.webp, output/design/assets/frames/<모델>-front.webp
+결과: output/design/assets/cards/<모델>.webp, cards/XDM-BLANK.webp(빈 슬롯 커버 합성), output/design/assets/frames/<모델>-front.webp
 필요 패키지: Pillow
 """
+import random
 import sys
 from pathlib import Path
-from PIL import Image
+from PIL import Image, ImageFilter, ImageOps
 
 CARD_WIDTH = 1200
 FRAME_WIDTH = 1200
@@ -53,6 +54,33 @@ def faceplate_band(image):
     return rgba.crop((left, top, right, bottom))
 
 
+def build_blank_plate():
+    """실물 블랭크 커버 사진이 없어 WOS100 판넬의 나사 끝부분과 매끈한 금속면으로 빈 슬롯 커버를 합성한다."""
+    source = Image.open(ROOT / 'output/design/assets/cards/XDM-WOS100.webp').convert('RGBA')
+    width, height = source.size
+    end_width, feather = 95, 20
+    metal = source.crop((240, 0, 360, height)).convert('RGB')  # 1·2번 포트 사이의 빈 금속면
+    pixels = metal.load()
+    rows = [tuple(sum(pixels[x, y][c] for x in range(metal.width)) // metal.width for c in range(3)) for y in range(height)]
+    random.seed(7)
+    plate = Image.new('RGB', (width, height))
+    target = plate.load()
+    for y in range(height):
+        for x in range(width):
+            noise = random.randint(-4, 4)
+            target[x, y] = tuple(max(0, min(255, value + noise)) for value in rows[y])
+    plate = plate.filter(ImageFilter.GaussianBlur(0.6)).convert('RGBA')
+    end = source.crop((0, 0, end_width, height))
+    mask = Image.new('L', (end_width, height), 255)
+    mask_pixels = mask.load()
+    for x in range(end_width - feather, end_width):
+        for y in range(height):
+            mask_pixels[x, y] = int(255 * (end_width - x) / feather)
+    plate.paste(end, (0, 0), mask)
+    plate.paste(ImageOps.mirror(end), (width - end_width, 0), ImageOps.mirror(mask))
+    return plate
+
+
 def save_webp(image, target, width):
     target.parent.mkdir(parents=True, exist_ok=True)
     if image.width > width:
@@ -67,6 +95,8 @@ def main(source):
         plate = faceplate_band(Image.open(path))
         size = save_webp(plate, ROOT / 'output/design/assets/cards' / f'{path.stem}.webp', CARD_WIDTH)
         print(f'card  {path.stem:12} {size[0]}x{size[1]}')
+    size = save_webp(build_blank_plate(), ROOT / 'output/design/assets/cards/XDM-BLANK.webp', CARD_WIDTH)
+    print(f'card  {"XDM-BLANK":12} {size[0]}x{size[1]} (합성)')
     # 나머지 프레임 사진은 매뉴얼 PDF에서 가져온다(extract_manual_frames.py). 사용자 제공 사진 중 정면·고해상도인 XDM-12만 쓴다.
     for path in sorted((source / 'frame').glob('XDM-12.png')):
         frame = Image.open(path).convert('RGBA')

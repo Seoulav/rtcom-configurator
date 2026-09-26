@@ -47,6 +47,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.click('button[data-model="XDM-144"]');
     await page.click('[data-action="next"]');
     await page.waitForLoadState('networkidle');
+    check('빈 슬롯 72개가 모두 블랭크 커버로 채워짐',await page.locator('.rt-rack-slot-blank img.rt-blank-plate').count()===72);
     await page.locator('button[data-slot="in-1"]').click();
     check('빈 슬롯을 누르면 카드 선택 팝업이 열림',await page.locator('.rt-card-modal[open]').isVisible());
     await page.keyboard.press('Escape');
@@ -56,6 +57,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.locator('button[data-slot="out-1"]').click();
     await page.locator('.rt-card-modal .rt-card-choice').first().click();
     await page.waitForLoadState('networkidle');
+    check('장착한 슬롯이 블랭크 커버에서 카드 판넬로 바뀌고 전환 효과가 적용됨',await page.locator('button[data-slot="out-1"].rt-rack-slot-filled.rt-rack-slot-changed').count()===1&&await page.locator('.rt-rack-slot-blank').count()===70);
     const placed=await page.locator('.rt-rack-slot-filled img.rt-faceplate').count();
     check('카드 선택 후 팝업이 닫히고 슬롯에 실물 판넬 이미지 표시',placed===2&&await page.locator('.rt-card-modal').count()===0,`${placed}개`);
     check('장착한 판넬 이미지가 정상 로드됨',await page.$$eval('.rt-rack-slot-filled img.rt-faceplate',images=>images.every(image=>image.naturalWidth>0)));
