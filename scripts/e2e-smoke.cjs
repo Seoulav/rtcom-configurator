@@ -175,10 +175,19 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('제품 카드를 누르면 상세(사양 표·입출력·출처)를 표시',(await page.locator('#rt-product-title').textContent()).includes('CT104-U')&&await page.locator('.rt-product-table tbody tr').count()>3&&await page.locator('.rt-product-source').isVisible());
     await page.waitForLoadState('networkidle');
     check('상세 이미지가 모두 열림',(await page.$$eval('.rt-product-gallery img',images=>images.filter(image=>!image.complete||image.naturalWidth===0).length))===0);
+    // 0.21 연결 다이어그램: 전송기는 TX→케이블→RX 형태, 시리즈(카드 슬롯이 필요한 XDM 등)는 데이터가 없어 그리지 않는다.
+    await page.waitForSelector('.rt-product-diagram svg');
+    check('CT104-U/CR104-U 상세에 TX·케이블·RX 연결 다이어그램이 보임',await page.locator('.rt-product-diagram svg').isVisible()&&(await page.locator('.rt-product-diagram-legend').textContent()).includes('HDBaseT'));
     await page.goBack();
     await page.waitForSelector('.rt-product-card');
     check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-product-card').count()===29);
+    await page.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
+    await page.waitForSelector('.rt-product-diagram svg');
+    check('HD-13U 상세에 분배기(소스→기기→디스플레이 3대) 다이어그램이 보임',await page.locator('.rt-product-diagram svg').isVisible()&&await page.locator('.rt-product-diagram-canvas text:has-text("HD-13U")').count()===1);
+    check('연결 다이어그램에도 가로 스크롤이 생기지 않음',(await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth))===0);
     await page.goto(`${home}#products/vdm`,{waitUntil:'networkidle'});
+    await page.waitForSelector('#rt-product-title');
+    check('시리즈(VDM)에는 연결 다이어그램을 그리지 않음(카드 슬롯 구성이 필요해 단순화하지 않음)',await page.locator('.rt-product-diagram').count()===0);
     check('제품 상세 주소(#products/vdm)로 바로 들어갈 수 있음',(await page.locator('#rt-product-title').textContent()).includes('VDM'));
     await page.click('[data-configure-family="VDM"]');
     await page.waitForSelector('.rt-chassis-card');
