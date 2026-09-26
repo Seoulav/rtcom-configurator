@@ -118,6 +118,10 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     const onChassis=await page.locator('.rt-step[aria-current="step"]').getAttribute('data-jump')==='1';
     await page.goForward();
     check('뒤로가기·앞으로가기로 이전·다음 단계를 오가며 주소는 바뀌지 않음',onChassis&&await page.locator('.rt-step[aria-current="step"]').getAttribute('data-jump')==='2'&&page.url()===cardsUrl);
+    let asked='';
+    page.once('dialog',dialog=>{asked=dialog.message()});
+    await page.click('.rt-brand-lockup');
+    check('로고를 누르면 확인 창 뒤 첫 화면(제품군)으로 이동하고 구성은 유지됨',/처음 화면/.test(asked)&&await page.locator('.rt-step[aria-current="step"]').getAttribute('data-jump')==='0'&&await page.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.model)==='XDM-12'&&page.url()===cardsUrl);
     const missing=await page.goto(home+'no-such-page/deep',{waitUntil:'networkidle'});
     check('사이트 안의 없는 주소는 404.html이 구성기 첫 화면으로 보냄',missing&&page.url()===home&&await page.locator('#matrix-configurator').count()===1);
     await page.evaluate(()=>localStorage.clear());
