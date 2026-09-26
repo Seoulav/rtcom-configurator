@@ -155,6 +155,18 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     const rows=await mobile.$$eval('.rt-rack-zone-input .rt-rack-slot',slots=>slots.map(slot=>slot.getBoundingClientRect()).map(rect=>[rect.top,rect.bottom]));
     const photoFits=await mobile.$eval('.rt-rack-photo',figure=>figure.getBoundingClientRect().right<=document.documentElement.clientWidth);
     check('터치 휴대폰에서 SPX-M3236 입력 슬롯 4개가 겹치지 않고 사진이 화면 폭 안에 들어감',rows.length===4&&rows.every((row,index)=>index===0||row[0]>=rows[index-1][1]-0.5)&&photoFits,JSON.stringify(rows.map(row=>row.map(Math.round))));
+    await mobile.goto(home,{waitUntil:'networkidle'});
+    await mobile.evaluate(()=>localStorage.clear());
+    await mobile.goto(home,{waitUntil:'networkidle'});
+    await mobile.click('button[data-family="XDM"]');
+    await mobile.click('[data-action="next"]');
+    await mobile.click('button[data-model="XDM-20"]');
+    await mobile.click('[data-action="next"]');
+    await mobile.evaluate(()=>document.querySelector('button[data-slot="out-2"]').click());
+    await mobile.locator('.rt-card-modal .rt-card-choice[data-card="XDM-FOS100"]').click();
+    await mobile.waitForTimeout(1000);
+    const fit=await mobile.$eval('button[data-slot="out-2"]',slot=>{const s=slot.getBoundingClientRect(),i=slot.querySelector('img.rt-faceplate').getBoundingClientRect();return [s.width-i.width,s.height-i.height,Math.abs(s.left-i.left),Math.abs(s.top-i.top)]});
+    check('터치 휴대폰에서 세로 슬롯에 장착한 판넬이 슬롯을 꽉 채움(좌우 끝 잘림 없음)',fit.every(value=>Math.abs(value)<0.6),JSON.stringify(fit.map(value=>value.toFixed(2))));
     await phone.close();
   }finally{
     await browser.close();
