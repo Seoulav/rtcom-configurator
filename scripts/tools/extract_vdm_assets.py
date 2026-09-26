@@ -4,7 +4,8 @@
 필요 패키지: pymupdf, Pillow. 원본은 저장소에 넣지 않는다(.source-materials/는 .gitignore 대상).
 결과:
 - output/design/assets/cards/<카드 ID>.webp : 구성기 VDM 카드 10종 판넬, VDM-BLANK.webp(합성)
-- output/design/assets/frames/vdm-16x-front.webp, vdm-16x-rear.webp, vdm-48x-front.webp
+- output/design/assets/frames/vdm-16x-front.webp, vdm-16x-rear.webp(사진), vdm-48x-front.webp
+- output/design/assets/frames/vdm-<모델>-rear.webp : 8X·32X·48X·64X·80X·128X·180X·256X 후면 선 도면
 """
 import importlib.util
 import io
@@ -24,6 +25,19 @@ BOARD_PAGES = {
 }
 FRONT_16X = (6, 763, 353)
 REAR_16X = (7, 628, 418)
+# 후면 선 도면: 모델 → (PDF 쪽, 원본 이미지 크기, 이미지 안의 후면 영역(왼쪽, 위, 오른쪽, 아래)).
+# 16X만 실물 사진(p.7)이 있고, 나머지는 2.2 Router Frame Specifications의 선 도면을 쓴다.
+# 구성기 rearPhotos 좌표는 이 잘린 도면의 원본 픽셀 기준이므로 크기를 바꾸지 않는다.
+REAR_DRAWINGS = {
+    '8x': (12, (641, 243), (4, 22, 641, 217)),
+    '32x': (14, (976, 473), (518, 0, 976, 473)),
+    '48x': (15, (976, 677), (528, 0, 976, 677)),
+    '64x': (16, (976, 819), (525, 0, 976, 819)),
+    '80x': (17, (250, 639), (6, 4, 245, 635)),
+    '128x': (18, (976, 1176), (499, 0, 976, 1176)),
+    '180x': (19, (171, 640), (0, 1, 170, 637)),
+    '256x': (20, (976, 777), (504, 0, 976, 777)),
+}
 
 
 def load_faceplate_band():
@@ -90,6 +104,8 @@ def main(pdf_path, photo_48x):
     # 매뉴얼 설명 번호(①~⑦)와 지시선을 빼고 장비 본체만 남긴다. 구성기 rearPhotos 좌표는 이 잘린 사진(449x278) 기준이다.
     save(largest_image(document, REAR_16X[0], REAR_16X[1:]).crop((100, 76, 549, 354)), FRAMES / 'vdm-16x-rear.webp')
     save(trim_white(Image.open(photo_48x).convert('RGB')), FRAMES / 'vdm-48x-front.webp', 900)
+    for model, (page, size, box) in REAR_DRAWINGS.items():
+        save(largest_image(document, page, size).crop(box), FRAMES / f'vdm-{model}-rear.webp')
 
 
 if __name__ == '__main__':

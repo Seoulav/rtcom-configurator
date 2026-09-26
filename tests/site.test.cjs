@@ -51,26 +51,31 @@ test('every XDM card and documented rear photo has an image asset',()=>{
 test('rear photo slot zones stay inside each photo and match the card faceplate ratio',()=>{
   const source=read('src/app.js');
   const literal=source.slice(source.indexOf('const rearPhotos=')+'const rearPhotos='.length,source.indexOf('};',source.indexOf('const rearPhotos='))+1);
-  const rearPhotos=new Function('SPX_MANUAL',`return ${literal}`)('SPX 국문 사용자 매뉴얼(250805)');
+  const rearPhotos=new Function('SPX_MANUAL','VDM_MANUAL',`return ${literal}`)('SPX 국문 사용자 매뉴얼(250805)','VDM 국문 매뉴얼 KV07');
   const catalog=loadCatalog();
-  assert.deepEqual(Object.keys(rearPhotos),['XDM-12','XDM-20','XDM-36','XDM-72','XDM-144','VDM-16X','SPX-M810','SPX-M1620','SPX-M3236','SPX-M2472','SPX-M24120']);
+  assert.deepEqual(Object.keys(rearPhotos),['XDM-12','XDM-20','XDM-36','XDM-72','XDM-144','VDM-16X','VDM-8X','VDM-32X','VDM-48X','VDM-64X','VDM-80X','VDM-128X','VDM-180X','VDM-256X','SPX-M810','SPX-M1620','SPX-M3236','SPX-M2472','SPX-M24120']);
   // [입력 슬롯, 출력 슬롯, 열 수(입력, 출력), 가로 판넬 여부]
   const layout={'XDM-12':[3,3,[1,1],true],'XDM-20':[5,5,[5,5]],'XDM-36':[9,9,[9,9]],'XDM-72':[18,18,[18,18]],'XDM-144':[36,36,[18,18]],'VDM-16X':[4,4,[4,4]],
+    'VDM-8X':[2,2,[1,1],true],'VDM-32X':[8,8,[4,4]],'VDM-48X':[12,12,[4,4]],'VDM-64X':[16,16,[4,4]],'VDM-80X':[20,20,[11,11]],'VDM-128X':[32,32,[11,11]],'VDM-180X':[45,45,[15,15]],'VDM-256X':[64,64,[11,11]],
     'SPX-M810':[1,1,[1,1],true],'SPX-M1620':[2,2,[1,1],true],'SPX-M3236':[4,3,[1,1],true],'SPX-M2472':[3,6,[3,6]],'SPX-M24120':[3,10,[3,10]]};
   const faceplateRatio={XDM:9.7,VDM:5.7,SPX:13.8};
   // SPX-M1620 매뉴얼 후면 사진은 가로로 눌려 있다(사진 662×418, 실제 483×177mm). 사진 속 판넬 비율(약 9.8:1)로 확인한다.
-  const photoRatio={'SPX-M1620':9.8};
+  // VDM 후면 선 도면은 모델마다 보드 비율이 다르게 그려져 있어 도면 속 비율로 확인한다.
+  const photoRatio={'SPX-M1620':9.8,'VDM-128X':3.9,'VDM-180X':8.2};
   for(const [model,photo] of Object.entries(rearPhotos)){
     const family=model.split('-')[0];
     assert.ok(catalog[family].models.includes(model));
     assert.ok(fs.existsSync(photo.src),`missing rear photo ${photo.src}`);
     const [width,height]=photo.size,[inputs,outputs,columns,horizontal]=layout[model];
     ['input','output'].forEach((dir,index)=>{
-      const [x0,y0,x1,y1]=photo[dir],count=index?outputs:inputs,cols=columns[index],rows=count/cols;
+      const rects=Array.isArray(photo[dir][0])?photo[dir]:[photo[dir]];
+      for(const [x0,y0,x1,y1] of rects){
+      const count=(index?outputs:inputs)/rects.length,cols=columns[index],rows=Math.ceil(count/cols);
       assert.ok(x0>=0&&y0>=0&&x1<=width&&y1<=height&&x0<x1&&y0<y1,`${model} ${dir} zone must stay inside the photo`);
       const slotWidth=(x1-x0)/cols,slotHeight=(y1-y0)/rows,ratio=horizontal?slotWidth/slotHeight:slotHeight/slotWidth;
       const expected=photoRatio[model]||faceplateRatio[family];
       assert.ok(ratio>expected*0.85&&ratio<expected*1.15,`${model} ${dir} slot ratio ${ratio.toFixed(2)} should match a ${expected}:1 faceplate`);
+      }
     });
   }
 });
