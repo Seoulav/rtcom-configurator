@@ -17,9 +17,15 @@
     portAssignments:{},
     links:{},slot:'in-a',format:'PDF'
   });
+  // 모델별 [입력 슬롯, 출력 슬롯]. XDM: 국문 매뉴얼 pp.7–11. SPX: 매뉴얼 p.4·카탈로그 I/O 크기·후면 사진(M810, M3236).
+  const slotPlans = {
+    XDM:{'XDM-12':[3,3],'XDM-20':[5,5],'XDM-36':[9,9],'XDM-72':[18,18],'XDM-144':[36,36],'XDM-216':[54,54]},
+    SPX:{'SPX-M810':[1,1],'SPX-M1620':[2,2],'SPX-M3236':[4,3],'SPX-M2472':[3,6],'SPX-M24120':[3,10]}
+  };
+  const slotPlan = (family, model) => slotPlans[family]?.[model] || null;
   function slotsFor(state) {
-    const count=state.family==='XDM'?{'XDM-12':3,'XDM-20':5,'XDM-36':9,'XDM-72':18,'XDM-144':36,'XDM-216':54}[state.model]:0;
-    if (count) return ['input','output'].flatMap(dir=>Array.from({length:count},(_,index)=>({id:`${dir==='input'?'in':'out'}-${index+1}`,label:`${dir==='input'?'입력':'출력'} 슬롯 ${index+1}`,dir})));
+    const plan=slotPlan(state.family,state.model);
+    if (plan) return ['input','output'].flatMap((dir,side)=>Array.from({length:plan[side]},(_,index)=>({id:`${dir==='input'?'in':'out'}-${index+1}`,label:`${dir==='input'?'입력':'출력'} 슬롯 ${index+1}`,dir})));
     return [{id:'in-a',label:'입력 A',dir:'input'},{id:'in-b',label:'입력 B',dir:'input'},{id:'out-a',label:'출력 A',dir:'output'},{id:'out-b',label:'출력 B',dir:'output'}];
   }
   const card = (state, id) => [...catalog[state.family].input,...catalog[state.family].output].find(item=>item[0]===id);
@@ -29,7 +35,7 @@
     return ({'XDM-HI100':[psePair],'XDM-HIS100':[psePair],'XDM-HOS100':[psePair],'XDM-WOS100':[psePair],'XDM-CIS100':['XDM-CTR100 · TX','XDM-CT103'],'XDM-COS100':['XDM-CTR100 · RX','XDM-CR103'],'XDM-FIS100':['XDM-FT101'],'XDM-FOS100':['XDM-FR101'],'SPX-COS12':['SPX-RX']})[id] || [];
   }
   // 카드를 장착할 때 자동으로 연결하는 전송기(RTCom 종합 카탈로그 p.10·12 호환 표기 근거). 사용자는 전송기 단계에서 바꿀 수 있다.
-  const defaultLinks = {'XDM-CIS100':'XDM-CTR100 · TX','XDM-COS100':'XDM-CTR100 · RX','XDM-FIS100':'XDM-FT101','XDM-FOS100':'XDM-FR101'};
+  const defaultLinks = {'SPX-COS12':'SPX-RX','XDM-CIS100':'XDM-CTR100 · TX','XDM-COS100':'XDM-CTR100 · RX','XDM-FIS100':'XDM-FT101','XDM-FOS100':'XDM-FR101'};
   function defaultLink(id, channels) {
     const device = defaultLinks[id];
     return device && choices(id).includes(device) ? {device,count:channels,distance:'30'} : null;
@@ -86,16 +92,20 @@
     if (input.model!==null && !family.models.includes(input.model)) fail('제품군과 섀시 모델이 일치하지 않습니다.');
     result.model=input.model;
     if (!plain(input.placements) || !plain(input.links)) fail('카드 또는 전송기 데이터 형식이 잘못되었습니다.');
-    const confirmedXdm=result.family==='XDM'&&['XDM-12','XDM-20','XDM-36','XDM-72','XDM-144','XDM-216'].includes(result.model);
-    const legacySlots=confirmedXdm?{'in-a':'in-1','in-b':'in-2','out-a':'out-1','out-b':'out-2'}:{};
+    const documented=Boolean(slotPlan(result.family,result.model));
+    const legacySlots=documented?{'in-a':'in-1','in-b':'in-2','out-a':'out-1','out-b':'out-2'}:{};
     const allowedSlots=new Set(slotsFor(result).map(item=>item.id));
+    // 이전 논리 슬롯(입력 A·B)을 실제 슬롯으로 옮긴다. 실제 슬롯이 1개뿐인 프레임(SPX-M810)의 두 번째 논리 슬롯은 옮길 곳이 없어 제외한다.
+    const droppedLegacy=new Set(Object.keys(input.placements).filter(id=>legacySlots[id]&&!allowedSlots.has(legacySlots[id])));
     for (const [id,value] of Object.entries(input.placements)) {
+      if (droppedLegacy.has(id)) continue;
       const target=legacySlots[id]||id;
       if (!allowedSlots.has(target) || !family[slotDirections[target]].some(item=>item[0]===value)) fail('지원하지 않는 슬롯 또는 카드입니다.');
       if (!result.model) fail('섀시 없이 카드를 배치할 수 없습니다.');
       result.placements[target]=value;
     }
     for (const [id,link] of Object.entries(input.links)) {
+      if (droppedLegacy.has(id)) continue;
       const target=legacySlots[id]||id;
       if (!own(result.placements,target) || !plain(link)) fail('전송기에 연결된 카드가 없습니다.');
       const selected=card(result,result.placements[target]);
@@ -106,7 +116,7 @@
       result.links[target]={device:link.device,count:link.count,distance:link.distance};
     }
     result.requirements={inputs:[],outputs:[]};
-    result.physicalSlots=confirmedXdm?{status:'manual_documented',slots:slotsFor(result).map(item=>item.id)}:{status:'unknown',slots:[]};
+    result.physicalSlots=documented?{status:'manual_documented',slots:slotsFor(result).map(item=>item.id)}:{status:'unknown',slots:[]};
     if (input.portAssignments!==undefined && !plain(input.portAssignments)) fail('포트 배정 데이터 형식이 잘못되었습니다.');
     const incomingPorts={};
     for (const [key,value] of Object.entries(input.portAssignments||{})) {
@@ -152,8 +162,9 @@
     const add=(code,level,message,evidence='')=>issues.push({code,level,message,evidence});
     if (!state.model) add('CHASSIS_REQUIRED','ERROR','섀시를 선택해 주세요.');
     for (const direction of ['input','output']) if (!Object.entries(state.placements).some(([id])=>slotDirections[id]===direction)) add('MISSING_'+direction.toUpperCase(),'WARNING',`${direction==='input'?'입력':'출력'} 카드가 선택되지 않았습니다.`);
-    const documentedSlots=state.family==='XDM'?{'XDM-12':3,'XDM-20':5,'XDM-36':9,'XDM-72':18,'XDM-144':36,'XDM-216':54}[state.model]:0;
-    if (documentedSlots) add('XDM_SLOT_LAYOUT','VALID',`매뉴얼 기준으로 입력 카드 ${documentedSlots}장과 출력 카드 ${documentedSlots}장을 장착할 수 있습니다.`,'M01 · XDM 국문 매뉴얼 pp.7–11');
+    const plan=slotPlan(state.family,state.model);
+    if (plan&&state.family==='XDM') add('XDM_SLOT_LAYOUT','VALID',`매뉴얼 기준으로 입력 카드 ${plan[0]}장과 출력 카드 ${plan[1]}장을 장착할 수 있습니다.`,'M01 · XDM 국문 매뉴얼 pp.7–11');
+    else if (plan) add('SLOT_LAYOUT','VALID',`입력 카드 ${plan[0]}장과 출력 카드 ${plan[1]}장을 장착할 수 있습니다.`,'SPX 매뉴얼 p.4 · SPX 카탈로그 I/O 구성 · 후면 사진(M810, M3236)');
     else add('PHYSICAL_LAYOUT_UNVERIFIED','UNVERIFIED','화면의 입력·출력 위치는 논리 구성입니다. 실제 슬롯 수와 카드 설치 허용표가 필요합니다.','G01 · G02');
     add('ACCESSORIES_UNVERIFIED','UNVERIFIED','기본 포함품, 케이블, 전원 및 필러 수량은 구매 목록에 포함되지 않았습니다.','G08 · G09 · G12');
     if (state.family==='SPX') add('SPX_CARD_ALLOWLIST','UNVERIFIED','SPX 프레임별 출력 카드 허용·혼합 조건과 전송기 판매 SKU를 확인해야 합니다.','G03 · G05');
@@ -172,6 +183,8 @@
         add('LINK_CONDITIONS_'+slot,'UNVERIFIED',`${id}: 전원과 부속품 조건은 미검증입니다.`,'G08 · G09');
       }
     }
+    const spxRx=Object.values(state.links).filter(link=>link.device==='SPX-RX').reduce((sum,link)=>sum+link.count,0);
+    if (spxRx) add('SPX_RX_POC','VALID',`SPX-RX ${spxRx}대는 메인프레임이 CAT 케이블로 전원을 공급(POC)하므로 별도 전원 연결이 필요 없습니다.`,'SPX 사양서·카탈로그 p.3 "POC 기능을 통해 메인프레임으로 RX 제품 전력 지원"');
     const ctrCount=Object.values(state.links).filter(link=>link.device?.startsWith('XDM-CTR100 · ')).reduce((sum,link)=>sum+link.count,0);
     if (ctrCount) add('CTR_POWER_REQUIRED','WARNING',`XDM-CTR100 ${ctrCount}대는 전원을 직접 연결해야 합니다. 매트릭스 카드(CIS100·COS100)에 연결하는 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다. 전원 공급 장비의 현행 모델명과 포트 용량을 확인하세요.`,'사용자 확인(2026-09-26) · 사용자 제공 XDM POE 구성도 · G08');
     const status=issues.some(issue=>issue.level==='ERROR')?'ERROR':issues.some(issue=>issue.level==='UNVERIFIED')?'UNVERIFIED':issues.some(issue=>issue.level==='WARNING')?'WARNING':'VALID';
@@ -212,5 +225,5 @@
     const rows=[['상태','구분','모델','수량','비고'],...bom(state).map(row=>['UNVERIFIED_DRAFT',row.category,row.model,row.quantity,'미검증 검토용 · 케이블/전원/기본 포함품 미확정'])];
     return rows.map(row=>row.map(cell).join(',')).join('\r\n');
   }
-  scope.RtCore={initial,checkState,choices,defaultLink,psePair,syncPorts,slotsFor,requirementSummary,validate,bom,document,parse,csv,catalogVersion,schemaVersion,signalTypes};
+  scope.RtCore={initial,checkState,choices,defaultLink,psePair,slotPlan,syncPorts,slotsFor,requirementSummary,validate,bom,document,parse,csv,catalogVersion,schemaVersion,signalTypes};
 })(globalThis);

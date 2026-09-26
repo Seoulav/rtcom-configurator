@@ -239,3 +239,9 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-ext-option-image-pair img{max-width:50%}
 #rtcom-design .rt-hdmi-extend{margin-top:22px;padding:20px;border:1px dashed #c9d6ea;border-radius:22px;background:#fbfcfe}
 @media(max-width:720px){#rtcom-design .rt-hdmi-extend{padding:14px}}
+/* SPX: 가로 카드를 입력(위)·출력(아래)으로 한 줄씩 쌓는 랙 */
+#rtcom-design .rt-rack-hs{width:100%;min-width:420px;max-width:860px}
+#rtcom-design .rt-rack-hs .rt-rack-body{grid-template-columns:1fr}
+#rtcom-design .rt-rack-hs .rt-rack-slot{aspect-ratio:13.8/1}
+#rtcom-design .rt-rack-hs .rt-rack-grid{gap:3px}
+#rtcom-design .rt-rack-hs .rt-rack-slot-no{top:50%;left:7.5%;transform:translateY(-50%)}

@@ -168,3 +168,33 @@ test('HDMI cards can extend with a CTR100 PSE + CTR100 pair that needs power onl
   const restored=core.parse(JSON.stringify(core.document(pairOnly)));
   assert.deepEqual(restored.links['in-1'],{device:core.psePair,count:4,distance:'30'});
 });
+
+test('SPX frames expose documented slot plans, migrate logical slots and link COS12 to SPX-RX',()=>{
+  const plans={'SPX-M810':[1,1],'SPX-M1620':[2,2],'SPX-M3236':[4,3],'SPX-M2472':[3,6],'SPX-M24120':[3,10]};
+  for(const [model,[input,output]] of Object.entries(plans)){
+    assert.deepEqual(core.slotPlan('SPX',model),[input,output]);
+    const slots=core.slotsFor({family:'SPX',model});
+    assert.equal(slots.filter(slot=>slot.dir==='input').length,input);
+    assert.equal(slots.filter(slot=>slot.dir==='output').length,output);
+    assert.equal(slots[0].id,'in-1');
+  }
+  assert.equal(core.slotPlan('VDM','VDM-8X'),null,'VDM stays logical until its own update');
+  assert.deepEqual(core.defaultLink('SPX-COS12',12),{device:'SPX-RX',count:12,distance:'30'});
+  const legacy=core.document({...core.initial(),family:'SPX',model:'SPX-M3236'});
+  legacy.schemaVersion=2;
+  legacy.state.placements={'in-a':'SPX-HIS8','in-b':'SPX-HIS8','out-b':'SPX-COS12'};
+  legacy.state.links={'out-b':{device:'SPX-RX',count:12,distance:'30'}};
+  delete legacy.state.portAssignments;
+  const migrated=core.parse(JSON.stringify(legacy));
+  assert.deepEqual(migrated.placements,{'in-1':'SPX-HIS8','in-2':'SPX-HIS8','out-2':'SPX-COS12'});
+  assert.deepEqual(migrated.links,{'out-2':{device:'SPX-RX',count:12,distance:'30'}});
+  const small=JSON.parse(JSON.stringify(legacy));small.state.model='SPX-M810';
+  const m810=core.parse(JSON.stringify(small));
+  assert.deepEqual(m810.placements,{'in-1':'SPX-HIS8'},'M810 has one input and one output slot; the second logical slots cannot move');
+  const state={...core.initial(),family:'SPX',model:'SPX-M3236',placements:{'out-1':'SPX-COS12'},links:{'out-1':{device:'SPX-RX',count:12,distance:'30'}}};
+  state.portAssignments=core.syncPorts(state);
+  const issues=core.validate(state).issues;
+  assert.ok(issues.some(issue=>issue.code==='SLOT_LAYOUT'&&issue.level==='VALID'));
+  assert.ok(issues.some(issue=>issue.code==='SPX_RX_POC'&&/POC/.test(issue.message)));
+  assert.equal(Object.fromEntries(core.bom(state).map(row=>[row.model,row.quantity]))['SPX-RX'],12);
+});

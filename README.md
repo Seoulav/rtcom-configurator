@@ -29,6 +29,7 @@ Node.js가 설치된 환경에서 `node scripts/serve.cjs` 후 http://127.0.0.1:
 - XDM-12/20/36/72/144는 매뉴얼의 실제 후면 사진을 모델별로 표시.
 - 빈 슬롯을 누르면 방향에 맞는 카드만 표시하고, 선택한 카드의 카탈로그 이미지를 슬롯에 즉시 반영.
 - HDBaseT 카드(CIS100·COS100)를 장착하면 XDM-CTR100(TX/RX), 광 카드(FIS100·FOS100)를 장착하면 XDM-FT101·FR101이 4채널분 자동으로 연결됩니다. 전송기 단계에서 벽부형 CT103·CR103으로 바꾸거나 채널 수를 줄일 수 있고, 연동 전송기 라인업을 사진과 함께 확인할 수 있습니다.
+- SPX 5종은 실제 슬롯 수(M810 1·1 ~ M24120 3·10)로 구성하며, SPX-COS12에는 SPX-RX가 자동 연결됩니다(본체 POC 전원).
 - HDMI 입력·출력 카드(HI100·HIS100·HOS100·WOS100)는 필요하면 CTR100 PSE + CTR100 한 쌍으로 연장할 수 있습니다. 전원은 PSE 쪽에만 연결하며, 이 쌍의 CTR100은 전원 공급 장비 수량에 넣지 않습니다.
 - 모델·슬롯 방향·카드·전송 장비 수량 검증 및 불러오기 실패 시 기존 구성 보존.
 - 포트에 배정된 TX/RX를 모델별 BOM 수량으로 합산.
@@ -68,6 +69,7 @@ Node.js가 설치된 환경에서 `node scripts/serve.cjs` 후 http://127.0.0.1:
 - `scripts/e2e-smoke.cjs`: 배포본 브라우저 검사.
 - `scripts/tools/prepare_xdm_images.py`: 사용자 제공 XDM 카드 판넬·XDM-12 전면 원본 사진을 웹용 WebP로 가공(Pillow 필요, 원본은 저장소에 넣지 않음).
 - `scripts/tools/extract_catalog_extenders.py`: 종합 카탈로그 PDF에서 XDM 연동 전송기 사진 추출(pymupdf, Pillow 필요).
+- `scripts/tools/extract_spx_catalog_cards.py`: SPX 카탈로그 스캔에서 카드 판넬·블랭크 커버를 만드는 임시 자산 스크립트.
 - `scripts/tools/extract_manual_frames.py`: XDM 국문 매뉴얼 PDF에서 프레임 전면·후면 사진을 추출(pymupdf, Pillow 필요).
 - `tests/`: 핵심 로직과 사이트 구성 테스트.
 

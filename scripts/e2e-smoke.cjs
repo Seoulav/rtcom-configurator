@@ -86,6 +86,18 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       await page.goto(`${home}${legacy}#matrix-configurator`,{waitUntil:'networkidle'});
       check(`옛 주소 /${legacy} → 구성기 첫 화면 이동`,page.url()===`${home}#matrix-configurator`&&await page.locator('#matrix-configurator h1').isVisible(),page.url());
     }
+    await page.evaluate(()=>localStorage.clear());
+    await page.goto(home,{waitUntil:'networkidle'});
+    await page.click('button[data-family="SPX"]');
+    await page.click('[data-action="next"]');
+    await page.click('button[data-model="SPX-M3236"]');
+    await page.click('[data-action="next"]');
+    await page.waitForLoadState('networkidle');
+    check('SPX-M3236은 입력 4·출력 3 슬롯이 블랭크 커버로 표시됨',await page.locator('.rt-rack-hs .rt-rack-slot-blank img.rt-blank-plate').count()===7);
+    await page.locator('button[data-slot="out-1"]').click();
+    await page.locator('.rt-card-modal .rt-card-choice[data-card="SPX-COS12"]').click();
+    await page.click('[data-action="next"]');
+    check('SPX-COS12 장착 시 SPX-RX가 12채널로 자동 연결됨',await page.locator('button[data-owner="out-1"][data-link-device="SPX-RX"][aria-pressed="true"]').count()===1&&await page.locator('select[data-owner="out-1"][data-link="count"]').inputValue()==='12');
     check('404 요청 없음',failed.length===0,failed.join(', '));
     check('자바스크립트 오류 없음',errors.length===0,errors.join(' | '));
     await context.close();
