@@ -6,6 +6,7 @@
 - output/design/assets/cards/<카드 ID>.webp : 구성기 VDM 카드 10종 판넬, VDM-BLANK.webp(합성)
 - output/design/assets/frames/vdm-16x-front.webp, vdm-16x-rear.webp(사진), vdm-48x-front.webp
 - output/design/assets/frames/vdm-<모델>-rear.webp : 8X·32X·48X·64X·80X·128X·180X·256X 후면 선 도면
+- output/design/assets/frames/vdm-<모델>-front.webp : 8X·32X·64X·80X·128X·180X·256X 전면 선 도면
 """
 import importlib.util
 import io
@@ -37,6 +38,16 @@ REAR_DRAWINGS = {
     '128x': (18, (976, 1176), (499, 0, 976, 1176)),
     '180x': (19, (171, 640), (0, 1, 170, 637)),
     '256x': (20, (976, 777), (504, 0, 976, 777)),
+}
+# 전면 선 도면: 실물 전면 사진이 없는 모델(16X·48X 제외)의 섀시 선택 이미지. (PDF 쪽, 원본 이미지 크기, 전면 영역)
+FRONT_DRAWINGS = {
+    '8x': (12, (641, 207), (7, 7, 633, 200)),
+    '32x': (14, (976, 473), (0, 0, 485, 473)),
+    '64x': (16, (976, 819), (0, 0, 500, 819)),
+    '80x': (17, (275, 641), (5, 0, 275, 638)),
+    '128x': (18, (976, 1176), (0, 0, 484, 1176)),
+    '180x': (19, (190, 640), (1, 0, 190, 636)),
+    '256x': (20, (976, 777), (0, 0, 485, 777)),
 }
 
 
@@ -106,6 +117,8 @@ def main(pdf_path, photo_48x):
     save(trim_white(Image.open(photo_48x).convert('RGB')), FRAMES / 'vdm-48x-front.webp', 900)
     for model, (page, size, box) in REAR_DRAWINGS.items():
         save(largest_image(document, page, size).crop(box), FRAMES / f'vdm-{model}-rear.webp')
+    for model, (page, size, box) in FRONT_DRAWINGS.items():
+        save(largest_image(document, page, size).crop(box), FRAMES / f'vdm-{model}-front.webp', 700)
 
 
 if __name__ == '__main__':

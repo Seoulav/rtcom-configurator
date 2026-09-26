@@ -126,6 +126,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.goto(home,{waitUntil:'networkidle'});
     await page.click('button[data-family="VDM"]');
     await page.click('[data-action="next"]');
+    check('VDM 섀시 9종(288X 제외)은 매뉴얼 전면 사진 또는 전면 도면을 표시함',await page.$$eval('.rt-chassis-card img',images=>images.filter(image=>image.getAttribute('src').includes('/frames/vdm-')&&image.getAttribute('src').endsWith('-front.webp')).length===9));
     await page.click('button[data-model="VDM-16X"]');
     await page.click('[data-action="next"]');
     await page.waitForLoadState('networkidle');

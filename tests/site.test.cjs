@@ -40,6 +40,7 @@ test('every XDM card and documented rear photo has an image asset',()=>{
   for(const id of ['SPX-HIS8','SPX-HOS10','SPX-HOS12','SPX-COS12','SPX-BLANK'])assert.ok(fs.existsSync(`output/design/assets/cards/${id}.webp`),`missing SPX card image ${id}`);
   for(const card of [...catalog.VDM.input,...catalog.VDM.output])assert.ok(fs.existsSync(`output/design/assets/cards/${card[0]}.webp`),`missing VDM faceplate for ${card[0]}`);
   assert.ok(fs.existsSync('output/design/assets/cards/VDM-BLANK.webp'),'missing VDM blank cover');
+  for(const model of ['8x','16x','32x','48x','64x','80x','128x','180x','256x'])assert.ok(fs.existsSync(`output/design/assets/frames/vdm-${model}-front.webp`)&&fs.existsSync(`output/design/assets/frames/vdm-${model}-rear.webp`),`missing VDM ${model} front/rear image`);
   for(const model of ['m810','m1620','m3236','m2472','m24120'])for(const side of ['front','rear'])assert.ok(fs.existsSync(`output/design/assets/frames/spx-${model}-${side}.webp`),`missing SPX ${model} ${side} photo`);
   for(const card of [...catalog.SPX.input,...catalog.SPX.output])assert.ok(fs.existsSync(`output/design/assets/cards/${card[0]}.webp`),`missing SPX faceplate for ${card[0]}`);
   const extenders=[...new Set([...read('src/app.js').matchAll(/'(output\/design\/assets\/extenders\/[^']+)'/g)].map(match=>match[1]))];
