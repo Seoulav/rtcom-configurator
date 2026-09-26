@@ -147,3 +147,24 @@ test('CTR100 linked to matrix cards needs its own power and cannot use CTR100 PS
   assert.match(power.model,/XDM-CTR100 전원 공급 장비/);
   assert.equal(core.bom(state).some(row=>row.model==='XDM-CTR100 PSE'),false);
 });
+
+test('HDMI cards can extend with a CTR100 PSE + CTR100 pair that needs power only at the PSE',()=>{
+  for(const id of ['XDM-HI100','XDM-HIS100','XDM-HOS100','XDM-WOS100'])assert.deepEqual(core.choices(id),[core.psePair]);
+  for(const id of ['XDM-HI100','XDM-HOS100'])assert.equal(core.defaultLink(id,4),null,'HDMI extension is optional');
+  assert.equal(core.choices('XDM-CIS100').includes(core.psePair),false,'PSE cannot be used on HDBaseT cards');
+  const state={...core.initial(),model:'XDM-12',placements:{'in-1':'XDM-HI100','out-1':'XDM-HOS100','in-2':'XDM-CIS100'},links:{'in-1':{device:core.psePair,count:2,distance:'30'},'out-1':{device:core.psePair,count:4,distance:'30'},'in-2':{device:'XDM-CTR100 · TX',count:3,distance:'30'}}};
+  state.portAssignments=core.syncPorts(state);
+  const bom=Object.fromEntries(core.bom(state).map(row=>[row.model,row.quantity]));
+  assert.equal(bom['XDM-CTR100 PSE'],6);
+  assert.equal(bom['XDM-CTR100 (PSE 급전, 전원 불필요)'],6);
+  assert.equal(bom['XDM-CTR100'],3);
+  const issues=core.validate(state).issues;
+  assert.match(issues.find(issue=>issue.code==='CTR_POWER_REQUIRED').message,/XDM-CTR100 3대/);
+  assert.ok(issues.some(issue=>issue.code==='LINK_PSE_PAIR_in-1'&&/PSE 쪽에만/.test(issue.message)));
+  const pairOnly={...core.initial(),model:'XDM-12',placements:{'in-1':'XDM-HI100'},links:{'in-1':{device:core.psePair,count:4,distance:'30'}}};
+  pairOnly.portAssignments=core.syncPorts(pairOnly);
+  assert.equal(core.bom(pairOnly).some(row=>row.category==='전원 장비'),false);
+  assert.equal(core.validate(pairOnly).issues.some(issue=>issue.code==='CTR_POWER_REQUIRED'),false);
+  const restored=core.parse(JSON.stringify(core.document(pairOnly)));
+  assert.deepEqual(restored.links['in-1'],{device:core.psePair,count:4,distance:'30'});
+});

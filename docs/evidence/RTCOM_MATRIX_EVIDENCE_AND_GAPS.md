@@ -49,6 +49,7 @@ SHA-256: `61F96DC8F33A74593F427F2E986796BE19DCE4D3E939AFB1F3037CD1A8C069AE`
 | E27 | 13 | SPX-M810 HDMI 구성도에 실제 후면 배치 일부가 보임 | DOCUMENTED | 해당 도식 참고 가능; 전체 프레임 허용표 대체 불가 |
 | U01 | 사용자 제공 XDM POE 구성도 | CIS/COS 카드에 연결하는 CTR100의 전원 공급용 별도 POE Power Supply 장비가 필요하며, 제공 도면은 MAX2-POE-PSU와 최대 16포트 구성을 표시 | DOCUMENTED + CURRENT MODEL MISSING | CTR100 사용 시 전원 장비를 BOM에 자동 추가하되 현행 모델명과 실제 포트 용량은 확인 필요로 표시 |
 | U03 | 사용자 확인(2026-09-26) | CTR100과 CTR100 PSE를 짝으로 구성하면 PSE 쪽에만 전원을 연결하고 CTR100은 전원 연결이 필요 없다. 단, 매트릭스 카드(CIS100·COS100)에 연결하는 구성에서는 PSE를 사용할 수 없으며 CTR100에 전원을 직접 연결해야 한다. | USER_CONFIRMED | 구성기 전원 안내·검토 경고·BOM 항목명에 반영 |
+| U04 | 사용자 확인(2026-09-26) | HDMI 입력·출력 카드는 CTR100 PSE + CTR100 조합으로 연장할 수 있으며 PSE 쪽에만 전원을 연결하면 된다. CTR100과 CTR100 PSE는 모두 DIP 스위치로 TX/RX를 선택한다. | USER_CONFIRMED | HDMI 카드 연장 선택지·BOM·전원 계산에 반영 |
 | U02 | 사용자 제공 XDM 커스텀 해상도·LED 연동 구성도 PPTX, p.1–3 | 개선 펌웨어 기준 비표준 입력(예: 3072×1728)을 수신해 LED 경로는 원본 패스스루로 유지하고, 모니터 경로는 3840×2160 업스케일로 분리할 수 있음. 3840×2160 캔버스의 (0,0)에 콘텐츠를 임베드하고 LED SBOX가 실 콘텐츠 영역만 추출하는 흐름을 설명함 | DOCUMENTED + IMPLEMENTATION DETAILS MISSING | XDM 라이브러리에 커스텀 해상도·LED 무손실 연동 특장점을 표시. 실제 EDID/펌웨어 지원 모델과 출력별 제한은 제조사 확인 전까지 확정하지 않음 |
 
 ## Data Gaps와 해소 기준

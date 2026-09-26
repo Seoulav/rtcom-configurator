@@ -23,8 +23,10 @@
     return [{id:'in-a',label:'입력 A',dir:'input'},{id:'in-b',label:'입력 B',dir:'input'},{id:'out-a',label:'출력 A',dir:'output'},{id:'out-b',label:'출력 B',dir:'output'}];
   }
   const card = (state, id) => [...catalog[state.family].input,...catalog[state.family].output].find(item=>item[0]===id);
+  // HDMI 카드 연장용 한 쌍: PSE 쪽에만 전원을 연결하면 CTR100은 전원 불필요(사용자 확인 2026-09-26). 두 제품 모두 DIP 스위치로 TX/RX 설정.
+  const psePair = 'XDM-CTR100 PSE + XDM-CTR100';
   function choices(id) {
-    return ({'XDM-CIS100':['XDM-CTR100 · TX','XDM-CT103'],'XDM-COS100':['XDM-CTR100 · RX','XDM-CR103'],'XDM-FIS100':['XDM-FT101'],'XDM-FOS100':['XDM-FR101'],'SPX-COS12':['SPX-RX']})[id] || [];
+    return ({'XDM-HI100':[psePair],'XDM-HIS100':[psePair],'XDM-HOS100':[psePair],'XDM-WOS100':[psePair],'XDM-CIS100':['XDM-CTR100 · TX','XDM-CT103'],'XDM-COS100':['XDM-CTR100 · RX','XDM-CR103'],'XDM-FIS100':['XDM-FT101'],'XDM-FOS100':['XDM-FR101'],'SPX-COS12':['SPX-RX']})[id] || [];
   }
   // 카드를 장착할 때 자동으로 연결하는 전송기(RTCom 종합 카탈로그 p.10·12 호환 표기 근거). 사용자는 전송기 단계에서 바꿀 수 있다.
   const defaultLinks = {'XDM-CIS100':'XDM-CTR100 · TX','XDM-COS100':'XDM-CTR100 · RX','XDM-FIS100':'XDM-FT101','XDM-FOS100':'XDM-FR101'};
@@ -158,6 +160,10 @@
     if (state.model==='XDM-288') add('XDM_288_SPEC','UNVERIFIED','XDM-288 상세 사양을 확인해야 합니다.','G10');
     for (const [slot,id] of Object.entries(state.placements)) {
       const selected=card(state,id), link=state.links[slot];
+      if (link?.device===psePair&&link.count) {
+        add('LINK_PSE_PAIR_'+slot,'VALID',`${id} → CTR100 PSE + CTR100 ${link.count}쌍: HDMI 연장. 전원은 PSE 쪽에만 연결하고 CTR100은 전원이 필요 없습니다. 두 제품 모두 DIP 스위치로 TX/RX를 설정합니다.`,'사용자 확인(2026-09-26) · E06');
+        continue;
+      }
       if (!['CAT','FIBER'].includes(selected[3])) continue;
       if (!choices(id).length) add('LINK_UNKNOWN_'+slot,'UNVERIFIED',`${id}: 개별 카드와 전송기의 호환 관계를 확인해야 합니다.`,'G06');
       else if (!link?.device||!link.count) add('LINK_UNUSED_'+slot,'VALID',`${id}: 원격 연결이 지정되지 않은 예비 포트는 오류가 아닙니다.`);
@@ -166,7 +172,7 @@
         add('LINK_CONDITIONS_'+slot,'UNVERIFIED',`${id}: 전원과 부속품 조건은 미검증입니다.`,'G08 · G09');
       }
     }
-    const ctrCount=Object.values(state.links).filter(link=>link.device?.startsWith('XDM-CTR100')).reduce((sum,link)=>sum+link.count,0);
+    const ctrCount=Object.values(state.links).filter(link=>link.device?.startsWith('XDM-CTR100 · ')).reduce((sum,link)=>sum+link.count,0);
     if (ctrCount) add('CTR_POWER_REQUIRED','WARNING',`XDM-CTR100 ${ctrCount}대는 전원을 직접 연결해야 합니다. 매트릭스 카드(CIS100·COS100)에 연결하는 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다. 전원 공급 장비의 현행 모델명과 포트 용량을 확인하세요.`,'사용자 확인(2026-09-26) · 사용자 제공 XDM POE 구성도 · G08');
     const status=issues.some(issue=>issue.level==='ERROR')?'ERROR':issues.some(issue=>issue.level==='UNVERIFIED')?'UNVERIFIED':issues.some(issue=>issue.level==='WARNING')?'WARNING':'VALID';
     return {status,exportStatus:'UNVERIFIED_DRAFT',canFinalize:status==='VALID',summary:requirementSummary(state),issues};
@@ -176,11 +182,15 @@
     const add=(category,model,quantity)=>{const row=rows.find(item=>item.model===model);if(row)row.quantity+=quantity;else rows.push({category,model,quantity})};
     if (state.model) add('메인프레임',state.model,1);
     for (const [slot,id] of Object.entries(state.placements)) add(slotDirections[slot]==='input'?'입력 카드':'출력 카드',id,1);
+    let ctrQuantity=0;
     for (const port of Object.values(state.portAssignments)) {
-      if (port.tx&&port.quantity) add('전송기',port.tx.split(' · ')[0],port.quantity);
-      if (port.rx&&port.quantity) add('수신기',port.rx.split(' · ')[0],port.quantity);
+      for (const [device,category] of [[port.tx,'전송기'],[port.rx,'수신기']]) {
+        if (!device||!port.quantity) continue;
+        if (device===psePair) {add('HDMI 연장 (PSE 쌍)','XDM-CTR100 PSE',port.quantity);add('HDMI 연장 (PSE 쌍)','XDM-CTR100 (PSE 급전, 전원 불필요)',port.quantity);continue}
+        add(category,device.split(' · ')[0],port.quantity);
+        if (device.startsWith('XDM-CTR100 · ')) ctrQuantity+=port.quantity;
+      }
     }
-    const ctrQuantity=rows.find(row=>row.model==='XDM-CTR100')?.quantity||0;
     if (ctrQuantity) add('전원 장비','XDM-CTR100 전원 공급 장비 (제공 구성도 기준 16포트당 1대, 현행 모델명 확인 필요)',Math.ceil(ctrQuantity/16));
     return rows;
   }
@@ -202,5 +212,5 @@
     const rows=[['상태','구분','모델','수량','비고'],...bom(state).map(row=>['UNVERIFIED_DRAFT',row.category,row.model,row.quantity,'미검증 검토용 · 케이블/전원/기본 포함품 미확정'])];
     return rows.map(row=>row.map(cell).join(',')).join('\r\n');
   }
-  scope.RtCore={initial,checkState,choices,defaultLink,syncPorts,slotsFor,requirementSummary,validate,bom,document,parse,csv,catalogVersion,schemaVersion,signalTypes};
+  scope.RtCore={initial,checkState,choices,defaultLink,psePair,syncPorts,slotsFor,requirementSummary,validate,bom,document,parse,csv,catalogVersion,schemaVersion,signalTypes};
 })(globalThis);
