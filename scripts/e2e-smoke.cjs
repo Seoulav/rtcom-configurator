@@ -94,6 +94,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.click('[data-action="next"]');
     await page.waitForLoadState('networkidle');
     check('SPX-M3236은 입력 4·출력 3 슬롯이 블랭크 커버로 표시됨',await page.locator('.rt-rack-hs .rt-rack-slot-blank img.rt-blank-plate').count()===7);
+    check('사진 슬롯 영역은 사진 높이 기준으로 배치됨(출력 영역 아래 끝 = 사진 677/772 지점)',await page.evaluate(()=>{const image=document.querySelector('.rt-rack-photo-image').getBoundingClientRect(),zone=document.querySelector('.rt-rack-zone-output').getBoundingClientRect();return Math.abs((zone.bottom-image.top)/image.height-677/772)<0.005}));
     await page.locator('button[data-slot="out-1"]').click();
     await page.locator('.rt-card-modal .rt-card-choice[data-card="SPX-COS12"]').click();
     await page.click('[data-action="next"]');
@@ -118,6 +119,12 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.locator('button[data-slot="in-1"]').click();
     await page.locator('.rt-card-modal .rt-card-choice[data-card="HIS4-U"]').click();
     check('VDM 보드를 장착하면 실물 판넬 사진이 표시됨',await page.$eval('button[data-slot="in-1"] img.rt-faceplate',image=>image.naturalWidth>0&&image.getAttribute('src').endsWith('HIS4-U.webp')));
+    await page.click('[data-action="back"]');
+    await page.click('button[data-model="VDM-256X"]');
+    await page.click('[data-action="next"]');
+    await page.locator('button[data-slot="out-64"]').click();
+    await page.locator('.rt-card-modal .rt-card-choice[data-card="COS4-U"]').click();
+    check('VDM-256X는 입력 64·출력 64 슬롯이고 64번 슬롯에 카드를 장착할 수 있음',await page.locator('.rt-rack-slot').count()===128&&await page.locator('button[data-slot="out-64"].rt-rack-slot-filled').count()===1);
     check('404 요청 없음',failed.length===0,failed.join(', '));
     check('자바스크립트 오류 없음',errors.length===0,errors.join(' | '));
     await context.close();

@@ -179,8 +179,13 @@ test('SPX frames expose documented slot plans, migrate logical slots and link CO
     assert.equal(slots.filter(slot=>slot.dir==='output').length,output);
     assert.equal(slots[0].id,'in-1');
   }
-  const vdm={'VDM-8X':[2,2],'VDM-16X':[4,4],'VDM-32X':[8,8],'VDM-48X':[12,12],'VDM-64X':[16,16],'VDM-80X':[20,20],'VDM-128X':[32,32],'VDM-180X':[45,45]};
+  const vdm={'VDM-8X':[2,2],'VDM-16X':[4,4],'VDM-32X':[8,8],'VDM-48X':[12,12],'VDM-64X':[16,16],'VDM-80X':[20,20],'VDM-128X':[32,32],'VDM-180X':[45,45],'VDM-256X':[64,64]};
   for(const [model,plan] of Object.entries(vdm))assert.deepEqual(core.slotPlan('VDM',model),plan,`${model} follows VDM manual KV07`);
+  const big={...core.initial(),family:'VDM',model:'VDM-256X',placements:{'in-64':'HIS4-U','out-64':'COS4-U'},links:{}};
+  assert.equal(core.slotsFor(big).length,128,'VDM-256X has 64 input and 64 output slots');
+  const bigDoc=core.document(big);
+  assert.deepEqual(core.parse(JSON.stringify(bigDoc)).placements,{'in-64':'HIS4-U','out-64':'COS4-U'},'slot 64 survives save and load');
+  assert.ok(core.validate(big).issues.some(issue=>issue.code==='SLOT_LAYOUT'&&/64장/.test(issue.message)));
   assert.equal(core.slotPlan('VDM','VDM-288X'),null,'VDM-288X is a custom build without a documented slot table');
   const custom={...core.initial(),family:'VDM',model:'VDM-288X',placements:{'in-a':'HIS4-U'}};
   assert.ok(core.validate(custom).issues.some(issue=>issue.code==='VDM_288X_CUSTOM'));

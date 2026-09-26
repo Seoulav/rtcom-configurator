@@ -5,7 +5,8 @@
   const catalogVersion = '2026-09-18-draft.1';
   const schemaVersion = 3;
   const slotDirections = {'in-a':'input','in-b':'input','out-a':'output','out-b':'output'};
-  for (let index=1;index<=54;index++) {slotDirections[`in-${index}`]='input';slotDirections[`out-${index}`]='output';}
+  // 슬롯 ID는 가장 큰 프레임(VDM-256X 입력·출력 64장)까지 만든다.
+  for (let index=1;index<=64;index++) {slotDirections[`in-${index}`]='input';slotDirections[`out-${index}`]='output';}
   const signalTypes = ['HDMI','SDI','DP','CAT','FIBER','OTHER'];
   const plain = value => value !== null && typeof value === 'object' && !Array.isArray(value);
   const own = (obj, key) => Object.prototype.hasOwnProperty.call(obj, key);
@@ -21,8 +22,8 @@
   const slotPlans = {
     XDM:{'XDM-12':[3,3],'XDM-20':[5,5],'XDM-36':[9,9],'XDM-72':[18,18],'XDM-144':[36,36],'XDM-216':[54,54]},
     SPX:{'SPX-M810':[1,1],'SPX-M1620':[2,2],'SPX-M3236':[4,3],'SPX-M2472':[3,6],'SPX-M24120':[3,10]},
-    // VDM: 국문 매뉴얼 KV07 2.2 Router Frame Specifications(PDF pp.12–19). VDM-288X는 특수 상황실용 커스텀 제작이라 표에 없다.
-    VDM:{'VDM-8X':[2,2],'VDM-16X':[4,4],'VDM-32X':[8,8],'VDM-48X':[12,12],'VDM-64X':[16,16],'VDM-80X':[20,20],'VDM-128X':[32,32],'VDM-180X':[45,45]}
+    // VDM: 국문 매뉴얼 KV07 2.2 Router Frame Specifications(PDF pp.12–20). VDM-288X는 특수 상황실용 커스텀 제작이라 표에 없다.
+    VDM:{'VDM-8X':[2,2],'VDM-16X':[4,4],'VDM-32X':[8,8],'VDM-48X':[12,12],'VDM-64X':[16,16],'VDM-80X':[20,20],'VDM-128X':[32,32],'VDM-180X':[45,45],'VDM-256X':[64,64]}
   };
   const slotPlan = (family, model) => slotPlans[family]?.[model] || null;
   function slotsFor(state) {
@@ -167,7 +168,7 @@
     for (const direction of ['input','output']) if (!Object.entries(state.placements).some(([id])=>slotDirections[id]===direction)) add('MISSING_'+direction.toUpperCase(),'WARNING',`${direction==='input'?'입력':'출력'} 카드가 선택되지 않았습니다.`);
     const plan=slotPlan(state.family,state.model);
     if (plan&&state.family==='XDM') add('XDM_SLOT_LAYOUT','VALID',`매뉴얼 기준으로 입력 카드 ${plan[0]}장과 출력 카드 ${plan[1]}장을 장착할 수 있습니다.`,'M01 · XDM 국문 매뉴얼 pp.7–11');
-    else if (plan) add('SLOT_LAYOUT','VALID',`입력 카드 ${plan[0]}장과 출력 카드 ${plan[1]}장을 장착할 수 있습니다.`,state.family==='VDM'?'VDM 국문 매뉴얼 KV07 PDF pp.12–19':'SPX 국문 사용자 매뉴얼(250805) pp.7–9');
+    else if (plan) add('SLOT_LAYOUT','VALID',`입력 카드 ${plan[0]}장과 출력 카드 ${plan[1]}장을 장착할 수 있습니다.`,state.family==='VDM'?'VDM 국문 매뉴얼 KV07 PDF pp.12–20':'SPX 국문 사용자 매뉴얼(250805) pp.7–9');
     else add('PHYSICAL_LAYOUT_UNVERIFIED','UNVERIFIED','화면의 입력·출력 위치는 논리 구성입니다. 실제 슬롯 수와 카드 설치 허용표가 필요합니다.','G01 · G02');
     add('ACCESSORIES_UNVERIFIED','UNVERIFIED','기본 포함품, 케이블, 전원 및 필러 수량은 구매 목록에 포함되지 않았습니다.','G08 · G09 · G12');
     if (state.family==='SPX') add('SPX_CARD_ALLOWLIST','UNVERIFIED','SPX 출력 카드 4종은 모든 프레임에 장착할 수 있습니다(매뉴얼 p.11). 카드 혼합 조건과 전송기 판매 SKU는 확인해야 합니다.','SPX 국문 사용자 매뉴얼(250805) pp.10–11 · G03 · G05');

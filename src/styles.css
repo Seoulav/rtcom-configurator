@@ -176,7 +176,8 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-rack-photo{position:relative;margin:0 auto;filter:drop-shadow(0 18px 22px #0f1b3038)}
 #rtcom-design .rt-rack-photo.rt-rack-h,#rtcom-design .rt-rack-photo.rt-rack-vs,#rtcom-design .rt-rack-photo.rt-rack-vt{width:min(100%,900px,calc(var(--rt-photo-ratio) * 1400px));min-width:460px}
 #rtcom-design .rt-rack-photo-image{display:block;width:100%;height:auto;border-radius:6px}
-#rtcom-design .rt-rack-photo-zones{position:absolute;inset:0}
+/* 슬롯 영역은 사진 크기와 같아야 한다(아래 figcaption 높이를 빼기 위해 사진 비율로 높이를 정한다). */
+#rtcom-design .rt-rack-photo-zones{position:absolute;left:0;top:0;width:100%;aspect-ratio:var(--rt-photo-ratio)}
 #rtcom-design .rt-rack-zone{position:absolute}
 #rtcom-design .rt-rack-photo .rt-rack-grid{height:100%;gap:1px;grid-template-rows:repeat(var(--rt-rack-zone-rows),minmax(0,1fr))}
 #rtcom-design .rt-rack-photo .rt-rack-slot{aspect-ratio:auto;height:100%;border:1px solid #0f1318;border-radius:2px;background:linear-gradient(90deg,#2d323a,#23282f 50%,#2d323a)}
