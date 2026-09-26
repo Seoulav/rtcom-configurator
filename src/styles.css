@@ -327,3 +327,26 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-product-detail h2:focus{outline:none}
 @media(max-width:720px){#rtcom-design .rt-products-title{margin:14px 18px 0}}
 @media(max-width:560px){#rtcom-design .rt-product-table thead{display:none}#rtcom-design .rt-product-table tr{display:block;padding:10px 12px;border-top:1px solid #edf1f6}#rtcom-design .rt-product-table tr:first-child{border-top:0}#rtcom-design .rt-product-table td{display:flex;gap:10px;border:0;padding:3px 0}#rtcom-design .rt-product-table td::before{content:attr(data-label);flex:0 0 52px;color:#8a94a6;font-size:12px}#rtcom-design .rt-product-table td:empty{display:none}}
+
+/* 0.20 — 에이앤미디어(antez.co.kr) 알티컴 제품 페이지 표기 참고: 한눈에 보기 칩, 개요 헤드라인, 주요기능/크기·무게 나란히 배치 */
+#rtcom-design .rt-product-facts{list-style:none;margin:0 0 22px;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+#rtcom-design .rt-product-facts li{display:flex;flex-direction:column;gap:4px;padding:14px 12px;border-radius:16px;background:linear-gradient(135deg,#eef4ff,#f3eefe);box-shadow:inset 0 0 0 1px #dce6fa;text-align:center}
+#rtcom-design .rt-product-facts b{font-size:17px;font-weight:800;color:#2748a8;letter-spacing:-.2px}
+#rtcom-design .rt-product-facts span{font-size:11px;color:#687386;font-weight:700}
+#rtcom-design .rt-product-overview-headline{font-size:16px;font-weight:750;color:#1f2532;line-height:1.6;margin-bottom:8px}
+#rtcom-design .rt-product-detail h3{display:flex;align-items:center;gap:8px}
+#rtcom-design .rt-product-detail h3::before{content:'';width:9px;height:9px;border-radius:999px;background:linear-gradient(135deg,#3978ee,#7669ef)}
+#rtcom-design .rt-product-side-row{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px;margin-top:24px}
+#rtcom-design .rt-product-box{margin:0;padding:16px 18px;border-radius:16px;background:#f7f9fd;box-shadow:inset 0 0 0 1px #e2e8f1}
+#rtcom-design .rt-product-box h3{margin:0 0 10px;font-size:15px}
+#rtcom-design .rt-product-box-size ul.rt-product-size{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+#rtcom-design .rt-product-size li{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:6px 0;border-top:1px solid #e8edf5}
+#rtcom-design .rt-product-size li:first-child{border-top:0}
+#rtcom-design .rt-product-size li span{color:#687386}
+#rtcom-design .rt-product-size li b{font-weight:750;color:#1f2532}
+#rtcom-design .rt-product-box-features .rt-product-features{margin:0}
+#rtcom-design .rt-product-detail section+.rt-product-side-row,#rtcom-design .rt-product-side-row+section{margin-top:24px}
+#rtcom-design .rt-product-table thead tr{background:linear-gradient(135deg,#1f2532,#2f3a52)}
+#rtcom-design .rt-product-table th{background:transparent;color:#fff}
+@media(max-width:720px){#rtcom-design .rt-product-side-row{grid-template-columns:1fr}}
+@media(max-width:480px){#rtcom-design .rt-product-facts{grid-template-columns:repeat(2,1fr)}}
