@@ -118,6 +118,12 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.locator('button[data-slot="in-1"]').click();
     await page.locator('.rt-card-modal .rt-card-choice[data-card="HIS4-U"]').click();
     check('VDM 보드를 장착하면 실물 판넬 사진이 표시됨',await page.$eval('button[data-slot="in-1"] img.rt-faceplate',image=>image.naturalWidth>0&&image.getAttribute('src').endsWith('HIS4-U.webp')));
+    await page.click('[data-action="back"]');
+    await page.click('button[data-model="VDM-256X"]');
+    await page.click('[data-action="next"]');
+    await page.locator('button[data-slot="out-64"]').click();
+    await page.locator('.rt-card-modal .rt-card-choice[data-card="COS4-U"]').click();
+    check('VDM-256X는 입력 64·출력 64 슬롯이고 64번 슬롯에 카드를 장착할 수 있음',await page.locator('.rt-rack-slot').count()===128&&await page.locator('button[data-slot="out-64"].rt-rack-slot-filled').count()===1);
     check('404 요청 없음',failed.length===0,failed.join(', '));
     check('자바스크립트 오류 없음',errors.length===0,errors.join(' | '));
     await context.close();

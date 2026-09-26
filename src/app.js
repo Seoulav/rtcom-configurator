@@ -36,8 +36,8 @@
     const photoCardFamilies=new Set(['XDM','SPX','VDM']);
     // 카드 판넬 가로:세로 비율(슬롯 모양). XDM 9.7, SPX 13.8, VDM 5.7
     const slotRatios={XDM:9.7,SPX:13.8,VDM:5.7};
-    // VDM 후면 배치(매뉴얼 도면 단순화): 8X는 가로 보드 좌우, 16X~64X는 세로 보드 '입력 4 | 출력 4'를 단으로 쌓고, 80X 이상은 입력 위·출력 아래.
-    const vdmRacks={'VDM-8X':['h',1],'VDM-16X':['vs',4],'VDM-32X':['vs',4],'VDM-48X':['vs',4],'VDM-64X':['vs',4],'VDM-80X':['vt',10],'VDM-128X':['vt',16],'VDM-180X':['vt',15]};
+    // VDM 후면 배치(매뉴얼 도면 단순화): 8X는 가로 보드 좌우, 16X~64X는 세로 보드 '입력 4 | 출력 4'를 단으로 쌓고, 80X 이상은 입력 위·출력 아래. 256X는 2랙 폭(랙당 16열)을 한 줄 32열로 편다.
+    const vdmRacks={'VDM-8X':['h',1],'VDM-16X':['vs',4],'VDM-32X':['vs',4],'VDM-48X':['vs',4],'VDM-64X':['vs',4],'VDM-80X':['vt',10],'VDM-128X':['vt',16],'VDM-180X':['vt',15],'VDM-256X':['vt',32]};
     const frameFronts={'XDM-12':'output/design/assets/frames/xdm-12-front.webp','XDM-20':'output/design/assets/frames/xdm-20-front.webp','XDM-36':'output/design/assets/frames/xdm-36-front.webp','XDM-72':'output/design/assets/frames/xdm-72-front.webp','XDM-144':'output/design/assets/frames/xdm-144-front.webp','XDM-216':'output/design/assets/frames/xdm-216-front.webp','VDM-16X':'output/design/assets/frames/vdm-16x-front.webp','SPX-M810':'output/design/assets/frames/spx-m810-front.webp','SPX-M1620':'output/design/assets/frames/spx-m1620-front.webp','SPX-M3236':'output/design/assets/frames/spx-m3236-front.webp','SPX-M2472':'output/design/assets/frames/spx-m2472-front.webp','SPX-M24120':'output/design/assets/frames/spx-m24120-front.webp','VDM-48X':'output/design/assets/frames/vdm-48x-front.webp'};
     // 국문 매뉴얼(KV08) 후면 사진과 사진 속 입력·출력 카드 영역(사진 픽셀 좌표: 왼쪽, 위, 오른쪽, 아래). 카드 고정 나사 간격으로 측정했다.
     // 업체의 빈 프레임 후면 사진을 받으면 src와 좌표만 바꾼다. XDM-216은 후면 사진이 없어 그림으로 표시한다.
