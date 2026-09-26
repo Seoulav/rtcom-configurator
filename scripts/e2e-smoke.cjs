@@ -37,21 +37,32 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     page.on('response',response=>{if(response.status()>=400)failed.push(`${response.status()} ${response.url().replace(origin,'')}`)});
     page.on('pageerror',error=>errors.push(error.message));
     page.on('dialog',dialog=>dialog.accept());
-    const brokenImages=()=>page.$$eval('img',images=>images.filter(image=>image.complete&&image.naturalWidth===0).map(image=>image.getAttribute('src')));
+    const brokenImages=()=>page.$$eval('img',images=>images.filter(image=>image.complete&&image.naturalWidth===0&&image.loading!=='lazy').map(image=>image.getAttribute('src')));
 
     await page.goto(home,{waitUntil:'networkidle'});
     check('첫 화면에 구성기가 표시됨',await page.locator('#matrix-configurator h1').isVisible());
     await page.click('button[data-family="XDM"]');
     await page.click('[data-action="next"]');
+    check('섀시 선택 화면에 XDM 프레임 카드 7종 표시',await page.locator('.rt-chassis-card').count()===7);
     await page.click('button[data-model="XDM-144"]');
     await page.click('[data-action="next"]');
     await page.waitForLoadState('networkidle');
-    await page.click('button[data-slot]');
-    await page.locator('button[data-card]').first().click();
+    check('빈 슬롯 72개가 모두 블랭크 커버로 채워짐',await page.locator('.rt-rack-slot-blank img.rt-blank-plate').count()===72);
+    await page.locator('button[data-slot="in-1"]').click();
+    check('빈 슬롯을 누르면 카드 선택 팝업이 열림',await page.locator('.rt-card-modal[open]').isVisible());
+    await page.keyboard.press('Escape');
+    check('Esc로 팝업을 닫으면 누른 슬롯으로 포커스 복귀',await page.locator('.rt-card-modal').count()===0&&await page.evaluate(()=>document.activeElement?.dataset?.slot)==='in-1');
+    await page.locator('button[data-slot="in-1"]').click();
+    await page.locator('.rt-card-modal .rt-card-choice').first().click();
+    await page.locator('button[data-slot="out-1"]').click();
+    await page.locator('.rt-card-modal .rt-card-choice').first().click();
     await page.waitForLoadState('networkidle');
-    const placed=await page.locator('.rt-hardware-slot img').count();
-    check('XDM-144 카드 장착 후 슬롯에 카드 이미지 표시',placed>0,`${placed}개`);
-    check('후면 사진이 정상 로드됨',await page.$eval('.rt-manual-rear img',image=>image.naturalWidth>0));
+    check('장착한 슬롯이 블랭크 커버에서 카드 판넬로 바뀌고 전환 효과가 적용됨',await page.locator('button[data-slot="out-1"].rt-rack-slot-filled.rt-rack-slot-changed').count()===1&&await page.locator('.rt-rack-slot-blank').count()===70);
+    const placed=await page.locator('.rt-rack-slot-filled img.rt-faceplate').count();
+    check('카드 선택 후 팝업이 닫히고 슬롯에 실물 판넬 이미지 표시',placed===2&&await page.locator('.rt-card-modal').count()===0,`${placed}개`);
+    check('장착한 판넬 이미지가 정상 로드됨',await page.$$eval('.rt-rack-slot-filled img.rt-faceplate',images=>images.every(image=>image.naturalWidth>0)));
+    check('구성 요약에 장착 카드가 표시됨',await page.locator('.rt-config-summary li').count()===2);
+    check('XDM-144 후면 사진 위에 슬롯이 표시되고 사진이 정상 로드됨',await page.locator('.rt-rack-photo .rt-rack-slot').count()===72&&await page.$eval('.rt-rack-photo-image',image=>image.naturalWidth>0));
     const broken=await brokenImages();
     check('깨진 이미지 없음',broken.length===0,broken.join(', '));
     check('주소가 바뀌지 않음(상대경로 이미지 보호)',page.url()===home,page.url());
@@ -59,7 +70,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('390px 화면에서 페이지 가로 넘침 없음',overflow<=0,`${overflow}px`);
 
     await page.reload({waitUntil:'networkidle'});
-    check('새로고침 후 자동 저장 복원',await page.locator('.rt-hardware-slot img').count()===placed);
+    check('새로고침 후 자동 저장 복원',await page.locator('.rt-rack-slot-filled img.rt-faceplate').count()===placed);
 
     for(const legacy of ['tools/matrix-configurator/','products/','tools/matrix-configurator']){
       await page.goto(`${home}${legacy}#matrix-configurator`,{waitUntil:'networkidle'});
