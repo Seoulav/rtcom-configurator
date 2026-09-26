@@ -1,0 +1,240 @@
+{
+  "id": "hds-21u",
+  "group": "distribution",
+  "manufacturer": "RTCOM",
+  "productName": "HDS-21U",
+  "model": "HDS-21U",
+  "series": "HDMI 4K Switcher",
+  "itemType": "PRODUCT",
+  "categories": [
+    "영상",
+    "Video",
+    "Switcher"
+  ],
+  "english": "2x1 HDMI 2.0 4K60 switcher with audio extraction/insertion, priority and EDID minder",
+  "korean": "오디오 추출·삽입, Priority, EDID 마인더 기능을 갖춘 2입력 1출력 HDMI 2.0 4K 선택기다.",
+  "catalogPages": "34",
+  "verificationSummary": "알티컴 종합 카탈로그(2026-03) 34쪽의 소개·주요기능·제품사양·크기 및 무게·제품 이미지에서 확인했다.",
+  "packageStatus": "VERIFIED",
+  "overview": "HDS-21U는 True HDMI 2.0 3840x2160p 60Hz 크로마샘플링 4:4:4 해상도를 지원하는 고성능 HDMI 선택기다. 두 개의 HDMI 입력신호를 선택하여 하나의 HDMI 신호로 출력한다. HDCP(고대역 디지털 콘텐츠 보호)와 EDID(디스플레이 식별 정보)를 완벽 지원하며 외부 EDID와 내부에 저장된 EDID를 사용할 수 있어 EDID 마인더 기능도 수행한다.\n\n아날로그 오디오를 병합·추출할 수 있으며 오디오 볼륨 조절 및 뮤트 기능을 지원한다. Priority(우선순위) 기능으로 오토셀렉팅(마지막에 입력된 신호를 출력)하거나 지정된 입력신호를 우선 출력하도록 선택할 수 있다. 버튼, RS-232, IR 리모콘의 3가지 제어방식을 지원한다.\n\n알티컴의 Fast Switching 기술을 적용하여 일반적인 스위처보다 빠르게 스위칭한다.",
+  "images": [
+    {
+      "role": "Front",
+      "file": "hds-21u-front.webp",
+      "alt": "RTCOM HDS-21U 전면",
+      "note": "Front · 카탈로그 제품 이미지",
+      "provider": "RTCOM",
+      "model": "HDS-21U",
+      "source": "C",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "783×170"
+    },
+    {
+      "role": "Rear",
+      "file": "hds-21u-rear.webp",
+      "alt": "RTCOM HDS-21U 후면",
+      "note": "Rear · 카탈로그 제품 이미지",
+      "provider": "RTCOM",
+      "model": "HDS-21U",
+      "source": "C",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "783×171"
+    }
+  ],
+  "imageStatuses": [
+    {
+      "role": "Main",
+      "status": "MISSING"
+    },
+    {
+      "role": "Front",
+      "status": "FOUND"
+    },
+    {
+      "role": "Rear",
+      "status": "FOUND"
+    },
+    {
+      "role": "Perspective",
+      "status": "MISSING"
+    }
+  ],
+  "documents": [
+    {
+      "type": "Catalog",
+      "status": "FOUND",
+      "title": "알티컴 종합 카탈로그 2026 (국문)",
+      "language": "ko",
+      "note": "34쪽"
+    }
+  ],
+  "features": [
+    {
+      "text": "HDMI 2.0, HDCP 2.2를 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "HDR을 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "Audio Extraction 기능: RS232로 Audio Volume Up/Down을 제어할 수 있다.",
+      "source": "C"
+    },
+    {
+      "text": "Priority 기능: 딥스위치로 채널 스위칭 방식을 선택할 수 있다.",
+      "source": "C"
+    },
+    {
+      "text": "Audio Insertion 기능: 딥스위치로 외부 오디오를 선택해 출력한다.",
+      "source": "C"
+    },
+    {
+      "text": "버튼, RS232, IR 리모콘으로 제어한다.",
+      "source": "C"
+    },
+    {
+      "text": "EDID 마인더 기능: 외부 연결된 디스플레이 EDID를 저장하고 내부 저장된 EDID를 사용할 수 있다.",
+      "source": "C"
+    }
+  ],
+  "specifications": [
+    {
+      "group": "Video",
+      "name": "비디오 대역폭",
+      "value": "18",
+      "unit": "Gbps",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "비디오 해상도",
+      "value": "up to 3840x2160, 4K 60Hz",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "입력포트",
+      "value": "2 HDMI Input, 1 3.5mm Stereo Audio Input",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "출력포트",
+      "value": "1 HDMI Output, 1 3.5mm Stereo Audio Output",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Control",
+      "name": "제어",
+      "value": "버튼, RS-232, IR 리모콘",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "name": "전원",
+      "value": "DC 5V, 2A",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "크기(W×D×H)",
+      "value": "160×65×30",
+      "unit": "mm",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "무게",
+      "value": "0.3",
+      "unit": "kg",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    }
+  ],
+  "io": [
+    {
+      "group": "Video",
+      "connector": "HDMI",
+      "signal": "HDMI",
+      "direction": "IN",
+      "quantity": "2",
+      "protocol": "HDMI 2.0",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "connector": "HDMI",
+      "signal": "HDMI",
+      "direction": "OUT",
+      "quantity": "1",
+      "protocol": "HDMI 2.0",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Audio",
+      "connector": "3.5mm Stereo",
+      "signal": "Analog Audio",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Audio",
+      "connector": "3.5mm Stereo",
+      "signal": "Analog Audio",
+      "direction": "OUT",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    }
+  ],
+  "related": [],
+  "sources": [
+    {
+      "code": "C",
+      "name": "알티컴 종합 카탈로그 2026 (국문)",
+      "page": "34",
+      "scope": "제조사 공식 출처"
+    }
+  ],
+  "issues": [
+    {
+      "code": "I1",
+      "status": "INFO",
+      "title": "이미지 출처",
+      "detail": "별도 원본 파일이 아닌 카탈로그 쪽에 실린 제품 이미지를 220dpi로 발췌했다. 원본 해상도가 낮아 확대 시 흐릴 수 있다."
+    }
+  ]
+}

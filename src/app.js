@@ -254,6 +254,13 @@
       if(modalSlot)closeCardModal(modalSlot);
       restoringNav=true;state.step=step;changed();restoringNav=false;
     });
+    // 제품정보(0.19) 시리즈 상세의 "구성기에서 구성하기": 해당 제품군을 고르고 섀시 선택 단계로 간다.
+    root.addEventListener('rt-configure-family',event=>{
+      const family=event.detail;
+      if(!families[family])return;
+      if(state.family!==family){if(!confirmReset())return;state.family=family;state.model=null;state.placements={};state.portAssignments={};state.links={};state.slot='in-a'}
+      modalSlot=null;state.maxStep=Math.max(state.maxStep,1);state.step=1;changed();window.scrollTo({top:0});
+    });
     root.addEventListener('click',event=>{
       const button=event.target.closest('button');
       if(!button||!root.contains(button)||button.disabled)return;

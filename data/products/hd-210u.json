@@ -1,0 +1,201 @@
+{
+  "id": "hd-210u",
+  "group": "distribution",
+  "manufacturer": "RTCOM",
+  "productName": "HD-210U",
+  "model": "HD-210U",
+  "series": "2x10 HDMI 18Gbps Splitter",
+  "itemType": "PRODUCT",
+  "categories": [
+    "영상",
+    "Video",
+    "Splitter"
+  ],
+  "english": "2x10 HDMI 2.0 18Gbps splitter selecting one of two inputs to ten outputs, 4K60 4:4:4",
+  "korean": "두 입력 중 하나를 선택해 10개 출력으로 분배하는 4K 60Hz 4:4:4 HDMI 2.0 18Gbps 분배기다.",
+  "catalogPages": "39",
+  "verificationSummary": "알티컴 종합 카탈로그(2026-03) 39쪽의 소개·주요기능·제품사양·크기 및 무게·제품 이미지에서 확인했다.",
+  "packageStatus": "VERIFIED",
+  "overview": "HD-210U는 HDMI 신호용 고성능 분배기다. True HDMI 2.0 3840x2160p 60Hz 크로마샘플링 4:4:4 해상도를 지원한다.\n\n입력된 두 개의 입력 신호 중 하나의 HDMI 입력신호를 선택하여 신호의 손실 없이 10개의 동일한 출력으로 분배하며 HDCP(고대역 디지털 콘텐츠 보호)와 EDID(디스플레이 식별 정보)를 완벽 지원하여 호환 이슈 없이 사용할 수 있다. 외부 EDID와 내부에 저장된 EDID를 사용할 수 있어 EDID 마인더 기능도 수행하며, 아날로그 오디오를 병합하는 기능을 지원한다.",
+  "images": [
+    {
+      "role": "Front",
+      "file": "hd-210u-front.webp",
+      "alt": "RTCOM HD-210U 전면",
+      "note": "Front · 카탈로그 제품 이미지",
+      "provider": "RTCOM",
+      "model": "HD-210U",
+      "source": "C",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "1012×154"
+    },
+    {
+      "role": "Rear",
+      "file": "hd-210u-rear.webp",
+      "alt": "RTCOM HD-210U 후면",
+      "note": "Rear · 카탈로그 제품 이미지",
+      "provider": "RTCOM",
+      "model": "HD-210U",
+      "source": "C",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "1007×156"
+    }
+  ],
+  "imageStatuses": [
+    {
+      "role": "Main",
+      "status": "MISSING"
+    },
+    {
+      "role": "Front",
+      "status": "FOUND"
+    },
+    {
+      "role": "Rear",
+      "status": "FOUND"
+    },
+    {
+      "role": "Perspective",
+      "status": "MISSING"
+    }
+  ],
+  "documents": [
+    {
+      "type": "Catalog",
+      "status": "FOUND",
+      "title": "알티컴 종합 카탈로그 2026 (국문)",
+      "language": "ko",
+      "note": "39쪽"
+    }
+  ],
+  "features": [
+    {
+      "text": "HDMI 2.0, HDCP 2.2를 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "EDID 마인더 기능: 외부 연결된 디스플레이 EDID를 저장하고 내부 저장된 EDID를 사용할 수 있다.",
+      "source": "C"
+    }
+  ],
+  "specifications": [
+    {
+      "group": "Video",
+      "name": "비디오 대역폭",
+      "value": "18",
+      "unit": "Gbps",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "비디오 해상도",
+      "value": "up to 3840x2160p@60Hz",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "입력포트",
+      "value": "2 HDMI Input",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "출력포트",
+      "value": "10 HDMI Output",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "name": "전원공급",
+      "value": "DC 12V, 2A",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "크기(W×D×H)",
+      "value": "335×85.6×30",
+      "unit": "mm",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "무게",
+      "value": "0.82",
+      "unit": "kg",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    }
+  ],
+  "io": [
+    {
+      "group": "Video",
+      "connector": "HDMI",
+      "signal": "HDMI",
+      "direction": "IN",
+      "quantity": "2",
+      "protocol": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "connector": "HDMI",
+      "signal": "HDMI",
+      "direction": "OUT",
+      "quantity": "10",
+      "protocol": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    }
+  ],
+  "related": [],
+  "sources": [
+    {
+      "code": "C",
+      "name": "알티컴 종합 카탈로그 2026 (국문)",
+      "page": "39",
+      "scope": "제조사 공식 출처"
+    }
+  ],
+  "issues": [
+    {
+      "code": "I2",
+      "status": "INFO",
+      "title": "오디오 단자 표기 누락",
+      "detail": "소개문은 아날로그 오디오 병합 기능을 설명하고 후면 이미지와 연결도에 AUDIO IN이 보이지만, 제품사양 표에는 오디오 입력이 없다. io에는 제품사양 표의 HDMI 포트만 적었다."
+    },
+    {
+      "code": "I3",
+      "status": "INFO",
+      "title": "연결도 라벨 중복",
+      "detail": "연결도의 출력 라벨 일부가 HDMI Out 8로 중복 표기되어 있다. 제품사양 표와 후면 이미지 기준 HDMI 출력은 10개다."
+    },
+    {
+      "code": "I1",
+      "status": "INFO",
+      "title": "이미지 출처",
+      "detail": "별도 원본 파일이 아닌 카탈로그 쪽에 실린 제품 이미지를 220dpi로 발췌했다. 원본 해상도가 낮아 확대 시 흐릴 수 있다."
+    }
+  ]
+}

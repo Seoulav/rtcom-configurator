@@ -1,0 +1,269 @@
+{
+  "id": "qms-44ux",
+  "group": "integrated",
+  "manufacturer": "RTCOM",
+  "productName": "QMS-44UX",
+  "model": "QMS-44UX",
+  "series": "HDMI Matrix Switcher",
+  "itemType": "PRODUCT",
+  "categories": [
+    "영상",
+    "Video",
+    "Matrix Switcher"
+  ],
+  "english": "4x4 4K60 HDMI matrix switcher with seamless switching, video wall, quad view and PIP",
+  "korean": "심리스 스위칭·2x2 비디오 월·쿼드 뷰·PIP 기능을 갖춘 4K 60Hz 4x4 HDMI 매트릭스 스위처다.",
+  "catalogPages": "29",
+  "verificationSummary": "알티컴 종합 카탈로그(2026-03) 29쪽의 소개·주요기능·제품사양·크기 및 무게·제품 이미지에서 확인했다.",
+  "packageStatus": "REVIEW REQUIRED",
+  "overview": "QMS-44UX는 다재다능한 4K 60Hz Matrix Switcher다. 4x4 HDMI Matrix로서 Seamless Switching, 2x2 Video Wall, 2x2 Quad Viewer, PIP 기능을 갖추고 있다.\n\nRS-232C, LAN(TCP/IP), 전면 버튼으로 제어할 수 있다.",
+  "images": [
+    {
+      "role": "Front",
+      "file": "qms-44ux-front.webp",
+      "alt": "RTCOM QMS-44UX 전면",
+      "note": "Front · 카탈로그 제품 이미지",
+      "provider": "RTCOM",
+      "model": "QMS-44UX",
+      "source": "C",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "938×129"
+    },
+    {
+      "role": "Rear",
+      "file": "qms-44ux-rear.webp",
+      "alt": "RTCOM QMS-44UX 후면",
+      "note": "Rear · 카탈로그 제품 이미지",
+      "provider": "RTCOM",
+      "model": "QMS-44UX",
+      "source": "C",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "938×104"
+    }
+  ],
+  "imageStatuses": [
+    {
+      "role": "Main",
+      "status": "MISSING"
+    },
+    {
+      "role": "Front",
+      "status": "FOUND"
+    },
+    {
+      "role": "Rear",
+      "status": "FOUND"
+    },
+    {
+      "role": "Perspective",
+      "status": "MISSING"
+    }
+  ],
+  "documents": [
+    {
+      "type": "Catalog",
+      "status": "FOUND",
+      "title": "알티컴 종합 카탈로그 2026 (국문)",
+      "language": "ko",
+      "note": "29쪽"
+    }
+  ],
+  "features": [
+    {
+      "text": "각 포트별 스케일 업다운 기능을 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "매트릭스, 비디오 월, 듀얼 디스플레이, 쿼드 디스플레이 모드를 선택할 수 있다.",
+      "source": "C"
+    },
+    {
+      "text": "심리스 스위칭 기능을 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "베젤 보정 기능을 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "각 포트별 HDCP 2.2 EDID 기능을 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "전면 패널, LAN, RS-232로 제어할 수 있다.",
+      "source": "C"
+    }
+  ],
+  "specifications": [
+    {
+      "group": "Video",
+      "name": "입력",
+      "value": "4채널 HDMI 입력",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "출력",
+      "value": "4채널 HDMI 출력",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "HDMI 규격",
+      "value": "HDMI 2.0",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "HDCP",
+      "value": "HDCP 2.2 지원",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "스케일링",
+      "value": "Up scaling and Down scaling",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "스케일링 해상도",
+      "value": "3840x2160p 60Hz, 3840x2160p 30Hz, 1920x1080p 60Hz, 1920x1080p 59.94Hz, 1920x1200p 60Hz, 1280x1024p 60Hz, 1280x720p 60Hz, 1280x720p 59.94Hz, 720x480p 60Hz, 1366x768p 60Hz, 1024x768p 60Hz",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Control",
+      "name": "제어",
+      "value": "전면 패널, LAN(TCP/IP), RS-232C",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Control",
+      "name": "기타",
+      "value": "미니 USB 포트 사용 (RS232C 사용가능)",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "name": "전원공급",
+      "value": "DC 12V 2A",
+      "unit": "",
+      "condition": "제품사양 표 기준. 연결도에는 +12V DC 5A로 표기",
+      "source": "C",
+      "verification": "REVIEW REQUIRED"
+    },
+    {
+      "group": "Physical",
+      "name": "크기(W×D×H)",
+      "value": "445×200×43",
+      "unit": "mm",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "무게",
+      "value": "2.3",
+      "unit": "kg",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    }
+  ],
+  "io": [
+    {
+      "group": "Video",
+      "connector": "HDMI",
+      "signal": "HDMI",
+      "direction": "IN",
+      "quantity": "4",
+      "protocol": "HDMI 2.0",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "connector": "HDMI",
+      "signal": "HDMI",
+      "direction": "OUT",
+      "quantity": "4",
+      "protocol": "HDMI 2.0",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Control",
+      "connector": "RS-232C",
+      "signal": "RS-232C",
+      "direction": "BIDIR",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Control",
+      "connector": "LAN",
+      "signal": "TCP/IP",
+      "direction": "BIDIR",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    }
+  ],
+  "related": [],
+  "sources": [
+    {
+      "code": "C",
+      "name": "알티컴 종합 카탈로그 2026 (국문)",
+      "page": "29",
+      "scope": "제조사 공식 출처"
+    }
+  ],
+  "issues": [
+    {
+      "code": "R1",
+      "status": "REVIEW REQUIRED",
+      "title": "전원 사양 표기 불일치",
+      "detail": "제품사양 표는 전원공급을 DC 12V 2A로 적었으나 같은 쪽 연결도의 후면 라벨은 +12V DC 5A로 적혀 있다. 값은 제품사양 표 원문을 유지했다."
+    },
+    {
+      "code": "I1",
+      "status": "INFO",
+      "title": "이미지 출처",
+      "detail": "별도 원본 파일이 아닌 카탈로그 쪽에 실린 제품 이미지를 220dpi로 발췌했다. 원본 해상도가 낮아 확대 시 흐릴 수 있다."
+    }
+  ]
+}

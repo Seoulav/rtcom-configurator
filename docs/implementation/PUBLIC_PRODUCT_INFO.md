@@ -1,0 +1,52 @@
+# 알티컴 공개 제품정보 (0.19.0)
+
+## 근거
+- 사용자 결정 2026-09-26: `docs/audit/SITE_SCOPE_REVIEW.md` §9
+  - 브로셔 수준 제품정보는 이 저장소에 두고 공개합니다.
+  - 회사 내부 자료는 비공개 AV Portal에 둡니다.
+  - 데이터는 공개 → 비공개 한 방향으로만 흐릅니다.
+- 대상 범위: AV Portal과 같은 제외 모델(HS-88MX·HD-D104U·HD-D108U)을 적용합니다(사용자 선택 2026-09-26).
+- 원본 자료: 알티컴 종합 카탈로그 2026(국문 48쪽). `docs/` 안의 PDF이며, 배포에는 포함하지 않습니다.
+- 보조 자료
+  - 저장소에 있던 제품 사진(`R`)
+  - VDM 전송기 연동 근거 U09(`U`)
+
+## 구성
+| 파일 | 역할 |
+|---|---|
+| `data/products/<id>.json` | 상세 29개. AV Portal 상세 JSON 호환에 `id·group·catalogPages·lineup·related`를 추가 |
+| `data/products/index.json` | 목록(`rtcom.products.v1`). `scripts/build-product-index.cjs`로 생성 |
+| `output/design/assets/products/*.webp` | 제품 이미지 55장. 카탈로그 220dpi 발췌 또는 기존 사진 변환 |
+| `src/products.js` | 제품정보 화면. 목록·분류 탭·검색·상세 |
+| `index.html` | 머리글 "매트릭스 구성기 / 알티컴 제품정보" 탭, `.rt-products-view` |
+| `src/app.js` | `rt-configure-family` 이벤트. 시리즈 상세에서 해당 제품군 섀시 단계로 이동 |
+| `docs/handoff/AV_PORTAL_RTCOM_PRODUCT_DATA.md` | AV Portal 인계 문서 |
+| `docs/RTCOM_HIRES_IMAGE_REQUEST.md` | 제조사에 보낼 고해상도 이미지 요청 목록 |
+
+## 설계 판단
+- **화면 전환은 주소 조각(`#products`, `#products/<id>`)만 씁니다.**
+  - 페이지 이동이 없어 상대 경로 이미지가 깨지지 않고 404도 나지 않습니다. 0.6에서 생긴 문제입니다.
+  - 브라우저가 방문 기록을 자동으로 남기므로 뒤로가기가 상세 → 목록 → 구성기 순서로 동작합니다.
+  - 구성기의 `pushState`/`replaceState` 규칙(주소 유지)은 바꾸지 않았습니다.
+- **데이터 작성 규칙**
+  - 카탈로그에 적힌 값만 씁니다.
+  - 표기가 서로 다르면 원문 값을 그대로 두고 `REVIEW REQUIRED`와 `issues`로 표시합니다. 29종 중 17종이 해당합니다.
+- **내부 정보 차단**: 검증 스크립트가 금지어(단가·원가·거래처·재고 등)가 있으면 실패합니다.
+- **제품정보 화면에서 로고를 누르면** 확인 창 없이 구성기로 돌아갑니다. 0.18의 첫 화면 이동 확인 창은 구성기 화면에서만 뜹니다.
+- **0.6 주소 `/products`** 는 호환성 계약대로 계속 구성기 첫 화면으로 이동합니다. 제품정보는 `#products`로 엽니다.
+
+## 데이터 작성 방법
+- 분류별로 병렬 작성했습니다: 시리즈 3 / 일체형·분배·케이블 13 / 전송기 13.
+- 모든 이미지는 눈으로 확인했습니다.
+- 카탈로그 충돌은 기존 근거 E23~E26과 새로 찾은 항목을 함께 기록했습니다. 예:
+  - QMS-88UX: 해상도 3860 표기, 출력 10포트, 100-200 VAC
+  - VDM-80X: 무게 오기 의심
+  - XDM: 메인프레임 범위 표기 불일치
+
+## 되돌리기
+- 0.19.0 병합 커밋을 revert합니다.
+- 구성기 호환성 계약(LocalStorage key, schema 3, catalogVersion, 슬롯 ID, `#matrix-configurator`, 0.6 주소 이동)은 바뀌지 않았으므로 구성기에는 영향이 없습니다.
+
+## 남은 일
+- 고해상도 이미지: 제조사에 요청 예정(`docs/RTCOM_HIRES_IMAGE_REQUEST.md`). XDM 프레임 고해상도 사진은 이미 있어 다음 작업에서 반영합니다.
+- AV Portal 비공개 전환: 2026-09-27 회사 내부 검토 후 진행합니다. 그 시점에 머리글 "AV Portal에서 제품 찾기" 링크를 어떻게 처리할지 정합니다.

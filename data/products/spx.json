@@ -1,0 +1,355 @@
+{
+  "id": "spx",
+  "group": "series",
+  "manufacturer": "RTCOM",
+  "productName": "SPX Series",
+  "model": "SPX Series",
+  "series": "Signal Processing eXpert",
+  "seriesNote": "메인프레임 5종과 8포트 입력·10~12포트 출력 보드, SPX-RX/TX 전송기로 구성한다.",
+  "itemType": "SERIES",
+  "categories": [
+    "영상",
+    "Video",
+    "Modular Matrix"
+  ],
+  "english": "Signal Processing eXpert — 4K60 4:4:4 18Gbps HDMI/CATx modular matrix with independent per-output scaling, video wall and quad view.",
+  "korean": "8포트 입력 보드와 10~12포트 출력 보드로 4K60Hz 4:4:4 신호를 분배하고 출력별 독립 스케일링을 지원하는 모듈형 매트릭스 스위처다.",
+  "catalogPages": "13–16",
+  "verificationSummary": "알티컴 종합 카탈로그(2026-03) 13~16쪽의 제품 구상도·소개·LINE-UP·주요기능·I/O 보드 공통 기능·제품사양·보드 및 전송기 사양에서 확인했다.",
+  "packageStatus": "REVIEW REQUIRED",
+  "overview": "SPX(Signal Processing eXpert) 매트릭스 시리즈는 4K 60Hz 4:4:4 18Gbps 고해상도 신호를 분배하거나 다양한 해상도를 선택할 수 있는 매트릭스 스위처다. 8포트 입력 카드와 10~12포트 출력 카드를 갖추고, 심리스 스위칭과 비디오월 기능을 적용했으며, 5가지로 세분화한 메인프레임으로 Sports Bar, 레스토랑, 회의실, 보안 통제실 등 다양한 현장에 대응한다.\n\n전면 터치패널, 웹 UI, RS-232, LAN 등 제어 방식을 환경에 맞게 선택할 수 있다. 디스플레이마다 독립적인 Scaling 출력과 CEC 컨트롤 기능을 제공하고, Hot-swap 기능으로 전원을 끄지 않고 슬롯 카드를 장착·교체할 수 있다.\n\n카탈로그는 SPX 시리즈를 심플하지만 강력한 미디어 분산 솔루션으로 소개한다. 13쪽 제품 구상도는 SPX-M810(HDMI SLOT)에 셋톱박스 최대 8대와 4개 존의 비디오·오디오를 연결하는 예를 보여 준다.",
+  "images": [
+    {
+      "role": "Main",
+      "file": "spx-main.webp",
+      "alt": "RTCOM SPX 시리즈 메인프레임과 SPX-RX 제품군",
+      "note": "Main · SPX-M810/M1620/M3236 등 제품군과 전송기 사진",
+      "provider": "RTCOM",
+      "model": "SPX Series",
+      "source": "R",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "586×302"
+    },
+    {
+      "role": "Front",
+      "file": "spx-front.webp",
+      "alt": "RTCOM SPX-M810 전면",
+      "note": "Front · SPX-M810 전면 사진",
+      "provider": "RTCOM",
+      "model": "SPX-M810",
+      "source": "R",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "715×161"
+    }
+  ],
+  "imageStatuses": [
+    {
+      "role": "Main",
+      "status": "FOUND"
+    },
+    {
+      "role": "Front",
+      "status": "FOUND"
+    },
+    {
+      "role": "Rear",
+      "status": "MISSING"
+    },
+    {
+      "role": "Perspective",
+      "status": "MISSING"
+    }
+  ],
+  "documents": [
+    {
+      "type": "Catalog",
+      "status": "FOUND",
+      "title": "알티컴 종합 카탈로그 2026 (국문)",
+      "language": "ko",
+      "note": "13~16쪽"
+    }
+  ],
+  "features": [
+    {
+      "text": "모든 출력 포트에 선택 가능한 독립적인 스케일링 기능을 제공한다.",
+      "source": "C"
+    },
+    {
+      "text": "최대 12개의 디스플레이로 구현 가능한 비디오월 기능(2x2, 3x3, 3x4)을 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "멀티 뷰(쿼드 뷰) 기능을 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "CEC 디스플레이 제어 기능을 제공한다.",
+      "source": "C"
+    },
+    {
+      "text": "RS-232, TCP/IP, Web UI 제어 기능을 제공한다.",
+      "source": "C"
+    },
+    {
+      "text": "Hot-Swappable 설계로 Slot 및 FAN Module 등을 손쉽게 교체할 수 있다.",
+      "source": "C"
+    },
+    {
+      "text": "전면 Touch Screen으로 쉽게 제어할 수 있다.",
+      "source": "C"
+    },
+    {
+      "text": "POC(Power Over CAT) 기능으로 메인프레임에서 RX 제품에 전력을 공급한다.",
+      "source": "C"
+    },
+    {
+      "text": "EDID, HDCP 2.2를 지원한다.",
+      "source": "C"
+    }
+  ],
+  "specifications": [
+    {
+      "group": "Video",
+      "name": "디지털 비디오 대역폭",
+      "value": "18",
+      "unit": "Gbps",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "최대 해상도",
+      "value": "4096×2160@60Hz, 3840×2160@60Hz",
+      "unit": "",
+      "condition": "4:4:4 (Up to 4K60Hz)",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "General",
+      "name": "입·출력 구성",
+      "value": "8x10, 16x20, 32x36, 24x72, 24x120",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "입력 신호",
+      "value": "HDMI",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "REVIEW REQUIRED"
+    },
+    {
+      "group": "Video",
+      "name": "출력 신호",
+      "value": "HDMI, CATx",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "name": "전원",
+      "value": "100~220",
+      "unit": "VAC",
+      "condition": "50/60Hz, 800W",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "General",
+      "name": "내구성(MTBF)",
+      "value": "50,000",
+      "unit": "hours",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Environment",
+      "name": "가용 온도",
+      "value": "0~40",
+      "unit": "°C",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Environment",
+      "name": "가용 습도",
+      "value": "80% 이하",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "General",
+      "name": "슬롯당 포트",
+      "value": "8~12",
+      "unit": "포트",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "HDMI 인터페이스 보드 규격",
+      "value": "HDMI 2.0b",
+      "unit": "",
+      "condition": "I/O 보드 공통 기능",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "name": "데이터 전송 속도",
+      "value": "18",
+      "unit": "Gbps",
+      "condition": "최대 · I/O 보드 공통 기능",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "HDCP",
+      "value": "HDCP 2.2",
+      "unit": "",
+      "condition": "I/O 보드 공통 기능",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "name": "CATx 보드 전송 거리",
+      "value": "50",
+      "unit": "m",
+      "condition": "CAT 6 기준 4K 60Hz(165 ft)",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "name": "CATx 보드 전송 거리",
+      "value": "60",
+      "unit": "m",
+      "condition": "CAT 6 기준 1080p(198 ft)",
+      "source": "C",
+      "verification": "VERIFIED"
+    }
+  ],
+  "io": [],
+  "lineup": [
+    {
+      "model": "SPX-M810",
+      "kind": "메인프레임",
+      "summary": "8x10까지의 I/O · 4.3\" Touch Screen · 483×355×88.1mm(2U)"
+    },
+    {
+      "model": "SPX-M1620",
+      "kind": "메인프레임",
+      "summary": "8x10~16x20 I/O · 7\" Touch Screen · 483×355×177mm(4U)"
+    },
+    {
+      "model": "SPX-M3236",
+      "kind": "메인프레임",
+      "summary": "8x10~32x36 I/O · 7\" Touch Screen · 483×355×310.3mm(7U)"
+    },
+    {
+      "model": "SPX-M2472",
+      "kind": "메인프레임",
+      "summary": "8x10~24x72 I/O · 7\" Touch Screen · 483×433.7×365mm(8U)"
+    },
+    {
+      "model": "SPX-M24120",
+      "kind": "메인프레임",
+      "summary": "8x10~24x120 I/O · 7\" Touch Screen · 483×433.7×365mm(8U)"
+    },
+    {
+      "model": "SPX-HIS8",
+      "kind": "입력 보드",
+      "summary": "HDMI 2.0b 입력 8포트 · 스테레오 오디오 출력(추출) 8"
+    },
+    {
+      "model": "SPX-HOS10",
+      "kind": "출력 보드",
+      "summary": "HDMI 2.0b 출력 10포트 · 3-pin phoenix 오디오 2포트 · 3840×2160@60Hz"
+    },
+    {
+      "model": "SPX-HOS12",
+      "kind": "출력 보드",
+      "summary": "HDMI 2.0b 출력 12포트 · 3840×2160@60Hz"
+    },
+    {
+      "model": "SPX-COS12",
+      "kind": "출력 보드",
+      "summary": "CATx 출력 12포트 · SPX-RX와 사용 · 3840×2160@60Hz"
+    },
+    {
+      "model": "SPX-RX/TX",
+      "kind": "전송기",
+      "summary": "CATx(RJ45)/HDMI 입력, HDMI 2.0/CATx(RJ45) 출력 · 4K60Hz 4:4:4 · 18Gbps · HDCP 2.2"
+    }
+  ],
+  "related": [],
+  "sources": [
+    {
+      "code": "C",
+      "name": "알티컴 종합 카탈로그 2026 (국문)",
+      "page": "13–16",
+      "scope": "제조사 공식 출처"
+    },
+    {
+      "code": "R",
+      "name": "저장소 기존 제품 사진(output/design/assets)",
+      "page": "",
+      "scope": "구성기 화면에서 사용 중인 RTCOM 제품 사진"
+    }
+  ],
+  "issues": [
+    {
+      "code": "R1",
+      "status": "REVIEW REQUIRED",
+      "title": "소개문 대역폭·색 표기 오기",
+      "detail": "14쪽 소개문은 '4:4;4 18Gps', 15쪽 I/O 보드 공통 기능은 '18Gps'로 적었다. 15쪽 제품사양 표의 '18Gbps', '4:4:4'를 사양값으로 썼다."
+    },
+    {
+      "code": "R2",
+      "status": "REVIEW REQUIRED",
+      "title": "출력 보드 포트 수 표기",
+      "detail": "16쪽 설명은 '출력 슬롯 당 10~2개의 HDMI 또는 CATx 인터페이스'라고 적었지만 14쪽 소개문(10~12 port)과 보드 목록(HOS10 10포트, HOS12·COS12 12포트)은 10~12포트다. 오기로 보이며 lineup은 보드별 원문 포트 수를 따랐다."
+    },
+    {
+      "code": "R3",
+      "status": "REVIEW REQUIRED",
+      "title": "CATx 입력 보드 미수록",
+      "detail": "16쪽 설명은 '입력 슬롯 당 8개의 HDMI 또는 CATx 입력 포트'라고 적었지만 카탈로그에 실린 입력 보드는 SPX-HIS8(HDMI) 하나이고 15쪽 제품사양의 입력 신호도 HDMI만 적혀 있다."
+    },
+    {
+      "code": "R4",
+      "status": "REVIEW REQUIRED",
+      "title": "SPX-HIS8·HOS10 표기 불완전",
+      "detail": "16쪽 SPX-HIS8 세부사항은 'Up to 3840@60Hz'로 세로 해상도가 빠져 있고, SPX-HOS10 오디오 포트는 '(1 , 10 )'처럼 일부 글자가 빠져 있다. lineup 요약에서 해당 값은 해석하지 않았다."
+    },
+    {
+      "code": "R5",
+      "status": "REVIEW REQUIRED",
+      "title": "SPX 전송기 제품 id 없음",
+      "detail": "SPX-RX/TX는 16쪽에 공통 사양 한 표로만 실려 있고 모델별 크기·무게가 없다. 별도 제품 JSON이 없어 related는 비워 두었다."
+    },
+    {
+      "code": "I1",
+      "status": "INFO",
+      "title": "이미지 출처",
+      "detail": "카탈로그 도면이 아니라 구성기 저장소에 있던 RTCOM 제품 사진을 webp로 변환했다. Main은 SPX 메인프레임 제품군과 SPX 전송기 사진, Front는 SPX-M810 전면 사진(구성기 프레임 이미지)이다."
+    }
+  ]
+}

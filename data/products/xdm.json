@@ -1,0 +1,424 @@
+{
+  "id": "xdm",
+  "group": "series",
+  "manufacturer": "RTCOM",
+  "productName": "XDM Series",
+  "model": "XDM Series",
+  "series": "eXtreme Digital Matrix",
+  "seriesNote": "메인프레임 7종과 4포트 입출력 슬롯, 전용 HDBaseT·광 전송기로 구성한다.",
+  "itemType": "SERIES",
+  "categories": [
+    "영상",
+    "Video",
+    "Modular Matrix"
+  ],
+  "english": "eXtreme Digital Matrix — modular cross-platform 4K60 4:4:4 matrix switcher with HDMI 2.0, DisplayPort 1.2, 12G-SDI, HDBaseT 3.0 and fiber slots.",
+  "korean": "HDMI 2.0·DisplayPort 1.2·12G-SDI·HDBaseT 3.0·광 신호를 4K60Hz 4:4:4로 입출력하는 모듈형 크로스 플랫폼 매트릭스 스위처다.",
+  "catalogPages": "4–12",
+  "verificationSummary": "알티컴 종합 카탈로그(2026-03) 4~12쪽의 소개·LINE-UP·주요기능·제품사양·크기 및 무게·입출력 슬롯·전송기 사양에서 확인했다.",
+  "packageStatus": "REVIEW REQUIRED",
+  "overview": "XDM(eXtreme Digital Matrix) 시리즈는 HDMI v2.0, DisplayPort v1.2, 12G-SDI, HDBaseT 3.0, DANTE 등 상용화 또는 표준화된 고대역폭 디지털 인터페이스의 입력과 출력을 제어해 자유로운 입출력 선택과 분배를 수행하는 고성능 크로스 플랫폼 매트릭스 스위처다. 심리스 스위칭으로 화상회의처럼 끊김 없는 전환이 필요한 곳에 딜레이 없는 빠른 전환을 제공하고, 비디오월 기능으로 화면을 원하는 크기로 확대·축소할 수 있다.\n\n전면 LCD 패널에서 파워와 쿨링 상태를 실시간으로 확인하고, 입력 포트에 저장된 EDID와 입력 소스 해상도, 출력 포트에 연결된 디스플레이의 EDID와 출력 상태를 확인해 최적 해상도로 출력할 수 있다.\n\n듀얼 리던던트 파워를 적용해 한 파워모듈에 장애가 생겨도 다른 모듈로 전원을 공급하며, 파워 핫스왑으로 전원을 끄지 않고 장애 모듈을 교체할 수 있다. 메인프레임은 XDM-12부터 XDM-288까지 LINE-UP에 올라 있다.",
+  "images": [
+    {
+      "role": "Main",
+      "file": "xdm-main.webp",
+      "alt": "RTCOM XDM 시리즈 메인프레임 제품군",
+      "note": "Main · XDM-12/20/36/72/144 제품군 사진",
+      "provider": "RTCOM",
+      "model": "XDM Series",
+      "source": "R",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "633×372"
+    },
+    {
+      "role": "Front",
+      "file": "xdm-front.webp",
+      "alt": "RTCOM XDM-12 전면",
+      "note": "Front · XDM-12 전면 사진",
+      "provider": "RTCOM",
+      "model": "XDM-12",
+      "source": "R",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "1200×442"
+    }
+  ],
+  "imageStatuses": [
+    {
+      "role": "Main",
+      "status": "FOUND"
+    },
+    {
+      "role": "Front",
+      "status": "FOUND"
+    },
+    {
+      "role": "Rear",
+      "status": "MISSING"
+    },
+    {
+      "role": "Perspective",
+      "status": "MISSING"
+    }
+  ],
+  "documents": [
+    {
+      "type": "Catalog",
+      "status": "FOUND",
+      "title": "알티컴 종합 카탈로그 2026 (국문)",
+      "language": "ko",
+      "note": "4~12쪽"
+    }
+  ],
+  "features": [
+    {
+      "text": "HDMI v2.0, DisplayPort v1.2, 12G-SDI, HDBaseT 3.0 등 초고화질 True 4K60Hz 4:4:4를 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "HDMI, DisplayPort, SDI, HDBaseT, Fiber Optic 신호 등 다양한 신호변환 기능을 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "부드러운 화면전환이 가능한 심리스 스위칭을 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "화면 확대/축소를 위한 비디오월 기능을 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "출력 포트별로 다양한 해상도를 지정할 수 있는 스케일 업/다운을 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "모니터링을 위한 멀티뷰(듀얼, 쿼드뷰, 16분할 멀티뷰)를 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "전면 LCD 터치패널, RS-232, LAN(TCP/IP) 3가지 제어방식을 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "전면 LCD 터치패널로 장비 상태를 파악하고 영상신호 감지 후 자동알림 기능을 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "내장 테스트패턴으로 손쉽게 테스트할 수 있다.",
+      "source": "C"
+    },
+    {
+      "text": "오디오 병합 및 추출이 가능하다.",
+      "source": "C"
+    },
+    {
+      "text": "전원 이중화 및 Hot-Swap을 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "입출력 슬롯 및 팬모듈 Hot-Swap을 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "매트릭스에서 송수신기 전원을 공급하는 Power over Ethernet(POE) 기능을 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "매트릭스에 연결된 송수신기를 통해 외부기기 RS-232 제어가 가능하다(RS-232+ 기능).",
+      "source": "C"
+    },
+    {
+      "text": "DANTE Network Audio를 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "19인치 렉마운트 타입이다.",
+      "source": "C"
+    },
+    {
+      "text": "EDID, HDCP 2.2를 지원한다.",
+      "source": "C"
+    }
+  ],
+  "specifications": [
+    {
+      "group": "Video",
+      "name": "디지털 비디오 대역폭",
+      "value": "18",
+      "unit": "Gbps",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "최대 해상도",
+      "value": "4096×2160@60Hz, 3840×2160@60Hz",
+      "unit": "",
+      "condition": "4:4:4 (Up to 4K60Hz)",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "General",
+      "name": "입력 채널",
+      "value": "12, 20, 36, 72, 144, 216",
+      "unit": "ch",
+      "condition": "",
+      "source": "C",
+      "verification": "REVIEW REQUIRED"
+    },
+    {
+      "group": "General",
+      "name": "출력 채널",
+      "value": "12, 20, 36, 72, 144, 216",
+      "unit": "ch",
+      "condition": "",
+      "source": "C",
+      "verification": "REVIEW REQUIRED"
+    },
+    {
+      "group": "Video",
+      "name": "입력 신호",
+      "value": "HDMI2.0, DisplayPort, 12G-SDI, HDBaseT 3.0, Fiber, DANTE",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "출력 신호",
+      "value": "HDMI2.0, DisplayPort, 12G-SDI, HDBaseT 3.0, Fiber, DANTE",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "name": "전원",
+      "value": "110~240",
+      "unit": "VAC",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "General",
+      "name": "내구성(MTBF)",
+      "value": "50,000",
+      "unit": "hours",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Environment",
+      "name": "가용 온도",
+      "value": "0~40",
+      "unit": "°C",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Environment",
+      "name": "가용 습도",
+      "value": "80% 이하",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "General",
+      "name": "슬롯당 포트",
+      "value": "4",
+      "unit": "포트",
+      "condition": "카탈로그 6~9쪽 입출력 슬롯 사양 기준",
+      "source": "C",
+      "verification": "VERIFIED"
+    }
+  ],
+  "io": [],
+  "lineup": [
+    {
+      "model": "XDM-12",
+      "kind": "메인프레임",
+      "summary": "12×12 · 482.6×369.5×177mm(W×D×H) · 10kg"
+    },
+    {
+      "model": "XDM-20",
+      "kind": "메인프레임",
+      "summary": "20×20 · 482.6×369.5×399.2mm · 15kg"
+    },
+    {
+      "model": "XDM-36",
+      "kind": "메인프레임",
+      "summary": "36×36 · 482.6×402×399.2mm · 19kg"
+    },
+    {
+      "model": "XDM-72",
+      "kind": "메인프레임",
+      "summary": "72×72 · 482.6×462.5×710.4mm · 47kg"
+    },
+    {
+      "model": "XDM-144",
+      "kind": "메인프레임",
+      "summary": "144×144 · 482.6×400×1288.2mm · 70kg"
+    },
+    {
+      "model": "XDM-216",
+      "kind": "메인프레임",
+      "summary": "216×216 · 482.6×452×1777.2mm · 110kg"
+    },
+    {
+      "model": "XDM-288",
+      "kind": "메인프레임",
+      "summary": "LINE-UP 표기만 있음 · 채널·크기·무게 사양 미수록"
+    },
+    {
+      "model": "XDM-HIS100",
+      "kind": "입력 카드",
+      "summary": "HDMI v2.0 입력 4포트 · 오디오 병합/추출 4 · 4K60Hz 4:4:4"
+    },
+    {
+      "model": "XDM-HI100",
+      "kind": "입력 카드",
+      "summary": "HDMI v2.0 입력 4포트(Non-Scaler) · 오디오 병합/추출 4 · 4K60Hz 4:4:4"
+    },
+    {
+      "model": "XDM-DPI100",
+      "kind": "입력 카드",
+      "summary": "DisplayPort v1.2 입력 4포트 · 오디오 병합/추출 4 · 4K60Hz 4:4:4"
+    },
+    {
+      "model": "XDM-FIS100",
+      "kind": "입력 카드",
+      "summary": "광(1 LC) 입력 4포트 · 싱글모드 2km/멀티모드 300m · 4K60Hz 4:4:4"
+    },
+    {
+      "model": "XDM-SIS100",
+      "kind": "입력 카드",
+      "summary": "12G-SDI(BNC) 입력 4포트 · 4K60Hz 4:2:2"
+    },
+    {
+      "model": "XDM-CIS100",
+      "kind": "입력 카드",
+      "summary": "HDBaseT 3.0(RJ45) 입력 4포트 · CAT6a/CAT7 100m · 4K60Hz 4:4:4"
+    },
+    {
+      "model": "XDM-HOS100",
+      "kind": "출력 카드",
+      "summary": "HDMI v2.0 출력 4포트 · 오디오 추출 4 · Video Wall, Quad-Viewer 전환 가능"
+    },
+    {
+      "model": "XDM-DPOS100",
+      "kind": "출력 카드",
+      "summary": "DisplayPort v1.2 출력 4포트 · 오디오 추출 4 · 4K60Hz 4:4:4"
+    },
+    {
+      "model": "XDM-COS100",
+      "kind": "출력 카드",
+      "summary": "HDBaseT 3.0(RJ45) 출력 4포트 · 오디오 추출·POE · CAT6a/CAT7 100m"
+    },
+    {
+      "model": "XDM-FOS100",
+      "kind": "출력 카드",
+      "summary": "광(1 LC) 출력 4포트 · 싱글모드 2km/멀티모드 300m · 4K60Hz 4:4:4"
+    },
+    {
+      "model": "XDM-SOS100",
+      "kind": "출력 카드",
+      "summary": "12G-SDI(BNC) 출력 4포트 · 오디오 추출 4 · 4K60Hz 4:2:2"
+    },
+    {
+      "model": "XDM-WOS100",
+      "kind": "출력 카드",
+      "summary": "HDMI(Wall Overlay) 출력 4포트 · Video Wall, 커맨드 중첩 기능"
+    },
+    {
+      "model": "XDM-CTR100",
+      "kind": "전송기",
+      "summary": "HDBaseT 3.0 HDMI 송·수신 겸용 · 설정으로 역할 전환 · XDM-CIS100/COS100 호환 · 100m"
+    },
+    {
+      "model": "XDM-CTR100 PSE",
+      "kind": "전송기",
+      "summary": "XDM-CTR100의 PSE(POE 전원 공급) 모델 · XDM-CTR100, XDM-CT/CR103과 사용"
+    },
+    {
+      "model": "XDM-CT103",
+      "kind": "전송기",
+      "summary": "HDBaseT 3.0 HDMI 1 Gang 벽부형 송신기 · XDM-CIS100 호환 · 100m"
+    },
+    {
+      "model": "XDM-CR103",
+      "kind": "전송기",
+      "summary": "HDBaseT 3.0 HDMI 1 Gang 벽부형 수신기 · XDM-COS100 호환 · 100m"
+    },
+    {
+      "model": "XDM-FT101",
+      "kind": "전송기",
+      "summary": "HDMI v2.0 광 송신기 · XDM-FIS100 호환 · 싱글모드 2km/멀티모드 300m"
+    },
+    {
+      "model": "XDM-FR101",
+      "kind": "전송기",
+      "summary": "HDMI v2.0 광 수신기 · XDM-FOS100 호환 · 싱글모드 2km/멀티모드 300m"
+    }
+  ],
+  "related": [
+    {
+      "relation": "PART_OF_SERIES",
+      "target": "xdm-ctr100",
+      "note": "XDM 전용 HDBaseT 송·수신기(PSE 포함) · XDM-CIS100/COS100 호환"
+    },
+    {
+      "relation": "PART_OF_SERIES",
+      "target": "xdm-ct103-cr103",
+      "note": "XDM 전용 벽부형 HDBaseT 송·수신기 · XDM-CIS100/COS100 호환"
+    },
+    {
+      "relation": "PART_OF_SERIES",
+      "target": "xdm-ft101-fr101",
+      "note": "XDM 전용 광 송·수신기 · XDM-FIS100/FOS100 호환"
+    }
+  ],
+  "sources": [
+    {
+      "code": "C",
+      "name": "알티컴 종합 카탈로그 2026 (국문)",
+      "page": "4–12",
+      "scope": "제조사 공식 출처"
+    },
+    {
+      "code": "R",
+      "name": "저장소 기존 제품 사진(output/design/assets)",
+      "page": "",
+      "scope": "구성기 화면에서 사용 중인 RTCOM 제품 사진"
+    }
+  ],
+  "issues": [
+    {
+      "code": "R1",
+      "status": "REVIEW REQUIRED",
+      "title": "메인프레임 범위 표기 불일치",
+      "detail": "4쪽 소개문은 '12x12~144X144까지 다양한 사이즈의 메인프레임'이라고 적었지만 같은 쪽 LINE-UP에는 XDM-216·XDM-288이 있고, 5쪽 제품사양의 입출력 채널은 216까지 적혀 있다. 원문 값을 그대로 두었다."
+    },
+    {
+      "code": "R2",
+      "status": "REVIEW REQUIRED",
+      "title": "XDM-288 사양 미수록",
+      "detail": "XDM-288은 4쪽 LINE-UP에만 있고 5쪽 입출력 채널(12~216)과 크기 및 무게 목록에는 없다. 구성기 catalog.js도 '상세 사양 확인 예정'으로 둔다. lineup에는 모델명만 넣었다."
+    },
+    {
+      "code": "I1",
+      "status": "INFO",
+      "title": "이미지 출처",
+      "detail": "카탈로그 도면이 아니라 구성기 저장소에 있던 RTCOM 제품 사진을 webp로 변환했다. Main은 XDM-12/20/36/72/144 제품군 사진, Front는 XDM-12 전면 사진(구성기 프레임 이미지)이다. 전면 화면의 표시값은 설명용이다."
+    }
+  ]
+}

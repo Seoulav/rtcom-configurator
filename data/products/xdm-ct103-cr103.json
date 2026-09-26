@@ -1,0 +1,317 @@
+{
+  "id": "xdm-ct103-cr103",
+  "group": "extender",
+  "manufacturer": "RTCOM",
+  "productName": "XDM-CT103 / XDM-CR103",
+  "model": "XDM-CT103 / XDM-CR103",
+  "series": "XDM Series Extender",
+  "seriesNote": "XDM 시리즈 전용 1 Gang 벽부형 HDBaseT 3.0 송신기(CT103)와 수신기(CR103) 짝이다.",
+  "itemType": "PRODUCT",
+  "categories": [
+    "영상",
+    "Video",
+    "Extender"
+  ],
+  "english": "1-gang wall-plate HDBaseT 3.0 HDMI transmitter/receiver pair for uncompressed 4K60 4:4:4 up to 100m, PoE-powered from XDM slots or XDM-CTR100 PSE.",
+  "korean": "HDBaseT 3.0 기술로 압축하지 않은 4K60Hz 4:4:4 HDMI 신호를 최대 100m 전송하는 1 Gang 벽부형 송·수신기다.",
+  "catalogPages": "11",
+  "verificationSummary": "알티컴 종합 카탈로그(2026-03) 11쪽의 XDM-CT103·XDM-CR103 소개와 제품사양 표에서 확인했다.",
+  "packageStatus": "REVIEW REQUIRED",
+  "overview": "XDM-CT103은 HDBaseT 3.0 기술이 적용되어 압축하지 않은 True 4K 4096x2160@60Hz(4:4:4), 3840x2160@60Hz(4:4:4) 해상도의 HDMI 신호를 케이블에 따라 최대 100m까지 전송하는 HDMI 1 Gang 벽부형 송신기이며 XDM-CIS100과 호환된다. XDM-CR103은 같은 신호를 최대 100m까지 받는 1 Gang 벽부형 수신기이며 XDM-COS100과 사용할 수 있다.\n\n벽부형 제품은 슬롯과 함께 쓰면 PoE 기능으로 별도 전원 케이블 없이 Cat 케이블을 통해 신호와 전원을 공급받는다. XDM-CTR100 PSE와도 사용할 수 있으며, 이때도 XDM-CT103/CR103에 별도 전원 케이블을 연결하지 않아도 된다. 케이블별 최대 사용 거리는 제조사 문의 사항으로 적혀 있다.",
+  "images": [
+    {
+      "role": "Main",
+      "file": "xdm-ct103-cr103-main.webp",
+      "alt": "RTCOM XDM-CT103 벽부형 송신기(TX) 전면",
+      "note": "Main · TX XDM-CT103 제품 사진",
+      "provider": "RTCOM",
+      "model": "XDM-CT103",
+      "source": "R",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "70×162"
+    },
+    {
+      "role": "Other",
+      "file": "xdm-ct103-cr103-perspective.webp",
+      "alt": "RTCOM XDM-CR103 벽부형 수신기(RX) 전면",
+      "note": "Other · RX XDM-CR103 제품 사진(정면)",
+      "provider": "RTCOM",
+      "model": "XDM-CR103",
+      "source": "R",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "66×154"
+    }
+  ],
+  "imageStatuses": [
+    {
+      "role": "Main",
+      "status": "FOUND"
+    },
+    {
+      "role": "Front",
+      "status": "MISSING"
+    },
+    {
+      "role": "Rear",
+      "status": "MISSING"
+    },
+    {
+      "role": "Perspective",
+      "status": "MISSING"
+    },
+    {
+      "role": "Other",
+      "status": "FOUND"
+    }
+  ],
+  "documents": [
+    {
+      "type": "Catalog",
+      "status": "FOUND",
+      "title": "알티컴 종합 카탈로그 2026 (국문)",
+      "language": "ko",
+      "note": "11쪽"
+    }
+  ],
+  "features": [
+    {
+      "text": "HDBaseT 3.0 기술로 압축하지 않은 True 4K 4096x2160@60Hz(4:4:4), 3840x2160@60Hz(4:4:4) HDMI 신호를 최대 100m 전송한다.",
+      "source": "C"
+    },
+    {
+      "text": "1 Gang 벽부형 구조다.",
+      "source": "C"
+    },
+    {
+      "text": "XDM-CT103은 XDM-CIS100과, XDM-CR103은 XDM-COS100과 사용할 수 있다.",
+      "source": "C"
+    },
+    {
+      "text": "XDM 슬롯과 함께 쓰면 PoE로 Cat 케이블을 통해 신호와 전원을 함께 공급받아 별도 전원 케이블이 필요 없다.",
+      "source": "C"
+    },
+    {
+      "text": "XDM-CTR100 PSE와 함께 쓸 때도 별도 전원 케이블 없이 사용할 수 있다.",
+      "source": "C"
+    }
+  ],
+  "specifications": [
+    {
+      "group": "Video",
+      "name": "최대 해상도",
+      "value": "4096x2160@60Hz, 3840x2160@60Hz",
+      "unit": "",
+      "condition": "4:4:4 · XDM-CT103·XDM-CR103 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "name": "최대 전송거리",
+      "value": "100",
+      "unit": "m",
+      "condition": "4K60Hz 4:4:4, CAT6a BELDEN10GXE02(S/FTP) 기준, 케이블별 상이 · XDM-CT103·XDM-CR103 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "name": "지원 케이블",
+      "value": "CAT6a, CAT7",
+      "unit": "",
+      "condition": "XDM-CT103·XDM-CR103 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "name": "규격",
+      "value": "HDBaseT 3.0, HDMI v2.0",
+      "unit": "",
+      "condition": "XDM-CT103·XDM-CR103 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "HDCP",
+      "value": "HDCP 2.2 support",
+      "unit": "",
+      "condition": "XDM-CT103·XDM-CR103 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "EDID",
+      "value": "Supports EDID",
+      "unit": "",
+      "condition": "XDM-CT103·XDM-CR103 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "name": "전원 공급",
+      "value": "PoE (XDM 슬롯 또는 XDM-CTR100 PSE 연결 시)",
+      "unit": "",
+      "condition": "소개문 기준",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "크기(W×D×H)",
+      "value": "49×78×102",
+      "unit": "mm",
+      "condition": "XDM-CT103·XDM-CR103 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "무게",
+      "value": "0.34",
+      "unit": "kg",
+      "condition": "XDM-CT103 (원문 1.0lb.)",
+      "source": "C",
+      "verification": "REVIEW REQUIRED"
+    },
+    {
+      "group": "Physical",
+      "name": "무게",
+      "value": "0.26",
+      "unit": "kg",
+      "condition": "XDM-CR103 (약 0.57lbs)",
+      "source": "C",
+      "verification": "VERIFIED"
+    }
+  ],
+  "io": [
+    {
+      "group": "TX · Video",
+      "connector": "Female HDMI connector",
+      "signal": "HDMI",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "HDMI v2.0",
+      "condition": "XDM-CT103",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "TX · Transmission",
+      "connector": "Female RJ45",
+      "signal": "HDBaseT",
+      "direction": "OUT",
+      "quantity": "1",
+      "protocol": "HDBaseT 3.0",
+      "condition": "XDM-CT103",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "TX · Audio",
+      "connector": "Female Phoenix connector 3p",
+      "signal": "Audio",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "XDM-CT103",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Video",
+      "connector": "Female HDMI connector",
+      "signal": "HDMI",
+      "direction": "OUT",
+      "quantity": "1",
+      "protocol": "HDMI v2.0",
+      "condition": "XDM-CR103",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Transmission",
+      "connector": "Female RJ45",
+      "signal": "HDBaseT",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "HDBaseT 3.0",
+      "condition": "XDM-CR103",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Audio",
+      "connector": "Female Phoenix connector 3p",
+      "signal": "Audio",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "XDM-CR103 · 원문 '1 Audio In' 그대로",
+      "source": "C",
+      "verification": "REVIEW REQUIRED"
+    }
+  ],
+  "related": [
+    {
+      "relation": "PART_OF_SERIES",
+      "target": "xdm",
+      "note": "XDM 시리즈 전용 벽부형 HDBaseT 전송기"
+    },
+    {
+      "relation": "WORKS_WITH",
+      "target": "xdm",
+      "note": "XDM-CIS100(CT103)·XDM-COS100(CR103) 카드"
+    },
+    {
+      "relation": "WORKS_WITH",
+      "target": "xdm-ctr100",
+      "note": "XDM-CTR100 PSE로 PoE 전원 공급"
+    }
+  ],
+  "sources": [
+    {
+      "code": "C",
+      "name": "알티컴 종합 카탈로그 2026 (국문)",
+      "page": "11",
+      "scope": "제조사 공식 출처"
+    },
+    {
+      "code": "R",
+      "name": "저장소 기존 제품 사진(output/design/assets)",
+      "page": "",
+      "scope": "구성기 화면에서 사용 중인 RTCOM 제품 사진"
+    }
+  ],
+  "issues": [
+    {
+      "code": "R1",
+      "status": "REVIEW REQUIRED",
+      "title": "XDM-CR103 오디오 방향 표기",
+      "detail": "수신기인 XDM-CR103의 Number of port가 송신기와 같은 '1 HDMI, 1 HDBaseT, 1 Audio In'으로 적혀 있다. 수신기의 오디오 단자 방향이 맞는지 확인이 필요하다. 원문대로 IN으로 두었다."
+    },
+    {
+      "code": "R2",
+      "status": "REVIEW REQUIRED",
+      "title": "XDM-CT103 무게 환산 불일치",
+      "detail": "XDM-CT103 무게는 '0.34kg (1.0lb.)'로 적혀 있지만 0.34kg은 약 0.75lb다. 같은 크기의 XDM-CR103은 약 0.26kg이다. kg 값을 그대로 두었다."
+    },
+    {
+      "code": "I1",
+      "status": "INFO",
+      "title": "이미지 출처",
+      "detail": "저장소에 있던 RTCOM 제품 사진(output/design/assets/extenders)을 흰 배경 webp로 변환했다. 카탈로그 인쇄 사진과 같은 촬영본이며 해상도가 낮다."
+    },
+    {
+      "code": "I2",
+      "status": "INFO",
+      "title": "이미지 역할 표기",
+      "detail": "짝 제품이라 Main에는 송신기 XDM-CT103, Other(기타) 자리에는 수신기 XDM-CR103 정면 사진을 넣었다."
+    }
+  ]
+}

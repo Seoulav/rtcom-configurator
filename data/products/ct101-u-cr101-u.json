@@ -1,0 +1,340 @@
+{
+  "id": "ct101-u-cr101-u",
+  "group": "extender",
+  "manufacturer": "RTCOM",
+  "productName": "CT101-U / CR101-U",
+  "model": "CT101-U / CR101-U",
+  "series": "VDM Series Extender",
+  "itemType": "PRODUCT",
+  "categories": [
+    "영상",
+    "Video",
+    "Extender"
+  ],
+  "english": "HDBaseT transmitter/receiver pair extending DVI/HDMI video, stereo audio and RS-232 up to 100m over one CATx cable.",
+  "korean": "HDBaseT 기술로 비디오·오디오·RS-232 신호를 CATx 케이블 한 가닥으로 최대 100m 전송하는 송·수신기다.",
+  "catalogPages": "21",
+  "verificationSummary": "알티컴 종합 카탈로그(2026-03) 21쪽의 CT101-U/CR101-U 소개와 CT101-U·CR101-U 제품사양 표에서 확인했다.",
+  "packageStatus": "REVIEW REQUIRED",
+  "overview": "CT101-U와 CR101-U는 비디오와 오디오, RS-232 신호를 CATx(UTP/STP)를 통해 장거리 전송하기 위한 송신기와 수신기다. CT101-U는 비디오·오디오·RS-232 신호를 CATx(UTP/STP) 신호로 변환하고, CR101-U는 CATx(UTP/STP) 신호를 다시 비디오·오디오·RS-232 신호로 복원한다.\n\nHDBaseT 기술을 적용해 하나의 CATx 케이블로 최대 100m까지 전송할 수 있다.",
+  "images": [
+    {
+      "role": "Main",
+      "file": "ct101-u-cr101-u-main.webp",
+      "alt": "RTCOM CT101-U 송신기(TX) 상판과 양쪽 단자면",
+      "note": "Main · TX CT101-U 카탈로그 사진",
+      "provider": "RTCOM",
+      "model": "CT101-U",
+      "source": "C",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "1040×383"
+    },
+    {
+      "role": "Other",
+      "file": "ct101-u-cr101-u-perspective.webp",
+      "alt": "RTCOM CR101-U 수신기(RX) 상판과 양쪽 단자면",
+      "note": "Other · RX CR101-U 카탈로그 사진",
+      "provider": "RTCOM",
+      "model": "CR101-U",
+      "source": "C",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "1037×395"
+    }
+  ],
+  "imageStatuses": [
+    {
+      "role": "Main",
+      "status": "FOUND"
+    },
+    {
+      "role": "Front",
+      "status": "MISSING"
+    },
+    {
+      "role": "Rear",
+      "status": "MISSING"
+    },
+    {
+      "role": "Perspective",
+      "status": "MISSING"
+    },
+    {
+      "role": "Other",
+      "status": "FOUND"
+    }
+  ],
+  "documents": [
+    {
+      "type": "Catalog",
+      "status": "FOUND",
+      "title": "알티컴 종합 카탈로그 2026 (국문)",
+      "language": "ko",
+      "note": "21쪽"
+    }
+  ],
+  "features": [
+    {
+      "text": "비디오·오디오·RS-232 신호를 CATx(UTP/STP)로 장거리 전송한다.",
+      "source": "C"
+    },
+    {
+      "text": "HDBaseT 기술을 적용해 CATx 케이블 한 가닥으로 최대 100m 전송한다.",
+      "source": "C"
+    },
+    {
+      "text": "CT101-U는 DVI/HDMI(TMDS)와 3.5mm 스테레오 오디오를 입력받는다.",
+      "source": "C"
+    }
+  ],
+  "specifications": [
+    {
+      "group": "Video",
+      "name": "입력 신호",
+      "value": "DVI / HDMI (TMDS), 3.5mm stereo audio",
+      "unit": "",
+      "condition": "CT101-U",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "출력 신호",
+      "value": "HDBaseT 0,1,2,3+/-",
+      "unit": "",
+      "condition": "CT101-U",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "입력 신호",
+      "value": "HDBaseT 0,1,2,3+/-",
+      "unit": "",
+      "condition": "CR101-U",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "출력 신호",
+      "value": "DVI / HDMI (TMDS), 3.5mm stereo audio",
+      "unit": "",
+      "condition": "CR101-U",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "name": "데이터 전송 속도",
+      "value": "3.4 Gbps/ch, Total 10.2 Gbps Max",
+      "unit": "",
+      "condition": "CT101-U·CR101-U 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "지원 해상도",
+      "value": "Up to Ultra HD 4K 4096x2160@24/25/30Hz",
+      "unit": "",
+      "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0 · CT101-U",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "지원 해상도",
+      "value": "PC: VGA ~ WUXGA (up to 1920x1200@60Hz), HDTV: 480i ~ 1080p, Up to Ultra HD 4K",
+      "unit": "",
+      "condition": "CR101-U",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "name": "최대 전송거리",
+      "value": "100",
+      "unit": "m",
+      "condition": "1920x1200@60Hz 또는 1080p, Ultra HD 4K · BELDEN CI 6522 · 330ft · CT101-U·CR101-U 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "General",
+      "name": "규격",
+      "value": "DVI 1.0, HDMI 1.4b, HDBaseT",
+      "unit": "",
+      "condition": "CT101-U",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "General",
+      "name": "규격",
+      "value": "HDMI 1.4, HDBaseT",
+      "unit": "",
+      "condition": "CR101-U",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "HDCP",
+      "value": "HDCP 1.X",
+      "unit": "",
+      "condition": "CT101-U·CR101-U 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "name": "전원",
+      "value": "DC +12V 2A",
+      "unit": "",
+      "condition": "CT101-U·CR101-U 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "크기(W×D×H)",
+      "value": "144.78×114.3×31.75",
+      "unit": "mm",
+      "condition": "CT101-U (5.75'×4.5'×1.25')",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "크기(W×D×H)",
+      "value": "113×73×29",
+      "unit": "mm",
+      "condition": "CR101-U (4.45'×2.87'×1.14')",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "무게",
+      "value": "0.23",
+      "unit": "kg",
+      "condition": "CT101-U (0.5 lbs)",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "무게",
+      "value": "0.27",
+      "unit": "kg",
+      "condition": "CR101-U (원문 0.5 lbs)",
+      "source": "C",
+      "verification": "REVIEW REQUIRED"
+    }
+  ],
+  "io": [
+    {
+      "group": "TX · Video",
+      "connector": "HDMI",
+      "signal": "DVI / HDMI (TMDS)",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "HDMI 1.4b",
+      "condition": "CT101-U · 수량은 카탈로그 사진(HDMI IN) 기준",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "TX · Audio",
+      "connector": "3.5mm stereo",
+      "signal": "Stereo Audio",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "CT101-U",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "TX · Transmission",
+      "connector": "RJ45 (CATx)",
+      "signal": "HDBaseT",
+      "direction": "OUT",
+      "quantity": "1",
+      "protocol": "HDBaseT",
+      "condition": "CT101-U",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Transmission",
+      "connector": "RJ45 (CATx)",
+      "signal": "HDBaseT",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "HDBaseT",
+      "condition": "CR101-U",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Video",
+      "connector": "HDMI",
+      "signal": "DVI / HDMI (TMDS)",
+      "direction": "OUT",
+      "quantity": "1",
+      "protocol": "HDMI 1.4",
+      "condition": "CR101-U · 수량은 카탈로그 사진(HDMI OUT) 기준",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Audio",
+      "connector": "3.5mm stereo",
+      "signal": "Stereo Audio",
+      "direction": "OUT",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "CR101-U",
+      "source": "C",
+      "verification": "VERIFIED"
+    }
+  ],
+  "related": [
+    {
+      "relation": "PART_OF_SERIES",
+      "target": "vdm",
+      "note": "VDM 시리즈 전송기"
+    }
+  ],
+  "sources": [
+    {
+      "code": "C",
+      "name": "알티컴 종합 카탈로그 2026 (국문)",
+      "page": "21",
+      "scope": "제조사 공식 출처"
+    }
+  ],
+  "issues": [
+    {
+      "code": "R1",
+      "status": "REVIEW REQUIRED",
+      "title": "CR101-U 무게 환산 불일치",
+      "detail": "CR101-U 무게가 '0.5 lbs (0.27 Kg)'로 적혀 있지만 CT101-U는 같은 0.5 lbs를 0.23 Kg으로 적었다. kg 값을 그대로 두었다."
+    },
+    {
+      "code": "I1",
+      "status": "INFO",
+      "title": "이미지 출처",
+      "detail": "카탈로그에 인쇄된 제품 사진을 해당 쪽에서 220dpi로 잘라냈다(도면이 아닌 사진). 원본 인쇄 사진 해상도가 낮아 확대 시 흐릴 수 있다."
+    },
+    {
+      "code": "I2",
+      "status": "INFO",
+      "title": "이미지 역할 표기",
+      "detail": "짝 제품이라 Main에는 송신기(TX), Other(기타)에는 수신기(RX) 사진을 넣었다. 각 이미지의 alt·note에 TX/RX를 적었다."
+    }
+  ]
+}

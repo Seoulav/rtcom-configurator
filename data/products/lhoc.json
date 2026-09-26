@@ -1,0 +1,220 @@
+{
+  "id": "lhoc",
+  "group": "cable",
+  "manufacturer": "RTCOM",
+  "productName": "LHOC",
+  "model": "LHOC",
+  "series": "Locking High Speed HDMI Active Optical Pluggable Cable",
+  "seriesNote": "카탈로그는 LHOC 시리즈로 소개한다.",
+  "itemType": "PRODUCT",
+  "categories": [
+    "영상",
+    "Video",
+    "Active Optical Cable"
+  ],
+  "english": "Locking pluggable HDMI 2.0b active optical cable, 4K60 4:4:4 HDR, 18Gbps, up to 100m",
+  "korean": "잠금형 분리 커넥터를 갖춘 최대 100m 4K 60Hz 4:4:4 HDR HDMI 2.0b 액티브 광케이블이다.",
+  "catalogPages": "44",
+  "verificationSummary": "알티컴 종합 카탈로그(2026-03) 44쪽의 소개·주요기능·제품사양·제품 이미지에서 확인했다.",
+  "packageStatus": "REVIEW REQUIRED",
+  "overview": "LHOC 시리즈는 Ultra HD 4K 60Hz 4:4:4 HDR과 Dolby Vision을 지원하며 최대 100m를 전송할 수 있는 Active Optical Cable이다. 광통신 기술로 강화된 LHOC는 18Gbps의 대역폭과 HDMI 2.0b 기능을 완벽하게 지원한다.\n\nUltimate High Retention Locking HDMI라고 하는 특허 기술로 약 10kg의 인장력을 가지고 있어 HDMI 케이블 사용 시의 불안 요소를 해소한다. 또한 커넥터를 분리하여 배관 사이즈 최소 20mm까지 적용할 수 있어 쉽게 포설할 수 있다.",
+  "images": [
+    {
+      "role": "Main",
+      "file": "lhoc-main.webp",
+      "alt": "RTCOM LHOC 제품 사진",
+      "note": "Main · 카탈로그 제품 사진",
+      "provider": "RTCOM",
+      "model": "LHOC",
+      "source": "C",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "616×579"
+    }
+  ],
+  "imageStatuses": [
+    {
+      "role": "Main",
+      "status": "FOUND"
+    },
+    {
+      "role": "Front",
+      "status": "MISSING"
+    },
+    {
+      "role": "Rear",
+      "status": "MISSING"
+    },
+    {
+      "role": "Perspective",
+      "status": "MISSING"
+    }
+  ],
+  "documents": [
+    {
+      "type": "Catalog",
+      "status": "FOUND",
+      "title": "알티컴 종합 카탈로그 2026 (국문)",
+      "language": "ko",
+      "note": "44쪽"
+    }
+  ],
+  "features": [
+    {
+      "text": "High Speed HDMI Active Optical Cable",
+      "source": "C"
+    },
+    {
+      "text": "지원 해상도: 4K60@Hz 4:4:4 UHD HDR, Dolby Vision, 3D Deep Color",
+      "source": "C"
+    },
+    {
+      "text": "전송속도는 최대 18Gbps다.",
+      "source": "C"
+    },
+    {
+      "text": "Audio: PCM 8-channel, Dolby Atmos, Dolby Digital True HD and DTS-HD Master Audio",
+      "source": "C"
+    },
+    {
+      "text": "일반 동축케이블에 비해 얇고, 유연하고 가볍다.",
+      "source": "C"
+    },
+    {
+      "text": "쉽게 설치한다(Plug and Play).",
+      "source": "C"
+    },
+    {
+      "text": "추가 전원공급이 필요 없다.",
+      "source": "C"
+    },
+    {
+      "text": "플래넘 타입 케이블이다.",
+      "source": "C"
+    },
+    {
+      "text": "케이블 길이는 최대 100m다.",
+      "source": "C"
+    },
+    {
+      "text": "Pull up 저항력: 19.46lbs / 86.59 Newtons / 8.83Kg",
+      "source": "C"
+    }
+  ],
+  "specifications": [
+    {
+      "group": "Video",
+      "name": "지원 해상도",
+      "value": "최대 4K 60Hz",
+      "unit": "",
+      "condition": "4:4:4",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "비디오 대역폭",
+      "value": "18",
+      "unit": "Gbps",
+      "condition": "최대",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "General",
+      "name": "지원",
+      "value": "HDMI2.0b, HDCP 2.2, EDID, HDMI-CEC 지원",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "name": "케이블 길이",
+      "value": "100",
+      "unit": "m",
+      "condition": "최대",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "name": "전압",
+      "value": "DC 5V",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "name": "파워",
+      "value": "0.25",
+      "unit": "W",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Environment",
+      "name": "작동 가능 온도",
+      "value": "0~50",
+      "unit": "℃",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Environment",
+      "name": "작동 가능 습도",
+      "value": "5~85",
+      "unit": "%",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "Pull up 저항력",
+      "value": "8.83",
+      "unit": "kg",
+      "condition": "19.46lbs / 86.59 Newtons. 소개문은 약 10kg 인장력",
+      "source": "C",
+      "verification": "REVIEW REQUIRED"
+    },
+    {
+      "group": "Physical",
+      "name": "배관 사이즈",
+      "value": "20",
+      "unit": "mm",
+      "condition": "커넥터 분리 시 최소",
+      "source": "C",
+      "verification": "VERIFIED"
+    }
+  ],
+  "io": [],
+  "related": [],
+  "sources": [
+    {
+      "code": "C",
+      "name": "알티컴 종합 카탈로그 2026 (국문)",
+      "page": "44",
+      "scope": "제조사 공식 출처"
+    }
+  ],
+  "issues": [
+    {
+      "code": "R1",
+      "status": "REVIEW REQUIRED",
+      "title": "인장력 표기 불일치",
+      "detail": "소개문은 Ultimate High Retention Locking 기술로 \"약 10kg의 인장력\"을 가진다고 적었으나 주요기능의 Pull up 저항력은 8.83Kg(86.59 Newtons)이다. 두 값의 측정 기준이 다른지 확인이 필요하며 값은 각각 원문을 유지했다."
+    },
+    {
+      "code": "I1",
+      "status": "INFO",
+      "title": "이미지 출처",
+      "detail": "카탈로그 쪽에 실린 래스터 제품 사진을 220dpi로 발췌했다. 원본 해상도가 낮아 확대 시 흐릴 수 있다."
+    }
+  ]
+}
