@@ -1,6 +1,6 @@
 # RTCOM Matrix Configurator
 
-**현재 버전: 0.8** · XDM·SPX·VDM 매트릭스의 프레임과 카드 슬롯을 구성하는 내부 검토용 도구입니다.
+**현재 버전: 0.9** · XDM·SPX·VDM 매트릭스의 프레임과 카드 슬롯을 구성하는 내부 검토용 도구입니다.
 
 프레임을 고르고 실제 슬롯 위치에 입력·출력 카드를 장착한 뒤, 전송기와 BOM을 검토하고 JSON·CSV·인쇄 보고서로 내보냅니다. 제품 소개·검색 정보는 [AV Portal](https://seoulav.github.io/AV-Portal/)에서 제공하므로 0.7부터 이 사이트는 구성기만 담당합니다. 실제 슬롯·설치 허용표와 전원·케이블 조건은 확정 전이며, 모든 내보내기는 `UNVERIFIED_DRAFT`로 표시합니다.
 
@@ -28,6 +28,7 @@ Node.js가 설치된 환경에서 `node scripts/serve.cjs` 후 http://127.0.0.1:
 - XDM 매뉴얼 기준으로 XDM-12/20/36/72/144/216의 입력·출력 슬롯 수와 좌우·상하 배치를 적용하며 각 카드를 4채널로 계산.
 - XDM-12/20/36/72/144는 매뉴얼의 실제 후면 사진을 모델별로 표시.
 - 빈 슬롯을 누르면 방향에 맞는 카드만 표시하고, 선택한 카드의 카탈로그 이미지를 슬롯에 즉시 반영.
+- HDBaseT 카드(CIS100·COS100)를 장착하면 XDM-CTR100(TX/RX), 광 카드(FIS100·FOS100)를 장착하면 XDM-FT101·FR101이 4채널분 자동으로 연결됩니다. 전송기 단계에서 벽부형 CT103·CR103으로 바꾸거나 채널 수를 줄일 수 있고, 연동 전송기 라인업을 사진과 함께 확인할 수 있습니다.
 - 모델·슬롯 방향·카드·전송 장비 수량 검증 및 불러오기 실패 시 기존 구성 보존.
 - 포트에 배정된 TX/RX를 모델별 BOM 수량으로 합산.
 - UTF-8 BOM CSV, 버전이 있는 JSON, 인쇄 / PDF 저장용 보고서.
@@ -65,6 +66,7 @@ Node.js가 설치된 환경에서 `node scripts/serve.cjs` 후 http://127.0.0.1:
 - `scripts/package-site.cjs`: 정적 배포 패키지 생성.
 - `scripts/e2e-smoke.cjs`: 배포본 브라우저 검사.
 - `scripts/tools/prepare_xdm_images.py`: 사용자 제공 XDM 카드 판넬·XDM-12 전면 원본 사진을 웹용 WebP로 가공(Pillow 필요, 원본은 저장소에 넣지 않음).
+- `scripts/tools/extract_catalog_extenders.py`: 종합 카탈로그 PDF에서 XDM 연동 전송기 사진 추출(pymupdf, Pillow 필요).
 - `scripts/tools/extract_manual_frames.py`: XDM 국문 매뉴얼 PDF에서 프레임 전면·후면 사진을 추출(pymupdf, Pillow 필요).
 - `tests/`: 핵심 로직과 사이트 구성 테스트.
 

@@ -63,6 +63,14 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('장착한 판넬 이미지가 정상 로드됨',await page.$$eval('.rt-rack-slot-filled img.rt-faceplate',images=>images.every(image=>image.naturalWidth>0)));
     check('구성 요약에 장착 카드가 표시됨',await page.locator('.rt-config-summary li').count()===2);
     check('XDM-144 후면 사진 위에 슬롯이 표시되고 사진이 정상 로드됨',await page.locator('.rt-rack-photo .rt-rack-slot').count()===72&&await page.$eval('.rt-rack-photo-image',image=>image.naturalWidth>0));
+    await page.locator('button[data-slot="in-2"]').click();
+    await page.locator('.rt-card-modal .rt-card-choice[data-card="XDM-CIS100"]').click();
+    await page.click('[data-action="next"]');
+    await page.waitForLoadState('networkidle');
+    check('CIS100 장착 시 전송기 단계에 XDM-CTR100(TX)이 4채널로 자동 연결됨',await page.locator('button[data-owner="in-2"][data-link-device="XDM-CTR100 · TX"][aria-pressed="true"]').count()===1&&await page.locator('select[data-owner="in-2"][data-link="count"]').inputValue()==='4');
+    check('전송기 단계에 XDM 연동 전송기 라인업 6종이 사진과 함께 표시됨',await page.locator('.rt-ext-lineup-card img').count()===6&&await page.$$eval('.rt-ext-lineup-card img',images=>images.every(image=>image.naturalWidth>0)));
+    await page.click('[data-action="back"]');
+    await page.waitForLoadState('networkidle');
     const broken=await brokenImages();
     check('깨진 이미지 없음',broken.length===0,broken.join(', '));
     check('주소가 바뀌지 않음(상대경로 이미지 보호)',page.url()===home,page.url());
@@ -70,7 +78,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('390px 화면에서 페이지 가로 넘침 없음',overflow<=0,`${overflow}px`);
 
     await page.reload({waitUntil:'networkidle'});
-    check('새로고침 후 자동 저장 복원',await page.locator('.rt-rack-slot-filled img.rt-faceplate').count()===placed);
+    check('새로고침 후 자동 저장 복원',await page.locator('.rt-rack-slot-filled img.rt-faceplate').count()===placed+1);
 
     for(const legacy of ['tools/matrix-configurator/','products/','tools/matrix-configurator']){
       await page.goto(`${home}${legacy}#matrix-configurator`,{waitUntil:'networkidle'});

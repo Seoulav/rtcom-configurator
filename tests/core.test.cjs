@@ -122,3 +122,28 @@ test('CSV contains draft status, combined quantities and accessory limitation',(
   const csv=core.csv(configured());
   assert.match(csv,/UNVERIFIED_DRAFT/);assert.match(csv,/"XDM-CTR100","5"/);assert.match(csv,/"전원 장비"/);assert.match(csv,/기본 포함품 미확정/);
 });
+
+test('HDBaseT and fiber cards default to their catalog paired extenders',()=>{
+  assert.deepEqual(core.defaultLink('XDM-CIS100',4),{device:'XDM-CTR100 · TX',count:4,distance:'30'});
+  assert.deepEqual(core.defaultLink('XDM-COS100',4),{device:'XDM-CTR100 · RX',count:4,distance:'30'});
+  assert.deepEqual(core.defaultLink('XDM-FIS100',4),{device:'XDM-FT101',count:4,distance:'30'});
+  assert.deepEqual(core.defaultLink('XDM-FOS100',4),{device:'XDM-FR101',count:4,distance:'30'});
+  for(const id of ['XDM-HI100','XDM-HOS100','XDM-SIS100','XDM-WOS100'])assert.equal(core.defaultLink(id,4),null);
+  for(const id of ['XDM-CIS100','XDM-COS100','XDM-FIS100','XDM-FOS100'])assert.ok(core.choices(id).includes(core.defaultLink(id,4).device),`${id} default must be a selectable choice`);
+  const state={...core.initial(),model:'XDM-12',placements:{'in-1':'XDM-CIS100','out-1':'XDM-FOS100'},links:{'in-1':core.defaultLink('XDM-CIS100',4),'out-1':core.defaultLink('XDM-FOS100',4)}};
+  state.portAssignments=core.syncPorts(state);
+  const bom=Object.fromEntries(core.bom(state).map(row=>[row.model,row.quantity]));
+  assert.equal(bom['XDM-CTR100'],4);
+  assert.equal(bom['XDM-FR101'],4);
+});
+
+test('CTR100 linked to matrix cards needs its own power and cannot use CTR100 PSE',()=>{
+  const state=configured();
+  const issue=core.validate(state).issues.find(item=>item.code==='CTR_POWER_REQUIRED');
+  assert.ok(issue);
+  assert.match(issue.message,/전원을 직접 연결/);
+  assert.match(issue.message,/CTR100 PSE를 사용할 수 없습니다/);
+  const power=core.bom(state).find(row=>row.category==='전원 장비');
+  assert.match(power.model,/XDM-CTR100 전원 공급 장비/);
+  assert.equal(core.bom(state).some(row=>row.model==='XDM-CTR100 PSE'),false);
+});
