@@ -136,8 +136,9 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-summary-meter b{color:#1f2532}
 #rtcom-design .rt-summary-meter i{display:block;height:7px;border-radius:99px;background:linear-gradient(90deg,#3978ee var(--rt-fill),#e7edf6 var(--rt-fill))}
 #rtcom-design .rt-config-summary ul{display:grid;gap:7px;margin:0;padding:0;list-style:none}
-#rtcom-design .rt-config-summary li{display:grid;grid-template-columns:62px minmax(0,1fr) auto;align-items:center;gap:9px;padding:7px 9px;border-radius:12px;background:#f5f8fc}
-#rtcom-design .rt-config-summary li img{width:62px;height:auto;border-radius:2px}
+/* 구성 요약의 카드 판넬은 목록 폭에 꽉 차게 크게 보여 주고, 이름·신호·수량은 그 아래 한 줄에 둔다. */
+#rtcom-design .rt-config-summary li{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px 10px;padding:10px;border-radius:12px;background:#f5f8fc}
+#rtcom-design .rt-config-summary li img{grid-column:1/-1;display:block;width:100%;height:auto;border-radius:3px}
 #rtcom-design .rt-config-summary li strong{display:block;font-size:12px}
 #rtcom-design .rt-config-summary li small{display:block;overflow:hidden;color:var(--rt-muted);font-size:10px;text-overflow:ellipsis;white-space:nowrap}
 #rtcom-design .rt-config-summary li b{color:#2f63c8;font-size:13px}
@@ -256,3 +257,6 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-rack-photo .rt-rack-slot{aspect-ratio:auto}
 /* 터치 기기의 버튼 최소 높이(44px)가 사진·도면 슬롯에 적용되면 슬롯이 겹친다. 슬롯은 사진 속 판넬 크기를 따른다. */
 @media(pointer:coarse){#rtcom-design .rt-rack .rt-rack-slot,#rtcom-design .rt-rack-photo .rt-rack-slot{min-height:0}}
+/* 장착한 카드 판넬은 포트가 모두 보여야 한다. 슬롯 번호표가 첫 포트를 가리므로 장착 슬롯에서는 숨기고, 마우스를 올리거나 키보드로 선택하면 보인다. */
+#rtcom-design .rt-rack-slot-filled .rt-rack-slot-no{opacity:0;transition:opacity .15s}
+#rtcom-design .rt-rack-slot-filled:hover .rt-rack-slot-no,#rtcom-design .rt-rack-slot-filled:focus-visible .rt-rack-slot-no{opacity:1}

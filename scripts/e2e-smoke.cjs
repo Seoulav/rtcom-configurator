@@ -63,12 +63,16 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('카드 선택 후 팝업이 닫히고 슬롯에 실물 판넬 이미지 표시',placed===2&&await page.locator('.rt-card-modal').count()===0,`${placed}개`);
     check('장착한 판넬 이미지가 정상 로드됨',await page.$$eval('.rt-rack-slot-filled img.rt-faceplate',images=>images.every(image=>image.naturalWidth>0)));
     check('구성 요약에 장착 카드가 표시됨',await page.locator('.rt-config-summary li').count()===2);
+    check('구성 요약의 카드 판넬이 목록 폭에 맞춰 크게 표시됨',await page.$$eval('.rt-config-summary li',items=>items.every(item=>{const image=item.querySelector('img').getBoundingClientRect(),box=item.getBoundingClientRect();return image.width>=box.width*0.85})));
     check('XDM-144 후면 사진 위에 슬롯이 표시되고 사진이 정상 로드됨',await page.locator('.rt-rack-photo .rt-rack-slot').count()===72&&await page.$eval('.rt-rack-photo-image',image=>image.naturalWidth>0));
     await page.locator('button[data-slot="in-2"]').click();
     await page.locator('.rt-card-modal .rt-card-choice[data-card="XDM-CIS100"]').click();
     await page.click('[data-action="next"]');
     await page.waitForLoadState('networkidle');
     check('CIS100 장착 시 전송기 단계에 XDM-CTR100(TX)이 4채널로 자동 연결됨',await page.locator('button[data-owner="in-2"][data-link-device="XDM-CTR100 · TX"][aria-pressed="true"]').count()===1&&await page.locator('select[data-owner="in-2"][data-link="count"]').inputValue()==='4');
+    // 라인업 사진은 지연 로딩(loading=lazy)이라 화면에 보이도록 스크롤한 뒤 로딩이 끝나기를 기다린다.
+    await page.locator('.rt-ext-lineup').scrollIntoViewIfNeeded();
+    await page.waitForFunction(()=>[...document.querySelectorAll('.rt-ext-lineup-card img')].every(image=>image.complete&&image.naturalWidth>0),null,{timeout:10000}).catch(()=>{});
     check('전송기 단계에 XDM 연동 전송기 라인업 6종이 사진과 함께 표시됨',await page.locator('.rt-ext-lineup-card img').count()===6&&await page.$$eval('.rt-ext-lineup-card img',images=>images.every(image=>image.naturalWidth>0)));
     await page.locator('button[data-owner="in-1"][data-link-device="XDM-CTR100 PSE + XDM-CTR100"]').click();
     check('HDMI 카드에 CTR100 PSE + CTR100 한 쌍을 연결할 수 있고 CTR100 전원 경고 수에는 포함되지 않음',await page.locator('button[data-owner="in-1"][data-link-device="XDM-CTR100 PSE + XDM-CTR100"][aria-pressed="true"]').count()===1&&/XDM-CTR100 4대/.test(await page.locator('.rt-power-notice strong').innerText()));
@@ -98,6 +102,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('사진 슬롯 영역은 사진 높이 기준으로 배치됨(출력 영역 아래 끝 = 사진 677/772 지점)',await page.evaluate(()=>{const image=document.querySelector('.rt-rack-photo-image').getBoundingClientRect(),zone=document.querySelector('.rt-rack-zone-output').getBoundingClientRect();return Math.abs((zone.bottom-image.top)/image.height-677/772)<0.005}));
     await page.locator('button[data-slot="out-1"]').click();
     await page.locator('.rt-card-modal .rt-card-choice[data-card="SPX-COS12"]').click();
+    await page.mouse.move(2,2);
+    await page.evaluate(()=>document.activeElement?.blur());
+    check('장착한 카드 판넬 위의 슬롯 번호표는 숨겨져 첫 포트를 가리지 않음(빈 슬롯 번호표는 표시)',await page.evaluate(()=>{const filled=[...document.querySelectorAll('.rt-rack-slot-filled .rt-rack-slot-no')],blank=[...document.querySelectorAll('.rt-rack-slot-blank .rt-rack-slot-no')];return filled.length>0&&filled.every(label=>getComputedStyle(label).opacity==='0')&&blank.length>0&&blank.every(label=>getComputedStyle(label).opacity!=='0')}));
     await page.click('[data-action="next"]');
     check('SPX-COS12 장착 시 SPX-RX가 12채널로 자동 연결됨',await page.locator('button[data-owner="out-1"][data-link-device="SPX-RX"][aria-pressed="true"]').count()===1&&await page.locator('select[data-owner="out-1"][data-link="count"]').inputValue()==='12');
     await page.evaluate(()=>localStorage.clear());
