@@ -204,4 +204,17 @@ test('SPX frames expose documented slot plans, migrate logical slots and link CO
   assert.ok(issues.some(issue=>issue.code==='SLOT_LAYOUT'&&issue.level==='VALID'));
   assert.ok(issues.some(issue=>issue.code==='SPX_RX_POC'&&/POC/.test(issue.message)));
   assert.equal(Object.fromEntries(core.bom(state).map(row=>[row.model,row.quantity]))['SPX-RX'],12);
+  assert.ok(!issues.some(issue=>issue.code==='SPX_PORT_SPLIT'),'M3236 uses every port of a 12-port card independently');
+});
+
+test('SPX-M810 and M1620 warn that ports 11-12 of HOS12/COS12 mirror output 10',()=>{
+  for(const model of ['SPX-M810','SPX-M1620']){
+    const state={...core.initial(),family:'SPX',model,placements:{'in-1':'SPX-HIS8','out-1':'SPX-HOS12'},links:{}};
+    state.portAssignments=core.syncPorts(state);
+    const split=core.validate(state).issues.find(issue=>issue.code==='SPX_PORT_SPLIT');
+    assert.ok(split&&split.level==='WARNING'&&/11·12번 포트/.test(split.message)&&/p\.11/.test(split.evidence),model);
+  }
+  const hos10={...core.initial(),family:'SPX',model:'SPX-M810',placements:{'out-1':'SPX-HOS10'},links:{}};
+  hos10.portAssignments=core.syncPorts(hos10);
+  assert.ok(!core.validate(hos10).issues.some(issue=>issue.code==='SPX_PORT_SPLIT'),'HOS10 has only 10 ports');
 });

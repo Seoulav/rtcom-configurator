@@ -1,6 +1,6 @@
 """SPX 카탈로그(스캔 PDF) 4쪽에서 SPX 카드 판넬을 잘라 WebP로 저장하고, SPX 블랭크 커버를 합성한다.
 
-사용자 제공 고해상도 SPX 후면 사진을 받으면 그 사진에서 다시 자르는 것이 좋다(현재는 임시 자산).
+0.11부터 SPX 매뉴얼 기반 extract_spx_manual_assets.py가 카드 판넬을 대체한다. blank_from()은 그 스크립트가 재사용한다.
 카탈로그 원본은 저장소에 넣지 않는다(.source-materials/는 .gitignore 대상).
 사용법: python3 scripts/tools/extract_spx_catalog_cards.py <SPX 카탈로그 PDF>
 필요 패키지: pymupdf, Pillow
@@ -31,12 +31,12 @@ def load_faceplate_band():
     return module.faceplate_band
 
 
-def blank_from(source):
-    """HIS8 판넬의 나사 끝부분과 나사·포트 사이 금속면으로 빈 슬롯 커버를 만든다."""
+def blank_from(source, scale=1.0):
+    """HIS8 판넬의 나사 끝부분과 나사·포트 사이 금속면으로 빈 슬롯 커버를 만든다. scale은 판넬 폭 816 기준 배율."""
     source = source.convert('RGBA')
     width, height = source.size
-    end_width = 52
-    metal = source.crop((44, 0, 62, height)).convert('RGB')
+    end_width = round(52 * scale)
+    metal = source.crop((round(44 * scale), 0, round(62 * scale), height)).convert('RGB')
     pixels = metal.load()
     rows = [tuple(sum(pixels[x, y][c] for x in range(metal.width)) // metal.width for c in range(3)) for y in range(height)]
     plate = Image.new('RGB', (width, height))

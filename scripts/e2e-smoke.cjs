@@ -100,6 +100,15 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('SPX-COS12 장착 시 SPX-RX가 12채널로 자동 연결됨',await page.locator('button[data-owner="out-1"][data-link-device="SPX-RX"][aria-pressed="true"]').count()===1&&await page.locator('select[data-owner="out-1"][data-link="count"]').inputValue()==='12');
     await page.evaluate(()=>localStorage.clear());
     await page.goto(home,{waitUntil:'networkidle'});
+    await page.click('button[data-family="SPX"]');
+    await page.click('[data-action="next"]');
+    check('SPX 섀시 5종 모두 매뉴얼 전면 사진이 표시됨',await page.$$eval('.rt-chassis-card img',images=>images.length===5&&images.every(image=>image.getAttribute('src').includes('/frames/spx-'))));
+    await page.click('button[data-model="SPX-M2472"]');
+    await page.click('[data-action="next"]');
+    await page.waitForLoadState('networkidle');
+    check('SPX-M2472는 매뉴얼 후면 사진 위 세로 슬롯(입력 3·출력 6)으로 표시됨',await page.locator('.rt-rack-photo.rt-rack-vs .rt-rack-zone-input .rt-rack-slot').count()===3&&await page.locator('.rt-rack-photo.rt-rack-vs .rt-rack-zone-output .rt-rack-slot').count()===6&&await page.$eval('.rt-rack-photo-image',image=>image.naturalWidth>0));
+    await page.evaluate(()=>localStorage.clear());
+    await page.goto(home,{waitUntil:'networkidle'});
     await page.click('button[data-family="VDM"]');
     await page.click('[data-action="next"]');
     await page.click('button[data-model="VDM-16X"]');
