@@ -8,6 +8,7 @@
 - 공개 배포: `hkkim0454/rtcom-av-design`
 - 두 저장소는 공통 Git 조상이 없습니다. `git merge --allow-unrelated-histories`를 사용하지 않습니다.
 - 원본 소스의 검증된 build 산출물만 공개 배포 저장소로 이식합니다.
+- 브로셔 수준 알티컴 제품정보의 원본은 이 저장소입니다. 비공개 AV Portal은 이 저장소의 공개 데이터를 읽기만 하며, 단가·노하우 등 회사 내부 정보는 이 저장소에 넣지 않습니다(`docs/audit/SITE_SCOPE_REVIEW.md` §9, 2026-09-26 결정).
 
 ## 작업 순서
 
