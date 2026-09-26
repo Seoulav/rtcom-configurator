@@ -44,7 +44,7 @@ test('every XDM card and documented rear photo has an image asset',()=>{
   for(const model of ['m810','m1620','m3236','m2472','m24120'])for(const side of ['front','rear'])assert.ok(fs.existsSync(`output/design/assets/frames/spx-${model}-${side}.webp`),`missing SPX ${model} ${side} photo`);
   for(const card of [...catalog.SPX.input,...catalog.SPX.output])assert.ok(fs.existsSync(`output/design/assets/cards/${card[0]}.webp`),`missing SPX faceplate for ${card[0]}`);
   const extenders=[...new Set([...read('src/app.js').matchAll(/'(output\/design\/assets\/extenders\/[^']+)'/g)].map(match=>match[1]))];
-  assert.equal(extenders.length,6);
+  assert.equal(extenders.length,10,'XDM 6 + VDM 4 extender photos');
   for(const extender of extenders)assert.ok(fs.existsSync(extender),`missing extender photo ${extender}`);
   assert.match(read('src/app.js'),/const blankPlate='output\/design\/assets\/cards\/XDM-BLANK\.webp'/);
   const frames=[...read('src/app.js').matchAll(/'(output\/design\/assets\/frames\/[^']+)'/g)].map(match=>match[1]);

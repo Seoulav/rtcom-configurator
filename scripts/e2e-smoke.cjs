@@ -118,6 +118,10 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     const onChassis=await page.locator('.rt-step[aria-current="step"]').getAttribute('data-jump')==='1';
     await page.goForward();
     check('뒤로가기·앞으로가기로 이전·다음 단계를 오가며 주소는 바뀌지 않음',onChassis&&await page.locator('.rt-step[aria-current="step"]').getAttribute('data-jump')==='2'&&page.url()===cardsUrl);
+    let asked='';
+    page.once('dialog',dialog=>{asked=dialog.message()});
+    await page.click('.rt-brand-lockup');
+    check('로고를 누르면 확인 창 뒤 첫 화면(제품군)으로 이동하고 구성은 유지됨',/처음 화면/.test(asked)&&await page.locator('.rt-step[aria-current="step"]').getAttribute('data-jump')==='0'&&await page.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.model)==='XDM-12'&&page.url()===cardsUrl);
     const missing=await page.goto(home+'no-such-page/deep',{waitUntil:'networkidle'});
     check('사이트 안의 없는 주소는 404.html이 구성기 첫 화면으로 보냄',missing&&page.url()===home&&await page.locator('#matrix-configurator').count()===1);
     await page.evaluate(()=>localStorage.clear());
@@ -141,6 +145,15 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.locator('button[data-slot="in-1"]').click();
     await page.locator('.rt-card-modal .rt-card-choice[data-card="HIS4-U"]').click();
     check('VDM 보드를 장착하면 실물 판넬 사진이 표시됨',await page.$eval('button[data-slot="in-1"] img.rt-faceplate',image=>image.naturalWidth>0&&image.getAttribute('src').endsWith('HIS4-U.webp')));
+    await page.locator('button[data-slot="in-2"]').click();
+    await page.locator('.rt-card-modal .rt-card-choice[data-card="CIS4-U"]').click();
+    await page.locator('button[data-slot="out-1"]').click();
+    await page.locator('.rt-card-modal .rt-card-choice[data-card="FOS4-U"]').click();
+    await page.click('[data-action="next"]');
+    await page.locator('.rt-ext-lineup').scrollIntoViewIfNeeded();
+    await page.waitForFunction(()=>[...document.querySelectorAll('.rt-ext-lineup-card img')].every(image=>image.complete&&image.naturalWidth>0),null,{timeout:10000}).catch(()=>{});
+    check('VDM CIS4-U·FOS4-U 장착 시 CT104-U·FR101-U가 4채널로 자동 연결되고 VDM 전송기 라인업 4종이 표시됨',await page.locator('button[data-owner="in-2"][data-link-device="CT104-U"][aria-pressed="true"]').count()===1&&await page.locator('button[data-owner="out-1"][data-link-device="FR101-U"][aria-pressed="true"]').count()===1&&await page.locator('select[data-owner="in-2"][data-link="count"]').inputValue()==='4'&&await page.$$eval('.rt-ext-lineup-card img',images=>images.length===4&&images.every(image=>image.naturalWidth>0)));
+    await page.click('[data-action="back"]');
     await page.click('[data-action="back"]');
     await page.click('button[data-model="VDM-256X"]');
     await page.click('[data-action="next"]');

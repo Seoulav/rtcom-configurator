@@ -35,11 +35,13 @@
   // HDMI 카드 연장용 한 쌍: PSE 쪽에만 전원을 연결하면 CTR100은 전원 불필요(사용자 확인 2026-09-26). 두 제품 모두 DIP 스위치로 TX/RX 설정.
   const psePair = 'XDM-CTR100 PSE + XDM-CTR100';
   function choices(id) {
-    return ({'XDM-HI100':[psePair],'XDM-HIS100':[psePair],'XDM-HOS100':[psePair],'XDM-WOS100':[psePair],'XDM-CIS100':['XDM-CTR100 · TX','XDM-CT103'],'XDM-COS100':['XDM-CTR100 · RX','XDM-CR103'],'XDM-FIS100':['XDM-FT101'],'XDM-FOS100':['XDM-FR101'],'SPX-COS12':['SPX-RX']})[id] || [];
+    return ({'XDM-HI100':[psePair],'XDM-HIS100':[psePair],'XDM-HOS100':[psePair],'XDM-WOS100':[psePair],'XDM-CIS100':['XDM-CTR100 · TX','XDM-CT103'],'XDM-COS100':['XDM-CTR100 · RX','XDM-CR103'],'XDM-FIS100':['XDM-FT101'],'XDM-FOS100':['XDM-FR101'],'SPX-COS12':['SPX-RX'],'CIS4-U':['CT104-U'],'COS4-U':['CR104-U'],'FIS4-U':['FT101-U'],'FOS4-U':['FR101-U']})[id] || [];
   }
   // 카드를 장착할 때 자동으로 연결하는 전송기(RTCom 종합 카탈로그 p.10·12 호환 표기 근거). 사용자는 전송기 단계에서 바꿀 수 있다.
   const spxSplitCards = ['SPX-HOS12','SPX-COS12'];
-  const defaultLinks = {'SPX-COS12':'SPX-RX','XDM-CIS100':'XDM-CTR100 · TX','XDM-COS100':'XDM-CTR100 · RX','XDM-FIS100':'XDM-FT101','XDM-FOS100':'XDM-FR101'};
+  const defaultLinks = {'SPX-COS12':'SPX-RX','XDM-CIS100':'XDM-CTR100 · TX','XDM-COS100':'XDM-CTR100 · RX','XDM-FIS100':'XDM-FT101','XDM-FOS100':'XDM-FR101',
+    // VDM 카드-전송기 호환(사용자 확인 2026-09-26, 알티컴 홈페이지 VDM EXTENDER 게시판): CIS4-U↔CT104-U, COS4-U↔CR104-U, FIS4-U↔FT101-U, FOS4-U↔FR101-U
+    'CIS4-U':'CT104-U','COS4-U':'CR104-U','FIS4-U':'FT101-U','FOS4-U':'FR101-U'};
   function defaultLink(id, channels) {
     const device = defaultLinks[id];
     return device && choices(id).includes(device) ? {device,count:channels,distance:'30'} : null;
@@ -189,7 +191,7 @@
       if (!choices(id).length) add('LINK_UNKNOWN_'+slot,'UNVERIFIED',`${id}: 개별 카드와 전송기의 호환 관계를 확인해야 합니다.`,'G06');
       else if (!link?.device||!link.count) add('LINK_UNUSED_'+slot,'VALID',`${id}: 원격 연결이 지정되지 않은 예비 포트는 오류가 아닙니다.`);
       else {
-        add('LINK_DOCUMENTED_'+slot,'VALID',`${id} → ${link.device}, ${link.count}대: 카탈로그에 연결 관계가 명시되어 있습니다.`,state.family==='SPX'?'E12':'E05 · E07 · E09');
+        add('LINK_DOCUMENTED_'+slot,'VALID',state.family==='VDM'?`${id} → ${link.device}, ${link.count}대: 호환 전송기입니다.`:`${id} → ${link.device}, ${link.count}대: 카탈로그에 연결 관계가 명시되어 있습니다.`,state.family==='SPX'?'E12':state.family==='VDM'?'사용자 확인(2026-09-26) · 알티컴 홈페이지 VDM EXTENDER · U09':'E05 · E07 · E09');
         add('LINK_CONDITIONS_'+slot,'UNVERIFIED',`${id}: 전원과 부속품 조건은 미검증입니다.`,'G08 · G09');
       }
     }
