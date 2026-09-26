@@ -180,9 +180,10 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-rack-photo-zones{position:absolute;left:0;top:0;width:100%;aspect-ratio:var(--rt-photo-ratio)}
 #rtcom-design .rt-rack-zone{position:absolute}
 #rtcom-design .rt-rack-photo .rt-rack-grid{height:100%;gap:1px;grid-template-rows:repeat(var(--rt-rack-zone-rows),minmax(0,1fr))}
-#rtcom-design .rt-rack-photo .rt-rack-slot{aspect-ratio:auto;height:100%;border:1px solid #0f1318;border-radius:2px;background:linear-gradient(90deg,#2d323a,#23282f 50%,#2d323a)}
+/* 사진·도면 슬롯은 테두리 없이 판넬이 슬롯을 꽉 채운다(1px 테두리가 휴대폰의 좁은 세로 슬롯에서 판넬 좌우 끝을 가렸다). 강조는 안쪽 윤곽선으로 한다. */
+#rtcom-design .rt-rack-photo .rt-rack-slot{aspect-ratio:auto;height:100%;border:0;border-radius:0;background:linear-gradient(90deg,#2d323a,#23282f 50%,#2d323a)}
 #rtcom-design .rt-rack-photo.rt-rack-h .rt-rack-slot{background:linear-gradient(180deg,#2d323a,#23282f 50%,#2d323a)}
-#rtcom-design .rt-rack-photo .rt-rack-slot:hover{border-color:#76a2f6;background:#2b3a55}
+#rtcom-design .rt-rack-photo .rt-rack-slot:hover{outline:2px solid #76a2f6;outline-offset:-2px;background:#2b3a55}
 #rtcom-design .rt-rack-photo .rt-rack-slot-filled{background:#15191e}
 #rtcom-design .rt-rack-photo figcaption{margin-top:6px;color:#56627a;font-size:10px;font-weight:700;text-align:left}
 #rtcom-design .rt-rack-note{margin:10px 0 0;color:#56627a;font-size:11px}
