@@ -23,7 +23,7 @@ Node.js가 설치된 환경에서 `node scripts/serve.cjs` 후 http://127.0.0.1:
 ## 제공하는 기능
 
 - 제품군 → 섀시 → 카드 슬롯 → 전송기 → 검토 → 내보내기 6단계.
-- 섀시를 전면 사진 카드로 고르고, 후면 랙 그림의 빈 슬롯을 누르면 카드 선택 팝업이 열립니다. 장착한 슬롯에는 실제 카드 후면 판넬 사진이 들어가고, 오른쪽에 구성 요약(카드별 수량, 채널 사용량)이 표시됩니다.
+- 섀시를 전면 사진 카드로 고르고, 후면 랙 그림의 빈 슬롯을 누르면 카드 선택 팝업이 열립니다. XDM-12~144는 매뉴얼의 실제 후면 사진 위에 슬롯이 겹쳐 표시되며, 장착한 슬롯에는 실제 카드 후면 판넬 사진이 들어가고, 오른쪽에 구성 요약(카드별 수량, 채널 사용량)이 표시됩니다.
 - 브라우저 자동 저장, JSON 백업·복원, 최근 100회 실행 취소·다시 실행.
 - XDM 매뉴얼 기준으로 XDM-12/20/36/72/144/216의 입력·출력 슬롯 수와 좌우·상하 배치를 적용하며 각 카드를 4채널로 계산.
 - XDM-12/20/36/72/144는 매뉴얼의 실제 후면 사진을 모델별로 표시.
@@ -64,7 +64,8 @@ Node.js가 설치된 환경에서 `node scripts/serve.cjs` 후 http://127.0.0.1:
 - `scripts/serve.cjs`: 로컬 서버.
 - `scripts/package-site.cjs`: 정적 배포 패키지 생성.
 - `scripts/e2e-smoke.cjs`: 배포본 브라우저 검사.
-- `scripts/tools/prepare_xdm_images.py`: XDM 카드 판넬·프레임 원본 사진을 웹용 WebP로 가공(Pillow 필요, 원본은 저장소에 넣지 않음).
+- `scripts/tools/prepare_xdm_images.py`: 사용자 제공 XDM 카드 판넬·XDM-12 전면 원본 사진을 웹용 WebP로 가공(Pillow 필요, 원본은 저장소에 넣지 않음).
+- `scripts/tools/extract_manual_frames.py`: XDM 국문 매뉴얼 PDF에서 프레임 전면·후면 사진을 추출(pymupdf, Pillow 필요).
 - `tests/`: 핵심 로직과 사이트 구성 테스트.
 
 `scripts/build-from-draft.cjs`는 초기 이관에 사용한 스크립트입니다. 앱을 수정한 뒤 다시 실행하면 `src/app.js`, `src/styles.css`, `index.html`을 재생성하므로 일반 개발에는 필요하지 않습니다.

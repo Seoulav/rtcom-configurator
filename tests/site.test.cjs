@@ -35,8 +35,28 @@ test('every XDM card and documented rear photo has an image asset',()=>{
   const frames=[...read('src/app.js').matchAll(/'(output\/design\/assets\/frames\/[^']+)'/g)].map(match=>match[1]);
   assert.ok(frames.length>=2);
   for(const frame of frames)assert.ok(fs.existsSync(frame),`missing frame photo ${frame}`);
-  const photoPages=read('src/app.js').match(/photoPages=\{([^}]*)\}/)[1];
-  for(const [,model] of photoPages.matchAll(/'([^']+)':\d+/g))assert.ok(fs.existsSync(`output/design/assets/${model.toLowerCase()}-rear.jpg`),`missing rear photo for ${model}`);
+
+});
+
+test('rear photo slot zones stay inside each photo and match the card faceplate ratio',()=>{
+  const source=read('src/app.js');
+  const literal=source.slice(source.indexOf('const rearPhotos=')+'const rearPhotos='.length,source.indexOf('};',source.indexOf('const rearPhotos='))+1);
+  const rearPhotos=new Function(`return ${literal}`)();
+  const catalog=loadCatalog();
+  assert.deepEqual(Object.keys(rearPhotos),['XDM-12','XDM-20','XDM-36','XDM-72','XDM-144']);
+  const slotCount={'XDM-12':3,'XDM-20':5,'XDM-36':9,'XDM-72':18,'XDM-144':36};
+  for(const [model,photo] of Object.entries(rearPhotos)){
+    assert.ok(catalog.XDM.models.includes(model));
+    assert.ok(fs.existsSync(photo.src),`missing rear photo ${photo.src}`);
+    const [width,height]=photo.size;
+    const columns=model==='XDM-12'?1:Math.min(18,slotCount[model]),rows=slotCount[model]/columns;
+    for(const dir of ['input','output']){
+      const [x0,y0,x1,y1]=photo[dir];
+      assert.ok(x0>=0&&y0>=0&&x1<=width&&y1<=height&&x0<x1&&y0<y1,`${model} ${dir} zone must stay inside the photo`);
+      const slotWidth=(x1-x0)/columns,slotHeight=(y1-y0)/rows,ratio=model==='XDM-12'?slotWidth/slotHeight:slotHeight/slotWidth;
+      assert.ok(ratio>8.5&&ratio<11,`${model} ${dir} slot ratio ${ratio.toFixed(2)} should match a 9.7:1 faceplate`);
+    }
+  }
 });
 
 test('static package ships only configurator files and redirects legacy portal URLs',()=>{

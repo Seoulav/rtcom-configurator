@@ -60,9 +60,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('카드 선택 후 팝업이 닫히고 슬롯에 실물 판넬 이미지 표시',placed===2&&await page.locator('.rt-card-modal').count()===0,`${placed}개`);
     check('장착한 판넬 이미지가 정상 로드됨',await page.$$eval('.rt-rack-slot-filled img.rt-faceplate',images=>images.every(image=>image.naturalWidth>0)));
     check('구성 요약에 장착 카드가 표시됨',await page.locator('.rt-config-summary li').count()===2);
-    await page.locator('.rt-manual-ref summary').click();
-    await page.waitForFunction(()=>document.querySelector('.rt-manual-rear img')?.complete);
-    check('매뉴얼 후면 사진을 펼치면 정상 로드됨',await page.$eval('.rt-manual-rear img',image=>image.naturalWidth>0));
+    check('XDM-144 후면 사진 위에 슬롯이 표시되고 사진이 정상 로드됨',await page.locator('.rt-rack-photo .rt-rack-slot').count()===72&&await page.$eval('.rt-rack-photo-image',image=>image.naturalWidth>0));
     const broken=await brokenImages();
     check('깨진 이미지 없음',broken.length===0,broken.join(', '));
     check('주소가 바뀌지 않음(상대경로 이미지 보호)',page.url()===home,page.url());

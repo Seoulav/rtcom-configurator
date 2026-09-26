@@ -3,7 +3,7 @@
 원본은 저장소에 넣지 않는다(.source-materials/는 .gitignore 대상).
 사용법: python3 scripts/tools/prepare_xdm_images.py <원본 폴더>
   <원본 폴더>/in/*.png, out/*.png  : 카드 후면 판넬 사진 (파일 이름 = 카드 모델명)
-  <원본 폴더>/frame/XDM-12.png ... : 프레임 전면 사진
+  <원본 폴더>/frame/XDM-12.png     : 프레임 전면 사진 (XDM-12만 사용)
 결과: output/design/assets/cards/<모델>.webp, output/design/assets/frames/<모델>-front.webp
 필요 패키지: Pillow
 """
@@ -67,7 +67,8 @@ def main(source):
         plate = faceplate_band(Image.open(path))
         size = save_webp(plate, ROOT / 'output/design/assets/cards' / f'{path.stem}.webp', CARD_WIDTH)
         print(f'card  {path.stem:12} {size[0]}x{size[1]}')
-    for path in sorted((source / 'frame').glob('*.png')):
+    # 나머지 프레임 사진은 매뉴얼 PDF에서 가져온다(extract_manual_frames.py). 사용자 제공 사진 중 정면·고해상도인 XDM-12만 쓴다.
+    for path in sorted((source / 'frame').glob('XDM-12.png')):
         frame = Image.open(path).convert('RGBA')
         frame = frame.crop(frame.getchannel('A').getbbox())
         size = save_webp(frame, ROOT / 'output/design/assets/frames' / f'{path.stem.lower()}-front.webp', FRAME_WIDTH)
