@@ -111,12 +111,20 @@ test('empty and partly used slots produce no error',()=>{
   assert(result.issues.some(issue=>issue.code==='XDM_SLOT_LAYOUT'&&issue.level==='VALID'));
 });
 
-test('VDM Quad card remains two ports and unknown remote links stay unconfirmed',()=>{
+test('VDM Quad card remains two ports and VDM remote cards link to confirmed extenders',()=>{
   const state={...core.initial(),family:'VDM',model:'VDM-8X',placements:{'in-1':'CIS4-U','out-1':'QOS4S-U'}};
   assert.equal(RtCatalog.VDM.output.find(card=>card[0]==='QOS4S-U')[2],2);
-  assert(core.validate(state).issues.some(issue=>issue.code==='LINK_UNKNOWN_in-1'));
   assert.equal(core.bom(state).find(row=>row.model==='QOS4S-U').quantity,1);
-  assert.equal(core.choices('CIS4-U').length,0);
+  // 사용자 확인(2026-09-26): CIS4-U↔CT104-U, COS4-U↔CR104-U, FIS4-U↔FT101-U, FOS4-U↔FR101-U
+  for(const [cardId,device] of [['CIS4-U','CT104-U'],['COS4-U','CR104-U'],['FIS4-U','FT101-U'],['FOS4-U','FR101-U']]){
+    assert.deepEqual(core.choices(cardId),[device]);
+    assert.deepEqual(core.defaultLink(cardId,4),{device,count:4,distance:'30'});
+  }
+  const linked={...state,links:{'in-1':{device:'CT104-U',count:4,distance:'30'}}};
+  const issues=core.validate(linked).issues;
+  assert.ok(!issues.some(issue=>issue.code==='LINK_UNKNOWN_in-1'));
+  assert.ok(issues.some(issue=>issue.code==='LINK_DOCUMENTED_in-1'&&/사용자 확인/.test(issue.evidence)));
+  assert.equal(core.bom(linked).find(row=>row.model==='CT104-U').quantity,4);
 });
 
 test('CSV contains draft status, combined quantities and accessory limitation',()=>{
