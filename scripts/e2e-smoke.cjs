@@ -98,6 +98,17 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.locator('.rt-card-modal .rt-card-choice[data-card="SPX-COS12"]').click();
     await page.click('[data-action="next"]');
     check('SPX-COS12 장착 시 SPX-RX가 12채널로 자동 연결됨',await page.locator('button[data-owner="out-1"][data-link-device="SPX-RX"][aria-pressed="true"]').count()===1&&await page.locator('select[data-owner="out-1"][data-link="count"]').inputValue()==='12');
+    await page.evaluate(()=>localStorage.clear());
+    await page.goto(home,{waitUntil:'networkidle'});
+    await page.click('button[data-family="VDM"]');
+    await page.click('[data-action="next"]');
+    await page.click('button[data-model="VDM-16X"]');
+    await page.click('[data-action="next"]');
+    await page.waitForLoadState('networkidle');
+    check('VDM-16X는 매뉴얼 후면 사진 위에 입력 4·출력 4 슬롯(블랭크 커버)이 표시됨',await page.locator('.rt-rack-photo .rt-rack-slot-blank').count()===8&&await page.$eval('.rt-rack-photo-image',image=>image.naturalWidth>0));
+    await page.locator('button[data-slot="in-1"]').click();
+    await page.locator('.rt-card-modal .rt-card-choice[data-card="HIS4-U"]').click();
+    check('VDM 보드를 장착하면 실물 판넬 사진이 표시됨',await page.$eval('button[data-slot="in-1"] img.rt-faceplate',image=>image.naturalWidth>0&&image.getAttribute('src').endsWith('HIS4-U.webp')));
     check('404 요청 없음',failed.length===0,failed.join(', '));
     check('자바스크립트 오류 없음',errors.length===0,errors.join(' | '));
     await context.close();

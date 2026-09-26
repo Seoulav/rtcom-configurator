@@ -32,9 +32,13 @@
     ];
     const blankPlate='output/design/assets/cards/XDM-BLANK.webp';
     // SPX 카드·블랭크는 카탈로그 스캔에서 자른 임시 자산이다(고해상도 후면 사진을 받으면 교체).
-    const blankPlates={XDM:blankPlate,SPX:'output/design/assets/cards/SPX-BLANK.webp'};
-    const photoCardFamilies=new Set(['XDM','SPX']);
-    const frameFronts={'XDM-12':'output/design/assets/frames/xdm-12-front.webp','XDM-20':'output/design/assets/frames/xdm-20-front.webp','XDM-36':'output/design/assets/frames/xdm-36-front.webp','XDM-72':'output/design/assets/frames/xdm-72-front.webp','XDM-144':'output/design/assets/frames/xdm-144-front.webp','XDM-216':'output/design/assets/frames/xdm-216-front.webp'};
+    const blankPlates={XDM:blankPlate,SPX:'output/design/assets/cards/SPX-BLANK.webp',VDM:'output/design/assets/cards/VDM-BLANK.webp'};
+    const photoCardFamilies=new Set(['XDM','SPX','VDM']);
+    // 카드 판넬 가로:세로 비율(슬롯 모양). XDM 9.7, SPX 13.8, VDM 5.7
+    const slotRatios={XDM:9.7,SPX:13.8,VDM:5.7};
+    // VDM 후면 배치(매뉴얼 도면 단순화): 8X는 가로 보드 좌우, 16X~64X는 세로 보드 '입력 4 | 출력 4'를 단으로 쌓고, 80X 이상은 입력 위·출력 아래.
+    const vdmRacks={'VDM-8X':['h',1],'VDM-16X':['vs',4],'VDM-32X':['vs',4],'VDM-48X':['vs',4],'VDM-64X':['vs',4],'VDM-80X':['vt',10],'VDM-128X':['vt',16],'VDM-180X':['vt',15]};
+    const frameFronts={'XDM-12':'output/design/assets/frames/xdm-12-front.webp','XDM-20':'output/design/assets/frames/xdm-20-front.webp','XDM-36':'output/design/assets/frames/xdm-36-front.webp','XDM-72':'output/design/assets/frames/xdm-72-front.webp','XDM-144':'output/design/assets/frames/xdm-144-front.webp','XDM-216':'output/design/assets/frames/xdm-216-front.webp','VDM-16X':'output/design/assets/frames/vdm-16x-front.webp','VDM-48X':'output/design/assets/frames/vdm-48x-front.webp'};
     // 국문 매뉴얼(KV08) 후면 사진과 사진 속 입력·출력 카드 영역(사진 픽셀 좌표: 왼쪽, 위, 오른쪽, 아래). 카드 고정 나사 간격으로 측정했다.
     // 업체의 빈 프레임 후면 사진을 받으면 src와 좌표만 바꾼다. XDM-216은 후면 사진이 없어 그림으로 표시한다.
     const rearPhotos={
@@ -42,7 +46,8 @@
       'XDM-20':{src:'output/design/assets/frames/xdm-20-rear.webp',page:9,size:[525,478],input:[12,40,141,292],output:[273,40,410,292]},
       'XDM-36':{src:'output/design/assets/frames/xdm-36-rear.webp',page:9,size:[452,419],input:[9,34,214,252],output:[214,34,419,252]},
       'XDM-72':{src:'output/design/assets/frames/xdm-72-rear.webp',page:10,size:[400,644],input:[5,46,372,242],output:[5,284,372,484]},
-      'XDM-144':{src:'output/design/assets/frames/xdm-144-rear.webp',page:11,size:[366,1035],input:[8,44,336,392],output:[8,494,336,845]}
+      'XDM-144':{src:'output/design/assets/frames/xdm-144-rear.webp',page:11,size:[366,1035],input:[8,44,336,392],output:[8,494,336,845]},
+      'VDM-16X':{src:'output/design/assets/frames/vdm-16x-rear.webp',page:7,manual:'VDM 국문 매뉴얼 KV07',size:[449,278],input:[2,24,165,276],output:[280,24,443,276]}
     };
     const design={tone:'warm',density:'comfortable'};
     const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -100,14 +105,15 @@
     function slotPlanFor(model){return RtCore.slotPlan(state.family,model)}
     function documentedSlotCount(model){return slotPlanFor(model)?.[0]||0}
     // SPX는 가로 카드를 위(입력)·아래(출력)로 한 줄씩 쌓는다(M810·M3236 후면 사진).
-    function rackLayout(model){if(!slotPlanFor(model)||model==='XDM-12')return 'h';if(state.family==='SPX')return 'hs';return ['XDM-72','XDM-144','XDM-216'].includes(model)?'vt':'vs'}
+    function rackLayout(model){if(!slotPlanFor(model)||model==='XDM-12')return 'h';if(state.family==='SPX')return 'hs';if(state.family==='VDM')return vdmRacks[model]?.[0]||'h';return ['XDM-72','XDM-144','XDM-216'].includes(model)?'vt':'vs'}
+    function rackColumns(model,layout){if(state.family==='VDM'&&vdmRacks[model])return vdmRacks[model][1];return layout==='vt'?18:layout==='vs'?(slotPlanFor(model)?.[0]||1):1}
     const maxPorts=dir=>Math.max(...families[state.family][dir].map(item=>item[2]));
     function chassisViewV2(){
       const f=families[state.family];
       const xdmFeature=state.family==='XDM'?'<div class="rt-xdm-feature-note"><span>EDID · LED TIP</span><strong>커스텀 해상도도 설계할 수 있습니다.</strong><p>개선 펌웨어 기준으로 비표준 입력을 원본 패스스루(LED) 또는 4K 업스케일(모니터) 경로로 나눠 검토합니다. 출고용 EDID 주입 조건은 제조사 확인이 필요합니다.</p></div>':'';
       const tile=(m,i)=>{
         const plan=slotPlanFor(m),front=frameFronts[m],selected=state.model===m;
-        const maxChannels=state.family==='XDM'?`${plan?.[0]*4}×${plan?.[1]*4}`:String(f.modelNotes[i]||'').split('·')[0].trim().replace(/\s*×\s*/,'×');
+        const maxChannels=state.family!=='SPX'?`${plan?.[0]*4}×${plan?.[1]*4}`:String(f.modelNotes[i]||'').split('·')[0].trim().replace(/\s*×\s*/,'×');
         const specs=plan?`<span><b>${plan[0]}</b>입력 슬롯</span><span><b>${plan[1]}</b>출력 슬롯</span><span><b>${maxChannels}</b>최대 채널</span>`:'<span class="rt-chassis-unknown">슬롯 구성 제조사 확인 필요</span>';
         return `<button type="button" class="rt-chassis-card ${front?'':'rt-chassis-card-generic'}" data-model="${m}" aria-pressed="${selected}"><span class="rt-chassis-visual"><img src="${front||assets[state.family]}" alt="${front?`${m} 전면 사진`:`${state.family} 제품군 사진`}" loading="lazy"></span><span class="rt-chassis-body"><span class="rt-chassis-name"><strong>${m}</strong><span class="rt-radio" aria-hidden="true">${selected?'✓':''}</span></span><small>${esc(f.modelNotes[i]||'')}</small><span class="rt-chassis-specs">${specs}</span></span></button>`;
       };
@@ -136,16 +142,16 @@
       const slotList=currentSlots(),model=state.model,layout=rackLayout(model),plan=slotPlanFor(model),count=plan?.[0]||0;
       const inputSlots=slotList.filter(item=>item.dir==='input'),outputSlots=slotList.filter(item=>item.dir==='output');
       const inputCards=inputSlots.filter(item=>slotCard(item.id)).length,outputCards=outputSlots.filter(item=>slotCard(item.id)).length;
-      const columns=layout==='vt'?18:layout==='vs'?count:1;
+      const columns=rackColumns(model,layout);
       const shortLabel=slot=>slot.id.replace(/^in-/,'IN ').replace(/^out-/,'OUT ').toUpperCase();
       const changed=changedSlot;changedSlot=null;
       const slotButton=slot=>{const c=slotCard(slot.id),blank=!c&&Boolean(blankPlates[state.family]);return `<button type="button" class="rt-rack-slot ${c?'rt-rack-slot-filled':''} ${blank?'rt-rack-slot-blank':''} ${changed===slot.id?'rt-rack-slot-changed':''}" data-slot="${slot.id}" aria-label="${esc(slot.label)}, ${c?`${c[0]} 장착됨 · 눌러서 변경`:'비어 있음 · 눌러서 카드 선택'}" title="${esc(slot.label)}${c?` · ${c[0]}`:''}"><span class="rt-rack-slot-no" aria-hidden="true">${shortLabel(slot)}</span>${c?`<img class="rt-faceplate" src="${cardAsset(c[0])}" alt="">`:`${blank?`<img class="rt-faceplate rt-blank-plate" src="${blankPlates[state.family]}" alt="">`:''}<span class="rt-rack-slot-add" aria-hidden="true">+</span>`}</button>`};
       const bank=(dir,items)=>`<section class="rt-rack-bank rt-rack-bank-${dir}" aria-label="${dir==='input'?'입력':'출력'} 카드 슬롯"><div class="rt-rack-bank-title"><strong>${dir==='input'?'INPUT':'OUTPUT'}</strong><span>${items.filter(item=>slotCard(item.id)).length} / ${items.length}</span></div><div class="rt-rack-grid">${items.map(slotButton).join('')}</div></section>`;
       const photo=rearPhotos[model];
       const zone=(dir,items)=>{const [x0,y0,x1,y1]=photo[dir],[w,h]=photo.size,rows=Math.ceil(items.length/columns);return `<section class="rt-rack-zone rt-rack-zone-${dir}" aria-label="${dir==='input'?'입력':'출력'} 카드 슬롯" style="left:${(x0/w*100).toFixed(3)}%;top:${(y0/h*100).toFixed(3)}%;width:${((x1-x0)/w*100).toFixed(3)}%;height:${((y1-y0)/h*100).toFixed(3)}%;--rt-rack-zone-rows:${rows}"><div class="rt-rack-grid">${items.map(slotButton).join('')}</div></section>`};
-      const photoRack=photo?`<figure class="rt-rack-photo rt-rack-${layout}" style="--rt-rack-columns:${columns};--rt-photo-ratio:${(photo.size[0]/photo.size[1]).toFixed(4)}"><img class="rt-rack-photo-image" src="${photo.src}" alt="${esc(model)} 후면 사진"><div class="rt-rack-photo-zones">${zone('input',inputSlots)}${zone('output',outputSlots)}</div><figcaption>후면 사진 · 국문 매뉴얼 p.${photo.page} · 선택한 카드만 표시</figcaption></figure>`:'';
+      const photoRack=photo?`<figure class="rt-rack-photo rt-rack-${layout}" style="--rt-rack-columns:${columns};--rt-slot-ratio:${slotRatios[state.family]||9.7};--rt-photo-ratio:${(photo.size[0]/photo.size[1]).toFixed(4)}"><img class="rt-rack-photo-image" src="${photo.src}" alt="${esc(model)} 후면 사진"><div class="rt-rack-photo-zones">${zone('input',inputSlots)}${zone('output',outputSlots)}</div><figcaption>후면 사진 · ${photo.manual||'XDM 국문 매뉴얼'} p.${photo.page} · 선택한 카드만 표시</figcaption></figure>`:'';
       const layoutText=!plan?'슬롯 구성 검토용 논리 도식':state.family==='SPX'?`상단 입력 ${plan[0]}슬롯(카드당 8포트) / 하단 출력 ${plan[1]}슬롯(카드당 10~12포트)`:`${layout==='vt'?'상단':'왼쪽'} 입력 ${plan[0]}슬롯 / ${layout==='vt'?'하단':'오른쪽'} 출력 ${plan[1]}슬롯 · 카드당 4채널`;
-      return heading('03 / CARD SLOTS','후면의 빈 슬롯을 눌러 카드를 장착하세요.',`${esc(model)} · ${layoutText}`)+`<div class="rt-config-stage"><section class="rt-rack-canvas"><div class="rt-rack-toolbar"><div><span class="rt-eyebrow">REAR VIEW</span><h3>${esc(model)}</h3></div><div class="rt-frame-count"><span><b>${inputCards}</b> / ${inputSlots.length} INPUT</span><span><b>${outputCards}</b> / ${outputSlots.length} OUTPUT</span></div></div><div class="rt-rack-scroll">${photoRack||`<div class="rt-rack rt-rack-${layout}" style="--rt-rack-columns:${columns};--rt-rack-rows:${Math.max(1,Math.ceil(inputSlots.length/columns))*2};--rt-bank-slots:${count}"><span class="rt-rack-ear" aria-hidden="true"></span><div class="rt-rack-body">${bank('input',inputSlots)}${bank('output',outputSlots)}<div class="rt-rack-psu" aria-hidden="true"><strong>RTCOM</strong><span>${esc(model)}</span><i></i><small>CONTROL</small><i></i><small>POWER</small></div></div><span class="rt-rack-ear" aria-hidden="true"></span></div>`}</div>${photo||layout!=='h'?'<p class="rt-rack-scroll-hint">좌우로 밀어서 후면 전체를 볼 수 있습니다.</p>':''}${count?'':'<p class="rt-stage-warning">이 프레임은 제조사 후면 도면과 카드 허용표를 확보하기 전까지 논리 도식으로 표시합니다. 물리 설치 위치로 사용하지 마세요.</p>'}${count&&!photo?`<p class="rt-rack-note">${state.family==='SPX'?'SPX 후면 사진을 적용하기 전까지 슬롯 배치(카탈로그·후면 사진 기준)를 그림으로 표시합니다. 카드 판넬은 카탈로그 스캔에서 자른 임시 이미지입니다.':'이 프레임은 매뉴얼에 후면 사진이 없어 슬롯 배치를 그림으로 표시합니다.'}</p>`:''}</section>${configurationSummary()}</div>${cardChoiceModal()}`;
+      return heading('03 / CARD SLOTS','후면의 빈 슬롯을 눌러 카드를 장착하세요.',`${esc(model)} · ${layoutText}`)+`<div class="rt-config-stage"><section class="rt-rack-canvas"><div class="rt-rack-toolbar"><div><span class="rt-eyebrow">REAR VIEW</span><h3>${esc(model)}</h3></div><div class="rt-frame-count"><span><b>${inputCards}</b> / ${inputSlots.length} INPUT</span><span><b>${outputCards}</b> / ${outputSlots.length} OUTPUT</span></div></div><div class="rt-rack-scroll">${photoRack||`<div class="rt-rack rt-rack-${layout}" style="--rt-rack-columns:${columns};--rt-rack-rows:${Math.max(1,Math.ceil(inputSlots.length/columns))*2};--rt-bank-slots:${columns};--rt-slot-ratio:${slotRatios[state.family]||9.7}"><span class="rt-rack-ear" aria-hidden="true"></span><div class="rt-rack-body">${bank('input',inputSlots)}${bank('output',outputSlots)}<div class="rt-rack-psu" aria-hidden="true"><strong>RTCOM</strong><span>${esc(model)}</span><i></i><small>CONTROL</small><i></i><small>POWER</small></div></div><span class="rt-rack-ear" aria-hidden="true"></span></div>`}</div>${photo||layout!=='h'?'<p class="rt-rack-scroll-hint">좌우로 밀어서 후면 전체를 볼 수 있습니다.</p>':''}${count?'':'<p class="rt-stage-warning">이 프레임은 제조사 후면 도면과 카드 허용표를 확보하기 전까지 논리 도식으로 표시합니다. 물리 설치 위치로 사용하지 마세요.</p>'}${count&&!photo?`<p class="rt-rack-note">${state.family==='VDM'?'VDM 매뉴얼에는 이 프레임의 선 도면만 있어, 슬롯 수는 매뉴얼 기준으로 하고 배치는 도면을 단순화한 그림으로 표시합니다.':state.family==='SPX'?'SPX 후면 사진을 적용하기 전까지 슬롯 배치(카탈로그·후면 사진 기준)를 그림으로 표시합니다. 카드 판넬은 카탈로그 스캔에서 자른 임시 이미지입니다.':'이 프레임은 매뉴얼에 후면 사진이 없어 슬롯 배치를 그림으로 표시합니다.'}</p>`:''}</section>${configurationSummary()}</div>${cardChoiceModal()}`;
     }
     function powerNotice(){
       const count=Object.values(state.links).filter(link=>link.device?.startsWith('XDM-CTR100 · ')).reduce((sum,link)=>sum+link.count,0);

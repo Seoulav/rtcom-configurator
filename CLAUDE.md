@@ -35,6 +35,7 @@
 - `catalogVersion`
 - 슬롯 ID와 기존 `#matrix-configurator` 주소
 - 0.6 포털 주소(`/products`, `/tools/matrix-configurator`)의 구성기 첫 화면 이동
+- 슬롯 표가 있는 프레임(XDM·SPX·VDM)의 예전 논리 슬롯(in-a·in-b·out-a·out-b)은 불러올 때 실제 슬롯 1·2로 변환합니다(0.10부터 SPX·VDM 포함).
 
 0.7부터 제품 라이브러리(31개 제품·5개 카테고리)와 카탈로그 PDF 배포는 AV portal과 중복되어 제거했습니다. 근거와 영향 범위는 `docs/audit/SITE_SCOPE_REVIEW.md`에 있습니다.
 

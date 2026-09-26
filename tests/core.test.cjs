@@ -112,9 +112,10 @@ test('empty and partly used slots produce no error',()=>{
 });
 
 test('VDM Quad card remains two ports and unknown remote links stay unconfirmed',()=>{
-  const state={...core.initial(),family:'VDM',model:'VDM-8X',placements:{'in-a':'CIS4-U','out-a':'QOS4S-U'}};
+  const state={...core.initial(),family:'VDM',model:'VDM-8X',placements:{'in-1':'CIS4-U','out-1':'QOS4S-U'}};
   assert.equal(RtCatalog.VDM.output.find(card=>card[0]==='QOS4S-U')[2],2);
-  assert(core.validate(state).issues.some(issue=>issue.code==='LINK_UNKNOWN_in-a'));
+  assert(core.validate(state).issues.some(issue=>issue.code==='LINK_UNKNOWN_in-1'));
+  assert.equal(core.bom(state).find(row=>row.model==='QOS4S-U').quantity,1);
   assert.equal(core.choices('CIS4-U').length,0);
 });
 
@@ -178,7 +179,13 @@ test('SPX frames expose documented slot plans, migrate logical slots and link CO
     assert.equal(slots.filter(slot=>slot.dir==='output').length,output);
     assert.equal(slots[0].id,'in-1');
   }
-  assert.equal(core.slotPlan('VDM','VDM-8X'),null,'VDM stays logical until its own update');
+  const vdm={'VDM-8X':[2,2],'VDM-16X':[4,4],'VDM-32X':[8,8],'VDM-48X':[12,12],'VDM-64X':[16,16],'VDM-80X':[20,20],'VDM-128X':[32,32],'VDM-180X':[45,45]};
+  for(const [model,plan] of Object.entries(vdm))assert.deepEqual(core.slotPlan('VDM',model),plan,`${model} follows VDM manual KV07`);
+  assert.equal(core.slotPlan('VDM','VDM-288X'),null,'VDM-288X is a custom build without a documented slot table');
+  const custom={...core.initial(),family:'VDM',model:'VDM-288X',placements:{'in-a':'HIS4-U'}};
+  assert.ok(core.validate(custom).issues.some(issue=>issue.code==='VDM_288X_CUSTOM'));
+  const legacyVdm=core.document({...core.initial(),family:'VDM',model:'VDM-16X'});legacyVdm.schemaVersion=2;legacyVdm.state.placements={'in-a':'HIS4-U','out-b':'HOS4-U'};delete legacyVdm.state.portAssignments;
+  assert.deepEqual(core.parse(JSON.stringify(legacyVdm)).placements,{'in-1':'HIS4-U','out-2':'HOS4-U'});
   assert.deepEqual(core.defaultLink('SPX-COS12',12),{device:'SPX-RX',count:12,distance:'30'});
   const legacy=core.document({...core.initial(),family:'SPX',model:'SPX-M3236'});
   legacy.schemaVersion=2;
