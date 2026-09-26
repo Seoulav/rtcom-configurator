@@ -242,11 +242,16 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 @media(max-width:720px){#rtcom-design .rt-hdmi-extend{padding:14px}}
 /* SPX: 가로 카드를 입력(위)·출력(아래)으로 한 줄씩 쌓는 랙 */
 #rtcom-design .rt-rack-hs{width:100%;min-width:420px;max-width:860px}
+/* SPX 가로 카드 사진은 휴대폰에서도 화면 폭에 맞춰 잘리지 않게 한다. */
+#rtcom-design .rt-rack-photo.rt-rack-hs{min-width:0}
 #rtcom-design .rt-rack-hs .rt-rack-body{grid-template-columns:1fr}
 #rtcom-design .rt-rack-hs .rt-rack-slot{aspect-ratio:13.8/1}
 #rtcom-design .rt-rack-hs .rt-rack-grid{gap:3px}
+#rtcom-design .rt-rack-photo.rt-rack-hs .rt-rack-grid{gap:1px}
 #rtcom-design .rt-rack-hs .rt-rack-slot-no{top:50%;left:7.5%;transform:translateY(-50%)}
 /* 제품군별 카드 판넬 비율로 슬롯 모양을 맞춘다(--rt-slot-ratio: XDM 9.7, SPX 13.8, VDM 5.7) */
 #rtcom-design .rt-rack-h .rt-rack-slot,#rtcom-design .rt-rack-hs .rt-rack-slot{aspect-ratio:var(--rt-slot-ratio,9.7) / 1}
 #rtcom-design .rt-rack-vs .rt-rack-slot,#rtcom-design .rt-rack-vt .rt-rack-slot{aspect-ratio:1 / var(--rt-slot-ratio,9.7)}
 #rtcom-design .rt-rack-photo .rt-rack-slot{aspect-ratio:auto}
+/* 터치 기기의 버튼 최소 높이(44px)가 사진·도면 슬롯에 적용되면 슬롯이 겹친다. 슬롯은 사진 속 판넬 크기를 따른다. */
+@media(pointer:coarse){#rtcom-design .rt-rack .rt-rack-slot,#rtcom-design .rt-rack-photo .rt-rack-slot{min-height:0}}
