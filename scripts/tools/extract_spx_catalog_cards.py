@@ -1,6 +1,6 @@
 """SPX 카탈로그(스캔 PDF) 4쪽에서 SPX 카드 판넬을 잘라 WebP로 저장하고, SPX 블랭크 커버를 합성한다.
 
-0.11부터 SPX 매뉴얼 기반 extract_spx_manual_assets.py가 카드 판넬을 대체한다. blank_from()은 그 스크립트가 재사용한다.
+0.11부터 SPX 매뉴얼 기반 extract_spx_manual_assets.py가 카드 판넬과 블랭크 커버를 대체한다(보관용 스크립트).
 카탈로그 원본은 저장소에 넣지 않는다(.source-materials/는 .gitignore 대상).
 사용법: python3 scripts/tools/extract_spx_catalog_cards.py <SPX 카탈로그 PDF>
 필요 패키지: pymupdf, Pillow

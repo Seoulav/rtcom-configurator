@@ -1,6 +1,6 @@
 """SPX 국문 사용자 매뉴얼(250805KOR)에서 SPX 자산을 추출한다.
 
-- 카드 판넬 4종(매뉴얼 pp.10–11) → output/design/assets/cards/SPX-*.webp, SPX-BLANK.webp(HIS8 판넬로 합성)
+- 카드 판넬 4종(매뉴얼 pp.10–11) → output/design/assets/cards/SPX-*.webp, SPX-BLANK.webp(M3236 후면 사진의 실제 블랭크 판넬)
 - 메인프레임 5종 전면·후면 사진(매뉴얼 pp.5–9) → output/design/assets/frames/spx-*-front.webp, spx-*-rear.webp
 후면 사진은 원본 픽셀 크기를 그대로 유지한다. src/app.js의 rearPhotos 슬롯 좌표가 원본 픽셀 기준이기 때문이다.
 매뉴얼 원본은 저장소에 넣지 않는다(.source-materials/는 .gitignore 대상).
@@ -26,6 +26,8 @@ CARD_IMAGES = {
     'SPX-HOS12': (11, (87, 111)),
     'SPX-COS12': (11, (88, 388)),
 }
+# M3236 후면 사진(1135×772) 속 블랭크 판넬의 나사 줄 한 칸(왼쪽, 위, 오른쪽, 아래). 카드 줄 간격과 같은 55px 높이.
+BLANK_BOX = (124, 237, 932, 292)
 # 매뉴얼에서 검은 배경 위에 찍힌 판넬. 흰 배경용 faceplate_band 대신 배경을 투명하게 뺀다.
 BLACK_BACKED = {'SPX-HOS10', 'SPX-HOS12'}
 FRAME_IMAGES = {
@@ -44,13 +46,6 @@ FRAME_IMAGES = {
 
 def load_prepare():
     spec = importlib.util.spec_from_file_location('prepare', ROOT / 'scripts/tools/prepare_xdm_images.py')
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
-def load_spx_catalog():
-    spec = importlib.util.spec_from_file_location('spx_catalog', ROOT / 'scripts/tools/extract_spx_catalog_cards.py')
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
@@ -80,20 +75,19 @@ def black_backed_plate(image, threshold=12):
 
 def main(pdf_path):
     faceplate_band = load_prepare().faceplate_band
-    blank_from = load_spx_catalog().blank_from
     document = pymupdf.open(pdf_path)
     for name, (page_no, origin) in CARD_IMAGES.items():
         source = image_at(document, page_no, origin)
         plate = black_backed_plate(source) if name in BLACK_BACKED else faceplate_band(source)
         plate.save(CARDS / f'{name}.webp', 'WEBP', quality=88, method=6)
         print(f'card  {name:16} {plate.size[0]}x{plate.size[1]}')
-        if name == 'SPX-HIS8':
-            # 카탈로그 판넬(폭 816) 기준 나사 끝·금속면 위치를 이 판넬 폭에 맞춰 쓴다.
-            blank = blank_from(plate, scale=plate.size[0] / 816)
-            blank.save(CARDS / 'SPX-BLANK.webp', 'WEBP', quality=88, method=6)
-            print(f'card  {"SPX-BLANK":16} {blank.size[0]}x{blank.size[1]} (합성)')
     for name, (page_no, origin) in FRAME_IMAGES.items():
         image = image_at(document, page_no, origin)
+        if name == 'spx-m3236-rear':
+            # 빈 슬롯 커버: M3236 후면 사진 가운데의 실제 블랭크 판넬에서 위쪽 나사 줄을 카드 한 칸 높이(55px)로 잘라 쓴다.
+            blank = image.crop(BLANK_BOX)
+            blank.save(CARDS / 'SPX-BLANK.webp', 'WEBP', quality=88, method=6)
+            print(f'card  {"SPX-BLANK":16} {blank.size[0]}x{blank.size[1]} (M3236 후면 블랭크 판넬)')
         image.save(FRAMES / f'{name}.webp', 'WEBP', quality=86, method=6)
         print(f'frame {name:16} {image.size[0]}x{image.size[1]}')
 
