@@ -5,7 +5,8 @@ const output=path.resolve('dist');
 fs.mkdirSync(output,{recursive:true});
 const cardAssets=fs.readdirSync('output/design/assets/cards').map(name=>`output/design/assets/cards/${name}`);
 const frameAssets=fs.readdirSync('output/design/assets/frames').map(name=>`output/design/assets/frames/${name}`);
-for(const file of ['index.html','src/catalog.js','src/core.js','src/app.js','src/styles.css','output/design/assets/xdm.jpg','output/design/assets/spx.jpg','output/design/assets/vdm.jpg',...cardAssets,...frameAssets,'docs/evidence/RTCOM_MATRIX_EVIDENCE_AND_GAPS.md']){
+const extenderAssets=fs.readdirSync('output/design/assets/extenders').map(name=>`output/design/assets/extenders/${name}`);
+for(const file of ['index.html','src/catalog.js','src/core.js','src/app.js','src/styles.css','output/design/assets/xdm.jpg','output/design/assets/spx.jpg','output/design/assets/vdm.jpg',...cardAssets,...frameAssets,...extenderAssets,'docs/evidence/RTCOM_MATRIX_EVIDENCE_AND_GAPS.md']){
  const target=path.join(output,file);fs.mkdirSync(path.dirname(target),{recursive:true});fs.copyFileSync(file,target);
 }
 // 0.6의 포털 주소(/products, /tools/matrix-configurator)로 들어온 방문자를 구성기 첫 화면으로 보낸다.
