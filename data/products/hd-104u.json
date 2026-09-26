@@ -1,0 +1,195 @@
+{
+  "id": "hd-104u",
+  "group": "distribution",
+  "manufacturer": "RTCOM",
+  "productName": "HD-104U",
+  "model": "HD-104U",
+  "series": "1x4 HDMI 18Gbps Splitter",
+  "itemType": "PRODUCT",
+  "categories": [
+    "영상",
+    "Video",
+    "Splitter"
+  ],
+  "english": "1x4 HDMI 2.0 18Gbps splitter supporting 4K60 4:4:4 with EDID minder",
+  "korean": "4K 60Hz 4:4:4와 EDID 마인더를 지원하는 1입력 4출력 HDMI 2.0 18Gbps 분배기다.",
+  "catalogPages": "37",
+  "verificationSummary": "알티컴 종합 카탈로그(2026-03) 37쪽의 소개·주요기능·제품사양·크기 및 무게·제품 이미지에서 확인했다.",
+  "packageStatus": "REVIEW REQUIRED",
+  "overview": "HD-104U는 HDMI 신호를 위한 고성능 분배기다. True HDMI 2.0 3840x2160 60Hz 크로마 샘플링 4:4:4 해상도를 지원한다.\n\n하나의 HDMI 입력 신호를 신호의 손실 없이 4개의 동일한 출력으로 분배한다. HDCP(고대역 디지털 콘텐츠 보호)와 EDID(디스플레이 식별 정보)를 완벽 지원하여 호환 이슈 없이 사용할 수 있다. 외부 EDID와 내부에 저장된 EDID를 사용할 수 있어 EDID 마인더 기능도 수행한다.",
+  "images": [
+    {
+      "role": "Front",
+      "file": "hd-104u-front.webp",
+      "alt": "RTCOM HD-104U 전면",
+      "note": "Front · 카탈로그 제품 이미지",
+      "provider": "RTCOM",
+      "model": "HD-104U",
+      "source": "C",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "688×164"
+    },
+    {
+      "role": "Rear",
+      "file": "hd-104u-rear.webp",
+      "alt": "RTCOM HD-104U 후면",
+      "note": "Rear · 카탈로그 제품 이미지",
+      "provider": "RTCOM",
+      "model": "HD-104U",
+      "source": "C",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "693×169"
+    }
+  ],
+  "imageStatuses": [
+    {
+      "role": "Main",
+      "status": "MISSING"
+    },
+    {
+      "role": "Front",
+      "status": "FOUND"
+    },
+    {
+      "role": "Rear",
+      "status": "FOUND"
+    },
+    {
+      "role": "Perspective",
+      "status": "MISSING"
+    }
+  ],
+  "documents": [
+    {
+      "type": "Catalog",
+      "status": "FOUND",
+      "title": "알티컴 종합 카탈로그 2026 (국문)",
+      "language": "ko",
+      "note": "37쪽"
+    }
+  ],
+  "features": [
+    {
+      "text": "HDMI 2.0, HDCP 2.2를 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "EDID 마인더 기능: 외부 연결된 디스플레이 EDID를 저장하고 내부 저장된 EDID를 사용할 수 있다.",
+      "source": "C"
+    }
+  ],
+  "specifications": [
+    {
+      "group": "Video",
+      "name": "비디오 대역폭",
+      "value": "18",
+      "unit": "Gbps",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "비디오 해상도",
+      "value": "up to 3840x2160p@60Hz",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "입력포트",
+      "value": "1 HDMI Input",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "출력포트",
+      "value": "4 HDMI Output",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "name": "전원공급",
+      "value": "DC 5V 2A",
+      "unit": "",
+      "condition": "제품사양 표 기준. 연결도 라벨은 DC + 12V",
+      "source": "C",
+      "verification": "REVIEW REQUIRED"
+    },
+    {
+      "group": "Physical",
+      "name": "크기(W×D×H)",
+      "value": "150.3×73.2×26",
+      "unit": "mm",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "무게",
+      "value": "0.32",
+      "unit": "kg",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    }
+  ],
+  "io": [
+    {
+      "group": "Video",
+      "connector": "HDMI",
+      "signal": "HDMI",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "connector": "HDMI",
+      "signal": "HDMI",
+      "direction": "OUT",
+      "quantity": "4",
+      "protocol": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    }
+  ],
+  "related": [],
+  "sources": [
+    {
+      "code": "C",
+      "name": "알티컴 종합 카탈로그 2026 (국문)",
+      "page": "37",
+      "scope": "제조사 공식 출처"
+    }
+  ],
+  "issues": [
+    {
+      "code": "R1",
+      "status": "REVIEW REQUIRED",
+      "title": "연결도 라벨과 제품사양 불일치",
+      "detail": "37쪽 연결도의 후면 라벨은 HDMI Out 1~8과 DC + 12V로 적혀 있어 HD-108U 도면을 재사용한 것으로 보인다. 제품사양 표(4 HDMI Output, DC 5V 2A)와 후면 제품 이미지(HDMI OUT 1~4, DC 5V)는 서로 일치하므로 값은 제품사양 표를 따랐다. HD-D104U(32쪽)와는 다른 제품이다."
+    },
+    {
+      "code": "I1",
+      "status": "INFO",
+      "title": "이미지 출처",
+      "detail": "별도 원본 파일이 아닌 카탈로그 쪽에 실린 제품 이미지를 220dpi로 발췌했다. 원본 해상도가 낮아 확대 시 흐릴 수 있다."
+    }
+  ]
+}

@@ -1,0 +1,334 @@
+{
+  "id": "ct104-u-cr104-u",
+  "group": "extender",
+  "manufacturer": "RTCOM",
+  "productName": "CT104-U / CR104-U",
+  "model": "CT104-U / CR104-U",
+  "series": "VDM Series Extender",
+  "seriesNote": "VDM CIS4-U 카드와 CT104-U, COS4-U 카드와 CR104-U가 짝을 이룬다(구성기 연동, U09).",
+  "itemType": "PRODUCT",
+  "categories": [
+    "영상",
+    "Video",
+    "Extender"
+  ],
+  "english": "HDBaseT transmitter/receiver pair extending 4K HDMI and RS-232 up to 100m over CAT5e/CAT6; pairs with VDM CIS4-U/COS4-U cards.",
+  "korean": "4K HDMI 신호와 RS-232 신호를 CAT5e/CAT6 케이블 한 가닥으로 최대 100m 전송하는 HDBaseT 송·수신기다.",
+  "catalogPages": "24",
+  "verificationSummary": "알티컴 종합 카탈로그(2026-03) 24쪽의 CT104-U/CR104-U 소개와 CT104-U·CR104-U 제품사양 표에서 확인했다. VDM 카드 연동은 근거 문서 U09(사용자 확인)를 따랐다.",
+  "packageStatus": "VERIFIED",
+  "overview": "CT104-U와 CR104-U는 4K 해상도의 HDMI 신호와 RS-232 신호를 CAT5e/CAT6(UTP/STP)를 통해 장거리 전송하기 위한 송신기와 수신기다. CT104-U는 HDMI 신호와 RS-232 신호를 CAT5e/CAT6(UTP/STP) 신호로 변환하고, CR104-U는 CAT5e/CAT6(UTP/STP) 신호를 다시 HDMI 신호와 RS-232 신호로 복원한다.\n\nHDBaseT 기술을 적용해 하나의 CATx 케이블로 최대 100m까지 전송할 수 있다.",
+  "images": [
+    {
+      "role": "Main",
+      "file": "ct104-u-cr104-u-main.webp",
+      "alt": "RTCOM CT104-U 송신기(TX) 상판과 양쪽 단자면",
+      "note": "Main · TX CT104-U 제품 사진",
+      "provider": "RTCOM",
+      "model": "CT104-U",
+      "source": "R",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "480×149"
+    },
+    {
+      "role": "Other",
+      "file": "ct104-u-cr104-u-perspective.webp",
+      "alt": "RTCOM CR104-U 수신기(RX) 상판과 양쪽 단자면",
+      "note": "Other · RX CR104-U 제품 사진",
+      "provider": "RTCOM",
+      "model": "CR104-U",
+      "source": "R",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "480×151"
+    }
+  ],
+  "imageStatuses": [
+    {
+      "role": "Main",
+      "status": "FOUND"
+    },
+    {
+      "role": "Front",
+      "status": "MISSING"
+    },
+    {
+      "role": "Rear",
+      "status": "MISSING"
+    },
+    {
+      "role": "Perspective",
+      "status": "MISSING"
+    },
+    {
+      "role": "Other",
+      "status": "FOUND"
+    }
+  ],
+  "documents": [
+    {
+      "type": "Catalog",
+      "status": "FOUND",
+      "title": "알티컴 종합 카탈로그 2026 (국문)",
+      "language": "ko",
+      "note": "24쪽"
+    }
+  ],
+  "features": [
+    {
+      "text": "4K 해상도의 HDMI 신호와 RS-232 신호를 CAT5e/CAT6(UTP/STP)로 장거리 전송한다.",
+      "source": "C"
+    },
+    {
+      "text": "HDBaseT 기술을 적용해 CATx 케이블 한 가닥으로 최대 100m 전송한다.",
+      "source": "C"
+    },
+    {
+      "text": "EDID Pass-Through를 지원한다.",
+      "source": "C"
+    }
+  ],
+  "specifications": [
+    {
+      "group": "Video",
+      "name": "입력 신호",
+      "value": "HDMI + RS-232",
+      "unit": "",
+      "condition": "CT104-U",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "출력 신호",
+      "value": "HDBaseT 0,1,2,3+/-",
+      "unit": "",
+      "condition": "CT104-U",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "입력 신호",
+      "value": "HDBaseT 0,1,2,3+/-",
+      "unit": "",
+      "condition": "CR104-U",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "출력 신호",
+      "value": "HDMI + RS-232",
+      "unit": "",
+      "condition": "CR104-U",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "name": "데이터 전송 속도",
+      "value": "3.4 Gbps/ch, Total 10.2 Gbps Max",
+      "unit": "",
+      "condition": "CT104-U·CR104-U 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "지원 해상도",
+      "value": "Up to Ultra HD 4K 4096x2160@24/25/30Hz",
+      "unit": "",
+      "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0 · CT104-U·CR104-U 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "name": "최대 전송거리",
+      "value": "100",
+      "unit": "m",
+      "condition": "1920x1200@60Hz 또는 1080p, 4Kx2K@30Hz · BELDEN CI 6522 · 330ft · CT104-U·CR104-U 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "General",
+      "name": "규격",
+      "value": "HDMI 1.4, HDBaseT",
+      "unit": "",
+      "condition": "CT104-U·CR104-U 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "HDCP",
+      "value": "HDCP 1.X",
+      "unit": "",
+      "condition": "CT104-U·CR104-U 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "EDID",
+      "value": "Pass-Through",
+      "unit": "",
+      "condition": "CT104-U·CR104-U 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "name": "전원",
+      "value": "DC +12V 2A",
+      "unit": "",
+      "condition": "CT104-U·CR104-U 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "크기(W×D×H)",
+      "value": "112×72×26",
+      "unit": "mm",
+      "condition": "CT104-U·CR104-U 공통 (4.4'×2.8'×1.0')",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "무게",
+      "value": "0.26",
+      "unit": "kg",
+      "condition": "CT104-U (0.57 lbs)",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "무게",
+      "value": "0.27",
+      "unit": "kg",
+      "condition": "CR104-U (0.59 lbs)",
+      "source": "C",
+      "verification": "VERIFIED"
+    }
+  ],
+  "io": [
+    {
+      "group": "TX · Video",
+      "connector": "HDMI",
+      "signal": "HDMI",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "HDMI 1.4",
+      "condition": "CT104-U · 수량은 제품 사진(HDMI IN) 기준",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "TX · Transmission",
+      "connector": "RJ45 (CATx)",
+      "signal": "HDBaseT",
+      "direction": "OUT",
+      "quantity": "1",
+      "protocol": "HDBaseT",
+      "condition": "CT104-U",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "TX · Control",
+      "connector": "RS-232 단자",
+      "signal": "RS-232",
+      "direction": "BIDIR",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "CT104-U · 사진 표기 RS232C",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Transmission",
+      "connector": "RJ45 (CATx)",
+      "signal": "HDBaseT",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "HDBaseT",
+      "condition": "CR104-U",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Video",
+      "connector": "HDMI",
+      "signal": "HDMI",
+      "direction": "OUT",
+      "quantity": "1",
+      "protocol": "HDMI 1.4",
+      "condition": "CR104-U · 수량은 제품 사진(HDMI OUT) 기준",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Control",
+      "connector": "RS-232 단자",
+      "signal": "RS-232",
+      "direction": "BIDIR",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "CR104-U · 사진 표기 RS232C",
+      "source": "C",
+      "verification": "VERIFIED"
+    }
+  ],
+  "related": [
+    {
+      "relation": "PART_OF_SERIES",
+      "target": "vdm",
+      "note": "VDM 시리즈 전송기"
+    },
+    {
+      "relation": "WORKS_WITH",
+      "target": "vdm",
+      "note": "CT104-U는 VDM CIS4-U 입력 카드, CR104-U는 COS4-U 출력 카드와 연동(U09 사용자 확인)"
+    }
+  ],
+  "sources": [
+    {
+      "code": "C",
+      "name": "알티컴 종합 카탈로그 2026 (국문)",
+      "page": "24",
+      "scope": "제조사 공식 출처"
+    },
+    {
+      "code": "R",
+      "name": "저장소 기존 제품 사진(output/design/assets)",
+      "page": "",
+      "scope": "구성기 화면에서 사용 중인 RTCOM 제품 사진"
+    },
+    {
+      "code": "U",
+      "name": "docs/evidence/RTCOM_MATRIX_EVIDENCE_AND_GAPS.md U09",
+      "page": "",
+      "scope": "사용자 확인(2026-09-26)·알티컴 홈페이지 VDM EXTENDER 게시판 — 구성기 카드 연동 근거"
+    }
+  ],
+  "issues": [
+    {
+      "code": "I1",
+      "status": "INFO",
+      "title": "이미지 출처",
+      "detail": "저장소에 있던 RTCOM 제품 사진(output/design/assets/extenders)을 흰 배경 webp로 변환했다. 카탈로그 인쇄 사진과 같은 촬영본이며 해상도가 낮다."
+    },
+    {
+      "code": "I2",
+      "status": "INFO",
+      "title": "이미지 역할 표기",
+      "detail": "짝 제품이라 Main에는 송신기(TX), Other(기타)에는 수신기(RX) 사진을 넣었다. 각 이미지의 alt·note에 TX/RX를 적었다."
+    }
+  ]
+}

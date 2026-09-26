@@ -6,7 +6,7 @@ const vm=require('node:vm');
 const {execFileSync}=require('node:child_process');
 
 const read=file=>fs.readFileSync(file,'utf8');
-const runtimeScripts=['src/catalog.js','src/core.js','src/app.js'];
+const runtimeScripts=['src/catalog.js','src/core.js','src/app.js','src/products.js'];
 const loadCatalog=()=>{const context={globalThis:{}};vm.runInNewContext(read('src/catalog.js'),context);return context.globalThis.RtCatalog};
 
 test('index.html is a configurator-only page that keeps the legacy anchors',()=>{
@@ -104,6 +104,28 @@ test('static package ships only configurator files and redirects legacy portal U
     assert.match(stub,new RegExp(`url=${base.replaceAll('.','\\.')}`));
     assert.match(stub,/location\.replace\(.*location\.hash\)/);
     assert.doesNotMatch(stub,/<script src=/,'legacy URL must not load the app from a nested path');
+  }
+});
+
+test('public product data (0.19) is valid, brochure-level only and listed in index.json',()=>{
+  const {build,EXCLUDED}=require('../scripts/build-product-index.cjs');
+  const {index,errors,text}=build();
+  assert.deepEqual(errors,[]);
+  assert.equal(read('data/products/index.json'),text,'run node scripts/build-product-index.cjs');
+  assert.equal(index.schema,'rtcom.products.v1');
+  const count=group=>index.products.filter(product=>product.group===group).length;
+  assert.deepEqual({series:count('series'),integrated:count('integrated'),distribution:count('distribution'),extender:count('extender'),cable:count('cable')},{series:3,integrated:2,distribution:7,extender:13,cable:4});
+  for(const model of EXCLUDED)assert.equal(index.products.some(product=>product.model===model),false,`${model} is excluded like AV Portal`);
+  for(const model of ['HD-104U','HD-108U','QMS-44UX','MR-4S'])assert.ok(index.products.some(product=>product.model===model),`missing ${model}`);
+  for(const product of index.products)assert.ok(product.cardImage,`${product.id} needs a card image`);
+  const html=read('index.html');
+  assert.match(html,/<section class="rt-products-view" aria-label="알티컴 제품정보" hidden>/);
+  assert.match(html,/<a data-view-tab="products" href="#products">/);
+  execFileSync(process.execPath,['scripts/package-site.cjs'],{stdio:'ignore'});
+  assert.ok(fs.existsSync('dist/data/products/index.json'));
+  for(const product of index.products){
+    assert.ok(fs.existsSync(`dist/data/products/${product.id}.json`),`dist is missing ${product.id}.json`);
+    assert.ok(fs.existsSync(`dist/output/design/assets/products/${product.cardImage}`),`dist is missing ${product.cardImage}`);
   }
 });
 

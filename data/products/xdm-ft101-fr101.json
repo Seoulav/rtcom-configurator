@@ -1,0 +1,325 @@
+{
+  "id": "xdm-ft101-fr101",
+  "group": "extender",
+  "manufacturer": "RTCOM",
+  "productName": "XDM-FT101 / XDM-FR101",
+  "model": "XDM-FT101 / XDM-FR101",
+  "series": "XDM Series Extender",
+  "seriesNote": "XDM 시리즈 전용 광 송신기(FT101)와 수신기(FR101) 짝이다.",
+  "itemType": "PRODUCT",
+  "categories": [
+    "영상",
+    "Video",
+    "Extender"
+  ],
+  "english": "Fiber optic HDMI 2.0 transmitter/receiver pair for 4K60 4:4:4 up to 2km single-mode or 300m multi-mode, with audio and RS-232+.",
+  "korean": "True 4K60Hz 4:4:4 HDMI v2.0 신호를 싱글모드 광케이블로 최대 2km, 멀티모드로 최대 300m 전송하는 광 송·수신기다.",
+  "catalogPages": "12",
+  "verificationSummary": "알티컴 종합 카탈로그(2026-03) 12쪽의 XDM-FT101·XDM-FR101 소개와 제품사양 표에서 확인했다.",
+  "packageStatus": "VERIFIED",
+  "overview": "XDM-FT101/XDM-FR101은 True 4K 4096x2160@60Hz(4:4:4), 3840x2160@60Hz(4:4:4) 해상도의 HDMI v2.0 신호를 싱글모드 광케이블 사용 시 최대 2km, 멀티모드 광케이블 사용 시 최대 300m까지 전송하는 광 송·수신기다.\n\nXDM-FT101은 XDM-FIS100과, XDM-FR101은 XDM-FOS100과 호환된다. RS-232+ 기능으로 XDM 매트릭스의 커맨드를 통해 광 송·수신기의 RS-232 단자에 연결된 외부기기를 제어할 수 있다. 송신기는 Phoenix 5p 단자로 스테레오 오디오를 삽입하고, 수신기는 같은 방식으로 스테레오 오디오를 추출한다.",
+  "images": [
+    {
+      "role": "Main",
+      "file": "xdm-ft101-fr101-main.webp",
+      "alt": "RTCOM XDM-FT101 광 송신기(TX) 상판",
+      "note": "Main · TX XDM-FT101 제품 사진",
+      "provider": "RTCOM",
+      "model": "XDM-FT101",
+      "source": "R",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "194×150"
+    },
+    {
+      "role": "Other",
+      "file": "xdm-ft101-fr101-perspective.webp",
+      "alt": "RTCOM XDM-FR101 광 수신기(RX) 상판",
+      "note": "Other · RX XDM-FR101 제품 사진",
+      "provider": "RTCOM",
+      "model": "XDM-FR101",
+      "source": "R",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "191×142"
+    },
+    {
+      "role": "Rear",
+      "file": "xdm-ft101-fr101-rear.webp",
+      "alt": "RTCOM XDM-FT101 송신기(TX) 단자면(DC IN·HDMI IN·오디오/RS-232·광 단자)",
+      "note": "Rear · 카탈로그 12쪽 XDM-FT101 단자면 사진",
+      "provider": "RTCOM",
+      "model": "XDM-FT101",
+      "source": "C",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "515×191"
+    }
+  ],
+  "imageStatuses": [
+    {
+      "role": "Main",
+      "status": "FOUND"
+    },
+    {
+      "role": "Front",
+      "status": "MISSING"
+    },
+    {
+      "role": "Rear",
+      "status": "FOUND"
+    },
+    {
+      "role": "Perspective",
+      "status": "MISSING"
+    },
+    {
+      "role": "Other",
+      "status": "FOUND"
+    }
+  ],
+  "documents": [
+    {
+      "type": "Catalog",
+      "status": "FOUND",
+      "title": "알티컴 종합 카탈로그 2026 (국문)",
+      "language": "ko",
+      "note": "12쪽"
+    }
+  ],
+  "features": [
+    {
+      "text": "True 4K 4096x2160@60Hz(4:4:4), 3840x2160@60Hz(4:4:4) HDMI v2.0 신호를 전송한다.",
+      "source": "C"
+    },
+    {
+      "text": "싱글모드 광케이블로 최대 2km, 멀티모드 광케이블로 최대 300m 전송한다.",
+      "source": "C"
+    },
+    {
+      "text": "XDM-FT101은 XDM-FIS100과, XDM-FR101은 XDM-FOS100과 호환된다.",
+      "source": "C"
+    },
+    {
+      "text": "RS-232+ 기능으로 XDM 매트릭스 커맨드를 통해 RS-232 단자에 연결된 외부기기를 제어할 수 있다.",
+      "source": "C"
+    },
+    {
+      "text": "송신기는 스테레오 오디오 삽입, 수신기는 스테레오 오디오 추출을 지원한다.",
+      "source": "C"
+    }
+  ],
+  "specifications": [
+    {
+      "group": "Video",
+      "name": "최대 해상도",
+      "value": "4096x2160@60Hz, 3840x2160@60Hz",
+      "unit": "",
+      "condition": "4:4:4 · XDM-FT101·XDM-FR101 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "name": "최대 전송거리",
+      "value": "2",
+      "unit": "km",
+      "condition": "Singlemode · XDM-FT101·XDM-FR101 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "name": "최대 전송거리",
+      "value": "300",
+      "unit": "m",
+      "condition": "Multimode · XDM-FT101·XDM-FR101 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "HDCP",
+      "value": "HDCP 2.2 support",
+      "unit": "",
+      "condition": "XDM-FT101·XDM-FR101 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "EDID",
+      "value": "Supports EDID",
+      "unit": "",
+      "condition": "XDM-FT101·XDM-FR101 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "크기(W×D×H)",
+      "value": "109.6×73×24",
+      "unit": "mm",
+      "condition": "XDM-FT101",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "크기(W×D×H)",
+      "value": "106×73×22",
+      "unit": "mm",
+      "condition": "XDM-FR101",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "무게",
+      "value": "0.7",
+      "unit": "kg",
+      "condition": "XDM-FT101 (1.6lb.)",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "무게",
+      "value": "0.7",
+      "unit": "kg",
+      "condition": "XDM-FR101 (1.6lb.)",
+      "source": "C",
+      "verification": "VERIFIED"
+    }
+  ],
+  "io": [
+    {
+      "group": "TX · Video",
+      "connector": "Female HDMI connector",
+      "signal": "HDMI",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "HDMI v2.0",
+      "condition": "XDM-FT101",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "TX · Transmission",
+      "connector": "Female 1LC connector",
+      "signal": "Fiber",
+      "direction": "OUT",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "XDM-FT101",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "TX · Audio",
+      "connector": "Female Phoenix connector 5p",
+      "signal": "Stereo Audio",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "XDM-FT101 · 오디오 삽입, RS-232와 같은 5p 단자",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "TX · Control",
+      "connector": "Female Phoenix connector 5p",
+      "signal": "RS-232",
+      "direction": "BIDIR",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "XDM-FT101 · 오디오와 같은 5p 단자",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Video",
+      "connector": "Female HDMI connector",
+      "signal": "HDMI",
+      "direction": "OUT",
+      "quantity": "1",
+      "protocol": "HDMI v2.0",
+      "condition": "XDM-FR101",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Transmission",
+      "connector": "Female 1LC connector",
+      "signal": "Fiber",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "XDM-FR101",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Audio",
+      "connector": "Female Phoenix connector 5p",
+      "signal": "Stereo Audio",
+      "direction": "OUT",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "XDM-FR101 · 오디오 추출, RS-232와 같은 5p 단자",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Control",
+      "connector": "Female Phoenix connector 5p",
+      "signal": "RS-232",
+      "direction": "BIDIR",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "XDM-FR101 · 오디오와 같은 5p 단자",
+      "source": "C",
+      "verification": "VERIFIED"
+    }
+  ],
+  "related": [
+    {
+      "relation": "PART_OF_SERIES",
+      "target": "xdm",
+      "note": "XDM 시리즈 전용 광 전송기"
+    },
+    {
+      "relation": "WORKS_WITH",
+      "target": "xdm",
+      "note": "XDM-FIS100(FT101)·XDM-FOS100(FR101) 카드"
+    }
+  ],
+  "sources": [
+    {
+      "code": "C",
+      "name": "알티컴 종합 카탈로그 2026 (국문)",
+      "page": "12",
+      "scope": "제조사 공식 출처"
+    },
+    {
+      "code": "R",
+      "name": "저장소 기존 제품 사진(output/design/assets)",
+      "page": "",
+      "scope": "구성기 화면에서 사용 중인 RTCOM 제품 사진"
+    }
+  ],
+  "issues": [
+    {
+      "code": "I1",
+      "status": "INFO",
+      "title": "이미지 출처",
+      "detail": "저장소에 있던 RTCOM 제품 사진(output/design/assets/extenders)을 흰 배경 webp로 변환했다. 카탈로그 인쇄 사진과 같은 촬영본이며 해상도가 낮다."
+    },
+    {
+      "code": "I2",
+      "status": "INFO",
+      "title": "이미지 역할 표기",
+      "detail": "Main에는 송신기 XDM-FT101, Other(기타) 자리에는 수신기 XDM-FR101 사진을 넣었다. Rear는 카탈로그 12쪽의 XDM-FT101 단자면 사진을 220dpi로 잘라냈다."
+    }
+  ]
+}

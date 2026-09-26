@@ -4,6 +4,14 @@
 
 ## Unreleased
 
+## 0.19.0
+
+- 알티컴 공개 제품정보를 다시 올렸습니다(사용자 결정 2026-09-26, `docs/audit/SITE_SCOPE_REVIEW.md` §9). 머리글의 "매트릭스 구성기 / 알티컴 제품정보" 탭으로 같은 화면 안에서 전환합니다(주소 조각 `#products`, `#products/<id>`만 바뀌고 페이지 이동이 없어 0.6의 이미지 깨짐·404가 생기지 않습니다). 뒤로가기로 상세 → 목록 → 구성기 순서로 돌아갑니다.
+- 대상 29종: 매트릭스 시리즈 3(XDM·SPX·VDM), 일체형 매트릭스 2, 분배기·선택기 7, 전송기 13, 케이블 4. AV Portal과 같은 제외 모델(HS-88MX·HD-D104U·HD-D108U)은 뺐습니다. 사양·입출력·기능은 알티컴 종합 카탈로그(2026, 국문 48쪽) 쪽 번호와 함께 표시하고, 카탈로그 안에서 표기가 서로 다른 값은 원문 그대로 두고 "표기 검토 필요"로 표시합니다. 단가·노하우 같은 내부 정보는 넣지 않으며 검증 스크립트가 금지어를 검사합니다.
+- 데이터는 AV Portal 상세 JSON과 같은 형식(`rtcom.products.v1`)으로 `data/products/`에 두고, 비공개 AV Portal이 읽기만 합니다. 인계 문서: `docs/handoff/AV_PORTAL_RTCOM_PRODUCT_DATA.md`. 목록은 `node scripts/build-product-index.cjs`로 만들고 `--check`로 검증합니다.
+- 시리즈 상세의 "구성기에서 구성하기"는 해당 제품군의 섀시 선택 단계로 바로 갑니다. 제품정보 화면에서 로고를 누르면 확인 창 없이 구성기로 돌아갑니다.
+- 구성기의 호환성 계약(LocalStorage key, schema 3, catalogVersion, 슬롯 ID, `#matrix-configurator`, 0.6 주소 이동)은 바뀌지 않았습니다.
+
 ## 0.18.0
 
 - XDM 카드 판넬 양쪽 끝 손나사가 1/4쯤 잘려 보이던 문제를 고쳤습니다(사용자 제보). 손나사는 금속판 끝보다 바깥으로 튀어나오는데, 판넬 자르기가 금속판 폭 기준이라 나사 바깥쪽이 잘렸습니다. XDM 카드 12종과 빈 슬롯 커버(XDM-BLANK)를 나사까지 포함해 다시 만들고, 나사 옆 흰 배경은 투명하게 했습니다(`scripts/tools/prepare_xdm_images.py`의 `faceplate_band(keep_screws=True)`).

@@ -1,0 +1,203 @@
+{
+  "id": "mr-4s",
+  "group": "extender",
+  "manufacturer": "RTCOM",
+  "productName": "MR-4S",
+  "model": "MR-4S",
+  "series": "Rack Mountable Modular Extension System",
+  "itemType": "PRODUCT",
+  "categories": [
+    "영상",
+    "Video",
+    "Extension Frame"
+  ],
+  "english": "Rack-mountable modular extension frame holding up to four CATx/fiber transmitter or receiver modules powered from a single adapter, up to 4K30.",
+  "korean": "CATx·광 송수신기 모듈을 최대 4개까지 장착하고 하나의 전원 어댑터로 전원을 공급하는 랙 장착형 집합 프레임이다.",
+  "catalogPages": "40",
+  "verificationSummary": "알티컴 종합 카탈로그(2026-03) 40쪽의 MR-4S 소개·주요기능·활용사례·크기 및 무게·제품사양에서 확인했다.",
+  "packageStatus": "REVIEW REQUIRED",
+  "overview": "MR-4S는 CATx/광 송수신기 슬롯을 4개까지 장착할 수 있는 집합형 CATx/광 송수신기 프레임이다. 한 개의 파워 어댑터로 최대 4개의 CATx/광 송수신기 슬롯에 전원을 공급하며, CATx/광 송신 슬롯과 수신 슬롯을 구분 없이 자유롭게 구성할 수 있다.\n\n4K 30Hz, HDCP, EDID를 지원한다. 카탈로그는 비디오 월 시스템, 대형 LED 스크린, 공항 이착륙 스크린, 홈시어터, TV 방송 시스템, 공연장 방송 시스템, 회의실 비디오 시스템, 교회 비디오 시스템을 활용사례로 든다.",
+  "images": [
+    {
+      "role": "Front",
+      "file": "mr-4s-front.webp",
+      "alt": "RTCOM MR-4S 전면",
+      "note": "Front · 카탈로그 40쪽 사진",
+      "provider": "RTCOM",
+      "model": "MR-4S",
+      "source": "C",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "1168×166"
+    },
+    {
+      "role": "Rear",
+      "file": "mr-4s-rear.webp",
+      "alt": "RTCOM MR-4S 후면(모듈 4개 장착 상태)",
+      "note": "Rear · 카탈로그 40쪽 사진",
+      "provider": "RTCOM",
+      "model": "MR-4S",
+      "source": "C",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "1147×178"
+    }
+  ],
+  "imageStatuses": [
+    {
+      "role": "Main",
+      "status": "MISSING"
+    },
+    {
+      "role": "Front",
+      "status": "FOUND"
+    },
+    {
+      "role": "Rear",
+      "status": "FOUND"
+    },
+    {
+      "role": "Perspective",
+      "status": "MISSING"
+    }
+  ],
+  "documents": [
+    {
+      "type": "Catalog",
+      "status": "FOUND",
+      "title": "알티컴 종합 카탈로그 2026 (국문)",
+      "language": "ko",
+      "note": "40쪽"
+    }
+  ],
+  "features": [
+    {
+      "text": "4K 30Hz를 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "최대 4개 모듈을 장착할 수 있다.",
+      "source": "C"
+    },
+    {
+      "text": "단일 전원으로 4개의 모듈에 전원을 공급한다.",
+      "source": "C"
+    },
+    {
+      "text": "HDCP를 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "EDID를 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "CATx/광 송신 슬롯과 수신 슬롯을 구분 없이 자유롭게 구성할 수 있다.",
+      "source": "C"
+    }
+  ],
+  "specifications": [
+    {
+      "group": "Video",
+      "name": "비디오 대역폭",
+      "value": "10.2",
+      "unit": "Gbps",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "최대 해상도",
+      "value": "Up to 4K 30Hz",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "name": "인터페이스",
+      "value": "1 leads LC Single Mode Fiber, CATx",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "General",
+      "name": "모듈 장착 수",
+      "value": "4",
+      "unit": "개",
+      "condition": "최대",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "name": "전원",
+      "value": "DC 12V, 3.0A",
+      "unit": "",
+      "condition": "power supply adapter included",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Environment",
+      "name": "작동 온도·습도",
+      "value": "0-40ºC, Less than 80% Humidity",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "크기(W×D×H)",
+      "value": "439×170×44",
+      "unit": "mm",
+      "condition": "17.3in×6.7in×1.75in",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "무게",
+      "value": "1.81",
+      "unit": "kg",
+      "condition": "4.0lbs · 원문 'for each of Tx and Rx'",
+      "source": "C",
+      "verification": "REVIEW REQUIRED"
+    }
+  ],
+  "io": [],
+  "related": [],
+  "sources": [
+    {
+      "code": "C",
+      "name": "알티컴 종합 카탈로그 2026 (국문)",
+      "page": "40",
+      "scope": "제조사 공식 출처"
+    }
+  ],
+  "issues": [
+    {
+      "code": "R1",
+      "status": "REVIEW REQUIRED",
+      "title": "무게 표기 문구",
+      "detail": "프레임 제품인데 무게가 '1.81Kg(4.0lbs) for each of Tx and Rx'로 적혀 있어 프레임 단독 무게인지, 모듈 포함 무게인지 확인이 필요하다. 원문 값을 그대로 두었다."
+    },
+    {
+      "code": "I2",
+      "status": "INFO",
+      "title": "장착 모듈 미기재",
+      "detail": "카탈로그에 MR-4S에 장착하는 모듈 모델명이 적혀 있지 않아 related 항목을 만들지 않았다. 후면 사진에는 모듈 4개가 장착된 상태가 보인다."
+    },
+    {
+      "code": "I1",
+      "status": "INFO",
+      "title": "이미지 출처",
+      "detail": "카탈로그에 인쇄된 제품 사진을 해당 쪽에서 220dpi로 잘라냈다(도면이 아닌 사진). 원본 인쇄 사진 해상도가 낮아 확대 시 흐릴 수 있다."
+    }
+  ]
+}

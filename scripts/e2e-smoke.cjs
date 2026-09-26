@@ -10,7 +10,7 @@ try{({chromium}=require('playwright'))}catch{
 }
 const BASE='/rtcom-configurator/';
 const dist=path.resolve('dist');
-const types={'.html':'text/html; charset=utf-8','.js':'text/javascript','.css':'text/css','.jpg':'image/jpeg','.png':'image/png','.md':'text/markdown'};
+const types={'.html':'text/html; charset=utf-8','.js':'text/javascript','.css':'text/css','.jpg':'image/jpeg','.png':'image/png','.md':'text/markdown','.json':'application/json','.webp':'image/webp'};
 const server=http.createServer((req,res)=>{
   const url=decodeURIComponent(new URL(req.url,'http://x').pathname);
   if(!url.startsWith(BASE)){res.writeHead(404).end();return}
@@ -160,6 +160,36 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.locator('button[data-slot="out-64"]').click();
     await page.locator('.rt-card-modal .rt-card-choice[data-card="COS4-U"]').click();
     check('VDM-256X는 매뉴얼 후면 도면(랙 2대) 위에 입력 64·출력 64 슬롯이고 64번 슬롯에 카드를 장착할 수 있음',await page.locator('.rt-rack-photo .rt-rack-zone').count()===4&&await page.locator('.rt-rack-slot').count()===128&&await page.locator('button[data-slot="out-64"].rt-rack-slot-filled').count()===1&&await page.$eval('.rt-rack-photo-image',image=>image.naturalWidth>0));
+    // 0.19 알티컴 공개 제품정보: 같은 화면 안에서 #products 주소 조각으로만 전환한다.
+    await page.click('a[data-view-tab="products"]');
+    await page.waitForSelector('.rt-product-card');
+    check('제품정보 탭을 누르면 구성기를 숨기고 제품 29종 목록을 표시',await page.locator('.rt-configurator-view').isHidden()&&await page.locator('.rt-product-card').count()===29);
+    await page.click('[data-product-filter="extender"]');
+    check('전송기 분류는 13종',await page.locator('.rt-product-card').count()===13);
+    await page.click('[data-product-filter="all"]');
+    await page.fill('[data-product-search]','QMS');
+    check('검색어 QMS로 일체형 매트릭스 2종이 남음',await page.locator('.rt-product-card').count()===2);
+    await page.fill('[data-product-search]','');
+    await page.click('a.rt-product-card[href="#products/ct104-u-cr104-u"]');
+    await page.waitForSelector('#rt-product-title');
+    check('제품 카드를 누르면 상세(사양 표·입출력·출처)를 표시',(await page.locator('#rt-product-title').textContent()).includes('CT104-U')&&await page.locator('.rt-product-table tbody tr').count()>3&&await page.locator('.rt-product-source').isVisible());
+    await page.waitForLoadState('networkidle');
+    check('상세 이미지가 모두 열림',(await page.$$eval('.rt-product-gallery img',images=>images.filter(image=>!image.complete||image.naturalWidth===0).length))===0);
+    await page.goBack();
+    await page.waitForSelector('.rt-product-card');
+    check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-product-card').count()===29);
+    await page.goto(`${home}#products/vdm`,{waitUntil:'networkidle'});
+    check('제품 상세 주소(#products/vdm)로 바로 들어갈 수 있음',(await page.locator('#rt-product-title').textContent()).includes('VDM'));
+    await page.click('[data-configure-family="VDM"]');
+    await page.waitForSelector('.rt-chassis-card');
+    check('시리즈 상세의 "구성기에서 구성하기"는 VDM 섀시 선택 단계로 이동',await page.locator('.rt-products-view').isHidden()&&await page.locator('[data-model="VDM-256X"]').count()===1);
+    await page.click('a[data-view-tab="products"]');
+    await page.waitForSelector('.rt-product-card');
+    let productDialog=false;const onProductDialog=()=>{productDialog=true};page.on('dialog',onProductDialog);
+    await page.click('.rt-brand-lockup');
+    await page.waitForFunction(()=>!document.querySelector('.rt-configurator-view').hidden,null,{timeout:3000}).catch(()=>{});
+    check('제품정보 화면에서 로고를 누르면 확인 창 없이 구성기로 돌아감',!productDialog&&await page.locator('.rt-configurator-view').isVisible()&&await page.locator('.rt-products-view').isHidden());
+    page.off('dialog',onProductDialog);
     check('404 요청 없음',failed.length===0,failed.join(', '));
     check('자바스크립트 오류 없음',errors.length===0,errors.join(' | '));
     await context.close();

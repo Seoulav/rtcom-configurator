@@ -1,0 +1,264 @@
+{
+  "id": "qms-88ux",
+  "group": "integrated",
+  "manufacturer": "RTCOM",
+  "productName": "QMS-88UX",
+  "model": "QMS-88UX",
+  "series": "HDMI Matrix Switcher",
+  "itemType": "PRODUCT",
+  "categories": [
+    "영상",
+    "Video",
+    "Matrix Switcher"
+  ],
+  "english": "True-4K 8x8 HDMI 2.0 scaling matrix switcher with 8-channel multi-view, video wall and dual mode",
+  "korean": "8CH 멀티뷰·비디오 월·듀얼 모드를 지원하는 True-4K 8x8 HDMI 2.0 매트릭스 스위처다.",
+  "catalogPages": "30",
+  "verificationSummary": "알티컴 종합 카탈로그(2026-03) 30쪽의 소개·주요기능·제품사양·크기 및 무게·제품 이미지에서 확인했다.",
+  "packageStatus": "REVIEW REQUIRED",
+  "overview": "QMS-88UX는 HDMI Ver. 2.0을 지원하는 True-4K HDMI 8x8 고성능 매트릭스 스위처다. 최대 3840x2160p 60Hz 4:4:4 해상도를 지원하며 Seamless Switching, 8CH Multi-view, Video Wall, Dual 모드 등 다양한 용도로 사용할 수 있다. 서로 다른 임의의 HDMI 입력을 서로 다른 임의의 HDMI 출력 포트로 출력하거나 분배할 수 있다.\n\n전면 터치 패널, LAN, RS-232, IR Remote Control의 4가지 제어방식으로 동작한다. 출력 9번과 10번은 쿼드 뷰 모드로, 한 화면에 최대 8개의 분할 화면을 구성할 수 있다. HDCP v2.2를 지원한다.",
+  "images": [
+    {
+      "role": "Front",
+      "file": "qms-88ux-front.webp",
+      "alt": "RTCOM QMS-88UX 전면",
+      "note": "Front · 카탈로그 제품 이미지",
+      "provider": "RTCOM",
+      "model": "QMS-88UX",
+      "source": "C",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "625×128"
+    },
+    {
+      "role": "Rear",
+      "file": "qms-88ux-rear.webp",
+      "alt": "RTCOM QMS-88UX 후면",
+      "note": "Rear · 카탈로그 제품 이미지",
+      "provider": "RTCOM",
+      "model": "QMS-88UX",
+      "source": "C",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "626×129"
+    }
+  ],
+  "imageStatuses": [
+    {
+      "role": "Main",
+      "status": "MISSING"
+    },
+    {
+      "role": "Front",
+      "status": "FOUND"
+    },
+    {
+      "role": "Rear",
+      "status": "FOUND"
+    },
+    {
+      "role": "Perspective",
+      "status": "MISSING"
+    }
+  ],
+  "documents": [
+    {
+      "type": "Catalog",
+      "status": "FOUND",
+      "title": "알티컴 종합 카탈로그 2026 (국문)",
+      "language": "ko",
+      "note": "30쪽"
+    }
+  ],
+  "features": [
+    {
+      "text": "HDMI 신호의 스위칭과 스케일링을 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "신속한 화면 전환이 가능한 심리스 스위칭을 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "HDMI 입력 8개 포트와 스케일링이 가능한 HDMI 출력 8개 포트를 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "HDMI v2.0, HDCP 2.2를 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "매트릭스, 최대 3X3 비디오 월, 쿼드 뷰, 듀얼 모드의 4가지 모드를 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "Bezel 조정 기능을 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "Subtitle 기능을 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "전면 LCD 패널, LAN(Telnet & Web Browser), RS-232, IR Remote Control 제어방식을 지원한다.",
+      "source": "C"
+    }
+  ],
+  "specifications": [
+    {
+      "group": "Video",
+      "name": "입력 신호",
+      "value": "HDMI 8 Ports",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "출력 신호",
+      "value": "HDMI 10 Ports",
+      "unit": "",
+      "condition": "9,10port: Quad-view 모드",
+      "source": "C",
+      "verification": "REVIEW REQUIRED"
+    },
+    {
+      "group": "Video",
+      "name": "해상도",
+      "value": "Up to 4K 60Hz(3860x2160@60Hz)",
+      "unit": "",
+      "condition": "카탈로그 원문 그대로",
+      "source": "C",
+      "verification": "REVIEW REQUIRED"
+    },
+    {
+      "group": "General",
+      "name": "연결 단자",
+      "value": "DC Power Jack, LAN, RS-232, Mini USB-serial, 3.5mm stereo, 3-pin phoenix, HDMI 19-Pin Female",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "HDMI 규격",
+      "value": "HDMI 2.0",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "HDCP",
+      "value": "HDCP Compliant v2.2 지원",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Control",
+      "name": "제어",
+      "value": "전면 패널, LAN(Telnet & Web Browser), RS-232, IR Remote Control",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "name": "전원 공급",
+      "value": "100-200",
+      "unit": "VAC",
+      "condition": "",
+      "source": "C",
+      "verification": "REVIEW REQUIRED"
+    },
+    {
+      "group": "Physical",
+      "name": "크기(W×D×H)",
+      "value": "446[482.6]×357.4×88.1",
+      "unit": "mm",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "무게",
+      "value": "4.3",
+      "unit": "kg",
+      "condition": "약",
+      "source": "C",
+      "verification": "VERIFIED"
+    }
+  ],
+  "io": [
+    {
+      "group": "Video",
+      "connector": "HDMI 19-Pin Female",
+      "signal": "HDMI",
+      "direction": "IN",
+      "quantity": "8",
+      "protocol": "HDMI 2.0",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "connector": "HDMI 19-Pin Female",
+      "signal": "HDMI",
+      "direction": "OUT",
+      "quantity": "10",
+      "protocol": "HDMI 2.0",
+      "condition": "제품사양 표 기준. 9·10번은 Quad-view 모드. 주요기능은 출력 8개 포트로 표기",
+      "source": "C",
+      "verification": "REVIEW REQUIRED"
+    }
+  ],
+  "related": [],
+  "sources": [
+    {
+      "code": "C",
+      "name": "알티컴 종합 카탈로그 2026 (국문)",
+      "page": "30",
+      "scope": "제조사 공식 출처"
+    }
+  ],
+  "issues": [
+    {
+      "code": "R1",
+      "status": "REVIEW REQUIRED",
+      "title": "해상도 오기 의심",
+      "detail": "제품사양 표의 해상도가 \"3860x2160@60Hz\"로 적혀 있으나 같은 쪽 소개문은 3840x2160p 60Hz로 적었다. 3860은 오기로 보이며 값은 원문을 유지했다."
+    },
+    {
+      "code": "R2",
+      "status": "REVIEW REQUIRED",
+      "title": "출력 포트 수 불일치",
+      "detail": "제품사양 표는 출력을 \"HDMI 10 Ports [9,10port: Quad-view 모드]\"로 적었으나 제품명(8x8)과 주요기능은 HDMI 출력 8개 포트로 적었다. 소개문은 출력 9번·10번을 쿼드 뷰 모드로 설명한다. 값은 제품사양 표 원문을 유지했다."
+    },
+    {
+      "code": "R3",
+      "status": "REVIEW REQUIRED",
+      "title": "전원 사양 표기 불일치",
+      "detail": "제품사양 표의 전원 공급은 \"100-200 VAC\"이나 같은 표의 연결 단자는 DC Power Jack을, 연결도 라벨은 DC + 12V를 적었다. 100-240 VAC 등의 오기 가능성도 있어 확인이 필요하다. 값은 원문을 유지했다."
+    },
+    {
+      "code": "R4",
+      "status": "REVIEW REQUIRED",
+      "title": "전면 제어 패널 표기 차이",
+      "detail": "소개문은 \"전면 터치 패널\", 주요기능은 \"전면 LCD 패널\"로 적었다."
+    },
+    {
+      "code": "I1",
+      "status": "INFO",
+      "title": "이미지 출처",
+      "detail": "별도 원본 파일이 아닌 카탈로그 쪽에 실린 제품 이미지를 220dpi로 발췌했다. 원본 해상도가 낮아 확대 시 흐릴 수 있다."
+    }
+  ]
+}

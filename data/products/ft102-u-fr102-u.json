@@ -1,0 +1,350 @@
+{
+  "id": "ft102-u-fr102-u",
+  "group": "extender",
+  "manufacturer": "RTCOM",
+  "productName": "FT102-U / FR102-U",
+  "model": "FT102-U / FR102-U",
+  "series": "VDM Series Extender",
+  "itemType": "PRODUCT",
+  "categories": [
+    "영상",
+    "Video",
+    "Extender"
+  ],
+  "english": "Fiber optic transmitter/receiver pair for VGA/DVI/HDMI, audio and RS-232 up to 2km single-mode or 500m multi-mode; receiver adds scaling and seamless switching.",
+  "korean": "VGA·DVI·HDMI 신호와 오디오·RS-232를 광케이블로 싱글모드 최대 2km, 멀티모드 최대 500m 전송하는 광 송·수신기이며, 수신기는 스케일링과 심리스 기능을 지원한다.",
+  "catalogPages": "26",
+  "verificationSummary": "알티컴 종합 카탈로그(2026-03) 26쪽의 FT102-U/FR102-U 소개와 FT102-U·FR102-U 제품사양 표에서 확인했다.",
+  "packageStatus": "REVIEW REQUIRED",
+  "overview": "FT102-U와 FR102-U는 비디오와 오디오, RS-232 신호를 광케이블을 통해 장거리 전송하기 위한 송신기와 수신기다. FT102-U는 비디오·오디오·RS-232 신호를 광신호로 변환하고, FR102-U는 광신호를 다시 비디오·오디오·RS-232 신호로 복원한다.\n\nFT102-U는 아날로그 신호인 VGA와 디지털 신호인 DVI 또는 HDMI를 지원하고, FR102-U는 스케일링 기능과 심리스 기능을 지원한다. 광신호를 사용해 최대 2km까지 전송할 수 있으며, 외부 신호의 영향으로부터 안전하게 신호를 전송할 수 있어 보안이 필요한 기업이나 군부대, 정부기관 등에 적합한 전송장비다.",
+  "images": [
+    {
+      "role": "Main",
+      "file": "ft102-u-fr102-u-main.webp",
+      "alt": "RTCOM FT102-U 광 송신기(TX) 상판과 양쪽 단자면",
+      "note": "Main · TX FT102-U 카탈로그 사진",
+      "provider": "RTCOM",
+      "model": "FT102-U",
+      "source": "C",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "942×346"
+    },
+    {
+      "role": "Other",
+      "file": "ft102-u-fr102-u-perspective.webp",
+      "alt": "RTCOM FR102-U 광 수신기(RX) 상판과 양쪽 단자면(LCD·버튼면 포함)",
+      "note": "Other · RX FR102-U 카탈로그 사진",
+      "provider": "RTCOM",
+      "model": "FR102-U",
+      "source": "C",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "961×337"
+    }
+  ],
+  "imageStatuses": [
+    {
+      "role": "Main",
+      "status": "FOUND"
+    },
+    {
+      "role": "Front",
+      "status": "MISSING"
+    },
+    {
+      "role": "Rear",
+      "status": "MISSING"
+    },
+    {
+      "role": "Perspective",
+      "status": "MISSING"
+    },
+    {
+      "role": "Other",
+      "status": "FOUND"
+    }
+  ],
+  "documents": [
+    {
+      "type": "Catalog",
+      "status": "FOUND",
+      "title": "알티컴 종합 카탈로그 2026 (국문)",
+      "language": "ko",
+      "note": "26쪽"
+    }
+  ],
+  "features": [
+    {
+      "text": "비디오·오디오·RS-232 신호를 광케이블로 장거리 전송한다.",
+      "source": "C"
+    },
+    {
+      "text": "FT102-U는 아날로그 VGA(YPbPr 컴포넌트 지원)와 디지털 DVI 또는 HDMI를 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "FR102-U는 스케일링 기능과 심리스 기능을 지원한다.",
+      "source": "C"
+    },
+    {
+      "text": "싱글모드 광케이블로 최대 2km, 멀티모드 광케이블로 최대 500m 전송한다.",
+      "source": "C"
+    },
+    {
+      "text": "외부 신호의 영향을 받지 않아 보안이 필요한 기업·군부대·정부기관에 적합하다.",
+      "source": "C"
+    }
+  ],
+  "specifications": [
+    {
+      "group": "Video",
+      "name": "입력 신호",
+      "value": "DVI / HDMI (TMDS), VGA (supports YPbPr component), 3.5mm Stereo Audio",
+      "unit": "",
+      "condition": "FT102-U",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "출력 신호",
+      "value": "Fiber Optical Output (> -10dbm after 6,600ft (2km) transmission)",
+      "unit": "",
+      "condition": "FT102-U",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "입력 신호",
+      "value": "Fiber Optical Output (> -10dbm after 6,600ft (2km) transmission)",
+      "unit": "",
+      "condition": "FR102-U · 입력 칸에 Output 표기(원문 그대로)",
+      "source": "C",
+      "verification": "REVIEW REQUIRED"
+    },
+    {
+      "group": "Video",
+      "name": "출력 신호",
+      "value": "DVI / HDMI (TMDS), 3.5mm stereo audio",
+      "unit": "",
+      "condition": "FR102-U",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "name": "데이터 전송 속도",
+      "value": "3.4 Gbps/ch, Total 10.2 Gbps Max",
+      "unit": "",
+      "condition": "FT102-U·FR102-U 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "지원 해상도",
+      "value": "Up to Ultra HD 4K 4096x2160@24/25/30Hz",
+      "unit": "",
+      "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0 · FT102-U·FR102-U 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "name": "최대 전송거리",
+      "value": "2",
+      "unit": "km",
+      "condition": "Single Mode Fiber · 1920x1200@60Hz 또는 1080p, Ultra HD 4K · 6,600ft · FT102-U·FR102-U 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "name": "최대 전송거리",
+      "value": "500",
+      "unit": "m",
+      "condition": "Multi Mode Fiber · 1920x1200@60Hz 또는 1080p, Ultra HD 4K · 1,650ft · FT102-U·FR102-U 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "General",
+      "name": "규격",
+      "value": "DVI 1.0, HDMI 1.4b",
+      "unit": "",
+      "condition": "FT102-U·FR102-U 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "HDCP",
+      "value": "HDCP 1.X",
+      "unit": "",
+      "condition": "FT102-U·FR102-U 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "name": "전원",
+      "value": "DC +12V 2A",
+      "unit": "",
+      "condition": "FT102-U·FR102-U 공통",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "크기(W×D×H)",
+      "value": "144.78×114.3×44.45",
+      "unit": "mm",
+      "condition": "FT102-U (5.75\"×4.5\"×1.75\")",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "크기(W×D×H)",
+      "value": "192.4×151.4×42",
+      "unit": "mm",
+      "condition": "FR102-U (7.57\"×5.96\"×1.7\")",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "무게",
+      "value": "0.46",
+      "unit": "kg",
+      "condition": "FT102-U (1.0 lbs)",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "무게",
+      "value": "0.68",
+      "unit": "kg",
+      "condition": "FR102-U (1.5 lbs)",
+      "source": "C",
+      "verification": "VERIFIED"
+    }
+  ],
+  "io": [
+    {
+      "group": "TX · Video",
+      "connector": "HDMI",
+      "signal": "DVI / HDMI (TMDS)",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "HDMI 1.4b",
+      "condition": "FT102-U · 수량은 카탈로그 사진(HDMI IN) 기준",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "TX · Video",
+      "connector": "VGA",
+      "signal": "VGA / YPbPr",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "FT102-U · 수량은 카탈로그 사진(VGA IN) 기준",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "TX · Audio",
+      "connector": "3.5mm stereo",
+      "signal": "Stereo Audio",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "FT102-U",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "TX · Transmission",
+      "connector": "광 단자(사진 표기 OPTICAL)",
+      "signal": "Fiber Optical",
+      "direction": "OUT",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "FT102-U",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Transmission",
+      "connector": "광 단자",
+      "signal": "Fiber Optical",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "FR102-U · 표의 입력 칸은 Fiber Optical Output으로 적혀 있음",
+      "source": "C",
+      "verification": "REVIEW REQUIRED"
+    },
+    {
+      "group": "RX · Video",
+      "connector": "HDMI",
+      "signal": "DVI / HDMI (TMDS)",
+      "direction": "OUT",
+      "quantity": "1",
+      "protocol": "HDMI 1.4b",
+      "condition": "FR102-U · 수량은 카탈로그 사진(HDMI OUT) 기준",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Audio",
+      "connector": "3.5mm stereo",
+      "signal": "Stereo Audio",
+      "direction": "OUT",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "FR102-U",
+      "source": "C",
+      "verification": "VERIFIED"
+    }
+  ],
+  "related": [
+    {
+      "relation": "PART_OF_SERIES",
+      "target": "vdm",
+      "note": "VDM 시리즈 전송기"
+    }
+  ],
+  "sources": [
+    {
+      "code": "C",
+      "name": "알티컴 종합 카탈로그 2026 (국문)",
+      "page": "26",
+      "scope": "제조사 공식 출처"
+    }
+  ],
+  "issues": [
+    {
+      "code": "R1",
+      "status": "REVIEW REQUIRED",
+      "title": "FR102-U 입력 신호 칸 Output 표기 (E24)",
+      "detail": "수신기 FR102-U의 Input Signal 칸에 송신기와 같은 'Fiber Optical Output ( > -10dbm (after 6,600ft (2km) transmission))'이 적혀 있다. 광 입력을 뜻하는 것으로 보이지만 원문 값을 그대로 두었다."
+    },
+    {
+      "code": "I1",
+      "status": "INFO",
+      "title": "이미지 출처",
+      "detail": "카탈로그에 인쇄된 제품 사진을 해당 쪽에서 220dpi로 잘라냈다(도면이 아닌 사진). 원본 인쇄 사진 해상도가 낮아 확대 시 흐릴 수 있다."
+    },
+    {
+      "code": "I2",
+      "status": "INFO",
+      "title": "이미지 역할 표기",
+      "detail": "짝 제품이라 Main에는 송신기(TX), Other(기타)에는 수신기(RX) 사진을 넣었다. 각 이미지의 alt·note에 TX/RX를 적었다."
+    }
+  ]
+}

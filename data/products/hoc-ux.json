@@ -1,0 +1,200 @@
+{
+  "id": "hoc-ux",
+  "group": "cable",
+  "manufacturer": "RTCOM",
+  "productName": "HOC-UX",
+  "model": "HOC-UX",
+  "series": "High Speed HDMI Active Optical Cable",
+  "itemType": "PRODUCT",
+  "categories": [
+    "영상",
+    "Video",
+    "Active Optical Cable"
+  ],
+  "english": "High speed HDMI 2.0b active optical cable, 4K60 4:4:4, 18Gbps, up to 100m",
+  "korean": "4K 60Hz 4:4:4·18Gbps를 최대 100m까지 전송하는 HDMI 2.0b 액티브 광케이블이다.",
+  "catalogPages": "43",
+  "verificationSummary": "알티컴 종합 카탈로그(2026-03) 43쪽의 소개·주요기능·제품사양·제품 이미지에서 확인했다.",
+  "packageStatus": "VERIFIED",
+  "overview": "HOC-UX는 새로운 기술이 적용된 제품으로서 HDMI를 통해 고속 통신을 가능하게 해주는 케이블이다. 이 일체형 케이블은 전력 소비를 최소화하여 신호를 전송한다.\n\n알티컴의 HOC-UX는 기존의 AOC와는 다르게 Tx와 Rx만을 활용하여 고속 전송을 가능하게 한다.",
+  "images": [
+    {
+      "role": "Main",
+      "file": "hoc-ux-main.webp",
+      "alt": "RTCOM HOC-UX 제품 사진",
+      "note": "Main · 카탈로그 제품 사진",
+      "provider": "RTCOM",
+      "model": "HOC-UX",
+      "source": "C",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "910×633"
+    }
+  ],
+  "imageStatuses": [
+    {
+      "role": "Main",
+      "status": "FOUND"
+    },
+    {
+      "role": "Front",
+      "status": "MISSING"
+    },
+    {
+      "role": "Rear",
+      "status": "MISSING"
+    },
+    {
+      "role": "Perspective",
+      "status": "MISSING"
+    }
+  ],
+  "documents": [
+    {
+      "type": "Catalog",
+      "status": "FOUND",
+      "title": "알티컴 종합 카탈로그 2026 (국문)",
+      "language": "ko",
+      "note": "43쪽"
+    }
+  ],
+  "features": [
+    {
+      "text": "High Speed HDMI Active Optical Cable",
+      "source": "C"
+    },
+    {
+      "text": "지원 해상도: 4K60@Hz 4:4:4 UHD HDR, Dolby Vision, 3D Deep Color",
+      "source": "C"
+    },
+    {
+      "text": "Audio: PCM 8-channel, Dolby Atmos, Dolby Digital True HD and DTS-HD Master Audio",
+      "source": "C"
+    },
+    {
+      "text": "일반 동축케이블에 비해 얇고, 유연하고 가볍다.",
+      "source": "C"
+    },
+    {
+      "text": "쉽게 설치한다(Plug and Play).",
+      "source": "C"
+    },
+    {
+      "text": "추가 전원공급이 필요 없다.",
+      "source": "C"
+    },
+    {
+      "text": "플래넘 타입 케이블이다.",
+      "source": "C"
+    },
+    {
+      "text": "케이블 길이는 최대 100m다.",
+      "source": "C"
+    },
+    {
+      "text": "Pull up 저항력: 19.46lbs / 86.59 Newtons / 8.83Kg",
+      "source": "C"
+    }
+  ],
+  "specifications": [
+    {
+      "group": "Video",
+      "name": "지원 해상도",
+      "value": "최대 4K 60Hz",
+      "unit": "",
+      "condition": "4:4:4",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "비디오 대역폭",
+      "value": "18",
+      "unit": "Gbps",
+      "condition": "최대",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "General",
+      "name": "지원",
+      "value": "HDMI2.0b, HDCP 2.2, EDID, HDMI-CEC 지원",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "name": "케이블 길이",
+      "value": "100",
+      "unit": "m",
+      "condition": "최대",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "name": "전압",
+      "value": "DC 5V",
+      "unit": "",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "name": "파워",
+      "value": "0.25",
+      "unit": "W",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Environment",
+      "name": "작동 가능 온도",
+      "value": "0~50",
+      "unit": "℃",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Environment",
+      "name": "작동 가능 습도",
+      "value": "5~85",
+      "unit": "%",
+      "condition": "",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "Pull up 저항력",
+      "value": "8.83",
+      "unit": "kg",
+      "condition": "19.46lbs / 86.59 Newtons",
+      "source": "C",
+      "verification": "VERIFIED"
+    }
+  ],
+  "io": [],
+  "related": [],
+  "sources": [
+    {
+      "code": "C",
+      "name": "알티컴 종합 카탈로그 2026 (국문)",
+      "page": "43",
+      "scope": "제조사 공식 출처"
+    }
+  ],
+  "issues": [
+    {
+      "code": "I1",
+      "status": "INFO",
+      "title": "이미지 출처",
+      "detail": "카탈로그 쪽에 실린 래스터 제품 사진을 220dpi로 발췌했다. 원본 해상도가 낮아 확대 시 흐릴 수 있다."
+    }
+  ]
+}
