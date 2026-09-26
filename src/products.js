@@ -29,26 +29,53 @@
     }
     const table=(head,rows)=>rows.length?`<div class="rt-product-table-wrap"><table class="rt-product-table"><thead><tr>${head.map(cell=>`<th scope="col">${cell}</th>`).join('')}</tr></thead><tbody>${rows.map(row=>`<tr>${row.map((cell,i)=>`<td data-label="${head[i]}">${cell}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`:'';
     const verification=value=>value&&value!=='VERIFIED'?` <span class="rt-product-badge">${value==='REVIEW REQUIRED'?'검토 필요':esc(value)}</span>`:'';
+    const isSizeSpec=spec=>spec.group==='Physical'&&(spec.name==='무게'||spec.name.startsWith('크기'));
+    // 에이앤미디어(antez.co.kr) 알티컴 제품 페이지 표기(2026-09-27 확인)를 참고한 배치: 개요 첫 문장 굵게 → 한눈에 보기 칩(대역폭·해상도·입출력) →
+    // 주요 기능 / 크기·무게를 나란히 → 제품 사양·입출력 표. 카탈로그 표기 충돌 표시(검토 필요 배지)는 그대로 유지한다.
+    const shortConnector=connector=>(connector||'').replace(/\([^)]*\)/g,'').split(/[,/]/)[0].trim();
+    function quickFacts(item){
+      if(!['distribution','integrated','cable'].includes(item.group))return [];
+      const specs=item.specifications||[];
+      const bandwidth=specs.find(spec=>/대역폭/.test(spec.name));
+      const resolution=specs.find(spec=>/해상도/.test(spec.name));
+      const hdmiPorts=direction=>{
+        const rows=(item.io||[]).filter(port=>port.direction===direction&&/^HDMI/i.test(port.connector||'')&&port.quantity);
+        if(!rows.length)return null;
+        const total=rows.reduce((sum,port)=>sum+(parseInt(port.quantity,10)||0),0);
+        return total?`${total} ${shortConnector(rows[0].connector)} ${directionLabel[direction]}`:null;
+      };
+      const facts=[bandwidth&&{label:'대역폭',value:`${bandwidth.value}${bandwidth.unit?` ${bandwidth.unit}`:''}`},resolution&&{label:'해상도',value:resolution.value.split(',')[0].split('(')[0].trim()},hdmiPorts('IN')&&{label:'입력',value:hdmiPorts('IN')},hdmiPorts('OUT')&&{label:'출력',value:hdmiPorts('OUT')}].filter(Boolean);
+      return facts.length>=2?facts.slice(0,4):[];
+    }
     function detailView(item){
       const byId=Object.fromEntries(index.products.map(product=>[product.id,product]));
       const images=item.images||[];
-      const specs=(item.specifications||[]).map(spec=>[esc(spec.group),esc(spec.name),`${esc(spec.value)}${spec.unit?` ${esc(spec.unit)}`:''}${verification(spec.verification)}`,esc(spec.condition)]);
+      const allSpecs=item.specifications||[];
+      const sizeSpecs=allSpecs.filter(isSizeSpec).map(spec=>[esc(spec.name.replace('크기(W×D×H)','크기')),`${esc(spec.value)}${spec.unit?` ${esc(spec.unit)}`:''}`]);
+      const specs=allSpecs.filter(spec=>!isSizeSpec(spec)).map(spec=>[`${esc(spec.group)} · ${esc(spec.name)}`,`${esc(spec.value)}${spec.unit?` ${esc(spec.unit)}`:''}${verification(spec.verification)}`,esc(spec.condition)]);
       const io=(item.io||[]).map(port=>[esc(port.group),esc(directionLabel[port.direction]||port.direction),esc(port.connector),esc(port.quantity),`${esc(port.signal)}${port.protocol?` · ${esc(port.protocol)}`:''}${verification(port.verification)}`,esc(port.condition)]);
       const lineup=(item.lineup||[]).map(entry=>[`<b>${esc(entry.model)}</b>`,esc(entry.kind),esc(entry.summary)]);
       // 같은 대상이 여러 관계로 적혀 있으면(예: 시리즈 소속 + 카드 연동) 한 번만 보이고, 구체적인 연동 설명을 우선한다.
       const related=Object.values((item.related||[]).filter(link=>byId[link.target]).reduce((all,link)=>{if(!all[link.target]||link.relation!=='PART_OF_SERIES')all[link.target]=link;return all},{}));
       const issues=(item.issues||[]);
       const sources=(item.sources||[]).map(source=>`${esc(source.name)}${source.page?` ${esc(source.page)}쪽`:''}${source.url&&/^https?:\/\//.test(source.url)?` — <a href="${esc(source.url)}" target="_blank" rel="noopener">열기 ↗</a>`:''}`);
+      const facts=quickFacts(item);
+      const overviewParagraphs=(item.overview||'').split(/\n{2,}/);
+      const [headline,...restOfFirst]=overviewParagraphs[0]?.split(/(?<=[.다])\s+/)||[];
       return `<article class="rt-product-detail" aria-labelledby="rt-product-title">
         <a class="rt-product-back" href="#products">← 제품 목록</a>
         <div class="rt-product-hero"><div class="rt-product-gallery">${images.length?images.map(img=>`<figure><img src="${image(img.file)}" alt="${esc(img.alt||item.productName)}" loading="lazy"><figcaption>${[img.role==='Other'?'':roleLabel[img.role]||img.role,(img.note||'').replace(/^[A-Za-z]+ · /,'')].filter(Boolean).map(esc).join(' · ')}</figcaption></figure>`).join(''):'<p class="rt-products-empty">등록된 이미지가 없습니다.</p>'}</div>
         <div class="rt-product-headline"><span class="rt-eyebrow">${esc(groupLabel[item.group])} · ${esc(item.manufacturer)}</span><h2 id="rt-product-title" tabindex="-1">${esc(item.productName)}</h2><p class="rt-product-en">${esc(item.english)}</p><p class="rt-product-ko">${esc(item.korean)}</p>${reviewBadge(item)}
         ${item.group==='series'?`<a class="rt-button rt-primary rt-product-configure" href="#matrix-configurator" data-configure-family="${esc(item.model.split(' ')[0])}">${esc(item.model.split(' ')[0])} 구성기에서 구성하기 →</a>`:''}
         ${related.length?`<div class="rt-product-related"><b>관련 제품</b>${related.map(link=>`<a href="#products/${link.target}">${esc(byId[link.target].productName)}${link.note?` <small>${esc(link.note)}</small>`:''}</a>`).join('')}</div>`:''}</div></div>
-        ${item.overview?`<section><h3>개요</h3>${item.overview.split(/\n{2,}/).map(paragraph=>`<p>${esc(paragraph)}</p>`).join('')}</section>`:''}
-        ${(item.features||[]).length?`<section><h3>주요 기능</h3><ul class="rt-product-features">${item.features.map(feature=>`<li>${esc(feature.text)}</li>`).join('')}</ul></section>`:''}
+        ${facts.length?`<ul class="rt-product-facts">${facts.map(fact=>`<li><b>${esc(fact.value)}</b><span>${esc(fact.label)}</span></li>`).join('')}</ul>`:''}
+        ${item.overview?`<section class="rt-product-overview"><h3>개요</h3>${headline?`<p class="rt-product-overview-headline">${esc(headline)}</p>`:''}${[restOfFirst.join(' '),...overviewParagraphs.slice(1)].filter(Boolean).map(paragraph=>`<p>${esc(paragraph)}</p>`).join('')}</section>`:''}
+        ${(item.features||[]).length||sizeSpecs.length?`<div class="rt-product-side-row">
+          ${(item.features||[]).length?`<section class="rt-product-box rt-product-box-features"><h3>주요 기능</h3><ul class="rt-product-features">${item.features.map(feature=>`<li>${esc(feature.text)}</li>`).join('')}</ul></section>`:''}
+          ${sizeSpecs.length?`<section class="rt-product-box rt-product-box-size"><h3>크기 및 무게</h3><ul class="rt-product-size">${sizeSpecs.map(([label,value])=>`<li><span>${label}</span><b>${value}</b></li>`).join('')}</ul></section>`:''}
+        </div>`:''}
         ${lineup.length?`<section><h3>구성 제품</h3>${table(['모델','구분','요약'],lineup)}</section>`:''}
-        ${specs.length?`<section><h3>제품 사양</h3>${table(['분류','항목','값','조건'],specs)}</section>`:''}
+        ${specs.length?`<section><h3>제품 사양</h3>${table(['구분','사양','비고'],specs)}</section>`:''}
         ${io.length?`<section><h3>입출력 단자</h3>${table(['분류','방향','단자','수량','신호','조건'],io)}</section>`:''}
         ${issues.length?`<section><h3>확인 사항</h3><ul class="rt-product-issues">${issues.map(issue=>`<li data-status="${esc(issue.status)}"><b>${esc(issue.title)}</b> ${esc(issue.detail)}</li>`).join('')}</ul></section>`:''}
         <section class="rt-product-source"><h3>출처</h3><p>${esc(item.verificationSummary)}</p>${sources.length?`<ul>${sources.map(source=>`<li>${source}</li>`).join('')}</ul>`:''}<p class="rt-product-note">공개 브로셔 수준 정보입니다. 최신 사양·납품 조건은 제조사 또는 서울영상테크에 확인하세요.</p></section>
