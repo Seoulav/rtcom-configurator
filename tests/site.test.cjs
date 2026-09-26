@@ -36,6 +36,7 @@ test('every XDM card and documented rear photo has an image asset',()=>{
   for(const id of ['SPX-HIS8','SPX-HOS10','SPX-HOS12','SPX-COS12','SPX-BLANK'])assert.ok(fs.existsSync(`output/design/assets/cards/${id}.webp`),`missing SPX card image ${id}`);
   for(const card of [...catalog.VDM.input,...catalog.VDM.output])assert.ok(fs.existsSync(`output/design/assets/cards/${card[0]}.webp`),`missing VDM faceplate for ${card[0]}`);
   assert.ok(fs.existsSync('output/design/assets/cards/VDM-BLANK.webp'),'missing VDM blank cover');
+  for(const model of ['m810','m1620','m3236','m2472','m24120'])for(const side of ['front','rear'])assert.ok(fs.existsSync(`output/design/assets/frames/spx-${model}-${side}.webp`),`missing SPX ${model} ${side} photo`);
   for(const card of [...catalog.SPX.input,...catalog.SPX.output])assert.ok(fs.existsSync(`output/design/assets/cards/${card[0]}.webp`),`missing SPX faceplate for ${card[0]}`);
   const extenders=[...new Set([...read('src/app.js').matchAll(/'(output\/design\/assets\/extenders\/[^']+)'/g)].map(match=>match[1]))];
   assert.equal(extenders.length,6);
@@ -50,24 +51,27 @@ test('every XDM card and documented rear photo has an image asset',()=>{
 test('rear photo slot zones stay inside each photo and match the card faceplate ratio',()=>{
   const source=read('src/app.js');
   const literal=source.slice(source.indexOf('const rearPhotos=')+'const rearPhotos='.length,source.indexOf('};',source.indexOf('const rearPhotos='))+1);
-  const rearPhotos=new Function(`return ${literal}`)();
+  const rearPhotos=new Function('SPX_MANUAL',`return ${literal}`)('SPX 국문 사용자 매뉴얼(250805)');
   const catalog=loadCatalog();
-  assert.deepEqual(Object.keys(rearPhotos),['XDM-12','XDM-20','XDM-36','XDM-72','XDM-144','VDM-16X']);
-  const slotCount={'XDM-12':3,'XDM-20':5,'XDM-36':9,'XDM-72':18,'XDM-144':36,'VDM-16X':4};
-  const faceplateRatio={XDM:9.7,VDM:5.7};
+  assert.deepEqual(Object.keys(rearPhotos),['XDM-12','XDM-20','XDM-36','XDM-72','XDM-144','VDM-16X','SPX-M810','SPX-M1620','SPX-M3236','SPX-M2472','SPX-M24120']);
+  // [입력 슬롯, 출력 슬롯, 열 수(입력, 출력), 가로 판넬 여부]
+  const layout={'XDM-12':[3,3,[1,1],true],'XDM-20':[5,5,[5,5]],'XDM-36':[9,9,[9,9]],'XDM-72':[18,18,[18,18]],'XDM-144':[36,36,[18,18]],'VDM-16X':[4,4,[4,4]],
+    'SPX-M810':[1,1,[1,1],true],'SPX-M1620':[2,2,[1,1],true],'SPX-M3236':[4,3,[1,1],true],'SPX-M2472':[3,6,[3,6]],'SPX-M24120':[3,10,[3,10]]};
+  const faceplateRatio={XDM:9.7,VDM:5.7,SPX:13.8};
+  // SPX-M1620 매뉴얼 후면 사진은 가로로 눌려 있다(사진 662×418, 실제 483×177mm). 사진 속 판넬 비율(약 9.8:1)로 확인한다.
+  const photoRatio={'SPX-M1620':9.8};
   for(const [model,photo] of Object.entries(rearPhotos)){
     const family=model.split('-')[0];
     assert.ok(catalog[family].models.includes(model));
     assert.ok(fs.existsSync(photo.src),`missing rear photo ${photo.src}`);
-    const [width,height]=photo.size;
-    const columns=model==='XDM-12'?1:model==='VDM-16X'?4:Math.min(18,slotCount[model]),rows=slotCount[model]/columns;
-    for(const dir of ['input','output']){
-      const [x0,y0,x1,y1]=photo[dir];
+    const [width,height]=photo.size,[inputs,outputs,columns,horizontal]=layout[model];
+    ['input','output'].forEach((dir,index)=>{
+      const [x0,y0,x1,y1]=photo[dir],count=index?outputs:inputs,cols=columns[index],rows=count/cols;
       assert.ok(x0>=0&&y0>=0&&x1<=width&&y1<=height&&x0<x1&&y0<y1,`${model} ${dir} zone must stay inside the photo`);
-      const slotWidth=(x1-x0)/columns,slotHeight=(y1-y0)/rows,ratio=model==='XDM-12'?slotWidth/slotHeight:slotHeight/slotWidth;
-      const expected=faceplateRatio[family];
+      const slotWidth=(x1-x0)/cols,slotHeight=(y1-y0)/rows,ratio=horizontal?slotWidth/slotHeight:slotHeight/slotWidth;
+      const expected=photoRatio[model]||faceplateRatio[family];
       assert.ok(ratio>expected*0.85&&ratio<expected*1.15,`${model} ${dir} slot ratio ${ratio.toFixed(2)} should match a ${expected}:1 faceplate`);
-    }
+    });
   }
 });
 

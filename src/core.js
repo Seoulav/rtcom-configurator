@@ -17,7 +17,7 @@
     portAssignments:{},
     links:{},slot:'in-a',format:'PDF'
   });
-  // 모델별 [입력 슬롯, 출력 슬롯]. XDM: 국문 매뉴얼 pp.7–11. SPX: 매뉴얼 p.4·카탈로그 I/O 크기·후면 사진(M810, M3236).
+  // 모델별 [입력 슬롯, 출력 슬롯]. XDM: 국문 매뉴얼 pp.7–11. SPX: 국문 사용자 매뉴얼(250805) pp.7–9.
   const slotPlans = {
     XDM:{'XDM-12':[3,3],'XDM-20':[5,5],'XDM-36':[9,9],'XDM-72':[18,18],'XDM-144':[36,36],'XDM-216':[54,54]},
     SPX:{'SPX-M810':[1,1],'SPX-M1620':[2,2],'SPX-M3236':[4,3],'SPX-M2472':[3,6],'SPX-M24120':[3,10]},
@@ -37,6 +37,7 @@
     return ({'XDM-HI100':[psePair],'XDM-HIS100':[psePair],'XDM-HOS100':[psePair],'XDM-WOS100':[psePair],'XDM-CIS100':['XDM-CTR100 · TX','XDM-CT103'],'XDM-COS100':['XDM-CTR100 · RX','XDM-CR103'],'XDM-FIS100':['XDM-FT101'],'XDM-FOS100':['XDM-FR101'],'SPX-COS12':['SPX-RX']})[id] || [];
   }
   // 카드를 장착할 때 자동으로 연결하는 전송기(RTCom 종합 카탈로그 p.10·12 호환 표기 근거). 사용자는 전송기 단계에서 바꿀 수 있다.
+  const spxSplitCards = ['SPX-HOS12','SPX-COS12'];
   const defaultLinks = {'SPX-COS12':'SPX-RX','XDM-CIS100':'XDM-CTR100 · TX','XDM-COS100':'XDM-CTR100 · RX','XDM-FIS100':'XDM-FT101','XDM-FOS100':'XDM-FR101'};
   function defaultLink(id, channels) {
     const device = defaultLinks[id];
@@ -166,10 +167,15 @@
     for (const direction of ['input','output']) if (!Object.entries(state.placements).some(([id])=>slotDirections[id]===direction)) add('MISSING_'+direction.toUpperCase(),'WARNING',`${direction==='input'?'입력':'출력'} 카드가 선택되지 않았습니다.`);
     const plan=slotPlan(state.family,state.model);
     if (plan&&state.family==='XDM') add('XDM_SLOT_LAYOUT','VALID',`매뉴얼 기준으로 입력 카드 ${plan[0]}장과 출력 카드 ${plan[1]}장을 장착할 수 있습니다.`,'M01 · XDM 국문 매뉴얼 pp.7–11');
-    else if (plan) add('SLOT_LAYOUT','VALID',`입력 카드 ${plan[0]}장과 출력 카드 ${plan[1]}장을 장착할 수 있습니다.`,state.family==='VDM'?'VDM 국문 매뉴얼 KV07 PDF pp.12–19':'SPX 매뉴얼 p.4 · SPX 카탈로그 I/O 구성 · 후면 사진(M810, M3236)');
+    else if (plan) add('SLOT_LAYOUT','VALID',`입력 카드 ${plan[0]}장과 출력 카드 ${plan[1]}장을 장착할 수 있습니다.`,state.family==='VDM'?'VDM 국문 매뉴얼 KV07 PDF pp.12–19':'SPX 국문 사용자 매뉴얼(250805) pp.7–9');
     else add('PHYSICAL_LAYOUT_UNVERIFIED','UNVERIFIED','화면의 입력·출력 위치는 논리 구성입니다. 실제 슬롯 수와 카드 설치 허용표가 필요합니다.','G01 · G02');
     add('ACCESSORIES_UNVERIFIED','UNVERIFIED','기본 포함품, 케이블, 전원 및 필러 수량은 구매 목록에 포함되지 않았습니다.','G08 · G09 · G12');
-    if (state.family==='SPX') add('SPX_CARD_ALLOWLIST','UNVERIFIED','SPX 프레임별 출력 카드 허용·혼합 조건과 전송기 판매 SKU를 확인해야 합니다.','G03 · G05');
+    if (state.family==='SPX') add('SPX_CARD_ALLOWLIST','UNVERIFIED','SPX 출력 카드 4종은 모든 프레임에 장착할 수 있습니다(매뉴얼 p.11). 카드 혼합 조건과 전송기 판매 SKU는 확인해야 합니다.','SPX 국문 사용자 매뉴얼(250805) pp.10–11 · G03 · G05');
+    // SPX-M810·M1620에 12포트 출력 카드를 꽂으면 11·12번 포트는 출력 10번의 분배(같은 영상)로 동작한다(매뉴얼 p.11).
+    if (['SPX-M810','SPX-M1620'].includes(state.model)) {
+      const split=Object.entries(state.placements).filter(([slot,id])=>slotDirections[slot]==='output'&&spxSplitCards.includes(id));
+      if (split.length) add('SPX_PORT_SPLIT','WARNING',`${state.model}에 장착한 ${[...new Set(split.map(([,id])=>id))].join('·')} ${split.length}장은 11·12번 포트가 출력 10번 포트의 분배(같은 영상)로 동작합니다. 독립 출력은 카드당 10채널로 계산하세요.`,'SPX 국문 사용자 매뉴얼(250805) p.11');
+    }
     if (state.model==='VDM-288X') add('VDM_288X_CUSTOM','UNVERIFIED','VDM-288X는 특수 상황실용으로 커스텀 제작한 모델입니다. 슬롯 수와 배치는 제작 사양서로 확인해야 합니다.','사용자 확인(2026-09-26)');
     if (state.model==='XDM-288') add('XDM_288_SPEC','UNVERIFIED','XDM-288 상세 사양을 확인해야 합니다.','G10');
     for (const [slot,id] of Object.entries(state.placements)) {
@@ -187,7 +193,7 @@
       }
     }
     const spxRx=Object.values(state.links).filter(link=>link.device==='SPX-RX').reduce((sum,link)=>sum+link.count,0);
-    if (spxRx) add('SPX_RX_POC','VALID',`SPX-RX ${spxRx}대는 메인프레임이 CAT 케이블로 전원을 공급(POC)하므로 별도 전원 연결이 필요 없습니다.`,'SPX 사양서·카탈로그 p.3 "POC 기능을 통해 메인프레임으로 RX 제품 전력 지원"');
+    if (spxRx) add('SPX_RX_POC','VALID',`SPX-RX ${spxRx}대는 메인프레임이 CAT 케이블로 전원을 공급(POC)하므로 별도 전원 연결이 필요 없습니다.`,'SPX 국문 사용자 매뉴얼(250805) p.7 · SPX 카탈로그 p.3');
     const ctrCount=Object.values(state.links).filter(link=>link.device?.startsWith('XDM-CTR100 · ')).reduce((sum,link)=>sum+link.count,0);
     if (ctrCount) add('CTR_POWER_REQUIRED','WARNING',`XDM-CTR100 ${ctrCount}대는 전원을 직접 연결해야 합니다. 매트릭스 카드(CIS100·COS100)에 연결하는 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다. 전원 공급 장비의 현행 모델명과 포트 용량을 확인하세요.`,'사용자 확인(2026-09-26) · 사용자 제공 XDM POE 구성도 · G08');
     const status=issues.some(issue=>issue.level==='ERROR')?'ERROR':issues.some(issue=>issue.level==='UNVERIFIED')?'UNVERIFIED':issues.some(issue=>issue.level==='WARNING')?'WARNING':'VALID';
