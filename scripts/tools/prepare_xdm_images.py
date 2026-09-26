@@ -5,7 +5,7 @@
   <원본 폴더>/in/*.png, out/*.png  : 카드 후면 판넬 사진 (파일 이름 = 카드 모델명)
   <원본 폴더>/frame/XDM-12.png     : 프레임 전면 사진 (XDM-12만 사용)
 결과: output/design/assets/cards/<모델>.webp, cards/XDM-BLANK.webp(빈 슬롯 커버 합성), output/design/assets/frames/<모델>-front.webp
-필요 패키지: Pillow
+필요 패키지: Pillow, numpy, scipy
 """
 import random
 import sys
@@ -17,8 +17,8 @@ FRAME_WIDTH = 1200
 ROOT = Path(__file__).resolve().parents[2]
 
 
-def faceplate_band(image):
-    """판넬 금속면만 남긴다. 위로 튀어나온 기판 부품과 흰 배경을 제외한다."""
+def faceplate_band(image, keep_screws=False):
+    """판넬 금속면만 남긴다. 위로 튀어나온 기판 부품과 흰 배경을 제외한다. keep_screws=True면 양쪽 손나사까지 남긴다."""
     rgba = image.convert('RGBA')
     background = Image.new('RGBA', rgba.size, (255, 255, 255, 0))
     mask = Image.eval(rgba.convert('L'), lambda v: 255 if v < 225 else 0)  # 흰 배경 제외
@@ -51,7 +51,28 @@ def faceplate_band(image):
     rows = range(top, bottom, max(1, (bottom - top) // 12))
     columns = [x for x in range(width) if sum(solid(x, y) for y in rows) >= len(rows) * 0.5]
     left, right = min(columns), max(columns) + 1
-    return rgba.crop((left, top, right, bottom))
+    if not keep_screws:
+        return rgba.crop((left, top, right, bottom))
+    # 판넬 양쪽 손나사는 금속판 끝보다 바깥으로 튀어나온다. 판넬 높이 안에서 조금이라도 사물이 있는 열까지 넓혀 나사를 온전히 남긴다.
+    def thing(x, y):  # 은색 나사 머리는 밝아서 solid()로는 배경처럼 보인다. 거의 흰색(배경)만 뺀다.
+        r, g, b, a = pixels[x, y]
+        return a > 200 and min(r, g, b) < 244
+    wide = [x for x in range(width) if sum(thing(x, y) for y in range(top, bottom, 2)) >= (bottom - top) / 2 * 0.04]
+    left, right = min(left, min(wide)), max(right, max(wide) + 1)
+    plate = rgba.crop((left, top, right, bottom))
+    return clear_border_white(plate)
+
+
+def clear_border_white(image, threshold=244):
+    """테두리와 이어진 흰 배경(나사 위아래로 남는 부분)을 투명하게 한다."""
+    import numpy as np
+    from scipy import ndimage
+    rgba = np.asarray(image.convert('RGBA')).copy()
+    white = rgba[:, :, :3].min(axis=2) >= threshold
+    labels, _ = ndimage.label(white)
+    border = set(np.unique(np.concatenate([labels[0], labels[-1], labels[:, 0], labels[:, -1]]))) - {0}
+    rgba[np.isin(labels, list(border)), 3] = 0
+    return Image.fromarray(rgba, 'RGBA')
 
 
 def build_blank_plate():
@@ -92,7 +113,7 @@ def save_webp(image, target, width):
 def main(source):
     source = Path(source)
     for path in sorted(list((source / 'in').glob('*.png')) + list((source / 'out').glob('*.png'))):
-        plate = faceplate_band(Image.open(path))
+        plate = faceplate_band(Image.open(path), keep_screws=True)
         size = save_webp(plate, ROOT / 'output/design/assets/cards' / f'{path.stem}.webp', CARD_WIDTH)
         print(f'card  {path.stem:12} {size[0]}x{size[1]}')
     size = save_webp(build_blank_plate(), ROOT / 'output/design/assets/cards/XDM-BLANK.webp', CARD_WIDTH)
