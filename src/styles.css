@@ -317,6 +317,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-product-issues li[data-status="REVIEW REQUIRED"] b{color:#a4570f}
 #rtcom-design .rt-product-source{padding:16px 18px;border-radius:16px;background:#f7f9fd}
 #rtcom-design .rt-product-source ul{margin:0 0 8px;padding-left:18px;font-size:13px}
+#rtcom-design .rt-product-source li,#rtcom-design .rt-product-source p{overflow-wrap:anywhere}
 #rtcom-design .rt-product-detail .rt-product-note{font-size:12px;color:#687386}
 @media(max-width:1100px){#rtcom-design .rt-product-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:820px){#rtcom-design .rt-product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#rtcom-design .rt-product-hero{grid-template-columns:1fr}}
