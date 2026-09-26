@@ -35,6 +35,7 @@
 - `catalogVersion`
 - 슬롯 ID와 기존 `#matrix-configurator` 주소
 - 0.6 포털 주소(`/products`, `/tools/matrix-configurator`)의 구성기 첫 화면 이동
+- 슬롯 표가 있는 프레임(XDM·SPX·VDM)의 예전 논리 슬롯(in-a·in-b·out-a·out-b)은 불러올 때 실제 슬롯 1·2로 변환합니다(0.10부터 SPX·VDM 포함).
 
 0.7부터 제품 라이브러리(31개 제품·5개 카테고리)와 카탈로그 PDF 배포는 AV portal과 중복되어 제거했습니다. 근거와 영향 범위는 `docs/audit/SITE_SCOPE_REVIEW.md`에 있습니다.
 
@@ -42,7 +43,7 @@
 
 - 현재 화면 버전은 `index.html`의 우측 상단 표기와 `README.md`에 함께 기록합니다.
 - 원본 `main`에 기능 묶음을 병합할 때 마이너 버전을 올리고, 같은 커밋에서 `CHANGELOG.md`를 갱신합니다.
-- 구성기 단일 화면 전환은 `0.7.0`, Analog Way 방식 화면 개편은 `0.8.0`, 전송기 자동 연동은 `0.9.0`으로 기록했습니다. 다음 기능 묶음은 `0.10.0`을 목표로 하며, 실제 병합 전에는 검증된 canonical main commit을 확인합니다.
+- 구성기 단일 화면 전환은 `0.7.0`, Analog Way 방식 화면 개편은 `0.8.0`, 전송기 자동 연동은 `0.9.0`, HDMI 카드 PSE 쌍 연장은 `0.10.0`으로 기록했습니다. 다음 기능 묶음은 `0.11.0`을 목표로 하며, 실제 병합 전에는 검증된 canonical main commit을 확인합니다.
 - 모든 작업은 구현 문서, QA 문서 또는 감사 문서에 근거와 결과를 남깁니다.
 
 ## Git 명령 정책

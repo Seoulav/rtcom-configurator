@@ -112,9 +112,10 @@ test('empty and partly used slots produce no error',()=>{
 });
 
 test('VDM Quad card remains two ports and unknown remote links stay unconfirmed',()=>{
-  const state={...core.initial(),family:'VDM',model:'VDM-8X',placements:{'in-a':'CIS4-U','out-a':'QOS4S-U'}};
+  const state={...core.initial(),family:'VDM',model:'VDM-8X',placements:{'in-1':'CIS4-U','out-1':'QOS4S-U'}};
   assert.equal(RtCatalog.VDM.output.find(card=>card[0]==='QOS4S-U')[2],2);
-  assert(core.validate(state).issues.some(issue=>issue.code==='LINK_UNKNOWN_in-a'));
+  assert(core.validate(state).issues.some(issue=>issue.code==='LINK_UNKNOWN_in-1'));
+  assert.equal(core.bom(state).find(row=>row.model==='QOS4S-U').quantity,1);
   assert.equal(core.choices('CIS4-U').length,0);
 });
 
@@ -146,4 +147,61 @@ test('CTR100 linked to matrix cards needs its own power and cannot use CTR100 PS
   const power=core.bom(state).find(row=>row.category==='전원 장비');
   assert.match(power.model,/XDM-CTR100 전원 공급 장비/);
   assert.equal(core.bom(state).some(row=>row.model==='XDM-CTR100 PSE'),false);
+});
+
+test('HDMI cards can extend with a CTR100 PSE + CTR100 pair that needs power only at the PSE',()=>{
+  for(const id of ['XDM-HI100','XDM-HIS100','XDM-HOS100','XDM-WOS100'])assert.deepEqual(core.choices(id),[core.psePair]);
+  for(const id of ['XDM-HI100','XDM-HOS100'])assert.equal(core.defaultLink(id,4),null,'HDMI extension is optional');
+  assert.equal(core.choices('XDM-CIS100').includes(core.psePair),false,'PSE cannot be used on HDBaseT cards');
+  const state={...core.initial(),model:'XDM-12',placements:{'in-1':'XDM-HI100','out-1':'XDM-HOS100','in-2':'XDM-CIS100'},links:{'in-1':{device:core.psePair,count:2,distance:'30'},'out-1':{device:core.psePair,count:4,distance:'30'},'in-2':{device:'XDM-CTR100 · TX',count:3,distance:'30'}}};
+  state.portAssignments=core.syncPorts(state);
+  const bom=Object.fromEntries(core.bom(state).map(row=>[row.model,row.quantity]));
+  assert.equal(bom['XDM-CTR100 PSE'],6);
+  assert.equal(bom['XDM-CTR100 (PSE 급전, 전원 불필요)'],6);
+  assert.equal(bom['XDM-CTR100'],3);
+  const issues=core.validate(state).issues;
+  assert.match(issues.find(issue=>issue.code==='CTR_POWER_REQUIRED').message,/XDM-CTR100 3대/);
+  assert.ok(issues.some(issue=>issue.code==='LINK_PSE_PAIR_in-1'&&/PSE 쪽에만/.test(issue.message)));
+  const pairOnly={...core.initial(),model:'XDM-12',placements:{'in-1':'XDM-HI100'},links:{'in-1':{device:core.psePair,count:4,distance:'30'}}};
+  pairOnly.portAssignments=core.syncPorts(pairOnly);
+  assert.equal(core.bom(pairOnly).some(row=>row.category==='전원 장비'),false);
+  assert.equal(core.validate(pairOnly).issues.some(issue=>issue.code==='CTR_POWER_REQUIRED'),false);
+  const restored=core.parse(JSON.stringify(core.document(pairOnly)));
+  assert.deepEqual(restored.links['in-1'],{device:core.psePair,count:4,distance:'30'});
+});
+
+test('SPX frames expose documented slot plans, migrate logical slots and link COS12 to SPX-RX',()=>{
+  const plans={'SPX-M810':[1,1],'SPX-M1620':[2,2],'SPX-M3236':[4,3],'SPX-M2472':[3,6],'SPX-M24120':[3,10]};
+  for(const [model,[input,output]] of Object.entries(plans)){
+    assert.deepEqual(core.slotPlan('SPX',model),[input,output]);
+    const slots=core.slotsFor({family:'SPX',model});
+    assert.equal(slots.filter(slot=>slot.dir==='input').length,input);
+    assert.equal(slots.filter(slot=>slot.dir==='output').length,output);
+    assert.equal(slots[0].id,'in-1');
+  }
+  const vdm={'VDM-8X':[2,2],'VDM-16X':[4,4],'VDM-32X':[8,8],'VDM-48X':[12,12],'VDM-64X':[16,16],'VDM-80X':[20,20],'VDM-128X':[32,32],'VDM-180X':[45,45]};
+  for(const [model,plan] of Object.entries(vdm))assert.deepEqual(core.slotPlan('VDM',model),plan,`${model} follows VDM manual KV07`);
+  assert.equal(core.slotPlan('VDM','VDM-288X'),null,'VDM-288X is a custom build without a documented slot table');
+  const custom={...core.initial(),family:'VDM',model:'VDM-288X',placements:{'in-a':'HIS4-U'}};
+  assert.ok(core.validate(custom).issues.some(issue=>issue.code==='VDM_288X_CUSTOM'));
+  const legacyVdm=core.document({...core.initial(),family:'VDM',model:'VDM-16X'});legacyVdm.schemaVersion=2;legacyVdm.state.placements={'in-a':'HIS4-U','out-b':'HOS4-U'};delete legacyVdm.state.portAssignments;
+  assert.deepEqual(core.parse(JSON.stringify(legacyVdm)).placements,{'in-1':'HIS4-U','out-2':'HOS4-U'});
+  assert.deepEqual(core.defaultLink('SPX-COS12',12),{device:'SPX-RX',count:12,distance:'30'});
+  const legacy=core.document({...core.initial(),family:'SPX',model:'SPX-M3236'});
+  legacy.schemaVersion=2;
+  legacy.state.placements={'in-a':'SPX-HIS8','in-b':'SPX-HIS8','out-b':'SPX-COS12'};
+  legacy.state.links={'out-b':{device:'SPX-RX',count:12,distance:'30'}};
+  delete legacy.state.portAssignments;
+  const migrated=core.parse(JSON.stringify(legacy));
+  assert.deepEqual(migrated.placements,{'in-1':'SPX-HIS8','in-2':'SPX-HIS8','out-2':'SPX-COS12'});
+  assert.deepEqual(migrated.links,{'out-2':{device:'SPX-RX',count:12,distance:'30'}});
+  const small=JSON.parse(JSON.stringify(legacy));small.state.model='SPX-M810';
+  const m810=core.parse(JSON.stringify(small));
+  assert.deepEqual(m810.placements,{'in-1':'SPX-HIS8'},'M810 has one input and one output slot; the second logical slots cannot move');
+  const state={...core.initial(),family:'SPX',model:'SPX-M3236',placements:{'out-1':'SPX-COS12'},links:{'out-1':{device:'SPX-RX',count:12,distance:'30'}}};
+  state.portAssignments=core.syncPorts(state);
+  const issues=core.validate(state).issues;
+  assert.ok(issues.some(issue=>issue.code==='SLOT_LAYOUT'&&issue.level==='VALID'));
+  assert.ok(issues.some(issue=>issue.code==='SPX_RX_POC'&&/POC/.test(issue.message)));
+  assert.equal(Object.fromEntries(core.bom(state).map(row=>[row.model,row.quantity]))['SPX-RX'],12);
 });

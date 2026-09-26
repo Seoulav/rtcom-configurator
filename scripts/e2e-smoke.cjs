@@ -69,6 +69,8 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.waitForLoadState('networkidle');
     check('CIS100 장착 시 전송기 단계에 XDM-CTR100(TX)이 4채널로 자동 연결됨',await page.locator('button[data-owner="in-2"][data-link-device="XDM-CTR100 · TX"][aria-pressed="true"]').count()===1&&await page.locator('select[data-owner="in-2"][data-link="count"]').inputValue()==='4');
     check('전송기 단계에 XDM 연동 전송기 라인업 6종이 사진과 함께 표시됨',await page.locator('.rt-ext-lineup-card img').count()===6&&await page.$$eval('.rt-ext-lineup-card img',images=>images.every(image=>image.naturalWidth>0)));
+    await page.locator('button[data-owner="in-1"][data-link-device="XDM-CTR100 PSE + XDM-CTR100"]').click();
+    check('HDMI 카드에 CTR100 PSE + CTR100 한 쌍을 연결할 수 있고 CTR100 전원 경고 수에는 포함되지 않음',await page.locator('button[data-owner="in-1"][data-link-device="XDM-CTR100 PSE + XDM-CTR100"][aria-pressed="true"]').count()===1&&/XDM-CTR100 4대/.test(await page.locator('.rt-power-notice strong').innerText()));
     await page.click('[data-action="back"]');
     await page.waitForLoadState('networkidle');
     const broken=await brokenImages();
@@ -84,6 +86,29 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       await page.goto(`${home}${legacy}#matrix-configurator`,{waitUntil:'networkidle'});
       check(`옛 주소 /${legacy} → 구성기 첫 화면 이동`,page.url()===`${home}#matrix-configurator`&&await page.locator('#matrix-configurator h1').isVisible(),page.url());
     }
+    await page.evaluate(()=>localStorage.clear());
+    await page.goto(home,{waitUntil:'networkidle'});
+    await page.click('button[data-family="SPX"]');
+    await page.click('[data-action="next"]');
+    await page.click('button[data-model="SPX-M3236"]');
+    await page.click('[data-action="next"]');
+    await page.waitForLoadState('networkidle');
+    check('SPX-M3236은 입력 4·출력 3 슬롯이 블랭크 커버로 표시됨',await page.locator('.rt-rack-hs .rt-rack-slot-blank img.rt-blank-plate').count()===7);
+    await page.locator('button[data-slot="out-1"]').click();
+    await page.locator('.rt-card-modal .rt-card-choice[data-card="SPX-COS12"]').click();
+    await page.click('[data-action="next"]');
+    check('SPX-COS12 장착 시 SPX-RX가 12채널로 자동 연결됨',await page.locator('button[data-owner="out-1"][data-link-device="SPX-RX"][aria-pressed="true"]').count()===1&&await page.locator('select[data-owner="out-1"][data-link="count"]').inputValue()==='12');
+    await page.evaluate(()=>localStorage.clear());
+    await page.goto(home,{waitUntil:'networkidle'});
+    await page.click('button[data-family="VDM"]');
+    await page.click('[data-action="next"]');
+    await page.click('button[data-model="VDM-16X"]');
+    await page.click('[data-action="next"]');
+    await page.waitForLoadState('networkidle');
+    check('VDM-16X는 매뉴얼 후면 사진 위에 입력 4·출력 4 슬롯(블랭크 커버)이 표시됨',await page.locator('.rt-rack-photo .rt-rack-slot-blank').count()===8&&await page.$eval('.rt-rack-photo-image',image=>image.naturalWidth>0));
+    await page.locator('button[data-slot="in-1"]').click();
+    await page.locator('.rt-card-modal .rt-card-choice[data-card="HIS4-U"]').click();
+    check('VDM 보드를 장착하면 실물 판넬 사진이 표시됨',await page.$eval('button[data-slot="in-1"] img.rt-faceplate',image=>image.naturalWidth>0&&image.getAttribute('src').endsWith('HIS4-U.webp')));
     check('404 요청 없음',failed.length===0,failed.join(', '));
     check('자바스크립트 오류 없음',errors.length===0,errors.join(' | '));
     await context.close();

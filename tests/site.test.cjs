@@ -33,6 +33,10 @@ test('every XDM card and documented rear photo has an image asset',()=>{
   assert.ok(cards.length>0);
   for(const card of cards){const id=Array.isArray(card)?card[0]:card.id;assert.ok(fs.existsSync(`output/design/assets/cards/${id}.webp`),`missing card faceplate for ${id}`)}
   assert.ok(fs.existsSync('output/design/assets/cards/XDM-BLANK.webp'),'missing blank slot cover');
+  for(const id of ['SPX-HIS8','SPX-HOS10','SPX-HOS12','SPX-COS12','SPX-BLANK'])assert.ok(fs.existsSync(`output/design/assets/cards/${id}.webp`),`missing SPX card image ${id}`);
+  for(const card of [...catalog.VDM.input,...catalog.VDM.output])assert.ok(fs.existsSync(`output/design/assets/cards/${card[0]}.webp`),`missing VDM faceplate for ${card[0]}`);
+  assert.ok(fs.existsSync('output/design/assets/cards/VDM-BLANK.webp'),'missing VDM blank cover');
+  for(const card of [...catalog.SPX.input,...catalog.SPX.output])assert.ok(fs.existsSync(`output/design/assets/cards/${card[0]}.webp`),`missing SPX faceplate for ${card[0]}`);
   const extenders=[...new Set([...read('src/app.js').matchAll(/'(output\/design\/assets\/extenders\/[^']+)'/g)].map(match=>match[1]))];
   assert.equal(extenders.length,6);
   for(const extender of extenders)assert.ok(fs.existsSync(extender),`missing extender photo ${extender}`);
@@ -48,18 +52,21 @@ test('rear photo slot zones stay inside each photo and match the card faceplate 
   const literal=source.slice(source.indexOf('const rearPhotos=')+'const rearPhotos='.length,source.indexOf('};',source.indexOf('const rearPhotos='))+1);
   const rearPhotos=new Function(`return ${literal}`)();
   const catalog=loadCatalog();
-  assert.deepEqual(Object.keys(rearPhotos),['XDM-12','XDM-20','XDM-36','XDM-72','XDM-144']);
-  const slotCount={'XDM-12':3,'XDM-20':5,'XDM-36':9,'XDM-72':18,'XDM-144':36};
+  assert.deepEqual(Object.keys(rearPhotos),['XDM-12','XDM-20','XDM-36','XDM-72','XDM-144','VDM-16X']);
+  const slotCount={'XDM-12':3,'XDM-20':5,'XDM-36':9,'XDM-72':18,'XDM-144':36,'VDM-16X':4};
+  const faceplateRatio={XDM:9.7,VDM:5.7};
   for(const [model,photo] of Object.entries(rearPhotos)){
-    assert.ok(catalog.XDM.models.includes(model));
+    const family=model.split('-')[0];
+    assert.ok(catalog[family].models.includes(model));
     assert.ok(fs.existsSync(photo.src),`missing rear photo ${photo.src}`);
     const [width,height]=photo.size;
-    const columns=model==='XDM-12'?1:Math.min(18,slotCount[model]),rows=slotCount[model]/columns;
+    const columns=model==='XDM-12'?1:model==='VDM-16X'?4:Math.min(18,slotCount[model]),rows=slotCount[model]/columns;
     for(const dir of ['input','output']){
       const [x0,y0,x1,y1]=photo[dir];
       assert.ok(x0>=0&&y0>=0&&x1<=width&&y1<=height&&x0<x1&&y0<y1,`${model} ${dir} zone must stay inside the photo`);
       const slotWidth=(x1-x0)/columns,slotHeight=(y1-y0)/rows,ratio=model==='XDM-12'?slotWidth/slotHeight:slotHeight/slotWidth;
-      assert.ok(ratio>8.5&&ratio<11,`${model} ${dir} slot ratio ${ratio.toFixed(2)} should match a 9.7:1 faceplate`);
+      const expected=faceplateRatio[family];
+      assert.ok(ratio>expected*0.85&&ratio<expected*1.15,`${model} ${dir} slot ratio ${ratio.toFixed(2)} should match a ${expected}:1 faceplate`);
     }
   }
 });
