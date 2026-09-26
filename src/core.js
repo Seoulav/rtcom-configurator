@@ -26,6 +26,12 @@
   function choices(id) {
     return ({'XDM-CIS100':['XDM-CTR100 · TX','XDM-CT103'],'XDM-COS100':['XDM-CTR100 · RX','XDM-CR103'],'XDM-FIS100':['XDM-FT101'],'XDM-FOS100':['XDM-FR101'],'SPX-COS12':['SPX-RX']})[id] || [];
   }
+  // 카드를 장착할 때 자동으로 연결하는 전송기(RTCom 종합 카탈로그 p.10·12 호환 표기 근거). 사용자는 전송기 단계에서 바꿀 수 있다.
+  const defaultLinks = {'XDM-CIS100':'XDM-CTR100 · TX','XDM-COS100':'XDM-CTR100 · RX','XDM-FIS100':'XDM-FT101','XDM-FOS100':'XDM-FR101'};
+  function defaultLink(id, channels) {
+    const device = defaultLinks[id];
+    return device && choices(id).includes(device) ? {device,count:channels,distance:'30'} : null;
+  }
   function cleanText(value, label, maximum) {
     if (typeof value !== 'string' || value.length > maximum) throw new Error(`${label} 형식이 잘못되었습니다.`);
     return value.trim();
@@ -196,5 +202,5 @@
     const rows=[['상태','구분','모델','수량','비고'],...bom(state).map(row=>['UNVERIFIED_DRAFT',row.category,row.model,row.quantity,'미검증 검토용 · 케이블/전원/기본 포함품 미확정'])];
     return rows.map(row=>row.map(cell).join(',')).join('\r\n');
   }
-  scope.RtCore={initial,checkState,choices,syncPorts,slotsFor,requirementSummary,validate,bom,document,parse,csv,catalogVersion,schemaVersion,signalTypes};
+  scope.RtCore={initial,checkState,choices,defaultLink,syncPorts,slotsFor,requirementSummary,validate,bom,document,parse,csv,catalogVersion,schemaVersion,signalTypes};
 })(globalThis);
