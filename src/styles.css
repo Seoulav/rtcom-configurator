@@ -362,3 +362,6 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-product-diagram-legend li span{width:12px;height:12px;border-radius:3px;display:inline-block}
 #rtcom-design .rt-product-diagram-note{margin:10px 0 0;text-align:center;font-size:12px;color:#687386}
 @media(max-width:480px){#rtcom-design .rt-product-diagram{padding:14px 10px}}
+
+/* 0.22 — 제품 사양 표를 에이앤미디어(antez.co.kr)처럼 구분·사양 2단으로 정리(비고는 사양 칸 아래 작은 글씨로) */
+#rtcom-design .rt-product-spec-note{display:block;margin-top:3px;font-size:11px;color:#8a94a6;font-weight:500}

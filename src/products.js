@@ -126,7 +126,7 @@
       const images=item.images||[];
       const allSpecs=item.specifications||[];
       const sizeSpecs=allSpecs.filter(isSizeSpec).map(spec=>[esc(spec.name.replace('크기(W×D×H)','크기')),`${esc(spec.value)}${spec.unit?` ${esc(spec.unit)}`:''}`]);
-      const specs=allSpecs.filter(spec=>!isSizeSpec(spec)).map(spec=>[`${esc(spec.group)} · ${esc(spec.name)}`,`${esc(spec.value)}${spec.unit?` ${esc(spec.unit)}`:''}${verification(spec.verification)}`,esc(spec.condition)]);
+      const specs=allSpecs.filter(spec=>!isSizeSpec(spec)).map(spec=>[esc(spec.name),`${esc(spec.value)}${spec.unit?` ${esc(spec.unit)}`:''}${verification(spec.verification)}${spec.condition?`<span class="rt-product-spec-note">${esc(spec.condition)}</span>`:''}`]);
       const io=(item.io||[]).map(port=>[esc(port.group),esc(directionLabel[port.direction]||port.direction),esc(port.connector),esc(port.quantity),`${esc(port.signal)}${port.protocol?` · ${esc(port.protocol)}`:''}${verification(port.verification)}`,esc(port.condition)]);
       const lineup=(item.lineup||[]).map(entry=>[`<b>${esc(entry.model)}</b>`,esc(entry.kind),esc(entry.summary)]);
       // 같은 대상이 여러 관계로 적혀 있으면(예: 시리즈 소속 + 카드 연동) 한 번만 보이고, 구체적인 연동 설명을 우선한다.
@@ -150,7 +150,7 @@
           ${sizeSpecs.length?`<section class="rt-product-box rt-product-box-size"><h3>크기 및 무게</h3><ul class="rt-product-size">${sizeSpecs.map(([label,value])=>`<li><span>${label}</span><b>${value}</b></li>`).join('')}</ul></section>`:''}
         </div>`:''}
         ${lineup.length?`<section><h3>구성 제품</h3>${table(['모델','구분','요약'],lineup)}</section>`:''}
-        ${specs.length?`<section><h3>제품 사양</h3>${table(['구분','사양','비고'],specs)}</section>`:''}
+        ${specs.length?`<section><h3>제품 사양</h3>${table(['구분','사양'],specs)}</section>`:''}
         ${diagram?`<section class="rt-product-diagram"><h3>연결 다이어그램</h3>${diagram}</section>`:''}
         ${io.length?`<section><h3>입출력 단자</h3>${table(['분류','방향','단자','수량','신호','조건'],io)}</section>`:''}
         ${issues.length?`<section><h3>확인 사항</h3><ul class="rt-product-issues">${issues.map(issue=>`<li data-status="${esc(issue.status)}"><b>${esc(issue.title)}</b> ${esc(issue.detail)}</li>`).join('')}</ul></section>`:''}
