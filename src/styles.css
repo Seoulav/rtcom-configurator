@@ -156,7 +156,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-card-choice:hover{border-color:#9dbbf5;box-shadow:0 8px 20px #2c4a8a1a}
 #rtcom-design .rt-card-choice:focus-visible{outline:3px solid #3978ee66;outline-offset:2px}
 #rtcom-design .rt-card-choice[aria-pressed="true"]{border-color:#3978ee;background:#f4f8ff}
-#rtcom-design .rt-card-choice-plate{grid-column:1/-1;display:block;padding:8px;border-radius:10px;background:#1a1f26}
+#rtcom-design .rt-card-choice-plate{grid-column:1/-1;display:block}
 #rtcom-design .rt-card-choice-plate img{display:block;width:100%;height:auto}
 #rtcom-design .rt-card-choice-copy strong{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:15px}
 #rtcom-design .rt-card-choice-copy strong em{padding:2px 7px;border-radius:99px;background:#efe8ff;color:#6b3fd1;font-size:9px;font-style:normal;letter-spacing:.06em}
