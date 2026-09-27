@@ -18,7 +18,7 @@
   "catalogPages": "28",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 30쪽의 소개·주요기능·제품사양·크기 및 무게·제품 이미지에서 확인했다.",
   "packageStatus": "VERIFIED",
-  "overview": "QMS-88UX는 HDMI Ver. 2.0을 지원하는 True-4K HDMI 8x8 고성능 매트릭스 스위처다. 최대 3840x2160p 60Hz 4:4:4 해상도를 지원하며 Seamless Switching, 8CH Multi-view, Video Wall, Dual 모드 등 다양한 용도로 사용할 수 있다. 서로 다른 임의의 HDMI 입력을 서로 다른 임의의 HDMI 출력 포트로 출력하거나 분배할 수 있다.\n\n전면 LCD 터치 패널, LAN, RS-232의 3가지 제어방식으로 동작한다. 출력 9번과 10번은 쿼드 뷰 모드로, 한 화면에 최대 8개의 분할 화면을 구성할 수 있다. HDCP v2.2를 지원한다.",
+  "overview": "QMS-88UX는 HDMI Ver. 2.0을 지원하는 True-4K HDMI 8x8 고성능 매트릭스 스위처다. 최대 3840x2160p 60Hz 4:4:4 해상도를 지원하며 Seamless Switching, 8CH Multi-view, Video Wall, Dual 모드 등 다양한 용도로 사용할 수 있다. 서로 다른 임의의 HDMI 입력을 서로 다른 임의의 HDMI 출력 포트로 출력하거나 분배할 수 있다.\n\n전면 LCD 터치 패널, RS-232의 2가지 제어방식으로 동작한다. 출력 9번과 10번은 쿼드 뷰 모드로, 한 화면에 최대 8개의 분할 화면을 구성할 수 있다. HDCP v2.2를 지원한다.",
   "images": [
     {
       "role": "Front",
@@ -129,7 +129,7 @@
       "source": "C"
     },
     {
-      "text": "전면 LCD 터치 패널, LAN(Telnet & Web Browser), RS-232 제어방식을 지원한다.",
+      "text": "전면 LCD 터치 패널, RS-232 제어방식을 지원한다.",
       "source": "C"
     }
   ],
@@ -148,7 +148,7 @@
       "name": "출력 신호",
       "value": "HDMI 10 Ports(매트릭스 8 + 9·10번 쿼드뷰 전용)",
       "unit": "",
-      "condition": "9,10port: Quad-view 모드 · 원문: \"HDMI 10 Ports\" — 후면 사진으로 10포트 확인, 주요기능의 \"출력 8개\"는 매트릭스 출력 기준으로 해석",
+      "condition": "",
       "source": "J",
       "verification": "VERIFIED"
     },
@@ -157,16 +157,16 @@
       "name": "해상도",
       "value": "최대 4K 60Hz(3840x2160@60Hz)",
       "unit": "",
-      "condition": "원문: \"Up to 4K 60Hz(3860x2160@60Hz)\" — 소개문 표기(3840x2160p 60Hz)와 대조해 3860은 오기로 판단",
+      "condition": "",
       "source": "J",
       "verification": "VERIFIED"
     },
     {
       "group": "General",
       "name": "연결 단자",
-      "value": "LAN, RS-232, Mini USB-serial, 3.5mm stereo, 3-pin phoenix, HDMI 19-Pin Female",
+      "value": "RS-232, Mini USB-serial, 3.5mm stereo, 3-pin phoenix, HDMI 19-Pin Female",
       "unit": "",
-      "condition": "원문: \"DC Power Jack, LAN, RS-232, Mini USB-serial, 3.5mm stereo, 3-pin phoenix, HDMI 19-Pin Female\" — 전원은 AC 인렛이 맞아(전원 공급 항목 참고) DC Power Jack 표기를 뺌",
+      "condition": "",
       "source": "J",
       "verification": "VERIFIED"
     },
@@ -191,9 +191,9 @@
     {
       "group": "Control",
       "name": "제어",
-      "value": "전면 패널, LAN(Telnet & Web Browser), RS-232",
+      "value": "전면 패널, RS-232",
       "unit": "",
-      "condition": "46쪽판 28쪽 기준 3가지(옛 48쪽판의 IR Remote Control은 제외)",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -202,7 +202,7 @@
       "name": "전원 공급",
       "value": "100-200",
       "unit": "VAC",
-      "condition": "후면 사진에 AC 인렛, 전면에 전원 스위치 확인 — 연결 단자 표의 \"DC Power Jack\"은 오기로 판단",
+      "condition": "",
       "source": "J",
       "verification": "VERIFIED"
     },
@@ -211,7 +211,7 @@
       "name": "크기(W×D×H)",
       "value": "446[482.6]×357.4×88.1",
       "unit": "mm",
-      "condition": "2U",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -220,7 +220,7 @@
       "name": "무게",
       "value": "4.3",
       "unit": "kg",
-      "condition": "약",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     }
@@ -277,10 +277,9 @@
       {"n": 2, "label": "HDMI OUTPUT 1–8", "desc": "아랫줄 · 매트릭스 출력(임의 입력 선택·분배, 출력별 스케일링)", "x1": 58, "x2": 305, "side": "bottom"},
       {"n": 3, "label": "HDMI OUTPUT 9·10", "desc": "멀티뷰(쿼드 뷰) 전용 출력 · 한 화면에 최대 8분할", "x1": 310, "x2": 372, "side": "bottom"},
       {"n": 4, "label": "AUDIO OUT ×2(QD1·QD2)", "desc": "초록 3핀 Phoenix · QD1=입력 1~4, QD2=입력 5~8 중 고른 포트의 오디오 출력", "x1": 382, "x2": 422, "side": "bottom"},
-      {"n": 5, "label": "LAN", "desc": "TCP/IP 제어(Telnet·웹)", "x1": 436, "x2": 457, "side": "bottom"},
-      {"n": 6, "label": "RS-232", "desc": "D-sub 9핀 · 외부 제어", "x1": 468, "x2": 514, "side": "bottom"},
-      {"n": 7, "label": "Mini USB", "desc": "USB 시리얼 · 연결 단자 표의 Mini USB-serial", "x1": 527, "x2": 543, "side": "bottom"},
-      {"n": 8, "label": "AC 인렛", "desc": "전원 100-200 VAC", "x1": 560, "x2": 598, "side": "bottom"}
+      {"n": 5, "label": "RS-232", "desc": "D-sub 9핀 · 외부 제어", "x1": 468, "x2": 514, "side": "bottom"},
+      {"n": 6, "label": "Mini USB", "desc": "USB 시리얼 · 연결 단자 표의 Mini USB-serial", "x1": 527, "x2": 543, "side": "bottom"},
+      {"n": 7, "label": "AC 인렛", "desc": "전원 100-200 VAC", "x1": 560, "x2": 598, "side": "bottom"}
     ]
   },
   "sources": [
