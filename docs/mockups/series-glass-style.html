@@ -1,0 +1,140 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>
+@font-face{font-family:"Pretendard Variable";font-weight:45 920;font-style:normal;font-display:swap;src:url("../../fonts/PretendardVariable.woff2") format("woff2-variations")}
+:root{color-scheme:light;--paper:#EEF1F6;--ink:#1C1C1E;--ink-2:#3A3A3C;--muted:#8A8A8E;--line:rgba(60,60,67,.12);--line-2:rgba(60,60,67,.20);
+--accent:#007AFF;--accent-2:#0057D8;--accent-tint:rgba(0,122,255,.12);--violet:#5E5CE6;--purple:#BF5AF2;--purple-ink:#8944AB;--purple-tint:rgba(137,68,171,.09);
+--glass-fill:rgba(255,255,255,.62);--glass-stroke:rgba(255,255,255,.7);--glass-blur:saturate(180%) blur(30px);--field-fill:rgba(118,118,128,.10);--seg-track:rgba(118,118,128,.14);
+--shadow-card:0 1px 2px rgba(20,26,40,.04),0 18px 48px -20px rgba(20,26,40,.28);--r-card:24px;--r-inner:16px;--r-pill:980px;
+--sans:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"SF Pro Display","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.45;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;min-height:100vh;position:relative}
+.bg-orbs{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(58vw 58vw at 12% -8%,rgba(0,122,255,.28),transparent 60%),radial-gradient(50vw 50vw at 92% 4%,rgba(191,90,242,.22),transparent 60%),radial-gradient(60vw 60vw at 78% 96%,rgba(48,209,196,.20),transparent 62%),radial-gradient(46vw 46vw at 6% 92%,rgba(255,149,0,.16),transparent 60%)}
+.wrap{max-width:1180px;margin:0 auto;padding:34px 22px 60px}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:26px}
+.brandmark{display:flex;align-items:center;gap:15px}
+.swatch{width:52px;height:52px;border-radius:14px;background:linear-gradient(150deg,#0A84FF,#5E5CE6 55%,#BF5AF2);box-shadow:inset 0 0 0 1px rgba(255,255,255,.35),0 8px 20px -6px rgba(10,132,255,.6);display:grid;place-items:center;position:relative;overflow:hidden}
+.swatch::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.28),rgba(255,255,255,0) 46%)}
+.title-block h1{font-size:27px;font-weight:800;letter-spacing:-.02em;margin:0;line-height:1.1}
+.title-block .sub{font-size:11px;color:var(--muted);letter-spacing:.02em;text-transform:uppercase;margin:3px 0 0}
+.toolbar{display:flex;gap:9px;flex-wrap:wrap}
+.btn{font:600 13px/1 var(--sans);border:1px solid transparent;background:var(--field-fill);color:var(--accent);padding:9px 16px;border-radius:var(--r-pill);white-space:nowrap}
+.btn.primary{background:var(--accent);color:#fff;box-shadow:0 6px 16px -6px var(--accent)}
+.cols{display:grid;grid-template-columns:360px 1fr;gap:22px;align-items:start}
+.col{display:flex;flex-direction:column;gap:18px;min-width:0}
+.card{background:var(--glass-fill);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:1px solid var(--glass-stroke);border-radius:var(--r-card);padding:22px;box-shadow:var(--shadow-card)}
+.card h2{font-size:15px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:0 0 16px;display:flex;align-items:center;gap:9px}
+.card h2 .idx{color:var(--accent);font-size:14px;font-weight:700}
+.card h2 .note{text-transform:none;letter-spacing:0;font-weight:500}
+.lead{font-size:15px;line-height:1.6;color:var(--ink-2);margin:0 0 14px}.lead b{color:var(--ink)}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fact{background:var(--field-fill);border-radius:13px;padding:10px 12px}
+.fact span{display:block;font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.02em;text-transform:uppercase}
+.fact b{font-size:18px;font-weight:800;letter-spacing:-.01em}.fact small{font-size:12px;color:var(--ink-2);font-weight:600;margin-left:3px}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line)}tbody tr:last-child td{border-bottom:none}
+th{font-size:10.5px;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);font-weight:700;background:var(--field-fill)}
+td:first-child{color:var(--muted);font-weight:600;width:34%}td{color:var(--ink-2)}
+.tableWrap{border-radius:var(--r-inner);border:1px solid var(--line);overflow:hidden}
+.hint{font-size:11.5px;color:var(--muted);margin-top:9px;line-height:1.45}
+.checks{list-style:none;margin:0;padding:0;display:grid;gap:9px;font-size:13px;color:var(--ink-2);font-weight:600}
+.checks li{display:flex;gap:10px;align-items:flex-start}
+.checks i{flex:none;width:18px;height:18px;border-radius:6px;background:var(--accent);display:grid;place-items:center;margin-top:1px}
+.seg{display:inline-flex;gap:2px;padding:2px;background:var(--seg-track);border-radius:11px}
+.seg span{border-radius:9px;font-weight:600;font-size:13px;padding:7px 14px;color:var(--ink)}.seg .on{background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.14),0 1px 2px rgba(0,0,0,.10)}
+.panel{background:#fff;border-radius:var(--r-inner);border:1px solid var(--line);padding:14px 10px 6px;margin-top:14px}
+.ports{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.port{background:var(--field-fill);border-radius:13px;padding:10px 12px;font-size:12px;color:var(--ink-2);line-height:1.45}
+.port b{display:flex;gap:7px;align-items:center;font-size:13px;color:var(--ink);margin-bottom:3px}
+.n{width:18px;height:18px;border-radius:50%;background:var(--accent);color:#fff;font-size:10.5px;font-weight:700;display:grid;place-items:center}
+.pill{display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:var(--r-pill);background:var(--accent-tint);color:var(--accent-2)}
+.foot{font-size:11.5px;color:var(--muted);line-height:1.6;padding:4px 2px}
+.foot b{color:var(--ink-2)}
+.tag{position:fixed;top:8px;right:8px;background:#D70015;color:#fff;font-size:11px;padding:3px 8px;border-radius:6px;z-index:5}
+@media(max-width:1000px){.cols{grid-template-columns:1fr}.ports{grid-template-columns:1fr 1fr}}
+
+.frames{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.frame{background:var(--field-fill);border-radius:16px;padding:10px 10px 12px;display:flex;flex-direction:column;gap:6px}
+.frame .ph{height:74px;border-radius:10px;background:#fff;display:grid;place-items:center;overflow:hidden}
+.frame .ph img{max-width:92%;max-height:68px;object-fit:contain}
+.frame .ph em{font-style:normal;font-size:11px;color:var(--muted)}
+.frame b{font-size:14px;font-weight:800;letter-spacing:-.01em}.frame small{font-size:11.5px;color:var(--ink-2);font-weight:600}
+.ru{height:6px;border-radius:6px;background:rgba(118,118,128,.14);overflow:hidden}.ru i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#0A84FF,#5E5CE6)}
+.frame .flag{align-self:flex-start;font-size:10px;font-weight:700;padding:2px 7px;border-radius:980px;background:var(--purple-tint);color:var(--purple-ink)}
+.cards2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cardcol h3{margin:0 0 8px;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.cardrow{display:grid;grid-template-columns:86px 1fr auto;gap:10px;align-items:center;padding:7px 8px;border-radius:12px;background:var(--field-fill);margin-bottom:6px}
+.cardrow img{width:86px;height:26px;object-fit:contain;background:#fff;border-radius:6px}
+.cardrow b{font-size:13px}.cardrow span{display:block;font-size:11.5px;color:var(--muted);font-weight:600}
+.cardrow .pc{font-size:12px;font-weight:800;color:var(--accent-2);background:var(--accent-tint);padding:3px 8px;border-radius:980px;white-space:nowrap}
+.cardrow .pc.out{color:var(--purple-ink);background:var(--purple-tint)}
+.more{font-size:12px;color:var(--accent);font-weight:600;margin-top:10px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:8px;font-size:11.5px;color:var(--muted);font-weight:600}.legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+</style></head><body><div class="bg-orbs"></div><div class="wrap" id="app"></div><span class="tag">시안 · 실제 사이트 아님</span>
+<script>
+const F='../../output/design/assets/frames/',C='../../output/design/assets/cards/';
+const SIG={HDMI:'#007AFF',DP:'#5E5CE6',SDI:'#E08A20',CAT:'#1E9E52',FIBER:'#30B0C7',QUAD:'#BF5AF2'};
+const SIGN={HDMI:'HDMI',DP:'DisplayPort',SDI:'SDI',CAT:'HDBaseT·CATx',FIBER:'광'};
+const DATA={
+xdm:{name:'XDM Series',sub:'eXtreme Digital Matrix · 4K60 4:4:4 모듈형 매트릭스',page:'4–12',
+lead:'HDMI·DisplayPort·12G-SDI·HDBaseT 3.0·광 신호를 <b>어떤 입력이든 원하는 출력으로</b> 바꿔 보내는 4K60 4:4:4 모듈형 매트릭스입니다. 카드를 꽂는 만큼 12×12부터 216×216까지 확장합니다.',
+facts:[['최대 규모','216','×216'],['해상도','4K','60Hz 4:4:4'],['대역폭','18','Gbps'],['카드당','4','포트']],
+frames:[['XDM-12','12×12',4,'xdm-12-front.webp'],['XDM-20','20×20',9,'xdm-20-front.webp'],['XDM-36','36×36',9,'xdm-36-front.webp'],['XDM-72','72×72',16,'xdm-72-front.webp'],['XDM-144','144×144',29,'xdm-144-front.webp'],['XDM-216','216×216',40,'xdm-216-front.webp']],maxRU:40,
+inCards:[['XDM-HIS100','HDMI 2.0','HDMI',4],['XDM-HI100','HDMI 2.0 · Non-Scaler','HDMI',4],['XDM-DPI100','DisplayPort 1.2','DP',4],['XDM-SIS100','12G-SDI','SDI',4],['XDM-CIS100','HDBaseT 3.0','CAT',4,'CTR100 TX · CT103'],['XDM-FIS100','광 1LC','FIBER',4,'FT101']],
+outCards:[['XDM-HOS100','HDMI 2.0 · 월·쿼드','HDMI',4],['XDM-WOS100','HDMI · Wall Overlay','HDMI',4],['XDM-DPOS100','DisplayPort 1.2','DP',4],['XDM-SOS100','12G-SDI','SDI',4],['XDM-COS100','HDBaseT 3.0 · POE','CAT',4,'CTR100 RX · CR103'],['XDM-FOS100','광 1LC','FIBER',4,'FR101']],
+spec:[['대역폭','18 Gbps'],['최대 해상도','4096×2160 · 3840×2160 60Hz 4:4:4'],['입출력 채널','12 · 20 · 36 · 72 · 144 · 216 ch'],['신호','HDMI 2.0 · DP · 12G-SDI · HDBaseT 3.0 · 광 · DANTE'],['제어','전면 LCD 터치 · RS-232 · LAN'],['전원','110~240 VAC · 이중화 · 핫스왑'],['MTBF','50,000 시간'],['환경','0~40 °C · 습도 80% 이하']],
+feats:['심리스 스위칭 · 비디오월 · 출력별 스케일 업/다운','멀티뷰(듀얼·쿼드·16분할)','전원 이중화 · 슬롯·팬 모듈 핫스왑','POE로 매트릭스에서 송수신기 전원 공급','RS-232+ — 송수신기 너머 외부기기 제어','DANTE 네트워크 오디오 · 오디오 병합/추출'],moreFeats:11,
+cta:'XDM 구성기에서 구성하기'},
+vdm:{name:'VDM Series',sub:'Variety Digital Matrix · 크로스 플랫폼 모듈형 매트릭스',page:'17–25',
+lead:'HDMI·HDBaseT·광·3G-SDI를 <b>한 프레임에서 섞어 쓰는</b> 크로스 플랫폼 매트릭스입니다. 8×8부터 288×288까지 10가지 프레임으로 소규모 회의실부터 대형 상황실까지 대응합니다.',
+facts:[['최대 규모','288','×288'],['해상도','4K','30Hz 4:4:4'],['대역폭','10.2','Gbps'],['카드당','4','포트']],
+frames:[['VDM-8X','8×8',3,'vdm-8x-front.webp'],['VDM-16X','16×16',7,'vdm-16x-front.webp'],['VDM-32X','32×32',12,'vdm-32x-front.webp'],['VDM-48X','48×48',19,'vdm-48x-front.webp'],['VDM-64X','64×64',24,'vdm-64x-front.webp'],['VDM-80X','80×80',27,'vdm-80x-front.webp'],['VDM-128X','128×128',37,'vdm-128x-front.webp'],['VDM-180X','180×180',38,'vdm-180x-front.webp'],['VDM-256X','256×256',39,'vdm-256x-front.webp','2랙 폭 · 매뉴얼 기준'],['VDM-288X','288×288',38,null,'2랙 폭 · 커스텀']],maxRU:40,
+inCards:[['HIS4-U','HDMI 1.4 · 4K30','HDMI',4],['SIS4-U','3G/HD-SDI','SDI',4],['CIS4-U','HDBaseT','CAT',4,'CT104-U'],['FIS4-U','광 1LC','FIBER',4,'FT101-U']],
+outCards:[['HOS4-U','HDMI · 일반 스위칭','HDMI',4],['HOS4S-UW','HDMI · 심리스 스위칭','HDMI',4],['QOS4S-U','HDMI · 쿼드 뷰어','QUAD',2],['SOS4','3G/HD-SDI','SDI',4],['COS4-U','HDBaseT','CAT',4,'CR104-U'],['FOS4-U','광 1LC','FIBER',4,'FR101-U']],
+spec:[['대역폭','10.2 Gbps'],['최대 해상도','3840×2160 30Hz 4:4:4'],['입출력 채널','8 · 16 · 32 · 48 · 64 · 80 · 128 · 180 · 288 ch'],['신호','HDMI · DVI(HDMI 보드 호환) · 3G-SDI · HDBaseT · 광'],['제어','전면 LCD 터치 · RS-232 · LAN'],['전원','110~240 VAC · 150~600W · 이중화'],['MTBF','50,000 시간'],['환경','0~40 °C · 습도 80% 미만']],
+feats:['어떤 입력이든 원하는 출력으로 — 크로스 플랫폼','심리스 전환 · 오토 스케일링 · 비디오월','오디오 병합/추출','전원 이중화 · 파워모듈 핫스왑','내장 패턴 제너레이터로 입출력 점검','EDID · HDCP 1.X'],moreFeats:4,
+cta:'VDM 구성기에서 구성하기'},
+spx:{name:'SPX Series',sub:'Signal Processing eXpert · 출력별 독립 스케일링 매트릭스',page:'13–16',
+lead:'8포트 입력 보드와 10~12포트 출력 보드로 <b>출력마다 독립 스케일링</b>을 하는 4K60 분배형 매트릭스입니다. 입력보다 출력이 많은 스포츠 바·레스토랑·회의실·통제실에 맞춰 설계됐습니다.',
+facts:[['최대 규모','24','×120'],['해상도','4K','60Hz 4:4:4'],['대역폭','18','Gbps'],['보드당','8–12','포트']],
+frames:[['SPX-M810','8×10',2,'spx-m810-front.webp'],['SPX-M1620','16×20',4,'spx-m1620-front.webp'],['SPX-M3236','32×36',7,'spx-m3236-front.webp'],['SPX-M2472','24×72',8,'spx-m2472-front.webp'],['SPX-M24120','24×120',8,'spx-m24120-front.webp']],maxRU:8,
+inCards:[['SPX-HIS8','HDMI 2.0b · 오디오 추출 8','HDMI',8]],
+outCards:[['SPX-HOS10','HDMI 2.0b · 오디오 2','HDMI',10],['SPX-HOS12','HDMI 2.0b','HDMI',12],['SPX-COS12','CATx · POC 급전','CAT',12,'SPX-RX']],
+spec:[['대역폭','18 Gbps'],['최대 해상도','4096×2160 · 3840×2160 60Hz 4:4:4'],['입·출력 구성','8×10 · 16×20 · 32×36 · 24×72 · 24×120'],['신호','입력 HDMI · 출력 HDMI·CATx'],['CATx 전송','CAT6 기준 4K60 50m · 1080p 60m'],['제어','전면 터치 · Web UI · RS-232 · LAN'],['전원','100~220 VAC · 800W'],['환경','0~40 °C · 습도 80% 이하']],
+feats:['모든 출력 포트에 독립 스케일링','비디오월 최대 12대(2×2·3×3·3×4) · 쿼드 뷰','CEC로 디스플레이 전원·입력 제어','POC — 메인프레임에서 RX에 전원 공급','슬롯·팬 모듈 핫스왑','EDID · HDCP 2.2'],moreFeats:3,
+cta:'SPX 구성기에서 구성하기',orig:true}};
+const id=new URLSearchParams(location.search).get('s')||'xdm',d=DATA[id];
+const esc=s=>s;
+const chk=`<i><svg width="11" height="11" viewBox="0 0 12 12"><path d="M2 6.3l2.6 2.5L10 3.4" fill="none" stroke="#fff" stroke-width="2"/></svg></i>`;
+const row=(c,o)=>`<div class="cardrow"><img src="${C}${c[0]}.webp" alt=""><div><b>${c[0]}</b><span>${c[1]}${c[4]?` · ↔ ${c[4]}`:''}</span></div><span class="pc ${o?'out':''}">${c[3]}포트</span></div>`;
+document.getElementById('app').innerHTML=`
+<header class="top"><div class="brandmark"><div class="swatch"><svg width="30" height="26" viewBox="0 0 30 26" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="12" height="20" rx="2"/><path d="M2 7h7M2 13h7M2 19h7M21 7h7M21 13h7M21 19h7M11 8l8 10M19 8l-8 10" stroke-width="1.6"/></svg></div>
+<div class="title-block"><h1>${d.name}</h1><p class="sub">${d.sub} · RTCOM</p></div></div>
+<div class="toolbar"><span class="btn">← 제품 목록</span>${d.orig?'<span class="btn">제조사 원본 구성도 (SPX-M810)</span>':''}<span class="btn">인쇄 / PDF</span><span class="btn primary">${d.cta} →</span></div></header>
+<div class="cols"><div class="col">
+<section class="card"><h2><span class="idx">01</span>한눈에 보기</h2><p class="lead">${d.lead}</p>
+<div class="facts">${d.facts.map(f=>`<div class="fact"><span>${f[0]}</span><b>${f[1]}</b><small>${f[2]}</small></div>`).join('')}</div>
+<p class="hint"><span class="pill">카탈로그 46쪽판 ${d.page}쪽 대조</span></p></section>
+<section class="card"><h2><span class="idx">05</span>시리즈 사양</h2><div class="tableWrap"><table><thead><tr><th>구분</th><th>사양</th></tr></thead><tbody>${d.spec.map(s=>`<tr><td>${s[0]}</td><td>${s[1]}</td></tr>`).join('')}</tbody></table></div></section>
+<section class="card"><h2><span class="idx">06</span>주요 기능</h2><ul class="checks">${d.feats.map(t=>`<li>${chk}<span>${t}</span></li>`).join('')}</ul><p class="more">기능 ${d.moreFeats}개 더 보기 ›</p></section>
+</div><div class="col">
+<section class="card"><h2><span class="idx">02</span>신호 구성 <span class="note">— 입력 카드 → 메인프레임 → 출력 카드</span></h2><svg id="arch" width="100%" role="img" aria-label="신호 구성"></svg>
+<div class="legend">${[...new Set([...d.inCards,...d.outCards].map(c=>c[2]==='QUAD'?'HDMI':c[2]))].map(k=>`<span><i style="background:${SIG[k]}"></i>${SIGN[k]}</span>`).join('')}<span><i style="background:transparent;border:1.5px dashed #8A8A8E"></i>전송기(연동)</span></div></section>
+<section class="card"><h2><span class="idx">03</span>메인프레임 <span class="note">— ${d.frames.length}종 · 막대는 랙 높이</span></h2>
+<div class="frames">${d.frames.map(f=>`<div class="frame"><div class="ph">${f[3]?`<img src="${F}${f[3]}" alt="">`:'<em>사진 준비 중</em>'}</div><b>${f[0]}</b><small>${f[1]} · ${f[2]}U</small><div class="ru"><i style="width:${Math.max(8,f[2]/d.maxRU*100)}%"></i></div>${f[4]?`<span class="flag">${f[4]}</span>`:''}</div>`).join('')}</div></section>
+<section class="card"><h2><span class="idx">04</span>카드 라인업 <span class="note">— 입력 ${d.inCards.length} · 출력 ${d.outCards.length}</span></h2>
+<div class="cards2"><div class="cardcol"><h3>입력</h3>${d.inCards.map(c=>row(c,0)).join('')}</div><div class="cardcol"><h3>출력</h3>${d.outCards.map(c=>row(c,1)).join('')}</div></div></section>
+<p class="foot"><b>공개 브로셔 수준 정보</b> — 알티컴 종합 카탈로그 2026(46쪽판) ${d.page}쪽 기준. 최신 사양·납품 조건은 서울영상테크에 확인하세요. · 자료 출처·검토 기록 ›</p>
+</div></div>`;
+// 신호 구성도
+(()=>{const ins=d.inCards,outs=d.outCards,n=Math.max(ins.length,outs.length),rh=40,H=n*rh+40,W=760,svg=document.getElementById('arch');svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+const mx=300,mw=160,my=14,mh=H-28;let h=`<defs><linearGradient id="mf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0A84FF"/><stop offset=".55" stop-color="#5E5CE6"/><stop offset="1" stop-color="#BF5AF2"/></linearGradient></defs>`;
+h+=`<rect x="${mx}" y="${my}" width="${mw}" height="${mh}" rx="18" fill="url(#mf)"/><rect x="${mx}" y="${my}" width="${mw}" height="${mh}" rx="18" fill="url(#mf)" opacity=".0"/>`;
+for(let i=0;i<5;i++)h+=`<path d="M${mx+22} ${my+30+i*(mh-60)/4}H${mx+mw-22}" stroke="#fff" stroke-opacity=".22" stroke-width="1.2"/>`;
+for(let i=0;i<4;i++)h+=`<path d="M${mx+40+i*27} ${my+22}V${my+mh-22}" stroke="#fff" stroke-opacity=".22" stroke-width="1.2"/>`;
+h+=`<text x="${mx+mw/2}" y="${my+mh/2-6}" text-anchor="middle" font-size="15" font-weight="800" fill="#fff">${d.name.split(' ')[0]} 메인프레임</text><text x="${mx+mw/2}" y="${my+mh/2+14}" text-anchor="middle" font-size="11" font-weight="600" fill="#fff" fill-opacity=".85">크로스 스위칭 · 심리스</text>`;
+const y0=(len)=>H/2-(len-1)*rh/2;
+ins.forEach((c,i)=>{const y=y0(ins.length)+i*rh,col=SIG[c[2]];if(c[4])h+=`<rect x="4" y="${y-12}" width="92" height="24" rx="12" fill="none" stroke="#8A8A8E" stroke-dasharray="4 3"/><text x="50" y="${y+4}" text-anchor="middle" font-size="10.5" font-weight="600" fill="#3A3A3C">${c[4].split(' · ')[0]}</text><path d="M96 ${y}H112" stroke="#8A8A8E" stroke-width="1.5" stroke-dasharray="3 3"/>`;
+h+=`<rect x="112" y="${y-14}" width="140" height="28" rx="14" fill="${col}" fill-opacity=".12"/><circle cx="128" cy="${y}" r="4.5" fill="${col}"/><text x="140" y="${y+4.5}" font-size="12" font-weight="700" fill="#1C1C1E">${c[0]}</text><path d="M252 ${y}C276 ${y} 276 ${H/2+(y-H/2)*.6} ${mx} ${H/2+(y-H/2)*.6}" fill="none" stroke="${col}" stroke-width="2"/>`});
+outs.forEach((c,i)=>{const y=y0(outs.length)+i*rh,col=SIG[c[2]],x=508;h+=`<path d="M${mx+mw} ${H/2+(y-H/2)*.6}C${x-24} ${H/2+(y-H/2)*.6} ${x-24} ${y} ${x} ${y}" fill="none" stroke="${col}" stroke-width="2"/><rect x="${x}" y="${y-14}" width="140" height="28" rx="14" fill="${col}" fill-opacity=".12"/><circle cx="${x+16}" cy="${y}" r="4.5" fill="${col}"/><text x="${x+28}" y="${y+4.5}" font-size="12" font-weight="700" fill="#1C1C1E">${c[0]}</text>`;
+if(c[4])h+=`<path d="M${x+140} ${y}H${x+156}" stroke="#8A8A8E" stroke-width="1.5" stroke-dasharray="3 3"/><rect x="${x+156}" y="${y-12}" width="92" height="24" rx="12" fill="none" stroke="#8A8A8E" stroke-dasharray="4 3"/><text x="${x+202}" y="${y+4}" text-anchor="middle" font-size="10.5" font-weight="600" fill="#3A3A3C">${c[4].split(' · ')[0]}</text>`});
+svg.innerHTML=h})();
+</script></body></html>
