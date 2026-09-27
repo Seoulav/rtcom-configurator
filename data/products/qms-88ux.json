@@ -121,7 +121,7 @@
       "source": "M1"
     },
     {
-      "text": "오디오 출력(QD1·QD2) 선택 기능: 후면 3핀 Phoenix 오디오 출력 2개는 원하는 입력 번호를 골라 그 소리를 추출한다 — 단자 1(QD1)은 입력 1~4번 중, 단자 2(QD2)는 입력 5~8번 중 하나를 고르며, 전면 터치 패널의 [Function] → [QD Audio] 메뉴에서 설정한다.",
+      "text": "오디오 출력 2개(QD1·QD2)는 원하는 입력의 소리를 골라 추출한다: QD1=입력 1~4번, QD2=입력 5~8번 중 선택, 전면 [Function]→[QD Audio] 메뉴에서 설정.",
       "source": "M1"
     },
     {
@@ -268,22 +268,82 @@
   "videoModes": {
     "source": "C2",
     "modes": [
-      {"name": "MATRIX", "summary": "입력 8 → 출력 8 임의 스위칭·분배, 심리스 스위칭"},
-      {"name": "WALL", "summary": "최대 3×3 비디오월, 베젤 조정"},
-      {"name": "QUAD", "summary": "출력 9·10번 전용, 한 화면 최대 8분할(8CH Multi-view)"},
-      {"name": "DUAL", "summary": "듀얼 모드"}
+      {
+        "name": "MATRIX",
+        "summary": "입력 8 → 출력 8 임의 스위칭·분배, 심리스 스위칭"
+      },
+      {
+        "name": "WALL",
+        "summary": "최대 3×3 비디오월, 베젤 조정"
+      },
+      {
+        "name": "QUAD",
+        "summary": "출력 9·10번 전용, 한 화면 최대 8분할(8CH Multi-view)"
+      },
+      {
+        "name": "DUAL",
+        "summary": "듀얼 모드"
+      }
     ]
   },
   "portMap": {
     "image": "Rear",
     "items": [
-      {"n": 1, "label": "HDMI INPUT 1–8", "desc": "윗줄 · HDMI 소스 8대 연결", "x1": 58, "x2": 475},
-      {"n": 2, "label": "HDMI OUTPUT 1–8", "desc": "아랫줄 · 매트릭스 출력(임의 입력 선택·분배, 출력별 스케일링)", "x1": 58, "x2": 305, "side": "bottom"},
-      {"n": 3, "label": "HDMI OUTPUT 9·10", "desc": "멀티뷰(쿼드 뷰) 전용 출력 · 한 화면에 최대 8분할", "x1": 310, "x2": 372, "side": "bottom"},
-      {"n": 4, "label": "AUDIO OUT ×2(QD1·QD2)", "desc": "초록 3핀 Phoenix · 단자 1(QD1)=입력 1~4번, 단자 2(QD2)=입력 5~8번 중 원하는 포트 하나를 골라 추출", "x1": 382, "x2": 422, "side": "bottom"},
-      {"n": 5, "label": "RS-232", "desc": "D-sub 9핀 · 외부 제어", "x1": 468, "x2": 514, "side": "bottom"},
-      {"n": 6, "label": "Mini USB", "desc": "USB 시리얼 · 연결 단자 표의 Mini USB-serial", "x1": 527, "x2": 543, "side": "bottom"},
-      {"n": 7, "label": "AC 인렛", "desc": "전원 100-200 VAC", "x1": 560, "x2": 598, "side": "bottom"}
+      {
+        "n": 1,
+        "label": "HDMI INPUT 1–8",
+        "desc": "윗줄 · HDMI 소스 8대 연결",
+        "x1": 58,
+        "x2": 475
+      },
+      {
+        "n": 2,
+        "label": "HDMI OUTPUT 1–8",
+        "desc": "아랫줄 · 매트릭스 출력(임의 입력 선택·분배, 출력별 스케일링)",
+        "x1": 58,
+        "x2": 305,
+        "side": "bottom"
+      },
+      {
+        "n": 3,
+        "label": "HDMI OUTPUT 9·10",
+        "desc": "멀티뷰(쿼드 뷰) 전용 출력 · 한 화면에 최대 8분할",
+        "x1": 310,
+        "x2": 372,
+        "side": "bottom"
+      },
+      {
+        "n": 4,
+        "label": "AUDIO OUT ×2(QD1·QD2)",
+        "desc": "초록 3핀 Phoenix · 단자 1(QD1)=입력 1~4번, 단자 2(QD2)=입력 5~8번 중 원하는 포트 하나를 골라 추출",
+        "x1": 382,
+        "x2": 422,
+        "side": "bottom"
+      },
+      {
+        "n": 5,
+        "label": "RS-232",
+        "desc": "D-sub 9핀 · 외부 제어",
+        "x1": 468,
+        "x2": 514,
+        "side": "bottom"
+      },
+      {
+        "n": 6,
+        "label": "Mini USB",
+        "desc": "USB 시리얼 · 연결 단자 표의 Mini USB-serial",
+        "x1": 527,
+        "x2": 543,
+        "side": "bottom"
+      },
+      {
+        "n": 7,
+        "label": "AC 인렛",
+        "desc": "전원 100-200 VAC",
+        "x1": 560,
+        "x2": 598,
+        "side": "bottom"
+      }
     ]
   },
   "sources": [

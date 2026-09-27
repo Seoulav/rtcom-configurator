@@ -117,7 +117,7 @@
       "source": "M1"
     },
     {
-      "text": "XDM-CR103은 XDM-COS100 카드, TX 모드로 설정한 XDM-CTR100, XDM-CT103과 연결해 사용한다. XDM-COS100 카드나 XDM-CTR100 PSE와 연결하면 PoE로 전원을 받아 별도 전원을 연결하지 않는다.",
+      "text": "XDM-CR103은 XDM-COS100 카드·TX 모드 CTR100·CT103과 연결한다. COS100 카드나 CTR100 PSE와 연결하면 PoE로 전원을 받는다.",
       "source": "M2"
     },
     {

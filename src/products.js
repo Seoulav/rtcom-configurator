@@ -339,7 +339,7 @@
       if(pseOnly){
         width=980;
         const boxW=170,boxH=70,iconX=60,leftBoxX=210,cardX=600,dstX=920,rowY=100;
-        height=240+(distanceLines.length?40:0);
+        height=240;
         bodyMarkup=`<text x="${width/2}" y="32" text-anchor="middle" font-size="11" font-weight="700" fill="#687386">PSE 조합 · PSE에만 전원 연결, 상대 기기는 CAT 케이블로 전원을 받음(PD)</text>`;
         bodyMarkup+=monitorIcon(iconX,rowY,'소스 기기')+arrow(iconX+24,rowY,leftBoxX-6,rowY,COLOR_IN);
         bodyMarkup+=deviceBox(leftBoxX,rowY-boxH/2,boxW,boxH,'XDM-CTR100 PSE','전원 연결(POE 공급측)');
@@ -348,14 +348,13 @@
         bodyMarkup+=arrow(cardX+boxW+6,rowY,dstX-24,rowY,COLOR_OUT)+monitorIcon(dstX,rowY,'디스플레이');
         bodyMarkup+=`<text x="${width/2}" y="${rowY+boxH/2+26}" text-anchor="middle" font-size="10" fill="#687386">PSE[TX 모드] ↔ XDM-CTR100[RX 모드]·XDM-CR103 · PSE[RX 모드] ↔ XDM-CTR100[TX 모드]·XDM-CT103</text>`;
         bodyMarkup+=`<text x="${width/2}" y="${rowY+boxH/2+44}" text-anchor="middle" font-size="10" fill="#687386">TX/RX는 각 기기 딥 스위치로 선택 · XDM-CIS100·COS100 카드에는 PSE가 아닌 XDM-CTR100을 직결</text>`;
-        if(distanceLines.length)bodyMarkup+=distanceLines.map((line,i)=>`<text x="24" y="${rowY+boxH/2+70+i*15}" text-anchor="start" font-size="10" font-weight="600" fill="${cableColor}">${svgEsc(line)}</text>`).join('');
         captions=[[COLOR_IN,'입력'],[cableColor,cableName],[COLOR_OUT,'출력']];
       } else if(pseCombo){
         width=980;
         const boxW=170,boxH=70;
         const iconX=60,leftBoxX=210,cardX=600,dstX=920;
         const row1Y=100,row2Y=220,combo2Y=390;
-        height=460+(distanceLines.length?40:0);
+        height=460;
         const cableSeg=(y)=>`<path d="M${leftBoxX+boxW} ${y}L${cardX} ${y}" stroke="${cableColor}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/><text x="${(leftBoxX+boxW+cardX)/2}" y="${y-14}" text-anchor="middle" font-size="10" font-weight="700" fill="${cableColor}">${svgEsc(cableName)}</text>`;
         const cableSeg2=(x1,x2,y)=>`<path d="M${x1+boxW} ${y}L${x2} ${y}" stroke="${cableColor}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/><text x="${(x1+boxW+x2)/2}" y="${y-14}" text-anchor="middle" font-size="10" font-weight="700" fill="${cableColor}">${svgEsc(cableName)} · 신호+전원 동시 공급</text>`;
         bodyMarkup=`<text x="${width/2}" y="32" text-anchor="middle" font-size="11" font-weight="700" fill="#687386">조합 1 · XDM-CIS100·COS100 카드에 직결(전원 직접 연결, PSE 사용 불가)</text>`;
@@ -374,7 +373,6 @@
         bodyMarkup+=deviceBox(cardX,combo2Y-boxH/2,boxW,boxH,'XDM-CTR100','전원 케이블 불필요(PD)');
         bodyMarkup+=arrow(cardX+boxW+6,combo2Y,dstX-24,combo2Y,COLOR_OUT)+monitorIcon(dstX,combo2Y,'디스플레이');
         bodyMarkup+=`<text x="${width/2}" y="${combo2Y+boxH/2+22}" text-anchor="middle" font-size="10" fill="#687386">TX/RX는 각 기기 DIP 스위치로 선택 · CIS100·COS100 카드에 직결할 때는 이 조합 대신 CTR100에 전원을 직접 연결</text>`;
-        if(distanceLines.length)bodyMarkup+=distanceLines.map((line,i)=>`<text x="24" y="${combo2Y+boxH/2+46+i*15}" text-anchor="start" font-size="10" font-weight="600" fill="${cableColor}">${svgEsc(line)}</text>`).join('');
         captions=[[COLOR_IN,'입력'],[cableColor,cableName],[COLOR_OUT,'출력']];
       } else {
         width=980;height=220;
@@ -385,9 +383,10 @@
         bodyMarkup+=`<path d="M${txX+boxW} ${midY}L${rxX} ${midY}" stroke="${cableColor}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/><text x="${(txX+boxW+rxX)/2}" y="${midY-20}" text-anchor="middle" font-size="11" font-weight="700" fill="${cableColor}">${svgEsc(cableName)}</text>`;
         bodyMarkup+=deviceBox(rxX,midY-boxH/2,boxW,boxH,rxLabel,isTransceiver?'수신 모드':'수신기(RX)');
         bodyMarkup+=arrow(rxX+boxW+6,midY,dstX-24,midY,COLOR_OUT)+monitorIcon(dstX,midY,'디스플레이');
-        if(distanceLines.length)bodyMarkup+=distanceLines.map((line,i)=>`<text x="24" y="${height-14-(distanceLines.length-1-i)*15}" text-anchor="start" font-size="10" font-weight="600" fill="${cableColor}">${svgEsc(line)}</text>`).join('');
         captions=[[COLOR_IN,'입력(소스 → TX)'],[cableColor,cableName],[COLOR_OUT,'출력(RX → 디스플레이)']];
       }
+      // 추천 케이블(최대 전송거리)은 캔버스 안이 아니라 범례에서 "출력" 오른쪽에 이어 붙인다(사용자 요청).
+      if(distanceLines.length)captions.push([cableColor,distanceLines.join(' · ')]);
       const extras=io.filter(port=>port!==txVideo&&port!==rxVideo&&port!==transmission&&!/Transmission/.test(port.group||'')).map(port=>port.signal||shortConnector(port.connector));
       const note=extras.length?`<p class="rt-pg-hint" style="text-align:center">그 외 신호(${[...new Set(extras)].map(esc).join(', ')})는 아래 자료 기록의 입출력 표를 확인하세요.</p>`:'';
       return diagramWrap(bodyMarkup,width,height,captions)+note;
