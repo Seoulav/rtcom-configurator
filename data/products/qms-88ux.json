@@ -16,7 +16,7 @@
   "catalogPages": "30",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 30쪽의 소개·주요기능·제품사양·크기 및 무게·제품 이미지에서 확인했다.",
   "packageStatus": "REVIEW REQUIRED",
-  "overview": "QMS-88UX는 HDMI Ver. 2.0을 지원하는 True-4K HDMI 8x8 고성능 매트릭스 스위처다. 최대 3840x2160p 60Hz 4:4:4 해상도를 지원하며 Seamless Switching, 8CH Multi-view, Video Wall, Dual 모드 등 다양한 용도로 사용할 수 있다. 서로 다른 임의의 HDMI 입력을 서로 다른 임의의 HDMI 출력 포트로 출력하거나 분배할 수 있다.\n\n전면 터치 패널, LAN, RS-232, IR Remote Control의 4가지 제어방식으로 동작한다. 출력 9번과 10번은 쿼드 뷰 모드로, 한 화면에 최대 8개의 분할 화면을 구성할 수 있다. HDCP v2.2를 지원한다.",
+  "overview": "QMS-88UX는 HDMI Ver. 2.0을 지원하는 True-4K HDMI 8x8 고성능 매트릭스 스위처다. 최대 3840x2160p 60Hz 4:4:4 해상도를 지원하며 Seamless Switching, 8CH Multi-view, Video Wall, Dual 모드 등 다양한 용도로 사용할 수 있다. 서로 다른 임의의 HDMI 입력을 서로 다른 임의의 HDMI 출력 포트로 출력하거나 분배할 수 있다.\n\n전면 터치 패널, LAN, RS-232의 3가지 제어방식으로 동작한다. 출력 9번과 10번은 쿼드 뷰 모드로, 한 화면에 최대 8개의 분할 화면을 구성할 수 있다. HDCP v2.2를 지원한다.",
   "images": [
     {
       "role": "Front",
@@ -122,7 +122,7 @@
       "source": "C"
     },
     {
-      "text": "전면 LCD 패널, LAN(Telnet & Web Browser), RS-232, IR Remote Control 제어방식을 지원한다.",
+      "text": "전면 LCD 패널, LAN(Telnet & Web Browser), RS-232 제어방식을 지원한다.",
       "source": "C"
     }
   ],
@@ -204,7 +204,7 @@
       "name": "크기(W×D×H)",
       "value": "446[482.6]×357.4×88.1",
       "unit": "mm",
-      "condition": "",
+      "condition": "2U",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -293,6 +293,12 @@
       "status": "INFO",
       "title": "연결 다이어그램 출처",
       "detail": "연결 다이어그램은 처음엔 이 사이트가 입출력 데이터로 자동으로 그렸으나, 사용자가 제공한 두 번째 카탈로그(46쪽판) 28쪽에 제조사가 직접 그린 연결 다이어그램이 있어 그 이미지로 교체했다(2026-09-27)."
+    },
+    {
+      "code": "I3",
+      "status": "INFO",
+      "title": "제어방식에서 IR Remote Control 제외(카탈로그 재검증)",
+      "detail": "옛(48쪽판) 카탈로그는 제어방식을 \"전면 터치 패널, LAN, RS-232, IR Remote Control\"의 4가지로 적었다. 사용자가 제공한 두 번째 카탈로그(46쪽판) 28쪽은 같은 문장에서 IR Remote Control을 빼고 3가지로 적었다. 더 최신인 46쪽판을 따라 IR Remote Control 언급을 지웠다(2026-09-27). 크기 표기에 2U(랙 단위)도 46쪽판에서 추가로 확인해 반영했다."
     }
   ]
 }
