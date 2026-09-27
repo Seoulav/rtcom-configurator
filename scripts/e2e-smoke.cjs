@@ -316,6 +316,12 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     // 0.47 오디오 설정: 병합(MUX)·추출(DEMUX)은 하나를 골라 쓴다(사용자 확인). 신호 흐름 문구와 07 카드 두 칸, 단자 지도 번호 순서(HDMI 입력 → 출력 → 오디오 → 전원)를 본다.
     const audioCard=await page.evaluate(()=>({modes:document.querySelectorAll('.rt-pg-audio .rt-pg-audio-mode').length,flow:[...document.querySelectorAll('.rt-pg-svg-wrap svg')].some(svg=>svg.textContent.includes('또는 추출 중 선택')),order:[...document.querySelectorAll('.rt-pg-port b')].map(b=>b.textContent.trim()).slice(0,5).join('|')}));
     check('HD-13U 오디오 설정 카드가 병합·추출 두 칸으로 나오고 신호 흐름에 "선택"이 표시되며 단자 번호가 HDMI 입력·출력·오디오·전원 순',audioCard.modes===2&&audioCard.flow&&audioCard.order==='1HDMI IN|2HDMI OUT 1–3|3AUDIO IN|4AUDIO OUT|5DC 5V',JSON.stringify(audioCard));
+    // 0.59 — EDID 코드표가 길면(16행) 세로로 너무 길어지므로 좌우 두 표로 나눠 펼친다(사용자 요청 2026-09-27 "좌우표를 펼쳐서하면 줄여줘").
+    const edidTables=await page.evaluate(()=>{const wrap=document.querySelector('.rt-pg-edid-tables');if(!wrap)return null;const tables=[...wrap.querySelectorAll('table')];return {count:tables.length,rows:tables.map(t=>t.querySelectorAll('tbody tr').length)}});
+    check('HD-13U 06 EDID 설정 코드표가 좌우 두 표로 나뉨',edidTables&&edidTables.count===2&&edidTables.rows[0]===8&&edidTables.rows[1]===8,JSON.stringify(edidTables));
+    // 0.58~0.59: 06 EDID 설정(항상 전체 폭)과 위 두 칸(01~05)의 높이 차이가 크지 않아야 오른쪽 칸에 빈 공간이 크게 남지 않는다(사용자 확인 2026-09-27 "06 EDID설정 깨진ㄷ").
+    const colGap=await page.evaluate(()=>{const cols=[...document.querySelectorAll('.rt-pg-col')].map(c=>c.getBoundingClientRect().height);return Math.abs(cols[0]-cols[1])});
+    check('HD-13U 01~05 두 칸의 높이 차이가 크지 않음(오른쪽 빈 공간 방지)',colGap<600,JSON.stringify({colGap}));
     // 0.55: 2U 미만(HD-13U)은 정면·후면 버튼 없이 정면 사진과 포트 연결면을 함께 보여준다.
     const hdFaces=await page.evaluate(()=>({face:!!document.querySelector('.rt-pg-face:not([hidden]) img'),toggle:document.querySelectorAll('[data-pm-side]').length}));
     check('2U 미만 제품(HD-13U)은 정면 사진과 후면 단자 지도를 함께 보여주고 정면·후면 버튼이 없음',hdFaces.face&&hdFaces.toggle===0,JSON.stringify(hdFaces));

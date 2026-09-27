@@ -533,6 +533,9 @@
       if(!rw||!rh)return '';
       const pct=(value,base)=>`${(value/base*100).toFixed(2)}%`;
       const stepsHtml=(es.steps||[]).map(step=>`<div class="rt-pg-edid-step"><b>${esc(step.title)}</b><ol>${step.items.map(text=>`<li>${esc(text)}</li>`).join('')}</ol></div>`).join('');
+      // 코드표가 길면(0.58, HD-13U 등 16행) 세로로 길어져 카드가 너무 커지므로 반으로 나눠 좌우 두 표로 펼친다(사용자 요청 2026-09-27 "좌우표를 펼쳐서 줄여줘").
+      const codeRows=es.table.map(row=>row.highlight?[`<b>${esc(row.code)}</b>`,`<b>${esc(row.function)}</b>`]:[esc(row.code),esc(row.function)]);
+      const codeTableHtml=codeRows.length>6?(()=>{const half=Math.ceil(codeRows.length/2);return `<div class="rt-pg-edid-tables">${table(['코드','기능'],codeRows.slice(0,half))}${table(['코드','기능'],codeRows.slice(half))}</div>`})():table(['코드','기능'],codeRows);
       return `<section class="rt-pg-card" style="margin-top:18px"><h2><span class="rt-pg-idx">${item.videoModes?'07':'06'}</span>EDID 설정</h2>
         <div class="rt-pg-edid">
           <div class="rt-pg-edid-photo">
@@ -544,7 +547,7 @@
             ${es.desc?`<p class="rt-pg-edid-desc">${esc(es.desc)}</p>`:''}
             ${es.default?`<p class="rt-pg-hint"><span class="rt-pg-pill">기본값 — ${esc(es.default)}</span></p>`:''}
             ${stepsHtml?`<div class="rt-pg-edid-steps">${stepsHtml}</div>`:''}
-            ${table(['코드','기능'],es.table.map(row=>row.highlight?[`<b>${esc(row.code)}</b>`,`<b>${esc(row.function)}</b>`]:[esc(row.code),esc(row.function)]))}
+            ${codeTableHtml}
           </div>
         </div>
       </section>`;
@@ -601,16 +604,18 @@
       const diagram=connectionDiagram(item);
       const portSection=item.group!=='cable'?(portMapDiagram(item)||portCards(item)):null;
       const related=Object.values((item.related||[]).filter(link=>byId[link.target]).reduce((all,link)=>{if(!all[link.target]||link.relation!=='PART_OF_SERIES')all[link.target]=link;return all},{}));
-      // "06" 카드(화면 구성 모드 → EDID 설정 → 오디오 설정 순으로 먼저 있는 것 하나)는 05 주요 기능 오른쪽에 붙이고, 나머지는 그대로 전체 폭 아래에 둔다(사용자 요청 2026-09-27).
+      // videoModes·audioMux 카드만 05 주요 기능 오른쪽에 붙이고, edidSwitch·dipSwitch는 전체 폭 아래에 둔다(사용자 요청 2026-09-27, 아래 이유 참고).
       const hasVideoModes=!!item.videoModes?.modes?.length;
-      const hasEdidSwitch=!!item.edidSwitch?.table?.length;
+      const hasAudioMux=!!item.audioMux?.modes?.length;
       let sideCard='',belowCards='';
-      if(hasVideoModes){sideCard=videoModesSection(item);belowCards=`${edidSwitchSection(item)}${audioMuxSection(item)}`}
-      else if(hasEdidSwitch){sideCard=edidSwitchSection(item);belowCards=audioMuxSection(item)}
-      else{sideCard=audioMuxSection(item)}
+      // edidSwitch는 사진+안내 2장+코드표(최대 12행)까지 있어 05 옆 좁은 칸(360px)에 넣으면 오른쪽 칸(02·03·기록)보다 훨씬 길어져 빈 공간이 크게 남는다(사용자 확인 2026-09-27 "06 EDID설정 깨진ㄷ").
+      // videoModes·audioMux는 상대적으로 짧아 좁은 칸에 넣어도 균형이 맞으므로 이 둘만 05 옆에 붙이고, edidSwitch·dipSwitch는 항상 전체 폭 아래에 둔다.
+      if(hasVideoModes){sideCard=videoModesSection(item);belowCards=edidSwitchSection(item)}
+      else if(hasAudioMux){sideCard=audioMuxSection(item);belowCards=edidSwitchSection(item)}
+      else{belowCards=edidSwitchSection(item)}
       belowCards+=dipSwitchSection(item);
       // 휴대폰(1000px 이하)에서는 .rt-pg-col이 사라지고 rt-pg-col-mobile-N 순서로만 쌓이므로, sideCard도 순서 클래스가 있어야 05 다음(01~05, 06, 07 기록)으로 나온다(없으면 order:0이라 맨 앞으로 감).
-      sideCard=sideCard.replace('class="rt-pg-card', 'class="rt-pg-card rt-pg-col-mobile-6');
+      if(sideCard)sideCard=sideCard.replace('class="rt-pg-card', 'class="rt-pg-card rt-pg-col-mobile-6');
       return `${headerBlock({icon:GROUP_ICON[item.group],title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,diagram:!!photo})}
       <div class="rt-pg-cols">
         <div class="rt-pg-col">
