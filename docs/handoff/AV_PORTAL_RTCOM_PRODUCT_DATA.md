@@ -173,3 +173,9 @@ rtcom-configurator 머리글의 "AV Portal에서 제품 찾기" 링크는 AV Por
 | QA 결과 | `docs/qa/PUBLIC_PRODUCT_INFO_QA.md` |
 | 카탈로그 충돌 근거 | `docs/evidence/RTCOM_MATRIX_EVIDENCE_AND_GAPS.md` E23~E26, U09 |
 | 검증 스크립트 | `scripts/build-product-index.cjs` (`--check`) |
+
+## 선택 필드 `aliases` (0.36 이후)
+
+- 같은 제품의 다른 모델명입니다. 예: `hd-104u`의 `aliases: ["HD-14U"]`(새 실크 표기), `hd-108u`의 `aliases: ["HD-18U"]`
+- 정식 키는 계속 `model`(HD-104U·HD-108U)입니다. AV Portal에서 검색할 때 aliases도 함께 찾으면 두 이름 모두로 검색됩니다.
+- `productName`은 화면용으로 두 이름을 함께 적습니다("HD-104U (HD-14U)"). 없어도 동작합니다.

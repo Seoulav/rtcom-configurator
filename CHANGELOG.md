@@ -4,6 +4,8 @@
 
 ## Unreleased
 
+- **HD-104U(HD-14U)·HD-108U(HD-18U) 병행 표기**(사용자 요청 2026-09-27 "같은 제품이야, 병행 기입"): 화면 제품명을 "HD-104U (HD-14U)"·"HD-108U (HD-18U)"로 함께 적습니다. 새 선택 필드 `aliases`에 새 실크 표기를 넣어 목록 검색("HD-14U"로 찾기)과 0.24~0.35의 옛 주소(`#products/hd-14u`·`hd-18u`)를 정식 상세로 이동시킵니다. `model`(AV Portal 키)은 정식 표기 HD-104U·HD-108U를 유지하고, index.json에도 aliases를 넣습니다. validator는 aliases 형식(문자열 배열, model·제외 모델과 겹치지 않음)을 검사하고, e2e에 옛 주소 이동 검사를 추가했습니다.
+
 ## 0.37.0
 
 - **매트릭스 구성기 화면 개편 — Analog Way 구조 + LED 글래스 스킨 + 블랭크 커버**(사용자 결정 2026-09-27: "모듈러 매트릭스 구성기의 기본 컨셉은 아날로그웨이와 동일", "아직 구성되지 않은 슬롯은 흰색", "블랭크 슬롯을 선택해 완성". 근거: `docs/handoff/CONFIGURATOR_AW_GLASS_SPEC.md`, `docs/audit/ANALOGWAY_CONFIGURATOR_RECHECK_2026-09-27.md`, 자세한 내용은 `docs/implementation/CONFIGURATOR_AW_GLASS.md`): 매트릭스 구성기(`#matrix-configurator`) 화면 전체를 다시 그렸습니다. 제품정보 화면(`#products`)은 손대지 않았습니다.

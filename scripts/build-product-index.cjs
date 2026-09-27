@@ -37,6 +37,14 @@ function validate(product,file,ids){
   for(const link of product.related||[])if(!ids.has(link.target))fail(`related 대상 없음: ${link.target}`);
   const codes=new Set((product.sources||[]).map(source=>source.code));
   for(const row of [...(product.specifications||[]),...(product.io||[]),...(product.features||[])])if(row.source&&!codes.has(row.source))fail(`출처 코드 ${row.source}가 sources에 없음`);
+  // 0.36 — 같은 제품의 다른 모델명(예: HD-104U의 새 실크 표기 HD-14U). 검색·옛 주소 이동에 쓴다.
+  if('aliases' in product){
+    if(!Array.isArray(product.aliases)||!product.aliases.every(name=>typeof name==='string'&&name.trim()))fail('aliases는 비어 있지 않은 문자열 배열이어야 함');
+    else for(const name of product.aliases){
+      if(name===product.model)fail(`aliases에 model과 같은 이름: ${name}`);
+      for(const model of EXCLUDED)if(name===model)fail(`aliases에 제외 모델 ${model}`);
+    }
+  }
   // 0.33 — 제품정보 글래스 디자인(선택 필드, docs/handoff/PRODUCT_GLASS_REDESIGN_SPEC.md 3장). 없어도 동작하지만 있으면 형식을 검사한다.
   if('lead' in product){
     if(typeof product.lead!=='string'||!product.lead)fail('lead는 비어 있지 않은 문자열이어야 함');
@@ -106,7 +114,7 @@ function build(){
     detailPath:'data/products/{id}.json',
     imagePath:'output/design/assets/products/{file}',
     groups:Object.fromEntries([['series','매트릭스 시리즈'],['integrated','일체형 매트릭스'],['distribution','분배기·선택기'],['extender','전송기'],['cable','케이블']]),
-    products:list.map(product=>({id:product.id,group:product.group,productName:product.productName,model:product.model,itemType:product.itemType,categories:product.categories,english:product.english,korean:product.korean,catalogPages:product.catalogPages||null,packageStatus:product.packageStatus,cardImage:card(product)}))
+    products:list.map(product=>({id:product.id,group:product.group,productName:product.productName,model:product.model,...(product.aliases?{aliases:product.aliases}:{}),itemType:product.itemType,categories:product.categories,english:product.english,korean:product.korean,catalogPages:product.catalogPages||null,packageStatus:product.packageStatus,cardImage:card(product)}))
   };
   return {index,errors,text:`${JSON.stringify(index,null,2)}\n`};
 }

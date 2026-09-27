@@ -23,7 +23,7 @@
     const loadDetail=id=>details.has(id)?Promise.resolve(details.get(id)):load(`data/products/${encodeURIComponent(id)}.json`).then(data=>{details.set(id,data);return data});
     const route=()=>{const match=location.hash.match(/^#products(?:\/([a-z0-9-]+))?$/);return match?{products:true,id:match[1]||null}:{products:false}};
     const reviewBadge=item=>item.packageStatus==='REVIEW REQUIRED'?'<span class="rt-pg-badge" title="카탈로그 안에서 표기가 서로 다른 항목이 있습니다">표기 검토 필요</span>':'';
-    const matches=item=>(filter==='all'||item.group===filter)&&(!query||[item.productName,item.model,item.english,item.korean,...(item.categories||[])].join(' ').toLowerCase().includes(query));
+    const matches=item=>(filter==='all'||item.group===filter)&&(!query||[item.productName,item.model,...(item.aliases||[]),item.english,item.korean,...(item.categories||[])].join(' ').toLowerCase().includes(query));
     const shortConnector=connector=>(connector||'').replace(/\([^)]*\)/g,'').split(/[,/]/)[0].trim();
     const verification=value=>value&&value!=='VERIFIED'?` <span class="rt-pg-badge">${value==='REVIEW REQUIRED'?'검토 필요':esc(value)}</span>`:'';
     const isSizeSpec=spec=>spec.group==='Physical'&&(spec.name==='무게'||spec.name.startsWith('크기'));
@@ -519,7 +519,13 @@
       for(const tab of tabs){const active=(tab.dataset.viewTab==='products')===state.products;tab.setAttribute('aria-current',active?'page':'false')}
       if(!state.products)return;
       body.innerHTML=`<div class="rt-pg-orbs"></div><div class="rt-pg-wrap"><p class="rt-pg-count" role="status">제품 정보를 불러오는 중입니다…</p></div>`;
-      loadIndex().then(()=>state.id?loadDetail(state.id).then(item=>{
+      loadIndex().then(()=>{
+        // 같은 제품의 다른 이름으로 된 옛 주소(예: #products/hd-14u → hd-104u, 0.24~0.35에서 쓰던 id)는 정식 id로 바꿔 연다.
+        if(state.id&&!index.products.some(product=>product.id===state.id)){
+          const target=index.products.find(product=>(product.aliases||[]).some(name=>name.toLowerCase()===state.id));
+          if(target){location.replace(`#products/${target.id}`);return new Promise(()=>{})}
+        }
+      }).then(()=>state.id?loadDetail(state.id).then(item=>{
         if(route().id!==state.id)return;
         body.innerHTML=`<div class="rt-pg-orbs"></div><div class="rt-pg-wrap">${detailView(item)}</div>`;
         body.querySelector('#rt-pg-title')?.setAttribute('tabindex','-1');
