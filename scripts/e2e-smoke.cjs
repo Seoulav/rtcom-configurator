@@ -400,13 +400,13 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.waitForSelector('.rt-pg-edid');
     const ftRot=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-edid .rt-pg-rotary-row .rt-pg-rotary svg')].map(svg=>(svg.getAttribute('aria-label').match(/(\w)번$/)||[])[1]).join(','));
     check('XDM-FT101/FR101 EDID 설정에 로터리 전체 8칸(Source 0~3, Analog 8~B)이 나옴',ftRot==='0,1,2,3,8,9,A,B',ftRot);
-    // 0.65 OBHD-2C EDID 로터리(매뉴얼 KV01 EDID Library 14종, 사용자 요청 "그려줘"): 0~D 전체 14칸, C번이 기본값, 06 EDID 설정, 정면 사진 로드.
+    // 0.65 OBHD-2C EDID 로터리 → 0.70 매뉴얼 Ver.2.1 6쪽 번호표로 정정: 0 EXTERNAL~F RESERVED 16칸, D번(1080p 2CH, Default EDID 1920x1080@60Hz) 기본값.
     await page.goto(`${home}#products/obhd-2c`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-edid');
     await page.$eval('.rt-pg-edid img',img=>img.scrollIntoView());
     await page.waitForFunction(()=>document.querySelector('.rt-pg-edid img')?.naturalWidth>0);
-    const obhd=await page.evaluate(()=>({codes:[...document.querySelectorAll('.rt-pg-edid .rt-pg-rotary-row .rt-pg-rotary svg')].map(svg=>(svg.getAttribute('aria-label').match(/(\w)번$/)||[])[1]).join(''),def:document.querySelector('.rt-pg-edid .rt-pg-rotary.is-default figcaption em')?.textContent,idx:document.querySelector('.rt-pg-edid')?.closest('section')?.querySelector('.rt-pg-idx')?.textContent,rows:document.querySelectorAll('.rt-pg-edid .rt-pg-tablewrap tbody tr').length}));
-    check('OBHD-2C 06 EDID 설정에 MODE 로터리 0~D 14칸과 C번 기본값, 코드표 14행이 나옴',obhd.codes==='0123456789ABCD'&&obhd.def==='C번 · 기본값'&&obhd.idx==='06'&&obhd.rows===14,JSON.stringify(obhd));
+    const obhd=await page.evaluate(()=>({codes:[...document.querySelectorAll('.rt-pg-edid .rt-pg-rotary-row .rt-pg-rotary svg')].map(svg=>(svg.getAttribute('aria-label').match(/(\w)번$/)||[])[1]).join(''),def:document.querySelector('.rt-pg-edid .rt-pg-rotary.is-default figcaption em')?.textContent,idx:document.querySelector('.rt-pg-edid')?.closest('section')?.querySelector('.rt-pg-idx')?.textContent,rows:document.querySelectorAll('.rt-pg-edid .rt-pg-tablewrap tbody tr').length,pending:document.body.textContent.includes('제조사 확인 전')}));
+    check('OBHD-2C 06 EDID 설정에 MODE 로터리 0~F 16칸(매뉴얼 Ver.2.1: 0 EXTERNAL)과 D번 기본값, 코드표 16행이 나오고 "제조사 확인 전" 문구가 없음',obhd.codes==='0123456789ABCDEF'&&obhd.def==='D번 · 기본값'&&obhd.idx==='06'&&obhd.rows===16&&!obhd.pending,JSON.stringify(obhd));
     // 0.65 XDM-CTR100·CTR100 PSE 06 딥 스위치 설정(매뉴얼 Ver.1.4 5쪽, 사용자 요청 "ctr100, pse 모두 딥스위치 그려줘"): 1·2번 TX/RX 조합이 3번 전송 거리보다 먼저, 아래쪽이 ON, 검은 몸체.
     for(const id of ['xdm-ctr100','xdm-ctr100-pse']){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
@@ -414,6 +414,11 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       const ctr=await page.evaluate(()=>({heads:[...document.querySelectorAll('.rt-pg-dip .rt-pg-dip-head b')].map(b=>b.textContent).join('|'),combos:document.querySelectorAll('.rt-pg-dip-combos figure').length,idx:document.querySelector('.rt-pg-dip .rt-pg-idx')?.textContent,down:document.querySelector('.rt-pg-dip h2')?.textContent.includes('아래쪽이 ON'),tx:document.querySelector('.rt-pg-dip')?.textContent.includes('TX 모드')&&document.querySelector('.rt-pg-dip')?.textContent.includes('RX 모드')}));
       check(`${id} 06 딥 스위치 설정이 1·2번 TX/RX 모드 2칸 → 3번 전송 거리 순서, 아래쪽 ON으로 나옴`,ctr.heads==='1·2번|3번'&&ctr.combos===2&&ctr.idx==='06'&&ctr.down&&ctr.tx,JSON.stringify(ctr));
     }
+    // 0.70 OBHD-2C 단자 지도: 매뉴얼 Ver.2.1 Tx·Rx 앞면·뒷면 합성 사진 두 장(portMap.file), Tx 6개(3 EDID S/W·4 MODE·5 S/P 포함, 전원 마지막)·Rx 4개.
+    await page.goto(`${home}#products/obhd-2c`,{waitUntil:'networkidle'});
+    await page.waitForSelector('.rt-pg-panel svg');
+    const obhdPm=await page.evaluate(()=>({maps:document.querySelectorAll('.rt-pg-panel').length,pins:[...document.querySelectorAll('.rt-pg-port b')].map(b=>b.textContent.trim().replace(/^\d+/,''))}));
+    check('OBHD-2C 단자 지도가 Tx(EDID S/W·MODE·S/P 포함 6개)·Rx(4개) 합성 사진 두 장으로 나옴',obhdPm.maps===2&&obhdPm.pins.length===10&&obhdPm.pins[2]==='EDID S/W'&&obhdPm.pins[3]==='MODE'&&obhdPm.pins[5]==='DC 5V'&&obhdPm.pins[9]==='DC 5V',JSON.stringify(obhdPm));
     // 0.64 SPX는 HDBaseT가 아닌 CATx 전송(사용자 확인 2026-09-27): SPX 시리즈 상세 신호 범례와 SPX-TX/RX 어디에도 HDBaseT가 나오지 않는다.
     for(const id of ['spx','spx-rx-tx']){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
