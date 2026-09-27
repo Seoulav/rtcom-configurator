@@ -177,12 +177,25 @@
         <section class="rt-product-source"><h3>출처</h3><p>${esc(item.verificationSummary)}</p>${sources.length?`<ul>${sources.map(source=>`<li>${source}</li>`).join('')}</ul>`:''}<p class="rt-product-note">공개 브로셔 수준 정보입니다. 최신 사양·납품 조건은 제조사 또는 서울영상테크에 확인하세요.</p></section>
       </article>`;
     }
+    // 다이어그램 캔버스가 화면보다 넓어 가로 스크롤이 필요하면 오른쪽 끝에 그러데이션을 보여 "잘린 것"이 아니라
+    // "더 있음"임을 알린다(2026-09-27 사용자 피드백: 휴대폰에서 오른쪽이 그냥 잘려 보임).
+    function initDiagramScroll(container){
+      container.querySelectorAll('.rt-product-diagram-canvas').forEach(canvas=>{
+        const update=()=>{
+          const hasMore=canvas.scrollWidth-canvas.clientWidth-canvas.scrollLeft>4;
+          canvas.classList.toggle('rt-has-more',hasMore);
+        };
+        update();
+        canvas.addEventListener('scroll',update,{passive:true});
+      });
+    }
+    window.addEventListener('resize',()=>initDiagramScroll(body));
     function show(state){
       view.hidden=!state.products;configurator.hidden=state.products;
       for(const tab of tabs){const active=(tab.dataset.viewTab==='products')===state.products;tab.setAttribute('aria-current',active?'page':'false')}
       if(!state.products)return;
       body.innerHTML='<p class="rt-products-count" role="status">제품 정보를 불러오는 중입니다…</p>';
-      loadIndex().then(()=>state.id?loadDetail(state.id).then(item=>{if(route().id!==state.id)return;body.innerHTML=detailView(item);body.querySelector('#rt-product-title')?.focus({preventScroll:true});window.scrollTo({top:view.offsetTop-8})}):(body.innerHTML=listView()))
+      loadIndex().then(()=>state.id?loadDetail(state.id).then(item=>{if(route().id!==state.id)return;body.innerHTML=detailView(item);body.querySelector('#rt-product-title')?.focus({preventScroll:true});window.scrollTo({top:view.offsetTop-8});initDiagramScroll(body)}):(body.innerHTML=listView()))
         .catch(()=>{body.innerHTML=`<p class="rt-products-empty">제품 정보를 불러오지 못했습니다. <a href="#products">목록으로</a></p>`});
     }
     body.addEventListener('click',event=>{
