@@ -594,12 +594,13 @@
       }
       return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="딥 스위치 ${target}번 ${on?'ON':'OFF'}">${body}</svg>`;
     }
+    // dipSwitch.order: ["on","off"]이면 ON 칸을 왼쪽에 둔다(HDS-21U·HDS-42MU, 사용자 요청 2026-09-27 "딥스위치 값 서로 좌우 위치 변경해줘"). 없으면 OFF → ON.
     function dipSwitchSection(item){
       const ds=item.dipSwitch;
       if(!ds||!ds.rows?.length)return '';
       const idx=String(6+(item.videoModes?1:0)+(item.edidSwitch?.table?.length?1:0)+(item.audioMux?.modes?.length?1:0)).padStart(2,'0');
       const state=(label,on,st,n)=>`<figure class="rt-pg-dip-state${on?' is-on':''}">${dipGraphic(ds.count,n,on,ds.onUp!==false)}<figcaption><em>${label}${st.name?` · ${esc(st.name)}`:''}</em>${esc(st.text)}</figcaption></figure>`;
-      const rows=ds.rows.map(row=>`<div class="rt-pg-dip-row"><div class="rt-pg-dip-head"><b>${row.n}번</b><span>${esc(row.title)}</span></div><div class="rt-pg-dip-states">${state('OFF',false,row.off,row.n)}${state('ON',true,row.on,row.n)}</div>${row.note?`<p class="rt-pg-dip-note">${esc(row.note)}</p>`:''}</div>`).join('');
+      const rows=ds.rows.map(row=>`<div class="rt-pg-dip-row"><div class="rt-pg-dip-head"><b>${row.n}번</b><span>${esc(row.title)}</span></div><div class="rt-pg-dip-states">${(ds.order?.[0]==='on'?[['ON',true,row.on],['OFF',false,row.off]]:[['OFF',false,row.off],['ON',true,row.on]]).map(([label,on,st])=>state(label,on,st,row.n)).join('')}</div>${row.note?`<p class="rt-pg-dip-note">${esc(row.note)}</p>`:''}</div>`).join('');
       return `<section class="rt-pg-card rt-pg-dip" style="margin-top:18px"><h2><span class="rt-pg-idx">${idx}</span>딥 스위치 설정 <span class="rt-pg-note">— 전면 ${esc(ds.label||'딥 스위치')} · ${ds.onUp!==false?'위쪽':'아래쪽'}이 ON</span></h2><div class="rt-pg-dip-rows">${rows}</div>${ds.apply?`<p class="rt-pg-hint">※ ${esc(ds.apply)}</p>`:''}${ds.note?`<p class="rt-pg-hint">※ ${esc(ds.note)}</p>`:''}</section>`;
     }
     // ---- 오디오 설정(병합 MUX·추출 DEMUX 중 선택, HD-13U). 매뉴얼 문장을 "이럴 때·연결·소리가 나오는 곳·확인 방법"으로 풀어 두 칸으로 보여준다 ----
@@ -656,13 +657,13 @@
       const diagram=connectionDiagram(item);
       const portSection=item.group!=='cable'?(portMapDiagram(item)||portCards(item)):null;
       const related=Object.values((item.related||[]).filter(link=>byId[link.target]).reduce((all,link)=>{if(!all[link.target]||link.relation!=='PART_OF_SERIES')all[link.target]=link;return all},{}));
-      // videoModes·audioMux 카드만 05 주요 기능 오른쪽에 붙이고, edidSwitch·dipSwitch는 전체 폭 아래에 둔다(사용자 요청 2026-09-27, 아래 이유 참고).
+      // audioMux 카드만 05 주요 기능 오른쪽에 붙이고, videoModes·edidSwitch·dipSwitch는 전체 폭 아래에 둔다(사용자 요청 2026-09-27, 아래 이유 참고).
       const hasVideoModes=!!item.videoModes?.modes?.length;
       const hasAudioMux=!!item.audioMux?.modes?.length;
       let sideCard='',belowCards='';
       // edidSwitch는 사진+안내 2장+코드표(최대 12행)까지 있어 05 옆 좁은 칸(360px)에 넣으면 오른쪽 칸(02·03·기록)보다 훨씬 길어져 빈 공간이 크게 남는다(사용자 확인 2026-09-27 "06 EDID설정 깨진ㄷ").
-      // videoModes·audioMux는 상대적으로 짧아 좁은 칸에 넣어도 균형이 맞으므로 이 둘만 05 옆에 붙이고, edidSwitch·dipSwitch는 항상 전체 폭 아래에 둔다.
-      if(hasVideoModes){sideCard=videoModesSection(item);belowCards=edidSwitchSection(item)}
+      // videoModes(QMS)도 모드 카드 4개+레이아웃 칩 12개까지 있어 좁은 칸에서는 글자가 카드 밖으로 넘친다(사용자 확인 2026-09-27 "06화면모드 짤린다"). audioMux만 상대적으로 짧아 05 옆에 붙이고, 나머지는 항상 전체 폭 아래에 둔다.
+      if(hasVideoModes){belowCards=`${videoModesSection(item)}${edidSwitchSection(item)}`}
       // 오디오 설정(병합·추출 두 칸)도 좁은 칸에서는 오른쪽 칸이 잘리고, EDID 설정(06)보다 먼저 보여 번호가 07 → 06 순서로 뒤집혔다(사용자 지적 2026-09-27 "13U 07 오디오가 잘린다").
       // 그래서 EDID 설정이 있는 제품은 06 EDID → 07 오디오 순서로 둘 다 전체 폭 아래에 두고, EDID가 없을 때만 오디오 설정을 05 옆에 붙인다.
       else if(hasAudioMux&&!item.edidSwitch?.table?.length){sideCard=audioMuxSection(item)}
