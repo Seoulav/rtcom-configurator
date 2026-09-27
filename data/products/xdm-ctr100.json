@@ -83,6 +83,20 @@
       "title": "알티컴 종합 카탈로그 2026 (국문)",
       "language": "ko",
       "note": "10쪽"
+    },
+    {
+      "type": "ProductSheet",
+      "status": "FOUND",
+      "title": "XDM-CTR100 PSE 제품 안내서",
+      "language": "ko",
+      "note": "1–2쪽 · 사용자 제공, 배포 제외"
+    },
+    {
+      "type": "Manual",
+      "status": "FOUND",
+      "title": "XDM-CTR100 사용자 매뉴얼 Ver.1.4",
+      "language": "ko",
+      "note": "4–9쪽 · 사용자 제공, 배포 제외"
     }
   ],
   "features": [
@@ -117,6 +131,34 @@
     {
       "text": "XDM-CTR100 PSE는 XDM-CTR100과 벽부형 XDM-CT103/CR103과 함께 사용할 수 있다.",
       "source": "C"
+    },
+    {
+      "text": "TX 모드에서는 HDMI IN에 소스를, RX 모드에서는 HDMI OUT에 디스플레이를 연결한다.",
+      "source": "S1"
+    },
+    {
+      "text": "후면 5핀 단자의 L·R·접지로 아날로그 스테레오 오디오를 출력해 스피커에 바로 연결할 수 있다.",
+      "source": "S1"
+    },
+    {
+      "text": "앞면 LED 4개(Rx Signal, Tx Signal, Tx/Rx, Link)로 동작 상태를 보여 준다.",
+      "source": "S1"
+    },
+    {
+      "text": "PSE[TX 모드]는 XDM-CTR100[RX 모드] 또는 XDM-CR103과, PSE[RX 모드]는 XDM-CTR100[TX 모드] 또는 XDM-CT103과 CAT6A·CAT7(BELDEN 10GXE02 S/FTP) 케이블로 연결한다.",
+      "source": "S1"
+    },
+    {
+      "text": "전면 딥 스위치로 모드를 고른다: TX 모드는 1번 ON, RX 모드는 2번 ON, 3번을 ON으로 두면 Long Reach 모드로 1920x1080p를 최대 150m까지 전송한다(4번은 사용하지 않음, 스위치를 내리면 ON).",
+      "source": "M1"
+    },
+    {
+      "text": "정상 동작하면 TX 모드는 Link·Tx/Rx·Tx Signal LED가, RX 모드는 Link·Tx/Rx·Rx Signal LED가 켜진다.",
+      "source": "M1"
+    },
+    {
+      "text": "HDMI 입력의 오디오가 5핀 단자의 스테레오 출력(L·R·접지)으로 추출된다.",
+      "source": "M1"
     }
   ],
   "specifications": [
@@ -145,6 +187,15 @@
       "unit": "m",
       "condition": "4K60Hz 4:4:4, CI6522(SF/UTP, CAT6) 케이블 사용 시 · XDM-CTR100·XDM-CTR100 PSE 공통 · 케이블별 상이(카탈로그 원문은 \"케이블 별 상이, 상세 문의\"로만 표기)",
       "source": "U",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "name": "최대 전송거리",
+      "value": "150",
+      "unit": "m",
+      "condition": "Long Reach 모드(딥 스위치 3번 ON), 1920x1080p · XDM-CTR100·XDM-CTR100 PSE 공통 · 매뉴얼 5쪽",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
@@ -193,6 +244,42 @@
       "verification": "VERIFIED"
     },
     {
+      "group": "Control",
+      "name": "딥 스위치 · TX 모드",
+      "value": "1 ON · 2 OFF · 3 OFF",
+      "unit": "",
+      "condition": "XDM-CTR100·XDM-CTR100 PSE 공통 · 스위치를 내리면 ON, 출고 시 모두 OFF · 매뉴얼 5쪽",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Control",
+      "name": "딥 스위치 · RX 모드",
+      "value": "1 OFF · 2 ON · 3 OFF",
+      "unit": "",
+      "condition": "XDM-CTR100·XDM-CTR100 PSE 공통 · 스위치를 내리면 ON, 출고 시 모두 OFF · 매뉴얼 5쪽",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Control",
+      "name": "딥 스위치 3 · 전송 모드",
+      "value": "ON: Long Reach / OFF: Normal",
+      "unit": "",
+      "condition": "XDM-CTR100·XDM-CTR100 PSE 공통 · 스위치를 내리면 ON, 출고 시 모두 OFF · 매뉴얼 5쪽 · Long Reach는 1920x1080p 최대 150m",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Control",
+      "name": "딥 스위치 4",
+      "value": "사용 안 함",
+      "unit": "",
+      "condition": "XDM-CTR100·XDM-CTR100 PSE 공통 · 스위치를 내리면 ON, 출고 시 모두 OFF · 매뉴얼 5쪽",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
       "group": "Physical",
       "name": "크기(W×D×H)",
       "value": "127.8×73.2×30.3",
@@ -204,10 +291,10 @@
     {
       "group": "Physical",
       "name": "크기(W×D×H)",
-      "value": "107.4 [127.4]×88×30.1",
+      "value": "127.4×88×30.1",
       "unit": "mm",
-      "condition": "XDM-CTR100 PSE · 원문 대괄호 표기 그대로",
-      "source": "C",
+      "condition": "XDM-CTR100 PSE · 제품 안내서 1쪽 127.4×88×30.1mm(5.02×3.46×1.19in) · 카탈로그 원문은 \"107.4 [127.4]\"",
+      "source": "S1",
       "verification": "VERIFIED"
     },
     {
@@ -226,6 +313,33 @@
       "unit": "kg",
       "condition": "XDM-CTR100 PSE",
       "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "name": "전원",
+      "value": "DC +12V 1A 이상",
+      "unit": "",
+      "condition": "XDM-CTR100 · XDM-CTR100 PSE와 연결되면 PD 모드로 CAT 케이블에서 전원을 받아 연결하지 않음 · 매뉴얼 4·9쪽",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "name": "전원",
+      "value": "DC 12V 1A",
+      "unit": "",
+      "condition": "XDM-CTR100 PSE · PSE에 전원을 연결하고, PSE와 연결된 XDM-CTR100·XDM-CT103·XDM-CR103에는 연결하지 않음 · 제품 안내서 1·2쪽",
+      "source": "S1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "General",
+      "name": "인증",
+      "value": "KC 인증",
+      "unit": "",
+      "condition": "XDM-CTR100 PSE · 제품 안내서 2쪽",
+      "source": "S1",
       "verification": "VERIFIED"
     }
   ],
@@ -270,8 +384,19 @@
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
-      "condition": "원문 'RS-232/Audio out 1' 표기",
-      "source": "C",
+      "condition": "5핀 중 접지·Tx·Rx · RS-232C 통신(RS-232+ 제어) · 매뉴얼 6쪽 · 원문 \"RS-232/Audio out 1\" 표기",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Audio",
+      "connector": "Female Phoenix connector 5p(RS-232와 공용, L·R·접지)",
+      "signal": "Analog Stereo Audio",
+      "direction": "OUT",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "5핀 중 L·R·접지 · HDMI 입력 오디오 추출 · 매뉴얼 6·8쪽, 제품 안내서 1쪽(안내서 2쪽 사양표의 \"Audio Input\"은 오기로 판단)",
+      "source": "M1",
       "verification": "VERIFIED"
     }
   ],
@@ -307,7 +432,7 @@
       {
         "n": 2,
         "label": "HDMI IN",
-        "desc": "HDMI 소스 입력",
+        "desc": "TX 모드에서 HDMI 소스 입력",
         "x1": 181,
         "x2": 239,
         "side": "bottom",
@@ -316,7 +441,7 @@
       {
         "n": 3,
         "label": "HDMI OUT",
-        "desc": "HDMI 디스플레이 출력",
+        "desc": "RX 모드에서 디스플레이 출력",
         "x1": 265,
         "x2": 325,
         "side": "bottom",
@@ -325,7 +450,7 @@
       {
         "n": 4,
         "label": "AUDIO · RS-232",
-        "desc": "5핀 터미널(L·R·접지·Tx·Rx) · 오디오 출력과 RS-232+ 제어",
+        "desc": "5핀(L·R·접지·Tx·Rx) · 아날로그 스테레오 오디오 출력과 RS-232+ 제어",
         "x1": 340,
         "x2": 404,
         "side": "bottom",
@@ -334,7 +459,7 @@
       {
         "n": 5,
         "label": "DC IN",
-        "desc": "전원 입력 · PSE와 함께 쓰면 연결하지 않음",
+        "desc": "DC 12V 1A 이상 · PSE에는 연결, PSE와 연결된 CTR100에는 연결하지 않음",
         "x1": 410,
         "x2": 451,
         "side": "bottom",
@@ -343,9 +468,18 @@
       {
         "n": 6,
         "label": "TX/RX DIP 스위치",
-        "desc": "송신(TX)·수신(RX) 동작 선택",
+        "desc": "1번 ON = TX · 2번 ON = RX · 3번 ON = Long Reach(1080p 150m) · 스위치를 내리면 ON",
         "x1": 181,
         "x2": 229,
+        "side": "top",
+        "y": 42
+      },
+      {
+        "n": 7,
+        "label": "상태 LED",
+        "desc": "Rx Signal(RX 모드) · Tx Signal(TX 모드) · Tx/Rx·Link(정상 연결)",
+        "x1": 112,
+        "x2": 166,
         "side": "top",
         "y": 42
       }
@@ -376,6 +510,18 @@
       "name": "서울영상테크 SI사업본부 확인",
       "page": "",
       "scope": "사용자 확인(2026-09-26·27) — 카탈로그가 '케이블 별 상이, 상세 문의'로만 표기한 항목의 실사용 확인 거리, XDM-CIS100·COS100 연결 시 전원 연결 방식"
+    },
+    {
+      "code": "S1",
+      "name": "XDM-CTR100 PSE 제품 안내서(Product Sheet)",
+      "page": "1–2",
+      "scope": "제조사 공식 출처 — 사용자 제공 PDF(.source-materials/RTcom_ProductSheet_XDM-CTR100-PSE.pdf, 배포 제외)"
+    },
+    {
+      "code": "M1",
+      "name": "XDM-CTR100 사용자 매뉴얼 Ver.1.4",
+      "page": "4–9",
+      "scope": "제조사 공식 출처 — 사용자 제공 PDF(.source-materials/RTcom_Manual_XDM-CTR100_Ver1.4.pdf, 배포 제외). XDM-CTR100 PSE도 같은 사양(매뉴얼 4쪽)"
     }
   ],
   "issues": []
