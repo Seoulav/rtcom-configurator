@@ -510,7 +510,8 @@
       },
       {
         "code": "3",
-        "function": "1920x1080@60 PCM 2CH"
+        "function": "1920x1080@60 PCM 2CH",
+        "highlight": true
       },
       {
         "code": "4",
@@ -522,7 +523,8 @@
       },
       {
         "code": "6",
-        "function": "3840x2160p@30 PCM 2CH"
+        "function": "3840x2160p@30 PCM 2CH",
+        "highlight": true
       },
       {
         "code": "7",
