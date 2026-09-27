@@ -70,6 +70,29 @@ test('schema two XDM-12 slots migrate to the six-slot identifiers',()=>{
   assert.equal(restored.slot,'out-2');
 });
 
+test('XDM-288 saved configs restore safely as an unselected XDM chassis with a notice',()=>{
+  const legacy=core.document(configured());
+  legacy.state.model='XDM-288';
+  legacy.state.placements={'in-a':'XDM-CIS100'};
+  legacy.state.links={'in-a':{device:'XDM-CTR100 · TX',count:1,distance:'30'}};
+  legacy.state.portAssignments={};
+  legacy.state.step=4;legacy.state.maxStep=4;legacy.state.slot='in-a';
+  const restored=core.parse(JSON.stringify(legacy));
+  assert.equal(restored.family,'XDM');
+  assert.equal(restored.model,null);
+  assert.deepEqual(restored.placements,{});
+  assert.deepEqual(restored.links,{});
+  assert.deepEqual(restored.portAssignments,{});
+  assert.equal(restored.step,0);
+  assert.equal(restored.maxStep,0);
+  assert.equal(restored.slot,'in-a');
+  assert.equal(restored.notice,'XDM-288은 구성기에서 제외되었습니다. 섀시를 다시 선택하세요.');
+});
+
+test('a normal restore never carries a notice',()=>{
+  assert.equal(core.parse(JSON.stringify(core.document(configured()))).notice,undefined);
+});
+
 test('requirements from old files are intentionally discarded',()=>{
   const legacy=core.document(configured());legacy.schemaVersion=2;
   legacy.state.requirements={inputs:[{id:'old',direction:'input',signalType:'HDMI',quantity:4}],outputs:[]};
