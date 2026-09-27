@@ -22,6 +22,11 @@
 - 매뉴얼 6쪽 EDID Select Rotary S/W 표: 0 Through pass·1 1920x1080@60·2 3840x2160@30·3 3840x2160@60(Source 오디오), 8·9·10(A)·11(B)는 같은 EDID에 Analog 오디오 병합. 기본값 0. 06 EDID 설정 카드와 대표 그림(0·3·8번)을 추가했습니다. 링 표시는 매뉴얼 전면 사진(`xdm-ft101-fr101-front.webp`)의 MODE 로터리 위치입니다.
 - 사양·입출력 보완: 전원 DC +12V 1A, 광 출력(2km 전송 후 -10 dBm 이상), S/P(Mini USB, 펌웨어), DC IN(+12V·GND) 단자. 매뉴얼 표의 연결 단자에는 "DC Power Jack"이라고 적혀 있지만 사진의 DC IN은 3핀 터미널(+12V·GND)이라, 단자 이름은 사진 표기를 따랐습니다.
 
+## 3-0. 추가 요청(2026-09-27)
+
+- "SPX는 HDBaseT 전송이 아니야, 착각하지 마": 03 Signal Flow(SPX-TX/RX)는 이미 "CATx"였고, 남아 있던 곳 3군데를 고쳤습니다. 구성기 04 전송기의 SPX 빈 구성 안내와 머리말("HDBaseT·광 카드" → "CATx 카드", `src/app.js`), SPX 시리즈 상세 02 신호 구성의 CAT 범례("HDBaseT·CATx" → "CATx", `src/products.js` SIG_NAME). XDM·VDM의 HDBaseT 카드 문구는 그대로입니다.
+- "XDM-FT101/FR101도 로터리 스위치 이미지화해서 넣어줘": 06 EDID 설정의 로터리 그림을 전체 8칸(Source 0~3 / Analog 8~11)으로 두 줄에 나눠 보여줍니다(`edidSwitch.examples: "all"`, 표 행의 `group`·`caption`). XDM-FT101/FR101에는 딥 스위치가 없고 스위치는 MODE 로터리 하나입니다.
+
 ## 3-1. OBUX-1C 딥 스위치(사용자 요청 "OBUX-1C 딥스위치 예상 이미지 만들어서 추가해", 매뉴얼 Ver.2.2 제공)
 
 - 근거: 매뉴얼 6~7쪽 "Dip S/W: EDID 설정과 오디오 선택을 위한 딥 스위치", 10쪽 "오디오 병합". 원본은 `.source-materials/RTcom_Manual_OBUX-1C_Ver2.2.pdf`.
@@ -38,7 +43,7 @@
 - `node --test tests/*.test.cjs`: 39/39 통과(전송기 13종 기대값)
 - `node scripts/build-product-index.cjs --check`: 29개 통과
 - `node scripts/package-site.cjs`: 통과
-- `node scripts/e2e-smoke.cjs`: 121/121 통과(SPX-TX/RX 딥 스위치·CATx 신호 흐름, FT101 로터리 0·3·8번, OBUX-1C 딥 스위치 확인 추가, 제품 29종·전송기 13종, 구성기 사진 슬롯 검사의 사진 로드 대기 보완)
+- `node scripts/e2e-smoke.cjs`: 124/124 통과(SPX-TX/RX 딥 스위치·CATx 신호 흐름, SPX HDBaseT 표기 없음(상세 2곳·구성기 04), FT101 로터리 전체 8칸, OBUX-1C 딥 스위치 확인 추가, 제품 29종·전송기 13종, 구성기 사진 슬롯 검사의 사진 로드 대기 보완)
 - 화면: `docs/qa/spx-txrx-screens/`
 
 ## 6. 되돌리기

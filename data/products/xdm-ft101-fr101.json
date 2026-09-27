@@ -468,39 +468,57 @@
     "table": [
       {
         "code": "0",
-        "function": "Through pass · Source 오디오"
+        "function": "Through pass · Source 오디오",
+        "group": "Source 오디오(HDMI 원래 소리) · 0~3번",
+        "caption": "Through pass"
       },
       {
         "code": "1",
-        "function": "1920x1080@60 · Source 오디오"
+        "function": "1920x1080@60 · Source 오디오",
+        "group": "Source 오디오(HDMI 원래 소리) · 0~3번",
+        "caption": "1920×1080@60"
       },
       {
         "code": "2",
-        "function": "3840x2160@30 · Source 오디오"
+        "function": "3840x2160@30 · Source 오디오",
+        "group": "Source 오디오(HDMI 원래 소리) · 0~3번",
+        "caption": "3840×2160@30"
       },
       {
         "code": "3",
         "function": "3840x2160@60 · Source 오디오",
-        "highlight": true
+        "highlight": true,
+        "group": "Source 오디오(HDMI 원래 소리) · 0~3번",
+        "caption": "3840×2160@60"
       },
       {
         "code": "8",
         "function": "Through pass · Analog 오디오(병합)",
-        "highlight": true
+        "highlight": true,
+        "group": "Analog 오디오 병합(3핀 L·R 입력) · 8~11번(10=A, 11=B)",
+        "caption": "Through pass"
       },
       {
         "code": "9",
-        "function": "1920x1080@60 · Analog 오디오(병합)"
+        "function": "1920x1080@60 · Analog 오디오(병합)",
+        "group": "Analog 오디오 병합(3핀 L·R 입력) · 8~11번(10=A, 11=B)",
+        "caption": "1920×1080@60"
       },
       {
         "code": "A",
-        "function": "3840x2160@30 · Analog 오디오(병합, 10번)"
+        "function": "3840x2160@30 · Analog 오디오(병합, 10번)",
+        "group": "Analog 오디오 병합(3핀 L·R 입력) · 8~11번(10=A, 11=B)",
+        "caption": "3840×2160@30"
       },
       {
         "code": "B",
-        "function": "3840x2160@60 · Analog 오디오(병합, 11번)"
+        "function": "3840x2160@60 · Analog 오디오(병합, 11번)",
+        "group": "Analog 오디오 병합(3핀 L·R 입력) · 8~11번(10=A, 11=B)",
+        "caption": "3840×2160@60"
       }
     ],
-    "source": "M1"
+    "source": "M1",
+    "examples": "all",
+    "rotaryName": "MODE 로터리"
   }
 }

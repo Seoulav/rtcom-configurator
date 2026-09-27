@@ -546,12 +546,19 @@
       return `<svg viewBox="0 0 ${S} ${S}" width="${S}" height="${S}" role="img" aria-label="${esc(opts.name||'EDID 로터리')} ${esc(code)}번">${body}</svg>`;
     }
     // 대표 설정: 기본값 코드(edidSwitch.default의 "0 = …" 앞 글자)와 자주 쓰는 코드(table[].highlight)를 코드 순으로 최대 4개 보여준다.
+    // examples "all": 표의 모든 코드를 그림으로 보여주고, table[].group이 있으면 묶음마다 제목을 붙여 한 줄씩 둔다(XDM-FT101: Source 0~3 / Analog 8~11, 사용자 요청 2026-09-27).
     function edidExamples(es){
       const def=(String(es.default||'').match(/^\s*([0-9A-F])\s*=/i)||[])[1]?.toUpperCase();
+      const tile=row=>{const code=String(row.code).toUpperCase(),isDef=code===def;return `<figure class="rt-pg-rotary${isDef?' is-default':''}">${rotaryGraphic(code,es.rotaryName?{name:es.rotaryName}:{})}<figcaption><em>${esc(row.code)}번${isDef?' · 기본값':''}</em>${esc(row.caption||row.function)}</figcaption></figure>`};
+      if(es.examples==='all'){
+        const groups=[];for(const row of es.table){const g=row.group||'';let last=groups[groups.length-1];if(!last||last.name!==g){last={name:g,rows:[]};groups.push(last)}last.rows.push(row)}
+        return groups.map(g=>`${g.name?`<p class="rt-pg-rotary-group">${esc(g.name)}</p>`:''}<div class="rt-pg-rotary-row rt-pg-rotary-all" aria-label="${esc(g.name||'로터리 설정')}">${g.rows.map(tile).join('')}</div>`).join('');
+      }
       const picks=es.table.filter(row=>row.highlight||String(row.code).toUpperCase()===def).slice(0,4);
       if(!picks.length)return '';
-      return `<div class="rt-pg-rotary-row" aria-label="EDID 로터리 대표 설정">${picks.map(row=>`<figure class="rt-pg-rotary${String(row.code).toUpperCase()===def?' is-default':''}">${rotaryGraphic(String(row.code).toUpperCase())}<figcaption><em>${esc(row.code)}번${String(row.code).toUpperCase()===def?' · 기본값':''}</em>${esc(row.function)}</figcaption></figure>`).join('')}</div>`;
+      return `<div class="rt-pg-rotary-row" aria-label="EDID 로터리 대표 설정">${picks.map(tile).join('')}</div>`;
     }
+
     function edidSwitchSection(item){
       const es=item.edidSwitch;
       if(!es||!es.table?.length)return '';
@@ -720,7 +727,8 @@
         return `<div class="rt-pg-cardrow"><img src="output/design/assets/cards/${encodeURIComponent(model)}.webp" alt="" loading="lazy"><div><b>${esc(model)}</b><span>${esc(desc)}${linked?` · ↔ ${esc(linked)}`:''}</span></div><span class="rt-pg-pc${isOut?' rt-pg-out':''}">${esc(count)}포트</span></div>`;
       };
       const SIG_COLOR={HDMI:'var(--pg-sig-hdmi)',DP:'var(--pg-sig-dp)',SDI:'var(--pg-sig-sdi)',CAT:'var(--pg-sig-cat)',FIBER:'var(--pg-sig-fiber)'};
-      const SIG_NAME={HDMI:'HDMI',DP:'DisplayPort',SDI:'SDI',CAT:'HDBaseT·CATx',FIBER:'광'};
+      // SPX의 CAT 카드(SPX-COS12)는 HDBaseT가 아닌 CATx 전송이다(사용자 확인 2026-09-27).
+      const SIG_NAME={HDMI:'HDMI',DP:'DisplayPort',SDI:'SDI',CAT:family==='SPX'?'CATx':'HDBaseT·CATx',FIBER:'광'};
       const legendKeys=[...new Set([...inCards,...outCards].map(card=>card[3]))];
       const arch=seriesSignalSvg(item.name||family,inCards,outCards,SIG_COLOR);
       return `${headerBlock({icon:GROUP_ICON.series,title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,cta:`<a class="rt-pg-btn rt-pg-primary" href="#matrix-configurator" data-configure-family="${esc(family)}">${esc(family)} 구성기에서 구성하기 →</a>`})}

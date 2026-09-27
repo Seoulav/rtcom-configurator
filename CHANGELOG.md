@@ -19,9 +19,11 @@
 - 딥 스위치 카드: 두 스위치를 함께 고르는 조합(`dipSwitch.combos`), 위치 표기(`place`, 기본 "전면"), 아래쪽이 ON인 제품의 "ON ↓" 표시를 추가했습니다.
 - 03 Signal Flow: HDBaseT를 쓰지 않는 CATx 전송기(SPX-TX/RX)는 케이블 이름을 "CATx"로 적고 거리 표기에 해상도(4K 60Hz·1080p·Long Reach)를 붙입니다. 다른 전송기는 그대로입니다.
 - **XDM-FT101/FR101 매뉴얼 Ver.1.3 반영**: 06 EDID 설정 카드(전면 MODE 로터리: 0~3번 EDID + Source 오디오, 8~11번 EDID + Analog 오디오 병합, 기본 0번, 대표 그림 0·3·8번)와 매뉴얼 전면 사진, 전원(DC +12V 1A)·광 출력(2km 후 -10 dBm 이상)·S/P(Mini USB)·DC IN 단자, 05 주요 기능 "EDID 마인더 기능 지원"을 추가했습니다.
+- **SPX는 HDBaseT가 아닌 CATx 전송**(사용자 지적 "SPX는 HDBaseT 전송이 아니야"): 구성기 04 전송기의 SPX 안내(빈 구성 안내·머리말)를 "HDBaseT·광 카드"에서 "CATx 카드"로, SPX 시리즈 상세 02 신호 구성의 CAT 범례를 "HDBaseT·CATx"에서 "CATx"로 바꿨습니다. XDM·VDM은 그대로입니다. e2e: SPX·SPX-TX/RX 상세와 SPX 구성기 04 화면에 HDBaseT가 나오지 않는지 확인.
+- **XDM-FT101 로터리 전체 그림**(사용자 요청 "XDM-FT101/FR101도 로터리 스위치 이미지화해서 넣어줘"): 06 EDID 설정의 로터리 그림을 대표 3칸에서 전체 8칸으로 늘리고 두 줄로 나눴습니다(Source 오디오 0~3번 / Analog 오디오 병합 8~11번, 10=A·11=B). 데이터: `edidSwitch.examples: "all"`, `table[].group`·`caption`, `rotaryName`.
 - **OBUX-1C 딥 스위치 설정**(사용자 요청 "OBUX-1C 딥스위치 예상 이미지 만들어서 추가해", OBUX-1C 사용자 매뉴얼 Ver.2.2 제공): Tx 전면 Mode 딥 스위치(검은 몸체 4핀, 아래쪽이 ON)를 06 딥 스위치 설정 카드로 추가했습니다. 1번 오디오(OFF HDMI Source 기본값 / ON Analog 병합), 2·3·4번 EDID 조합(OFF·OFF·OFF Through-pass 기본값 / ON·OFF·OFF 1080p60 / OFF·ON·OFF 2160p30 / ON·ON·OFF 2160p60 / ON·ON·ON Through-pass EDID Fix)과 EDID Fix 설정 순서를 적었습니다. 매뉴얼은 ON 방향을 적지 않아, 사진(출고 시 모두 OFF, 레버가 위) 기준으로 아래쪽을 ON으로 그리고 "제품 하단 스티커로 확인"을 함께 적었습니다. 지원 사양(HDMI 2.0b·HDR Static/Dynamic·Dolby Atmos·HDCP v1.x/2.2)과 S/P(Mini USB) 단자도 보완했습니다. 딥 스위치 그림에 몸체 색(`dipSwitch.color: "black"`) 옵션을 추가했습니다.
 - **전 제품 05 주요 기능 어투 통일**(사용자 요청 "XDM-FT101/FR101 이것도 05 주요기능에 ~한다라고 표현되어 있어, 전수조사해서 수정해"): 20개 제품 약 90줄의 "~한다/~다." 문장을 "~ 지원"·명사형으로 바꿨습니다(뜻 유지, 카탈로그 원문 영어 줄과 단순 사양 줄은 그대로).
-- e2e: SPX-TX/RX(딥 스위치 3행·조합 4칸·아래쪽 ON·CATx 신호 흐름·깨진 사진 없음), XDM-FT101/FR101(로터리 0·3·8번) ·OBUX-1C 딥 스위치 확인 추가, 제품 29종·전송기 13종 기대값 갱신, 구성기 사진 슬롯 검사에 사진 로드 대기 추가(121/121). QA: `docs/qa/SPX_TXRX_FT101_MANUAL_QA_2026-09-27.md`.
+- e2e: SPX-TX/RX(딥 스위치 3행·조합 4칸·아래쪽 ON·CATx 신호 흐름·깨진 사진 없음), XDM-FT101/FR101(로터리 전체 8칸), SPX HDBaseT 표기 없음 ·OBUX-1C 딥 스위치 확인 추가, 제품 29종·전송기 13종 기대값 갱신, 구성기 사진 슬롯 검사에 사진 로드 대기 추가(124/124). QA: `docs/qa/SPX_TXRX_FT101_MANUAL_QA_2026-09-27.md`.
 - 되돌리기: 해당 커밋을 `git revert`합니다.
 
 ## 0.63.0

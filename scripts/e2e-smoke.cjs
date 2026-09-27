@@ -148,6 +148,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.waitForLoadState('networkidle');
     check('실행 취소 1번으로 "채우기"가 통째로 되돌아감(블랭크 6개가 다시 빈칸으로)',await page.locator('.rt-rack-slot-blank').count()===0&&await page.locator('.rt-rack-slot-empty').count()===6&&await page.locator('button[data-slot="out-1"].rt-rack-slot-filled').count()===1&&await page.locator('.rt-slot-done-banner').count()===0);
     await page.click('[data-action="next"]');
+    // 0.64 SPX 04 전송기 안내는 "HDBaseT·광 카드"가 아니라 "CATx 카드"(SPX는 HDBaseT 전송이 아님, 사용자 확인 2026-09-27).
+    const spxLinkText=await page.evaluate(()=>document.querySelector('.rt-configurator-view')?.innerText||'');
+    check('SPX 04 전송기 안내가 "CATx 카드"로 표기되고 HDBaseT가 나오지 않음',spxLinkText.includes('CATx 카드')&&!spxLinkText.includes('HDBaseT'),spxLinkText.match(/.{0,30}(CATx 카드|HDBaseT).{0,30}/)?.[0]||'없음');
     check('SPX-COS12 장착 시 SPX-RX가 12채널로 자동 연결됨',await page.locator('button[data-owner="out-1"][data-link-device="SPX-RX"][aria-pressed="true"]').count()===1&&await page.locator('select[data-owner="out-1"][data-link="count"]').inputValue()==='12');
     // 제품군을 바꾸면(확인 창 수락) 카드·전송기 선택이 초기화된다.
     await page.click('.rt-step[data-jump="0"]');
@@ -384,8 +387,15 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     // 0.64 XDM-FT101/FR101 EDID·오디오 로터리(매뉴얼 Ver.1.3): 0(기본값)·3·8번 대표 설정 그림.
     await page.goto(`${home}#products/xdm-ft101-fr101`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-edid');
-    const ftRot=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-edid .rt-pg-rotary-row .rt-pg-rotary svg')].map(svg=>svg.getAttribute('aria-label').replace(/\D/g,'')).join(','));
-    check('XDM-FT101/FR101 EDID 설정에 로터리 0·3·8번 대표 그림이 나옴',ftRot==='0,3,8',ftRot);
+    const ftRot=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-edid .rt-pg-rotary-row .rt-pg-rotary svg')].map(svg=>(svg.getAttribute('aria-label').match(/(\w)번$/)||[])[1]).join(','));
+    check('XDM-FT101/FR101 EDID 설정에 로터리 전체 8칸(Source 0~3, Analog 8~B)이 나옴',ftRot==='0,1,2,3,8,9,A,B',ftRot);
+    // 0.64 SPX는 HDBaseT가 아닌 CATx 전송(사용자 확인 2026-09-27): SPX 시리즈 상세 신호 범례와 SPX-TX/RX 어디에도 HDBaseT가 나오지 않는다.
+    for(const id of ['spx','spx-rx-tx']){
+      await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
+      await page.waitForSelector('#rt-pg-title');
+      const hb=await page.evaluate(()=>{const el=document.querySelector('.rt-products-view');const m=(el?.textContent||'').match(/.{0,40}HDBaseT.{0,40}/);return m?m[0]:false});
+      check(`${id} 상세에 HDBaseT 표기가 없음(CATx 전송)`,!hb,String(hb));
+    }
     // 0.61 HD-210U 딥 스위치 설정(매뉴얼 Ver.1.2 7쪽: 1번 오디오 병합, 2번 DDC). 병합만 되고 추출(AUDIO OUT)은 없다(사용자 확인 2026-09-27).
     await page.goto(`${home}#products/hd-210u`,{waitUntil:'networkidle'});
     await page.waitForSelector('#rt-pg-title');
