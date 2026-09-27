@@ -79,11 +79,11 @@
   ],
   "features": [
     {
-      "text": "싱글모드로 2km까지 전송할 수 있다.",
+      "text": "싱글모드로 2km까지 전송",
       "source": "C"
     },
     {
-      "text": "멀티모드로 500m까지 전송할 수 있다.",
+      "text": "멀티모드로 500m까지 전송",
       "source": "C"
     },
     {
@@ -95,7 +95,7 @@
       "source": "C"
     },
     {
-      "text": "Plug & Play로 쉽게 설치할 수 있다.",
+      "text": "Plug & Play로 쉽게 설치",
       "source": "C"
     }
   ],

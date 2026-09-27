@@ -456,6 +456,11 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       const over=await mobile.evaluate(()=>[...document.querySelectorAll('.rt-pg-card')].map(card=>Math.round(card.getBoundingClientRect().right-document.documentElement.clientWidth)).filter(value=>value>1));
       check(`휴대폰에서 ${id} 제품 카드가 모두 화면 폭 안에 들어감`,over.length===0,JSON.stringify(over));
     }
+    // 0.57 — 05 옆으로 옮긴 06 카드(EDID 설정 등)가 순서 클래스 없이 order:0이 되어 휴대폰에서 맨 위(01보다 먼저)로 올라가던 문제 수정(사용자 확인 2026-09-27 "모바일에 제품 들어가면 6번부터 보여").
+    await mobile.goto(`${home}#products/hd-210u`,{waitUntil:'networkidle'});
+    await mobile.waitForSelector('.rt-pg-idx');
+    const idxOrder=await mobile.evaluate(()=>[...document.querySelectorAll('.rt-pg-idx')].map(el=>({text:el.textContent,top:el.getBoundingClientRect().top})).sort((a,b)=>a.top-b.top).map(x=>x.text));
+    check('휴대폰에서 HD-210U 제품 상세는 01부터 순서대로 보임(06이 맨 위로 올라가지 않음)',idxOrder.join(',')==='01,02,03,04,05,06',JSON.stringify(idxOrder));
     await phone.close();
   }finally{
     await browser.close();
