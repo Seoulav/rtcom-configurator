@@ -47,7 +47,7 @@
 - `node --test tests/*.test.cjs`: 39/39(`fillTargets`·`moveCard` 단위 테스트 2개 추가)
 - `node scripts/build-product-index.cjs --check`: 28개 통과
 - `node scripts/package-site.cjs`: 통과
-- `node scripts/e2e-smoke.cjs`: 93/93
+- `node scripts/e2e-smoke.cjs`: 93/93. 다른 세션 `7fa0f55`(사진 팝업·돋보기 삭제)와 합친 뒤에는 89/89입니다(사진 팝업 검사 4개가 함께 빠짐).
   - 새로 넣은 검사: 확인 창 모양, Esc 취소, 수량 3 채우기, 팝업 이동(같은 방향만), 끌어 옮기기(반대 방향 거부)
   - 기본 확인 창 대신 사이트 확인 창의 확인 버튼을 누르도록 바꿨습니다.
 - 캡처: 1280px·390px 확인 창, 1280px·412px(터치) 카드 팝업의 수량·이동 막대
