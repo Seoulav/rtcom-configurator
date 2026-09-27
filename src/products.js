@@ -8,48 +8,6 @@
     const configurator=root.querySelector('.rt-configurator-view');
     const body=view.querySelector('.rt-products-body');
     const tabs=[...root.querySelectorAll('[data-view-tab]')];
-    // 제품 사진 돋보기(라이트박스). .rt-products-view는 overflow:hidden이라 안에 두면 position:fixed가 화면 전체를 덮지 못한다.
-    // root(#rtcom-design)는 overflow를 걸지 않으므로 그 바로 아래(화면 전환마다 다시 만들지 않도록 한 번만)에 붙인다.
-    // 0.49: 사용자 LED 계산기 "05 프로세서" 사진 팝업과 같은 방식으로 바꿨다(사용자 요청 2026-09-27).
-    // 제목(제품명)·사진 탭(정면·후면 등)·닫기 버튼이 있는 카드이고, 사진 위에서 커서(휴대폰은 손가락)를 따라 원형 돋보기가 확대해 보여준다.
-    root.insertAdjacentHTML('beforeend','<div class="rt-pg-lightbox" hidden><div class="rt-pg-lb-card" role="dialog" aria-modal="true" aria-label="제품 사진 확대"><div class="rt-pg-lb-head"><div class="rt-pg-lb-title"></div><div class="rt-pg-lb-tabs" role="tablist"></div><button type="button" class="rt-pg-lb-close" data-zoom-close aria-label="사진 확대 닫기">✕</button></div><div class="rt-pg-lb-body"><div class="rt-pg-lb-zoom" title="마우스를 올리면 원형 돋보기로 확대됩니다"><img class="rt-pg-lightbox-img" alt="" draggable="false" loading="lazy"><div class="rt-pg-loupe" hidden></div></div><p class="rt-pg-lb-hint">사진 위에 마우스를 올리면(휴대폰은 누른 채 움직이면) 원형 돋보기로 확대됩니다</p></div></div></div>');
-    const lightbox=root.querySelector('.rt-pg-lightbox');
-    const lightboxImg=lightbox.querySelector('.rt-pg-lightbox-img');
-    const loupe=lightbox.querySelector('.rt-pg-loupe');
-    let zoomReturnFocus=null,zoomShots=[];
-    const LOUPE=160,LOUPE_ZOOM=3.1;// 사용자 LED 계산기와 같은 값: 돋보기 원 160px, 배율 3.1
-    function showShot(index){
-      const shot=zoomShots[index];if(!shot)return;
-      lightboxImg.src=shot.src;lightboxImg.alt=shot.alt||'';loupe.hidden=true;
-      lightbox.querySelectorAll('[data-zoom-shot]').forEach(btn=>{const on=Number(btn.dataset.zoomShot)===index;btn.classList.toggle('on',on);btn.setAttribute('aria-selected',String(on))});
-    }
-    function openZoom(src,alt,fromEl){
-      // 같은 사진 띠(.rt-pg-hero)의 사진을 모두 탭으로 만든다. 누른 사진이 처음 선택된다.
-      const strip=fromEl?.closest('.rt-pg-hero');
-      const buttons=strip?[...strip.querySelectorAll('[data-zoom-src]')]:[];
-      zoomShots=buttons.length?buttons.map(btn=>({src:btn.dataset.zoomSrc,alt:btn.dataset.zoomAlt,label:btn.querySelector('.rt-pg-hero-cap')?.textContent||'사진'})):[{src,alt,label:'사진'}];
-      const start=Math.max(0,buttons.indexOf(fromEl));
-      lightbox.querySelector('.rt-pg-lb-title').textContent=strip?.dataset.zoomTitle||alt||'';
-      lightbox.querySelector('.rt-pg-lb-tabs').innerHTML=zoomShots.length>1?zoomShots.map((shot,index)=>`<button type="button" role="tab" data-zoom-shot="${index}">${esc(shot.label)}</button>`).join(''):'';
-      showShot(start);
-      lightbox.hidden=false;zoomReturnFocus=fromEl||null;lightbox.querySelector('[data-zoom-close]').focus();
-    }
-    function closeZoom(){lightbox.hidden=true;lightboxImg.src='';loupe.hidden=true;zoomReturnFocus?.focus({preventScroll:true});zoomReturnFocus=null}
-    function moveLoupe(event){
-      if(!lightboxImg.complete||!lightboxImg.naturalWidth)return;
-      const rect=lightboxImg.getBoundingClientRect();
-      if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom){loupe.hidden=true;return}
-      const x=event.clientX-rect.left,y=event.clientY-rect.top;
-      loupe.hidden=false;
-      loupe.style.left=`${lightboxImg.offsetLeft+x-LOUPE/2}px`;
-      loupe.style.top=`${lightboxImg.offsetTop+y-LOUPE/2}px`;
-      loupe.style.backgroundImage=`url("${lightboxImg.currentSrc||lightboxImg.src}")`;
-      loupe.style.backgroundSize=`${rect.width*LOUPE_ZOOM}px ${rect.height*LOUPE_ZOOM}px`;
-      loupe.style.backgroundPosition=`${LOUPE/2-x*LOUPE_ZOOM}px ${LOUPE/2-y*LOUPE_ZOOM}px`;
-    }
-    lightbox.addEventListener('pointermove',moveLoupe);
-    lightbox.addEventListener('pointerdown',event=>{if(event.target===lightboxImg)moveLoupe(event)});
-    ['pointerleave','pointerup','pointercancel'].forEach(type=>lightbox.addEventListener(type,()=>{loupe.hidden=true}));
     const groups=[['all','전체'],['series','매트릭스 시리즈'],['integrated','일체형 매트릭스'],['distribution','분배기·선택기'],['extender','전송기'],['cable','케이블']];
     const groupLabel=Object.fromEntries(groups);
     const roleLabel={Main:'대표',Front:'전면',Rear:'후면',Perspective:'사선',Diagram:'구성도',Other:'기타'};
@@ -545,11 +503,6 @@
     }
 
     // ---- 단일 제품 템플릿(분배기·일체형·전송기·케이블) — 명세 2-2·2-4 ----
-    // ---- 제품 사진 확대(돋보기). 01 위에 큰 사진 띠를 두고, 누르면 크게 보고 한 번 더 누르면 확대/축소한다 ----
-    function heroGallery(item,images){
-      if(!images.length)return '';
-      return `<section class="rt-pg-hero" aria-label="${esc(item.productName)} 제품 사진" data-zoom-title="${esc(item.productName)}"><div class="rt-pg-hero-scroll">${images.map(img=>`<button type="button" class="rt-pg-hero-item" data-zoom-src="${esc(image(img.file))}" data-zoom-alt="${esc(img.alt||item.productName)}"><img src="${image(img.file)}" alt="${esc(img.alt||item.productName)}" loading="lazy"><span class="rt-pg-hero-cap">${esc(roleLabel[img.role]||img.role)}</span><span class="rt-pg-hero-zoom" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="10" cy="10" r="6.5"/><path d="M14.7 14.7 20 20"/></svg></span></button>`).join('')}</div></section>`;
-    }
     function singleDetailView(item,byId){
       const images=(item.images||[]).filter(img=>img.role!=='Diagram');
       const photo=(item.images||[]).find(img=>img.role==='Diagram');
@@ -559,8 +512,14 @@
       const diagram=connectionDiagram(item);
       const portSection=item.group!=='cable'?(portMapDiagram(item)||portCards(item)):null;
       const related=Object.values((item.related||[]).filter(link=>byId[link.target]).reduce((all,link)=>{if(!all[link.target]||link.relation!=='PART_OF_SERIES')all[link.target]=link;return all},{}));
+      // "06" 카드(화면 구성 모드 → EDID 설정 → 오디오 설정 순으로 먼저 있는 것 하나)는 05 주요 기능 오른쪽에 붙이고, 나머지는 그대로 전체 폭 아래에 둔다(사용자 요청 2026-09-27).
+      const hasVideoModes=!!item.videoModes?.modes?.length;
+      const hasEdidSwitch=!!item.edidSwitch?.table?.length;
+      let sideCard='',belowCards='';
+      if(hasVideoModes){sideCard=videoModesSection(item);belowCards=`${edidSwitchSection(item)}${audioMuxSection(item)}`}
+      else if(hasEdidSwitch){sideCard=edidSwitchSection(item);belowCards=audioMuxSection(item)}
+      else{sideCard=audioMuxSection(item)}
       return `${headerBlock({icon:GROUP_ICON[item.group],title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,diagram:!!photo})}
-      ${heroGallery(item,images)}
       <div class="rt-pg-cols">
         <div class="rt-pg-col">
           <section class="rt-pg-card rt-pg-col-mobile-1"><h2><span class="rt-pg-idx">01</span>한눈에 보기</h2>
@@ -570,14 +529,15 @@
           </section>
           <section class="rt-pg-card rt-pg-col-mobile-4"><h2><span class="rt-pg-idx">04</span>제품 사양</h2>${specTable(orderedSpecs)}</section>
           ${(item.features||[]).length?`<section class="rt-pg-card rt-pg-col-mobile-5"><h2><span class="rt-pg-idx">05</span>주요 기능</h2><ul class="rt-pg-checks">${item.features.map(feature=>`<li><i><svg width="11" height="11" viewBox="0 0 12 12"><path d="M2 6.3l2.6 2.5L10 3.4" fill="none" stroke="#fff" stroke-width="2"/></svg></i><span>${esc(feature.text)}</span></li>`).join('')}</ul></section>`:''}
+          ${sideCard}
         </div>
         <div class="rt-pg-col">
-          ${diagram?`<section class="rt-pg-card rt-pg-col-mobile-2"><h2><span class="rt-pg-idx">02</span>신호 흐름</h2>${diagram}</section>`:''}
-          ${portSection?`<section class="rt-pg-card rt-pg-col-mobile-3"><h2><span class="rt-pg-idx">03</span>단자 지도 <span class="rt-pg-note">— ${item.portMap?'실제 제품 사진 기준':'입출력 표 기준'}</span></h2>${portSection}</section>`:''}
+          ${portSection?`<section class="rt-pg-card rt-pg-col-mobile-2"><h2><span class="rt-pg-idx">02</span>Port Map <span class="rt-pg-note">— ${item.portMap?'실제 제품 사진 기준':'입출력 표 기준'}</span></h2>${portSection}</section>`:''}
+          ${diagram?`<section class="rt-pg-card rt-pg-col-mobile-3"><h2><span class="rt-pg-idx">03</span>Signal Flow</h2>${diagram}</section>`:''}
           ${recordSection(item,diagram,photo)}
         </div>
       </div>
-      ${videoModesSection(item)}${edidSwitchSection(item)}${audioMuxSection(item)}`;
+      ${belowCards}`;
     }
 
     // ---- 시리즈 템플릿(XDM·VDM·SPX) — 명세 2-3 ----
@@ -685,20 +645,11 @@
       if(diagramBtn){const record=body.querySelector('.rt-pg-record');if(record){record.open=true;record.querySelector('#rt-pg-diagram-photo')?.scrollIntoView({behavior:'smooth',block:'start'})}return}
       const moreBtn=event.target.closest('[data-more-features]');
       if(moreBtn){const more=body.querySelector('[data-feature-more]');if(more){more.hidden=false;moreBtn.hidden=true}return}
-      const zoomOpenBtn=event.target.closest('[data-zoom-src]');
-      if(zoomOpenBtn){openZoom(zoomOpenBtn.dataset.zoomSrc,zoomOpenBtn.dataset.zoomAlt,zoomOpenBtn);return}
-    });
-    lightbox.addEventListener('click',event=>{
-      const tab=event.target.closest('[data-zoom-shot]');
-      if(tab){showShot(Number(tab.dataset.zoomShot));return}
-      // 카드 바깥 어두운 곳이나 ✕를 누르면 닫는다.
-      if(event.target===lightbox||event.target.closest('[data-zoom-close]'))closeZoom();
     });
     body.addEventListener('keydown',event=>{
       const filterBtn=event.target.closest('[data-product-filter]');
       if(filterBtn&&(event.key==='Enter'||event.key===' ')){event.preventDefault();filterBtn.click()}
     });
-    document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!lightbox.hidden)closeZoom()});
     body.addEventListener('input',event=>{
       if(!event.target.matches('[data-product-search]'))return;
       query=event.target.value.trim().toLowerCase();

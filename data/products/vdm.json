@@ -79,27 +79,27 @@
       "source": "C"
     },
     {
-      "text": "HDMI, DVI, 3G-SDI, HDBaseT, Fiber Optical, VGA 등 다양한 인터페이스를 지원한다.",
+      "text": "HDMI, DVI, 3G-SDI, HDBaseT, Fiber Optical, VGA 등 다양한 인터페이스 지원",
       "source": "C"
     },
     {
-      "text": "어떤 신호가 입력되더라도 원하는 신호로 출력할 수 있는 크로스플랫폼 기능을 지원한다.",
+      "text": "어떤 신호가 입력되더라도 원하는 신호로 출력할 수 있는 크로스플랫폼 기능 지원",
       "source": "C"
     },
     {
-      "text": "HDMI 1.4 버전 4K@30Hz를 지원한다.",
+      "text": "HDMI 1.4 버전 4K@30Hz 지원",
       "source": "C"
     },
     {
-      "text": "부드러운 화면전환이 가능한 심리스 기능을 지원한다.",
+      "text": "부드러운 화면전환이 가능한 심리스 기능 지원",
       "source": "C"
     },
     {
-      "text": "디스플레이 최적 해상도로 출력하는 오토 스케일링 기능을 지원한다.",
+      "text": "디스플레이 최적 해상도로 출력하는 오토 스케일링 기능 지원",
       "source": "C"
     },
     {
-      "text": "오디오 병합, 추출 기능을 지원한다.",
+      "text": "오디오 병합, 추출 기능 지원",
       "source": "C"
     },
     {
@@ -107,11 +107,11 @@
       "source": "C"
     },
     {
-      "text": "비디오월 기능을 지원한다.",
+      "text": "비디오월 기능 지원",
       "source": "C"
     },
     {
-      "text": "EDID, HDCP 1.X를 지원한다.",
+      "text": "EDID, HDCP 1.X 지원",
       "source": "C"
     }
   ],

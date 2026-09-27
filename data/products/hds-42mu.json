@@ -104,11 +104,11 @@
   ],
   "features": [
     {
-      "text": "4x2 Matrix Switcher 기능을 지원한다.",
+      "text": "4x2 Matrix Switcher 기능 지원",
       "source": "C"
     },
     {
-      "text": "HDMI 2.0, HDCP 2.2를 지원한다.",
+      "text": "HDMI 2.0, HDCP 2.2 지원",
       "source": "C"
     },
     {
@@ -116,7 +116,7 @@
       "source": "C"
     },
     {
-      "text": "HDR을 지원한다.",
+      "text": "HDR 지원",
       "source": "C"
     },
     {

@@ -74,7 +74,7 @@
   ],
   "features": [
     {
-      "text": "4K 30Hz를 지원한다.",
+      "text": "4K 30Hz 지원",
       "source": "C"
     },
     {
@@ -86,11 +86,11 @@
       "source": "C"
     },
     {
-      "text": "HDCP를 지원한다.",
+      "text": "HDCP 지원",
       "source": "C"
     },
     {
-      "text": "EDID를 지원한다.",
+      "text": "EDID 지원",
       "source": "C"
     },
     {
@@ -177,8 +177,20 @@
   "portMap": {
     "image": "Rear",
     "items": [
-      {"n": 2, "label": "DC 전원", "desc": "DC 12V 3A 전원 입력", "x1": 27, "x2": 100},
-      {"n": 1, "label": "모듈 슬롯 1–4", "desc": "CATx·광 송수신기 모듈 최대 4개 장착(HDMI·RS-232·RJ45)", "x1": 104, "x2": 1119}
+      {
+        "n": 2,
+        "label": "DC 전원",
+        "desc": "DC 12V 3A 전원 입력",
+        "x1": 27,
+        "x2": 100
+      },
+      {
+        "n": 1,
+        "label": "모듈 슬롯 1–4",
+        "desc": "CATx·광 송수신기 모듈 최대 4개 장착(HDMI·RS-232·RJ45)",
+        "x1": 104,
+        "x2": 1119
+      }
     ]
   },
   "sources": [

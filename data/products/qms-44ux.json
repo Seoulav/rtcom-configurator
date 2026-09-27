@@ -96,7 +96,7 @@
   ],
   "features": [
     {
-      "text": "각 포트별 스케일 업다운 기능을 지원한다.",
+      "text": "각 포트별 스케일 업다운 기능 지원",
       "source": "C"
     },
     {
@@ -104,15 +104,15 @@
       "source": "C"
     },
     {
-      "text": "심리스 스위칭 기능을 지원한다.",
+      "text": "심리스 스위칭 기능 지원",
       "source": "C"
     },
     {
-      "text": "베젤 보정 기능을 지원한다.",
+      "text": "베젤 보정 기능 지원",
       "source": "C"
     },
     {
-      "text": "각 포트별 HDCP 2.2 EDID 기능을 지원한다.",
+      "text": "각 포트별 HDCP 2.2 EDID 기능 지원",
       "source": "C"
     },
     {
@@ -271,20 +271,97 @@
   "videoModes": {
     "source": "M-Q44",
     "modes": [
-      {"name": "MATRIX", "summary": "입력 4 → 출력 4 임의 스위칭·분배, 심리스 스위칭", "detail": "1 TO 1(같은 번호끼리)·ALL(한 입력을 모든 출력으로) 버튼", "page": "20"},
-      {"name": "QUAD", "summary": "입력 4개를 분할해 한 화면에 출력(모든 출력에 같은 분할 화면). 분할 화면 하나를 ZOOM-IN으로 전체 화면 전환", "layouts": ["QUAD", "3-BOTTOM", "3-SIDE RIGHT", "3-SIDE LEFT", "CASCADE1", "4CH-POP", "2CH-SIDE", "3CH-MODE1", "3CH-MODE2", "USER MODE 1", "USER MODE 2", "USER MODE 3"], "page": "21–23"},
-      {"name": "WALL", "summary": "2×2 비디오월, 1프레임 단위 베젤 보정", "layouts": ["2×2", "2×1", "1×2", "3×1", "1×3", "4×1", "1×4", "Full"], "page": "23–24"},
-      {"name": "DUAL", "summary": "한 화면 2분할(출력 1·2, 3·4 쌍별 레이아웃)", "layouts": ["PBP", "PBP-Full", "PIP", "User Mode"], "page": "24"}
+      {
+        "name": "MATRIX",
+        "summary": "입력 4 → 출력 4 임의 스위칭·분배, 심리스 스위칭",
+        "detail": "1 TO 1(같은 번호끼리)·ALL(한 입력을 모든 출력으로) 버튼",
+        "page": "20"
+      },
+      {
+        "name": "QUAD",
+        "summary": "입력 4개를 분할해 한 화면에 출력(모든 출력에 같은 분할 화면). 분할 화면 하나를 ZOOM-IN으로 전체 화면 전환",
+        "layouts": [
+          "QUAD",
+          "3-BOTTOM",
+          "3-SIDE RIGHT",
+          "3-SIDE LEFT",
+          "CASCADE1",
+          "4CH-POP",
+          "2CH-SIDE",
+          "3CH-MODE1",
+          "3CH-MODE2",
+          "USER MODE 1",
+          "USER MODE 2",
+          "USER MODE 3"
+        ],
+        "page": "21–23"
+      },
+      {
+        "name": "WALL",
+        "summary": "2×2 비디오월, 1프레임 단위 베젤 보정",
+        "layouts": [
+          "2×2",
+          "2×1",
+          "1×2",
+          "3×1",
+          "1×3",
+          "4×1",
+          "1×4",
+          "Full"
+        ],
+        "page": "23–24"
+      },
+      {
+        "name": "DUAL",
+        "summary": "한 화면 2분할(출력 1·2, 3·4 쌍별 레이아웃)",
+        "layouts": [
+          "PBP",
+          "PBP-Full",
+          "PIP",
+          "User Mode"
+        ],
+        "page": "24"
+      }
     ]
   },
   "portMap": {
     "image": "Rear",
     "items": [
-      {"n": 1, "label": "INPUT 1–4", "desc": "HDMI 소스 4대 연결", "x1": 285, "x2": 545},
-      {"n": 2, "label": "OUTPUT 1–4", "desc": "임의의 입력을 매트릭스로 전환해 출력", "x1": 615, "x2": 882},
-      {"n": 3, "label": "RS-232C", "desc": "외부 제어", "x1": 124, "x2": 194},
-      {"n": 4, "label": "LAN", "desc": "TCP/IP 제어", "x1": 206, "x2": 247},
-      {"n": 5, "label": "DC 12V", "desc": "전원 어댑터 12V 5A", "x1": 40, "x2": 75}
+      {
+        "n": 1,
+        "label": "INPUT 1–4",
+        "desc": "HDMI 소스 4대 연결",
+        "x1": 285,
+        "x2": 545
+      },
+      {
+        "n": 2,
+        "label": "OUTPUT 1–4",
+        "desc": "임의의 입력을 매트릭스로 전환해 출력",
+        "x1": 615,
+        "x2": 882
+      },
+      {
+        "n": 3,
+        "label": "RS-232C",
+        "desc": "외부 제어",
+        "x1": 124,
+        "x2": 194
+      },
+      {
+        "n": 4,
+        "label": "LAN",
+        "desc": "TCP/IP 제어",
+        "x1": 206,
+        "x2": 247
+      },
+      {
+        "n": 5,
+        "label": "DC 12V",
+        "desc": "전원 어댑터 12V 5A",
+        "x1": 40,
+        "x2": 75
+      }
     ]
   },
   "sources": [

@@ -241,26 +241,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     // 0.52: 이름을 "제조사 자료"로 바꾸고 표기 다름·참고 사항·출처·카탈로그 쪽 대조 표시를 화면에서 뺐다(사용자 요청).
     check('제조사 자료를 펼치면 입출력 단자 표가 보이고 표기 다름·출처는 보이지 않음',await page.locator('.rt-pg-record[open]').count()===1&&(await page.locator('.rt-pg-record summary').textContent()).startsWith('제조사 자료')&&(await page.locator('.rt-pg-record-body').textContent()).includes('HDMI')&&await page.locator('.rt-pg-diagram-mismatch').count()===0&&!(await page.locator('.rt-pg-record-body').textContent()).includes('종합 카탈로그')&&!(await page.locator('.rt-products-body').textContent()).includes('쪽 대조'));
     await page.waitForLoadState('networkidle');
-    check('상세 이미지가 모두 열림',(await page.$$eval('.rt-pg-hero-item img',images=>images.filter(image=>!image.complete||image.naturalWidth===0).length))===0);
-    // 0.49 — 사진 팝업(사용자 LED 계산기 "05 프로세서" 방식): 사진을 누르면 제목·사진 탭·닫기 버튼이 있는 카드가 열리고,
-    // 사진 위에 마우스를 올리면 원형 돋보기(160px, 3.1배)가 커서를 따라 확대하며, 탭으로 사진을 바꾸고 Esc로 닫는다.
-    const heroCount=await page.locator('.rt-pg-hero-item').count();
-    await page.locator('.rt-pg-hero-item').first().click();
-    await page.waitForFunction(()=>{const img=document.querySelector('.rt-pg-lightbox-img');return img&&img.complete&&img.naturalWidth>0});
-    const lb=await page.evaluate(()=>({card:!!document.querySelector('.rt-pg-lightbox:not([hidden]) .rt-pg-lb-card'),title:document.querySelector('.rt-pg-lb-title').textContent,tabs:document.querySelectorAll('.rt-pg-lb-tabs [data-zoom-shot]').length,on:document.querySelector('.rt-pg-lb-tabs .on')?.dataset.zoomShot}));
-    check('사진을 누르면 제목·사진 탭이 있는 사진 팝업이 열림',lb.card&&lb.title===(await page.locator('#rt-pg-title').textContent()).trim()&&(heroCount<2||lb.tabs===heroCount)&&(heroCount<2||lb.on==='0'),JSON.stringify({...lb,heroCount}));
-    const imgBox=await page.locator('.rt-pg-lightbox-img').boundingBox();
-    await page.mouse.move(imgBox.x+imgBox.width*0.6,imgBox.y+imgBox.height*0.5);
-    const lens=await page.evaluate(()=>{const l=document.querySelector('.rt-pg-loupe');const r=l.getBoundingClientRect();return {shown:!l.hidden,w:Math.round(r.width),bg:l.style.backgroundImage.includes('url(')}});
-    check('사진 위에 마우스를 올리면 원형 돋보기(160px)가 사진을 확대해 보여줌',lens.shown&&lens.w===160&&lens.bg,JSON.stringify(lens));
-    if(heroCount>1){
-      const before=await page.locator('.rt-pg-lightbox-img').getAttribute('src');
-      await page.locator('.rt-pg-lb-tabs [data-zoom-shot="1"]').click();
-      check('사진 탭을 누르면 다른 사진(앞면·뒷면 등)으로 바뀜',(await page.locator('.rt-pg-lightbox-img').getAttribute('src'))!==before&&await page.locator('.rt-pg-lb-tabs [data-zoom-shot="1"].on').count()===1);
-    }
-    await page.keyboard.press('Escape');
-    check('Esc를 누르면 돋보기가 닫힘',await page.locator('.rt-pg-lightbox').isHidden());
-    // 0.21/0.33 연결 다이어그램: "02 신호 흐름"은 항상 자동 생성 SVG를 보여준다(전송기는 TX→케이블→RX 형태). 제조사 원본 사진이 있으면 기록 영역에 따로 둔다.
+    // 0.54 — "01 한눈에 보기" 위 사진 띠(0.39·0.49 사진 팝업·원형 돋보기)를 없애고, 02 Port Map에 실제 사진을 앞세웠다(사용자 요청 2026-09-27).
+    check('01 한눈에 보기 위 사진 띠가 더 이상 없음',await page.locator('.rt-pg-hero').count()===0);
+    // 0.21/0.33 연결 다이어그램: "03 Signal Flow"는 항상 자동 생성 SVG를 보여준다(전송기는 TX→케이블→RX 형태). 제조사 원본 사진이 있으면 기록 영역에 따로 둔다.
     await page.waitForSelector('.rt-pg-svg-wrap svg');
     check('CT104-U/CR104-U 상세에 TX·케이블·RX 연결 다이어그램이 보임',await page.locator('.rt-pg-svg-wrap svg').first().isVisible()&&(await page.locator('.rt-pg-legend').first().textContent()).includes('HDBaseT'));
     // 0.42 전송기 단자 지도: 송신기·수신기 사진 두 장에 번호표를 얹고(입출력 표 카드가 아니라), 사진이 정상으로 열린다.
@@ -276,9 +259,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('FT103-U-H/FR103-U 벽부형 단자 지도가 두 장·번호표 11개·옆면 단자 안내로 나옴',wallMap.maps===2&&wallMap.pins===11&&wallMap.note,JSON.stringify(wallMap));
     await page.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
     await page.waitForSelector('#rt-pg-title');
-    check('HD-13U 상세는 02 신호 흐름에 자동 생성 SVG를 보여주고, 제조사 원본 다이어그램 버튼으로 기록 영역의 사진을 펼침',await page.locator('.rt-pg-svg-wrap svg').first().isVisible());
+    check('HD-13U 상세는 03 Signal Flow에 자동 생성 SVG를 보여주고, 제조사 원본 다이어그램 버튼으로 기록 영역의 사진을 펼침',await page.locator('.rt-pg-svg-wrap svg').first().isVisible());
     // 0.47 오디오 설정: 병합(MUX)·추출(DEMUX)은 하나를 골라 쓴다(사용자 확인). 신호 흐름 문구와 07 카드 두 칸, 단자 지도 번호 순서(HDMI 입력 → 출력 → 오디오 → 전원)를 본다.
-    const audioCard=await page.evaluate(()=>({modes:document.querySelectorAll('.rt-pg-audio .rt-pg-audio-mode').length,flow:document.querySelector('.rt-pg-svg-wrap svg')?.textContent.includes('또는 추출 중 선택'),order:[...document.querySelectorAll('.rt-pg-port b')].map(b=>b.textContent.trim()).slice(0,5).join('|')}));
+    const audioCard=await page.evaluate(()=>({modes:document.querySelectorAll('.rt-pg-audio .rt-pg-audio-mode').length,flow:[...document.querySelectorAll('.rt-pg-svg-wrap svg')].some(svg=>svg.textContent.includes('또는 추출 중 선택')),order:[...document.querySelectorAll('.rt-pg-port b')].map(b=>b.textContent.trim()).slice(0,5).join('|')}));
     check('HD-13U 오디오 설정 카드가 병합·추출 두 칸으로 나오고 신호 흐름에 "선택"이 표시되며 단자 번호가 HDMI 입력·출력·오디오·전원 순',audioCard.modes===2&&audioCard.flow&&audioCard.order==='1HDMI IN|2HDMI OUT 1–3|3AUDIO IN|4AUDIO OUT|5DC 5V',JSON.stringify(audioCard));
     // 0.49 HDS-21U·HDS-42MU도 같은 방식(딥 스위치 1번 선택, 사용자 확인·매뉴얼 Ver.1.0). 신호 흐름 문구에는 HD-13U 전용 "(OUT 1)"이 붙지 않는다.
     for(const id of ['hds-21u','hds-42mu']){

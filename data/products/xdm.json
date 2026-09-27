@@ -75,35 +75,35 @@
   ],
   "features": [
     {
-      "text": "HDMI v2.0, DisplayPort v1.2, 12G-SDI, HDBaseT 3.0 등 초고화질 True 4K60Hz 4:4:4를 지원한다.",
+      "text": "HDMI v2.0, DisplayPort v1.2, 12G-SDI, HDBaseT 3.0 등 초고화질 True 4K60Hz 4:4:4 지원",
       "source": "C"
     },
     {
-      "text": "HDMI, DisplayPort, SDI, HDBaseT 3.0, Fiber Optic 신호 등 다양한 신호변환 기능을 지원한다.",
+      "text": "HDMI, DisplayPort, SDI, HDBaseT 3.0, Fiber Optic 신호 등 다양한 신호변환 기능 지원",
       "source": "C2"
     },
     {
-      "text": "부드러운 화면전환이 가능한 심리스 스위칭을 지원한다.",
+      "text": "부드러운 화면전환이 가능한 심리스 스위칭 지원",
       "source": "C"
     },
     {
-      "text": "화면 확대/축소를 위한 비디오월 기능을 지원한다.",
+      "text": "화면 확대/축소를 위한 비디오월 기능 지원",
       "source": "C"
     },
     {
-      "text": "출력 포트별로 다양한 해상도를 지정할 수 있는 스케일 업/다운을 지원한다.",
+      "text": "출력 포트별로 다양한 해상도를 지정할 수 있는 스케일 업/다운 지원",
       "source": "C"
     },
     {
-      "text": "모니터링을 위한 멀티뷰(듀얼, 쿼드뷰, 16분할 멀티뷰)를 지원한다.",
+      "text": "모니터링을 위한 멀티뷰(듀얼, 쿼드뷰, 16분할 멀티뷰) 지원",
       "source": "C"
     },
     {
-      "text": "전면 LCD 터치패널, RS-232, LAN(TCP/IP) 3가지 제어방식을 지원한다.",
+      "text": "전면 LCD 터치패널, RS-232, LAN(TCP/IP) 3가지 제어방식 지원",
       "source": "C"
     },
     {
-      "text": "전면 LCD 터치패널로 장비 상태를 파악하고 영상신호 감지 후 자동알림 기능을 지원한다.",
+      "text": "전면 LCD 터치패널로 장비 상태를 파악하고 영상신호 감지 후 자동알림 기능 지원",
       "source": "C"
     },
     {
@@ -115,15 +115,15 @@
       "source": "C"
     },
     {
-      "text": "전원 이중화 및 Hot-Swap을 지원한다.",
+      "text": "전원 이중화 및 Hot-Swap 지원",
       "source": "C"
     },
     {
-      "text": "입출력 슬롯 및 팬모듈 Hot-Swap을 지원한다.",
+      "text": "입출력 슬롯 및 팬모듈 Hot-Swap 지원",
       "source": "C"
     },
     {
-      "text": "매트릭스에서 송수신기 전원을 공급하는 Power over Ethernet(POE) 기능을 지원한다.",
+      "text": "매트릭스에서 송수신기 전원을 공급하는 Power over Ethernet(POE) 기능 지원",
       "source": "C"
     },
     {
@@ -131,7 +131,7 @@
       "source": "C"
     },
     {
-      "text": "DANTE Network Audio를 지원한다.",
+      "text": "DANTE Network Audio 지원",
       "source": "C"
     },
     {
@@ -139,7 +139,7 @@
       "source": "C"
     },
     {
-      "text": "EDID, HDCP 2.2를 지원한다.",
+      "text": "EDID, HDCP 2.2 지원",
       "source": "C"
     }
   ],
