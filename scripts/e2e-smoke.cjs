@@ -178,6 +178,32 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.click('.rt-brand-lockup');
     await page.click('dialog.rt-confirm .rt-confirm-ok');
     check('로고를 누르면 확인 창 뒤 첫 화면(제품군)으로 이동하고 구성은 유지됨',/처음 화면/.test(asked)&&await page.locator('.rt-step[aria-current="step"]').getAttribute('data-jump')==='0'&&await page.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.model)==='XDM-12'&&page.url()===cardsUrl);
+    // 0.55 수량 채우기·슬롯 이동(사용자 요청): XDM-36 입력 슬롯 1에서 수량 3으로 HI100을 고르면 1·2·3이 채워지고,
+    // 팝업 "다른 슬롯으로 이동"과 끌어 옮기기로 같은 방향 슬롯끼리 옮길 수 있다.
+    await page.evaluate(()=>localStorage.clear());
+    await page.goto(home,{waitUntil:'networkidle'});
+    await page.click('button[data-family="XDM"]');await acceptConfirm();
+    await page.click('[data-action="next"]');
+    await page.click('button[data-model="XDM-36"]');await acceptConfirm();
+    await page.click('[data-action="next"]');
+    await page.locator('button[data-slot="in-1"]').click();
+    await page.locator('.rt-card-qty [data-qty-step="1"]').click();
+    await page.locator('.rt-card-qty [data-qty-step="1"]').click();
+    const qtyShown=await page.locator('.rt-card-qty output').textContent();
+    await page.locator('.rt-card-modal .rt-card-choice[data-card="XDM-HI100"]').click();
+    const saved=()=>page.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.placements);
+    let moveState=await saved();
+    check('카드 팝업에서 수량 3을 고르면 선택한 슬롯부터 입력 슬롯 3칸이 채워짐',qtyShown==='3'&&moveState['in-1']==='XDM-HI100'&&moveState['in-2']==='XDM-HI100'&&moveState['in-3']==='XDM-HI100'&&!moveState['in-4'],JSON.stringify(moveState));
+    await page.locator('button[data-slot="in-1"]').click();
+    const moveOptions=await page.$$eval('.rt-card-move option',options=>options.map(option=>option.value));
+    await page.selectOption('.rt-card-move select','in-5');
+    await page.click('.rt-card-move [data-action="move-card"]');
+    moveState=await saved();
+    check('팝업의 "다른 슬롯으로 이동"은 같은 방향 슬롯만 보여 주고 카드를 옮김',moveOptions.length&&moveOptions.every(id=>id.startsWith('in-'))&&!moveState['in-1']&&moveState['in-5']==='XDM-HI100',JSON.stringify({moveOptions:moveOptions.length,moveState}));
+    await page.dragAndDrop('button[data-slot="in-2"]','button[data-slot="in-7"]');
+    await page.dragAndDrop('button[data-slot="in-3"]','button[data-slot="out-1"]');
+    moveState=await saved();
+    check('장착한 슬롯을 끌어 같은 방향 슬롯에 놓으면 옮겨지고, 반대 방향(출력)에는 놓이지 않음',!moveState['in-2']&&moveState['in-7']==='XDM-HI100'&&moveState['in-3']==='XDM-HI100'&&!moveState['out-1'],JSON.stringify(moveState));
     const missing=await page.goto(home+'no-such-page/deep',{waitUntil:'networkidle'});
     check('사이트 안의 없는 주소는 404.html이 구성기 첫 화면으로 보냄',missing&&page.url()===home&&await page.locator('#matrix-configurator').count()===1);
     await page.evaluate(()=>localStorage.clear());
