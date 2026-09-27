@@ -104,19 +104,7 @@
       "source": "C"
     },
     {
-      "text": "오디오 병합 지원(딥 스위치 1번, 07 딥 스위치 설정 참고)",
-      "source": "M-HD210"
-    },
-    {
-      "text": "DDC Buffer·Level Shifter 선택 지원(딥 스위치 2번)",
-      "source": "M-HD210"
-    },
-    {
-      "text": "전면 파란 로터리로 EDID를 고른다: F=OUTPUT 1 디스플레이 EDID를 FLASH에 저장, 0=저장된 EDID 사용, 1~B=내장 EDID(4K60·4K30·1080p60 등).",
-      "source": "M-HD210"
-    },
-    {
-      "text": "두 입력 중 한 곳에만 신호가 있으면 신호가 있는 채널을 자동으로 선택한다.",
+      "text": "두 입력 중 신호 있는 쪽 자동 선택",
       "source": "M-HD210"
     }
   ],
