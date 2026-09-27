@@ -28,6 +28,9 @@
       ${items.length?`<ul class="rt-product-grid">${items.map(item=>`<li><a class="rt-product-card" href="#products/${item.id}"><span class="rt-product-visual">${item.cardImage?`<img src="${image(item.cardImage)}" alt="" loading="lazy">`:'<span aria-hidden="true">RTCOM</span>'}</span><span class="rt-product-card-body"><span class="rt-product-group">${esc(groupLabel[item.group])}${item.catalogPages?` · 카탈로그 ${esc(item.catalogPages)}쪽`:''}</span><strong>${esc(item.productName)}</strong><span class="rt-product-en">${esc(item.english)}</span><span class="rt-product-ko">${esc(item.korean)}</span>${reviewBadge(item)}</span></a></li>`).join('')}</ul>`:'<p class="rt-products-empty">조건에 맞는 제품이 없습니다. 검색어를 지우거나 다른 분류를 선택하세요.</p>'}`;
     }
     const table=(head,rows)=>rows.length?`<div class="rt-product-table-wrap"><table class="rt-product-table"><thead><tr>${head.map(cell=>`<th scope="col">${cell}</th>`).join('')}</tr></thead><tbody>${rows.map(row=>`<tr>${row.map((cell,i)=>`<td data-label="${head[i]}">${cell}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`:'';
+    // 사양 분류(그룹)마다 작은 색 점을 붙여 한눈에 구분되게 한다(캡처로 받은 에이앤티 표 디자인 참고, 2026-09-27).
+    const GROUP_DOT={Video:'#3978ee',Transmission:'#1f9d7c',Power:'#c17a1f',Audio:'#a855c9',Control:'#7669ef'};
+    const specTable=specs=>specs.length?`<div class="rt-product-table-wrap"><table class="rt-product-table rt-product-spec-table"><thead><tr><th scope="col">구분</th><th scope="col">사양</th></tr></thead><tbody>${specs.map(spec=>`<tr><td data-label="구분"><span class="rt-product-spec-dot" style="background:${GROUP_DOT[spec.group]||'#8a94a6'}" title="${esc(spec.group)}"></span>${esc(spec.name)}</td><td data-label="사양">${esc(spec.value)}${spec.unit?` ${esc(spec.unit)}`:''}${verification(spec.verification)}${spec.condition?`<span class="rt-product-spec-note">${esc(spec.condition)}</span>`:''}</td></tr>`).join('')}</tbody></table></div>`:'';
     const verification=value=>value&&value!=='VERIFIED'?` <span class="rt-product-badge">${value==='REVIEW REQUIRED'?'검토 필요':esc(value)}</span>`:'';
     const isSizeSpec=spec=>spec.group==='Physical'&&(spec.name==='무게'||spec.name.startsWith('크기'));
     // 에이앤미디어(antez.co.kr) 알티컴 제품 페이지 표기(2026-09-27 확인)를 참고한 배치: 개요 첫 문장 굵게 → 한눈에 보기 칩(대역폭·해상도·입출력) →
@@ -130,7 +133,7 @@
       const images=(item.images||[]).filter(img=>img.role!=='Diagram');
       const allSpecs=item.specifications||[];
       const sizeSpecs=allSpecs.filter(isSizeSpec).map(spec=>[esc(spec.name.replace('크기(W×D×H)','크기')),`${esc(spec.value)}${spec.unit?` ${esc(spec.unit)}`:''}`]);
-      const specs=allSpecs.filter(spec=>!isSizeSpec(spec)).map(spec=>[esc(spec.name),`${esc(spec.value)}${spec.unit?` ${esc(spec.unit)}`:''}${verification(spec.verification)}${spec.condition?`<span class="rt-product-spec-note">${esc(spec.condition)}</span>`:''}`]);
+      const specs=allSpecs.filter(spec=>!isSizeSpec(spec));
       const io=(item.io||[]).map(port=>[esc(port.group),esc(directionLabel[port.direction]||port.direction),esc(port.connector),esc(port.quantity),`${esc(port.signal)}${port.protocol?` · ${esc(port.protocol)}`:''}${verification(port.verification)}`,esc(port.condition)]);
       const lineup=(item.lineup||[]).map(entry=>[`<b>${esc(entry.model)}</b>`,esc(entry.kind),esc(entry.summary)]);
       // 같은 대상이 여러 관계로 적혀 있으면(예: 시리즈 소속 + 카드 연동) 한 번만 보이고, 구체적인 연동 설명을 우선한다.
@@ -154,7 +157,7 @@
           ${sizeSpecs.length?`<section class="rt-product-box rt-product-box-size"><h3>크기 및 무게</h3><ul class="rt-product-size">${sizeSpecs.map(([label,value])=>`<li><span>${label}</span><b>${value}</b></li>`).join('')}</ul></section>`:''}
         </div>`:''}
         ${lineup.length?`<section><h3>구성 제품</h3>${table(['모델','구분','요약'],lineup)}</section>`:''}
-        ${specs.length?`<section><h3>제품 사양</h3>${table(['구분','사양'],specs)}</section>`:''}
+        ${specs.length?`<section><h3>제품 사양</h3>${specTable(specs)}</section>`:''}
         ${diagram?`<section class="rt-product-diagram"><h3>연결 다이어그램</h3>${diagram}</section>`:''}
         ${io.length?`<section><h3>입출력 단자</h3>${table(['분류','방향','단자','수량','신호','조건'],io)}</section>`:''}
         ${issues.length?`<section><h3>확인 사항</h3><ul class="rt-product-issues">${issues.map(issue=>`<li data-status="${esc(issue.status)}"><b>${esc(issue.title)}</b> ${esc(issue.detail)}</li>`).join('')}</ul></section>`:''}

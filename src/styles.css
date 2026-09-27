@@ -370,3 +370,13 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 /* 0.25 — 제조사 제공 연결 다이어그램(카탈로그 원본 이미지). 자동 생성 SVG와 같은 스크롤 규칙을 쓴다 */
 #rtcom-design .rt-product-diagram-photo{padding:0;background:#fff}
 #rtcom-design .rt-product-diagram-photo img{width:100%;min-width:620px;display:block;border-radius:10px}
+
+/* 0.26 — 제품 사양 표 디자인 다듬기: 사용자가 캡처로 준 자료(에이앤티) 참고, 분류별 색 점으로 구분 */
+#rtcom-design .rt-product-spec-table thead tr{background:linear-gradient(120deg,#3978ee,#7669ef)}
+#rtcom-design .rt-product-spec-table th{background:transparent;color:#fff;font-size:12px;letter-spacing:.3px}
+#rtcom-design .rt-product-spec-table tbody tr:nth-child(even){background:#f7f9fd}
+#rtcom-design .rt-product-spec-table tbody tr:hover{background:#eef2ff}
+#rtcom-design .rt-product-spec-table td:first-child{display:flex;align-items:center;gap:8px;font-weight:650;color:#333d52;white-space:nowrap}
+#rtcom-design .rt-product-spec-dot{flex:0 0 auto;width:8px;height:8px;border-radius:999px}
+#rtcom-design .rt-product-spec-table td:last-child{font-weight:600;color:#1f2532}
+@media(max-width:560px){#rtcom-design .rt-product-spec-table td:first-child{white-space:normal}}

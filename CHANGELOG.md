@@ -4,6 +4,10 @@
 
 ## Unreleased
 
+## 0.26.0
+
+- 제품 사양 표를 더 정돈된 디자인으로 다듬었습니다(사용자 캡처 이미지·antez.co.kr 참고, 2026-09-27). 머리글을 사이트 브랜드 색(파랑·보라 그라디언트)으로 채우고, 짝수 줄 배경·마우스 오버 강조를 넣었습니다. 각 사양 항목 앞에 분류(Video·Power·Control·Transmission·Audio)를 나타내는 작은 색 점을 붙여, 표를 늘리지 않고도 분류를 한눈에 볼 수 있게 했습니다.
+
 ## 0.25.0
 
 - 연결 다이어그램을 제조사가 직접 그린 카탈로그 원본 이미지로 바꿨습니다(사용자 요청 "구성도는 PDF 사용해서 변경", docs/RTcom_catalogue_2026_46p.pdf). 분배기·일체형 매트릭스 9종(HD-13U·HD-14U·HD-18U·HD-210U·HD-D102U·HDS-21U·HDS-42MU·QMS-44UX·QMS-88UX)은 카탈로그의 "Color Key"(PC·노트북·카메라 등 소스 아이콘, HDMI IN 파란색·OUT 자주색 화살표, 실제 후면 판넬 사진) 다이어그램을 그대로 실었습니다. SPX는 SPX-M810 모델 기준 제조사 시스템 구성도(Zone 1~4 오디오·비디오, LAN Cable, Control, Set-top Box, Zone Audio Amplifier)를 실었습니다.
