@@ -216,26 +216,43 @@
       const protoBits=[videoIn.protocol,hdcp&&(hdcpVersion?`HDCP ${hdcpVersion}`:'HDCP'),...audioBits].filter(Boolean);
       if(protoBits.length)bodyMarkup+=`<text x="${(bandX1+bandX2)/2}" y="${bandY+28}" text-anchor="middle" font-size="11" font-weight="600" fill="${M}">${svgEsc(protoBits.join(' · '))}</text>`;
 
-      const cols=Math.min(outN,5),rows=Math.ceil(outN/cols);
+      // 멀티뷰 전용 출력(QMS-88UX의 9·10번 등): videoModes의 QUAD 요약 "출력 9·10번 전용"에서 번호를 읽어 매트릭스 출력과 분리된 별도 갈래로 그린다.
+      const quadMode=(item.videoModes?.modes||[]).find(mode=>mode.name==='QUAD');
+      const multiview=((quadMode?.summary||'').match(/출력\s*([\d·,\s]+)번\s*전용/)||[])[1]?.split(/[·,\s]+/).map(Number).filter(n=>n>=1&&n<=outN)||[];
+      const matrixPorts=Array.from({length:outN},(_,i)=>i+1).filter(n=>!multiview.includes(n));
+
       const cellW=32,cellH=23,cellGap=8,panelPad=14;
+      const cols=Math.min(matrixPorts.length,5),rows=Math.ceil(matrixPorts.length/cols);
       const gridW=cols*cellW+(cols-1)*cellGap,gridH=rows*(cellH+13)+(rows-1)*cellGap;
       const panelX=bandX2+20,panelW=gridW+panelPad*2,panelH=gridH+panelPad*2+10;
       const panelY=Math.max(10,bandY-panelH/2);
       bodyMarkup+=`<rect x="${panelX}" y="${panelY}" width="${panelW}" height="${panelH}" rx="16" fill="rgba(137,68,171,.09)"/>`;
-      // 멀티뷰 전용 출력(QMS-88UX의 9·10번 등): videoModes의 QUAD 요약 "출력 9·10번 전용"에서 번호를 읽어 4분할 화면으로 따로 그린다.
-      const quadMode=(item.videoModes?.modes||[]).find(mode=>mode.name==='QUAD');
-      const multiview=((quadMode?.summary||'').match(/출력\s*([\d·,\s]+)번\s*전용/)||[])[1]?.split(/[·,\s]+/).map(Number).filter(n=>n>=1&&n<=outN)||[];
-      for(let i=0;i<outN;i++){
+      matrixPorts.forEach((n,i)=>{
         const c=i%cols,r=Math.floor(i/cols);
         const x=panelX+panelPad+c*(cellW+cellGap),y=panelY+panelPad+r*(cellH+13+cellGap)+8;
-        const mv=multiview.includes(i+1);
-        bodyMarkup+=`<rect x="${x}" y="${y}" width="${cellW}" height="${cellH}" rx="4" fill="${mv?'#F3EEFF':'#fff'}" stroke="${P}" stroke-width="1.8"/>${mv?`<path d="M${x+cellW/2} ${y+2}V${y+cellH-2}M${x+2} ${y+cellH/2}H${x+cellW-2}" stroke="${P}" stroke-width="1" opacity=".55"/>`:''}<path d="M${x+cellW/2} ${y+cellH}v5M${x+cellW/2-7} ${y+cellH+6}h14" stroke="${P}" stroke-width="1.6"/><text x="${x+cellW/2}" y="${y+cellH/2+3.5}" text-anchor="middle" font-size="9" font-weight="700" fill="${PI}">${i+1}</text>`;
-      }
-      const outCaption=outTotal>outN?`OUT 1–${outN} 외 ${outTotal-outN}개`:outN===1?'OUT':`OUT 1–${outN}`;
-      const sameSignal=outN===1?'선택한 입력 출력':isMatrix?'독립 출력':'같은 영상';
-      const matrixCount=outN-multiview.length;
-      const captionText=multiview.length?`OUT 1–${matrixCount} 매트릭스 · ${multiview.join('·')} 멀티뷰`:`${outCaption} · ${sameSignal}`;
+        bodyMarkup+=`<rect x="${x}" y="${y}" width="${cellW}" height="${cellH}" rx="4" fill="#fff" stroke="${P}" stroke-width="1.8"/><path d="M${x+cellW/2} ${y+cellH}v5M${x+cellW/2-7} ${y+cellH+6}h14" stroke="${P}" stroke-width="1.6"/><text x="${x+cellW/2}" y="${y+cellH/2+3.5}" text-anchor="middle" font-size="9" font-weight="700" fill="${PI}">${n}</text>`;
+      });
+      const outCaption=outTotal>outN?`OUT 1–${outN} 외 ${outTotal-outN}개`:matrixPorts.length===1?'OUT':`OUT ${matrixPorts[0]}–${matrixPorts[matrixPorts.length-1]}`;
+      const sameSignal=matrixPorts.length===1?'선택한 입력 출력':isMatrix?'독립 출력':'같은 영상';
+      const captionText=`${outCaption} · ${sameSignal}${multiview.length?' 매트릭스':''}`;
       bodyMarkup+=`<text x="${panelX+panelW/2}" y="${panelY+panelH+16}" text-anchor="middle" font-size="11.5" font-weight="700" fill="${PI}">${svgEsc(captionText)}</text>`;
+
+      // 멀티뷰 전용 출력: 매트릭스 출력과 같은 대역폭 띠에서 갈라져 나오는 별도 갈래로, 위쪽에 자체 패널과 캡션을 둔다.
+      if(multiview.length){
+        const mvCols=Math.min(multiview.length,5),mvRows=Math.ceil(multiview.length/mvCols);
+        const mvGridW=mvCols*cellW+(mvCols-1)*cellGap,mvGridH=mvRows*(cellH+13)+(mvRows-1)*cellGap;
+        const mvPanelW=mvGridW+panelPad*2,mvPanelH=mvGridH+panelPad*2+10;
+        const mvPanelX=panelX,mvPanelY=Math.max(10,panelY-mvPanelH-46);
+        bodyMarkup+=`<path d="M${bandX2} ${bandY-7}C${bandX2} ${mvPanelY+mvPanelH/2} ${mvPanelX-20} ${mvPanelY+mvPanelH/2} ${mvPanelX} ${mvPanelY+mvPanelH/2}" fill="none" stroke="${PI}" stroke-width="1.8" stroke-dasharray="4 3"/>`;
+        bodyMarkup+=`<rect x="${mvPanelX}" y="${mvPanelY}" width="${mvPanelW}" height="${mvPanelH}" rx="16" fill="rgba(137,68,171,.16)"/>`;
+        multiview.forEach((n,i)=>{
+          const c=i%mvCols,r=Math.floor(i/mvCols);
+          const x=mvPanelX+panelPad+c*(cellW+cellGap),y=mvPanelY+panelPad+r*(cellH+13+cellGap)+8;
+          bodyMarkup+=`<rect x="${x}" y="${y}" width="${cellW}" height="${cellH}" rx="4" fill="#F3EEFF" stroke="${P}" stroke-width="1.8"/><path d="M${x+cellW/2} ${y+2}V${y+cellH-2}M${x+2} ${y+cellH/2}H${x+cellW-2}" stroke="${P}" stroke-width="1" opacity=".55"/><path d="M${x+cellW/2} ${y+cellH}v5M${x+cellW/2-7} ${y+cellH+6}h14" stroke="${P}" stroke-width="1.6"/><text x="${x+cellW/2}" y="${y+cellH/2+3.5}" text-anchor="middle" font-size="9" font-weight="700" fill="${PI}">${n}</text>`;
+        });
+        const mvCaption=`${multiview.join('·')} 멀티뷰`;
+        bodyMarkup+=`<text x="${mvPanelX+mvPanelW/2}" y="${mvPanelY+mvPanelH+16}" text-anchor="middle" font-size="11.5" font-weight="700" fill="${PI}">${svgEsc(mvCaption)}</text>`;
+      }
 
       // 오디오 추출(디먹스): 캡션 아래에 AUDIO OUT 칩을 두고 대역폭 띠에서 점선으로 이어 "병합"과 대칭으로 보이게 한다.
       let audioOutBottom=panelY+panelH+16;
@@ -246,7 +263,7 @@
       }
 
       // 캡션 글자가 출력 격자보다 넓을 수 있어(예: 매트릭스 전환 문구) SVG 너비에 여유를 둔다.
-      const captionHalfWidth=captionText.length*3.6+20;
+      const captionHalfWidth=Math.max(captionText.length,multiview.length?`${multiview.join('·')} 멀티뷰`.length:0)*3.6+20;
       const width=Math.max(panelX+panelW+20,panelX+panelW/2+captionHalfWidth+20,audioOut?panelX+panelW/2+52+40:0);
       const height=Math.max(leftBottom+20,panelY+panelH+38,midY+70,audioOutBottom+16);
       return diagramWrap(bodyMarkup,width,height,[]);
