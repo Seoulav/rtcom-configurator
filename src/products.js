@@ -453,7 +453,7 @@
     function listView(){
       const items=index.products.filter(matches);
       const counts=Object.fromEntries(groups.map(([id])=>[id,id==='all'?index.products.length:index.products.filter(item=>item.group===id).length]));
-      return `${headerBlock({icon:GROUP_ICON.series,title:'알티컴 제품정보',subtitle:'RTCOM PRODUCTS · 카탈로그(2026) 기준 매트릭스·분배기·전송기·케이블',back:false,print:false})}
+      return `${headerBlock({icon:GROUP_ICON.series,title:'알티컴 제품정보',subtitle:'RTCOM PRODUCTS · 매트릭스·분배기·전송기·케이블',back:false,print:false})}
       <section class="rt-pg-card"><div class="rt-pg-tools"><div class="rt-pg-seg" role="group" aria-label="제품 분류">${groups.map(([id,label])=>`<span data-product-filter="${id}" role="button" tabindex="0" aria-pressed="${filter===id}" class="${filter===id?'rt-pg-on':''}">${label} (${counts[id]})</span>`).join('')}</div><label class="rt-pg-search"><span class="rt-visually-hidden">제품 검색</span><input type="search" data-product-search placeholder="모델명·기능 검색 (예: HDMI, 광, 4K)" value="${esc(query)}"></label></div>
       <p class="rt-pg-count" role="status">${items.length}개 제품</p>
       ${items.length?`<ul class="rt-pg-grid">${items.map(item=>`<li><a class="rt-pg-gridcard" href="#products/${item.id}"><span class="rt-pg-photo">${item.cardImage?`<img src="${image(item.cardImage)}" alt="" loading="lazy">`:'<span aria-hidden="true">RTCOM</span>'}</span><span class="rt-pg-body"><span class="rt-pg-group">${esc(groupLabel[item.group])}</span><strong>${noBreak(item.productName)}</strong><span class="rt-pg-card-lead">${esc(item.lead?firstSentence(item.lead).replace(/\*\*/g,''):item.korean)}</span>${reviewBadge(item)}</span></a></li>`).join('')}</ul>`:'<p class="rt-pg-empty">조건에 맞는 제품이 없습니다. 검색어를 지우거나 다른 분류를 선택하세요.</p>'}</section>`;
@@ -463,13 +463,13 @@
     function recordSection(item,diagramHtml,photo){
       const io=(item.io||[]).map(port=>[esc(port.group),esc(directionLabel[port.direction]||port.direction),esc(port.connector),esc(port.quantity),`${esc(port.signal)}${port.protocol?` · ${esc(port.protocol)}`:''}${verification(port.verification)}`,esc(port.condition)]);
       const issues=item.issues||[];
-      const sources=(item.sources||[]).map(source=>`${esc(source.name)}${source.page?` ${esc(source.page)}쪽`:''}${source.url&&/^https?:\/\//.test(source.url)?` — <a href="${esc(source.url)}" target="_blank" rel="noopener">열기 ↗</a>`:''}`);
-      const count=io.length+issues.length+sources.length;
-      return `<details class="rt-pg-record"${item.packageStatus==='REVIEW REQUIRED'?' open':''}><summary>자료 출처·검토 기록 (${count}건)${reviewBadge(item)}</summary><div class="rt-pg-record-body">
-        ${photo?`<div id="rt-pg-diagram-photo"><h4>제조사 원본 다이어그램</h4><div class="rt-pg-diagram-photo"><img src="${image(photo.file)}" alt="${esc(photo.alt||`${item.productName} 연결 다이어그램`)}" loading="lazy"></div>${photo.note?`<p class="rt-pg-diagram-caption">${esc((photo.note||'').replace(/^[A-Za-z]+ · /,''))}</p>`:''}${photo.diagramMismatch?`<p class="rt-pg-diagram-mismatch"><b>표기 다름</b> ${esc(photo.diagramMismatch)}</p>`:''}</div>`:''}
+      // 0.52: 사용자 요청으로 이름을 "제조사 자료"로 바꾸고 출처 목록을 화면에서 뺐다(출처는 data/products/*.json의 sources에 그대로 남는다).
+      const count=io.length+issues.length+(photo?1:0);
+      return `<details class="rt-pg-record"${item.packageStatus==='REVIEW REQUIRED'?' open':''}><summary>제조사 자료 (${count}건)${reviewBadge(item)}</summary><div class="rt-pg-record-body">
+        ${photo?`<div id="rt-pg-diagram-photo"><h4>제조사 원본 다이어그램</h4><div class="rt-pg-diagram-photo"><img src="${image(photo.file)}" alt="${esc(photo.alt||`${item.productName} 연결 다이어그램`)}" loading="lazy"></div>${photo.diagramMismatch?`<p class="rt-pg-diagram-mismatch"><b>표기 다름</b> ${esc(photo.diagramMismatch)}</p>`:''}</div>`:''}
         ${io.length?`<div><h4>입출력 단자</h4>${table(['분류','방향','단자','수량','신호','조건'],io)}</div>`:''}
         ${issues.length?`<div><h4>참고 사항</h4><ul>${issues.map(issue=>`<li data-status="${esc(issue.status)}"><b>${esc(issue.title)}</b> ${esc(issue.detail)}</li>`).join('')}</ul></div>`:''}
-        <div><h4>출처</h4><p>${esc(item.verificationSummary)}</p>${sources.length?`<ul>${sources.map(source=>`<li>${source}</li>`).join('')}</ul>`:''}<p class="rt-pg-hint">공개 브로셔 수준 정보입니다. 최신 사양·납품 조건은 제조사 또는 서울영상테크에 확인하세요.</p></div>
+        <p class="rt-pg-hint">공개 브로셔 수준 정보입니다. 최신 사양·납품 조건은 제조사 또는 서울영상테크에 확인하세요.</p>
       </div></details>`;
     }
 
@@ -564,7 +564,6 @@
           <section class="rt-pg-card rt-pg-col-mobile-1"><h2><span class="rt-pg-idx">01</span>한눈에 보기</h2>
             <p class="rt-pg-lead">${leadFor(item)}</p>
             ${factsList(facts)}
-            ${item.catalogPages?`<p class="rt-pg-hint"><span class="rt-pg-pill">카탈로그 46쪽판 ${esc(item.catalogPages)}쪽 대조</span></p>`:''}
             ${related.length?`<p class="rt-pg-hint"><b>관련 제품</b> ${related.map(link=>`<a href="#products/${link.target}">${noBreak(byId[link.target].productName)}</a>`).join(' · ')}</p>`:''}
           </section>
           <section class="rt-pg-card rt-pg-col-mobile-4"><h2><span class="rt-pg-idx">04</span>제품 사양</h2>${specTable(orderedSpecs)}</section>
@@ -602,7 +601,7 @@
       return `${headerBlock({icon:GROUP_ICON.series,title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,cta:`<a class="rt-pg-btn rt-pg-primary" href="#matrix-configurator" data-configure-family="${esc(family)}">${esc(family)} 구성기에서 구성하기 →</a>`})}
       <div class="rt-pg-cols">
         <div class="rt-pg-col">
-          <section class="rt-pg-card rt-pg-col-mobile-1"><h2><span class="rt-pg-idx">01</span>한눈에 보기</h2><p class="rt-pg-lead">${leadFor(item)}</p>${factsList(facts)}${item.catalogPages?`<p class="rt-pg-hint"><span class="rt-pg-pill">카탈로그 46쪽판 ${esc(item.catalogPages)}쪽 대조</span></p>`:''}</section>
+          <section class="rt-pg-card rt-pg-col-mobile-1"><h2><span class="rt-pg-idx">01</span>한눈에 보기</h2><p class="rt-pg-lead">${leadFor(item)}</p>${factsList(facts)}</section>
           <section class="rt-pg-card rt-pg-col-mobile-5"><h2><span class="rt-pg-idx">05</span>시리즈 사양</h2>${specTable((item.specifications||[]).map(spec=>({...spec,name:spec.name})))}</section>
           <section class="rt-pg-card rt-pg-col-mobile-6"><h2><span class="rt-pg-idx">06</span>주요 기능</h2><ul class="rt-pg-checks" data-feature-list>${featureItems.slice(0,featureShown).map(feature=>`<li><i><svg width="11" height="11" viewBox="0 0 12 12"><path d="M2 6.3l2.6 2.5L10 3.4" fill="none" stroke="#fff" stroke-width="2"/></svg></i><span>${esc(feature.text)}</span></li>`).join('')}</ul>${featureItems.length>featureShown?`<button type="button" class="rt-pg-more" data-more-features>기능 ${featureItems.length-featureShown}개 더 보기 ›</button><ul class="rt-pg-checks" data-feature-more hidden>${featureItems.slice(featureShown).map(feature=>`<li><i><svg width="11" height="11" viewBox="0 0 12 12"><path d="M2 6.3l2.6 2.5L10 3.4" fill="none" stroke="#fff" stroke-width="2"/></svg></i><span>${esc(feature.text)}</span></li>`).join('')}</ul>`:''}</section>
         </div>
