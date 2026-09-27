@@ -357,6 +357,8 @@
     }
 
     // ---- 단자 지도(03 카드). portMap이 있으면 사진 위에 번호표를 얹고, 없으면 io 표에서 뽑은 카드만 보여준다(명세 3장) ----
+    // 크기 사양(W×D×H)의 세 번째 값(높이, mm). 2U(88.9mm) 판단용. 값이 없으면 0.
+    const heightMm=item=>{const spec=(item.specifications||[]).find(row=>/크기/.test(row.name));const parts=String(spec?.value||'').split(/[×x*]/);return parseFloat(parts[2])||0};
     function portMapDiagram(item){
       // portMap은 사진 한 장(객체) 또는 여러 장(배열, 전송기 송신기·수신기 등)이다(0.42). 장마다 사진·번호표·설명 카드를 차례로 그린다.
       const maps=item.portMap?(Array.isArray(item.portMap)?item.portMap:[item.portMap]):[];
@@ -392,10 +394,18 @@
         const B=typeof it.y==='number'?Y0+it.y*s:Y0;
         svgBody+=`<path d="M${x1} ${B+8}V${B-6}H${x2}V${B+8}" fill="none" stroke="${COLOR_IN}" stroke-width="1.5"/><path d="M${cx} ${B-6}V${B-14}" stroke="${COLOR_IN}" stroke-width="1.5"/><circle cx="${cx}" cy="${B-24}" r="10" fill="${COLOR_IN}"/><text x="${cx}" y="${B-20}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">${it.n}</text>`;
       });
-      const seg=map.title?`<span class="rt-pg-seg"><span class="rt-pg-on">${esc(map.title)}</span></span>`:`<span class="rt-pg-seg"><span class="${map.image==='Front'?'rt-pg-on':''}">정면</span><span class="${map.image==='Rear'?'rt-pg-on':''}">후면</span></span>`;
+      // 0.55(사용자 요청 "2U크기 이상 제품은 정면, 후면 버튼을 유지하고 나머지는 앞 또는 정면·포트연결 뒷면 또는 측면이 보이게"):
+      // 높이 2U(88mm) 이상은 정면·후면 버튼으로 사진을 바꿔 보고, 그보다 작은 제품은 버튼 없이 정면 사진과 포트 연결면(후면·측면)을 함께 보여준다.
+      const front=(item.images||[]).find(img=>img.role==='Front');
+      const withFront=!map.title&&front&&map.image!=='Front'&&front.file!==photo.file;
+      const tall=withFront&&heightMm(item)>=88;
+      const sideLabel=map.image==='Rear'?'후면':map.image==='Perspective'?'사선':'포트 연결면';
+      const seg=map.title?`<span class="rt-pg-seg"><span class="rt-pg-on">${esc(map.title)}</span></span>`:tall?`<span class="rt-pg-seg" role="group" aria-label="사진 면 선택"><button type="button" data-pm-side="front" aria-pressed="false">정면</button><button type="button" class="rt-pg-on" data-pm-side="rear" aria-pressed="true">${sideLabel}</button></span>`:'';
+      const frontFigure=withFront?`<figure class="rt-pg-face"${tall?' data-pm-face="front" hidden':''}>${tall?'':'<figcaption class="rt-pg-face-cap">정면</figcaption>'}<img src="${image(front.file)}" alt="${esc(front.alt||`${item.productName} 정면`)}" loading="lazy"></figure>`:'';
+      const sideCap=withFront&&!tall?`<p class="rt-pg-face-cap">${sideLabel} · 포트 연결</p>`:'';
       const ports=`<div class="rt-pg-ports">${[...map.items].sort((a,b)=>a.n-b.n).map(it=>`<div class="rt-pg-port"><b><span class="rt-pg-n">${it.n}</span>${esc(it.label)}</b>${esc(it.desc)}</div>`).join('')}</div>`;
       const note=map.note?`<p class="rt-pg-hint">${esc(map.note)}</p>`:'';
-      return `${seg}<div class="rt-pg-panel"><div class="rt-pg-svg-wrap"><svg viewBox="0 0 ${W+X0*2} ${H}" width="100%"${map.displayWidth?` style="display:block;max-width:${map.displayWidth}px;margin:0 auto"`:''} role="img" aria-label="${esc(map.title||'')} 단자 지도">${svgBody}</svg></div></div>${ports}${note}`;
+      return `${seg}${tall?'':frontFigure}${sideCap}${tall?frontFigure+'<div data-pm-face="rear">':''}<div class="rt-pg-panel"><div class="rt-pg-svg-wrap"><svg viewBox="0 0 ${W+X0*2} ${H}" width="100%"${map.displayWidth?` style="display:block;max-width:${map.displayWidth}px;margin:0 auto"`:''} role="img" aria-label="${esc(map.title||'')} 단자 지도">${svgBody}</svg></div></div>${ports}${note}${tall?'</div>':''}`;
     }
     function portCards(item){
       const io=item.io||[];
@@ -641,6 +651,9 @@
       if(configure){event.preventDefault();location.hash='#matrix-configurator';root.dispatchEvent(new CustomEvent('rt-configure-family',{detail:configure.dataset.configureFamily}));return}
       const printBtn=event.target.closest('[data-print]');
       if(printBtn){window.print();return}
+      // 0.55 2U 이상 제품의 정면·후면 버튼: 같은 단자 지도 안에서 정면 사진과 후면 단자 지도를 바꿔 보여준다.
+      const sideBtn=event.target.closest('[data-pm-side]');
+      if(sideBtn){const seg=sideBtn.closest('.rt-pg-seg'),scope=seg?.parentElement;if(scope){seg.querySelectorAll('[data-pm-side]').forEach(btn=>{const on=btn===sideBtn;btn.classList.toggle('rt-pg-on',on);btn.setAttribute('aria-pressed',String(on))});scope.querySelectorAll('[data-pm-face]').forEach(el=>{el.hidden=el.dataset.pmFace!==sideBtn.dataset.pmSide})}return}
       const diagramBtn=event.target.closest('[data-open-diagram]');
       if(diagramBtn){const record=body.querySelector('.rt-pg-record');if(record){record.open=true;record.querySelector('#rt-pg-diagram-photo')?.scrollIntoView({behavior:'smooth',block:'start'})}return}
       const moreBtn=event.target.closest('[data-more-features]');

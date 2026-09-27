@@ -194,6 +194,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     const saved=()=>page.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.placements);
     let moveState=await saved();
     check('카드 팝업에서 수량 3을 고르면 선택한 슬롯부터 입력 슬롯 3칸이 채워짐',qtyShown==='3'&&moveState['in-1']==='XDM-HI100'&&moveState['in-2']==='XDM-HI100'&&moveState['in-3']==='XDM-HI100'&&!moveState['in-4'],JSON.stringify(moveState));
+    // 0.55: XDM 세로 슬롯 카드 글자가 바로 읽히도록 90도(기존 -90도에서 180도) 회전, 작업 단계 표기는 한글.
+    const xdmFace=await page.evaluate(()=>{const img=document.querySelector('button[data-slot="in-1"] img.rt-faceplate');const m=new DOMMatrix(getComputedStyle(img).transform);return {b:Math.round(m.b),eyebrow:document.querySelector('.rt-main .rt-eyebrow')?.textContent||'',bank:document.querySelector('.rt-rack-bank-title strong, .rt-frame-count')?.textContent||''}});
+    check('XDM 세로 슬롯 카드는 90도로 돌아가 글자가 바로 보이고, 단계 제목·입출력 표기가 한글',xdmFace.b===1&&xdmFace.eyebrow.includes('03 / 카드 슬롯')&&!/INPUT|OUTPUT/.test(xdmFace.bank),JSON.stringify(xdmFace));
     await page.locator('button[data-slot="in-1"]').click();
     const moveOptions=await page.$$eval('.rt-card-move option',options=>options.map(option=>option.value));
     await page.selectOption('.rt-card-move select','in-5');
@@ -302,6 +305,17 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     // 0.47 오디오 설정: 병합(MUX)·추출(DEMUX)은 하나를 골라 쓴다(사용자 확인). 신호 흐름 문구와 07 카드 두 칸, 단자 지도 번호 순서(HDMI 입력 → 출력 → 오디오 → 전원)를 본다.
     const audioCard=await page.evaluate(()=>({modes:document.querySelectorAll('.rt-pg-audio .rt-pg-audio-mode').length,flow:[...document.querySelectorAll('.rt-pg-svg-wrap svg')].some(svg=>svg.textContent.includes('또는 추출 중 선택')),order:[...document.querySelectorAll('.rt-pg-port b')].map(b=>b.textContent.trim()).slice(0,5).join('|')}));
     check('HD-13U 오디오 설정 카드가 병합·추출 두 칸으로 나오고 신호 흐름에 "선택"이 표시되며 단자 번호가 HDMI 입력·출력·오디오·전원 순',audioCard.modes===2&&audioCard.flow&&audioCard.order==='1HDMI IN|2HDMI OUT 1–3|3AUDIO IN|4AUDIO OUT|5DC 5V',JSON.stringify(audioCard));
+    // 0.55: 2U 미만(HD-13U)은 정면·후면 버튼 없이 정면 사진과 포트 연결면을 함께 보여준다.
+    const hdFaces=await page.evaluate(()=>({face:!!document.querySelector('.rt-pg-face:not([hidden]) img'),toggle:document.querySelectorAll('[data-pm-side]').length}));
+    check('2U 미만 제품(HD-13U)은 정면 사진과 후면 단자 지도를 함께 보여주고 정면·후면 버튼이 없음',hdFaces.face&&hdFaces.toggle===0,JSON.stringify(hdFaces));
+    await page.goto(`${home}#products/qms-88ux`,{waitUntil:'networkidle'});
+    await page.waitForSelector('[data-pm-side="front"]');
+    const beforeToggle=await page.evaluate(()=>({front:document.querySelector('[data-pm-face="front"]').hidden,rear:document.querySelector('[data-pm-face="rear"]').hidden}));
+    await page.click('[data-pm-side="front"]');
+    const afterToggle=await page.evaluate(()=>({front:document.querySelector('[data-pm-face="front"]').hidden,rear:document.querySelector('[data-pm-face="rear"]').hidden}));
+    check('2U 이상 제품(QMS-88UX)은 정면·후면 버튼으로 후면 단자 지도와 정면 사진을 바꿔 봄',beforeToggle.front&&!beforeToggle.rear&&!afterToggle.front&&afterToggle.rear,JSON.stringify({beforeToggle,afterToggle}));
+    await page.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
+    await page.waitForSelector('#rt-pg-title');
     // 0.49 HDS-21U·HDS-42MU도 같은 방식(딥 스위치 1번 선택, 사용자 확인·매뉴얼 Ver.1.0). 신호 흐름 문구에는 HD-13U 전용 "(OUT 1)"이 붙지 않는다.
     for(const id of ['hds-21u','hds-42mu']){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
