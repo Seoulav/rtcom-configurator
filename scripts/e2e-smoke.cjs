@@ -238,7 +238,14 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.click('.rt-pg-record summary');
     check('자료 출처·검토 기록을 펼치면 출처가 보임',await page.locator('.rt-pg-record[open]').count()===1&&(await page.locator('.rt-pg-record-body').textContent()).includes('카탈로그'));
     await page.waitForLoadState('networkidle');
-    check('상세 이미지가 모두 열림',(await page.$$eval('.rt-pg-gallery img',images=>images.filter(image=>!image.complete||image.naturalWidth===0).length))===0);
+    check('상세 이미지가 모두 열림',(await page.$$eval('.rt-pg-hero-item img',images=>images.filter(image=>!image.complete||image.naturalWidth===0).length))===0);
+    // 0.39 — 01 위 사진 띠(돋보기): 사진을 누르면 라이트박스가 열리고, 그 안에서 다시 누르면 확대되고, Esc로 닫힌다.
+    await page.locator('.rt-pg-hero-item').first().click();
+    check('사진을 누르면 돋보기(라이트박스)가 화면 전체로 열림',await page.locator('.rt-pg-lightbox').isVisible()&&await page.$eval('.rt-pg-lightbox',el=>{const r=el.getBoundingClientRect();return r.width===document.documentElement.clientWidth&&r.height===window.innerHeight}));
+    await page.locator('.rt-pg-lightbox-img').click({position:{x:15,y:15}});
+    check('라이트박스 안에서 사진을 다시 누르면 확대됨',await page.locator('.rt-pg-lightbox-img.rt-pg-zoomed').count()===1);
+    await page.keyboard.press('Escape');
+    check('Esc를 누르면 돋보기가 닫힘',await page.locator('.rt-pg-lightbox').isHidden());
     // 0.21/0.33 연결 다이어그램: "02 신호 흐름"은 항상 자동 생성 SVG를 보여준다(전송기는 TX→케이블→RX 형태). 제조사 원본 사진이 있으면 기록 영역에 따로 둔다.
     await page.waitForSelector('.rt-pg-svg-wrap svg');
     check('CT104-U/CR104-U 상세에 TX·케이블·RX 연결 다이어그램이 보임',await page.locator('.rt-pg-svg-wrap svg').first().isVisible()&&(await page.locator('.rt-pg-legend').first().textContent()).includes('HDBaseT'));

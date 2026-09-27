@@ -8,6 +8,17 @@
     const configurator=root.querySelector('.rt-configurator-view');
     const body=view.querySelector('.rt-products-body');
     const tabs=[...root.querySelectorAll('[data-view-tab]')];
+    // 제품 사진 돋보기(라이트박스). .rt-products-view는 overflow:hidden이라 안에 두면 position:fixed가 화면 전체를 덮지 못한다.
+    // root(#rtcom-design)는 overflow를 걸지 않으므로 그 바로 아래(화면 전환마다 다시 만들지 않도록 한 번만)에 붙인다.
+    root.insertAdjacentHTML('beforeend','<div class="rt-pg-lightbox" hidden><button type="button" class="rt-pg-lightbox-close" data-zoom-close aria-label="사진 확대 닫기">×</button><div class="rt-pg-lightbox-stage" data-zoom-close><img class="rt-pg-lightbox-img" data-zoom-toggle alt="" loading="lazy"></div><p class="rt-pg-lightbox-hint">사진을 눌러 확대·축소</p></div>');
+    const lightbox=root.querySelector('.rt-pg-lightbox');
+    const lightboxImg=lightbox.querySelector('.rt-pg-lightbox-img');
+    let zoomReturnFocus=null;
+    function openZoom(src,alt,fromEl){
+      lightboxImg.src=src;lightboxImg.alt=alt||'';lightboxImg.classList.remove('rt-pg-zoomed');lightboxImg.style.transformOrigin='';
+      lightbox.hidden=false;zoomReturnFocus=fromEl||null;lightbox.querySelector('[data-zoom-close]').focus();
+    }
+    function closeZoom(){lightbox.hidden=true;lightboxImg.src='';zoomReturnFocus?.focus({preventScroll:true});zoomReturnFocus=null}
     const groups=[['all','전체'],['series','매트릭스 시리즈'],['integrated','일체형 매트릭스'],['distribution','분배기·선택기'],['extender','전송기'],['cable','케이블']];
     const groupLabel=Object.fromEntries(groups);
     const roleLabel={Main:'대표',Front:'전면',Rear:'후면',Perspective:'사선',Diagram:'구성도',Other:'기타'};
@@ -410,6 +421,11 @@
     }
 
     // ---- 단일 제품 템플릿(분배기·일체형·전송기·케이블) — 명세 2-2·2-4 ----
+    // ---- 제품 사진 확대(돋보기). 01 위에 큰 사진 띠를 두고, 누르면 크게 보고 한 번 더 누르면 확대/축소한다 ----
+    function heroGallery(item,images){
+      if(!images.length)return '';
+      return `<section class="rt-pg-hero" aria-label="${esc(item.productName)} 제품 사진"><div class="rt-pg-hero-scroll">${images.map(img=>`<button type="button" class="rt-pg-hero-item" data-zoom-src="${esc(image(img.file))}" data-zoom-alt="${esc(img.alt||item.productName)}"><img src="${image(img.file)}" alt="${esc(img.alt||item.productName)}" loading="lazy"><span class="rt-pg-hero-cap">${esc(roleLabel[img.role]||img.role)}</span><span class="rt-pg-hero-zoom" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="10" cy="10" r="6.5"/><path d="M14.7 14.7 20 20"/></svg></span></button>`).join('')}</div></section>`;
+    }
     function singleDetailView(item,byId){
       const images=(item.images||[]).filter(img=>img.role!=='Diagram');
       const photo=(item.images||[]).find(img=>img.role==='Diagram');
@@ -420,12 +436,12 @@
       const portSection=item.group!=='cable'?(portMapDiagram(item)||portCards(item)):null;
       const related=Object.values((item.related||[]).filter(link=>byId[link.target]).reduce((all,link)=>{if(!all[link.target]||link.relation!=='PART_OF_SERIES')all[link.target]=link;return all},{}));
       return `${headerBlock({icon:GROUP_ICON[item.group],title:esc(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,diagram:!!photo})}
+      ${heroGallery(item,images)}
       <div class="rt-pg-cols">
         <div class="rt-pg-col">
           <section class="rt-pg-card rt-pg-col-mobile-1"><h2><span class="rt-pg-idx">01</span>한눈에 보기</h2>
             <p class="rt-pg-lead">${leadFor(item)}</p>
             ${factsList(facts)}
-            ${images.length?`<div class="rt-pg-gallery">${images.map(img=>`<figure><img src="${image(img.file)}" alt="${esc(img.alt||item.productName)}" loading="lazy"><figcaption>${esc(roleLabel[img.role]||img.role)}</figcaption></figure>`).join('')}</div>`:''}
             ${item.catalogPages?`<p class="rt-pg-hint"><span class="rt-pg-pill">카탈로그 46쪽판 ${esc(item.catalogPages)}쪽 대조</span></p>`:''}
             ${related.length?`<p class="rt-pg-hint"><b>관련 제품</b> ${related.map(link=>`<a href="#products/${link.target}">${esc(byId[link.target].productName)}</a>`).join(' · ')}</p>`:''}
           </section>
@@ -546,11 +562,24 @@
       if(diagramBtn){const record=body.querySelector('.rt-pg-record');if(record){record.open=true;record.querySelector('#rt-pg-diagram-photo')?.scrollIntoView({behavior:'smooth',block:'start'})}return}
       const moreBtn=event.target.closest('[data-more-features]');
       if(moreBtn){const more=body.querySelector('[data-feature-more]');if(more){more.hidden=false;moreBtn.hidden=true}return}
+      const zoomOpenBtn=event.target.closest('[data-zoom-src]');
+      if(zoomOpenBtn){openZoom(zoomOpenBtn.dataset.zoomSrc,zoomOpenBtn.dataset.zoomAlt,zoomOpenBtn);return}
+    });
+    lightbox.addEventListener('click',event=>{
+      const toggle=event.target.closest('[data-zoom-toggle]');
+      if(toggle){
+        const zoomed=toggle.classList.toggle('rt-pg-zoomed');
+        if(zoomed){const rect=toggle.getBoundingClientRect();toggle.style.transformOrigin=`${((event.clientX-rect.left)/rect.width*100).toFixed(1)}% ${((event.clientY-rect.top)/rect.height*100).toFixed(1)}%`}
+        else toggle.style.transformOrigin='';
+        return;
+      }
+      if(event.target.closest('[data-zoom-close]'))closeZoom();
     });
     body.addEventListener('keydown',event=>{
       const filterBtn=event.target.closest('[data-product-filter]');
       if(filterBtn&&(event.key==='Enter'||event.key===' ')){event.preventDefault();filterBtn.click()}
     });
+    document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!lightbox.hidden)closeZoom()});
     body.addEventListener('input',event=>{
       if(!event.target.matches('[data-product-search]'))return;
       query=event.target.value.trim().toLowerCase();

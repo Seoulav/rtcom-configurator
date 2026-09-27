@@ -139,7 +139,7 @@
     {
       "group": "Video",
       "name": "지원 해상도",
-      "value": "PC: VGA ~ WUXGA (up to 1920x1200@60Hz), HDTV: 480i ~ 1080p",
+      "value": "PC: VGA ~ WUXGA (최대 1920x1200@60Hz), HDTV: 480i ~ 1080p",
       "unit": "",
       "condition": "CT103-U-H · 해상도 표를 우선해 최대 1920×1200@60Hz/1080p로 확정. 거리 표의 Ultra HD 4K 언급은 CT101-U 문구가 잘못 옮겨진 것으로 판단",
       "source": "J",
@@ -148,7 +148,7 @@
     {
       "group": "Video",
       "name": "지원 해상도",
-      "value": "Up to Ultra HD 4K 4096x2160@24/25/30Hz",
+      "value": "최대 Ultra HD 4K 4096x2160@24/25/30Hz",
       "unit": "",
       "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0 · CR103-U",
       "source": "C",

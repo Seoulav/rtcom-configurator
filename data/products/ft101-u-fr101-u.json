@@ -140,7 +140,7 @@
     {
       "group": "Video",
       "name": "지원 해상도",
-      "value": "Up to Ultra HD 4K 4096x2160@24/25/30Hz",
+      "value": "최대 Ultra HD 4K 4096x2160@24/25/30Hz",
       "unit": "",
       "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0 · FT101-U·FR101-U 공통",
       "source": "C",

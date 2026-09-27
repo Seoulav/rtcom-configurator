@@ -151,7 +151,7 @@
     {
       "group": "Video",
       "name": "해상도",
-      "value": "Up to 4K 60Hz(3840x2160@60Hz)",
+      "value": "최대 4K 60Hz(3840x2160@60Hz)",
       "unit": "",
       "condition": "원문: \"Up to 4K 60Hz(3860x2160@60Hz)\" — 소개문 표기(3840x2160p 60Hz)와 대조해 3860은 오기로 판단",
       "source": "J",

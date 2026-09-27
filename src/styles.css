@@ -463,10 +463,21 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-svg-wrap.rt-has-more::after{content:"";position:absolute;top:0;right:0;bottom:0;width:32px;background:linear-gradient(to right,rgba(255,255,255,0),#fff 80%);pointer-events:none}
 #rtcom-design .rt-pg-svg-hint{display:none;margin:8px 0 0;color:var(--pg-muted);font-size:11px;text-align:center}
 @media(max-width:720px){#rtcom-design .rt-pg-svg-hint{display:block}}
-#rtcom-design .rt-pg-gallery{display:flex;gap:8px;overflow-x:auto;padding:2px;margin-top:14px}
-#rtcom-design .rt-pg-gallery figure{margin:0;flex:0 0 auto;width:120px}
-#rtcom-design .rt-pg-gallery img{width:100%;border-radius:10px;background:#fff;display:block}
-#rtcom-design .rt-pg-gallery figcaption{font-size:10px;color:var(--pg-muted);margin-top:4px;text-align:center}
+/* 제품 사진 확대(돋보기, 0.39). 01 위 큰 사진 띠 + 라이트박스 */
+#rtcom-design .rt-pg-hero{margin:14px 16px 0}
+#rtcom-design .rt-pg-hero-scroll{display:flex;gap:10px;overflow-x:auto;padding:2px 2px 6px;scroll-snap-type:x proximity}
+#rtcom-design .rt-pg-hero-item{position:relative;flex:0 0 auto;scroll-snap-align:start;border:0;padding:0;width:min(80vw,300px);height:190px;border-radius:20px;overflow:hidden;background:#fff;box-shadow:var(--pg-shadow-card);cursor:zoom-in}
+#rtcom-design .rt-pg-hero-item img{width:100%;height:100%;object-fit:contain;box-sizing:border-box;padding:16px;display:block}
+#rtcom-design .rt-pg-hero-cap{position:absolute;left:10px;bottom:10px;font-size:11px;font-weight:700;color:var(--pg-ink);background:rgba(255,255,255,.88);padding:3px 9px;border-radius:999px}
+#rtcom-design .rt-pg-hero-zoom{position:absolute;right:10px;bottom:10px;width:28px;height:28px;border-radius:50%;background:var(--pg-accent);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px -4px rgba(0,122,255,.6)}
+@media(min-width:1000px){#rtcom-design .rt-pg-hero-item{width:260px;height:210px}}
+#rtcom-design .rt-pg-lightbox{position:fixed;inset:0;z-index:1000;background:rgba(10,12,18,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:28px}
+#rtcom-design .rt-pg-lightbox[hidden]{display:none}
+#rtcom-design .rt-pg-lightbox-stage{max-width:min(92vw,920px);max-height:78vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#rtcom-design .rt-pg-lightbox-img{max-width:100%;max-height:78vh;object-fit:contain;display:block;border-radius:14px;background:#fff;cursor:zoom-in;transition:transform .25s ease}
+#rtcom-design .rt-pg-lightbox-img.rt-pg-zoomed{transform:scale(2.3);cursor:zoom-out}
+#rtcom-design .rt-pg-lightbox-close{position:absolute;top:16px;right:16px;width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;font-size:22px;line-height:1;cursor:pointer}
+#rtcom-design .rt-pg-lightbox-hint{color:rgba(255,255,255,.68);font-size:12px;font-weight:600}
 #rtcom-design .rt-pg-diagram-photo{border-radius:var(--pg-r-inner);overflow:hidden;background:#fff;box-shadow:inset 0 0 0 1px var(--pg-line)}
 #rtcom-design .rt-pg-diagram-photo img{width:100%;display:block}
 #rtcom-design .rt-pg-diagram-caption{margin:8px 0 0;text-align:center;font-size:11px;color:var(--pg-muted)}
