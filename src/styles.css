@@ -664,7 +664,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
   #rtcom-design .rt-step:not(.rt-step-current){flex-grow:0;flex-basis:auto}
 }
 
-/* 2-2: 01 제품군 · 02 섀시 — 왼쪽 선택 목록 | 오른쪽 고정 미리보기(대략 1:1.05). 820px 이하는 위아래로 쌓는다(미리보기 최대 260px). */
+/* 2-2: 01 제품군 · 02 프레임 — 왼쪽 선택 목록 | 오른쪽 고정 미리보기(대략 1:1.05). 820px 이하는 위아래로 쌓는다(미리보기 최대 260px). */
 #rtcom-design .rt-cg-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);border-radius:var(--pg-r-card,24px);overflow:hidden;background:var(--pg-glass-fill,rgba(255,255,255,.62));border:1px solid var(--pg-glass-stroke,rgba(255,255,255,.7));box-shadow:var(--pg-shadow-card,0 18px 48px -20px rgba(20,26,40,.28))}
 #rtcom-design .rt-cg-list{padding:10px;display:flex;flex-direction:column;gap:8px;min-width:0;align-content:start}
 #rtcom-design .rt-cg-row{display:flex;flex-direction:column;gap:8px;padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.72);border:1px solid var(--pg-line,rgba(60,60,67,.12));text-align:left;width:100%;cursor:pointer;transition:box-shadow .12s,border-color .12s}
@@ -871,3 +871,44 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-rotary-group{margin:10px 0 6px;font-size:12px;font-weight:800;color:var(--pg-ink)}
 #rtcom-design .rt-pg-rotary-all{grid-template-columns:repeat(4,1fr);margin-top:0}
 @media(max-width:720px){#rtcom-design .rt-pg-rotary-all{grid-template-columns:repeat(2,1fr)}}
+
+/* 0.70 (사용자 요청 2026-09-28)
+   ① 빈 슬롯: 모든 프레임에서 XDM-12처럼 어두운 금속색 공패널로 보이게 한다(예전: XDM-12만 어둡고 나머지는 흰색).
+   ② 블랭크·빈 슬롯의 IN/OUT 번호표를 더 크고 눈에 띄게(입력 파랑·출력 주황).
+   ③ 카드 팝업의 카드별 수량 칸. */
+#rtcom-design .rt-rack-slot.rt-rack-slot-empty,#rtcom-design .rt-rack-photo .rt-rack-slot.rt-rack-slot-empty{background:linear-gradient(90deg,#2d323a,#23282f 50%,#2d323a);border:1px solid #c9ced6}
+#rtcom-design .rt-rack-h .rt-rack-slot.rt-rack-slot-empty,#rtcom-design .rt-rack-hs .rt-rack-slot.rt-rack-slot-empty{background:linear-gradient(180deg,#2d323a,#23282f 50%,#2d323a)}
+#rtcom-design .rt-rack-slot.rt-rack-slot-empty:hover,#rtcom-design .rt-rack-slot.rt-rack-slot-empty:focus-visible,#rtcom-design .rt-rack-photo .rt-rack-slot.rt-rack-slot-empty:hover{background:#2b3a55;border-color:#007AFF}
+#rtcom-design .rt-rack-slot.rt-rack-slot-empty:hover .rt-rack-slot-add,#rtcom-design .rt-rack-slot.rt-rack-slot-empty:focus-visible .rt-rack-slot-add{color:#9cc3ff}
+#rtcom-design .rt-rack-slot.rt-rack-slot-selecting,#rtcom-design .rt-rack-photo .rt-rack-slot.rt-rack-slot-selecting{background:linear-gradient(rgba(0,122,255,.28),rgba(0,122,255,.28)),#23282f}
+#rtcom-design .rt-rack-slot.rt-rack-slot-selecting .rt-rack-slot-add{color:#9cc3ff}
+#rtcom-design .rt-slot-legend-empty{background:linear-gradient(90deg,#2d323a,#23282f 50%,#2d323a);box-shadow:inset 0 0 0 1px #c9ced6}
+#rtcom-design .rt-rack-slot.rt-rack-slot-empty .rt-rack-slot-no,#rtcom-design .rt-rack-slot.rt-rack-slot-blank .rt-rack-slot-no,#rtcom-design .rt-rack-slot.rt-rack-slot-selecting .rt-rack-slot-no{padding:2px 6px;border-radius:4px;color:#fff;font-size:11px;font-weight:850;letter-spacing:.02em;box-shadow:0 1px 3px #0008}
+#rtcom-design .rt-rack-slot .rt-rack-slot-no-input{background:#007AFF}
+#rtcom-design .rt-rack-slot .rt-rack-slot-no-output{background:#E8590C}
+#rtcom-design .rt-rack-slot.rt-rack-slot-empty .rt-rack-slot-no-input,#rtcom-design .rt-rack-slot.rt-rack-slot-blank .rt-rack-slot-no-input,#rtcom-design .rt-rack-slot.rt-rack-slot-selecting .rt-rack-slot-no-input{background:#007AFF}
+#rtcom-design .rt-rack-slot.rt-rack-slot-empty .rt-rack-slot-no-output,#rtcom-design .rt-rack-slot.rt-rack-slot-blank .rt-rack-slot-no-output,#rtcom-design .rt-rack-slot.rt-rack-slot-selecting .rt-rack-slot-no-output{background:#E8590C}
+#rtcom-design .rt-rack-vs .rt-rack-slot .rt-rack-slot-no,#rtcom-design .rt-rack-vt .rt-rack-slot .rt-rack-slot-no{padding:6px 2px}
+#rtcom-design .rt-card-choice-item{display:grid;border:1px solid #e0e7f1;border-radius:16px;background:#fff;transition:border-color .12s,box-shadow .12s}
+#rtcom-design .rt-card-choice-item:hover{border-color:#9dbbf5;box-shadow:0 8px 20px #2c4a8a1a}
+#rtcom-design .rt-card-choice-item:has(.rt-card-choice[aria-pressed="true"]){border-color:#3978ee;background:#f4f8ff}
+#rtcom-design .rt-card-choice-item>.rt-card-choice{border:0;box-shadow:none;background:transparent}
+#rtcom-design .rt-card-choice-qty{display:flex;justify-content:flex-end;align-items:center;gap:10px;margin:0 12px 12px;padding-top:10px;border-top:1px dashed #e0e7f1;color:#56627a;font-size:12px;font-weight:750}
+#rtcom-design .rt-card-choice-qty .rt-card-qty-stepper button{width:30px;height:30px;font-size:16px}
+#rtcom-design .rt-card-choice-qty .rt-card-qty-stepper output{min-width:30px;font-size:15px}
+#rtcom-design .rt-card-modal-foot [data-action="fill-qty"]{margin-right:auto}
+#rtcom-design [data-action="fill-qty"]:disabled{opacity:.45;cursor:default}
+/* 0.70 02 프레임 선택 아래 "함께 보면 좋은 제품" — 사진 카드 한 줄(넘치면 가로 스크롤) */
+#rtcom-design .rt-rel{margin-top:22px}
+#rtcom-design .rt-rel-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-bottom:10px}
+#rtcom-design .rt-rel-head h3{margin:0;font-size:16px;font-weight:800;color:var(--rt-ink)}
+#rtcom-design .rt-rel-head span{color:var(--rt-muted);font-size:12px;font-weight:650}
+#rtcom-design .rt-rel-row{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(150px,1fr);gap:12px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x proximity}
+#rtcom-design .rt-rel-card{display:flex;flex-direction:column;gap:4px;padding:10px;border:1px solid #e3e9f2;border-radius:16px;background:#fff;color:inherit;text-decoration:none;scroll-snap-align:start;transition:border-color .12s,box-shadow .12s}
+#rtcom-design .rt-rel-card:hover,#rtcom-design .rt-rel-card:focus-visible{border-color:#9dbbf5;box-shadow:0 8px 20px #2c4a8a1a}
+#rtcom-design .rt-rel-photo{display:flex;align-items:center;justify-content:center;aspect-ratio:4/3;border-radius:10px;background:#f4f6fa;overflow:hidden}
+#rtcom-design .rt-rel-photo img{max-width:92%;max-height:92%;object-fit:contain}
+#rtcom-design .rt-rel-card strong{font-size:13px;font-weight:800;color:var(--rt-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#rtcom-design .rt-rel-card small{color:#56627a;font-size:11.5px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+@media(max-width:720px){#rtcom-design .rt-rel-row{grid-auto-columns:minmax(140px,44%)}}
+#rtcom-design .rt-card-modal-foot{flex-wrap:wrap}
