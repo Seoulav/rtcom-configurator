@@ -243,6 +243,17 @@
       "condition": "제품사양 표 기준. 9·10번은 Quad-view 모드(매트릭스 출력은 8개). 후면 사진으로 10포트 확인, 주요기능의 출력 8개 포트는 매트릭스 출력 기준으로 해석",
       "source": "J",
       "verification": "VERIFIED"
+    },
+    {
+      "group": "Audio",
+      "connector": "3-pin Phoenix (female)",
+      "signal": "Analog Stereo Audio",
+      "direction": "OUT",
+      "quantity": "2",
+      "protocol": "",
+      "condition": "후면 초록 3핀 터미널 2개 · 연결 단자 표의 3-pin phoenix · 방향은 사용자 확인(2026-09-27)",
+      "source": "U",
+      "verification": "VERIFIED"
     }
   ],
   "related": [],
@@ -261,7 +272,7 @@
       {"n": 1, "label": "HDMI INPUT 1–8", "desc": "윗줄 · HDMI 소스 8대 연결", "x1": 58, "x2": 475},
       {"n": 2, "label": "HDMI OUTPUT 1–8", "desc": "아랫줄 · 매트릭스 출력(임의 입력 선택·분배, 출력별 스케일링)", "x1": 58, "x2": 305, "side": "bottom"},
       {"n": 3, "label": "HDMI OUTPUT 9·10", "desc": "멀티뷰(쿼드 뷰) 전용 출력 · 한 화면에 최대 8분할", "x1": 310, "x2": 372, "side": "bottom"},
-      {"n": 4, "label": "오디오(3-pin)", "desc": "초록 3핀 터미널 2개 · 연결 단자 표의 3-pin phoenix", "x1": 382, "x2": 422, "side": "bottom"},
+      {"n": 4, "label": "AUDIO OUT ×2", "desc": "초록 3핀 Phoenix · 아날로그 오디오 출력(추출) 2개", "x1": 382, "x2": 422, "side": "bottom"},
       {"n": 5, "label": "LAN", "desc": "TCP/IP 제어(Telnet·웹)", "x1": 436, "x2": 457, "side": "bottom"},
       {"n": 6, "label": "RS-232", "desc": "D-sub 9핀 · 외부 제어", "x1": 468, "x2": 514, "side": "bottom"},
       {"n": 7, "label": "Mini USB", "desc": "USB 시리얼 · 연결 단자 표의 Mini USB-serial", "x1": 527, "x2": 543, "side": "bottom"},
@@ -286,6 +297,12 @@
       "name": "서울영상테크 SI사업본부 검토 판단",
       "page": "",
       "scope": "사용자 위임(2026-09-27) — 카탈로그 내부 충돌·오기 정리"
+    },
+    {
+      "code": "U",
+      "name": "서울영상테크 SI사업본부 확인",
+      "page": "",
+      "scope": "사용자 확인(2026-09-27) — 카탈로그 사진으로 읽을 수 없는 단자 방향"
     }
   ],
   "issues": [
@@ -330,6 +347,12 @@
       "status": "INFO",
       "title": "제어방식에서 IR Remote Control 제외(카탈로그 재검증)",
       "detail": "옛(48쪽판) 카탈로그는 제어방식을 \"전면 터치 패널, LAN, RS-232, IR Remote Control\"의 4가지로 적었다. 사용자가 제공한 두 번째 카탈로그(46쪽판) 28쪽은 같은 문장에서 IR Remote Control을 빼고 3가지로 적었다. 더 최신인 46쪽판을 따라 IR Remote Control 언급을 지웠다(2026-09-27). 크기 표기에 2U(랙 단위)도 46쪽판에서 추가로 확인해 반영했다."
+    },
+    {
+      "code": "I4",
+      "status": "INFO",
+      "title": "후면 3핀 단자 2개는 오디오 출력(사용자 확인)",
+      "detail": "46쪽판 28쪽 후면 사진의 초록 3핀 터미널 2개는 라벨이 작아 입출력 방향을 읽을 수 없었다. 연결 단자 표에는 '3-pin phoenix'로만 적혀 있다. 사용자(서울영상테크 SI사업본부, 2026-09-27)가 아날로그 오디오 출력(추출) 2개로 확인해 주어 출처 U로 입출력 표와 단자 지도에 반영했다."
     }
   ]
 }
