@@ -160,7 +160,7 @@
       const others=currentSlots().filter(item=>item.dir===slot.dir&&item.id!==slot.id);
       const moveBar=installed&&others.length?`<div class="rt-card-move"><label for="rt-card-move-target">다른 ${dirWord} 슬롯으로 이동</label><div><select id="rt-card-move-target" data-move-target>${others.map(item=>{const v=state.placements[item.id];return `<option value="${item.id}">${esc(item.label)} · ${v==='BLANK'?'블랭크 (서로 바꿈)':v?`${esc(v)} (서로 바꿈)`:'비어 있음'}</option>`}).join('')}</select><button type="button" class="rt-button" data-action="move-card">이동</button></div></div>`:'';
       const sep=`<p class="rt-card-choice-sep">${slot.dir==='input'?'입력':'출력'} 카드 ${list.length}종 · ${list[0]?.[2]||4}채널</p>`;
-      return `<dialog class="rt-card-modal" aria-labelledby="rt-card-modal-title"><div class="rt-card-modal-head"><div><span class="rt-eyebrow">${slot.dir==='input'?'입력':'출력'} 카드 · ${esc(state.model)}</span><h3 id="rt-card-modal-title">${esc(slot.label)} 카드 선택</h3></div><button type="button" class="rt-card-modal-close" data-modal-close aria-label="카드 선택 닫기">×</button></div>${tips}${qtyBar}${moveBar}<div class="rt-card-choice-list">${blankChoice}${sep}${list.map(choice).join('')}</div><div class="rt-card-modal-foot"><button type="button" class="rt-button rt-quiet" data-action="remove" ${installed?'':'disabled'}>슬롯 비우기(흰 칸)</button><button type="button" class="rt-button" data-modal-close>닫기</button></div></dialog>`;
+      return `<dialog class="rt-card-modal" aria-labelledby="rt-card-modal-title"><div class="rt-card-modal-head"><div><span class="rt-eyebrow">${slot.dir==='input'?'입력':'출력'} 카드 · ${esc(state.model)}</span><h3 id="rt-card-modal-title">${esc(slot.label)} 카드 선택</h3></div><button type="button" class="rt-card-modal-close" data-modal-close aria-label="카드 선택 닫기">×</button></div>${tips}${qtyBar}${moveBar}<div class="rt-card-choice-list">${blankChoice}${sep}${list.map(choice).join('')}</div><div class="rt-card-modal-foot"><button type="button" class="rt-button rt-quiet" data-action="remove" ${installed?'':'disabled'} title="키보드 Delete 키로도 비울 수 있습니다">슬롯 비우기(흰 칸) <kbd class="rt-kbd">Del</kbd></button><button type="button" class="rt-button" data-modal-close>닫기</button></div></dialog>`;
     }
     function configurationSummary(){
       const slotList=currentSlots(),t=totals(),completion=RtCore.completionFor(state),rows=dir=>{
@@ -302,6 +302,21 @@
     root.addEventListener('dragleave',event=>{const b=event.target.closest?.('button[data-slot]');if(b&&!b.contains(event.relatedTarget))b.classList.remove('rt-rack-slot-drop')});
     root.addEventListener('drop',event=>{const b=event.target.closest?.('button[data-slot]');const from=dragFrom;dragFrom=null;clearDrop();if(!b||!from)return;event.preventDefault();const moved=RtCore.moveCard(state,from,b.dataset.slot);if(!moved)return;state=moved;changedSlot=b.dataset.slot;changed();announce(`${b.dataset.slot.replace(/^in-/,'입력 슬롯 ').replace(/^out-/,'출력 슬롯 ')}(으)로 옮겼습니다.`)});
     root.addEventListener('dragend',()=>{dragFrom=null;clearDrop()});
+    // 0.55 Delete 키로 카드 빼기(사용자 요청 "프레임 뒤에서 카드를 선택하고 del키를 누르면 삭제"): 슬롯에 초점이 있거나
+    // 그 슬롯의 카드 팝업이 열려 있을 때 Delete(맥은 Backspace)를 누르면 슬롯을 비운다. 실행 취소로 되돌릴 수 있다.
+    root.addEventListener('keydown',event=>{
+      if(event.key!=='Delete'&&event.key!=='Backspace')return;
+      if(event.target.closest?.('input,select,textarea,[contenteditable="true"]'))return;
+      const slotButton=event.target.closest?.('button[data-slot]');
+      const id=slotButton?slotButton.dataset.slot:event.target.closest?.('.rt-card-modal')?modalSlot:null;
+      if(!id||state.step!==2||!Object.prototype.hasOwnProperty.call(state.placements,id))return;
+      event.preventDefault();
+      const was=state.placements[id];
+      if(modalSlot)closeCardModal(id);
+      delete state.placements[id];delete state.links[id];
+      state.slot=id;changedSlot=id;focusSlotAfterRender=id;syncPorts();changed();
+      announce(`${id.replace(/^in-/,'입력 슬롯 ').replace(/^out-/,'출력 슬롯 ')}에서 ${was==='BLANK'?'블랭크 커버':was}를 뺐습니다. 실행 취소로 되돌릴 수 있습니다.`);
+    });
     function openCardModal(){
       const dialog=main.querySelector('.rt-card-modal');
       if(!dialog){if(focusSlotAfterRender){const id=focusSlotAfterRender;focusSlotAfterRender=null;requestAnimationFrame(()=>focusSlot(id))}return}

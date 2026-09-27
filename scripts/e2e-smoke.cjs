@@ -207,6 +207,15 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.dragAndDrop('button[data-slot="in-3"]','button[data-slot="out-1"]');
     moveState=await saved();
     check('장착한 슬롯을 끌어 같은 방향 슬롯에 놓으면 옮겨지고, 반대 방향(출력)에는 놓이지 않음',!moveState['in-2']&&moveState['in-7']==='XDM-HI100'&&moveState['in-3']==='XDM-HI100'&&!moveState['out-1'],JSON.stringify(moveState));
+    // 0.55 Delete 키(사용자 요청 "카드를 선택하고 del키를 누르면 삭제"): 슬롯에 초점이 있거나 그 슬롯 팝업이 열려 있을 때 비운다.
+    await page.locator('button[data-slot="in-7"]').focus();
+    await page.keyboard.press('Delete');
+    await page.locator('button[data-slot="in-5"]').click();
+    await page.waitForSelector('dialog.rt-card-modal[open]');
+    await page.keyboard.press('Delete');
+    moveState=await saved();
+    const modalGone=await page.locator('dialog.rt-card-modal').count()===0;
+    check('슬롯을 고르고 Delete 키를 누르면 카드가 빠짐(초점·팝업 모두)',!moveState['in-7']&&!moveState['in-5']&&moveState['in-3']==='XDM-HI100'&&modalGone,JSON.stringify({moveState,modalGone}));
     const missing=await page.goto(home+'no-such-page/deep',{waitUntil:'networkidle'});
     check('사이트 안의 없는 주소는 404.html이 구성기 첫 화면으로 보냄',missing&&page.url()===home&&await page.locator('#matrix-configurator').count()===1);
     await page.evaluate(()=>localStorage.clear());
