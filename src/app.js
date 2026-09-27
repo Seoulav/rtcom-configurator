@@ -233,7 +233,9 @@
       const lineup=state.family==='XDM'?lineupSection('XDM','XDM 연동 전송기','HDBaseT 카드(CIS100·COS100)와 광 카드(FIS100·FOS100)에 연결하는 전송기입니다. 근거: RTCom 종합 카탈로그 p.10~12',extenderLineup):state.family==='VDM'?lineupSection('VDM','VDM 연동 전송기','HDBaseT 카드(CIS4-U·COS4-U)와 광 카드(FIS4-U·FOS4-U)에 연결하는 전송기입니다. 근거: 사용자 확인, 알티컴 홈페이지 VDM EXTENDER',vdmExtenderLineup):'';
       // 전송기 라인업(2-2 "판 아래 접이식 영역"): 처음부터 펼쳐 둔다 — e2e가 스크롤해서 사진 로딩을 확인하므로 클릭 없이 보여야 한다.
       const lineupWrap=lineup?`<details open class="rt-ext-lineup-details"><summary>연동 전송기 라인업 펼치기/접기</summary>${lineup}</details>`:'';
-      const empty=`<div class="rt-empty rt-link-empty"><strong>현재 구성에는 HDBaseT·광 카드가 없습니다.</strong><p>${state.family==='SPX'?'SPX-COS12(CATx 출력) 카드를 장착하면 SPX-RX가 자동으로 연결되고 여기서 채널 수를 바꿀 수 있습니다.':state.family==='VDM'?'CIS4-U·COS4-U(HDBaseT) 또는 FIS4-U·FOS4-U(광) 카드를 장착하면 CT104-U·CR104-U·FT101-U·FR101-U가 자동으로 연결되고 여기서 채널 수를 바꿀 수 있습니다.':'XDM-CIS100·COS100(HDBaseT) 또는 XDM-FIS100·FOS100(광) 카드를 장착하면 CTR100·FT101·FR101이 자동으로 연결되고 여기서 바꿀 수 있습니다.'}</p><button type="button" class="rt-button" data-jump="2">카드 슬롯으로 돌아가기</button></div>`;
+      // SPX는 HDBaseT가 아니라 CATx(SPX-COS12 ↔ SPX-RX)로 전송한다(사용자 확인 2026-09-27 "SPX는 HDBaseT 전송이 아니야"). 안내 문구의 카드 이름을 제품군에 맞춘다.
+      const remoteName=state.family==='SPX'?'CATx 카드':'HDBaseT·광 카드';
+      const empty=`<div class="rt-empty rt-link-empty"><strong>현재 구성에는 ${remoteName}가 없습니다.</strong><p>${state.family==='SPX'?'SPX-COS12(CATx 출력) 카드를 장착하면 SPX-RX가 자동으로 연결되고 여기서 채널 수를 바꿀 수 있습니다.':state.family==='VDM'?'CIS4-U·COS4-U(HDBaseT) 또는 FIS4-U·FOS4-U(광) 카드를 장착하면 CT104-U·CR104-U·FT101-U·FR101-U가 자동으로 연결되고 여기서 채널 수를 바꿀 수 있습니다.':'XDM-CIS100·COS100(HDBaseT) 또는 XDM-FIS100·FOS100(광) 카드를 장착하면 CTR100·FT101·FR101이 자동으로 연결되고 여기서 바꿀 수 있습니다.'}</p><button type="button" class="rt-button" data-jump="2">카드 슬롯으로 돌아가기</button></div>`;
       // 왼쪽 목록: 원격(CAT·광) 카드 묶음 → (있으면) HDMI 카드 연장 묶음(우산 아래). "현재 구성에는 HDBaseT·광 카드가 없습니다" 안내는
       // remote가 없을 때만 뜨고(명세 5번), HDMI 연장 슬롯만 있으면 그 묶음은 그대로 함께 보여준다(옛 화면도 두 안내가 함께 있을 수 있었다).
       const hdmiGroup=hdmiExtend.length?`<div class="rt-cg-link-umbrella"><div class="rt-cg-link-umbrella-head"><span class="rt-eyebrow">HDMI 연장 · 선택</span><h4>HDMI 카드 연장(선택)</h4><p>HDMI 입력·출력 포트를 멀리 연결해야 하면 CTR100 PSE와 CTR100을 한 쌍으로 씁니다. 전원은 PSE 쪽에만 연결하고, 두 제품 모두 DIP 스위치로 TX/RX를 설정합니다.</p></div>${hdmiExtend.map(group).join('')}</div>`:'';
@@ -265,7 +267,7 @@
       // 채널 수는 미리보기 안에 이미 있고 전원 안내는 카드마다 똑같아 판 전체 아래 한 번만 두는 쪽을 선택했다 — 구현 문서에 남긴 편차).
       // rt-link-preview: 01/02의 오른쪽 미리보기는 사진 한 장이라 820px 이하 max-height:260px 안에 들어가지만,
       // 04의 연결 흐름(세그먼트+노드 여러 개)은 그보다 쉽게 커져서 넘친다 — 이 표시가 있을 때만 높이 제한을 풀어준다(styles.css).
-      return heading('04 / 전송기','카드에 연결할 전송 장비를 확인하세요.',remote.length?`HDBaseT·광 카드 ${remote.length}장에 기본 전송기를 연결했습니다. 필요하면 ${state.family==='XDM'?'벽부형이나 ':''}채널 수를 바꾸세요.`:'HDBaseT·광 카드를 장착하면 연동 전송기가 자동으로 연결됩니다.')+`<div class="rt-cg-split"><div class="rt-cg-list" role="list">${listBody}</div><div class="rt-cg-preview rt-link-preview">${previewBody()}</div></div>${powerNotice()}${lineupWrap}`;
+      return heading('04 / 전송기','카드에 연결할 전송 장비를 확인하세요.',remote.length?`${remoteName} ${remote.length}장에 기본 전송기를 연결했습니다. 필요하면 ${state.family==='XDM'?'벽부형이나 ':''}채널 수를 바꾸세요.`:`${remoteName}를 장착하면 연동 전송기가 자동으로 연결됩니다.`)+`<div class="rt-cg-split"><div class="rt-cg-list" role="list">${listBody}</div><div class="rt-cg-preview rt-link-preview">${previewBody()}</div></div>${powerNotice()}${lineupWrap}`;
     }
     function bom(){return RtCore.bom(state).map(row=>[row.category,row.model,row.quantity])}
     function table(){return `<div class="rt-table-wrap"><table><thead><tr><th>구분</th><th>모델</th><th>수량</th></tr></thead><tbody>${bom().map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')}</tbody></table></div>`}

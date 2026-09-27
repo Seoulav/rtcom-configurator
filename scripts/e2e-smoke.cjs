@@ -130,6 +130,8 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.click('[data-action="next"]');
     await page.waitForLoadState('networkidle');
     check('SPX-M3236은 입력 4·출력 3 슬롯이 모두 흰 빈칸으로 표시됨(블랭크 자동 없음)',await page.locator('.rt-rack-hs .rt-rack-slot-empty').count()===7&&await page.locator('.rt-rack-hs .rt-rack-slot-blank').count()===0);
+    // 사진이 다 받아지기 전에 위치를 재면 높이가 0이라 가끔 실패했다(0.64 확인, 재실행 3회 모두 통과). 사진 로드를 최대 5초 기다린 뒤 잰다.
+    await page.waitForFunction(()=>document.querySelector('.rt-rack-photo-image')?.naturalWidth>0,null,{timeout:5000}).catch(()=>{});
     check('사진 슬롯 영역은 사진 높이 기준으로 배치됨(출력 영역 아래 끝 = 사진 677/772 지점)',await page.evaluate(()=>{const image=document.querySelector('.rt-rack-photo-image').getBoundingClientRect(),zone=document.querySelector('.rt-rack-zone-output').getBoundingClientRect();return Math.abs((zone.bottom-image.top)/image.height-677/772)<0.005}));
     await page.locator('button[data-slot="out-1"]').click();
     await page.locator('.rt-card-modal .rt-card-choice[data-card="SPX-COS12"]').click();
@@ -146,6 +148,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.waitForLoadState('networkidle');
     check('실행 취소 1번으로 "채우기"가 통째로 되돌아감(블랭크 6개가 다시 빈칸으로)',await page.locator('.rt-rack-slot-blank').count()===0&&await page.locator('.rt-rack-slot-empty').count()===6&&await page.locator('button[data-slot="out-1"].rt-rack-slot-filled').count()===1&&await page.locator('.rt-slot-done-banner').count()===0);
     await page.click('[data-action="next"]');
+    // 0.64 SPX 04 전송기 안내는 "HDBaseT·광 카드"가 아니라 "CATx 카드"(SPX는 HDBaseT 전송이 아님, 사용자 확인 2026-09-27).
+    const spxLinkText=await page.evaluate(()=>document.querySelector('.rt-configurator-view')?.innerText||'');
+    check('SPX 04 전송기 안내가 "CATx 카드"로 표기되고 HDBaseT가 나오지 않음',spxLinkText.includes('CATx 카드')&&!spxLinkText.includes('HDBaseT'),spxLinkText.match(/.{0,30}(CATx 카드|HDBaseT).{0,30}/)?.[0]||'없음');
     check('SPX-COS12 장착 시 SPX-RX가 12채널로 자동 연결됨',await page.locator('button[data-owner="out-1"][data-link-device="SPX-RX"][aria-pressed="true"]').count()===1&&await page.locator('select[data-owner="out-1"][data-link="count"]').inputValue()==='12');
     // 제품군을 바꾸면(확인 창 수락) 카드·전송기 선택이 초기화된다.
     await page.click('.rt-step[data-jump="0"]');
@@ -280,9 +285,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     // 0.33 — 제품정보 글래스 디자인(rt-pg-*)으로 목록·상세 마크업이 바뀌었다.
     await page.click('a[data-view-tab="products"]');
     await page.waitForSelector('.rt-pg-gridcard');
-    check('제품정보 탭을 누르면 구성기를 숨기고 제품 28종 목록을 표시',await page.locator('.rt-configurator-view').isHidden()&&await page.locator('.rt-pg-gridcard').count()===28);
+    check('제품정보 탭을 누르면 구성기를 숨기고 제품 29종 목록(0.64부터 SPX-TX/RX 포함)을 표시',await page.locator('.rt-configurator-view').isHidden()&&await page.locator('.rt-pg-gridcard').count()===29);
     await page.click('[data-product-filter="extender"]');
-    check('전송기 분류는 12종',await page.locator('.rt-pg-gridcard').count()===12);
+    check('전송기 분류는 13종(0.64부터 SPX-TX/RX 포함)',await page.locator('.rt-pg-gridcard').count()===13);
     await page.click('[data-product-filter="all"]');
     await page.fill('[data-product-search]','QMS');
     check('검색어 QMS로 일체형 매트릭스 2종이 남음',await page.locator('.rt-pg-gridcard').count()===2);
@@ -304,7 +309,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('CT104-U/CR104-U 단자 지도가 송신기·수신기 사진 두 장으로 나옴',extenderMaps.length===2&&extenderMaps[0].includes('송신기 CT104-U')&&extenderMaps[1].includes('수신기 CR104-U'),JSON.stringify(extenderMaps));
     await page.goBack();
     await page.waitForSelector('.rt-pg-gridcard');
-    check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-pg-gridcard').count()===28);
+    check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-pg-gridcard').count()===29);
     // 0.43 벽부형 단자 지도: 송신기·수신기 두 장, 세로 괄호(side left/right) 번호표 11개(0.46에서 HDMI IN 1·2를 한 번호로 묶음), 사진에 보이지 않는 옆면 단자 안내(note).
     await page.goto(`${home}#products/ft103-u-h-fr103-u`,{waitUntil:'networkidle'});
     await page.waitForSelector('#rt-pg-title');
@@ -335,7 +340,8 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.waitForSelector('#rt-pg-title');
     // 0.49 HDS-21U·HDS-42MU도 같은 방식(딥 스위치 1번 선택, 사용자 확인·매뉴얼 Ver.1.0). 신호 흐름 문구에는 HD-13U 전용 "(OUT 1)"이 붙지 않는다.
     // 0.58 두 제품은 07 오디오 설정 카드 대신 07 딥 스위치 설정 카드로 스위치 번호마다 OFF·ON 그림을 보여준다(사용자 요청 2026-09-27).
-    for(const [id,rows] of [['hds-21u',2],['hds-42mu',3]]){
+    // 0.64 HDS-21U 딥 스위치는 HDS-42MU와 같다(1 오디오·2 Priority·3 분배, 사용자 확인 2026-09-27).
+    for(const [id,rows] of [['hds-21u',3],['hds-42mu',3]]){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
       await page.waitForSelector('#rt-pg-title');
       const hdsDip=await page.evaluate(()=>({audio:document.querySelectorAll('.rt-pg-audio').length,rows:document.querySelectorAll('.rt-pg-dip .rt-pg-dip-row').length,svgs:document.querySelectorAll('.rt-pg-dip svg[aria-label^="딥 스위치"]').length,idx:document.querySelector('.rt-pg-dip .rt-pg-idx')?.textContent,first:document.querySelector('.rt-pg-dip .rt-pg-dip-row')?.textContent.includes('병합'),flow:[...document.querySelectorAll('.rt-pg-svg-wrap svg')].some(svg=>svg.textContent.includes('오디오 병합 또는 추출 중 선택')&&!svg.textContent.includes('(OUT 1)')),overflow:document.documentElement.scrollWidth>innerWidth+1}));
@@ -368,6 +374,35 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       await page.waitForSelector('.rt-pg-dip');
       const order=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-dip .rt-pg-dip-row')].map(row=>[...row.querySelectorAll('.rt-pg-dip-state em')].map(em=>em.textContent.split(' ')[0]).join('/')));
       check(`${id} 딥 스위치 칸이 ${first==='ON'?'ON → OFF':'OFF → ON'} 순서`,order.length>0&&order.every(o=>o===(first==='ON'?'ON/OFF':'OFF/ON')),JSON.stringify(order));
+    }
+    // 0.64 SPX-TX/RX 전송기(매뉴얼 Ver.2.0): 전송기 목록에 나오고, 단자 지도 2장(TX·RX), 딥 스위치(아래쪽이 ON) 1·2번 + 3·4번 EDID 조합 4칸, 신호 흐름은 HDBaseT가 아닌 CATx.
+    await page.goto(`${home}#products/spx-rx-tx`,{waitUntil:'networkidle'});
+    await page.waitForSelector('#rt-pg-title');
+    const spxrt=await page.evaluate(()=>({maps:document.querySelectorAll('.rt-pg-portmap svg image, .rt-pg-portmap image').length||document.querySelectorAll('[data-pm-map], .rt-pg-pm').length,rows:document.querySelectorAll('.rt-pg-dip .rt-pg-dip-row').length,combos:document.querySelectorAll('.rt-pg-dip-combos figure').length,down:document.querySelector('.rt-pg-dip h2')?.textContent.includes('아래쪽이 ON'),flow:[...document.querySelectorAll('.rt-pg-svg-wrap svg')].map(s=>s.textContent).join(' '),broken:[...document.images].filter(i=>i.complete&&!i.naturalWidth).length}));
+    check('SPX-TX/RX 상세에 딥 스위치 3행(1·2번, 3·4번 조합 4칸, 아래쪽이 ON)과 CATx 신호 흐름이 나오고 깨진 사진이 없음',spxrt.rows===3&&spxrt.combos===4&&spxrt.down&&spxrt.flow.includes('CATx')&&!spxrt.flow.includes('HDBaseT')&&spxrt.broken===0,JSON.stringify({...spxrt,flow:spxrt.flow.slice(0,80)}));
+    // 0.64 OBUX-1C Tx Mode 딥 스위치(매뉴얼 Ver.2.2): 검은 몸체 4핀, 1번 오디오 + 2·3·4번 EDID 조합 5칸(Through-pass EDID Fix 포함).
+    await page.goto(`${home}#products/obux-1c`,{waitUntil:'networkidle'});
+    await page.waitForSelector('.rt-pg-dip');
+    const obux=await page.evaluate(()=>({rows:document.querySelectorAll('.rt-pg-dip .rt-pg-dip-row').length,combos:document.querySelectorAll('.rt-pg-dip-combos figure').length,fix:document.querySelector('.rt-pg-dip')?.textContent.includes('Through-pass EDID Fix')}));
+    check('OBUX-1C 딥 스위치 설정이 1번 오디오와 2·3·4번 EDID 조합 5칸으로 나옴',obux.rows===2&&obux.combos===5&&obux.fix,JSON.stringify(obux));
+    // 0.64 XDM-FT101/FR101 EDID·오디오 로터리(매뉴얼 Ver.1.3): 0(기본값)·3·8번 대표 설정 그림.
+    await page.goto(`${home}#products/xdm-ft101-fr101`,{waitUntil:'networkidle'});
+    await page.waitForSelector('.rt-pg-edid');
+    const ftRot=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-edid .rt-pg-rotary-row .rt-pg-rotary svg')].map(svg=>(svg.getAttribute('aria-label').match(/(\w)번$/)||[])[1]).join(','));
+    check('XDM-FT101/FR101 EDID 설정에 로터리 전체 8칸(Source 0~3, Analog 8~B)이 나옴',ftRot==='0,1,2,3,8,9,A,B',ftRot);
+    // 0.65 OBHD-2C EDID 로터리(매뉴얼 KV01 EDID Library 14종, 사용자 요청 "그려줘"): 0~D 전체 14칸, C번이 기본값, 06 EDID 설정, 정면 사진 로드.
+    await page.goto(`${home}#products/obhd-2c`,{waitUntil:'networkidle'});
+    await page.waitForSelector('.rt-pg-edid');
+    await page.$eval('.rt-pg-edid img',img=>img.scrollIntoView());
+    await page.waitForFunction(()=>document.querySelector('.rt-pg-edid img')?.naturalWidth>0);
+    const obhd=await page.evaluate(()=>({codes:[...document.querySelectorAll('.rt-pg-edid .rt-pg-rotary-row .rt-pg-rotary svg')].map(svg=>(svg.getAttribute('aria-label').match(/(\w)번$/)||[])[1]).join(''),def:document.querySelector('.rt-pg-edid .rt-pg-rotary.is-default figcaption em')?.textContent,idx:document.querySelector('.rt-pg-edid')?.closest('section')?.querySelector('.rt-pg-idx')?.textContent,rows:document.querySelectorAll('.rt-pg-edid .rt-pg-tablewrap tbody tr').length}));
+    check('OBHD-2C 06 EDID 설정에 MODE 로터리 0~D 14칸과 C번 기본값, 코드표 14행이 나옴',obhd.codes==='0123456789ABCD'&&obhd.def==='C번 · 기본값'&&obhd.idx==='06'&&obhd.rows===14,JSON.stringify(obhd));
+    // 0.64 SPX는 HDBaseT가 아닌 CATx 전송(사용자 확인 2026-09-27): SPX 시리즈 상세 신호 범례와 SPX-TX/RX 어디에도 HDBaseT가 나오지 않는다.
+    for(const id of ['spx','spx-rx-tx']){
+      await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
+      await page.waitForSelector('#rt-pg-title');
+      const hb=await page.evaluate(()=>{const el=document.querySelector('.rt-products-view');const m=(el?.textContent||'').match(/.{0,40}HDBaseT.{0,40}/);return m?m[0]:false});
+      check(`${id} 상세에 HDBaseT 표기가 없음(CATx 전송)`,!hb,String(hb));
     }
     // 0.61 HD-210U 딥 스위치 설정(매뉴얼 Ver.1.2 7쪽: 1번 오디오 병합, 2번 DDC). 병합만 되고 추출(AUDIO OUT)은 없다(사용자 확인 2026-09-27).
     await page.goto(`${home}#products/hd-210u`,{waitUntil:'networkidle'});

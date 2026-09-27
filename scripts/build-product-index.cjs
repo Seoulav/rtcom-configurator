@@ -106,6 +106,17 @@ function validate(product,file,ids){
       if(!codes.has(ds.source))fail(`dipSwitch.source(${ds.source})가 sources에 없음`);
       if('onUp' in ds&&typeof ds.onUp!=='boolean')fail('dipSwitch.onUp은 true/false여야 함');
       for(const key of ['label','apply','note'])if(key in ds&&(typeof ds[key]!=='string'||!ds[key]))fail(`dipSwitch.${key}는 비어 있지 않은 문자열이어야 함`);
+      if('color' in ds&&!['red','black'].includes(ds.color))fail('dipSwitch.color는 "red" 또는 "black"이어야 함');
+      if('place' in ds&&(typeof ds.place!=='string'||!ds.place))fail('dipSwitch.place는 비어 있지 않은 문자열이어야 함');
+      for(const cb of ds.combos||[]){
+        if(!Array.isArray(cb.switches)||cb.switches.length<2||cb.switches.some(n=>!Number.isInteger(n)||n<1||n>ds.count))fail(`dipSwitch.combos[].switches는 1~${ds.count} 번호 2개 이상이어야 함`);
+        if(typeof cb.title!=='string'||!cb.title)fail('dipSwitch.combos[].title이 비어 있음');
+        if(!Array.isArray(cb.items)||!cb.items.length)fail('dipSwitch.combos[].items가 비어 있음');
+        else for(const it of cb.items){
+          if(!Array.isArray(it.set)||it.set.length!==(cb.switches||[]).length||it.set.some(v=>!['on','off'].includes(v)))fail('dipSwitch.combos[].items[].set은 switches 수만큼 "on"/"off"여야 함');
+          if(typeof it.name!=='string'||!it.name||typeof it.text!=='string'||!it.text)fail('dipSwitch.combos[].items[]는 name·text를 갖춰야 함');
+        }
+      }
       if('order' in ds&&!(Array.isArray(ds.order)&&ds.order.length===2&&ds.order.includes('on')&&ds.order.includes('off')))fail('dipSwitch.order는 ["on","off"] 또는 ["off","on"]이어야 함');
       if(!Array.isArray(ds.rows)||!ds.rows.length)fail('dipSwitch.rows는 비어 있지 않은 배열이어야 함');
       else{
