@@ -152,8 +152,10 @@
       if(!videoIn||!videoOut)return null;
       const inTotal=parseInt(videoIn.quantity,10),outTotal=parseInt(videoOut.quantity,10);
       const inN=Math.min(inTotal,8),outN=Math.min(outTotal,12);
-      // 오디오 입력은 io(Audio 그룹)에 있으면 그것을, 없으면 overview의 "오디오 병합/삽입" 문구를 근거로 인정한다(HD-210U·HD-13U 등 이미 개요에 있는 사실).
+      // 오디오 입력(병합·믹스)·출력(추출·디먹스)은 io(Audio 그룹)에 있으면 그것을, 없으면 overview의 문구를 근거로 인정한다
+      // (HD-13U는 제품사양 표에 오디오 단자가 없어 io에 안 적었지만 개요에 "병합 및 추출"이 이미 있다 — issues I2 참고).
       const audioIn=io.find(port=>port.direction==='IN'&&port.group==='Audio')||(/오디오\s*(병합|삽입)/.test(item.overview||'')?{signal:'Analog Audio'}:null);
+      const audioOut=io.find(port=>port.direction==='OUT'&&port.group==='Audio')||(/오디오[^.]*추출|추출[^.]*오디오/.test(item.overview||'')?{signal:'Analog Audio'}:null);
       // 입력·출력이 모두 여럿이면 매트릭스 전환(각 출력이 독립), 출력이 1개면 여러 입력 중 하나를 고르는 선택기다.
       // 입출력이 둘 이상이라고 매트릭스인 것은 아니다(HD-210U는 2입력 중 1개를 골라 10출력에 같은 영상을 보내는 분배기). 0.34 검수에서
       // 입출력 수 기준(inN>1&&outN>1)을 되돌려, 일체형 매트릭스이거나 제품 문구에 매트릭스라고 적힌 경우(HDS-42MU "4x2 Matrix Switcher")만 매트릭스로 본다.
@@ -182,7 +184,7 @@
           const cy=y+chipH/2;
           bodyMarkup+=`<path d="M${leftX+chipW} ${cy}C${leftX+chipW+32} ${cy} ${leftX+chipW+32} ${midY} ${nodeX-22} ${midY}" fill="none" stroke="${A}" stroke-width="3"/>`;
         });
-        if(audioIn){const joinY=isMatrix?midY+Math.max(52,chipYs.length*(chipH+chipVGap)-chipVGap)/2:midY+21;bodyMarkup+=`<path d="M${leftX+chipW} ${audioY+audioH/2}C${leftX+chipW+42} ${audioY+audioH/2} ${nodeX} ${audioY+audioH/2} ${nodeX} ${joinY}" fill="none" stroke="${M}" stroke-width="1.8" stroke-dasharray="4 3"/>`;}
+        if(audioIn){const joinY=isMatrix?midY+Math.max(52,chipYs.length*(chipH+chipVGap)-chipVGap)/2:midY+21;bodyMarkup+=`<path d="M${leftX+chipW} ${audioY+audioH/2}C${leftX+chipW+42} ${audioY+audioH/2} ${nodeX} ${audioY+audioH/2} ${nodeX} ${joinY}" fill="none" stroke="${M}" stroke-width="1.8" stroke-dasharray="4 3"/><rect x="${leftX+chipW+8}" y="${audioY+audioH+2}" width="30" height="15" rx="7" fill="#fff"/><text x="${leftX+chipW+23}" y="${audioY+audioH+13}" text-anchor="middle" font-size="10" font-weight="700" fill="${M}">병합</text>`;}
         if(isMatrix){
           const boxW=68,boxH=Math.max(52,chipYs.length*(chipH+chipVGap)-chipVGap);
           bodyMarkup+=`<rect x="${nodeX-boxW/2}" y="${midY-boxH/2}" width="${boxW}" height="${boxH}" rx="14" fill="#fff" stroke="${A}" stroke-width="3"/><text x="${nodeX}" y="${midY+5}" text-anchor="middle" font-size="12" font-weight="700" fill="${A}">매트릭스</text>`;
@@ -193,6 +195,8 @@
         }
       }else{
         nodeRight=leftX+chipW;
+        // 입력이 1개뿐인 분배기(HD-13U 등)는 선택 노드가 없어 오디오 병합 선도 안 그려졌다 — 대역폭 띠로 들어가기 직전 지점에 합류시킨다.
+        if(audioIn)bodyMarkup+=`<path d="M${leftX+chipW} ${audioY+audioH/2}C${leftX+chipW+30} ${audioY+audioH/2} ${leftX+chipW+30} ${midY} ${nodeRight+18} ${midY}" fill="none" stroke="${M}" stroke-width="1.8" stroke-dasharray="4 3"/><rect x="${leftX+chipW+8}" y="${audioY+audioH+2}" width="30" height="15" rx="7" fill="#fff"/><text x="${leftX+chipW+23}" y="${audioY+audioH+13}" text-anchor="middle" font-size="10" font-weight="700" fill="${M}">병합</text>`;
       }
 
       const bandX1=nodeRight+22,bandWidth=280,bandX2=bandX1+bandWidth,bandY=midY;
@@ -204,7 +208,7 @@
       const hdcp=(item.specifications||[]).find(spec=>/HDCP/.test(spec.name));
       // HDCP 값은 제품마다 "HDCP 2.2 support", "HDCP Compliant v2.2 지원"처럼 달라 앞의 HDCP·Compliant·v를 걷어내고 한 번만 붙인다(0.34 검수: "HDCP HDCP Compliant v2.2").
       const hdcpVersion=hdcp&&hdcp.value.replace(/지원|support/ig,'').replace(/^\s*HDCP\s*/i,'').replace(/Compliant\s*/i,'').replace(/^v(?=\d)/i,'').trim();
-      const protoBits=[videoIn.protocol,hdcp&&(hdcpVersion?`HDCP ${hdcpVersion}`:'HDCP'),audioIn&&'오디오 병합'].filter(Boolean);
+      const protoBits=[videoIn.protocol,hdcp&&(hdcpVersion?`HDCP ${hdcpVersion}`:'HDCP'),audioIn&&'오디오 병합',audioOut&&'오디오 추출'].filter(Boolean);
       if(protoBits.length)bodyMarkup+=`<text x="${(bandX1+bandX2)/2}" y="${bandY+28}" text-anchor="middle" font-size="11" font-weight="600" fill="${M}">${svgEsc(protoBits.join(' · '))}</text>`;
 
       const cols=Math.min(outN,5),rows=Math.ceil(outN/cols);
@@ -228,10 +232,18 @@
       const captionText=multiview.length?`OUT 1–${matrixCount} 매트릭스 · ${multiview.join('·')} 멀티뷰`:`${outCaption} · ${sameSignal}`;
       bodyMarkup+=`<text x="${panelX+panelW/2}" y="${panelY+panelH+16}" text-anchor="middle" font-size="11.5" font-weight="700" fill="${PI}">${svgEsc(captionText)}</text>`;
 
+      // 오디오 추출(디먹스): 캡션 아래에 AUDIO OUT 칩을 두고 대역폭 띠에서 점선으로 이어 "병합"과 대칭으로 보이게 한다.
+      let audioOutBottom=panelY+panelH+16;
+      if(audioOut){
+        const audioOutW=104,audioOutH=30,aoX=panelX+panelW/2-audioOutW/2,aoY=panelY+panelH+34;
+        bodyMarkup+=`<path d="M${bandX2} ${bandY+7}C${bandX2} ${aoY+audioOutH/2} ${aoX+audioOutW/2} ${aoY+audioOutH/2} ${aoX+audioOutW/2} ${aoY}" fill="none" stroke="${M}" stroke-width="1.8" stroke-dasharray="4 3"/><rect x="${aoX}" y="${aoY}" width="${audioOutW}" height="${audioOutH}" rx="15" fill="rgba(118,118,128,.10)"/><text x="${aoX+audioOutW/2}" y="${aoY+audioOutH/2+4}" text-anchor="middle" font-size="11.5" font-weight="600" fill="${M}">AUDIO OUT</text><rect x="${aoX+audioOutW+6}" y="${aoY+7}" width="30" height="15" rx="7" fill="#fff"/><text x="${aoX+audioOutW+21}" y="${aoY+18}" text-anchor="middle" font-size="10" font-weight="700" fill="${M}">추출</text>`;
+        audioOutBottom=aoY+audioOutH;
+      }
+
       // 캡션 글자가 출력 격자보다 넓을 수 있어(예: 매트릭스 전환 문구) SVG 너비에 여유를 둔다.
       const captionHalfWidth=captionText.length*3.6+20;
-      const width=Math.max(panelX+panelW+20,panelX+panelW/2+captionHalfWidth+20);
-      const height=Math.max(leftBottom+20,panelY+panelH+38,midY+70);
+      const width=Math.max(panelX+panelW+20,panelX+panelW/2+captionHalfWidth+20,audioOut?panelX+panelW/2+52+40:0);
+      const height=Math.max(leftBottom+20,panelY+panelH+38,midY+70,audioOutBottom+16);
       return diagramWrap(bodyMarkup,width,height,[]);
     }
     function cableDiagram(item){
@@ -258,7 +270,13 @@
       const cableColor=isFiber?COLOR_FIBER:COLOR_COPPER;
       const distanceSpecs=(item.specifications||[]).filter(spec=>/전송거리/.test(spec.name));
       const cableName=isFiber?'광케이블':'HDBaseT(CATx)';
-      const cableDistance=distanceSpecs.length?`최대 ${distanceSpecs.map(spec=>`${spec.value}${spec.unit||''}`).join(' / ')}`:'';
+      const cableLabelFor=spec=>{
+        const m=(spec.condition||'').match(/(BELDEN\s*)?([A-Z0-9]+)\s*\(([^)]+)\)/);
+        if(!m)return `최대 ${spec.value}${spec.unit||''}`;
+        const mod=m[3].split(',')[0].trim();
+        return `${m[1]||''}${m[2]}(${mod}) 최대 ${spec.value}${spec.unit||''}`;
+      };
+      const distanceLines=distanceSpecs.map(cableLabelFor);
       const [txLabel,rxLabel]=isTransceiver?[item.model.split(' / ')[0],item.model.split(' / ')[0]]:(item.model.includes(' / ')?item.model.split(' / '):[item.model,item.model]);
       const pseCombo=item.id==='xdm-ctr100';
       let bodyMarkup,width,height,captions;
@@ -267,9 +285,9 @@
         const boxW=170,boxH=70;
         const iconX=60,leftBoxX=210,cardX=600,dstX=920;
         const row1Y=100,row2Y=220,combo2Y=390;
-        height=460;
-        const cableSeg=(y)=>`<path d="M${leftBoxX+boxW} ${y}L${cardX} ${y}" stroke="${cableColor}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/><text x="${(leftBoxX+boxW+cardX)/2}" y="${y-14}" text-anchor="middle" font-size="10" font-weight="700" fill="${cableColor}">${svgEsc(cableName)}</text>${cableDistance?`<text x="${(leftBoxX+boxW+cardX)/2}" y="${y+22}" text-anchor="middle" font-size="9" fill="${cableColor}">${svgEsc(cableDistance)}</text>`:''}`;
-        const cableSeg2=(x1,x2,y)=>`<path d="M${x1+boxW} ${y}L${x2} ${y}" stroke="${cableColor}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/><text x="${(x1+boxW+x2)/2}" y="${y-14}" text-anchor="middle" font-size="10" font-weight="700" fill="${cableColor}">${svgEsc(cableName)} · 신호+전원 동시 공급</text>${cableDistance?`<text x="${(x1+boxW+x2)/2}" y="${y+22}" text-anchor="middle" font-size="9" fill="${cableColor}">${svgEsc(cableDistance)}</text>`:''}`;
+        height=460+(distanceLines.length?40:0);
+        const cableSeg=(y)=>`<path d="M${leftBoxX+boxW} ${y}L${cardX} ${y}" stroke="${cableColor}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/><text x="${(leftBoxX+boxW+cardX)/2}" y="${y-14}" text-anchor="middle" font-size="10" font-weight="700" fill="${cableColor}">${svgEsc(cableName)}</text>`;
+        const cableSeg2=(x1,x2,y)=>`<path d="M${x1+boxW} ${y}L${x2} ${y}" stroke="${cableColor}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/><text x="${(x1+boxW+x2)/2}" y="${y-14}" text-anchor="middle" font-size="10" font-weight="700" fill="${cableColor}">${svgEsc(cableName)} · 신호+전원 동시 공급</text>`;
         bodyMarkup=`<text x="${width/2}" y="32" text-anchor="middle" font-size="11" font-weight="700" fill="#687386">조합 1 · XDM-CIS100·COS100 카드에 직결(전원 직접 연결, PSE 사용 불가)</text>`;
         bodyMarkup+=monitorIcon(iconX,row1Y,'소스 기기')+arrow(iconX+24,row1Y,leftBoxX-6,row1Y,COLOR_IN);
         bodyMarkup+=deviceBox(leftBoxX,row1Y-boxH/2,boxW,boxH,'XDM-CTR100','TX · 전원 직접 연결');
@@ -286,6 +304,7 @@
         bodyMarkup+=deviceBox(cardX,combo2Y-boxH/2,boxW,boxH,'XDM-CTR100','전원 케이블 불필요(PD)');
         bodyMarkup+=arrow(cardX+boxW+6,combo2Y,dstX-24,combo2Y,COLOR_OUT)+monitorIcon(dstX,combo2Y,'디스플레이');
         bodyMarkup+=`<text x="${width/2}" y="${combo2Y+boxH/2+22}" text-anchor="middle" font-size="10" fill="#687386">TX/RX는 각 기기 DIP 스위치로 선택 · CIS100·COS100 카드에 직결할 때는 이 조합 대신 CTR100에 전원을 직접 연결</text>`;
+        if(distanceLines.length)bodyMarkup+=distanceLines.map((line,i)=>`<text x="24" y="${combo2Y+boxH/2+46+i*15}" text-anchor="start" font-size="10" font-weight="600" fill="${cableColor}">${svgEsc(line)}</text>`).join('');
         captions=[[COLOR_IN,'입력'],[cableColor,cableName],[COLOR_OUT,'출력']];
       } else {
         width=980;height=220;
@@ -293,9 +312,10 @@
         const srcX=60,txX=210,rxX=width-210-boxW,dstX=width-60;
         bodyMarkup=monitorIcon(srcX,midY,'소스 기기')+arrow(srcX+24,midY,txX-6,midY,COLOR_IN);
         bodyMarkup+=deviceBox(txX,midY-boxH/2,boxW,boxH,txLabel,isTransceiver?'송신 모드':'송신기(TX)');
-        bodyMarkup+=`<path d="M${txX+boxW} ${midY}L${rxX} ${midY}" stroke="${cableColor}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/><text x="${(txX+boxW+rxX)/2}" y="${midY-20}" text-anchor="middle" font-size="11" font-weight="700" fill="${cableColor}">${svgEsc(cableName)}</text>${cableDistance?`<text x="${(txX+boxW+rxX)/2}" y="${midY-6}" text-anchor="middle" font-size="10" fill="${cableColor}">${svgEsc(cableDistance)}</text>`:''}`;
+        bodyMarkup+=`<path d="M${txX+boxW} ${midY}L${rxX} ${midY}" stroke="${cableColor}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/><text x="${(txX+boxW+rxX)/2}" y="${midY-20}" text-anchor="middle" font-size="11" font-weight="700" fill="${cableColor}">${svgEsc(cableName)}</text>`;
         bodyMarkup+=deviceBox(rxX,midY-boxH/2,boxW,boxH,rxLabel,isTransceiver?'수신 모드':'수신기(RX)');
         bodyMarkup+=arrow(rxX+boxW+6,midY,dstX-24,midY,COLOR_OUT)+monitorIcon(dstX,midY,'디스플레이');
+        if(distanceLines.length)bodyMarkup+=distanceLines.map((line,i)=>`<text x="24" y="${height-14-(distanceLines.length-1-i)*15}" text-anchor="start" font-size="10" font-weight="600" fill="${cableColor}">${svgEsc(line)}</text>`).join('');
         captions=[[COLOR_IN,'입력(소스 → TX)'],[cableColor,cableName],[COLOR_OUT,'출력(RX → 디스플레이)']];
       }
       const extras=io.filter(port=>port!==txVideo&&port!==rxVideo&&port!==transmission&&!/Transmission/.test(port.group||'')).map(port=>port.signal||shortConnector(port.connector));
@@ -311,28 +331,44 @@
 
     // ---- 단자 지도(03 카드). portMap이 있으면 사진 위에 번호표를 얹고, 없으면 io 표에서 뽑은 카드만 보여준다(명세 3장) ----
     function portMapDiagram(item){
-      const map=item.portMap;
-      if(!map)return null;
+      // portMap은 사진 한 장(객체) 또는 여러 장(배열, 전송기 송신기·수신기 등)이다(0.42). 장마다 사진·번호표·설명 카드를 차례로 그린다.
+      const maps=item.portMap?(Array.isArray(item.portMap)?item.portMap:[item.portMap]):[];
+      const blocks=maps.map(map=>portMapBlock(item,map)).filter(Boolean);
+      return blocks.length?blocks.join(''):null;
+    }
+    function portMapBlock(item,map){
       const photo=(item.images||[]).find(img=>img.role===map.image);
       if(!photo||!photo.resolution)return null;
       const [rw,rh]=photo.resolution.split(/[×x]/).map(Number);
       if(!rw||!rh)return null;
-      const W=680,s=W/rw,X0=40,Y0=40,H=Y0*2+rh*s;
+      // displayWidth가 있으면 그 폭(px)에 맞춰 그려서, 세로로 긴 벽부형 사진도 번호표 글씨 크기를 유지한 채 작게 보여준다(0.43).
+      const X0=40,Y0=40,W=map.displayWidth?map.displayWidth-X0*2:680,s=W/rw,H=Y0*2+rh*s;
       const px=x=>X0+x*s;
       let svgBody=`<image href="${image(photo.file)}" x="${X0}" y="${Y0}" width="${W}" height="${rh*s}"/>`;
       // 위아래 두 줄로 단자가 놓인 후면(QMS-88UX 등)은 아랫줄 단자의 괄호를 사진 아래에 그린다(side:"bottom", 0.34 검수).
+      // y가 있으면 사진 가장자리 대신 그 높이(원본 px)에 괄호를 붙인다. 앞면·뒷면이 위아래로 함께 찍힌 전송기 사진용(0.42).
       const YB=Y0+rh*s;
       map.items.forEach(it=>{
-        const x1=px(it.x1),x2=px(it.x2),cx=(x1+x2)/2;
-        if(it.side==='bottom'){
-          svgBody+=`<path d="M${x1} ${YB-8}V${YB+6}H${x2}V${YB-8}" fill="none" stroke="${COLOR_IN}" stroke-width="1.5"/><path d="M${cx} ${YB+6}V${YB+14}" stroke="${COLOR_IN}" stroke-width="1.5"/><circle cx="${cx}" cy="${YB+24}" r="10" fill="${COLOR_IN}"/><text x="${cx}" y="${YB+28}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">${it.n}</text>`;
+        // 벽부형처럼 단자가 세로로 쌓인 판넬은 사진 왼쪽·오른쪽에 세로 괄호를 그린다(side:"left"|"right", y1~y2, 0.43).
+        if(it.side==='left'||it.side==='right'){
+          const y1=Y0+it.y1*s,y2=Y0+it.y2*s,cy=(y1+y2)/2,dir=it.side==='left'?-1:1;
+          const E=X0+(typeof it.x==='number'?it.x:(it.side==='left'?0:rw))*s;
+          svgBody+=`<path d="M${E-dir*8} ${y1}H${E+dir*6}V${y2}H${E-dir*8}" fill="none" stroke="${COLOR_IN}" stroke-width="1.5"/><path d="M${E+dir*6} ${cy}H${E+dir*14}" stroke="${COLOR_IN}" stroke-width="1.5"/><circle cx="${E+dir*24}" cy="${cy}" r="10" fill="${COLOR_IN}"/><text x="${E+dir*24}" y="${cy+4}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">${it.n}</text>`;
           return;
         }
-        svgBody+=`<path d="M${x1} ${Y0+8}V${Y0-6}H${x2}V${Y0+8}" fill="none" stroke="${COLOR_IN}" stroke-width="1.5"/><path d="M${cx} ${Y0-6}V${Y0-14}" stroke="${COLOR_IN}" stroke-width="1.5"/><circle cx="${cx}" cy="${Y0-24}" r="10" fill="${COLOR_IN}"/><text x="${cx}" y="${Y0-20}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">${it.n}</text>`;
+        const x1=px(it.x1),x2=px(it.x2),cx=(x1+x2)/2;
+        if(it.side==='bottom'){
+          const B=typeof it.y==='number'?Y0+it.y*s:YB;
+          svgBody+=`<path d="M${x1} ${B-8}V${B+6}H${x2}V${B-8}" fill="none" stroke="${COLOR_IN}" stroke-width="1.5"/><path d="M${cx} ${B+6}V${B+14}" stroke="${COLOR_IN}" stroke-width="1.5"/><circle cx="${cx}" cy="${B+24}" r="10" fill="${COLOR_IN}"/><text x="${cx}" y="${B+28}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">${it.n}</text>`;
+          return;
+        }
+        const B=typeof it.y==='number'?Y0+it.y*s:Y0;
+        svgBody+=`<path d="M${x1} ${B+8}V${B-6}H${x2}V${B+8}" fill="none" stroke="${COLOR_IN}" stroke-width="1.5"/><path d="M${cx} ${B-6}V${B-14}" stroke="${COLOR_IN}" stroke-width="1.5"/><circle cx="${cx}" cy="${B-24}" r="10" fill="${COLOR_IN}"/><text x="${cx}" y="${B-20}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">${it.n}</text>`;
       });
-      const seg=`<span class="rt-pg-seg"><span class="${map.image==='Front'?'rt-pg-on':''}">정면</span><span class="${map.image==='Rear'?'rt-pg-on':''}">후면</span></span>`;
+      const seg=map.title?`<span class="rt-pg-seg"><span class="rt-pg-on">${esc(map.title)}</span></span>`:`<span class="rt-pg-seg"><span class="${map.image==='Front'?'rt-pg-on':''}">정면</span><span class="${map.image==='Rear'?'rt-pg-on':''}">후면</span></span>`;
       const ports=`<div class="rt-pg-ports">${map.items.map(it=>`<div class="rt-pg-port"><b><span class="rt-pg-n">${it.n}</span>${esc(it.label)}</b>${esc(it.desc)}</div>`).join('')}</div>`;
-      return `${seg}<div class="rt-pg-panel"><div class="rt-pg-svg-wrap"><svg viewBox="0 0 ${W+X0*2} ${H}" width="100%" role="img" aria-label="단자 지도">${svgBody}</svg></div></div>${ports}`;
+      const note=map.note?`<p class="rt-pg-hint">${esc(map.note)}</p>`:'';
+      return `${seg}<div class="rt-pg-panel"><div class="rt-pg-svg-wrap"><svg viewBox="0 0 ${W+X0*2} ${H}" width="100%"${map.displayWidth?` style="display:block;max-width:${map.displayWidth}px;margin:0 auto"`:''} role="img" aria-label="${esc(map.title||'')} 단자 지도">${svgBody}</svg></div></div>${ports}${note}`;
     }
     function portCards(item){
       const io=item.io||[];
@@ -414,7 +450,7 @@
             ${es.desc?`<p class="rt-pg-edid-desc">${esc(es.desc)}</p>`:''}
             ${es.default?`<p class="rt-pg-hint"><span class="rt-pg-pill">기본값 — ${esc(es.default)}</span></p>`:''}
             ${stepsHtml?`<div class="rt-pg-edid-steps">${stepsHtml}</div>`:''}
-            ${table(['코드','기능'],es.table.map(row=>[esc(row.code),esc(row.function)]))}
+            ${table(['코드','기능'],es.table.map(row=>row.highlight?[`<b>${esc(row.code)}</b>`,`<b>${esc(row.function)}</b>`]:[esc(row.code),esc(row.function)]))}
           </div>
         </div>
       </section>`;

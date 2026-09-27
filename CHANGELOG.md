@@ -4,6 +4,49 @@
 
 ## Unreleased
 
+## 0.45.0
+
+- **벽부형 3종을 사용자 제공 매뉴얼로 보완**(사용자 요청 2026-09-27, 매뉴얼 3권 업로드, "ctr100 pse랑 사용하면 전원연결안해되"): 0.42에서 사진이 흐리거나 작아 단자 지도를 못 넣은 3종에 사진 기준 단자 지도를 넣고 사양을 매뉴얼 기준으로 고쳤습니다. 기록은 `docs/qa/MANUAL_WALLPLATE_QA_2026-09-27.md`에 있습니다.
+  - XDM-CT103: 매뉴얼 앞면·뒷면 사진으로 단자 지도 6개. XDM-CR103도 전원 연결 방식(XDM-COS100·XDM-CTR100 PSE와 연결하면 전원 불필요)과 연결 상대를 CT103과 같게 적었습니다(사용자 확인 "cr103도 동일"). 전원 DC +12V 1A 이상(XDM-CIS100·XDM-CTR100 PSE와 연결하면 PoE라 연결하지 않음, 사용자 확인), Long Reach 1080p 150m, 딥 스위치 1·2 행을 추가했습니다. 무게는 0.45kg(매뉴얼)로 고쳤습니다.
+  - CT103-U-H/CR103-U: HDMI 입력을 2개로 고쳤습니다(FT-103-U-H 매뉴얼과 같은 판넬 배치). CT103-U-H 해상도를 4K 24/25/30Hz로 바꾸고, CR103-U에 3.5mm 오디오 출력을 추가했습니다. 수신기 사진은 매뉴얼 사진으로 바꿨습니다.
+  - FT103-U-H/FR103-U: HDMI 입력 2개, 4K 24/25/30Hz, 2LC 광 커넥터를 반영했습니다. EDID 설정 카드(로터리 0~F, 외부 EDID 저장, 외부 오디오 병합)를 추가하고, 송신기·수신기 사진을 매뉴얼 사진으로 바꿨습니다.
+  - 코드: 단자 지도에 세로 괄호(`side: left/right`), 표시 폭(`displayWidth`), 사진에 보이지 않는 단자 안내(`note`)를 추가했습니다. `edidSwitch.image`는 단자 지도와 같은 사진 역할을 받습니다. validator와 e2e(벽부형 단자 지도 검사)를 함께 넣었습니다.
+- **검증**: `node --test tests/*.test.cjs`(37/37) · `node scripts/build-product-index.cjs --check`(27개) · `node scripts/package-site.cjs` · `node scripts/e2e-smoke.cjs`(84/84) · `git diff --check`. 390px에서 세 제품 모두 가로 넘침이 없습니다.
+
+## 0.44.0
+
+- **분배기·선택기 필터 정렬 — 분배기(Splitter)를 먼저, 셀렉터(Switcher)를 나중에**(사용자 요청 "분배기, 셀렉터 순으로 나오게해줘", 0.43.0의 HDMI 출력 개수 순 정렬에 이어): `build-product-index.cjs`가 `categories`의 `Splitter`/`Switcher` 표기로 먼저 나누고, 같은 종류 안에서는 기존처럼 HDMI 출력 개수 순으로 정렬합니다. 결과 순서는 HD-D102U(2분배)·HD-13U(3분배)·HD-104U(4분배)·HD-108U(8분배)·HD-210U(10분배) 다음 HDS-21U(2×1 셀렉터)·HDS-42MU(4×2 셀렉터)입니다.
+- **검증**: `node --test tests/*.test.cjs`(37/37) · `node scripts/build-product-index.cjs --check`(27개) · `node scripts/package-site.cjs` · `node scripts/e2e-smoke.cjs`(83/83) · `git diff --check`.
+
+## 0.43.0
+
+- **HDS-21U·HDS-42MU에 EDID 로터리 스위치 추가**(사용자 제공 매뉴얼 Ver.1.0 근거): 두 제품 다 전면 파란 로터리로 EDID를 설정하는데도 `edidSwitch`가 없었던 것을, HD-13U와 같은 형식(사진 위 위치 표시·코드표 0~B·설정 절차)으로 채웠습니다. 좌표는 전면 사진에서 파란 스위치를 색상으로 검출해 확인했습니다.
+- **오디오 병합 설명 정정**(사용자 지적 "병합 추출은 입력소스에 대해서ㄱ런거냐 착각하지마"): HDS-21U·HDS-42MU의 "HDMI 입력에 실리는 오디오는 딥스위치로 고른다"는 표현이 실제로는 출력 특성(딥스위치가 고르는 건 OUTPUT에 실리는 오디오)이라 "HDMI OUTPUT에 실리는 오디오"로 고쳤습니다. 오디오 추출은 매뉴얼 원문대로 "선택된 입력 포트의 오디오"로 그대로 뒀습니다. HD-13U·HD-210U는 이미 맞게 쓰여 있어 바꾸지 않았습니다.
+- **분배기·선택기 필터 정렬**(사용자 요청 "분배기 필터 눌렀을 2분배기부터 10분배가 순차적으로 나오게해줘"): `build-product-index.cjs`가 `distribution` 그룹 안에서 HDMI 출력 개수(io[].direction==='OUT') 기준으로 정렬하도록 고쳐, HDS-21U(1)·HD-D102U(2)·HDS-42MU(2)·HD-13U(3)·HD-104U(4)·HD-108U(8)·HD-210U(10) 순서로 나옵니다.
+- **XDM-CTR100 "02 신호 흐름" 케이블 거리 표기 정리**(사용자 요청 "BELDEN 10GXE02(S/FTP) 100m, ci6522(sf/utp) 80m 2번 신호 흐름 하단 한쪽편에 배치"): 케이블 구간마다 흩어져 있던 거리 표시를 지우고, 다이어그램 하단 왼쪽 한 곳에 "BELDEN 10GXE02(S/FTP) 최대 100m" / "CI6522(SF/UTP) 최대 80m" 두 줄로 모아 표시합니다. 케이블명은 각 제품 `specifications[].condition`에서 정규식으로 뽑아내므로 다른 전송기(단일 거리)에도 그대로 적용되고, 괄호 표기가 없는 제품은 기존처럼 "최대 100m" 형태로 표시됩니다.
+- **검증**: `node --test tests/*.test.cjs`(37/37) · `node scripts/build-product-index.cjs --check`(27개) · `node scripts/package-site.cjs` · `node scripts/e2e-smoke.cjs`(83/83) · `git diff --check`. XDM-CTR100·CT104-U/CR104-U·HDS-21U 상세를 Playwright 스크린샷으로 직접 확인(케이블 거리 두 줄이 다른 라벨과 겹치지 않음, EDID 코드표·절차가 HD-13U와 같은 형식으로 보임).
+
+## 0.42.0
+
+- **단자 지도를 HD-13U처럼 실제 제품 사진 기준으로 통일**(사용자 요청 2026-09-27 "13u 단자 설명처럼 똑같이 안된것들 찾아서 수정해줘"): 사진 없이 입출력 표 카드로만 보이던 7종에 사진 위 번호표와 단자별 설명을 넣었습니다.
+  - 분배기 HD-D102U(사선 사진, STD/TV 스위치 포함), XDM-CTR100(앞면 DIP 스위치·뒷면 6단자)
+  - 전송기 5종은 송신기·수신기 사진을 한 장씩 그렸습니다: CT101-U/CR101-U, CT104-U/CR104-U, FT101-U/FR101-U, OBUX-1C, OBHD-2C(뒷면 한 장에 송신기·수신기)
+  - 코드: `portMap`이 사진 여러 장(배열, 장마다 `title`)과 괄호 높이 `y`(앞면·뒷면이 위아래로 함께 찍힌 사진용)를 받도록 넓혔습니다. 기존 객체 형식은 그대로 동작합니다. validator도 같은 규칙을 검사합니다.
+  - 좌표는 원본 사진에 눈금을 그려 쟀습니다. FR101-U 사진의 AUDIO OUT 단자를 입출력 표에도 추가했습니다(카탈로그 사진 기준).
+  - 사진 해상도가 낮아 단자 이름을 읽을 수 없는 벽부형 CT103-U-H·FT103-U-H와, 사진이 너무 작은 XDM-CT103/CR103은 입출력 표 카드로 둡니다.
+- **HD-13U 입출력 표에 오디오 IN·OUT 행 추가**: 단자 지도에는 있던 3.5mm AUDIO IN(병합)·OUT(추출)을 입출력 표에도 적었습니다(매뉴얼 7쪽, 후면 사진).
+- **확인 사항 기준 유지**: 0.41에서 HD-13U·HD-104U·HD-108U·HD-210U에 다시 들어간 작업 기록("로터리 자주 쓰는 코드 강조")을 0.39 정리 기준대로 뺐습니다. 강조 표시 자체는 그대로입니다.
+- **검증**: `node --test tests/*.test.cjs`(37/37) · `node scripts/build-product-index.cjs --check`(27개) · `node scripts/package-site.cjs` · `node scripts/e2e-smoke.cjs`(83/83, CT104-U 송신기·수신기 단자 지도 두 장 검사 추가) · `git diff --check`. 390px에서 8개 상세 화면 가로 넘침 없음.
+
+## 0.41.0
+
+- **EDID 로터리 코드표 1·7번 강조**(사용자 요청 "분배기에 로터리중 1,7번 bold를 줘 가장 많이쓰거든 3분배부터 10분배까지 동일하게 적용해줘"): 가장 많이 쓰는 4K 60Hz(코드 1)·1080p 60Hz(코드 7) 행을 굵게 표시했습니다(`edidSwitch.table[].highlight`). HD-13U(3분배)·HD-210U(10분배)는 기존 표에 표시만 추가했고, HD-104U(4분배)·HD-108U(8분배)는 이번에 `edidSwitch`(전면 EDID 로터리 사진 표시·코드표)를 처음 추가했습니다(각자의 사용자 매뉴얼 7쪽 근거, HD-13U와 달리 SET 버튼 없이 로터리만으로 외부 EDID 저장). 좌표는 각 전면 사진에서 파란 스위치를 색상으로 검출해 확인했습니다.
+- **"02 신호 흐름"에 오디오 병합(믹스)·추출(디먹스) 표시 추가**(사용자 요청, 스크린샷으로 HDS-21U의 AUDIO IN 점선 부분을 가리키며 "이 부분이 좀더 해석되게 그려줘 mux demux기능을 말야"): 그동안 오디오 입력(병합)만 점선으로 표시하고 라벨이 없어 알아보기 어려웠던 것을, 점선 옆에 "병합" 글자를 붙이고, 출력 쪽에도 대칭으로 AUDIO OUT 칩+점선+"추출" 글자를 새로 그렸습니다. 오디오 출력은 `io`(Audio 그룹 direction:OUT)에 있으면 그것을, 없으면 overview의 "…추출…" 문구를 근거로 인정합니다(HD-13U처럼 제품사양 표에 오디오 단자가 없는 경우, issues I2). 대역폭 띠 아래 문구도 "오디오 병합"만 있던 것을 "오디오 병합 · 오디오 추출"처럼 있는 만큼만 나열하도록 고쳤습니다. HDS-21U·HDS-42MU(병합+추출 모두), HD-13U(병합+추출, overview 근거), HD-210U(병합만), QMS-88UX(추출만) 5가지 조합을 스크린샷으로 확인했습니다.
+- **검증**: `node --test tests/*.test.cjs`(37/37) · `node scripts/build-product-index.cjs --check`(27개) · `node scripts/package-site.cjs` · `node scripts/e2e-smoke.cjs`(전역 playwright, **82/82**) · `git diff --check`. 390px에서 새 AUDIO OUT 칩이 있는 화면도 가로 스크롤이 생기지 않음을 확인했습니다.
+
+## 0.40.0
+
+- **HD-13U 오디오 병합·추출 동시 사용 안내 추가**(사용자 질문 "hd-13u 오디오demux mux모두 선택해서 가능해", 근거: HD-13U 사용자 매뉴얼 Ver.1.2 7쪽, 출처 M1): "05 주요 기능"에 새 항목을 추가했습니다. 전면 로터리 스위치를 '0'에 두고 SET 버튼으로 "Stereo Audio" 모드를 선택하면 3.5mm AUDIO IN이 HDMI OUTPUT 1번에만 믹스되고, HDMI 입력이 연결돼 있으면 이 병합 여부와 관계없이 그 오디오가 항상 3.5mm AUDIO OUT으로 추출됩니다(둘은 서로 다른 신호 경로라 동시 사용 가능). 다만 AUDIO IN → AUDIO OUT 직결 패스스루는 안 됩니다(매뉴얼 명시).
 - **0.39.0 배포 기록**: `docs/qa/DEPLOYMENT_0.39_2026-09-27.md`(run `36305653692`, 공개 파일 182개가 로컬 배포본과 같음을 확인)
 
 ## 0.39.0

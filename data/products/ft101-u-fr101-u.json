@@ -287,6 +287,17 @@
       "verification": "VERIFIED"
     },
     {
+      "group": "RX · Audio",
+      "connector": "3.5mm stereo",
+      "signal": "Stereo Audio",
+      "direction": "OUT",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "FR101-U · 카탈로그 제품 사진의 AUDIO OUT 단자 기준(제품사양 표에는 오디오 출력 미기재)",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
       "group": "RX · Control",
       "connector": "Phoenix connector(녹색, 핀 수 미기재)",
       "signal": "RS-232",
@@ -308,6 +319,146 @@
       "relation": "WORKS_WITH",
       "target": "vdm",
       "note": "FT101-U는 VDM FIS4-U 입력 카드, FR101-U는 FOS4-U 출력 카드와 연동(U09 사용자 확인)"
+    }
+  ],
+  "portMap": [
+    {
+      "image": "Main",
+      "title": "송신기 FT101-U",
+      "items": [
+        {
+          "n": 1,
+          "label": "DC IN",
+          "desc": "전원 입력 +12V 2A(3핀 터미널)",
+          "x1": 23,
+          "x2": 46,
+          "side": "bottom",
+          "y": 196
+        },
+        {
+          "n": 2,
+          "label": "HDMI IN",
+          "desc": "소스 연결(DVI/HDMI)",
+          "x1": 78,
+          "x2": 104,
+          "side": "bottom",
+          "y": 196
+        },
+        {
+          "n": 3,
+          "label": "AUDIO IN",
+          "desc": "3.5mm 스테레오 오디오 입력",
+          "x1": 131,
+          "x2": 141,
+          "side": "bottom",
+          "y": 196
+        },
+        {
+          "n": 4,
+          "label": "RS-232C",
+          "desc": "3핀 터미널(Tx·Rx·접지) · 제어 신호 전송",
+          "x1": 146,
+          "x2": 166,
+          "side": "bottom",
+          "y": 196
+        },
+        {
+          "n": 5,
+          "label": "OPTICAL",
+          "desc": "광 단자 · 수신기 FR101-U와 광케이블로 연결(싱글모드 최대 2km)",
+          "x1": 171,
+          "x2": 198,
+          "side": "bottom",
+          "y": 196
+        },
+        {
+          "n": 6,
+          "label": "FIRMWARE",
+          "desc": "Mini USB · 펌웨어 업데이트",
+          "x1": 41,
+          "x2": 56,
+          "side": "top",
+          "y": 78
+        },
+        {
+          "n": 7,
+          "label": "전원 스위치",
+          "desc": "ON/OFF",
+          "x1": 190,
+          "x2": 215,
+          "side": "top",
+          "y": 78
+        }
+      ]
+    },
+    {
+      "image": "Other",
+      "title": "수신기 FR101-U",
+      "items": [
+        {
+          "n": 1,
+          "label": "DC IN",
+          "desc": "전원 입력 +12V 2A(3핀 터미널)",
+          "x1": 23,
+          "x2": 45,
+          "side": "bottom",
+          "y": 196
+        },
+        {
+          "n": 2,
+          "label": "HDMI OUT",
+          "desc": "디스플레이 연결(DVI/HDMI)",
+          "x1": 75,
+          "x2": 102,
+          "side": "bottom",
+          "y": 196
+        },
+        {
+          "n": 3,
+          "label": "AUDIO OUT",
+          "desc": "3.5mm 스테레오 오디오 출력",
+          "x1": 129,
+          "x2": 139,
+          "side": "bottom",
+          "y": 196
+        },
+        {
+          "n": 4,
+          "label": "RS-232C",
+          "desc": "3핀 터미널(Tx·Rx·접지) · 제어 신호 수신",
+          "x1": 144,
+          "x2": 164,
+          "side": "bottom",
+          "y": 196
+        },
+        {
+          "n": 5,
+          "label": "OPTICAL",
+          "desc": "광 단자 · 송신기 FT101-U와 광케이블로 연결",
+          "x1": 169,
+          "x2": 196,
+          "side": "bottom",
+          "y": 196
+        },
+        {
+          "n": 6,
+          "label": "FIRMWARE",
+          "desc": "Mini USB · 펌웨어 업데이트",
+          "x1": 40,
+          "x2": 55,
+          "side": "top",
+          "y": 81
+        },
+        {
+          "n": 7,
+          "label": "전원 스위치",
+          "desc": "ON/OFF",
+          "x1": 188,
+          "x2": 214,
+          "side": "top",
+          "y": 81
+        }
+      ]
     }
   ],
   "sources": [

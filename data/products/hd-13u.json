@@ -102,6 +102,10 @@
     {
       "text": "EDID 마인더 기능: 외부 연결된 디스플레이 EDID를 저장하고 내부 저장된 EDID를 사용할 수 있다.",
       "source": "C"
+    },
+    {
+      "text": "HDMI OUTPUT 1번에 실리는 오디오는 전면 로터리 스위치를 '0'에 두고 SET 버튼을 눌러 'Stereo Audio'(3.5mm AUDIO IN을 믹스)와 'HDMI Audio'(HDMI에 원래 실린 오디오 그대로)를 서로 바꿔가며 고른다 — 이 둘은 동시에 쓸 수 없고 반드시 하나만 선택된다. 오디오 추출은 이 선택과 무관하게 별도로 동작한다: HDMI 입력이 연결돼 있으면 그 입력에 실린 오디오가 항상 3.5mm AUDIO OUT으로 나간다. 다만 AUDIO IN에 연결한 오디오가 AUDIO OUT으로 그대로 나오지는 않는다(직결 패스스루 아님).",
+      "source": "M1"
     }
   ],
   "specifications": [
@@ -191,6 +195,28 @@
       "condition": "",
       "source": "C",
       "verification": "VERIFIED"
+    },
+    {
+      "group": "Audio",
+      "connector": "3.5mm Stereo",
+      "signal": "Analog Stereo Audio",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "HDMI OUTPUT 1번에 병합(전면 로터리 0 + SET으로 Stereo Audio 모드) · 후면 사진 AUDIO IN, 매뉴얼 7쪽",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Audio",
+      "connector": "3.5mm Stereo",
+      "signal": "Analog Stereo Audio",
+      "direction": "OUT",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "HDMI 입력 오디오 추출 · 후면 사진 AUDIO OUT, 매뉴얼 7쪽",
+      "source": "M1",
+      "verification": "VERIFIED"
     }
   ],
   "related": [],
@@ -230,13 +256,13 @@
     ],
     "table": [
       {"code": "0", "function": "FLASH에 저장된 외부 EDID(기본값)"},
-      {"code": "1", "function": "3840x2160p@60 PCM 2CH"},
+      {"code": "1", "function": "3840x2160p@60 PCM 2CH", "highlight": true},
       {"code": "2", "function": "3840x2160p@60 Multi"},
       {"code": "3", "function": "3840x2160p@60 Dolby"},
       {"code": "4", "function": "3840x2160p@30 PCM 2CH"},
       {"code": "5", "function": "3840x2160p@30 Multi"},
       {"code": "6", "function": "3840x2160p@30 Dolby"},
-      {"code": "7", "function": "1920x1080p@60 PCM 2CH"},
+      {"code": "7", "function": "1920x1080p@60 PCM 2CH", "highlight": true},
       {"code": "8", "function": "1920x1080p@60 Multi"},
       {"code": "9", "function": "1920x1080p@60 Dolby"},
       {"code": "A", "function": "1920x1080p@60 DVI"},

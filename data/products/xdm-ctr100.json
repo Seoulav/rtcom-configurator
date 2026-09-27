@@ -292,6 +292,66 @@
       "note": "XDM-CTR100 PSE로 벽부형 CT103/CR103 사용 가능"
     }
   ],
+  "portMap": {
+    "image": "Rear",
+    "items": [
+      {
+        "n": 1,
+        "label": "HDBaseT",
+        "desc": "RJ45 · CAT 케이블로 XDM 카드 또는 상대 CTR100과 연결",
+        "x1": 104,
+        "x2": 168,
+        "side": "bottom",
+        "y": 310
+      },
+      {
+        "n": 2,
+        "label": "HDMI IN",
+        "desc": "HDMI 소스 입력",
+        "x1": 181,
+        "x2": 239,
+        "side": "bottom",
+        "y": 310
+      },
+      {
+        "n": 3,
+        "label": "HDMI OUT",
+        "desc": "HDMI 디스플레이 출력",
+        "x1": 265,
+        "x2": 325,
+        "side": "bottom",
+        "y": 310
+      },
+      {
+        "n": 4,
+        "label": "AUDIO · RS-232",
+        "desc": "5핀 터미널(L·R·접지·Tx·Rx) · 오디오 출력과 RS-232+ 제어",
+        "x1": 340,
+        "x2": 404,
+        "side": "bottom",
+        "y": 310
+      },
+      {
+        "n": 5,
+        "label": "DC IN",
+        "desc": "전원 입력 · PSE와 함께 쓰면 연결하지 않음",
+        "x1": 410,
+        "x2": 451,
+        "side": "bottom",
+        "y": 310
+      },
+      {
+        "n": 6,
+        "label": "TX/RX DIP 스위치",
+        "desc": "송신(TX)·수신(RX) 동작 선택",
+        "x1": 181,
+        "x2": 229,
+        "side": "top",
+        "y": 42
+      }
+    ],
+    "title": "위 앞면, 아래 뒷면"
+  },
   "sources": [
     {
       "code": "C",

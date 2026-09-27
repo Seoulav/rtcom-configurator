@@ -113,8 +113,8 @@
       "source": "C"
     },
     {
-      "text": "Audio Insertion 기능: 딥스위치로 외부 오디오를 선택해 출력한다.",
-      "source": "C"
+      "text": "오디오 병합(Audio Insertion): HDMI OUTPUT에 실리는 오디오는 전면 딥스위치 1번으로 'HDMI Embedded Audio'(선택된 입력의 오디오 그대로)와 '3.5mm Stereo Audio'(외부 아날로그 입력을 병합)를 서로 바꿔가며 고른다 — 이 둘은 동시에 쓸 수 없고 반드시 하나만 선택되며, 전환 후 전원 케이블을 1회 탈착해야 적용된다. 오디오 추출(Audio Extraction)은 이 선택과 무관하게 별도로 동작한다: 현재 선택된 입력 포트의 오디오가 별도 설정 없이 항상 3.5mm Stereo Audio 출력 단자로 나간다.",
+      "source": "M1"
     },
     {
       "text": "Priority 기능: 딥스위치로 채널 스위칭 방식을 선택할 수 있다.",
@@ -261,6 +261,46 @@
       {"n": 6, "label": "DC 5V", "desc": "전원 어댑터 5V 2A", "x1": 74, "x2": 100}
     ]
   },
+  "edidSwitch": {
+    "image": "Front",
+    "x1": 315, "y1": 71, "x2": 349, "y2": 104,
+    "label": "EDID 로터리 스위치",
+    "desc": "전면 파란색 EDID 로터리 스위치로 디스플레이 EDID를 선택한다. HD-13U와 달리 별도 SET 버튼이 없어, 로터리를 돌린 뒤 전원 케이블을 1회 탈착해야 적용된다.",
+    "default": "매뉴얼에 기본값 표시 없음 — 0 = Throughpass(OUTPUT에 연결된 디스플레이의 EDID를 그대로 전달)",
+    "steps": [
+      {
+        "title": "외부 EDID 저장(External EDID Setting)",
+        "items": [
+          "EDID를 저장할 디스플레이를 OUTPUT에 연결한다.",
+          "전면 로터리 스위치를 '0'번에 위치시킨다.",
+          "전원 케이블을 1회 탈착하면 OUTPUT에 연결된 디스플레이의 EDID 정보가 저장된다."
+        ]
+      },
+      {
+        "title": "내부 EDID 지정(Internal EDID Setting)",
+        "items": [
+          "EDID를 적용할 디스플레이를 OUTPUT에 연결한다.",
+          "전면 로터리 스위치를 원하는 EDID 번호에 맞춘다(10번=A, 11번=B).",
+          "전원 케이블을 1회 탈착하면 선택한 번호와 일치하는 EDID 정보로 적용된다."
+        ]
+      }
+    ],
+    "table": [
+      {"code": "0", "function": "Throughpass"},
+      {"code": "1", "function": "1920x1200@60 (DVI)"},
+      {"code": "2", "function": "1920x1080p@60 (DVI)"},
+      {"code": "3", "function": "1920x1080p@60 PCM 2CH"},
+      {"code": "4", "function": "1920x1080p@60 Multi Channel"},
+      {"code": "5", "function": "1920x1080p@60 Bitstream"},
+      {"code": "6", "function": "3840x2160p@30 PCM 2CH"},
+      {"code": "7", "function": "3840x2160p@30 Multi Channel"},
+      {"code": "8", "function": "3840x2160p@30 Bitstream"},
+      {"code": "9", "function": "3840x2160p@60 PCM 2CH"},
+      {"code": "A", "function": "3840x2160p@60 Multi Channel"},
+      {"code": "B", "function": "3840x2160p@60 Bitstream"}
+    ],
+    "source": "M1"
+  },
   "sources": [
     {
       "code": "C",
@@ -273,7 +313,20 @@
       "name": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
       "page": "33",
       "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
+    },
+    {
+      "code": "M1",
+      "name": "HDS-42MU 사용자 매뉴얼 Ver.1.0",
+      "page": "7-8",
+      "scope": "제조사 공식 출처 — 사용자 제공 PDF(.source-materials/RTcom_Manual_HDS-42MU_Ver1.0.pdf, 배포 제외)"
     }
   ],
-  "issues": []
+  "issues": [
+    {
+      "code": "I5",
+      "status": "INFO",
+      "title": "EDID 로터리 스위치 추가 + 오디오 병합 딥스위치 배타 명시",
+      "detail": "사용자 제공 매뉴얼(2026-09-27)을 근거로 전면 EDID 로터리 스위치 데이터를 추가하고, 오디오 병합 딥스위치 1번이 'HDMI Embedded'/'3.5mm Stereo' 중 하나만 선택되는 배타적 기능임을 명시했다(사용자 요청 \"edid로타리가 있는 모든제품은 edid설정이 13u처럼 동일하게 mux demux는 둘중 1개 동작만 가능하고 dip스위치를 선택헤야해\")."
+    }
+  ]
 }

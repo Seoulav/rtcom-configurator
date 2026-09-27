@@ -767,3 +767,8 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
   #rtcom-design .rt-link-flow-cable{width:auto;border-bottom:0;border-left:2px dashed #1E9E52;padding:6px 0 6px 10px;text-align:left}
   #rtcom-design .rt-link-flow-cable::after{right:auto;left:-7px;bottom:-8px;border:5px solid transparent;border-top-color:#1E9E52;border-left-color:transparent}
 }
+/* 0.42 단자 지도 여러 장(전송기 송신기·수신기): 앞 장 설명 카드와 다음 장 제목 사이 간격 */
+#rtcom-design .rt-pg-ports+.rt-pg-seg{margin-top:22px}
+/* 0.43 단자 지도 안내 줄(portMap.note, 사진에 보이지 않는 옆면·뒷면 단자) 뒤에 다음 장이 올 때 간격 */
+#rtcom-design .rt-pg-ports+.rt-pg-hint{margin-top:10px}
+#rtcom-design .rt-pg-hint+.rt-pg-seg{margin-top:22px}

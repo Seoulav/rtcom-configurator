@@ -52,17 +52,36 @@ function validate(product,file,ids){
   }
   if('subtitle' in product&&(typeof product.subtitle!=='string'||!product.subtitle))fail('subtitle은 비어 있지 않은 문자열이어야 함');
   if('portMap' in product){
-    const map=product.portMap;
-    if(!map||!['Rear','Front'].includes(map.image))fail('portMap.image는 Rear 또는 Front여야 함');
+    // portMap은 사진 한 장(객체) 또는 여러 장(배열, 예: 전송기 송신기·수신기 사진)을 받는다(0.42).
+    const maps=Array.isArray(product.portMap)?product.portMap:[product.portMap];
+    if(!maps.length)fail('portMap 배열이 비어 있음');
+    for(const map of maps){
+    if(!map||!['Rear','Front','Perspective','Main','Other'].includes(map.image))fail('portMap.image는 Rear·Front·Perspective·Main·Other 중 하나여야 함');
     else if(!(product.images||[]).some(image=>image.role===map.image))fail(`portMap.image(${map.image})에 해당하는 이미지가 images에 없음`);
+    if('note' in (map||{})&&(typeof map.note!=='string'||!map.note))fail('portMap.note는 비어 있지 않은 문자열이어야 함');
+    if('title' in (map||{})&&(typeof map.title!=='string'||!map.title))fail('portMap.title은 비어 있지 않은 문자열이어야 함');
+    if('displayWidth' in (map||{})&&(typeof map.displayWidth!=='number'||map.displayWidth<240||map.displayWidth>760))fail('portMap.displayWidth는 240~760 사이 숫자여야 함');
+    if(maps.length>1&&!map?.title)fail('portMap이 여러 장이면 각 장에 title(예: "송신기 CT104-U")이 있어야 함');
+    const photo=(product.images||[]).find(image=>image.role===map?.image),[width,height]=String(photo?.resolution||'').split(/[×x]/).map(Number);
     if(!Array.isArray(map?.items)||!map.items.length)fail('portMap.items는 비어 있지 않은 배열이어야 함');
     else for(const item of map.items){
-      if(typeof item.n!=='number'||typeof item.label!=='string'||typeof item.desc!=='string'||typeof item.x1!=='number'||typeof item.x2!=='number')fail('portMap.items 항목은 n·label·desc·x1·x2를 모두 갖춰야 함');
-      else if(item.x1>=item.x2)fail(`portMap.items의 x1(${item.x1})은 x2(${item.x2})보다 작아야 함`);
-      {const photo=(product.images||[]).find(image=>image.role===map?.image),width=Number(String(photo?.resolution||'').split(/[×x]/)[0]);
-       if(!width)fail(`portMap 사진(${map?.image})에 resolution(가로×세로)이 없음`);
-       else if(item.x1<0||item.x2>width)fail(`portMap.items ${item.label}의 좌표(${item.x1}~${item.x2})가 사진 폭 ${width}px를 벗어남`);}
-      if('side' in item&&!['top','bottom'].includes(item.side))fail(`portMap.items의 side는 top 또는 bottom이어야 함(${item.side})`);
+      const vertical=item.side==='left'||item.side==='right';
+      if(!width)fail(`portMap 사진(${map?.image})에 resolution(가로×세로)이 없음`);
+      if('side' in item&&!['top','bottom','left','right'].includes(item.side))fail(`portMap.items의 side는 top·bottom·left·right 중 하나여야 함(${item.side})`);
+      if(typeof item.n!=='number'||typeof item.label!=='string'||typeof item.desc!=='string')fail('portMap.items 항목은 n·label·desc를 갖춰야 함');
+      if(vertical){
+        // 세로 괄호(0.43): y1~y2(원본 px)가 사진 높이 안이어야 한다. x는 괄호를 붙일 가장자리(선택).
+        if(typeof item.y1!=='number'||typeof item.y2!=='number'||item.y1>=item.y2)fail(`portMap.items ${item.label}: side ${item.side}에는 y1<y2가 필요함`);
+        else if(item.y1<0||!height||item.y2>height)fail(`portMap.items ${item.label}의 y(${item.y1}~${item.y2})가 사진 높이 ${height}px를 벗어남`);
+        if('x' in item&&(typeof item.x!=='number'||item.x<0||item.x>width))fail(`portMap.items ${item.label}의 x(${item.x})가 사진 폭 안이어야 함`);
+      }else{
+        if(typeof item.x1!=='number'||typeof item.x2!=='number')fail('portMap.items 항목은 x1·x2를 갖춰야 함(세로 괄호가 아닐 때)');
+        else if(item.x1>=item.x2)fail(`portMap.items의 x1(${item.x1})은 x2(${item.x2})보다 작아야 함`);
+        else if(width&&(item.x1<0||item.x2>width))fail(`portMap.items ${item.label}의 좌표(${item.x1}~${item.x2})가 사진 폭 ${width}px를 벗어남`);
+      }
+      // y: 괄호를 붙일 사진 속 높이(원본 px). 위아래 두 면이 함께 찍힌 사진에서 면 가장자리에 괄호를 붙일 때 쓴다.
+      if('y' in item&&(typeof item.y!=='number'||item.y<0||!height||item.y>height))fail(`portMap.items ${item.label}의 y(${item.y})가 사진 높이 ${height}px 안이어야 함`);
+    }
     }
   }
   for(const entry of product.lineup||[])if('rackUnits' in entry&&(typeof entry.rackUnits!=='number'||entry.rackUnits<=0))fail(`lineup[].rackUnits는 양수여야 함(${entry.model})`);
@@ -80,7 +99,7 @@ function validate(product,file,ids){
   // 0.35 — 전면 로터리 스위치 등 단일 컨트롤 표시(선택 필드). 사진 위 x1·y1·x2·y2 영역과 코드표를 검사한다.
   if('edidSwitch' in product){
     const es=product.edidSwitch;
-    if(!es||!['Rear','Front'].includes(es.image))fail('edidSwitch.image는 Rear 또는 Front여야 함');
+    if(!es||!['Rear','Front','Perspective','Main','Other'].includes(es.image))fail('edidSwitch.image는 Rear·Front·Perspective·Main·Other 중 하나여야 함');
     else if(!(product.images||[]).some(image=>image.role===es.image))fail(`edidSwitch.image(${es.image})에 해당하는 이미지가 images에 없음`);
     if(!es||typeof es.label!=='string'||!es.label)fail('edidSwitch.label은 비어 있지 않은 문자열이어야 함');
     if(!es||[es.x1,es.y1,es.x2,es.y2].some(value=>typeof value!=='number'))fail('edidSwitch는 x1·y1·x2·y2를 모두 숫자로 갖춰야 함');
@@ -105,7 +124,25 @@ function build(){
   const ids=new Set(products.map(([,product])=>product.id));
   const errors=products.flatMap(([name,product])=>validate(product,path.join(DIR,name),ids));
   const order=product=>GROUPS.indexOf(product.group);
-  const list=products.map(([,product])=>product).sort((a,b)=>order(a)-order(b)||a.productName.localeCompare(b.productName,'en'));
+  const hdmiOutQty=product=>{
+    const port=(product.io||[]).find(row=>row.direction==='OUT'&&/HDMI/i.test(row.connector||''));
+    const n=port&&parseInt(port.quantity,10);
+    return Number.isFinite(n)?n:null;
+  };
+  // 분배기(Splitter)를 먼저, 셀렉터(Switcher)를 나중에 보여준다(사용자 요청 2026-09-27 "분배기, 셀렉터 순으로 나오게해줘").
+  const DIST_TYPES=['Splitter','Switcher'];
+  const distType=product=>{const i=DIST_TYPES.findIndex(type=>(product.categories||[]).includes(type));return i<0?DIST_TYPES.length:i};
+  const list=products.map(([,product])=>product).sort((a,b)=>{
+    const groupDiff=order(a)-order(b);
+    if(groupDiff)return groupDiff;
+    if(a.group==='distribution'&&b.group==='distribution'){
+      const typeDiff=distType(a)-distType(b);
+      if(typeDiff)return typeDiff;
+      const qa=hdmiOutQty(a),qb=hdmiOutQty(b);
+      if(qa!==null&&qb!==null&&qa!==qb)return qa-qb;
+    }
+    return a.productName.localeCompare(b.productName,'en');
+  });
   const card=product=>{const images=product.images||[];return (images.find(image=>image.role==='Main')||images.find(image=>image.role==='Front')||images[0]||{}).file||null};
   const index={
     schema:SCHEMA,

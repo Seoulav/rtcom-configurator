@@ -333,6 +333,146 @@
       "note": "VDM 시리즈 전송기"
     }
   ],
+  "portMap": [
+    {
+      "image": "Main",
+      "title": "송신기 CT101-U",
+      "items": [
+        {
+          "n": 1,
+          "label": "DC IN",
+          "desc": "전원 입력 +12V 2A(3핀 터미널)",
+          "x1": 68,
+          "x2": 111,
+          "side": "bottom",
+          "y": 334
+        },
+        {
+          "n": 2,
+          "label": "HDMI IN",
+          "desc": "소스 연결(DVI/HDMI)",
+          "x1": 173,
+          "x2": 227,
+          "side": "bottom",
+          "y": 334
+        },
+        {
+          "n": 3,
+          "label": "AUDIO IN",
+          "desc": "3.5mm 스테레오 오디오 입력",
+          "x1": 276,
+          "x2": 296,
+          "side": "bottom",
+          "y": 334
+        },
+        {
+          "n": 4,
+          "label": "RS-232C",
+          "desc": "3핀 터미널(Tx·Rx·접지) · 제어 신호 전송",
+          "x1": 308,
+          "x2": 348,
+          "side": "bottom",
+          "y": 334
+        },
+        {
+          "n": 5,
+          "label": "CATx",
+          "desc": "RJ45 · 수신기 CR101-U와 CAT 케이블로 연결",
+          "x1": 357,
+          "x2": 410,
+          "side": "bottom",
+          "y": 334
+        },
+        {
+          "n": 6,
+          "label": "FIRMWARE",
+          "desc": "Mini USB · 펌웨어 업데이트",
+          "x1": 103,
+          "x2": 137,
+          "side": "top",
+          "y": 97
+        },
+        {
+          "n": 7,
+          "label": "전원 스위치",
+          "desc": "ON/OFF",
+          "x1": 397,
+          "x2": 447,
+          "side": "top",
+          "y": 97
+        }
+      ]
+    },
+    {
+      "image": "Other",
+      "title": "수신기 CR101-U",
+      "items": [
+        {
+          "n": 1,
+          "label": "DC IN",
+          "desc": "전원 입력 +12V 2A(3핀 터미널)",
+          "x1": 70,
+          "x2": 112,
+          "side": "bottom",
+          "y": 348
+        },
+        {
+          "n": 2,
+          "label": "HDMI OUT",
+          "desc": "디스플레이 연결(DVI/HDMI)",
+          "x1": 175,
+          "x2": 228,
+          "side": "bottom",
+          "y": 348
+        },
+        {
+          "n": 3,
+          "label": "AUDIO OUT",
+          "desc": "3.5mm 스테레오 오디오 출력",
+          "x1": 279,
+          "x2": 299,
+          "side": "bottom",
+          "y": 348
+        },
+        {
+          "n": 4,
+          "label": "RS-232C",
+          "desc": "3핀 터미널(Tx·Rx·접지) · 제어 신호 수신",
+          "x1": 310,
+          "x2": 350,
+          "side": "bottom",
+          "y": 348
+        },
+        {
+          "n": 5,
+          "label": "CATx",
+          "desc": "RJ45 · 송신기 CT101-U와 CAT 케이블로 연결",
+          "x1": 358,
+          "x2": 414,
+          "side": "bottom",
+          "y": 348
+        },
+        {
+          "n": 6,
+          "label": "FIRMWARE",
+          "desc": "Mini USB · 펌웨어 업데이트",
+          "x1": 103,
+          "x2": 135,
+          "side": "top",
+          "y": 111
+        },
+        {
+          "n": 7,
+          "label": "전원 스위치",
+          "desc": "ON/OFF",
+          "x1": 397,
+          "x2": 447,
+          "side": "top",
+          "y": 111
+        }
+      ]
+    }
+  ],
   "sources": [
     {
       "code": "C",

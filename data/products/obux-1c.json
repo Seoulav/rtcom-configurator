@@ -250,6 +250,92 @@
     }
   ],
   "related": [],
+  "portMap": [
+    {
+      "image": "Main",
+      "title": "송신기 OBUX-1C Tx",
+      "items": [
+        {
+          "n": 1,
+          "label": "+12V",
+          "desc": "전원 어댑터 12V 1A",
+          "x1": 679,
+          "x2": 709,
+          "side": "bottom",
+          "y": 347
+        },
+        {
+          "n": 2,
+          "label": "Audio IN",
+          "desc": "3핀 터미널(L·접지·R) · 아날로그 오디오 병합",
+          "x1": 792,
+          "x2": 834,
+          "side": "bottom",
+          "y": 347
+        },
+        {
+          "n": 3,
+          "label": "HDMI IN",
+          "desc": "소스 연결",
+          "x1": 855,
+          "x2": 911,
+          "side": "bottom",
+          "y": 347
+        },
+        {
+          "n": 4,
+          "label": "Fiber OUT",
+          "desc": "SC 광 단자 · 멀티모드(OM3) 광케이블로 수신기와 연결",
+          "x1": 960,
+          "x2": 1011,
+          "side": "bottom",
+          "y": 347
+        }
+      ]
+    },
+    {
+      "image": "Other",
+      "title": "수신기 OBUX-1C Rx",
+      "items": [
+        {
+          "n": 1,
+          "label": "+12V",
+          "desc": "전원 어댑터 12V 1A",
+          "x1": 676,
+          "x2": 709,
+          "side": "bottom",
+          "y": 309
+        },
+        {
+          "n": 2,
+          "label": "Audio OUT",
+          "desc": "3핀 터미널(L·접지·R) · 아날로그 오디오 추출",
+          "x1": 794,
+          "x2": 836,
+          "side": "bottom",
+          "y": 309
+        },
+        {
+          "n": 3,
+          "label": "HDMI OUT",
+          "desc": "디스플레이 연결",
+          "x1": 858,
+          "x2": 913,
+          "side": "bottom",
+          "y": 309
+        },
+        {
+          "n": 4,
+          "label": "Fiber IN",
+          "desc": "SC 광 단자 · 송신기와 연결",
+          "x1": 964,
+          "x2": 1012,
+          "side": "bottom",
+          "y": 309
+        }
+      ]
+    }
+  ],
   "sources": [
     {
       "code": "C",

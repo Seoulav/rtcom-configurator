@@ -23,15 +23,15 @@
   "images": [
     {
       "role": "Main",
-      "file": "xdm-ct103-cr103-main.webp",
-      "alt": "RTCOM XDM-CT103 벽부형 송신기(TX) 전면",
-      "note": "Main · TX XDM-CT103 제품 사진",
+      "file": "xdm-ct103-manual.webp",
+      "alt": "RTCOM XDM-CT103 벽부형 송신기 앞면(왼쪽)과 뒷면(오른쪽)",
+      "note": "Main · XDM-CT103 사용자 매뉴얼 Ver.1.4 5쪽 제품 사진(앞면·뒷면)",
       "provider": "RTCOM",
       "model": "XDM-CT103",
-      "source": "R",
+      "source": "M1",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "70×162"
+      "resolution": "458×483"
     },
     {
       "role": "Other",
@@ -75,6 +75,13 @@
       "title": "알티컴 종합 카탈로그 2026 (국문)",
       "language": "ko",
       "note": "11쪽"
+    },
+    {
+      "type": "Manual",
+      "status": "FOUND",
+      "title": "XDM-CT103 사용자 매뉴얼 Ver.1.4",
+      "language": "ko",
+      "note": "4–9쪽 · 사용자 제공, 배포 제외"
     }
   ],
   "features": [
@@ -97,9 +104,43 @@
     {
       "text": "XDM-CTR100 PSE와 함께 쓸 때도 별도 전원 케이블 없이 사용할 수 있다.",
       "source": "C"
+    },
+    {
+      "text": "XDM-CT103은 XDM-CIS100 카드, RX 모드로 설정한 XDM-CTR100, XDM-CR103과 CAT6a U/FTP 케이블로 연결해 사용한다.",
+      "source": "M1"
+    },
+    {
+      "text": "XDM-CR103은 XDM-COS100 카드, TX 모드로 설정한 XDM-CTR100, XDM-CT103과 연결해 사용한다. XDM-COS100 카드나 XDM-CTR100 PSE와 연결하면 PoE로 전원을 받아 별도 전원을 연결하지 않는다.",
+      "source": "U"
+    },
+    {
+      "text": "전면 Mode 딥 스위치 1번을 ON으로 두면 3핀 오디오 단자로 넣은 아날로그 오디오가 HDMI에 병합되어 XDM-CTR100(RX 모드) 또는 XDM-CR103의 HDMI 출력으로 나간다.",
+      "source": "M1"
+    },
+    {
+      "text": "딥 스위치 2번을 ON(Long Reach)으로 두면 1920x1080p 영상을 최대 150m까지 전송한다.",
+      "source": "M1"
     }
   ],
   "specifications": [
+    {
+      "group": "Video",
+      "name": "입력 신호",
+      "value": "HDMI 1 Port, 3-pin Stereo 1 Port",
+      "unit": "",
+      "condition": "XDM-CT103 · 매뉴얼 4쪽",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "출력 신호",
+      "value": "HDBaseT 1 Port",
+      "unit": "",
+      "condition": "XDM-CT103 · 매뉴얼 4쪽",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
     {
       "group": "Video",
       "name": "최대 해상도",
@@ -116,6 +157,15 @@
       "unit": "m",
       "condition": "4K60Hz 4:4:4, CAT6a BELDEN10GXE02(S/FTP) 기준, 케이블별 상이 · XDM-CT103·XDM-CR103 공통",
       "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "name": "최대 전송거리",
+      "value": "150",
+      "unit": "m",
+      "condition": "Long Reach 모드(딥 스위치 2번 ON), 1920x1080p · XDM-CT103 · 매뉴얼 5쪽",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
@@ -164,6 +214,24 @@
       "verification": "VERIFIED"
     },
     {
+      "group": "Power",
+      "name": "전원(어댑터)",
+      "value": "DC +12V 1A 이상",
+      "unit": "",
+      "condition": "XDM-CT103 · XDM-CIS100 카드나 XDM-CTR100 PSE와 연결하면 PoE로 전원을 받아 연결하지 않음(사용자 확인) · 그 밖에는 어댑터 연결 · 매뉴얼 4·8쪽",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "name": "전원(어댑터)",
+      "value": "DC +12V 1A 이상",
+      "unit": "",
+      "condition": "XDM-CR103 · XDM-CT103과 동일(사용자 확인) · XDM-COS100 카드나 XDM-CTR100 PSE와 연결하면 PoE로 전원을 받아 연결하지 않음 · 그 밖에는 어댑터 연결",
+      "source": "U",
+      "verification": "VERIFIED"
+    },
+    {
       "group": "Physical",
       "name": "크기(W×D×H)",
       "value": "49×78×102",
@@ -175,10 +243,10 @@
     {
       "group": "Physical",
       "name": "무게",
-      "value": "0.34",
+      "value": "0.45",
       "unit": "kg",
-      "condition": "XDM-CT103",
-      "source": "C",
+      "condition": "XDM-CT103 · 매뉴얼 4쪽 1lbs(0.45Kg) · 카탈로그 11쪽은 0.34kg(1.0lb와 환산이 맞지 않음)",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
@@ -188,6 +256,24 @@
       "unit": "kg",
       "condition": "XDM-CR103 (약 0.57lbs)",
       "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Control",
+      "name": "딥 스위치 1 · 오디오",
+      "value": "ON: 3-pin Stereo Audio 병합 / OFF: Source Audio(HDMI)",
+      "unit": "",
+      "condition": "XDM-CT103 전면 Mode · 스위치를 내리면 ON, 출고 시 모두 OFF · 매뉴얼 5쪽",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Control",
+      "name": "딥 스위치 2 · 전송 모드",
+      "value": "ON: Long Reach / OFF: Normal",
+      "unit": "",
+      "condition": "XDM-CT103 전면 Mode · 매뉴얼 5쪽",
+      "source": "M1",
       "verification": "VERIFIED"
     }
   ],
@@ -221,8 +307,8 @@
       "direction": "IN",
       "quantity": "1",
       "protocol": "",
-      "condition": "XDM-CT103",
-      "source": "C",
+      "condition": "XDM-CT103 · L·접지·R 3핀, 딥 스위치 1번 ON일 때 HDMI에 병합 · 매뉴얼 5쪽",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
@@ -276,6 +362,66 @@
       "note": "XDM-CTR100 PSE로 PoE 전원 공급"
     }
   ],
+  "portMap": {
+    "image": "Main",
+    "title": "송신기 XDM-CT103 · 왼쪽 앞면, 오른쪽 뒷면",
+    "displayWidth": 520,
+    "items": [
+      {
+        "n": 1,
+        "label": "Signal · Link LED",
+        "desc": "정상으로 연결되면 켜짐",
+        "side": "left",
+        "x": 40,
+        "y1": 168,
+        "y2": 212
+      },
+      {
+        "n": 2,
+        "label": "AUDIO IN",
+        "desc": "3핀(L·접지·R) · 딥 스위치 1번 ON이면 HDMI에 병합",
+        "side": "left",
+        "x": 40,
+        "y1": 220,
+        "y2": 276
+      },
+      {
+        "n": 3,
+        "label": "Mode 딥 스위치",
+        "desc": "1번 오디오 병합 · 2번 Long Reach(1080p 150m)",
+        "side": "left",
+        "x": 40,
+        "y1": 288,
+        "y2": 322
+      },
+      {
+        "n": 4,
+        "label": "HDMI IN",
+        "desc": "소스 연결(HDMI 2.0, 4K 60Hz 4:4:4)",
+        "x1": 132,
+        "x2": 162,
+        "side": "top",
+        "y": 166
+      },
+      {
+        "n": 5,
+        "label": "HDBaseT OUT",
+        "desc": "RJ45 · XDM-CIS100, XDM-CTR100(RX 모드), XDM-CR103과 CAT6a U/FTP로 연결",
+        "side": "right",
+        "y1": 100,
+        "y2": 298
+      },
+      {
+        "n": 6,
+        "label": "DC IN",
+        "desc": "DC 12V 1A 이상 · XDM-CIS100이나 XDM-CTR100 PSE와 쓰면 연결하지 않음",
+        "x1": 315,
+        "x2": 352,
+        "side": "bottom",
+        "y": 348
+      }
+    ]
+  },
   "sources": [
     {
       "code": "C",
@@ -300,6 +446,18 @@
       "name": "서울영상테크 SI사업본부 검토 판단",
       "page": "",
       "scope": "사용자 위임(2026-09-27) — 카탈로그 내부 충돌·오기 정리"
+    },
+    {
+      "code": "M1",
+      "name": "XDM-CT103 사용자 매뉴얼 Ver.1.4",
+      "page": "4–9",
+      "scope": "제조사 공식 출처 — 사용자 제공 PDF(.source-materials/RTcom_Manual_XDM-CT103_Ver1.4.pdf, 배포 제외)"
+    },
+    {
+      "code": "U",
+      "name": "서울영상테크 SI사업본부 확인",
+      "page": "",
+      "scope": "사용자 확인(2026-09-27) — XDM-CTR100 PSE와 연결하면 XDM-CT103에 전원을 연결하지 않아도 됨, XDM-CR103도 동일"
     }
   ],
   "issues": []
