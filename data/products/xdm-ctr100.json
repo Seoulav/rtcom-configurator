@@ -156,7 +156,7 @@
     },
     {
       "group": "Transmission",
-      "name": "지원 케이블",
+      "name": "권장 케이블",
       "value": "CAT6a, CAT7",
       "unit": "",
       "condition": "XDM-CTR100·XDM-CTR100 PSE 공통",

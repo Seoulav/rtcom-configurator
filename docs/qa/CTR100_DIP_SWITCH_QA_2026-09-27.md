@@ -28,3 +28,10 @@
 ## 5. 되돌리기
 
 해당 커밋을 `git revert`합니다. 06 카드가 빠지고 05 주요 기능·단자 지도 설명이 이전 문장으로 돌아갑니다.
+
+## 6. 후속: "지원 케이블" → "권장 케이블"
+
+- 사용자 요청: "지원 케이블 대신 권장 케이블".
+- 대상: `xdm-ctr100.json`, `xdm-ctr100-pse.json`, `xdm-ct103-cr103.json`의 04 제품 사양 전송(Transmission) 행 `name`. 값(CAT6a, CAT7)·조건·출처는 그대로입니다. 사이트 코드와 다른 제품에는 "지원 케이블" 표기가 없습니다(`data`·`src`·`index.html`·`scripts`·`tests` 검색).
+- 과거 기록 문서(`docs/implementation/PUBLIC_PRODUCT_INFO.md`의 I4 설명)는 당시 표기 그대로 둡니다.
+- 되돌리기: 해당 커밋을 `git revert`합니다.
