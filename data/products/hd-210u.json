@@ -45,6 +45,18 @@
       "resolution": "1007×156"
     },
     {
+      "role": "Other",
+      "file": "hd-210u-front-rear.webp",
+      "alt": "RTCOM HD-210U 앞면(위)과 뒷면(아래)",
+      "note": "Other · 정면·후면 사진을 위아래로 합성(단자 지도용)",
+      "provider": "RTCOM",
+      "model": "HD-210U",
+      "source": "C",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "1012×390"
+    },
+    {
       "role": "Diagram",
       "file": "hd-210u-diagram.webp",
       "alt": "RTCOM HD-210U 연결 다이어그램(제조사 제공)",
@@ -218,35 +230,62 @@
   ],
   "related": [],
   "portMap": {
-    "image": "Rear",
+    "image": "Other",
+    "title": "위 앞면, 아래 뒷면",
     "items": [
       {
         "n": 1,
         "label": "HDMI IN 1·2",
         "desc": "소스 2대 연결, 하나를 골라 전체 출력",
         "x1": 40,
-        "x2": 152
+        "x2": 152,
+        "side": "top",
+        "y": 234
       },
       {
         "n": 3,
         "label": "AUDIO IN",
         "desc": "3.5mm 아날로그 오디오 병합",
         "x1": 170,
-        "x2": 192
+        "x2": 192,
+        "side": "top",
+        "y": 234
       },
       {
         "n": 2,
         "label": "HDMI OUT 1–10",
         "desc": "10개 모두 같은 영상",
         "x1": 220,
-        "x2": 880
+        "x2": 880,
+        "side": "top",
+        "y": 234
       },
       {
-        "n": 4,
+        "n": 6,
         "label": "DC 12V",
         "desc": "전원 어댑터 12V 2A",
         "x1": 912,
-        "x2": 940
+        "x2": 940,
+        "side": "top",
+        "y": 234
+      },
+      {
+        "label": "EDID",
+        "desc": "전면 파란색 EDID 로터리 스위치, '06 EDID 설정' 참고",
+        "x1": 772,
+        "x2": 803,
+        "side": "top",
+        "y": 0,
+        "n": 4
+      },
+      {
+        "label": "MODE",
+        "desc": "전면 빨간색 딥 스위치 3개(1번 오디오 병합, 2번 DDC). 설정 방법은 '07 딥 스위치 설정' 참고",
+        "x1": 889,
+        "x2": 918,
+        "side": "top",
+        "y": 0,
+        "n": 5
       }
     ]
   },
