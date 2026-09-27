@@ -387,8 +387,13 @@
     },
     {
       "relation": "WORKS_WITH",
-      "target": "xdm-ctr100",
+      "target": "xdm-ctr100-pse",
       "note": "XDM-CTR100 PSE로 PoE 전원 공급"
+    },
+    {
+      "relation": "WORKS_WITH",
+      "target": "xdm-ctr100",
+      "note": "XDM-CTR100(CT103은 RX 모드, CR103은 TX 모드)과 연결"
     }
   ],
   "portMap": [
@@ -416,7 +421,7 @@
           "y2": 276
         },
         {
-          "n": 3,
+          "n": 4,
           "label": "Signal · Link LED",
           "desc": "정상으로 연결되면 켜짐",
           "side": "left",
@@ -425,7 +430,7 @@
           "y2": 212
         },
         {
-          "n": 4,
+          "n": 3,
           "label": "HDBaseT OUT",
           "desc": "RJ45 · XDM-CIS100, XDM-CTR100(RX 모드), XDM-CR103과 CAT6a U/FTP로 연결",
           "side": "right",
@@ -433,7 +438,7 @@
           "y2": 298
         },
         {
-          "n": 5,
+          "n": 6,
           "label": "DC IN",
           "desc": "DC 12V 1A 이상 · XDM-CIS100이나 XDM-CTR100 PSE와 쓰면 연결하지 않음",
           "x1": 315,
@@ -442,7 +447,7 @@
           "y": 348
         },
         {
-          "n": 6,
+          "n": 5,
           "label": "Mode 딥 스위치",
           "desc": "1번 오디오 병합 · 2번 Long Reach(1080p 150m)",
           "side": "left",
@@ -476,7 +481,7 @@
           "y2": 258
         },
         {
-          "n": 3,
+          "n": 4,
           "label": "Signal · Link LED",
           "desc": "정상으로 연결되면 켜짐",
           "side": "right",
@@ -485,7 +490,7 @@
           "y2": 312
         },
         {
-          "n": 4,
+          "n": 3,
           "label": "HDBaseT IN",
           "desc": "RJ45 · XDM-COS100, XDM-CTR100(TX 모드), XDM-CT103과 CAT6a U/FTP로 연결",
           "side": "right",
