@@ -367,14 +367,14 @@
         if(file.size>1024*1024)throw new Error('JSON 파일은 1MB 이하여야 합니다.');
         const candidate=RtCore.parse(await file.text());
         if(Object.keys(state.placements).length&&!window.confirm('파일의 구성으로 현재 작업을 바꿀까요? 실행 취소로 복원할 수 있습니다.'))return;
-        state=candidate;changed();announce('JSON 구성을 불러왔습니다. 검토 결과를 현재 기준으로 다시 계산했습니다.');
+        state=candidate;changed();announce(candidate.notice||'JSON 구성을 불러왔습니다. 검토 결과를 현재 기준으로 다시 계산했습니다.');
       }catch(error){announce('불러오기 실패: '+error.message)}
     });
     function initialize(){
       let message='이 브라우저에 자동 저장됩니다. 다른 기기로 옮길 때는 JSON 백업을 사용하세요.';
       try{
         const saved=localStorage.getItem(storageKey);
-        if(saved){state=RtCore.parse(saved);message='이 브라우저에 저장된 구성을 복원했습니다.'}
+        if(saved){state=RtCore.parse(saved);message=state.notice||'이 브라우저에 저장된 구성을 복원했습니다.'}
       }catch(error){message='저장된 구성을 복원하지 못했습니다. '+error.message+' JSON 백업이 있으면 불러오세요.'}
       recordHistory();render();announce(message);
     }

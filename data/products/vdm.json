@@ -299,12 +299,12 @@
     {
       "model": "HOS4-U",
       "kind": "출력 보드",
-      "summary": "4K HDMI 출력 4포트 · DVI 1.0/HDMI 1.4 · 3840×2160@30Hz · 오디오 추출/병합"
+      "summary": "일반 스위칭 4K HDMI 출력 4포트 · DVI 1.0/HDMI 1.4 · 3840×2160@30Hz · 오디오 추출/병합"
     },
     {
       "model": "HOS4S-UW",
       "kind": "출력 보드",
-      "summary": "4K 스케일링·심리스·월 HDMI 출력 4포트 · 3840×2160 30Hz 비디오월"
+      "summary": "심리스 스위칭 4K 스케일링·월 HDMI 출력 4포트 · 3840×2160 30Hz 비디오월"
     },
     {
       "model": "FOS4-U",
@@ -387,6 +387,12 @@
       "name": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
       "page": "17–20",
       "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
+    },
+    {
+      "code": "U",
+      "name": "서울영상테크 SI사업본부 확인",
+      "page": "",
+      "scope": "사용자 확인(2026-09-27) — HOS4-U(일반 스위칭)·HOS4S-UW(심리스 스위칭)가 둘 다 현행 판매 카드라는 확인"
     }
   ],
   "issues": [
@@ -416,9 +422,9 @@
     },
     {
       "code": "R6",
-      "status": "REVIEW REQUIRED",
-      "title": "출력 보드 HOS4-U(4K HDMI Output, 스케일링·월 아님)가 46쪽판에서 빠짐",
-      "detail": "옛 카탈로그(48쪽판, C) 20쪽에는 QOS4S-U·COS4-U·HOS4-U(4K HDMI Output Board, DVI1.0/HDMI1.4, 3840x2160@30Hz, 오디오 추출/병합)·HOS4S-UW(스케일링·심리스·월)·FOS4-U·SOS4 6개 출력 보드 항목이 있다. 2026-09-27 확인한 새 카탈로그(46쪽판, C2 20쪽)에는 COS4-U·FOS4-U·SOS4·HOS4S-UW·QOS4S-U 5개 항목만 있고 'HOS4-U(4K HDMI Output Board Specifications)' 절 자체가 통째로 빠져 있다(19쪽 입력 보드 쪽 HIS4-U는 그대로 있음). 두 판이 다른데 46쪽판의 누락이 단종을 의미하는지 편집 누락인지 판단할 근거가 없어 lineup의 HOS4-U 항목은 그대로 두고 REVIEW REQUIRED로 남긴다."
+      "status": "INFO",
+      "title": "출력 보드 HOS4-U가 46쪽판에서 빠진 건은 사용자 확인으로 해소",
+      "detail": "옛 카탈로그(48쪽판, C) 20쪽에는 QOS4S-U·COS4-U·HOS4-U(4K HDMI Output Board, DVI1.0/HDMI1.4, 3840x2160@30Hz, 오디오 추출/병합)·HOS4S-UW(스케일링·심리스·월)·FOS4-U·SOS4 6개 출력 보드 항목이 있다. 새 카탈로그(46쪽판, C2 20쪽)에는 이 절이 빠져 있어 처음엔 단종 가능성으로 REVIEW REQUIRED를 남겼다. 사용자(서울영상테크 SI사업본부, 2026-09-27) 확인 결과 HOS4-U는 '일반 스위칭' HDMI 출력 카드, HOS4S-UW는 '심리스 스위칭' HDMI 출력 카드로 두 카드 모두 현행 판매 제품이다(46쪽판 누락은 편집 누락으로 확인). lineup 요약과 구성기(`src/catalog.js`) 카드 설명에 두 카드의 스위칭 방식 차이를 명시해 반영했다."
     },
     {
       "code": "R5",

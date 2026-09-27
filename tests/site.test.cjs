@@ -136,7 +136,7 @@ test('public product data (0.19) is valid, brochure-level only and listed in ind
 test('configurator catalog and persistence contracts remain unchanged',()=>{
   const families=loadCatalog();
   assert.equal(Object.keys(families).length,3);
-  assert.equal(Object.values(families).reduce((sum,family)=>sum+family.models.length,0),22);
+  assert.equal(Object.values(families).reduce((sum,family)=>sum+family.models.length,0),21);
   assert.equal(Object.values(families).reduce((sum,family)=>sum+family.input.length+family.output.length,0),26);
   assert.match(read('src/app.js'),/const storageKey='rtcom\.configuration\.v1'/);
   assert.match(read('src/core.js'),/const catalogVersion = '2026-09-18-draft\.1'/);

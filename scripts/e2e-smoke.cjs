@@ -44,7 +44,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('첫 화면에 구성기가 표시됨',await page.locator('#matrix-configurator h1').isVisible());
     await page.click('button[data-family="XDM"]');
     await page.click('[data-action="next"]');
-    check('섀시 선택 화면에 XDM 프레임 카드 7종 표시',await page.locator('.rt-chassis-card').count()===7);
+    check('섀시 선택 화면에 XDM 프레임 카드 6종 표시(XDM-288 제외)',await page.locator('.rt-chassis-card').count()===6);
     await page.click('button[data-model="XDM-144"]');
     await page.click('[data-action="next"]');
     await page.waitForLoadState('networkidle');

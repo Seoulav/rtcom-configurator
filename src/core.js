@@ -93,6 +93,13 @@
   function checkState(input) {
     const fail = message => {throw new Error(message)};
     if (!plain(input) || !own(catalog,input.family)) fail('지원하지 않는 제품군입니다.');
+    let notice='';
+    // XDM-288은 46쪽판 카탈로그 LINE-UP·사양에서 빠져 0.29부터 구성기에서 제외했다(사용자 결정 2026-09-27).
+    // 예전에 저장한 XDM-288 구성은 복원 실패 대신 섀시 미선택 상태로 안전하게 되돌린다.
+    if (input.family==='XDM' && input.model==='XDM-288') {
+      input={...input,model:null,placements:{},links:{},portAssignments:{},step:0,maxStep:0,slot:'in-a'};
+      notice='XDM-288은 구성기에서 제외되었습니다. 섀시를 다시 선택하세요.';
+    }
     const result=initial(), family=catalog[input.family];
     result.family=input.family;
     if (input.model!==null && !family.models.includes(input.model)) fail('제품군과 섀시 모델이 일치하지 않습니다.');
@@ -147,6 +154,7 @@
     const selectedSlot=legacySlots[input.slot]||input.slot;
     if (!allowedSlots.has(selectedSlot)||!['PDF','CSV','JSON'].includes(input.format)) fail('화면 설정 형식이 잘못되었습니다.');
     result.slot=selectedSlot;result.format=input.format;
+    if (notice) result.notice=notice;
     return result;
   }
   function requirementSummary(state) {
@@ -180,7 +188,6 @@
       if (split.length) add('SPX_PORT_SPLIT','WARNING',`${state.model}에 장착한 ${[...new Set(split.map(([,id])=>id))].join('·')} ${split.length}장은 11·12번 포트가 출력 10번 포트의 분배(같은 영상)로 동작합니다. 독립 출력은 카드당 10채널로 계산하세요.`,'SPX 국문 사용자 매뉴얼(250805) p.11');
     }
     if (state.model==='VDM-288X') add('VDM_288X_CUSTOM','UNVERIFIED','VDM-288X는 특수 상황실용으로 커스텀 제작한 모델입니다. 슬롯 수와 배치는 제작 사양서로 확인해야 합니다.','사용자 확인(2026-09-26)');
-    if (state.model==='XDM-288') add('XDM_288_SPEC','UNVERIFIED','XDM-288 상세 사양을 확인해야 합니다.','G10');
     for (const [slot,id] of Object.entries(state.placements)) {
       const selected=card(state,id), link=state.links[slot];
       if (link?.device===psePair&&link.count) {
