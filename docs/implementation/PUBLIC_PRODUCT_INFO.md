@@ -147,3 +147,10 @@
 - 고침: `src/products.js`에 `initDiagramScroll(container)` 함수를 추가해, 상세 화면을 그릴 때마다 각 `.rt-product-diagram-canvas`의 `scrollWidth`와 보이는 폭을 비교해 더 볼 내용이 남아 있으면 `rt-has-more` 클래스를 붙입니다(스크롤·창 크기 변경 시 다시 계산). `src/styles.css`에서 이 클래스가 있을 때만 오른쪽 끝에 옅은 그러데이션(`::after`)을 보여 "잘림"이 아니라 "더 있음"을 표시합니다. 다이어그램의 좌표·스크롤 동작 자체(0.21의 설계)는 바꾸지 않았습니다.
 - **XDM-CTR100 케이블별 최대 전송거리**: 카탈로그 10쪽은 "BELDEN 10GXE02(S/FTP, CAT6A) 케이블 기준 100m"만 명시하고, 그 외 케이블은 "케이블 별 상이하니 당사(031-447-0250)로 문의"라고만 적혀 있습니다(48쪽판·46쪽판 모두 동일, 재확인함). 사용자(서울영상테크 SI사업본부, 2026-09-27)가 CI6522(SF/UTP, CAT6) 케이블 사용 시 80m로 확인해 주어, 이를 새 사양 행(`data/products/xdm-ctr100.json`)으로 추가했습니다. 카탈로그에 없는 사실이므로 출처 코드를 새로 만들어(`U`, "서울영상테크 SI사업본부 확인") 구분했고, `issues`(I4)에 "지원 케이블" 사양 행(카탈로그 원문 CAT6a·CAT7)과 CI6522(CAT6, 비-CAT6a)의 등급 차이도 함께 적어 뒀습니다.
 - 검증: 테스트 27 pass, `build-product-index.cjs --check` 통과, e2e 53/53 passed. Playwright로 XDM-CTR100 상세를 휴대폰(390px) 화면에서 다시 스크린샷해 그러데이션 표시와 두 케이블 사양 행이 모두 정상적으로 보이는 것을 확인했습니다.
+
+## 0.29.0 — XDM-CTR100 PSE 무게 정정(실사용 확인)
+
+- 근거: 사용자가 "PSE 모델도 CTR100이랑 무게는 같아"라고 확인해 주었습니다(2026-09-27). `data/products/xdm-ctr100.json`의 기존 REVIEW REQUIRED(R1)는 카탈로그 원문의 "0.34kg(약 0.71lb.)"가 자체적으로 환산이 안 맞는 문제였는데(0.34kg은 약 0.75lb), 사용자 확인으로 애초에 PSE 무게가 CTR100과 같은 0.28kg이라는 사실이 드러나 해소됐습니다.
+- PSE 무게 사양 행을 `0.28kg`으로 바꾸고 출처를 `U`(서울영상테크 SI사업본부 확인)로 표시했습니다. `issues`의 R1을 INFO로 바꿔 카탈로그 원문 값과 정정 근거를 함께 남겼습니다.
+- 이 파일에 남아 있던 마지막 REVIEW REQUIRED가 없어져 `packageStatus`가 VERIFIED로 바뀌었고, 전체 REVIEW REQUIRED 제품 수가 13종 → 12종이 됐습니다.
+- 검증: `build-product-index.cjs`(재생성 후 --check), 테스트 27 pass, e2e 53/53 passed.
