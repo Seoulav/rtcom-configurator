@@ -6,6 +6,7 @@
 
 - **0.38.0 Opus 검수 수정(`45b5b38`)에 e2e 회귀 검사 3개 추가**(`53cda81`, 0.38.0 배포 뒤 추가라 Unreleased에 기록): PC(1280px) 흐름 한 줄(노드 세로 중심 차이 2px 이하) · PC(1280px) 목록이 미리보기보다 길 때 스크롤해도 미리보기가 8~16px에 붙어있음(sticky) · 휴대폰(390px) 흐름이 세로로 쌓임(`flex-direction:column`). "0.38 검수(Opus)" CSS 블록을 잠깐 지우고 돌려 3개 모두 FAIL(나머지 76개는 그대로 PASS)함을 확인한 뒤 복원했습니다(79/79). 기록은 `docs/qa/CONFIGURATOR_AW_GLASS_QA.md`에 있습니다.
 - **0.38.0 배포 기록**: `docs/qa/DEPLOYMENT_0.38_2026-09-27.md`(run `36303395870`, 공개 파일 182개가 로컬 배포본과 같음을 확인)
+- **정식 공개 사이트 주소 정리**(사용자 결정 2026-09-27 "추천대로"): README.md·CLAUDE.md의 공개 사이트 표기를 실제 운영 주소인 `seoulav.github.io/rtcom-configurator`로 바로잡았습니다. 계획했던 별도 배포 저장소 `hkkim0454/rtcom-av-design`은 GitHub Pages가 개설되어 있지 않아 현재 운영하지 않는다고 명시했습니다. 코드·데이터는 바뀌지 않았습니다.
 
 ## 0.38.0
 

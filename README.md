@@ -12,7 +12,7 @@
 
 외부 패키지를 설치하지 않아도 실행할 수 있습니다. 첫 화면(`/`)이 바로 구성기입니다. 0.6에서 쓰던 `/products`, `/tools/matrix-configurator` 주소로 들어오면 구성기 첫 화면으로 자동 이동합니다.
 
-GitHub Pages 공개 사이트는 [hkkim0454.github.io/rtcom-av-design](https://hkkim0454.github.io/rtcom-av-design/)에서 확인할 수 있습니다. 공개 사이트의 저장소와 원본 소스 저장소는 역할이 다르므로, 자세한 운영 규칙은 [`CLAUDE.md`](CLAUDE.md)를 확인하세요.
+GitHub Pages 공개 사이트는 [seoulav.github.io/rtcom-configurator](https://seoulav.github.io/rtcom-configurator/)에서 확인할 수 있습니다(정식 공개 주소, 사용자 결정 2026-09-27). 원래 계획했던 별도 배포 저장소 `hkkim0454/rtcom-av-design`은 현재 운영하지 않습니다. 자세한 운영 규칙은 [`CLAUDE.md`](CLAUDE.md)를 확인하세요.
 
 ## 실행 명령
 

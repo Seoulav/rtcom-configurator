@@ -5,9 +5,8 @@
 ## 저장소 역할
 
 - 원본 소스: `Seoulav/rtcom-configurator`
-- 공개 배포: `hkkim0454/rtcom-av-design`
-- 두 저장소는 공통 Git 조상이 없습니다. `git merge --allow-unrelated-histories`를 사용하지 않습니다.
-- 원본 소스의 검증된 build 산출물만 공개 배포 저장소로 이식합니다.
+- 정식 공개 사이트: `Seoulav/rtcom-configurator`의 GitHub Pages(`https://seoulav.github.io/rtcom-configurator/`). `.github/workflows/pages.yml`(`Deploy RTCOM to GitHub Pages`)이 `main`의 `node scripts/package-site.cjs` 산출물(`dist/`)만 배포합니다. 저장소 전체가 아니라 `dist/`만 공개되므로, 감사·명세·시안 등 이 문서 아래 나머지 규칙은 그대로 적용합니다.
+- 별도 배포 저장소 `hkkim0454/rtcom-av-design`은 두 저장소가 공통 Git 조상이 없다는 전제로 계획했으나, 현재 GitHub Pages가 개설되어 있지 않아 운영하지 않습니다(사용자 결정 2026-09-27, `docs/qa/DEPLOYMENT_0.38_2026-09-27.md`). 이 저장소를 다시 쓰게 되면 원본 소스의 검증된 build 산출물만 이식하고 `git merge --allow-unrelated-histories`는 사용하지 않습니다.
 - 브로셔 수준 알티컴 제품정보의 원본은 이 저장소입니다. 비공개 AV Portal은 이 저장소의 공개 데이터를 읽기만 하며, 단가·노하우 등 회사 내부 정보는 이 저장소에 넣지 않습니다(`docs/audit/SITE_SCOPE_REVIEW.md` §9, 2026-09-26 결정).
 
 ## 작업 순서
