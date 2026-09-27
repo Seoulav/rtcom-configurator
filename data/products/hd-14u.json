@@ -15,7 +15,7 @@
   "korean": "4K 60Hz 4:4:4와 EDID 마인더를 지원하는 1입력 4출력 HDMI 2.0 18Gbps 분배기다.",
   "catalogPages": "37",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 37쪽의 소개·주요기능·제품사양·크기 및 무게·제품 이미지에서 확인했다.",
-  "packageStatus": "REVIEW REQUIRED",
+  "packageStatus": "VERIFIED",
   "overview": "HD-14U는 HDMI 신호를 위한 고성능 분배기다. True HDMI 2.0 3840x2160 60Hz 크로마 샘플링 4:4:4 해상도를 지원한다.\n\n하나의 HDMI 입력 신호를 신호의 손실 없이 4개의 동일한 출력으로 분배한다. HDCP(고대역 디지털 콘텐츠 보호)와 EDID(디스플레이 식별 정보)를 완벽 지원하여 호환 이슈 없이 사용할 수 있다. 외부 EDID와 내부에 저장된 EDID를 사용할 수 있어 EDID 마인더 기능도 수행한다.",
   "images": [
     {
@@ -41,6 +41,17 @@
       "officialSource": true,
       "verificationStatus": "FOUND",
       "resolution": "693×169"
+    },
+    {
+      "role": "Diagram",
+      "file": "hd-14u-diagram.webp",
+      "alt": "RTCOM HD-14U 연결 다이어그램(제조사 제공)",
+      "note": "Diagram · 카탈로그 46쪽판 35쪽 제조사 제공 연결 다이어그램",
+      "provider": "RTCOM",
+      "model": "HD-14U",
+      "source": "C2",
+      "officialSource": true,
+      "verificationStatus": "FOUND"
     }
   ],
   "imageStatuses": [
@@ -59,6 +70,10 @@
     {
       "role": "Perspective",
       "status": "MISSING"
+    },
+    {
+      "role": "Diagram",
+      "status": "FOUND"
     }
   ],
   "documents": [
@@ -68,6 +83,13 @@
       "title": "알티컴 종합 카탈로그 2026 (국문)",
       "language": "ko",
       "note": "37쪽"
+    },
+    {
+      "type": "Diagram",
+      "status": "FOUND",
+      "title": "제조사 연결 다이어그램",
+      "language": "en/ko",
+      "note": "카탈로그 46쪽판 35쪽"
     }
   ],
   "features": [
@@ -122,9 +144,9 @@
       "name": "전원공급",
       "value": "DC 5V 2A",
       "unit": "",
-      "condition": "제품사양 표 기준. 연결도 라벨은 DC + 12V",
+      "condition": "",
       "source": "C",
-      "verification": "REVIEW REQUIRED"
+      "verification": "VERIFIED"
     },
     {
       "group": "Physical",
@@ -176,14 +198,20 @@
       "name": "알티컴 종합 카탈로그 2026 (국문)",
       "page": "37",
       "scope": "제조사 공식 출처"
+    },
+    {
+      "code": "C2",
+      "name": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
+      "page": "35",
+      "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
     }
   ],
   "issues": [
     {
       "code": "R1",
-      "status": "REVIEW REQUIRED",
+      "status": "INFO",
       "title": "연결도 라벨과 제품사양 불일치",
-      "detail": "37쪽 연결도의 후면 라벨은 HDMI Out 1~8과 DC + 12V로 적혀 있어 HD-18U 도면을 재사용한 것으로 보인다. 제품사양 표(4 HDMI Output, DC 5V 2A)와 후면 제품 이미지(HDMI OUT 1~4, DC 5V)는 서로 일치하므로 값은 제품사양 표를 따랐다. HD-D104U(32쪽)와는 다른 제품이다."
+      "detail": "37쪽 옛 연결도(48쪽판 카탈로그)는 후면 라벨이 HDMI Out 1~8·DC + 12V로 적혀 있어 HD-18U 도면을 재사용한 것으로 보였다. 제품사양 표(4 HDMI Output, DC 5V 2A)와 후면 제품 이미지(HDMI OUT 1~4, DC 5V)는 항상 서로 일치했다. 0.25에서 연결 다이어그램을 새 카탈로그(46쪽판) 35쪽의 제조사 원본 이미지로 교체하면서 이 불일치는 더는 나타나지 않는다(2026-09-27)."
     },
     {
       "code": "I1",
@@ -196,6 +224,12 @@
       "status": "INFO",
       "title": "모델명 정정 근거",
       "detail": "저장소가 처음 썼던 알티컴 종합 카탈로그(48쪽, 국문)에는 이 제품이 \"HD-104U\"로 인쇄돼 있었다. 사용자가 제공한 두 번째 카탈로그(RTcom_catalogue, 46쪽, 2026-09-27)와 에이앤미디어(antez.co.kr) 화면 모두 \"HD-14U\"로 일치해, 첫 카탈로그의 오기로 보고 모델명을 정정했다(HD-104U → HD-14U)."
+    },
+    {
+      "code": "I4",
+      "status": "INFO",
+      "title": "연결 다이어그램 출처",
+      "detail": "연결 다이어그램은 처음엔 이 사이트가 입출력 데이터로 자동으로 그렸으나, 사용자가 제공한 두 번째 카탈로그(46쪽판) 35쪽에 제조사가 직접 그린 연결 다이어그램이 있어 그 이미지로 교체했다(2026-09-27)."
     }
   ]
 }

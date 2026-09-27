@@ -117,13 +117,17 @@
       return diagramWrap(body,width,height,[[COLOR_IN,'입력(소스 → TX)'],[cableColor,cableName],[COLOR_OUT,'출력(RX → 디스플레이)']])+note;
     }
     function connectionDiagram(item){
+      // 제조사가 직접 그린 연결 다이어그램(images 안의 role:"Diagram")이 있으면 그것을 쓰고, 자동 생성 도식은 만들지 않는다.
+      const photo=(item.images||[]).find(img=>img.role==='Diagram');
+      if(photo)return `<div class="rt-product-diagram-canvas rt-product-diagram-photo"><img src="${image(photo.file)}" alt="${esc(photo.alt||`${item.productName} 연결 다이어그램`)}" loading="lazy"></div>
+      <p class="rt-product-diagram-hint">좌우로 밀어서 볼 수 있습니다.</p>`;
       if(item.group==='distribution'||item.group==='integrated')return splitterDiagram(item);
       if(item.group==='extender')return extenderDiagram(item);
       return null;
     }
     function detailView(item){
       const byId=Object.fromEntries(index.products.map(product=>[product.id,product]));
-      const images=item.images||[];
+      const images=(item.images||[]).filter(img=>img.role!=='Diagram');
       const allSpecs=item.specifications||[];
       const sizeSpecs=allSpecs.filter(isSizeSpec).map(spec=>[esc(spec.name.replace('크기(W×D×H)','크기')),`${esc(spec.value)}${spec.unit?` ${esc(spec.unit)}`:''}`]);
       const specs=allSpecs.filter(spec=>!isSizeSpec(spec)).map(spec=>[esc(spec.name),`${esc(spec.value)}${spec.unit?` ${esc(spec.unit)}`:''}${verification(spec.verification)}${spec.condition?`<span class="rt-product-spec-note">${esc(spec.condition)}</span>`:''}`]);
