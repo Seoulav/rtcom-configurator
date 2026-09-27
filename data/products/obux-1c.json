@@ -14,9 +14,11 @@
   ],
   "english": "4K60 4:4:4 HDMI fiber optic extender over OM3 multi-mode SC fiber up to 300m, with analog audio embedding and de-embedding.",
   "korean": "4K60Hz 4:4:4 HDMI 신호를 OM3 멀티모드(SC) 광케이블로 최대 300m 전송하고, 아날로그 오디오 병합·추출을 지원하는 광 송·수신기다.",
-  "catalogPages": "42",
+  "subtitle": "Optical Extender · 4K60 4:4:4 광 송·수신기",
+  "lead": "4K60Hz 4:4:4 HDMI 신호를 **OM3 멀티모드 광케이블로 최대 300m** 전송하고, 아날로그 오디오 병합·추출을 지원합니다.",
+  "catalogPages": "40",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 42쪽의 OBUX-1C 소개·주요기능·크기 및 무게·제품사양에서 확인했다.",
-  "packageStatus": "REVIEW REQUIRED",
+  "packageStatus": "VERIFIED",
   "overview": "OBUX-1C는 최대 4K 60Hz(4:4:4) 해상도를 지원하는 광 송·수신기로, 멀티모드(SC Type, OM3) 전용 광케이블을 통해 영상 신호를 최대 300m까지 전송한다. 아날로그 오디오 신호의 병합(Embedded)과 추출(De-embedded) 기능을 갖추었다.\n\n압축 없이 원본 영상 신호를 그대로 전송하며, 컬러 딥(Color Depth)과 선명한 화질이 필요한 방송·전시·회의실·컨트롤룸 환경을 대상으로 한다.",
   "images": [
     {
@@ -145,11 +147,11 @@
     {
       "group": "General",
       "name": "출력단자",
-      "value": "HDMI(female), SC connector(female), Analog Stereo Audio Input",
+      "value": "HDMI(female), SC connector(female), Analog Stereo Audio Output",
       "unit": "",
-      "condition": "출력단자 칸에 'Audio Input' 표기(원문 그대로)",
-      "source": "C",
-      "verification": "REVIEW REQUIRED"
+      "condition": "원문: \"HDMI(female), SC connector(female), Analog Stereo Audio Input\" — 수신기 사진의 Audio OUT 표기, 소개문의 De-embedded(오디오 추출) 기능으로 출력 확정",
+      "source": "J",
+      "verification": "VERIFIED"
     },
     {
       "group": "Power",
@@ -242,9 +244,9 @@
       "direction": "OUT",
       "quantity": "1",
       "protocol": "",
-      "condition": "RX · 오디오 추출. 표 출력단자 칸은 'Audio Input'으로 적혀 있음",
-      "source": "C",
-      "verification": "REVIEW REQUIRED"
+      "condition": "RX · 오디오 추출. 표 출력단자 칸은 원문에 'Audio Input'으로 적혀 있었으나 Output으로 확정",
+      "source": "J",
+      "verification": "VERIFIED"
     }
   ],
   "related": [],
@@ -260,14 +262,20 @@
       "name": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
       "page": "40",
       "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
+    },
+    {
+      "code": "J",
+      "name": "서울영상테크 SI사업본부 검토 판단",
+      "page": "",
+      "scope": "사용자 위임(2026-09-27) — 카탈로그 내부 충돌·오기 정리"
     }
   ],
   "issues": [
     {
       "code": "R1",
-      "status": "REVIEW REQUIRED",
-      "title": "출력단자 오디오 방향 표기",
-      "detail": "제품사양 출력단자 칸이 입력단자와 같은 'HDMI(female), SC connector(female), Analog Stereo Audio Input'으로 적혀 있다. 소개문의 오디오 추출(De-embedded) 기능과 수신기 사진의 Audio OUT 표기로 보아 출력일 가능성이 높지만 원문 값을 그대로 두었다."
+      "status": "INFO",
+      "title": "[판단] 출력단자 오디오 방향 표기",
+      "detail": "제품사양 출력단자 칸이 입력단자와 같은 'HDMI(female), SC connector(female), Analog Stereo Audio Input'으로 적혀 있다. 소개문의 오디오 추출(De-embedded) 기능과 수신기 사진의 Audio OUT 표기로 보아 출력일 가능성이 높지만 원문 값을 그대로 두었다. → 판단: 수신기 사진의 Audio OUT 표기와 소개문의 De-embedded 기능으로 출력단자 = Analog Stereo Audio Output으로 확정한다(§6)."
     },
     {
       "code": "I1",
@@ -285,7 +293,7 @@
       "code": "I3",
       "status": "INFO",
       "title": "46쪽판 재검증 결과 — 변동 없음",
-      "detail": "새 카탈로그(46쪽판) 40쪽 본문을 옛 카탈로그(48쪽판) 42쪽과 대조한 결과 공백 제외 완전히 동일한 문구다. R1(출력단자 오디오 방향 표기)은 두 판이 같은 표현을 반복하므로 판단 근거가 없어 REVIEW REQUIRED로 유지한다."
+      "detail": "새 카탈로그(46쪽판) 40쪽 본문을 옛 카탈로그(48쪽판) 42쪽과 대조한 결과 공백 제외 완전히 동일한 문구다. R1(출력단자 오디오 방향 표기)은 두 판이 같은 표현을 반복하므로 판단 근거가 없어 REVIEW REQUIRED로 유지한다. → 추가: 이후 §6 판단으로 R1을 Output으로 확정했다(2026-09-27)."
     }
   ]
 }

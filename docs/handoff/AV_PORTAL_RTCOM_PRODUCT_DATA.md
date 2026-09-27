@@ -86,9 +86,9 @@ AV Portal과 같은 제외 모델을 적용했습니다(HS-88MX, HS-88M-U, HD-D1
 | 매트릭스 시리즈 | `xdm` | XDM Series | 4–12 | REVIEW REQUIRED |
 | 일체형 매트릭스 | `qms-44ux` | QMS-44UX | 29 | REVIEW REQUIRED |
 | 일체형 매트릭스 | `qms-88ux` | QMS-88UX | 30 | REVIEW REQUIRED |
+| 분배기·선택기 | `hd-104u` | HD-104U | 37 | REVIEW REQUIRED |
+| 분배기·선택기 | `hd-108u` | HD-108U | 38 | VERIFIED |
 | 분배기·선택기 | `hd-13u` | HD-13U | 36 | VERIFIED |
-| 분배기·선택기 | `hd-14u` | HD-14U | 37 | REVIEW REQUIRED |
-| 분배기·선택기 | `hd-18u` | HD-18U | 38 | VERIFIED |
 | 분배기·선택기 | `hd-210u` | HD-210U | 39 | VERIFIED |
 | 분배기·선택기 | `hd-d102u` | HD-D102U | 31 | VERIFIED |
 | 분배기·선택기 | `hds-21u` | HDS-21U | 34 | VERIFIED |
@@ -154,6 +154,7 @@ rtcom-configurator 머리글의 "AV Portal에서 제품 찾기" 링크는 AV Por
 
 ## 6. 변경 관리
 
+- **0.33 선택 필드 추가**(제품정보 글래스 디자인, `docs/handoff/PRODUCT_GLASS_REDESIGN_SPEC.md` 6-A): `lead`(01 카드 요약, `**한 곳까지**` 굵게 허용)·`subtitle`(머리 부제)·`portMap`(`{image:"Rear"|"Front", items:[{n,label,desc,x1,x2}]}`, 단자 지도 번호표 좌표)·`lineup[].rackUnits`(시리즈 메인프레임 랙 유닛 숫자)를 추가했습니다. 모두 선택 필드라 없어도 화면이 깨지지 않습니다(없으면 개요 첫 문장·io 표 기반 카드로 대신 보여줍니다). `scripts/build-product-index.cjs`가 있을 때만 형식을 검사합니다.
 - **필드 추가**는 같은 `rtcom.products.v1` 안에서 합니다. 읽는 쪽은 모르는 필드를 무시합니다.
 - **필드 삭제·의미 변경**은 `rtcom.products.v2`로 올립니다. rtcom-configurator `CHANGELOG.md`에 먼저 기록합니다.
 - **`id`는 바꾸지 않습니다.** 부득이하면 새 `id`로 추가하고, 옛 `id`는 한 버전 동안 유지하면서 `issues`에 안내합니다.
@@ -172,3 +173,9 @@ rtcom-configurator 머리글의 "AV Portal에서 제품 찾기" 링크는 AV Por
 | QA 결과 | `docs/qa/PUBLIC_PRODUCT_INFO_QA.md` |
 | 카탈로그 충돌 근거 | `docs/evidence/RTCOM_MATRIX_EVIDENCE_AND_GAPS.md` E23~E26, U09 |
 | 검증 스크립트 | `scripts/build-product-index.cjs` (`--check`) |
+
+## 선택 필드 `aliases` (0.36 이후)
+
+- 같은 제품의 다른 모델명입니다. 예: `hd-104u`의 `aliases: ["HD-14U"]`(새 실크 표기), `hd-108u`의 `aliases: ["HD-18U"]`
+- 정식 키는 계속 `model`(HD-104U·HD-108U)입니다. AV Portal에서 검색할 때 aliases도 함께 찾으면 두 이름 모두로 검색됩니다.
+- `productName`은 화면용으로 두 이름을 함께 적습니다("HD-104U (HD-14U)"). 없어도 동작합니다.

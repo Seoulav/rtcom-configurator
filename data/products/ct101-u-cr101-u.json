@@ -13,9 +13,11 @@
   ],
   "english": "HDBaseT transmitter/receiver pair extending DVI/HDMI video, stereo audio and RS-232 up to 100m over one CATx cable.",
   "korean": "HDBaseT 기술로 비디오·오디오·RS-232 신호를 CATx 케이블 한 가닥으로 최대 100m 전송하는 송·수신기다.",
+  "subtitle": "VDM Series Extender · HDBaseT 송·수신기",
+  "lead": "HDBaseT 기술로 **비디오·오디오·RS-232 신호를 CATx 케이블 한 가닥으로 최대 100m** 전송합니다.",
   "catalogPages": "21",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 21쪽의 CT101-U/CR101-U 소개와 CT101-U·CR101-U 제품사양 표에서 확인했다.",
-  "packageStatus": "REVIEW REQUIRED",
+  "packageStatus": "VERIFIED",
   "overview": "CT101-U와 CR101-U는 비디오와 오디오, RS-232 신호를 CATx(UTP/STP)를 통해 장거리 전송하기 위한 송신기와 수신기다. CT101-U는 비디오·오디오·RS-232 신호를 CATx(UTP/STP) 신호로 변환하고, CR101-U는 CATx(UTP/STP) 신호를 다시 비디오·오디오·RS-232 신호로 복원한다.\n\nHDBaseT 기술을 적용해 하나의 CATx 케이블로 최대 100m까지 전송할 수 있다.",
   "images": [
     {
@@ -229,9 +231,9 @@
       "name": "무게",
       "value": "0.27",
       "unit": "kg",
-      "condition": "CR101-U (원문 0.5 lbs)",
+      "condition": "CR101-U",
       "source": "C",
-      "verification": "REVIEW REQUIRED"
+      "verification": "VERIFIED"
     }
   ],
   "io": [
@@ -269,6 +271,17 @@
       "verification": "VERIFIED"
     },
     {
+      "group": "TX · Control",
+      "connector": "Phoenix connector(녹색, 핀 수 미기재)",
+      "signal": "RS-232",
+      "direction": "BIDIR",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "CT101-U · 커넥터 핀 수 미기재",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
       "group": "RX · Transmission",
       "connector": "RJ45 (CATx)",
       "signal": "HDBaseT",
@@ -300,6 +313,17 @@
       "condition": "CR101-U",
       "source": "C",
       "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Control",
+      "connector": "Phoenix connector(녹색, 핀 수 미기재)",
+      "signal": "RS-232",
+      "direction": "BIDIR",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "CR101-U · 커넥터 핀 수 미기재",
+      "source": "C",
+      "verification": "VERIFIED"
     }
   ],
   "related": [
@@ -315,14 +339,26 @@
       "name": "알티컴 종합 카탈로그 2026 (국문)",
       "page": "21",
       "scope": "제조사 공식 출처"
+    },
+    {
+      "code": "C2",
+      "name": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
+      "page": "21",
+      "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
     }
   ],
   "issues": [
     {
       "code": "R1",
-      "status": "REVIEW REQUIRED",
-      "title": "CR101-U 무게 환산 불일치",
-      "detail": "CR101-U 무게가 '0.5 lbs (0.27 Kg)'로 적혀 있지만 CT101-U는 같은 0.5 lbs를 0.23 Kg으로 적었다. kg 값을 그대로 두었다."
+      "status": "INFO",
+      "title": "[판단] CR101-U 무게 환산 불일치",
+      "detail": "CR101-U 무게가 '0.5 lbs (0.27 Kg)'로 적혀 있지만 CT101-U는 같은 0.5 lbs를 0.23 Kg으로 적었다. kg 값을 그대로 두었다. → 판단: kg과 lb 환산이 맞지 않아 lb 표기는 condition에서 빼고 kg 원문(0.27 kg)만 표시한다(§6 원칙 3)."
+    },
+    {
+      "code": "I3",
+      "status": "INFO",
+      "title": "46쪽판 재검증 · RS-232 단자 추가",
+      "detail": "46쪽판(C2) 21쪽을 48쪽판과 줄 단위로 대조했다. 공백 차이를 빼면 완전히 같아 사양 값은 바꾸지 않았다. 소개문·주요 기능은 '비디오·오디오·RS-232 신호를 CATx로 전송'이라고 적었지만 입출력 표에는 RS-232 단자 행이 없었다. 카탈로그 사진의 녹색 Phoenix 단자를 근거로 TX·RX 각각에 RS-232 단자 행을 추가했다. → 판단: 핀 수는 원문에 없지만 커넥터 종류(녹색 Phoenix)는 사진으로 확인되어 VERIFIED로 표시하고, condition은 '커넥터 핀 수 미기재'로 남긴다(§6)."
     },
     {
       "code": "I1",

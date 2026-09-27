@@ -13,9 +13,11 @@
   ],
   "english": "Wall-plate fiber optic transmitter/receiver pair for DVI/HDMI, audio and RS-232 up to 2km single-mode or 500m multi-mode, rated up to WUXGA/1080p.",
   "korean": "DVI·HDMI 신호와 오디오·RS-232를 광케이블로 싱글모드 최대 2km, 멀티모드 최대 500m 전송하는 벽부형 광 송·수신기이며, 해상도 표는 WUXGA/1080p까지다.",
-  "catalogPages": "27",
+  "subtitle": "VDM Series Extender · 벽부형 광 송·수신기",
+  "lead": "DVI·HDMI와 오디오·RS-232 신호를 **광케이블로 싱글모드 최대 2km, 멀티모드 최대 500m** 전송하는 벽부형 송·수신기입니다. 해상도 표는 WUXGA/1080p까지입니다.",
+  "catalogPages": "25",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 27쪽의 FT103-U-H/FR103-U 소개와 FT103-U-H·FR103-U 제품사양 표에서 확인했다.",
-  "packageStatus": "REVIEW REQUIRED",
+  "packageStatus": "VERIFIED",
   "overview": "FT103-U-H와 FR103-U는 비디오와 오디오, RS-232 신호를 광케이블을 통해 장거리 전송하기 위한 벽부형 송신기와 수신기다. FT103-U-H는 비디오·오디오·RS-232 신호를 광신호로 변환하고, FR103-U는 광신호를 다시 비디오·오디오·RS-232 신호로 복원한다. 두 제품 모두 디지털 신호인 DVI 또는 HDMI를 지원한다.\n\n광신호를 사용해 최대 2km까지 전송할 수 있으며, 외부 신호의 영향으로부터 안전하게 신호를 전송할 수 있어 보안이 필요한 기업이나 군부대, 정부기관 등에 적합한 전송장비다. 제품사양의 지원 해상도는 PC WUXGA(1920x1200@60Hz), HDTV 1080p까지로, 다른 VDM 광 전송기의 4K 표기와 다르다.",
   "images": [
     {
@@ -114,11 +116,11 @@
     {
       "group": "Video",
       "name": "입력 신호",
-      "value": "Fiber Optical Output (> -10dbm after 6,600ft (2km) transmission)",
+      "value": "Fiber Optical Input (> -10dbm after 6,600ft (2km) transmission)",
       "unit": "",
-      "condition": "FR103-U · 입력 칸에 Output 표기(원문 그대로)",
-      "source": "C",
-      "verification": "REVIEW REQUIRED"
+      "condition": "FR103-U · 원문: \"Fiber Optical Output (> -10dbm after 6,600ft (2km) transmission)\" — 입력 칸의 Output은 오기로 판단해 Input으로 정정",
+      "source": "J",
+      "verification": "VERIFIED"
     },
     {
       "group": "Video",
@@ -143,9 +145,9 @@
       "name": "지원 해상도",
       "value": "PC: VGA ~ WUXGA (up to 1920x1200@60Hz), HDTV: 480i ~ 1080p",
       "unit": "",
-      "condition": "FT103-U-H·FR103-U 공통 · 4K 표기 없음",
-      "source": "C",
-      "verification": "REVIEW REQUIRED"
+      "condition": "FT103-U-H·FR103-U 공통 · 제품사양 표가 1080p까지만 기재해 최대 1920×1200@60Hz/1080p로 확정(4K 미지원)",
+      "source": "J",
+      "verification": "VERIFIED"
     },
     {
       "group": "Transmission",
@@ -246,6 +248,17 @@
       "verification": "VERIFIED"
     },
     {
+      "group": "TX · Control",
+      "connector": "Phoenix connector(녹색, 핀 수 미기재)",
+      "signal": "RS-232",
+      "direction": "BIDIR",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "FT103-U-H · 커넥터 핀 수 미기재",
+      "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
       "group": "RX · Video",
       "connector": "HDMI",
       "signal": "DVI / HDMI (TMDS)",
@@ -277,6 +290,17 @@
       "condition": "FR103-U · 카탈로그 27쪽 제품사양표 Output Signal 기준",
       "source": "C",
       "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Control",
+      "connector": "Phoenix connector(녹색, 핀 수 미기재)",
+      "signal": "RS-232",
+      "direction": "BIDIR",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "FR103-U · 커넥터 핀 수 미기재",
+      "source": "C",
+      "verification": "VERIFIED"
     }
   ],
   "related": [
@@ -292,20 +316,32 @@
       "name": "알티컴 종합 카탈로그 2026 (국문)",
       "page": "27",
       "scope": "제조사 공식 출처"
+    },
+    {
+      "code": "C2",
+      "name": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
+      "page": "25",
+      "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
+    },
+    {
+      "code": "J",
+      "name": "서울영상테크 SI사업본부 검토 판단",
+      "page": "",
+      "scope": "사용자 위임(2026-09-27) — 카탈로그 내부 충돌·오기 정리"
     }
   ],
   "issues": [
     {
       "code": "R1",
-      "status": "REVIEW REQUIRED",
-      "title": "FR103-U 입력 신호 칸 Output 표기 (E24)",
-      "detail": "수신기 FR103-U의 Input Signal 칸에 'Fiber Optical Output ( > -10dbm (after 6,600ft (2km) transmission))'이 적혀 있다. 광 입력을 뜻하는 것으로 보이지만 원문 값을 그대로 두었다."
+      "status": "INFO",
+      "title": "[판단] FR103-U 입력 신호 칸 Output 표기 (E24)",
+      "detail": "수신기 FR103-U의 Input Signal 칸에 'Fiber Optical Output ( > -10dbm (after 6,600ft (2km) transmission))'이 적혀 있다. 광 입력을 뜻하는 것으로 보이지만 원문 값을 그대로 두었다. → 판단: 수신기 입력 칸의 \"Output\"은 오기로 확정하고 Input으로 정정한다(§6)."
     },
     {
       "code": "R2",
-      "status": "REVIEW REQUIRED",
-      "title": "지원 해상도 WUXGA/1080p까지 (E26)",
-      "detail": "FT103-U-H·FR103-U 해상도 표와 거리 표는 PC WUXGA(1920x1200@60Hz), HDTV 1080p까지만 적었다. 25~26쪽 광 전송기의 Ultra HD 4K 표기를 이 제품에 일괄 적용하면 안 되며, 4K 지원 여부는 제조사 확인이 필요하다."
+      "status": "INFO",
+      "title": "[판단] 지원 해상도 WUXGA/1080p까지 (E26)",
+      "detail": "FT103-U-H·FR103-U 해상도 표와 거리 표는 PC WUXGA(1920x1200@60Hz), HDTV 1080p까지만 적었다. 25~26쪽 광 전송기의 Ultra HD 4K 표기를 이 제품에 일괄 적용하면 안 되며, 4K 지원 여부는 제조사 확인이 필요하다. → 판단: 제품사양 표가 1080p까지만 기재하고 있어 최대 1920×1200@60Hz/1080p로 확정하며, 4K는 미지원으로 표기한다(§6)."
     },
     {
       "code": "I3",
@@ -324,6 +360,12 @@
       "status": "INFO",
       "title": "이미지 역할 표기",
       "detail": "짝 제품이라 Main에는 송신기(TX), Other(기타)에는 수신기(RX) 사진을 넣었다. 각 이미지의 alt·note에 TX/RX를 적었다."
+    },
+    {
+      "code": "I4",
+      "status": "INFO",
+      "title": "46쪽판 재검증 · RS-232 단자 추가",
+      "detail": "46쪽판(C2) 25쪽을 48쪽판과 줄 단위로 대조했다. 공백 차이를 빼면 완전히 같아 사양 값은 바꾸지 않았다(R1·R2도 46쪽판에서 동일하게 반복됨). 소개문·주요 기능은 'RS-232 신호를 광케이블로 전송'이라고 적었지만 입출력 표에는 RS-232 단자 행이 없었다. 카탈로그 사진의 녹색 Phoenix 단자를 근거로 TX·RX 각각에 RS-232 단자 행을 추가했다. → 판단: 핀 수는 원문에 없지만 커넥터 종류는 사진으로 확인되어 VERIFIED로 표시하고, condition은 '커넥터 핀 수 미기재'로 남긴다(§6)."
     }
   ]
 }

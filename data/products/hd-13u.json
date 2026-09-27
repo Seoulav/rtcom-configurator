@@ -13,7 +13,9 @@
   ],
   "english": "1x3 HDMI 2.0 18Gbps splitter supporting 4K60 4:4:4 with EDID minder",
   "korean": "4K 60Hz 4:4:4와 EDID 마인더를 지원하는 1입력 3출력 HDMI 2.0 18Gbps 분배기다.",
-  "catalogPages": "36",
+  "subtitle": "1×3 HDMI 2.0 Splitter · EDID 마인더",
+  "lead": "하나의 HDMI 입력을 **손실 없이 3개의 동일한 출력**으로 분배합니다. 4K 60Hz 4:4:4를 지원합니다.",
+  "catalogPages": "34",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 36쪽의 소개·주요기능·제품사양·크기 및 무게·제품 이미지에서 확인했다.",
   "packageStatus": "VERIFIED",
   "overview": "HD-13U는 HDMI 신호용 고성능 분배기다. True HDMI 2.0 3840x2160p 60Hz 크로마샘플링 4:4:4 해상도를 지원한다.\n\n하나의 HDMI 입력신호를 신호의 손실 없이 3개의 동일한 출력으로 분배한다. HDCP(고대역 디지털 콘텐츠 보호)와 EDID(디스플레이 식별 정보)를 완벽 지원하여 호환 이슈 없이 사용할 수 있으며, 아날로그 오디오 병합 및 추출 기능을 지원한다.",
@@ -192,6 +194,60 @@
     }
   ],
   "related": [],
+  "portMap": {
+    "image": "Rear",
+    "items": [
+      {"n": 1, "label": "HDMI IN", "desc": "소스 연결, 3개 출력으로 동일하게 분배", "x1": 136, "x2": 206},
+      {"n": 2, "label": "AUDIO IN", "desc": "3.5mm 아날로그 오디오 병합", "x1": 541, "x2": 563},
+      {"n": 3, "label": "HDMI OUT 1–3", "desc": "3개 모두 같은 영상", "x1": 237, "x2": 508},
+      {"n": 4, "label": "AUDIO OUT", "desc": "3.5mm 아날로그 오디오 추출", "x1": 581, "x2": 601},
+      {"n": 5, "label": "DC 5V", "desc": "전원 어댑터 5V 2A", "x1": 55, "x2": 100}
+    ]
+  },
+  "edidSwitch": {
+    "image": "Front",
+    "x1": 179, "y1": 75, "x2": 219, "y2": 113,
+    "label": "MODE 로터리 스위치",
+    "desc": "전면 파란색 로터리 스위치로 EDID를 선택한다. SET 버튼과 함께 쓰면 OUTPUT 1에 연결된 디스플레이의 EDID를 FLASH에 저장할 수도 있다(EDID 마인더).",
+    "default": "0 = FLASH에 저장된 외부 EDID(기본값 3840x2160p@60 PCM 2CH)",
+    "steps": [
+      {
+        "title": "외부 EDID 저장(External EDID Setting)",
+        "items": [
+          "EDID를 저장할 디스플레이를 OUTPUT 1에 연결한다.",
+          "로터리 스위치를 'F(Store External EDID)'에 맞추고 SET 버튼을 누르면 OUTPUT 1의 EDID를 읽어 FLASH에 저장한다.",
+          "로터리 스위치를 '0'번으로 돌린 뒤 전원 케이블을 1회 탈착한다."
+        ]
+      },
+      {
+        "title": "내부 EDID 지정(Internal EDID Setting)",
+        "items": [
+          "EDID를 적용할 디스플레이를 OUTPUT에 연결한다.",
+          "로터리 스위치를 원하는 EDID 번호에 맞춘다.",
+          "연결된 디스플레이가 깜빡이며 해당 EDID로 출력된다. 완전한 적용을 위해 전원 케이블을 1회 탈착한다."
+        ]
+      }
+    ],
+    "table": [
+      {"code": "0", "function": "FLASH에 저장된 외부 EDID(기본값)"},
+      {"code": "1", "function": "3840x2160p@60 PCM 2CH"},
+      {"code": "2", "function": "3840x2160p@60 Multi"},
+      {"code": "3", "function": "3840x2160p@60 Dolby"},
+      {"code": "4", "function": "3840x2160p@30 PCM 2CH"},
+      {"code": "5", "function": "3840x2160p@30 Multi"},
+      {"code": "6", "function": "3840x2160p@30 Dolby"},
+      {"code": "7", "function": "1920x1080p@60 PCM 2CH"},
+      {"code": "8", "function": "1920x1080p@60 Multi"},
+      {"code": "9", "function": "1920x1080p@60 Dolby"},
+      {"code": "A", "function": "1920x1080p@60 DVI"},
+      {"code": "B", "function": "1920x1200@60 DVI"},
+      {"code": "C", "function": "미사용(Nothing)"},
+      {"code": "D", "function": "Firmware Download Mode"},
+      {"code": "E", "function": "미사용(Nothing)"},
+      {"code": "F", "function": "외부 EDID를 FLASH에 저장(Store External EDID, OUTPUT 1번 연결 확인)"}
+    ],
+    "source": "M1"
+  },
   "sources": [
     {
       "code": "C",
@@ -204,6 +260,12 @@
       "name": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
       "page": "34",
       "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
+    },
+    {
+      "code": "M1",
+      "name": "HD-13U 사용자 매뉴얼 Ver.1.2",
+      "page": "7-8",
+      "scope": "제조사 공식 출처 — 사용자 제공 PDF(.source-materials/RTcom_Manual_HD-13U_Ver1.2.pdf, 배포 제외)"
     }
   ],
   "issues": [
@@ -224,6 +286,12 @@
       "status": "INFO",
       "title": "연결 다이어그램 출처",
       "detail": "연결 다이어그램은 처음엔 이 사이트가 입출력 데이터로 자동으로 그렸으나, 사용자가 제공한 두 번째 카탈로그(46쪽판) 34쪽에 제조사가 직접 그린 연결 다이어그램이 있어 그 이미지로 교체했다(2026-09-27)."
+    },
+    {
+      "code": "I4",
+      "status": "INFO",
+      "title": "EDID 로터리 스위치 추가",
+      "detail": "사용자가 제공한 HD-13U 매뉴얼(Ver.1.2) 7-8쪽의 전면 MODE 로터리 스위치·SET 버튼 사용법과 EDID 코드표(0~F)를 edidSwitch에 추가했다(2026-09-27). 좌표(x1·y1·x2·y2)는 hd-13u-front.webp 원본 픽셀(718×187)에서 파란색 스위치 부분을 색상으로 검출해 확인했다."
     }
   ]
 }

@@ -9,6 +9,13 @@ const read=file=>fs.readFileSync(file,'utf8');
 const runtimeScripts=['src/catalog.js','src/core.js','src/app.js','src/products.js'];
 const loadCatalog=()=>{const context={globalThis:{}};vm.runInNewContext(read('src/catalog.js'),context);return context.globalThis.RtCatalog};
 
+test('Pretendard Variable font and its OFL license are present and referenced by styles.css',()=>{
+  assert.ok(fs.existsSync('fonts/PretendardVariable.woff2'),'fonts/PretendardVariable.woff2 must exist (0.19 이후 제품정보 글래스 디자인, self-hosted font)');
+  assert.ok(fs.existsSync('fonts/OFL.txt'),'fonts/OFL.txt (SIL Open Font License) must ship alongside the font file');
+  assert.match(read('fonts/OFL.txt'),/SIL OPEN FONT LICENSE/i);
+  assert.match(read('src/styles.css'),/url\(["']?\.?\.?\/?fonts\/PretendardVariable\.woff2["']?\)\s*format\("woff2-variations"\)/);
+});
+
 test('index.html is a configurator-only page that keeps the legacy anchors',()=>{
   const html=read('index.html');
   for(const id of ['rtcom-design','matrix-configurator','print-report','rtcom-assets'])assert.match(html,new RegExp(`id="${id}"`));
@@ -96,7 +103,7 @@ test('static package ships only configurator files and redirects legacy portal U
   walk('dist');
   assert.equal(files.some(file=>file.endsWith('.pdf')),false,'catalog PDF must not be published');
   assert.equal(files.some(file=>file.startsWith('output/design/assets/library/')),false);
-  for(const file of ['index.html','.nojekyll',...runtimeScripts,'src/styles.css'])assert.ok(files.includes(file),`dist is missing ${file}`);
+  for(const file of ['index.html','.nojekyll',...runtimeScripts,'src/styles.css','fonts/PretendardVariable.woff2','fonts/OFL.txt'])assert.ok(files.includes(file),`dist is missing ${file}`);
   const html=read('dist/index.html');
   for(const [,ref] of html.matchAll(/(?:src|href)="((?:src|output)\/[^"]+)"/g))assert.ok(files.includes(ref),`dist/index.html references missing ${ref}`);
   for(const [,ref] of read('src/app.js').matchAll(/'(output\/design\/assets\/frames\/[^']+)'/g))assert.ok(files.includes(ref),`dist is missing ${ref}`);
@@ -120,7 +127,7 @@ test('public product data (0.19) is valid, brochure-level only and listed in ind
   const count=group=>index.products.filter(product=>product.group===group).length;
   assert.deepEqual({series:count('series'),integrated:count('integrated'),distribution:count('distribution'),extender:count('extender'),cable:count('cable')},{series:3,integrated:2,distribution:7,extender:11,cable:4});
   for(const model of EXCLUDED)assert.equal(index.products.some(product=>product.model===model),false,`${model} is excluded like AV Portal`);
-  for(const model of ['HD-14U','HD-18U','QMS-44UX','MR-4S'])assert.ok(index.products.some(product=>product.model===model),`missing ${model}`);
+  for(const model of ['HD-104U','HD-108U','QMS-44UX','MR-4S'])assert.ok(index.products.some(product=>product.model===model),`missing ${model}`);
   for(const product of index.products)assert.ok(product.cardImage,`${product.id} needs a card image`);
   const html=read('index.html');
   assert.match(html,/<section class="rt-products-view" aria-label="알티컴 제품정보" hidden>/);
@@ -136,7 +143,7 @@ test('public product data (0.19) is valid, brochure-level only and listed in ind
 test('configurator catalog and persistence contracts remain unchanged',()=>{
   const families=loadCatalog();
   assert.equal(Object.keys(families).length,3);
-  assert.equal(Object.values(families).reduce((sum,family)=>sum+family.models.length,0),22);
+  assert.equal(Object.values(families).reduce((sum,family)=>sum+family.models.length,0),21);
   assert.equal(Object.values(families).reduce((sum,family)=>sum+family.input.length+family.output.length,0),26);
   assert.match(read('src/app.js'),/const storageKey='rtcom\.configuration\.v1'/);
   assert.match(read('src/core.js'),/const catalogVersion = '2026-09-18-draft\.1'/);

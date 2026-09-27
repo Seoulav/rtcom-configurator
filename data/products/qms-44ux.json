@@ -13,9 +13,11 @@
   ],
   "english": "4x4 4K60 HDMI matrix switcher with seamless switching, video wall, quad view and PIP",
   "korean": "심리스 스위칭·2x2 비디오 월·쿼드 뷰·PIP 기능을 갖춘 4K 60Hz 4x4 HDMI 매트릭스 스위처다.",
-  "catalogPages": "29",
+  "subtitle": "4×4 HDMI Matrix Switcher · 심리스 스위칭",
+  "lead": "4개의 HDMI 입력을 **어떤 출력으로도 자유롭게 전환**하는 4K 60Hz 매트릭스입니다. 2×2 비디오 월·쿼드 뷰·PIP 기능을 지원합니다.",
+  "catalogPages": "27",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 29쪽의 소개·주요기능·제품사양·크기 및 무게·제품 이미지에서 확인했다.",
-  "packageStatus": "REVIEW REQUIRED",
+  "packageStatus": "VERIFIED",
   "overview": "QMS-44UX는 다재다능한 4K 60Hz Matrix Switcher다. 4x4 HDMI Matrix로서 Seamless Switching, 2x2 Video Wall, 2x2 Quad Viewer, PIP 기능을 갖추고 있다.\n\nRS-232C, LAN(TCP/IP), 전면 버튼으로 제어할 수 있다.",
   "images": [
     {
@@ -194,11 +196,11 @@
     {
       "group": "Power",
       "name": "전원공급",
-      "value": "DC 12V 2A",
+      "value": "DC 12V 5A",
       "unit": "",
-      "condition": "제품사양 표 기준. 연결도에는 +12V DC 5A로 표기",
-      "source": "C",
-      "verification": "REVIEW REQUIRED"
+      "condition": "매뉴얼 KV.04 구성품·전원 사양·연결도 라벨 세 곳이 모두 5A로 일치 · 원문: 제품사양 표 \"DC 12V 2A\"",
+      "source": "M-Q44",
+      "verification": "VERIFIED"
     },
     {
       "group": "Physical",
@@ -266,6 +268,25 @@
     }
   ],
   "related": [],
+  "videoModes": {
+    "source": "M-Q44",
+    "modes": [
+      {"name": "MATRIX", "summary": "입력 4 → 출력 4 임의 스위칭·분배, 심리스 스위칭", "detail": "1 TO 1(같은 번호끼리)·ALL(한 입력을 모든 출력으로) 버튼", "page": "20"},
+      {"name": "QUAD", "summary": "입력 4개를 분할해 한 화면에 출력(모든 출력에 같은 분할 화면). 분할 화면 하나를 ZOOM-IN으로 전체 화면 전환", "layouts": ["QUAD", "3-BOTTOM", "3-SIDE RIGHT", "3-SIDE LEFT", "CASCADE1", "4CH-POP", "2CH-SIDE", "3CH-MODE1", "3CH-MODE2", "USER MODE 1", "USER MODE 2", "USER MODE 3"], "page": "21–23"},
+      {"name": "WALL", "summary": "2×2 비디오월, 1프레임 단위 베젤 보정", "layouts": ["2×2", "2×1", "1×2", "3×1", "1×3", "4×1", "1×4", "Full"], "page": "23–24"},
+      {"name": "DUAL", "summary": "한 화면 2분할(출력 1·2, 3·4 쌍별 레이아웃)", "layouts": ["PBP", "PBP-Full", "PIP", "User Mode"], "page": "24"}
+    ]
+  },
+  "portMap": {
+    "image": "Rear",
+    "items": [
+      {"n": 1, "label": "INPUT 1–4", "desc": "HDMI 소스 4대 연결", "x1": 285, "x2": 545},
+      {"n": 2, "label": "OUTPUT 1–4", "desc": "임의의 입력을 매트릭스로 전환해 출력", "x1": 615, "x2": 882},
+      {"n": 3, "label": "RS-232C", "desc": "외부 제어", "x1": 124, "x2": 194},
+      {"n": 4, "label": "LAN", "desc": "TCP/IP 제어", "x1": 206, "x2": 247},
+      {"n": 5, "label": "DC 12V", "desc": "전원 어댑터 12V 5A", "x1": 40, "x2": 75}
+    ]
+  },
   "sources": [
     {
       "code": "C",
@@ -278,14 +299,26 @@
       "name": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
       "page": "27",
       "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
+    },
+    {
+      "code": "M-Q44",
+      "name": "알티컴 QMS-44UX 사용자 매뉴얼 KV.04",
+      "page": "3, 6, 11",
+      "scope": "사용자 제공(2026-09-27) — PDF는 저장소에 넣지 않음, 요약은 docs/evidence/QMS_VIDEO_MODES.md"
+    },
+    {
+      "code": "J",
+      "name": "서울영상테크 SI사업본부 검토 판단",
+      "page": "",
+      "scope": "사용자 위임(2026-09-27) — 카탈로그 내부 충돌·오기 정리"
     }
   ],
   "issues": [
     {
       "code": "R1",
-      "status": "REVIEW REQUIRED",
-      "title": "전원 사양 표기 불일치",
-      "detail": "제품사양 표는 전원공급을 DC 12V 2A로 적었으나 같은 쪽 연결도의 후면 라벨은 +12V DC 5A로 적혀 있다. 값은 제품사양 표 원문을 유지했다."
+      "status": "INFO",
+      "title": "[판단] 전원 사양 표기 불일치",
+      "detail": "제품사양 표는 전원공급을 DC 12V 2A로 적었으나 같은 쪽 연결도의 후면 라벨은 +12V DC 5A로 적혀 있다. 값은 제품사양 표 원문을 유지했다. → 판단: 매뉴얼(M-Q44) 구성품·전원 사양·연결도 라벨 세 곳이 모두 5A로 일치해 DC 12V 5A로 정정한다. 제품사양 표의 2A는 condition에 원문으로 남긴다(§6)."
     },
     {
       "code": "I1",

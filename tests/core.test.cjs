@@ -70,6 +70,29 @@ test('schema two XDM-12 slots migrate to the six-slot identifiers',()=>{
   assert.equal(restored.slot,'out-2');
 });
 
+test('XDM-288 saved configs restore safely as an unselected XDM chassis with a notice',()=>{
+  const legacy=core.document(configured());
+  legacy.state.model='XDM-288';
+  legacy.state.placements={'in-a':'XDM-CIS100'};
+  legacy.state.links={'in-a':{device:'XDM-CTR100 · TX',count:1,distance:'30'}};
+  legacy.state.portAssignments={};
+  legacy.state.step=4;legacy.state.maxStep=4;legacy.state.slot='in-a';
+  const restored=core.parse(JSON.stringify(legacy));
+  assert.equal(restored.family,'XDM');
+  assert.equal(restored.model,null);
+  assert.deepEqual(restored.placements,{});
+  assert.deepEqual(restored.links,{});
+  assert.deepEqual(restored.portAssignments,{});
+  assert.equal(restored.step,0);
+  assert.equal(restored.maxStep,0);
+  assert.equal(restored.slot,'in-a');
+  assert.equal(restored.notice,'XDM-288은 구성기에서 제외되었습니다. 섀시를 다시 선택하세요.');
+});
+
+test('a normal restore never carries a notice',()=>{
+  assert.equal(core.parse(JSON.stringify(core.document(configured()))).notice,undefined);
+});
+
 test('requirements from old files are intentionally discarded',()=>{
   const legacy=core.document(configured());legacy.schemaVersion=2;
   legacy.state.requirements={inputs:[{id:'old',direction:'input',signalType:'HDMI',quantity:4}],outputs:[]};
@@ -218,6 +241,59 @@ test('SPX frames expose documented slot plans, migrate logical slots and link CO
   assert.ok(issues.some(issue=>issue.code==='SPX_RX_POC'&&/POC/.test(issue.message)));
   assert.equal(Object.fromEntries(core.bom(state).map(row=>[row.model,row.quantity]))['SPX-RX'],12);
   assert.ok(!issues.some(issue=>issue.code==='SPX_PORT_SPLIT'),'M3236 uses every port of a 12-port card independently');
+});
+
+test('BLANK is a reserved placement value accepted in any family/direction slot',()=>{
+  const state=core.checkState({...core.initial(),model:'XDM-12',placements:{'in-1':'BLANK','out-1':'BLANK'}});
+  assert.equal(state.placements['in-1'],'BLANK');
+  assert.equal(state.placements['out-1'],'BLANK');
+  // 0채널: syncPorts는 BLANK 슬롯에 포트를 만들지 않는다.
+  assert.equal(Object.keys(state.portAssignments).some(key=>key.startsWith('in-1:')),false);
+});
+
+test('BLANK round-trips through document/parse and rejects a link on a blank slot',()=>{
+  const state=core.checkState({...core.initial(),model:'XDM-12',placements:{'in-1':'BLANK'}});
+  const restored=core.parse(JSON.stringify(core.document(state)));
+  assert.equal(restored.placements['in-1'],'BLANK');
+  assert.throws(()=>core.checkState({...core.initial(),model:'XDM-12',placements:{'in-1':'BLANK'},links:{'in-1':{device:'XDM-CTR100 · TX',count:1,distance:'30'}}}));
+});
+
+test('completionFor counts cards, blanks and empty slots',()=>{
+  const state=core.checkState({...core.initial(),model:'XDM-12',placements:{'in-1':'XDM-CIS100','in-2':'BLANK'}});
+  assert.deepEqual(core.completionFor(state),{cards:1,blanks:1,empty:4,total:6});
+});
+
+test('fillBlanks only fills currently-empty slots and leaves cards untouched',()=>{
+  const state=core.checkState({...core.initial(),model:'XDM-12',placements:{'in-1':'XDM-CIS100'}});
+  const filled=core.fillBlanks(state);
+  assert.equal(filled.placements['in-1'],'XDM-CIS100');
+  assert.equal(Object.values(filled.placements).filter(id=>id==='BLANK').length,5);
+  assert.deepEqual(core.completionFor(filled),{cards:1,blanks:5,empty:0,total:6});
+});
+
+test('SLOT_INCOMPLETE warns while slots are empty and clears once every slot is a card or BLANK',()=>{
+  const partial=core.checkState({...core.initial(),model:'XDM-12',placements:{'in-1':'XDM-CIS100'}});
+  const partialIssue=core.validate(partial).issues.find(issue=>issue.code==='SLOT_INCOMPLETE');
+  assert.ok(partialIssue&&partialIssue.level==='WARNING'&&/빈 슬롯 5개/.test(partialIssue.message)&&partialIssue.evidence==='사용자 결정 2026-09-27');
+  const full=core.fillBlanks(partial);
+  assert.equal(core.validate(full).issues.some(issue=>issue.code==='SLOT_INCOMPLETE'),false);
+});
+
+test('BOM includes a blank-cover row with quantity and no card row for BLANK placements',()=>{
+  const state=core.checkState({...core.initial(),model:'XDM-12',placements:{'in-1':'XDM-CIS100','in-2':'BLANK','out-1':'BLANK'}});
+  const rows=core.bom(state);
+  assert.equal(rows.some(row=>row.model==='BLANK'),false);
+  const blankRow=rows.find(row=>row.category==='마감재');
+  assert.ok(blankRow&&blankRow.quantity===2&&/블랭크 커버 \(XDM\)/.test(blankRow.model)&&/제조사 확인 필요/.test(blankRow.model));
+});
+
+test('CSV and JSON export report completion and blank quantity',()=>{
+  const state=core.checkState({...core.initial(),model:'XDM-12',placements:{'in-1':'XDM-CIS100','in-2':'BLANK'}});
+  const csv=core.csv(state);
+  assert.match(csv,/"슬롯 완성도"/);
+  assert.match(csv,/카드 1 . 블랭크 1 . 빈칸 4 \/ 전체 6/);
+  const doc=core.document(state);
+  assert.deepEqual(doc.completion,{cards:1,blanks:1,empty:4,total:6});
 });
 
 test('SPX-M810 and M1620 warn that ports 11-12 of HOS12/COS12 mirror output 10',()=>{
