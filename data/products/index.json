@@ -301,11 +301,11 @@
         "Video",
         "Extender"
       ],
-      "english": "Wall-plate fiber optic transmitter/receiver pair for DVI/HDMI, audio and RS-232 up to 2km single-mode or 500m multi-mode, rated up to WUXGA/1080p.",
-      "korean": "DVI·HDMI 신호와 오디오·RS-232를 광케이블로 싱글모드 최대 2km, 멀티모드 최대 500m 전송하는 벽부형 광 송·수신기이며, 해상도 표는 WUXGA/1080p까지다.",
+      "english": "Wall-plate fiber optic transmitter/receiver pair for HDMI (2 inputs on TX), audio and RS-232 up to 2km single-mode or 500m multi-mode, up to 4K 24/25/30Hz.",
+      "korean": "HDMI(송신기 입력 2개)와 오디오·RS-232를 광케이블로 싱글모드 최대 2km, 멀티모드 최대 500m 전송하는 벽부형 광 송·수신기이며, 최대 4K 30Hz를 지원한다.",
       "catalogPages": "25",
       "packageStatus": "VERIFIED",
-      "cardImage": "ft103-u-h-fr103-u-main.webp"
+      "cardImage": "ft103-u-h-manual-tx.webp"
     },
     {
       "id": "mr-4s",
@@ -373,7 +373,7 @@
       "korean": "HDBaseT 3.0 기술로 압축하지 않은 4K60Hz 4:4:4 HDMI 신호를 최대 100m 전송하는 1 Gang 벽부형 송·수신기다.",
       "catalogPages": "11",
       "packageStatus": "VERIFIED",
-      "cardImage": "xdm-ct103-cr103-main.webp"
+      "cardImage": "xdm-ct103-manual.webp"
     },
     {
       "id": "xdm-ctr100",

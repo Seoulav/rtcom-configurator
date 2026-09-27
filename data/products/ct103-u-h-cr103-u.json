@@ -16,7 +16,7 @@
   "subtitle": "VDM Series Extender · 벽부형 HDBaseT 송·수신기",
   "lead": "벽부형 HDBaseT 송·수신기로 **비디오·오디오·RS-232 신호를 CATx 케이블 한 가닥으로 최대 100m** 전송합니다. 수신기는 스케일링과 심리스 전환을 지원합니다.",
   "catalogPages": "22",
-  "verificationSummary": "알티컴 종합 카탈로그(2026-03) 23쪽의 CT103-U-H/CR103-U 소개와 CT103-U-H·CR103-U 제품사양 표에서 확인했다.",
+  "verificationSummary": "알티컴 종합 카탈로그(2026-03) 23쪽의 CT103-U-H/CR103-U 소개와 CT103-U-H·CR103-U 제품사양 표에서 확인했다. CR103-U는 사용자 매뉴얼(KV01) 4쪽 사양과 대조했고, CT103-U-H의 HDMI 입력 2개는 같은 -U-H 벽부형 FT-103-U-H 매뉴얼의 판넬 배치로 판단했다.",
   "packageStatus": "VERIFIED",
   "overview": "CT103-U-H와 CR103-U는 비디오와 오디오, RS-232 신호를 CATx(UTP/STP)를 통해 장거리 전송하기 위한 벽부형 송신기와 벽부형 수신기다. CT103-U-H는 비디오·오디오·RS-232 신호를 CATx(UTP/STP) 신호로 변환하고, CR103-U는 CATx(UTP/STP) 신호를 다시 비디오·오디오·RS-232 신호로 복원한다.\n\nCT103-U-H는 DVI 또는 HDMI(TMDS)와 3.5mm 스테레오 오디오 신호를 입력받고, CR103-U는 DVI 또는 HDMI 신호를 지원하며 스케일링 기능과 심리스 기능을 지원한다. HDBaseT 기술을 적용해 하나의 CATx 케이블로 최대 100m까지 전송할 수 있다.",
   "images": [
@@ -34,15 +34,15 @@
     },
     {
       "role": "Other",
-      "file": "ct103-u-h-cr103-u-perspective.webp",
-      "alt": "RTCOM CR103-U 벽부형 수신기(RX) 전면",
-      "note": "Other · RX CR103-U 카탈로그 사진(정면)",
+      "file": "cr103-u-manual.webp",
+      "alt": "RTCOM CR103-U 벽부형 수신기(RX) 앞면",
+      "note": "Other · RX CR-103-U 사용자 매뉴얼 KV01 표지 제품 사진",
       "provider": "RTCOM",
       "model": "CR103-U",
-      "source": "C",
+      "source": "M1",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "383×352"
+      "resolution": "483×475"
     }
   ],
   "imageStatuses": [
@@ -74,12 +74,23 @@
       "title": "알티컴 종합 카탈로그 2026 (국문)",
       "language": "ko",
       "note": "23쪽"
+    },
+    {
+      "type": "Manual",
+      "status": "FOUND",
+      "title": "CT-103-U / CR-103-U 사용자 매뉴얼 KV01",
+      "language": "ko",
+      "note": "CR-103-U 사양·사진 · 사용자 제공, 배포 제외"
     }
   ],
   "features": [
     {
       "text": "벽부형 송신기와 수신기로 비디오·오디오·RS-232 신호를 CATx(UTP/STP)로 장거리 전송한다.",
       "source": "C"
+    },
+    {
+      "text": "CT103-U-H는 HDMI 입력 2개를 앞면 INPUT 버튼으로 전환해 보낸다.",
+      "source": "J"
     },
     {
       "text": "HDBaseT 기술을 적용해 CATx 케이블 한 가닥으로 최대 100m 전송한다.",
@@ -94,9 +105,9 @@
     {
       "group": "Video",
       "name": "입력 신호",
-      "value": "DVI / HDMI (TMDS), 3.5mm Stereo Audio",
+      "value": "HDMI 2 Ports(INPUT 버튼으로 선택), 3.5mm Stereo Audio",
       "unit": "",
-      "condition": "CT103-U-H · 제품사양 표에 VGA 입력이 없어 DVI/HDMI(TMDS)·3.5mm로 확정. 소개문의 VGA 문구는 오기로 판단해 개요에서 제외",
+      "condition": "CT103-U-H · 카탈로그 사진의 HDMI 단자 2개와 INPUT 버튼이 같은 -U-H 벽부형 FT-103-U-H 매뉴얼(6쪽)의 HDMI1·HDMI2 배치와 같아 2포트로 판단 · 카탈로그 제품사양 표는 DVI/HDMI(TMDS)로만 적음",
       "source": "J",
       "verification": "VERIFIED"
     },
@@ -121,10 +132,10 @@
     {
       "group": "Video",
       "name": "출력 신호",
-      "value": "DVI / HDMI (TMDS)",
+      "value": "DVI / HDMI (TMDS), 3.5mm stereo audio",
       "unit": "",
-      "condition": "CR103-U",
-      "source": "C",
+      "condition": "CR103-U · 매뉴얼 4쪽(카탈로그는 DVI / HDMI만 적음)",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
@@ -139,9 +150,9 @@
     {
       "group": "Video",
       "name": "지원 해상도",
-      "value": "PC: VGA ~ WUXGA (최대 1920x1200@60Hz), HDTV: 480i ~ 1080p",
+      "value": "최대 Ultra HD 4K 4096x2160@24/25/30Hz",
       "unit": "",
-      "condition": "CT103-U-H · 해상도 표를 우선해 최대 1920×1200@60Hz/1080p로 확정. 거리 표의 Ultra HD 4K 언급은 CT101-U 문구가 잘못 옮겨진 것으로 판단",
+      "condition": "CT103-U-H · 짝 수신기 CR-103-U 매뉴얼(4쪽)과 같은 계열 FT-103-U-H 매뉴얼(4쪽)이 모두 4K 24/25/30Hz이고, 카탈로그 거리 표에도 Ultra HD 4K가 있어 4K 30Hz까지로 판단(카탈로그 해상도 표는 1080p까지만 적음)",
       "source": "J",
       "verification": "VERIFIED"
     },
@@ -150,7 +161,7 @@
       "name": "지원 해상도",
       "value": "최대 Ultra HD 4K 4096x2160@24/25/30Hz",
       "unit": "",
-      "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0 · CR103-U",
+      "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0 · CR103-U · 매뉴얼 4쪽과 같음",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -159,8 +170,8 @@
       "name": "최대 전송거리",
       "value": "100",
       "unit": "m",
-      "condition": "1920x1200@60Hz 또는 1080p 확정(4K 언급은 CT101-U 문구가 잘못 옮겨진 것으로 판단) · BELDEN CI 6522 · 330ft · CT103-U-H",
-      "source": "J",
+      "condition": "1920x1200@60Hz 또는 1080p, Ultra HD 4K · BELDEN CI 6522 · 330ft · CT103-U-H",
+      "source": "C",
       "verification": "VERIFIED"
     },
     {
@@ -204,7 +215,7 @@
       "name": "전원",
       "value": "DC +12V 2A",
       "unit": "",
-      "condition": "CT103-U-H·CR103-U 공통",
+      "condition": "CT103-U-H·CR103-U 공통 · 매뉴얼: CR-103-U 최대 15W",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -233,10 +244,10 @@
       "connector": "HDMI",
       "signal": "DVI / HDMI (TMDS)",
       "direction": "IN",
-      "quantity": "1",
+      "quantity": "2",
       "protocol": "HDMI 1.4",
-      "condition": "CT103-U-H · 카탈로그 23쪽 제품사양표 Input Signal 기준(사진에는 형태가 비슷한 단자가 2개 보이나 표에 구분이 없어 수량 1로 기록, 둘째 단자 용도 미확인)",
-      "source": "C",
+      "condition": "CT103-U-H · HDMI1·HDMI2, 앞면 INPUT 버튼으로 선택(판넬 배치가 FT-103-U-H 매뉴얼 6쪽과 같음)",
+      "source": "J",
       "verification": "VERIFIED"
     },
     {
@@ -263,12 +274,12 @@
     },
     {
       "group": "TX · Control",
-      "connector": "Phoenix connector(녹색, 핀 수 미기재)",
+      "connector": "3핀 터미널(Tx·Rx·접지)",
       "signal": "RS-232",
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
-      "condition": "CT103-U-H · 커넥터 핀 수 미기재",
+      "condition": "CT103-U-H · 앞면 RS232 단자 표기 · 매뉴얼 4쪽 3P Terminal Block(for RS-232)",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -295,14 +306,25 @@
       "verification": "VERIFIED"
     },
     {
+      "group": "RX · Audio",
+      "connector": "3.5mm stereo",
+      "signal": "Stereo Audio",
+      "direction": "OUT",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "CR103-U · 매뉴얼 4쪽 출력 신호·커넥터 표 기준(앞면 사진에는 보이지 않음)",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
       "group": "RX · Control",
-      "connector": "Phoenix connector(녹색, 핀 수 미기재)",
+      "connector": "3핀 터미널(Tx·Rx·접지)",
       "signal": "RS-232",
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
-      "condition": "CR103-U · 커넥터 핀 수 미기재",
-      "source": "C",
+      "condition": "CR103-U · 앞면 RS232 단자 표기 · 매뉴얼 4쪽 3P Terminal Block(for RS-232)",
+      "source": "M1",
       "verification": "VERIFIED"
     }
   ],
@@ -311,6 +333,105 @@
       "relation": "PART_OF_SERIES",
       "target": "vdm",
       "note": "VDM 시리즈 전송기"
+    }
+  ],
+  "portMap": [
+    {
+      "image": "Main",
+      "title": "송신기 CT103-U-H",
+      "displayWidth": 520,
+      "note": "뒷면(사진에 보이지 않음): CATx(RJ45) 출력, 전원 입력(DC +12V)",
+      "items": [
+        {
+          "n": 1,
+          "label": "HDMI IN 1",
+          "desc": "HDMI 소스 1",
+          "side": "left",
+          "x": 77,
+          "y1": 143,
+          "y2": 164
+        },
+        {
+          "n": 2,
+          "label": "HDMI IN 2",
+          "desc": "HDMI 소스 2",
+          "side": "left",
+          "x": 77,
+          "y1": 209,
+          "y2": 231
+        },
+        {
+          "n": 3,
+          "label": "INPUT 버튼",
+          "desc": "HDMI 1·2 입력 전환",
+          "x1": 148,
+          "x2": 162,
+          "side": "top",
+          "y": 120
+        },
+        {
+          "n": 4,
+          "label": "POWER · ST LED",
+          "desc": "전원 · 입력 신호 표시",
+          "x1": 241,
+          "x2": 271,
+          "side": "top",
+          "y": 104
+        },
+        {
+          "n": 5,
+          "label": "AUDIO IN",
+          "desc": "3.5mm 스테레오 오디오 입력",
+          "side": "right",
+          "x": 291,
+          "y1": 166,
+          "y2": 196
+        },
+        {
+          "n": 6,
+          "label": "RS-232",
+          "desc": "3핀(Tx·Rx·접지) · 제어 신호 전송",
+          "side": "right",
+          "x": 291,
+          "y1": 209,
+          "y2": 237
+        }
+      ]
+    },
+    {
+      "image": "Other",
+      "title": "수신기 CR103-U",
+      "displayWidth": 520,
+      "note": "뒷면(사진에 보이지 않음): CATx(RJ45) 입력, 전원 3핀 터미널(DC +12V), 3.5mm 스테레오 오디오 출력(매뉴얼 4쪽 커넥터 표 기준)",
+      "items": [
+        {
+          "n": 1,
+          "label": "HDMI OUT",
+          "desc": "디스플레이 연결(DVI/HDMI) · 스케일링·심리스 지원",
+          "x1": 117,
+          "x2": 180,
+          "side": "bottom",
+          "y": 258
+        },
+        {
+          "n": 2,
+          "label": "POWER · ST LED",
+          "desc": "전원 · 상태 표시",
+          "x1": 323,
+          "x2": 369,
+          "side": "top",
+          "y": 128
+        },
+        {
+          "n": 3,
+          "label": "RS-232",
+          "desc": "3핀(Tx·Rx·접지) · 제어 신호 수신",
+          "side": "right",
+          "x": 397,
+          "y1": 228,
+          "y2": 264
+        }
+      ]
     }
   ],
   "sources": [
@@ -331,6 +452,18 @@
       "name": "서울영상테크 SI사업본부 검토 판단",
       "page": "",
       "scope": "사용자 위임(2026-09-27) — 카탈로그 내부 충돌·오기 정리"
+    },
+    {
+      "code": "M1",
+      "name": "CT-103-U / CR-103-U 사용자 매뉴얼 KV01",
+      "page": "표지, 3–4",
+      "scope": "제조사 공식 출처 — 사용자 제공 PDF(.source-materials/RTcom_Manual_CT-CR-103-U_KV01.pdf, 배포 제외). 송신기는 VGA형 CT-103-U 기준이라 CT103-U-H에는 수신기 사양과 비교용으로만 씀"
+    },
+    {
+      "code": "M2",
+      "name": "FT-103-U-H / FR-103-U 사용자 매뉴얼 Ver.1.4",
+      "page": "6",
+      "scope": "같은 -U-H 벽부형 송신기의 판넬 배치(HDMI1·HDMI2·INPUT 버튼) 참고 — 사용자 제공 PDF, 배포 제외"
     }
   ],
   "issues": []

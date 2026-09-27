@@ -333,13 +333,21 @@
       if(!photo||!photo.resolution)return null;
       const [rw,rh]=photo.resolution.split(/[×x]/).map(Number);
       if(!rw||!rh)return null;
-      const W=680,s=W/rw,X0=40,Y0=40,H=Y0*2+rh*s;
+      // displayWidth가 있으면 그 폭(px)에 맞춰 그려서, 세로로 긴 벽부형 사진도 번호표 글씨 크기를 유지한 채 작게 보여준다(0.43).
+      const X0=40,Y0=40,W=map.displayWidth?map.displayWidth-X0*2:680,s=W/rw,H=Y0*2+rh*s;
       const px=x=>X0+x*s;
       let svgBody=`<image href="${image(photo.file)}" x="${X0}" y="${Y0}" width="${W}" height="${rh*s}"/>`;
       // 위아래 두 줄로 단자가 놓인 후면(QMS-88UX 등)은 아랫줄 단자의 괄호를 사진 아래에 그린다(side:"bottom", 0.34 검수).
       // y가 있으면 사진 가장자리 대신 그 높이(원본 px)에 괄호를 붙인다. 앞면·뒷면이 위아래로 함께 찍힌 전송기 사진용(0.42).
       const YB=Y0+rh*s;
       map.items.forEach(it=>{
+        // 벽부형처럼 단자가 세로로 쌓인 판넬은 사진 왼쪽·오른쪽에 세로 괄호를 그린다(side:"left"|"right", y1~y2, 0.43).
+        if(it.side==='left'||it.side==='right'){
+          const y1=Y0+it.y1*s,y2=Y0+it.y2*s,cy=(y1+y2)/2,dir=it.side==='left'?-1:1;
+          const E=X0+(typeof it.x==='number'?it.x:(it.side==='left'?0:rw))*s;
+          svgBody+=`<path d="M${E-dir*8} ${y1}H${E+dir*6}V${y2}H${E-dir*8}" fill="none" stroke="${COLOR_IN}" stroke-width="1.5"/><path d="M${E+dir*6} ${cy}H${E+dir*14}" stroke="${COLOR_IN}" stroke-width="1.5"/><circle cx="${E+dir*24}" cy="${cy}" r="10" fill="${COLOR_IN}"/><text x="${E+dir*24}" y="${cy+4}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">${it.n}</text>`;
+          return;
+        }
         const x1=px(it.x1),x2=px(it.x2),cx=(x1+x2)/2;
         if(it.side==='bottom'){
           const B=typeof it.y==='number'?Y0+it.y*s:YB;
@@ -351,7 +359,8 @@
       });
       const seg=map.title?`<span class="rt-pg-seg"><span class="rt-pg-on">${esc(map.title)}</span></span>`:`<span class="rt-pg-seg"><span class="${map.image==='Front'?'rt-pg-on':''}">정면</span><span class="${map.image==='Rear'?'rt-pg-on':''}">후면</span></span>`;
       const ports=`<div class="rt-pg-ports">${map.items.map(it=>`<div class="rt-pg-port"><b><span class="rt-pg-n">${it.n}</span>${esc(it.label)}</b>${esc(it.desc)}</div>`).join('')}</div>`;
-      return `${seg}<div class="rt-pg-panel"><div class="rt-pg-svg-wrap"><svg viewBox="0 0 ${W+X0*2} ${H}" width="100%" role="img" aria-label="${esc(map.title||'')} 단자 지도">${svgBody}</svg></div></div>${ports}`;
+      const note=map.note?`<p class="rt-pg-hint">${esc(map.note)}</p>`:'';
+      return `${seg}<div class="rt-pg-panel"><div class="rt-pg-svg-wrap"><svg viewBox="0 0 ${W+X0*2} ${H}" width="100%"${map.displayWidth?` style="display:block;max-width:${map.displayWidth}px;margin:0 auto"`:''} role="img" aria-label="${esc(map.title||'')} 단자 지도">${svgBody}</svg></div></div>${ports}${note}`;
     }
     function portCards(item){
       const io=item.io||[];
