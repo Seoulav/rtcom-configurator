@@ -195,6 +195,28 @@
       "condition": "",
       "source": "C",
       "verification": "VERIFIED"
+    },
+    {
+      "group": "Audio",
+      "connector": "3.5mm Stereo",
+      "signal": "Analog Stereo Audio",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "HDMI OUTPUT 1번에 병합(전면 로터리 0 + SET으로 Stereo Audio 모드) · 후면 사진 AUDIO IN, 매뉴얼 7쪽",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Audio",
+      "connector": "3.5mm Stereo",
+      "signal": "Analog Stereo Audio",
+      "direction": "OUT",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "HDMI 입력 오디오 추출 · 후면 사진 AUDIO OUT, 매뉴얼 7쪽",
+      "source": "M1",
+      "verification": "VERIFIED"
     }
   ],
   "related": [],
@@ -272,12 +294,5 @@
       "scope": "제조사 공식 출처 — 사용자 제공 PDF(.source-materials/RTcom_Manual_HD-13U_Ver1.2.pdf, 배포 제외)"
     }
   ],
-  "issues": [
-    {
-      "code": "I5",
-      "status": "INFO",
-      "title": "로터리 자주 쓰는 코드 강조",
-      "detail": "사용자 요청(2026-09-27 \"분배기에 로터리중 1,7번 bold를 줘 가장 많이쓰거든\")에 따라 EDID 코드표에서 1번(4K 60Hz)과 7번(1080p 60Hz)을 굵게 강조했다(edidSwitch.table[].highlight)."
-    }
-  ]
+  "issues": []
 }

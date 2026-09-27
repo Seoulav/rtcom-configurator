@@ -299,6 +299,92 @@
       "note": "CT104-U는 VDM CIS4-U 입력 카드, CR104-U는 COS4-U 출력 카드와 연동(U09 사용자 확인)"
     }
   ],
+  "portMap": [
+    {
+      "image": "Main",
+      "title": "송신기 CT104-U",
+      "items": [
+        {
+          "n": 1,
+          "label": "DC 12V",
+          "desc": "전원 어댑터 12V 2A",
+          "x1": 31,
+          "x2": 44,
+          "side": "bottom",
+          "y": 144
+        },
+        {
+          "n": 2,
+          "label": "HDMI IN",
+          "desc": "4K HDMI 소스 연결",
+          "x1": 69,
+          "x2": 95,
+          "side": "bottom",
+          "y": 144
+        },
+        {
+          "n": 3,
+          "label": "RS-232C",
+          "desc": "3핀 터미널(Tx·Rx·접지) · 제어 신호 전송",
+          "x1": 121,
+          "x2": 137,
+          "side": "bottom",
+          "y": 144
+        },
+        {
+          "n": 4,
+          "label": "CATx",
+          "desc": "RJ45 · 수신기 CR104-U와 CAT5e/CAT6 케이블로 연결",
+          "x1": 147,
+          "x2": 173,
+          "side": "bottom",
+          "y": 144
+        }
+      ]
+    },
+    {
+      "image": "Other",
+      "title": "수신기 CR104-U",
+      "items": [
+        {
+          "n": 1,
+          "label": "DC 12V",
+          "desc": "전원 어댑터 12V 2A",
+          "x1": 30,
+          "x2": 43,
+          "side": "bottom",
+          "y": 145
+        },
+        {
+          "n": 2,
+          "label": "HDMI OUT",
+          "desc": "4K 디스플레이 연결",
+          "x1": 68,
+          "x2": 94,
+          "side": "bottom",
+          "y": 145
+        },
+        {
+          "n": 3,
+          "label": "RS-232C",
+          "desc": "3핀 터미널(Tx·Rx·접지) · 제어 신호 수신",
+          "x1": 120,
+          "x2": 136,
+          "side": "bottom",
+          "y": 145
+        },
+        {
+          "n": 4,
+          "label": "CATx",
+          "desc": "RJ45 · 송신기 CT104-U와 CAT5e/CAT6 케이블로 연결",
+          "x1": 145,
+          "x2": 171,
+          "side": "bottom",
+          "y": 145
+        }
+      ]
+    }
+  ],
   "sources": [
     {
       "code": "C",

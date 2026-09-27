@@ -220,6 +220,48 @@
     }
   ],
   "related": [],
+  "portMap": {
+    "image": "Perspective",
+    "items": [
+      {
+        "n": 1,
+        "label": "HDMI IN",
+        "desc": "소스 연결, 2개 출력으로 동일하게 분배",
+        "x1": 257,
+        "x2": 319,
+        "side": "bottom",
+        "y": 368
+      },
+      {
+        "n": 2,
+        "label": "HDMI OUT 1·2",
+        "desc": "2개 모두 같은 영상",
+        "x1": 85,
+        "x2": 229,
+        "side": "bottom",
+        "y": 350
+      },
+      {
+        "n": 3,
+        "label": "DC 5V",
+        "desc": "전원 어댑터 5V 1A",
+        "x1": 360,
+        "x2": 386,
+        "side": "bottom",
+        "y": 398
+      },
+      {
+        "n": 4,
+        "label": "STD/TV 스위치",
+        "desc": "STD: 4K 60Hz 기본 EDID · TV: OUT 1 디스플레이 EDID 복사",
+        "x1": 348,
+        "x2": 370,
+        "side": "top",
+        "y": 178
+      }
+    ],
+    "title": "사선 · 위 앞면, 아래 뒷면"
+  },
   "sources": [
     {
       "code": "C",

@@ -52,17 +52,25 @@ function validate(product,file,ids){
   }
   if('subtitle' in product&&(typeof product.subtitle!=='string'||!product.subtitle))fail('subtitle은 비어 있지 않은 문자열이어야 함');
   if('portMap' in product){
-    const map=product.portMap;
-    if(!map||!['Rear','Front'].includes(map.image))fail('portMap.image는 Rear 또는 Front여야 함');
+    // portMap은 사진 한 장(객체) 또는 여러 장(배열, 예: 전송기 송신기·수신기 사진)을 받는다(0.42).
+    const maps=Array.isArray(product.portMap)?product.portMap:[product.portMap];
+    if(!maps.length)fail('portMap 배열이 비어 있음');
+    for(const map of maps){
+    if(!map||!['Rear','Front','Perspective','Main','Other'].includes(map.image))fail('portMap.image는 Rear·Front·Perspective·Main·Other 중 하나여야 함');
     else if(!(product.images||[]).some(image=>image.role===map.image))fail(`portMap.image(${map.image})에 해당하는 이미지가 images에 없음`);
+    if('title' in (map||{})&&(typeof map.title!=='string'||!map.title))fail('portMap.title은 비어 있지 않은 문자열이어야 함');
+    if(maps.length>1&&!map?.title)fail('portMap이 여러 장이면 각 장에 title(예: "송신기 CT104-U")이 있어야 함');
+    const photo=(product.images||[]).find(image=>image.role===map?.image),[width,height]=String(photo?.resolution||'').split(/[×x]/).map(Number);
     if(!Array.isArray(map?.items)||!map.items.length)fail('portMap.items는 비어 있지 않은 배열이어야 함');
     else for(const item of map.items){
       if(typeof item.n!=='number'||typeof item.label!=='string'||typeof item.desc!=='string'||typeof item.x1!=='number'||typeof item.x2!=='number')fail('portMap.items 항목은 n·label·desc·x1·x2를 모두 갖춰야 함');
       else if(item.x1>=item.x2)fail(`portMap.items의 x1(${item.x1})은 x2(${item.x2})보다 작아야 함`);
-      {const photo=(product.images||[]).find(image=>image.role===map?.image),width=Number(String(photo?.resolution||'').split(/[×x]/)[0]);
-       if(!width)fail(`portMap 사진(${map?.image})에 resolution(가로×세로)이 없음`);
-       else if(item.x1<0||item.x2>width)fail(`portMap.items ${item.label}의 좌표(${item.x1}~${item.x2})가 사진 폭 ${width}px를 벗어남`);}
+      if(!width)fail(`portMap 사진(${map?.image})에 resolution(가로×세로)이 없음`);
+      else if(item.x1<0||item.x2>width)fail(`portMap.items ${item.label}의 좌표(${item.x1}~${item.x2})가 사진 폭 ${width}px를 벗어남`);
       if('side' in item&&!['top','bottom'].includes(item.side))fail(`portMap.items의 side는 top 또는 bottom이어야 함(${item.side})`);
+      // y: 괄호를 붙일 사진 속 높이(원본 px). 위아래 두 면이 함께 찍힌 사진에서 면 가장자리에 괄호를 붙일 때 쓴다.
+      if('y' in item&&(typeof item.y!=='number'||item.y<0||!height||item.y>height))fail(`portMap.items ${item.label}의 y(${item.y})가 사진 높이 ${height}px 안이어야 함`);
+    }
     }
   }
   for(const entry of product.lineup||[])if('rackUnits' in entry&&(typeof entry.rackUnits!=='number'||entry.rackUnits<=0))fail(`lineup[].rackUnits는 양수여야 함(${entry.model})`);

@@ -331,8 +331,12 @@
 
     // ---- 단자 지도(03 카드). portMap이 있으면 사진 위에 번호표를 얹고, 없으면 io 표에서 뽑은 카드만 보여준다(명세 3장) ----
     function portMapDiagram(item){
-      const map=item.portMap;
-      if(!map)return null;
+      // portMap은 사진 한 장(객체) 또는 여러 장(배열, 전송기 송신기·수신기 등)이다(0.42). 장마다 사진·번호표·설명 카드를 차례로 그린다.
+      const maps=item.portMap?(Array.isArray(item.portMap)?item.portMap:[item.portMap]):[];
+      const blocks=maps.map(map=>portMapBlock(item,map)).filter(Boolean);
+      return blocks.length?blocks.join(''):null;
+    }
+    function portMapBlock(item,map){
       const photo=(item.images||[]).find(img=>img.role===map.image);
       if(!photo||!photo.resolution)return null;
       const [rw,rh]=photo.resolution.split(/[×x]/).map(Number);
@@ -341,18 +345,21 @@
       const px=x=>X0+x*s;
       let svgBody=`<image href="${image(photo.file)}" x="${X0}" y="${Y0}" width="${W}" height="${rh*s}"/>`;
       // 위아래 두 줄로 단자가 놓인 후면(QMS-88UX 등)은 아랫줄 단자의 괄호를 사진 아래에 그린다(side:"bottom", 0.34 검수).
+      // y가 있으면 사진 가장자리 대신 그 높이(원본 px)에 괄호를 붙인다. 앞면·뒷면이 위아래로 함께 찍힌 전송기 사진용(0.42).
       const YB=Y0+rh*s;
       map.items.forEach(it=>{
         const x1=px(it.x1),x2=px(it.x2),cx=(x1+x2)/2;
         if(it.side==='bottom'){
-          svgBody+=`<path d="M${x1} ${YB-8}V${YB+6}H${x2}V${YB-8}" fill="none" stroke="${COLOR_IN}" stroke-width="1.5"/><path d="M${cx} ${YB+6}V${YB+14}" stroke="${COLOR_IN}" stroke-width="1.5"/><circle cx="${cx}" cy="${YB+24}" r="10" fill="${COLOR_IN}"/><text x="${cx}" y="${YB+28}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">${it.n}</text>`;
+          const B=typeof it.y==='number'?Y0+it.y*s:YB;
+          svgBody+=`<path d="M${x1} ${B-8}V${B+6}H${x2}V${B-8}" fill="none" stroke="${COLOR_IN}" stroke-width="1.5"/><path d="M${cx} ${B+6}V${B+14}" stroke="${COLOR_IN}" stroke-width="1.5"/><circle cx="${cx}" cy="${B+24}" r="10" fill="${COLOR_IN}"/><text x="${cx}" y="${B+28}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">${it.n}</text>`;
           return;
         }
-        svgBody+=`<path d="M${x1} ${Y0+8}V${Y0-6}H${x2}V${Y0+8}" fill="none" stroke="${COLOR_IN}" stroke-width="1.5"/><path d="M${cx} ${Y0-6}V${Y0-14}" stroke="${COLOR_IN}" stroke-width="1.5"/><circle cx="${cx}" cy="${Y0-24}" r="10" fill="${COLOR_IN}"/><text x="${cx}" y="${Y0-20}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">${it.n}</text>`;
+        const B=typeof it.y==='number'?Y0+it.y*s:Y0;
+        svgBody+=`<path d="M${x1} ${B+8}V${B-6}H${x2}V${B+8}" fill="none" stroke="${COLOR_IN}" stroke-width="1.5"/><path d="M${cx} ${B-6}V${B-14}" stroke="${COLOR_IN}" stroke-width="1.5"/><circle cx="${cx}" cy="${B-24}" r="10" fill="${COLOR_IN}"/><text x="${cx}" y="${B-20}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">${it.n}</text>`;
       });
-      const seg=`<span class="rt-pg-seg"><span class="${map.image==='Front'?'rt-pg-on':''}">정면</span><span class="${map.image==='Rear'?'rt-pg-on':''}">후면</span></span>`;
+      const seg=map.title?`<span class="rt-pg-seg"><span class="rt-pg-on">${esc(map.title)}</span></span>`:`<span class="rt-pg-seg"><span class="${map.image==='Front'?'rt-pg-on':''}">정면</span><span class="${map.image==='Rear'?'rt-pg-on':''}">후면</span></span>`;
       const ports=`<div class="rt-pg-ports">${map.items.map(it=>`<div class="rt-pg-port"><b><span class="rt-pg-n">${it.n}</span>${esc(it.label)}</b>${esc(it.desc)}</div>`).join('')}</div>`;
-      return `${seg}<div class="rt-pg-panel"><div class="rt-pg-svg-wrap"><svg viewBox="0 0 ${W+X0*2} ${H}" width="100%" role="img" aria-label="단자 지도">${svgBody}</svg></div></div>${ports}`;
+      return `${seg}<div class="rt-pg-panel"><div class="rt-pg-svg-wrap"><svg viewBox="0 0 ${W+X0*2} ${H}" width="100%" role="img" aria-label="${esc(map.title||'')} 단자 지도">${svgBody}</svg></div></div>${ports}`;
     }
     function portCards(item){
       const io=item.io||[];
