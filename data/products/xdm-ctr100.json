@@ -123,7 +123,7 @@
       "name": "최대 해상도",
       "value": "4096x2160@60Hz, 3840x2160@60Hz",
       "unit": "",
-      "condition": "4:4:4 · XDM-CTR100·XDM-CTR100 PSE 공통",
+      "condition": "4:4:4",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -132,7 +132,7 @@
       "name": "최대 전송거리",
       "value": "100",
       "unit": "m",
-      "condition": "4K60Hz 4:4:4, BELDEN 10GXE02(S/FTP, CAT6A) 케이블 기준 · XDM-CTR100·XDM-CTR100 PSE 공통",
+      "condition": "4K60Hz 4:4:4, BELDEN 10GXE02(S/FTP, CAT6A) 케이블 기준",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -141,7 +141,7 @@
       "name": "최대 전송거리",
       "value": "80",
       "unit": "m",
-      "condition": "4K60Hz 4:4:4, CI6522(SF/UTP, CAT6) 케이블 사용 시 · XDM-CTR100·XDM-CTR100 PSE 공통 · 케이블별 상이",
+      "condition": "4K60Hz 4:4:4, CI6522(SF/UTP, CAT6) 케이블 사용 시 · 케이블별 상이",
       "source": "U",
       "verification": "VERIFIED"
     },
@@ -150,7 +150,7 @@
       "name": "최대 전송거리",
       "value": "150",
       "unit": "m",
-      "condition": "Long Reach 모드(딥 스위치 3번 ON), 1920x1080p · XDM-CTR100·XDM-CTR100 PSE 공통",
+      "condition": "Long Reach 모드(딥 스위치 3번 ON), 1920x1080p",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -159,7 +159,7 @@
       "name": "권장 케이블",
       "value": "CAT6a, CAT7",
       "unit": "",
-      "condition": "XDM-CTR100·XDM-CTR100 PSE 공통",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -168,7 +168,7 @@
       "name": "규격",
       "value": "HDBaseT 3.0, HDMI v2.0",
       "unit": "",
-      "condition": "XDM-CTR100·XDM-CTR100 PSE 공통",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -177,7 +177,7 @@
       "name": "HDCP",
       "value": "HDCP 2.2 support",
       "unit": "",
-      "condition": "XDM-CTR100·XDM-CTR100 PSE 공통",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -186,7 +186,7 @@
       "name": "EDID",
       "value": "Supports EDID",
       "unit": "",
-      "condition": "XDM-CTR100·XDM-CTR100 PSE 공통",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -204,7 +204,7 @@
       "name": "크기(W×D×H)",
       "value": "127.8×73.2×30.3",
       "unit": "mm",
-      "condition": "XDM-CTR100",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -213,7 +213,7 @@
       "name": "무게",
       "value": "0.28",
       "unit": "kg",
-      "condition": "XDM-CTR100 (0.62lbs)",
+      "condition": "0.62lbs",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -222,7 +222,7 @@
       "name": "전원",
       "value": "DC +12V 1A 이상",
       "unit": "",
-      "condition": "XDM-CTR100 · XDM-CTR100 PSE와 연결되면 PD 모드로 CAT 케이블에서 전원을 받아 연결하지 않음",
+      "condition": "XDM-CTR100 PSE와 연결되면 PD 모드로 CAT 케이블에서 전원을 받아 연결하지 않음",
       "source": "M1",
       "verification": "VERIFIED"
     }
