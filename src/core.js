@@ -113,7 +113,8 @@
     for (const [id,value] of Object.entries(input.placements)) {
       if (droppedLegacy.has(id)) continue;
       const target=legacySlots[id]||id;
-      if (!allowedSlots.has(target) || !family[slotDirections[target]].some(item=>item[0]===value)) fail('지원하지 않는 슬롯 또는 카드입니다.');
+      // BLANK(블랭크 커버)는 예약값으로 모든 제품군·모든 방향 슬롯에 허용한다(사용자 결정 2026-09-27). catalog.js에는 추가하지 않는다.
+      if (!allowedSlots.has(target) || (value!=='BLANK' && !family[slotDirections[target]].some(item=>item[0]===value))) fail('지원하지 않는 슬롯 또는 카드입니다.');
       if (!result.model) fail('섀시 없이 카드를 배치할 수 없습니다.');
       result.placements[target]=value;
     }
@@ -121,6 +122,7 @@
       if (droppedLegacy.has(id)) continue;
       const target=legacySlots[id]||id;
       if (!own(result.placements,target) || !plain(link)) fail('전송기에 연결된 카드가 없습니다.');
+      if (result.placements[target]==='BLANK') fail('블랭크 슬롯에는 전송기를 연결할 수 없습니다.');
       const selected=card(result,result.placements[target]);
       if (!choices(selected[0]).length || (link.device!=='' && !choices(selected[0]).includes(link.device))) fail('카드와 전송기의 연결 방향 또는 허용 관계가 일치하지 않습니다.');
       if (!Number.isInteger(link.count) || link.count<0 || link.count>selected[2] || (!link.device&&link.count!==0)) fail('전송기 수량이 카드 포트 범위를 벗어났습니다.');
@@ -157,6 +159,19 @@
     if (notice) result.notice=notice;
     return result;
   }
+  // 슬롯 완성도(순수 함수, 사용자 결정 2026-09-27): 카드·블랭크·빈칸·전체 슬롯 수.
+  function completionFor(state) {
+    let cards=0,blanks=0;
+    for (const id of Object.values(state.placements||{})) {if (id==='BLANK') blanks++; else cards++;}
+    const total=slotsFor(state).length;
+    return {cards,blanks,empty:Math.max(0,total-cards-blanks),total};
+  }
+  // 빈 슬롯만 BLANK로 채운 새 상태를 돌려준다. 이미 카드가 있는 슬롯은 건드리지 않는다.
+  function fillBlanks(state) {
+    const placements={...state.placements};
+    for (const slot of slotsFor(state)) if (!own(placements,slot.id)) placements[slot.id]='BLANK';
+    return checkState({...state,placements});
+  }
   function requirementSummary(state) {
     const rows=[];
     for (const direction of ['input','output']) {
@@ -176,6 +191,11 @@
     const add=(code,level,message,evidence='')=>issues.push({code,level,message,evidence});
     if (!state.model) add('CHASSIS_REQUIRED','ERROR','섀시를 선택해 주세요.');
     for (const direction of ['input','output']) if (!Object.entries(state.placements).some(([id])=>slotDirections[id]===direction)) add('MISSING_'+direction.toUpperCase(),'WARNING',`${direction==='input'?'입력':'출력'} 카드가 선택되지 않았습니다.`);
+    // 블랭크 커버 완성도(사용자 결정 2026-09-27): 빈 슬롯이 하나라도 있으면 경고한다. 막지는 않는다.
+    if (state.model) {
+      const completion=completionFor(state);
+      if (completion.empty) add('SLOT_INCOMPLETE','WARNING',`빈 슬롯 ${completion.empty}개에 카드나 블랭크 커버가 지정되지 않았습니다.`,'사용자 결정 2026-09-27');
+    }
     const plan=slotPlan(state.family,state.model);
     if (plan&&state.family==='XDM') add('XDM_SLOT_LAYOUT','VALID',`매뉴얼 기준으로 입력 카드 ${plan[0]}장과 출력 카드 ${plan[1]}장을 장착할 수 있습니다.`,'M01 · XDM 국문 매뉴얼 pp.7–11');
     else if (plan) add('SLOT_LAYOUT','VALID',`입력 카드 ${plan[0]}장과 출력 카드 ${plan[1]}장을 장착할 수 있습니다.`,state.family==='VDM'?'VDM 국문 매뉴얼 KV07 PDF pp.12–20':'SPX 국문 사용자 매뉴얼(250805) pp.7–9');
@@ -189,6 +209,7 @@
     }
     if (state.model==='VDM-288X') add('VDM_288X_CUSTOM','UNVERIFIED','VDM-288X는 특수 상황실용으로 커스텀 제작한 모델입니다. 슬롯 수와 배치는 제작 사양서로 확인해야 합니다.','사용자 확인(2026-09-26)');
     for (const [slot,id] of Object.entries(state.placements)) {
+      if (id==='BLANK') continue;
       const selected=card(state,id), link=state.links[slot];
       if (link?.device===psePair&&link.count) {
         add('LINK_PSE_PAIR_'+slot,'VALID',`${id} → CTR100 PSE + CTR100 ${link.count}쌍: HDMI 연장. 전원은 PSE 쪽에만 연결하고 CTR100은 전원이 필요 없습니다. 두 제품 모두 DIP 스위치로 TX/RX를 설정합니다.`,'사용자 확인(2026-09-26) · E06');
@@ -213,7 +234,9 @@
     const state=checkState(input), rows=[];
     const add=(category,model,quantity)=>{const row=rows.find(item=>item.model===model);if(row)row.quantity+=quantity;else rows.push({category,model,quantity})};
     if (state.model) add('메인프레임',state.model,1);
-    for (const [slot,id] of Object.entries(state.placements)) add(slotDirections[slot]==='input'?'입력 카드':'출력 카드',id,1);
+    for (const [slot,id] of Object.entries(state.placements)) if (id!=='BLANK') add(slotDirections[slot]==='input'?'입력 카드':'출력 카드',id,1);
+    const blanks=completionFor(state).blanks;
+    if (blanks) add('마감재',`블랭크 커버 (${state.family}) · 부품번호·기본 포함 여부 제조사 확인 필요`,blanks);
     let ctrQuantity=0;
     for (const port of Object.values(state.portAssignments)) {
       for (const [device,category] of [[port.tx,'전송기'],[port.rx,'수신기']]) {
@@ -228,7 +251,7 @@
   }
   function document(input) {
     const state=checkState(input);
-    return {schemaVersion,catalogVersion,status:'UNVERIFIED_DRAFT',savedAt:new Date().toISOString(),state,validation:validate(state),bom:bom(state)};
+    return {schemaVersion,catalogVersion,status:'UNVERIFIED_DRAFT',savedAt:new Date().toISOString(),state,validation:validate(state),bom:bom(state),completion:completionFor(state)};
   }
   function parse(text) {
     if (typeof text!=='string'||text.length>1024*1024) throw new Error('JSON 파일은 1MB 이하여야 합니다.');
@@ -241,8 +264,11 @@
   function csv(input) {
     const state=checkState(input);
     const cell=value=>'"'+String(value).replace(/^[=+@-]/,"'$&").replace(/"/g,'""')+'"';
-    const rows=[['상태','구분','모델','수량','비고'],...bom(state).map(row=>['UNVERIFIED_DRAFT',row.category,row.model,row.quantity,'미검증 검토용 · 케이블/전원/기본 포함품 미확정'])];
+    const completion=completionFor(state);
+    const rows=[['상태','구분','모델','수량','비고'],
+      ['UNVERIFIED_DRAFT','슬롯 완성도',`카드 ${completion.cards} · 블랭크 ${completion.blanks} · 빈칸 ${completion.empty} / 전체 ${completion.total}`,completion.total,completion.empty?'빈 슬롯이 있습니다. 카드나 블랭크 커버로 채워야 완성됩니다.':'모든 슬롯을 채웠습니다.'],
+      ...bom(state).map(row=>['UNVERIFIED_DRAFT',row.category,row.model,row.quantity,'미검증 검토용 · 케이블/전원/기본 포함품 미확정'])];
     return rows.map(row=>row.map(cell).join(',')).join('\r\n');
   }
-  scope.RtCore={initial,checkState,choices,defaultLink,psePair,slotPlan,syncPorts,slotsFor,requirementSummary,validate,bom,document,parse,csv,catalogVersion,schemaVersion,signalTypes};
+  scope.RtCore={initial,checkState,choices,defaultLink,psePair,slotPlan,syncPorts,slotsFor,requirementSummary,validate,bom,document,parse,csv,completionFor,fillBlanks,catalogVersion,schemaVersion,signalTypes};
 })(globalThis);

@@ -4,6 +4,19 @@
 
 ## Unreleased
 
+## 0.37.0
+
+- **매트릭스 구성기 화면 개편 — Analog Way 구조 + LED 글래스 스킨 + 블랭크 커버**(사용자 결정 2026-09-27: "모듈러 매트릭스 구성기의 기본 컨셉은 아날로그웨이와 동일", "아직 구성되지 않은 슬롯은 흰색", "블랭크 슬롯을 선택해 완성". 근거: `docs/handoff/CONFIGURATOR_AW_GLASS_SPEC.md`, `docs/audit/ANALOGWAY_CONFIGURATOR_RECHECK_2026-09-27.md`, 자세한 내용은 `docs/implementation/CONFIGURATOR_AW_GLASS.md`): 매트릭스 구성기(`#matrix-configurator`) 화면 전체를 다시 그렸습니다. 제품정보 화면(`#products`)은 손대지 않았습니다.
+  - **머리 막대**: 단계 탭 6개를 밑줄형(완료 ✓ + 파란 밑줄, 현재 파란 원 + 넓은 칸, 이후 회색)으로 바꿨습니다. 큰 제목 블록("DESIGN TOOL · MATRIX")은 지우고 `<h1>`은 접근성용으로 시각적으로 숨겼습니다(`#matrix-configurator` id는 그대로).
+  - **01 제품군 · 02 섀시**: 왼쪽 선택 목록 + 오른쪽 고정 미리보기 구조로 바꿨습니다. 02는 정면/후면 사진 세그먼트 토글을 추가했습니다.
+  - **03 카드 슬롯 + 블랭크 커버**(사용자 결정 2026-09-27): 빈 슬롯은 흰 배경(마우스 오버·포커스에서만 "+"), 블랭크 커버 그림은 팝업에서 사용자가 직접 고른 슬롯에만 표시됩니다(이전에는 모든 빈 슬롯에 자동으로 블랭크 그림이 씌워졌습니다 — 감사 문서 §2-6, 사용자 결정에 따라 없앴습니다). 범례, "남은 N칸 블랭크로 채우기" 버튼(빈 슬롯만 채우고 실행 취소 1단계로 기록), 완성 배너, 슬롯 완성도 3색 막대를 추가했습니다. 카드 선택 팝업 맨 위에 블랭크 커버(0포트) 선택지를 추가했습니다.
+  - **데이터(`core.js`, 추가만, 기존 로직 변경 없음)**: `placements`에 예약값 `"BLANK"`를 모든 제품군·방향에 허용, `completionFor(state)`·`fillBlanks(state)` 순수 함수 추가, `validate()`에 `SLOT_INCOMPLETE`(WARNING) 추가, `bom()`에 마감재(블랭크 커버) 행 추가, `csv()`·`document()`에 완성도 반영. `catalogVersion`·schema 3·`rtcom.configuration.v1`·슬롯 ID·구성기 3/21/26 계약은 바꾸지 않았습니다. **호환성**: 이전 버전(0.36 이하)은 `"BLANK"`가 든 저장 파일을 읽지 못합니다(구버전 → 신버전 방향만 호환).
+  - **주황 강조색 제거**: `src/styles.css`의 옛 `--rt-accent`(주황, 실제로는 이미 파랑 토큰에 덮여 있었음)와 리터럴 `#f4a46b` 3곳을 정리했습니다. 실제 원인은 `src/app.js`의 `applyDesign()`이 매 렌더링마다 `--rt-accent`를 인라인 스타일로 주황으로 강제 덮어쓰던 죽은 토글이었고, 이 함수를 제거했습니다.
+  - **rt-pg-\* 글래스 토큰 공유 범위 확장**: `#rtcom-design .rt-products-view`에서 `#rtcom-design`(공통 조상)으로 넓혀 구성기·제품정보·공통 머리가 같은 토큰을 두 번 선언하지 않고 공유합니다.
+  - **정리**: 죽은 화면 함수 10개(`legacyCardsView`·`cardsView`·`cardsViewV2`·`chassisVisual`·`requirementEditor`·`portEditor`·`requirementSummaryView`·`linksView`·`linksViewV2`·`reviewView`, 호출자 0 확인 후 삭제)와 CSS 규칙 167개(자동 대조 스크립트로 확인, 옛 다크 후면 패널 체계 포함)를 지웠습니다.
+  - **`scripts/e2e-smoke.cjs`**: 로컬에 playwright가 없으면 전역 설치(`npm root -g`)에서 찾도록 폴백을 추가하고, 브라우저는 `/opt/pw-browsers/chromium`을 기본으로 씁니다.
+  - **검증**: `node --test tests/*.test.cjs`(37/37, BLANK·완성도·fillBlanks·SLOT_INCOMPLETE 테스트 추가) · `node scripts/build-product-index.cjs --check`(27개) · `node scripts/package-site.cjs` · `node scripts/e2e-smoke.cjs`(전역 playwright, **72/72**, 블랭크 선택·새로고침 복원·채우기+완성 배너+실행 취소·제품군 변경 초기화 시나리오 추가) · `git diff --check`. 1280px·390px 전후 캡처로 레이아웃과 0.14–0.18 모바일 버그 재발 여부를 확인했습니다(`docs/qa/CONFIGURATOR_AW_GLASS_QA.md`). `#products/hd-210u`·`#products/xdm`은 머리글 버전 표기 한 줄을 제외하고 픽셀 단위로 동일함을 확인했습니다.
+
 ## 0.36.0
 
 - **HD-104U·HD-108U 모델명 표기 되돌림**(사용자 확인 2026-09-27, 서울영상테크 SI사업본부): "전체 카탈로그에 HD-104U, HD-108U로 나와 있으며 추후 실크만 14U·18U 변경 예정입니다." 0.24.0에서는 두 번째(46쪽) 카탈로그와 에이앤미디어(antez.co.kr) 화면의 "HD-14U"·"HD-18U" 표기를 근거로 모델명을 정정했지만, 실제로는 제품 실크(전면 인쇄 라벨)만 앞으로 14U·18U로 바뀔 예정이고 현재 정식 카탈로그 표기는 HD-104U·HD-108U입니다. id·파일명(`hd-14u`→`hd-104u`, `hd-18u`→`hd-108u`)과 이미지 파일명, `productName`·`model`·`alt` 등 본문 표기를 모두 되돌리고, 각 파일의 `issues`(I3)에 표기 이력(0.24.0 정정 → 0.36.0 재정정)을 남겼습니다. `docs/handoff/AV_PORTAL_RTCOM_PRODUCT_DATA.md`의 id·모델명도 갱신했습니다. 0.24.0 이후의 CHANGELOG·구현/QA 문서 속 "HD-14U"·"HD-18U" 언급은 그 시점의 기록이라 다시 쓰지 않았습니다.
