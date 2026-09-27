@@ -352,7 +352,9 @@
       announce(`${extension.toUpperCase()} 검토용 초안 다운로드를 요청했습니다.`);
     }
     function report(){
-      const rows=currentSlots().filter(s=>slotCard(s.id)).map(s=>{
+      // 블랭크 커버를 넣은 슬롯도 보고서에 남긴다(0.37 검수: BOM에는 수량만 있고 어느 슬롯인지 보이지 않았음).
+      const rows=currentSlots().filter(s=>slotCard(s.id)||state.placements[s.id]==='BLANK').map(s=>{
+        if(state.placements[s.id]==='BLANK')return `<tr><td>${s.label}</td><td>블랭크 커버</td><td>0</td><td>-</td><td>-</td></tr>`;
         const c=slotCard(s.id),l=state.links[s.id];
         return `<tr><td>${s.label}</td><td>${esc(c[0])}</td><td>${c[2]}</td><td>${l?.device?esc(l.device):'미지정'}</td><td>${l?.device?l.count:0}</td></tr>`;
       }).join('');
