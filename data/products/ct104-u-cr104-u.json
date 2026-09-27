@@ -140,7 +140,7 @@
     {
       "group": "Video",
       "name": "지원 해상도",
-      "value": "Up to Ultra HD 4K 4096x2160@24/25/30Hz",
+      "value": "최대 Ultra HD 4K 4096x2160@24/25/30Hz",
       "unit": "",
       "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0 · CT104-U·CR104-U 공통",
       "source": "C",
@@ -325,24 +325,5 @@
       "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
     }
   ],
-  "issues": [
-    {
-      "code": "I1",
-      "status": "INFO",
-      "title": "이미지 출처",
-      "detail": "저장소에 있던 RTCOM 제품 사진(output/design/assets/extenders)을 흰 배경 webp로 변환했다. 카탈로그 인쇄 사진과 같은 촬영본이며 해상도가 낮다."
-    },
-    {
-      "code": "I2",
-      "status": "INFO",
-      "title": "이미지 역할 표기",
-      "detail": "짝 제품이라 Main에는 송신기(TX), Other(기타)에는 수신기(RX) 사진을 넣었다. 각 이미지의 alt·note에 TX/RX를 적었다."
-    },
-    {
-      "code": "I3",
-      "status": "INFO",
-      "title": "46쪽판 재검증",
-      "detail": "46쪽판(C2) 23쪽을 48쪽판과 줄 단위로 대조했다. 공백 차이를 빼면 완전히 같아 값을 바꾸지 않았다. 이 제품은 이미 RS-232 단자 io 행(TX·Control, RX·Control)이 있어 추가 작업은 없었다."
-    }
-  ]
+  "issues": []
 }

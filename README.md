@@ -1,6 +1,6 @@
 # RTCOM Matrix Configurator
 
-**현재 버전: 0.38** · XDM·SPX·VDM 매트릭스의 프레임과 카드 슬롯을 구성하는 도구(Analog Way 구조 + LED 글래스 스킨 + 블랭크 커버, 04 전송기도 좌우 분할)와 알티컴 공개 제품정보(27종, 글래스 디자인·연결 다이어그램)를 제공합니다.
+**현재 버전: 0.39** · XDM·SPX·VDM 매트릭스의 프레임과 카드 슬롯을 구성하는 도구(Analog Way 구조 + LED 글래스 스킨 + 블랭크 커버, 04 전송기도 좌우 분할)와 알티컴 공개 제품정보(27종, 글래스 디자인·연결 다이어그램)를 제공합니다.
 
 프레임을 고르고 실제 슬롯 위치에 입력·출력 카드를 장착한 뒤, 전송기와 BOM을 검토하고 JSON·CSV·인쇄 보고서로 내보냅니다. 0.19부터 알티컴 브로셔 수준 제품정보의 원본은 이 저장소(`data/products/`)이며, 머리글의 "알티컴 제품정보" 탭에서 봅니다. 비공개 AV Portal은 이 공개 데이터를 읽기만 합니다([인계 문서](docs/handoff/AV_PORTAL_RTCOM_PRODUCT_DATA.md)). 실제 슬롯·설치 허용표와 전원·케이블 조건은 확정 전이며, 모든 내보내기는 `UNVERIFIED_DRAFT`로 표시합니다.
 
@@ -12,7 +12,7 @@
 
 외부 패키지를 설치하지 않아도 실행할 수 있습니다. 첫 화면(`/`)이 바로 구성기입니다. 0.6에서 쓰던 `/products`, `/tools/matrix-configurator` 주소로 들어오면 구성기 첫 화면으로 자동 이동합니다.
 
-GitHub Pages 공개 사이트는 [hkkim0454.github.io/rtcom-av-design](https://hkkim0454.github.io/rtcom-av-design/)에서 확인할 수 있습니다. 공개 사이트의 저장소와 원본 소스 저장소는 역할이 다르므로, 자세한 운영 규칙은 [`CLAUDE.md`](CLAUDE.md)를 확인하세요.
+GitHub Pages 공개 사이트는 [seoulav.github.io/rtcom-configurator](https://seoulav.github.io/rtcom-configurator/)에서 확인할 수 있습니다(정식 공개 주소, 사용자 결정 2026-09-27). 원래 계획했던 별도 배포 저장소 `hkkim0454/rtcom-av-design`은 현재 운영하지 않습니다. 자세한 운영 규칙은 [`CLAUDE.md`](CLAUDE.md)를 확인하세요.
 
 ## 실행 명령
 

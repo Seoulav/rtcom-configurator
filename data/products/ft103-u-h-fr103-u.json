@@ -143,7 +143,7 @@
     {
       "group": "Video",
       "name": "지원 해상도",
-      "value": "PC: VGA ~ WUXGA (up to 1920x1200@60Hz), HDTV: 480i ~ 1080p",
+      "value": "PC: VGA ~ WUXGA (최대 1920x1200@60Hz), HDTV: 480i ~ 1080p",
       "unit": "",
       "condition": "FT103-U-H·FR103-U 공통 · 제품사양 표가 1080p까지만 기재해 최대 1920×1200@60Hz/1080p로 확정(4K 미지원)",
       "source": "J",
@@ -276,7 +276,7 @@
       "direction": "IN",
       "quantity": "1",
       "protocol": "",
-      "condition": "FR103-U · 카탈로그 27쪽 제품사양표 Input Signal 기준(E24: 원문 칸 이름은 Output이나 광 입력으로 본다)",
+      "condition": "FR103-U · 카탈로그 27쪽 제품사양표 Input Signal 기준(원문 칸 이름은 Output이나 수신기의 광 입력)",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -330,42 +330,5 @@
       "scope": "사용자 위임(2026-09-27) — 카탈로그 내부 충돌·오기 정리"
     }
   ],
-  "issues": [
-    {
-      "code": "R1",
-      "status": "INFO",
-      "title": "[판단] FR103-U 입력 신호 칸 Output 표기 (E24)",
-      "detail": "수신기 FR103-U의 Input Signal 칸에 'Fiber Optical Output ( > -10dbm (after 6,600ft (2km) transmission))'이 적혀 있다. 광 입력을 뜻하는 것으로 보이지만 원문 값을 그대로 두었다. → 판단: 수신기 입력 칸의 \"Output\"은 오기로 확정하고 Input으로 정정한다(§6)."
-    },
-    {
-      "code": "R2",
-      "status": "INFO",
-      "title": "[판단] 지원 해상도 WUXGA/1080p까지 (E26)",
-      "detail": "FT103-U-H·FR103-U 해상도 표와 거리 표는 PC WUXGA(1920x1200@60Hz), HDTV 1080p까지만 적었다. 25~26쪽 광 전송기의 Ultra HD 4K 표기를 이 제품에 일괄 적용하면 안 되며, 4K 지원 여부는 제조사 확인이 필요하다. → 판단: 제품사양 표가 1080p까지만 기재하고 있어 최대 1920×1200@60Hz/1080p로 확정하며, 4K는 미지원으로 표기한다(§6)."
-    },
-    {
-      "code": "I3",
-      "status": "INFO",
-      "title": "TX 입력·광 단자는 제품사양표 기준으로 보완",
-      "detail": "FT103-U-H·FR103-U 제품사양표의 Input Signal/Output Signal 텍스트(DVI/HDMI TMDS·3.5mm Stereo Audio·Fiber Optical)를 근거로 TX 영상·오디오 입력과 광 단자 io를 수량 1로 보완했다. 광 커넥터 형식(SC/LC 등)은 원문에 없어 적지 않았다. 카탈로그 사진에는 TX 쪽에 형태가 비슷한 단자가 2개 보이는데 표·본문에 구분 설명이 없어 둘째 단자 용도는 확인하지 않았다."
-    },
-    {
-      "code": "I1",
-      "status": "INFO",
-      "title": "이미지 출처",
-      "detail": "카탈로그에 인쇄된 제품 사진을 해당 쪽에서 220dpi로 잘라냈다(도면이 아닌 사진). 원본 인쇄 사진 해상도가 낮아 확대 시 흐릴 수 있다."
-    },
-    {
-      "code": "I2",
-      "status": "INFO",
-      "title": "이미지 역할 표기",
-      "detail": "짝 제품이라 Main에는 송신기(TX), Other(기타)에는 수신기(RX) 사진을 넣었다. 각 이미지의 alt·note에 TX/RX를 적었다."
-    },
-    {
-      "code": "I4",
-      "status": "INFO",
-      "title": "46쪽판 재검증 · RS-232 단자 추가",
-      "detail": "46쪽판(C2) 25쪽을 48쪽판과 줄 단위로 대조했다. 공백 차이를 빼면 완전히 같아 사양 값은 바꾸지 않았다(R1·R2도 46쪽판에서 동일하게 반복됨). 소개문·주요 기능은 'RS-232 신호를 광케이블로 전송'이라고 적었지만 입출력 표에는 RS-232 단자 행이 없었다. 카탈로그 사진의 녹색 Phoenix 단자를 근거로 TX·RX 각각에 RS-232 단자 행을 추가했다. → 판단: 핀 수는 원문에 없지만 커넥터 종류는 사진으로 확인되어 VERIFIED로 표시하고, condition은 '커넥터 핀 수 미기재'로 남긴다(§6)."
-    }
-  ]
+  "issues": []
 }

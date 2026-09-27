@@ -325,24 +325,5 @@
       "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
     }
   ],
-  "issues": [
-    {
-      "code": "I3",
-      "status": "INFO",
-      "title": "새 카탈로그 재대조 결과",
-      "detail": "46쪽판 12쪽 XDM-FT101·XDM-FR101 소개문·제품사양 표를 48쪽판 12쪽과 줄 단위로 비교한 결과 완전히 동일했다(diff 없음). 값 변경 없음."
-    },
-    {
-      "code": "I1",
-      "status": "INFO",
-      "title": "이미지 출처",
-      "detail": "저장소에 있던 RTCOM 제품 사진(output/design/assets/extenders)을 흰 배경 webp로 변환했다. 카탈로그 인쇄 사진과 같은 촬영본이며 해상도가 낮다."
-    },
-    {
-      "code": "I2",
-      "status": "INFO",
-      "title": "이미지 역할 표기",
-      "detail": "Main에는 송신기 XDM-FT101, Other(기타) 자리에는 수신기 XDM-FR101 사진을 넣었다. Rear는 카탈로그 12쪽의 XDM-FT101 단자면 사진을 220dpi로 잘라냈다."
-    }
-  ]
+  "issues": []
 }

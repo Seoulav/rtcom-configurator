@@ -4,7 +4,15 @@
 
 ## Unreleased
 
-- 없음
+## 0.39.0
+
+- **제품 사진 확대(돋보기) 추가**(사용자 요청 "01번 위에 장비 이미지가 확대 나오게 해주고 돋보기 기능도 추가"): 제품 상세(`singleDetailView`) "01 한눈에 보기" 위에 전면·후면 사진을 큰 사진 띠로 올렸습니다(각 사진에 파란 돋보기 배지). 사진을 누르면 화면 전체를 덮는 라이트박스가 열리고, 그 안에서 사진을 다시 누르면 누른 위치를 중심으로 확대·축소됩니다(Esc나 바깥을 눌러 닫음). 라이트박스는 `.rt-products-view`가 `overflow:hidden`이라 그 안에 두면 `position:fixed`가 화면 전체를 덮지 못해, `#rtcom-design` 바로 아래에 한 번만 만들어 씁니다. e2e에 열림·확대·Esc 닫힘 검사 3개를 추가했습니다.
+- **"up to" 표기를 "최대"로 통일**(사용자 요청): 화면에 보이는 제품 사양 표(`specifications[].value`·`condition`)와 주요 기능(`features[].text`)의 영어 "up to"/"Up to"를 "최대"로 바꿨습니다(16개 파일, 20곳). 영어 요약 문장(`english` 필드)과 `issues[].detail` 안의 `원문: "..."` 원본 인용문(제조사 카탈로그 오기를 지적하는 근거라 그대로 둬야 함)은 바꾸지 않았습니다.
+- **검증**: `node --test tests/*.test.cjs`(37/37) · `node scripts/build-product-index.cjs --check`(27개) · `node scripts/package-site.cjs` · `node scripts/e2e-smoke.cjs`(전역 playwright, **82/82**, 반복 실행으로 안정적임을 확인) · `git diff --check`. Playwright로 라이트박스가 실제 뷰포트 전체를 덮는지 직접 측정해 확인했습니다.
+- **0.38.0 Opus 검수 수정(`45b5b38`)에 e2e 회귀 검사 3개 추가**(`53cda81`, 0.38.0 배포 뒤 추가라 Unreleased에 기록): PC(1280px) 흐름 한 줄(노드 세로 중심 차이 2px 이하) · PC(1280px) 목록이 미리보기보다 길 때 스크롤해도 미리보기가 8~16px에 붙어있음(sticky) · 휴대폰(390px) 흐름이 세로로 쌓임(`flex-direction:column`). "0.38 검수(Opus)" CSS 블록을 잠깐 지우고 돌려 3개 모두 FAIL(나머지 76개는 그대로 PASS)함을 확인한 뒤 복원했습니다(79/79). 기록은 `docs/qa/CONFIGURATOR_AW_GLASS_QA.md`에 있습니다.
+- **0.38.0 배포 기록**: `docs/qa/DEPLOYMENT_0.38_2026-09-27.md`(run `36303395870`, 공개 파일 182개가 로컬 배포본과 같음을 확인)
+- **정식 공개 사이트 주소 정리**(사용자 결정 2026-09-27 "추천대로"): README.md·CLAUDE.md의 공개 사이트 표기를 실제 운영 주소인 `seoulav.github.io/rtcom-configurator`로 바로잡았습니다. 계획했던 별도 배포 저장소 `hkkim0454/rtcom-av-design`은 GitHub Pages가 개설되어 있지 않아 현재 운영하지 않는다고 명시했습니다. 코드·데이터는 바뀌지 않았습니다.
+- **제품정보 "확인 사항" 대폭 정리**(사용자 요청 2026-09-27 "확인사항 너 스스로 확인해서 대폭 삭제"): 27종 118건 가운데 116건(이미지 출처·재검증 결과·다이어그램 교체 경위 같은 작업 기록과, 판단 결과가 이미 사양에 반영된 항목)을 화면에서 뺐습니다. HD-104U·HD-108U의 실크 표기 변경 예정 안내 2건만 남기고 제목을 "참고 사항"으로 바꿨습니다. HD-210U 크기는 매뉴얼(355mm, 14in와 일치)로 바로잡았고, XDM-CTR100 주요 기능에 CIS100·COS100 연결 시 전원 연결 방식을 추가했습니다. 지운 원문과 제조사 확인 목록은 `docs/audit/PRODUCT_ISSUES_ARCHIVE_2026-09-27.md`에 있습니다.
 
 ## 0.38.0
 
