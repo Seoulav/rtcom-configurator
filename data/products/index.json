@@ -100,8 +100,11 @@
     {
       "id": "hd-104u",
       "group": "distribution",
-      "productName": "HD-104U",
+      "productName": "HD-104U (HD-14U)",
       "model": "HD-104U",
+      "aliases": [
+        "HD-14U"
+      ],
       "itemType": "PRODUCT",
       "categories": [
         "영상",
@@ -117,8 +120,11 @@
     {
       "id": "hd-108u",
       "group": "distribution",
-      "productName": "HD-108U",
+      "productName": "HD-108U (HD-18U)",
       "model": "HD-108U",
+      "aliases": [
+        "HD-18U"
+      ],
       "itemType": "PRODUCT",
       "categories": [
         "영상",
