@@ -173,6 +173,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 @media(max-width:720px){#rtcom-design .rt-rack-canvas{padding:12px;border-radius:18px}#rtcom-design .rt-rack-h .rt-rack-body{grid-template-columns:1fr}#rtcom-design .rt-card-modal-head,#rtcom-design .rt-card-choice-list,#rtcom-design .rt-card-modal-foot{padding-left:14px;padding-right:14px}}
 
 
+#rtcom-design .rt-kbd{display:inline-block;margin-left:4px;padding:1px 6px;border:1px solid #cfd8e6;border-bottom-width:2px;border-radius:6px;background:#fff;font:600 11px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;color:#56627a}
 /* 0.55 카드 팝업 수량·이동, 슬롯 끌어 옮기기(사용자 요청) */
 #rtcom-design .rt-card-qty,#rtcom-design .rt-card-move{margin:14px 22px 0;padding:12px 14px;border-radius:16px;background:#f3f6fb;display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}
 #rtcom-design .rt-card-qty-label,#rtcom-design .rt-card-move label{font-size:13px;font-weight:750;color:var(--rt-ink)}
