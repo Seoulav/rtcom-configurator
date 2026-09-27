@@ -857,13 +857,9 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-spec-table th,#rtcom-design .rt-pg-spec-table td{padding-top:6px;padding-bottom:6px}
 #rtcom-design .rt-pg-spec-table td .rt-pg-note-line{margin-top:2px}
 
-/* 0.61 오디오 설정 전면 패널 그림(LED 불 켜짐) */
-#rtcom-design .rt-pg-audio-panelrow{display:flex;align-items:center;gap:8px;margin:0 0 12px}
-#rtcom-design .rt-pg-rotary-mini{flex:0 0 auto;background:#fff;padding:8px 8px 10px}
-#rtcom-design .rt-pg-rotary-mini svg{width:96px;height:96px}
-#rtcom-design .rt-pg-audio-plus{flex:0 0 auto;font-size:18px;font-weight:800;color:var(--pg-muted)}
-#rtcom-design .rt-pg-audio-panel{display:block;flex:1 1 auto;min-width:0;max-width:300px;height:auto}
-@media(max-width:720px){#rtcom-design .rt-pg-audio-panelrow{flex-wrap:wrap}#rtcom-design .rt-pg-audio-plus{display:none}#rtcom-design .rt-pg-audio-panel{flex-basis:100%;max-width:none}#rtcom-design .rt-pg-rotary-mini{flex-direction:row;gap:10px;padding:6px 12px 6px 6px;text-align:left}#rtcom-design .rt-pg-rotary-mini svg{width:84px;height:84px}}
+/* 0.61 오디오 설정 순서 그림(EDID 대표 설정 칸과 같은 모양: 로터리 → SET → LED 불 켜짐) */
+#rtcom-design .rt-pg-audio-steps{margin:0 0 14px}
+@media(max-width:720px){#rtcom-design .rt-pg-audio-steps{grid-template-columns:repeat(2,1fr)}}
 #rtcom-design .rt-pg-led-blink{animation:rt-pg-led-blink 1s steps(1,end) infinite}
 @keyframes rt-pg-led-blink{50%{fill:#2F3A31}}
 @media (prefers-reduced-motion:reduce){#rtcom-design .rt-pg-led-blink{animation:none}}

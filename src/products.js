@@ -529,7 +529,7 @@
     // ---- 전면 컨트롤 강조(EDID 로터리 스위치 등, 0.35). edidSwitch가 있을 때만 전체 폭 카드로 보여준다 ----
     // ---- EDID 로터리 대표 설정 그림(0.59, 사용자 요청 "EDID 로터리 스위치도 대표적인 것을 DIP 스위치처럼 예상 이미지 만들어봐줘") ----
     // 제품 사진과 같은 파란 16단(0~F) 로터리를 그리고, 화살표가 고른 코드를 가리키게 한다. 0이 위쪽이고 시계 방향으로 1, 2 … F 순서다.
-    // opts.name: 화면 읽기 이름(기본 "EDID 로터리", 오디오 설정은 "MODE 로터리"). opts.dark·opts.box: 어두운 패널 안에 넣을 때 쓰는 선택(현재 미사용).
+    // opts.name: 화면 읽기 이름(기본 "EDID 로터리", 오디오 설정은 "MODE 로터리").
     function rotaryGraphic(code,opts={}){
       const idx=parseInt(code,16);
       const S=112,c=S/2,labels='0123456789ABCDEF'.split('');
@@ -539,8 +539,7 @@
       body+=`<circle cx="${c}" cy="${c}" r="20" fill="#E9F2FF" stroke="#0B4FA8" stroke-width="1.5"/>`;
       const deg=idx*22.5;
       body+=`<g transform="rotate(${deg} ${c} ${c})"><rect x="${c-3}" y="${c-16}" width="6" height="32" rx="2" fill="#1C1C1E"/><path d="M${c} ${c-27}l-6 9h12z" fill="#1C1C1E"/></g>`;
-      labels.forEach((label,i)=>{const [x,y]=at(i,47);const on=i===idx;body+=on?`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="8" fill="#007AFF"/><text x="${x.toFixed(1)}" y="${(y+3.5).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">${label}</text>`:`<text x="${x.toFixed(1)}" y="${(y+3.2).toFixed(1)}" text-anchor="middle" font-size="9" font-weight="600" fill="${opts.dark?'#C7C7CC':'#8A8A8E'}">${label}</text>`;});
-      if(opts.box){const [bx,by,bs]=opts.box;return `<svg x="${bx}" y="${by}" width="${bs}" height="${bs}" viewBox="0 0 ${S} ${S}">${body}</svg>`;}
+      labels.forEach((label,i)=>{const [x,y]=at(i,47);const on=i===idx;body+=on?`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="8" fill="#007AFF"/><text x="${x.toFixed(1)}" y="${(y+3.5).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">${label}</text>`:`<text x="${x.toFixed(1)}" y="${(y+3.2).toFixed(1)}" text-anchor="middle" font-size="9" font-weight="600" fill="#8A8A8E">${label}</text>`;});
       return `<svg viewBox="0 0 ${S} ${S}" width="${S}" height="${S}" role="img" aria-label="${esc(opts.name||'EDID 로터리')} ${esc(code)}번">${body}</svg>`;
     }
     // 대표 설정: 기본값 코드(edidSwitch.default의 "0 = …" 앞 글자)와 자주 쓰는 코드(table[].highlight)를 코드 순으로 최대 4개 보여준다.
@@ -605,28 +604,30 @@
     }
     // ---- 오디오 설정(병합 MUX·추출 DEMUX 중 선택, HD-13U). 매뉴얼 문장을 "이럴 때·연결·소리가 나오는 곳·확인 방법"으로 풀어 두 칸으로 보여준다 ----
     // HDS-21U·HDS-42MU는 딥 스위치 1번으로 고르므로 이 카드 대신 딥 스위치 설정 카드에서 함께 설명한다(사용자 요청 2026-09-27).
-    // ---- 오디오 설정 전면 패널 그림(0.61, 사용자 요청 "HD-13U 07 오디오 설정 부분을 DIP 이미지처럼 불 켜짐을 만들어줘") ----
-    // 로터리를 panel.rotary.value에 맞추고 SET 버튼을 누르는 모습과, 확인용 LED(panel.target)가 깜빡이는지(mode.led "blink") 켜진 채인지("steady")를 그린다.
+    // ---- 오디오 설정 순서 그림(0.61, 사용자 요청 "DIP 이미지처럼 불 켜짐", "분배기 로터리 이미지 그대로 활용해줘, 통일감이 없어") ----
+    // EDID 설정 카드의 대표 설정 줄(rt-pg-rotary-row·rt-pg-rotary 칸, 112px 그림, 파란 글자 캡션)을 그대로 쓴다.
+    // ① MODE 로터리를 panel.rotary.value에 맞춤 → ② SET 누름 → ③④ 모드별 확인 LED(panel.target)가 깜빡임(led "blink") / 깜빡이지 않음("steady").
     // 깜빡임은 CSS 애니메이션(rt-pg-led-blink)으로 보여주고, 움직임 줄이기 설정이나 인쇄에서도 알 수 있게 LED 둘레에 빛 표시를 함께 그린다.
-    function audioPanelGraphic(panel,mode){
-      const leds=panel.leds||[];
-      // 로터리는 EDID 설정 카드의 대표 설정 그림과 똑같은 밝은 칸(rt-pg-rotary)으로 따로 두고, 어두운 패널에는 SET 버튼과 LED만 그린다(사용자 요청 2026-09-27 "이 느낌 로터리 써줘").
-      const value=String(panel.rotary?.value??'0').toUpperCase();
-      const W=250,H=92,py=8,ph=62,cy=py+ph/2-4,labelY=py+ph-8,bx=26;
-      let body=`<rect x="2" y="${py}" width="${W-4}" height="${ph}" rx="8" fill="#1C1C1E"/>`;
-      body+=`<circle cx="${bx}" cy="${cy}" r="8" fill="#48484A" stroke="#8E8E93" stroke-width="1"/><circle cx="${bx}" cy="${cy}" r="12" fill="none" stroke="#007AFF" stroke-width="2"/>`;
-      body+=`<text x="${bx}" y="${labelY}" text-anchor="middle" font-size="8.5" font-weight="800" fill="#fff">${esc(panel.button||'SET')}</text><text x="${bx}" y="${py+ph+15}" text-anchor="middle" font-size="10" font-weight="800" fill="#007AFF">누름</text>`;
-      const x0=66,gap=(W-22-x0)/Math.max(1,leds.length-1);
-      leds.forEach((label,i)=>{
-        const x=x0+i*gap,on=label===panel.target,blink=on&&mode.led==='blink';
-        if(on)body+=`<circle cx="${x}" cy="${cy}" r="10" fill="#34C759" opacity=".22"/>`;
-        if(blink)body+=`<g stroke="#34C759" stroke-width="1.6" stroke-linecap="round">${[0,60,120,180,240,300].map(a=>{const r1=8.5,r2=12.5,rad=a*Math.PI/180;return `<path d="M${(x+r1*Math.cos(rad)).toFixed(1)} ${(cy+r1*Math.sin(rad)).toFixed(1)}L${(x+r2*Math.cos(rad)).toFixed(1)} ${(cy+r2*Math.sin(rad)).toFixed(1)}"/>`}).join('')}</g>`;
-        body+=`<circle cx="${x}" cy="${cy}" r="4.5" fill="${on?'#34C759':'#2F3A31'}"${blink?' class="rt-pg-led-blink"':''}/>`;
-        body+=`<text x="${x}" y="${labelY}" text-anchor="middle" font-size="8" font-weight="${on?800:600}" fill="${on?'#fff':'#8E8E93'}">${esc(label)}</text>`;
-        if(on)body+=`<text x="${x}" y="${py+ph+15}" text-anchor="middle" font-size="10" font-weight="800" fill="${blink?'#248A3D':'#6E6E73'}">${blink?'깜빡임':'깜빡이지 않음'}</text>`;
-      });
-      const label=`${panel.rotary?.label||'MODE'} 로터리 ${value}번 + ${panel.button||'SET'} 누름 → ${panel.target} LED ${mode.led==='blink'?'깜빡임':'깜빡이지 않음'}`;
-      return `<div class="rt-pg-audio-panelrow" role="img" aria-label="${esc(label)}"><figure class="rt-pg-rotary rt-pg-rotary-mini">${rotaryGraphic(value,{name:`${panel.rotary?.label||'MODE'} 로터리`})}<figcaption><em>${esc(panel.rotary?.label||'MODE')} ${esc(value)}번</em>선택</figcaption></figure><span class="rt-pg-audio-plus" aria-hidden="true">+</span><svg class="rt-pg-audio-panel" viewBox="0 0 ${W} ${H}" aria-hidden="true">${body}</svg></div>`;
+    function setButtonGraphic(label){
+      const S=112,c=S/2;
+      const body=`<circle cx="${c}" cy="${c-4}" r="30" fill="#1C1C1E"/><circle cx="${c}" cy="${c-4}" r="15" fill="#48484A" stroke="#8E8E93" stroke-width="1.5"/><circle cx="${c}" cy="${c-4}" r="21" fill="none" stroke="#007AFF" stroke-width="3"/><path d="M${c} ${c-50}v12M${c-6} ${c-44}l6 6 6-6" fill="none" stroke="#007AFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><text x="${c}" y="${c+42}" text-anchor="middle" font-size="11" font-weight="800" fill="#1C1C1E">${esc(label)}</text>`;
+      return `<svg viewBox="0 0 ${S} ${S}" width="${S}" height="${S}" role="img" aria-label="${esc(label)} 버튼 누름">${body}</svg>`;
+    }
+    function ledGraphic(label,blink){
+      const S=112,c=S/2,cy=c-4;
+      let body=`<circle cx="${c}" cy="${cy}" r="30" fill="#1C1C1E"/><circle cx="${c}" cy="${cy}" r="18" fill="#34C759" opacity=".25"/>`;
+      if(blink)body+=`<g stroke="#34C759" stroke-width="2.2" stroke-linecap="round">${[0,45,90,135,180,225,270,315].map(a=>{const r1=14,r2=22,rad=a*Math.PI/180;return `<path d="M${(c+r1*Math.cos(rad)).toFixed(1)} ${(cy+r1*Math.sin(rad)).toFixed(1)}L${(c+r2*Math.cos(rad)).toFixed(1)} ${(cy+r2*Math.sin(rad)).toFixed(1)}"/>`}).join('')}</g>`;
+      body+=`<circle cx="${c}" cy="${cy}" r="8" fill="#34C759"${blink?' class="rt-pg-led-blink"':''}/><text x="${c}" y="${c+42}" text-anchor="middle" font-size="11" font-weight="800" fill="#1C1C1E">${esc(label)}</text>`;
+      return `<svg viewBox="0 0 ${S} ${S}" width="${S}" height="${S}" role="img" aria-label="${esc(label)} LED ${blink?'깜빡임':'깜빡이지 않음'}">${body}</svg>`;
+    }
+    function audioStepsRow(am){
+      const pn=am.panel;
+      if(!pn)return '';
+      const value=String(pn.rotary?.value??'0').toUpperCase(),rlabel=pn.rotary?.label||'MODE';
+      const tiles=[`<figure class="rt-pg-rotary">${rotaryGraphic(value,{name:`${rlabel} 로터리`})}<figcaption><em>① ${esc(value)}번</em>${esc(rlabel)} 로터리를 ${esc(value)}에 맞춤</figcaption></figure>`,
+        `<figure class="rt-pg-rotary">${setButtonGraphic(pn.button||'SET')}<figcaption><em>② ${esc(pn.button||'SET')} 누름</em>누를 때마다 병합 ↔ 추출</figcaption></figure>`,
+        ...am.modes.filter(mode=>mode.led).map(mode=>`<figure class="rt-pg-rotary rt-pg-audio-step-${mode.led}">${ledGraphic(pn.target,mode.led==='blink')}<figcaption><em>${esc(mode.title)}</em>${esc(pn.target)} LED ${mode.led==='blink'?'깜빡임':'깜빡이지 않음'}</figcaption></figure>`)];
+      return `<div class="rt-pg-rotary-row rt-pg-audio-steps" aria-label="오디오 병합·추출 전환 순서">${tiles.join('')}</div>`;
     }
     function audioMuxSection(item){
       const am=item.audioMux;
@@ -635,10 +636,10 @@
       const arrow='<svg viewBox="0 0 16 10" width="16" height="10" aria-hidden="true"><path d="M1 5h12M9 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
       return `<section class="rt-pg-card rt-pg-audio" style="margin-top:18px"><h2><span class="rt-pg-idx">${idx}</span>오디오 설정 <span class="rt-pg-note">— 병합과 추출 중 하나를 골라 쓴다</span></h2>
         ${am.howTo?`<p class="rt-pg-audio-how">${esc(am.howTo)}</p>`:''}
+        ${audioStepsRow(am)}
         <div class="rt-pg-audio-modes">${am.modes.map(mode=>`<div class="rt-pg-audio-mode rt-pg-audio-${mode.name==='MUX'?'mux':'demux'}">
           <div class="rt-pg-audio-head"><b>${esc(mode.title)}</b><small>${esc(mode.name)}${mode.setting?` · ${esc(mode.setting)}`:''}</small></div>
           ${mode.flow?.length?`<div class="rt-pg-audio-flow">${mode.flow.map(step=>`<span>${esc(step)}</span>`).join(arrow)}</div>`:''}
-          ${am.panel&&mode.led?audioPanelGraphic(am.panel,mode):''}
           <dl>${mode.rows.map(row=>`<dt>${esc(row.label)}</dt><dd>${esc(row.text)}</dd>`).join('')}</dl>
         </div>`).join('')}</div>
         ${am.note?`<p class="rt-pg-hint">※ ${esc(am.note)}</p>`:''}
