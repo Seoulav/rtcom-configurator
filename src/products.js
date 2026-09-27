@@ -524,6 +524,27 @@
     }
 
     // ---- 전면 컨트롤 강조(EDID 로터리 스위치 등, 0.35). edidSwitch가 있을 때만 전체 폭 카드로 보여준다 ----
+    // ---- EDID 로터리 대표 설정 그림(0.59, 사용자 요청 "EDID 로터리 스위치도 대표적인 것을 DIP 스위치처럼 예상 이미지 만들어봐줘") ----
+    // 제품 사진과 같은 파란 16단(0~F) 로터리를 그리고, 화살표가 고른 코드를 가리키게 한다. 0이 위쪽이고 시계 방향으로 1, 2 … F 순서다.
+    function rotaryGraphic(code){
+      const idx=parseInt(code,16);
+      const S=112,c=S/2,labels='0123456789ABCDEF'.split('');
+      const at=(i,r)=>{const a=(i*22.5-90)*Math.PI/180;return [c+r*Math.cos(a),c+r*Math.sin(a)]};
+      let body=`<circle cx="${c}" cy="${c}" r="34" fill="#1E7BE6"/><circle cx="${c}" cy="${c}" r="34" fill="none" stroke="#0B4FA8" stroke-width="2"/>`;
+      for(let i=0;i<16;i++){const [x1,y1]=at(i,30),[x2,y2]=at(i,34);body+=`<path d="M${x1.toFixed(1)} ${y1.toFixed(1)}L${x2.toFixed(1)} ${y2.toFixed(1)}" stroke="#0B4FA8" stroke-width="1.4"/>`;}
+      body+=`<circle cx="${c}" cy="${c}" r="20" fill="#E9F2FF" stroke="#0B4FA8" stroke-width="1.5"/>`;
+      const deg=idx*22.5;
+      body+=`<g transform="rotate(${deg} ${c} ${c})"><rect x="${c-3}" y="${c-16}" width="6" height="32" rx="2" fill="#1C1C1E"/><path d="M${c} ${c-27}l-6 9h12z" fill="#1C1C1E"/></g>`;
+      labels.forEach((label,i)=>{const [x,y]=at(i,47);const on=i===idx;body+=on?`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="8" fill="#007AFF"/><text x="${x.toFixed(1)}" y="${(y+3.5).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">${label}</text>`:`<text x="${x.toFixed(1)}" y="${(y+3.2).toFixed(1)}" text-anchor="middle" font-size="9" font-weight="600" fill="#8A8A8E">${label}</text>`;});
+      return `<svg viewBox="0 0 ${S} ${S}" width="${S}" height="${S}" role="img" aria-label="EDID 로터리 ${esc(code)}번">${body}</svg>`;
+    }
+    // 대표 설정: 기본값 코드(edidSwitch.default의 "0 = …" 앞 글자)와 자주 쓰는 코드(table[].highlight)를 코드 순으로 최대 4개 보여준다.
+    function edidExamples(es){
+      const def=(String(es.default||'').match(/^\s*([0-9A-F])\s*=/i)||[])[1]?.toUpperCase();
+      const picks=es.table.filter(row=>row.highlight||String(row.code).toUpperCase()===def).slice(0,4);
+      if(!picks.length)return '';
+      return `<div class="rt-pg-rotary-row" aria-label="EDID 로터리 대표 설정">${picks.map(row=>`<figure class="rt-pg-rotary${String(row.code).toUpperCase()===def?' is-default':''}">${rotaryGraphic(String(row.code).toUpperCase())}<figcaption><em>${esc(row.code)}번${String(row.code).toUpperCase()===def?' · 기본값':''}</em>${esc(row.function)}</figcaption></figure>`).join('')}</div>`;
+    }
     function edidSwitchSection(item){
       const es=item.edidSwitch;
       if(!es||!es.table?.length)return '';
@@ -546,6 +567,7 @@
           <div class="rt-pg-edid-body">
             ${es.desc?`<p class="rt-pg-edid-desc">${esc(es.desc)}</p>`:''}
             ${es.default?`<p class="rt-pg-hint"><span class="rt-pg-pill">기본값 — ${esc(es.default)}</span></p>`:''}
+            ${edidExamples(es)}
             ${stepsHtml?`<div class="rt-pg-edid-steps">${stepsHtml}</div>`:''}
             ${codeTableHtml}
           </div>
