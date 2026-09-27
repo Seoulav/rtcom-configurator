@@ -104,8 +104,8 @@
       "source": "C"
     },
     {
-      "text": "스마트 EDID, STP(4K60Hz) 모드, TV(OUT1 복사) 모드 지원",
-      "source": "C"
+      "text": "스마트 EDID 지원(내장 EDID 사용 또는 출력 1번에 연결된 디스플레이의 EDID 그대로 전달 중 선택)",
+      "source": "U"
     },
     {
       "text": "설치가 쉬운 컴팩트 구조 지원",
@@ -274,6 +274,12 @@
       "name": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
       "page": "29",
       "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
+    },
+    {
+      "code": "U",
+      "name": "서울영상테크 SI사업본부 확인",
+      "page": "",
+      "scope": "사용자 확인(2026-09-28) — 카탈로그 원문 \"Smart EDID, STP(4K60Hz) mode and TV(copy OUT1) Mode\"를 내장 EDID·출력 1번 EDID 패스스루 선택 기능으로 알기 쉽게 정리"
     }
   ],
   "issues": []
