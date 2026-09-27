@@ -102,6 +102,22 @@
     {
       "text": "EDID 마인더 기능: 외부 연결된 디스플레이 EDID를 저장하고 내부 저장된 EDID를 사용할 수 있다.",
       "source": "C"
+    },
+    {
+      "text": "전면 딥 스위치 1번으로 오디오 소스를 고른다. ON이면 3.5mm 스테레오 입력을 HDMI 신호에 병합해 모든 출력으로 보내고, OFF이면 HDMI에 실린 원래 오디오를 그대로 보낸다.",
+      "source": "M-HD210"
+    },
+    {
+      "text": "전면 딥 스위치 2번으로 DDC 동작 방식을 고른다. ON이면 DDC Level Shifter, OFF이면 DDC Buffer 모드다.",
+      "source": "M-HD210"
+    },
+    {
+      "text": "전면 파란색 로터리 스위치로 EDID를 고른다. F에 두면 OUTPUT 1에 연결한 디스플레이의 EDID를 FLASH에 저장하고, 0에 두면 저장한 EDID를 쓴다. 1~B는 내장 EDID(4K60·4K30·1080p60, PCM 2CH·Multi·Dolby, DVI)다.",
+      "source": "M-HD210"
+    },
+    {
+      "text": "두 입력 중 한 곳에만 신호가 있으면 신호가 있는 채널을 자동으로 선택한다.",
+      "source": "M-HD210"
     }
   ],
   "specifications": [
@@ -167,6 +183,33 @@
       "condition": "",
       "source": "C",
       "verification": "VERIFIED"
+    },
+    {
+      "group": "Control",
+      "name": "딥 스위치 1 · 오디오",
+      "value": "ON: 3.5mm Stereo Audio 병합 / OFF: HDMI Audio",
+      "unit": "",
+      "condition": "전면 · 매뉴얼 7쪽",
+      "source": "M-HD210",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Control",
+      "name": "딥 스위치 2 · DDC",
+      "value": "ON: DDC Level Shifter / OFF: DDC Buffer",
+      "unit": "",
+      "condition": "전면 · 매뉴얼 7쪽",
+      "source": "M-HD210",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Control",
+      "name": "EDID 로터리 스위치",
+      "value": "0: 저장한 외부 EDID · 1~B: 내장 EDID · F: OUTPUT 1 디스플레이 EDID 저장",
+      "unit": "",
+      "condition": "전면 파란색 로터리 · 기본값 1920×1080p 2CH · 설정 뒤 전원 케이블 1회 탈착 · 매뉴얼 8쪽",
+      "source": "M-HD210",
+      "verification": "VERIFIED"
     }
   ],
   "io": [
@@ -190,6 +233,17 @@
       "protocol": "",
       "condition": "",
       "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Audio",
+      "connector": "3.5mm Stereo",
+      "signal": "Analog Stereo Audio",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "HDMI 신호에 병합(전면 딥 스위치 1번 ON) · 매뉴얼 4쪽 입력 신호 \"3.5mm Stereo 1 port\", 후면 사진 AUDIO IN",
+      "source": "M-HD210",
       "verification": "VERIFIED"
     }
   ],
@@ -215,6 +269,12 @@
       "name": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
       "page": "37",
       "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
+    },
+    {
+      "code": "M-HD210",
+      "name": "HD-210U 사용자 매뉴얼 Ver.1.2",
+      "page": "6–8",
+      "scope": "제조사 공식 출처(사용자 제공 2026-09-27)"
     }
   ],
   "issues": [
@@ -241,6 +301,18 @@
       "status": "INFO",
       "title": "연결 다이어그램 출처",
       "detail": "연결 다이어그램은 처음엔 이 사이트가 입출력 데이터로 자동으로 그렸으나, 사용자가 제공한 두 번째 카탈로그(46쪽판) 37쪽에 제조사가 직접 그린 연결 다이어그램이 있어 그 이미지로 교체했다(2026-09-27)."
+    },
+    {
+      "code": "I5",
+      "status": "INFO",
+      "title": "전면 설정 스위치(매뉴얼 추가)",
+      "detail": "카탈로그에는 없는 딥 스위치 1·2번(오디오 병합, DDC 모드)과 EDID 로터리 스위치 설정을 HD-210U 사용자 매뉴얼 Ver.1.2 6~8쪽에서 옮겼다(출처 M-HD210). 매뉴얼은 두 DDC 모드를 언제 쓰는지 설명하지 않는다. 일반적으로는 기본값 Buffer(OFF)로 쓰고, 특정 기기에서 HDCP 인증 문제(무화면·깜빡임)가 생길 때 Level Shifter(ON)를 시험한다. 이 권장은 제조사 확인 전이라 사양 값에는 넣지 않았다."
+    },
+    {
+      "code": "I6",
+      "status": "INFO",
+      "title": "크기 표기 차이(카탈로그 335mm, 매뉴얼 355mm)",
+      "detail": "카탈로그 46쪽판 37쪽은 가로 335mm, 매뉴얼 Ver.1.2 4쪽 일반 사양표는 355 x 85.6 x 30 mm(14 x 3.4 x 1.2in)로 적었다. 14in는 약 356mm라 매뉴얼 값이 맞을 가능성이 있지만, 사양 값은 카탈로그를 유지하고 차이만 기록한다."
     }
   ]
 }

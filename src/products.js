@@ -144,7 +144,9 @@
       // 오디오 입력은 io(Audio 그룹)에 있으면 그것을, 없으면 overview의 "오디오 병합/삽입" 문구를 근거로 인정한다(HD-210U·HD-13U 등 이미 개요에 있는 사실).
       const audioIn=io.find(port=>port.direction==='IN'&&port.group==='Audio')||(/오디오\s*(병합|삽입)/.test(item.overview||'')?{signal:'Analog Audio'}:null);
       // 입력·출력이 모두 여럿이면 매트릭스 전환(각 출력이 독립), 출력이 1개면 여러 입력 중 하나를 고르는 선택기다.
-      const isMatrix=inN>1&&outN>1;
+      // 입출력이 둘 이상이라고 매트릭스인 것은 아니다(HD-210U는 2입력 중 1개를 골라 10출력에 같은 영상을 보내는 분배기). 0.34 검수에서
+      // 입출력 수 기준(inN>1&&outN>1)을 되돌려, 일체형 매트릭스이거나 제품 문구에 매트릭스라고 적힌 경우(HDS-42MU "4x2 Matrix Switcher")만 매트릭스로 본다.
+      const isMatrix=inN>1&&outN>1&&(item.group==='integrated'||/matrix|매트릭스/i.test([item.english,item.korean,item.overview,...(item.features||[]).map(feature=>feature.text)].join(' ')));
       const A=COLOR_IN,V='#5E5CE6',P=COLOR_OUT,PI='#8944AB',M='#8A8A8E';
       const sigName=(videoIn.connector.match(/^[A-Za-z]+/)||['HDMI'])[0];
 
@@ -169,13 +171,13 @@
           const cy=y+chipH/2;
           bodyMarkup+=`<path d="M${leftX+chipW} ${cy}C${leftX+chipW+32} ${cy} ${leftX+chipW+32} ${midY} ${nodeX-22} ${midY}" fill="none" stroke="${A}" stroke-width="3"/>`;
         });
-        if(audioIn)bodyMarkup+=`<path d="M${leftX+chipW} ${audioY+audioH/2}C${leftX+chipW+42} ${audioY+audioH/2} ${leftX+chipW+52} ${midY+42} ${nodeX} ${midY+42}" fill="none" stroke="${M}" stroke-width="1.8" stroke-dasharray="4 3"/>`;
+        if(audioIn){const joinY=isMatrix?midY+Math.max(52,chipYs.length*(chipH+chipVGap)-chipVGap)/2:midY+21;bodyMarkup+=`<path d="M${leftX+chipW} ${audioY+audioH/2}C${leftX+chipW+42} ${audioY+audioH/2} ${nodeX} ${audioY+audioH/2} ${nodeX} ${joinY}" fill="none" stroke="${M}" stroke-width="1.8" stroke-dasharray="4 3"/>`;}
         if(isMatrix){
           const boxW=68,boxH=Math.max(52,chipYs.length*(chipH+chipVGap)-chipVGap);
           bodyMarkup+=`<rect x="${nodeX-boxW/2}" y="${midY-boxH/2}" width="${boxW}" height="${boxH}" rx="14" fill="#fff" stroke="${A}" stroke-width="3"/><text x="${nodeX}" y="${midY+5}" text-anchor="middle" font-size="12" font-weight="700" fill="${A}">매트릭스</text>`;
           nodeRight=nodeX+boxW/2;
         }else{
-          bodyMarkup+=`<circle cx="${nodeX}" cy="${midY}" r="21" fill="#fff" stroke="${A}" stroke-width="3"/><path d="M${nodeX-10} ${midY}h20M${nodeX+4} ${midY-7}l7 7-7 7" fill="none" stroke="${A}" stroke-width="2.6" stroke-linecap="round"/><text x="${nodeX}" y="${midY+41}" text-anchor="middle" font-size="11" font-weight="600" fill="${M}">${inN}개 중 1개 선택</text>`;
+          bodyMarkup+=`<circle cx="${nodeX}" cy="${midY}" r="21" fill="#fff" stroke="${A}" stroke-width="3"/><path d="M${nodeX-10} ${midY}h20M${nodeX+4} ${midY-7}l7 7-7 7" fill="none" stroke="${A}" stroke-width="2.6" stroke-linecap="round"/><text x="${nodeX}" y="${audioIn?midY-31:midY+41}" text-anchor="middle" font-size="11" font-weight="600" fill="${M}">${inN}개 중 1개 선택</text>`;
           nodeRight=nodeX+21;
         }
       }else{
@@ -209,8 +211,8 @@
         const mv=multiview.includes(i+1);
         bodyMarkup+=`<rect x="${x}" y="${y}" width="${cellW}" height="${cellH}" rx="4" fill="${mv?'#F3EEFF':'#fff'}" stroke="${P}" stroke-width="1.8"/>${mv?`<path d="M${x+cellW/2} ${y+2}V${y+cellH-2}M${x+2} ${y+cellH/2}H${x+cellW-2}" stroke="${P}" stroke-width="1" opacity=".55"/>`:''}<path d="M${x+cellW/2} ${y+cellH}v5M${x+cellW/2-7} ${y+cellH+6}h14" stroke="${P}" stroke-width="1.6"/><text x="${x+cellW/2}" y="${y+cellH/2+3.5}" text-anchor="middle" font-size="9" font-weight="700" fill="${PI}">${i+1}</text>`;
       }
-      const outCaption=outTotal>outN?`OUT 1–${outN} 외 ${outTotal-outN}개`:`OUT 1–${outN}`;
-      const sameSignal=isMatrix?'독립 출력':'같은 영상';
+      const outCaption=outTotal>outN?`OUT 1–${outN} 외 ${outTotal-outN}개`:outN===1?'OUT':`OUT 1–${outN}`;
+      const sameSignal=outN===1?'선택한 입력 출력':isMatrix?'독립 출력':'같은 영상';
       const matrixCount=outN-multiview.length;
       const captionText=multiview.length?`OUT 1–${matrixCount} 매트릭스 · ${multiview.join('·')} 멀티뷰`:`${outCaption} · ${sameSignal}`;
       bodyMarkup+=`<text x="${panelX+panelW/2}" y="${panelY+panelH+16}" text-anchor="middle" font-size="11.5" font-weight="700" fill="${PI}">${svgEsc(captionText)}</text>`;
