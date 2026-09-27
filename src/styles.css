@@ -629,6 +629,52 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
   #rtcom-design .rt-cg-split{grid-template-columns:1fr}
   #rtcom-design .rt-cg-preview{order:-1;max-height:260px;border-left:0;border-bottom:1px solid var(--pg-line,rgba(60,60,67,.12))}
   #rtcom-design .rt-cg-preview img{max-height:190px}
+  /* 04 연결 흐름은 사진 한 장(01/02)보다 세로로 쉽게 길어져서 260px 안에 못 들어가면 위아래로 넘친다(justify-content:center 특성상 위로도 샌다).
+     이 표시가 있을 때만 높이 제한을 풀고 위에서부터 쌓는다. */
+  #rtcom-design .rt-cg-preview.rt-link-preview{max-height:none;justify-content:flex-start;padding-top:24px}
+}
+
+/* 04 전송기 전용 — rt-cg-split/rt-cg-list/rt-cg-row/rt-cg-preview/rt-cg-dot/rt-cg-seg 틀은 위 2-2 규칙을 그대로 쓴다. 여기서는 이 화면에만 있는 모양만 더한다:
+   묶음 제목+채널 선택, HDMI 연장 우산 묶음, 연결 흐름 그림, 접이식 전송기 라인업. */
+#rtcom-design .rt-cg-link-group{display:flex;flex-direction:column;gap:8px}
+#rtcom-design .rt-cg-link-group+.rt-cg-link-group{border-top:1px solid var(--pg-line,rgba(60,60,67,.12));padding-top:14px;margin-top:6px}
+#rtcom-design .rt-cg-link-group-head{display:flex;align-items:center;justify-content:space-between;gap:10px 16px;flex-wrap:wrap;padding:0 4px}
+#rtcom-design .rt-cg-link-group-title{border:0;background:transparent;padding:6px 0;text-align:left;cursor:pointer;color:inherit;font:inherit}
+#rtcom-design .rt-cg-link-group-title strong{font-size:14px;font-weight:800;letter-spacing:-.01em;color:var(--pg-ink,#1f2532)}
+#rtcom-design .rt-cg-link-group-title[aria-pressed=true] strong{color:var(--pg-accent,#007AFF)}
+#rtcom-design .rt-cg-link-group-rows{display:flex;flex-direction:column;gap:8px}
+#rtcom-design .rt-cg-row-head strong em{font-style:normal;margin-left:6px;padding:2px 7px;border-radius:var(--pg-r-pill,980px);background:var(--pg-accent-tint,#e6f0ff);color:var(--pg-accent-2,#0057d8);font-size:9px;font-weight:800;letter-spacing:.03em;vertical-align:2px}
+#rtcom-design .rt-cg-link-umbrella{margin-top:6px;padding-top:14px;border-top:1px dashed var(--pg-line-2,rgba(60,60,67,.2))}
+#rtcom-design .rt-cg-link-umbrella-head{padding:0 4px 10px}
+#rtcom-design .rt-cg-link-umbrella-head h4{margin:2px 0 0;font-size:13px;font-weight:800;color:var(--pg-ink,#1f2532)}
+#rtcom-design .rt-cg-link-umbrella-head p{margin:5px 0 0;font-size:11.5px;color:var(--pg-muted,#8a8a8e);line-height:1.55}
+#rtcom-design .rt-cg-link-umbrella .rt-cg-link-group+.rt-cg-link-group{margin-top:6px}
+/* 미리보기 위 세그먼트: rt-cg-seg와 같은 색·모양이지만 01/02와 달리 카드가 여러 장이라 한 줄에 안 들어갈 수 있다.
+   01/02는 항상 2개뿐이라 구석에 겹쳐 놓아도 되지만(position:absolute), 04는 개수가 정해져 있지 않아 일반 흐름 안에 두고 줄바꿈한다. */
+#rtcom-design .rt-cg-seg-link{position:static;flex-wrap:wrap;justify-content:center;max-width:100%}
+#rtcom-design .rt-link-flow{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+#rtcom-design .rt-link-flow-node{background:#fff;border-radius:16px;padding:12px;text-align:center;box-shadow:0 10px 24px -16px rgba(20,26,40,.45);width:132px;flex:none}
+#rtcom-design .rt-link-flow-node img{max-width:100%;height:54px;object-fit:contain;display:block;margin:0 auto 6px}
+#rtcom-design .rt-link-flow-node strong{display:block;font-size:13px;font-weight:700;color:var(--pg-ink,#1f2532)}
+#rtcom-design .rt-link-flow-node small{display:block;font-size:11px;color:var(--pg-muted,#8a8a8e);margin-top:2px}
+#rtcom-design .rt-link-flow-endpoint{background:var(--pg-accent-tint,rgba(0,122,255,.07));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+#rtcom-design .rt-link-flow-icon{font-size:20px;color:var(--pg-accent,#007AFF)}
+#rtcom-design .rt-link-flow-arrow{color:var(--pg-accent,#007AFF);font-weight:800;font-size:18px;flex:none}
+#rtcom-design .rt-link-flow-ext-imgs{display:flex;gap:2px;justify-content:center}
+#rtcom-design .rt-link-flow-ext-imgs img{max-width:100%;max-height:54px;object-fit:contain;margin:0 auto 6px}
+#rtcom-design .rt-link-flow-cable{width:96px;flex:none;text-align:center;font-size:11px;font-weight:700;color:#1E9E52;line-height:1.35;padding-bottom:6px;border-bottom:2px dashed #1E9E52;position:relative}
+#rtcom-design .rt-link-flow-cable::after{content:'';position:absolute;right:-2px;bottom:-6px;border:5px solid transparent;border-left-color:#1E9E52}
+#rtcom-design .rt-link-preview-meta{margin-top:16px;text-align:center}
+#rtcom-design .rt-link-preview-meta strong{display:block;font-size:14px;font-weight:800;color:var(--pg-ink,#1f2532)}
+#rtcom-design .rt-link-preview-meta span{font-size:12px;color:var(--pg-muted,#8a8a8e)}
+#rtcom-design .rt-ext-lineup-details{margin-top:22px}
+#rtcom-design .rt-ext-lineup-details>summary{cursor:pointer;font-size:13px;font-weight:800;color:var(--pg-ink-2,#3a3a3c);padding:10px 4px;list-style:none}
+#rtcom-design .rt-ext-lineup-details>summary::-webkit-details-marker{display:none}
+#rtcom-design .rt-ext-lineup-details>summary::before{content:'▾';display:inline-block;margin-right:6px}
+#rtcom-design .rt-ext-lineup-details:not([open])>summary::before{content:'▸'}
+#rtcom-design .rt-ext-lineup-details .rt-ext-lineup{margin-top:8px}
+@media(max-width:720px){
+  #rtcom-design .rt-link-flow-node{width:112px}
 }
 
 /* 2-3: 03 카드 슬롯 — 빈칸은 흰색, 카드는 실제 사진(그대로), 블랭크는 사용자가 고른 슬롯에만, 선택 중은 파란 테두리.

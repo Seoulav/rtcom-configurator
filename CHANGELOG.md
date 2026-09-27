@@ -6,6 +6,15 @@
 
 - **HD-104U(HD-14U)·HD-108U(HD-18U) 병행 표기**(사용자 요청 2026-09-27 "같은 제품이야, 병행 기입"): 화면 제품명을 "HD-104U (HD-14U)"·"HD-108U (HD-18U)"로 함께 적습니다. 새 선택 필드 `aliases`에 새 실크 표기를 넣어 목록 검색("HD-14U"로 찾기)과 0.24~0.35의 옛 주소(`#products/hd-14u`·`hd-18u`)를 정식 상세로 이동시킵니다. `model`(AV Portal 키)은 정식 표기 HD-104U·HD-108U를 유지하고, index.json에도 aliases를 넣습니다. validator는 aliases 형식(문자열 배열, model·제외 모델과 겹치지 않음)을 검사하고, e2e에 옛 주소 이동 검사를 추가했습니다.
 
+## 0.38.0
+
+- **매트릭스 구성기 04 전송기 화면을 좌우 분할 구조로 재구축**(0.37.0 검수에서 남긴 유일한 시안 편차 — `docs/qa/CONFIGURATOR_AW_GLASS_QA.md` 맨 아래 Opus 검수 — 를 사용자가 검토 후 "시안대로 만들어 달라"고 확정, 근거: `docs/handoff/CONFIGURATOR_AW_GLASS_SPEC.md` 2-2 "04 전송기", `docs/mockups/configurator-aw-4links.png`·`configurator-aw-style.html?step=4`): `linksViewV3()`(카드별 섹션 + 인라인 선택 행)를 01·02와 같은 `.rt-cg-split`/`.rt-cg-row`/`.rt-cg-preview`/`.rt-cg-dot`/`.rt-cg-seg` 틀을 재사용하는 `linksViewV4()`로 다시 짰습니다.
+  - **왼쪽 목록**: HDBaseT·광 카드(원격)마다 묶음 제목(`IN 2 · XDM-CIS100 · 입력 4채널` + 연결 채널 수 `<select>`) 아래 전송 장비 선택 행. 기존 `tile()`/`none()`의 속성(`data-link-device`, `data-owner`, `aria-pressed`, `select[data-link="count"]`)은 그대로 두고 모양만 `.rt-cg-row`/`.rt-cg-dot`(상태 텍스트 배지 대신 초록 점)로 바꿨습니다. 이어서 "HDMI 카드 연장(선택)" 묶음(CTR100 PSE 쌍).
+  - **오른쪽 미리보기**: 세그먼트(`data-link-preview`, 예: `IN 2 | OUT 2 | IN 1 (HDMI)`)로 고른 슬롯의 연결 흐름을 소스/디스플레이 ↔ 전송기(사진) ↔ 케이블·거리 ↔ 카드(판넬 사진) 순서로 보여줍니다. 케이블·거리 문구는 `extenderInfo[device].specs`에 이미 있는 문장에서 그대로 뽑고 새 숫자를 만들지 않았습니다. 전송기를 고르지 않은 슬롯은 케이블·전송기 구간 없이 소스/디스플레이 ↔ 카드만 표시합니다. 왼쪽 어느 행이나 묶음 제목을 눌러도 오른쪽 미리보기가 그 슬롯으로 바뀝니다. 이 세그먼트 상태(`linkPreviewSlot`)는 `previewSide`와 같은 순수 화면 상태로 `state`·실행 취소·자동 저장 대상이 아니며, 제품군·모델이 바뀌거나 지금 보던 슬롯이 사라지면(카드 제거 등) 첫 슬롯으로 되돌아갑니다.
+  - **전송기 라인업**(`extenderLineup`·`vdmExtenderLineup`, XDM·VDM만): 판 아래 `<details open>` 접이식 영역 "연동 전송기 라인업 펼치기/접기"로 옮겼습니다. 처음부터 펼쳐 두어 e2e·사용자 모두 클릭 없이 사진을 볼 수 있습니다.
+  - **명세 대비 판단(편차)**: (1) 명세 예시는 채널 수 선택 컨트롤을 묶음 제목 줄에 그리지 않지만(시안 PNG 참고), 스펙 본문은 "선택 행 + 연결 채널 수 선택"을 요구해 본문을 따랐습니다. (2) 명세는 "흐름 아래에 채널 N/M과 전원 안내를 둔다"고 하지만, 전원 안내(`powerNotice()`)는 링크 전체 합산값이라 슬롯마다 반복해 보여주면 어색해 판 전체 아래 한 번만 두고, 채널 수만 미리보기 안에 남겼습니다. (3) "현재 구성에는 HDBaseT·광 카드가 없습니다" 안내는 원격 카드가 없을 때만 뜨게 하고 HDMI 카드 연장 묶음은 있으면 함께 보여줘, 두 안내가 동시에 있을 수 있던 0.37.0 이전 동작을 유지했습니다.
+  - **검증**: `node --test tests/*.test.cjs`(37/37, 변경 없음) · `node scripts/build-product-index.cjs --check`(27개) · `node scripts/package-site.cjs` · `node scripts/e2e-smoke.cjs`(전역 playwright, **76/76**, 04 세그먼트 전환·390px 폭 검사 추가) · `git diff --check`. XDM(CIS100+COS100+HDMI 연장)·SPX(COS12)·VDM(CIS4-U+FOS4-U) 3가지 구성을 1280px·390px로 캡처해 시안과 대조했습니다(`docs/qa/CONFIGURATOR_AW_GLASS_QA.md`). 01·02·03·05·06 단계와 제품정보(`#products`) 화면은 건드리지 않았습니다.
+
 ## 0.37.0
 
 - **매트릭스 구성기 화면 개편 — Analog Way 구조 + LED 글래스 스킨 + 블랭크 커버**(사용자 결정 2026-09-27: "모듈러 매트릭스 구성기의 기본 컨셉은 아날로그웨이와 동일", "아직 구성되지 않은 슬롯은 흰색", "블랭크 슬롯을 선택해 완성". 근거: `docs/handoff/CONFIGURATOR_AW_GLASS_SPEC.md`, `docs/audit/ANALOGWAY_CONFIGURATOR_RECHECK_2026-09-27.md`, 자세한 내용은 `docs/implementation/CONFIGURATOR_AW_GLASS.md`): 매트릭스 구성기(`#matrix-configurator`) 화면 전체를 다시 그렸습니다. 제품정보 화면(`#products`)은 손대지 않았습니다.

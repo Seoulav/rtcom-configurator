@@ -81,3 +81,39 @@
 | 인쇄 보고서 | **수정**: 슬롯 표에 블랭크 슬롯이 빠져 있었습니다(BOM에는 수량만 표시). 이제 "블랭크 커버 · 0채널" 행으로 표시합니다. |
 | 04 전송기 편차 | 승인 시안(왼쪽 목록 + 오른쪽 연결 흐름)과 다르게 기존 카드별 구조를 유지했습니다. 사용자 결정이 필요하므로 보고서에 선택지를 적었습니다. |
 | 강조색 | 구성기의 주요 버튼·단계 탭은 기존 브랜드 파랑 `#3978ee`(주요 버튼은 파랑→보라 그라디언트)입니다. 제품정보 화면의 `#007AFF`와 약간 다르며, 통일 여부는 후속으로 남깁니다. |
+
+## 7. 0.38.0 — 04 전송기 좌우 분할(편차 해소)
+
+0.37.0 Opus 검수(위 6번 표 "04 전송기 편차")가 남긴 유일한 시안 편차를 사용자가 검토하고 "시안대로 만들어 달라"고 확정해, `linksViewV3()`(카드별 섹션 + 인라인 선택 행)를 01·02와 같은 `.rt-cg-split`/`.rt-cg-row`/`.rt-cg-preview` 틀을 쓰는 `linksViewV4()`로 다시 지었습니다.
+
+### 7-1. 캡처 — 시안 대조
+
+캡처: `docs/qa/configurator-aw-glass-screens/0.38-step04-links/`. 1280px·390px, 3가지 구성. 정지 상태를 보장하기 위해 각 캡처 전에 `waitForLoadState('networkidle')` → `document.getAnimations().every(a=>a.playState!=='running')`(진행 중인 CSS 트랜지션·애니메이션이 없을 때까지 대기, 추측성 `sleep` 대신 실제 애니메이션 상태를 확인) → 모든 `<img>`의 `complete` 대기 순서로 안정화했습니다.
+
+| 구성 | 1280px | 390px | 시안 참고 |
+|---|---|---|---|
+| XDM-36 · IN2 CIS100 + OUT2 COS100 + IN1 HDMI(CTR100 PSE 연장) | `0.38-step04-links/xdm-cis100-cos100-hdmi-1280.png` | `0.38-step04-links/xdm-cis100-cos100-hdmi-390.png` | `docs/mockups/configurator-aw-4links.png` |
+| SPX-M3236 · OUT1 COS12(SPX-RX 자동 연결) | `0.38-step04-links/spx-cos12-1280.png` | `0.38-step04-links/spx-cos12-390.png` | `docs/mockups/configurator-aw-style.html?step=4` |
+| VDM-16X · IN2 CIS4-U + OUT1 FOS4-U(CT104-U·FR101-U 자동 연결) | `0.38-step04-links/vdm-cis4u-fos4u-1280.png` | `0.38-step04-links/vdm-cis4u-fos4u-390.png` | `docs/mockups/configurator-aw-style.html?step=4` |
+
+**시안과 대조한 결과**: 왼쪽 묶음 제목("IN 2 · XDM-CIS100 · 입력 4채널")·선택 행(이름+부제/스펙 2줄/상태 점)·오른쪽 세그먼트("IN 2 | OUT 2 | IN 1 (HDMI)")·연결 흐름(소스 → 전송기 사진 → 케이블·거리 → 카드 사진)이 시안과 같은 모양으로 나옵니다. 라인업은 판 아래 펼쳐진 `<details open>`으로 옮겨졌고 사진이 정상 로드됩니다. 390px에서는 미리보기가 위, 목록이 아래로 쌓이고 가로 스크롤이 생기지 않습니다.
+
+### 7-2. 명세 대비 판단(편차 — 시안 픽셀보다 명세 문장을 따른 지점)
+
+| 항목 | 시안(픽셀) | 이번 구현 | 판단 근거 |
+|---|---|---|---|
+| 채널 수 선택 컨트롤 위치 | 시안 PNG에는 묶음 제목 줄에 `<select>`가 보이지 않음 | 묶음 제목 오른쪽에 `연결 채널` `<select data-link="count">`를 그대로 둠 | 명세 본문(`CONFIGURATOR_AW_GLASS_SPEC.md` 2-2 "04 전송기")이 "선택 행 + 연결 채널 수 선택"을 명시적으로 요구함 — 명세 문장이 시안 픽셀보다 우선 |
+| 전원 안내(`powerNotice`) 위치 | 명세는 "흐름 아래에 채널 N/M과 전원 안내를 둔다"고 서술 | 채널 수(`채널 N/M 연결`)는 미리보기 안에 두고, 전원 안내는 판 전체 아래 한 번만 유지 | `powerNotice()`는 링크 전체 합산값(예: "XDM-CTR100 8대에 전원 직접 연결")이라 세그먼트를 바꿀 때마다 슬롯 미리보기 안에 반복해서 보여주면 같은 문장이 계속 다시 나와 어색함. 명세도 "먼저 시도하고, 어색하면 근거를 남기고 벗어나도 된다"고 허용해 이 쪽을 택함 |
+| "HDBaseT·광 카드가 없습니다" 안내 범위 | 명세는 04 전체의 빈 상태만 언급 | `remote.length===0`일 때만 뜨고, HDMI 카드 연장 묶음은 있으면 별도로 계속 표시 | 과제 지시가 "empty state"를 "no CAT/FIBER cards" 조건으로 좁혀 정의했고, 0.37.0 이전에도 두 안내가 함께 있을 수 있었던 동작을 그대로 유지하는 쪽이 더 안전하다고 판단 |
+| 오른쪽 세그먼트 위치(모바일) | 01/02는 `.rt-cg-seg`를 이미지 위에 절대 위치로 겹침 | 04는 세그먼트를 일반 흐름 안에 두고 여러 개면 줄바꿈(`.rt-cg-seg-link{position:static}`) | 01/02는 세그먼트가 항상 2개뿐이라 구석에 겹쳐도 되지만, 04는 카드 수만큼(원격 + HDMI 연장) 늘어날 수 있어 절대 위치로 겹치면 820px 이하에서 `.rt-cg-preview{max-height:260px}`의 `justify-content:center`와 상호작용해 흐름 그림이 위로 넘쳐 머리글과 겹치는 문제를 실제로 재현·확인함(수정: `.rt-cg-preview.rt-link-preview{max-height:none;justify-content:flex-start}`을 820px 이하에 추가) |
+| 전송기 사진 없이 이름만 있는 옵션 | — | 목록 선택 행에서는 사진을 빼고(01/02의 `.rt-cg-row`처럼 이름+부제/스펙만), 오른쪽 미리보기에만 사진을 둠 | 과제 지시("status dot, not the current .rt-ext-option-state text badge")가 목록 행을 01/02 모양으로 바꾸라고 명시했고, 사진은 미리보기의 "흐름" 쪽 역할이라 판단 |
+
+### 7-3. e2e·검증
+
+- `node --test tests/*.test.cjs`: 37/37(변경 없음)
+- `node scripts/build-product-index.cjs --check`: 27개
+- `node scripts/package-site.cjs`: 통과
+- `node scripts/e2e-smoke.cjs`(전역 playwright, `/opt/pw-browsers/chromium`): **76/76**(기존 73 + 신규 3: "04 세그먼트로 IN 2를 고르면 오른쪽 흐름이 XDM-CIS100을 보여줌"(전환 전 상태 확정용) · "04에서 오른쪽 세그먼트를 바꾸면 흐름이 해당 카드로 바뀐다" · "390px에서 04 카드 폭이 화면 안에 들어간다")
+- `git diff --check`: 통과(공백 오류 없음)
+- 기존 04 검사(HDBaseT·광 카드 자동 연결, CTR100 PSE 쌍, 전송기 라인업 사진, 전원 경고)는 선택자(`button[data-owner][data-link-device]`, `select[data-owner][data-link="count"]`, `.rt-ext-lineup`, `.rt-ext-lineup-card img`, `.rt-power-notice strong`)를 그대로 써서 모두 회귀 없이 통과했습니다.
+- 01·02·03·05·06 단계와 제품정보(`#products`) 화면은 이번 세션에서 `src/app.js`·`src/styles.css`의 04 관련 부분과 문서/버전 표기만 바꿨고, `git status`로 그 외 파일이 바뀌지 않았음을 확인했습니다.

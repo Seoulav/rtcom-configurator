@@ -11,6 +11,9 @@
     let modalSlot=null;
     // 02 섀시 미리보기의 정면/후면 세그먼트(2-2). 상태 저장·실행 취소 대상이 아닌 순수 화면 토글이다.
     let previewSide='front';
+    // 04 전송기 미리보기가 지금 보여주는 슬롯 id(2-2). previewSide와 같은 성격의 순수 화면 상태 — state에 없고 저장·실행 취소 대상이 아니다.
+    // 가족·모델이 바뀌면 previewSide와 함께 null로 되돌리고, linksViewV4가 렌더링 때마다 현재 remote/hdmiExtend 목록에 없으면 첫 슬롯으로 다시 잡는다.
+    let linkPreviewSlot=null;
     let changedSlot=null;
     // XDM 연동 전송기 정보(RTCom 종합 카탈로그 p.10~12). 키는 저장 파일·BOM에 쓰이는 전송기 이름과 같다.
     const extenderInfo={
@@ -194,18 +197,66 @@
       const count=Object.values(state.links).filter(link=>link.device?.startsWith('XDM-CTR100 · ')).reduce((sum,link)=>sum+link.count,0);
       return count?`<div class="rt-power-notice"><span>필수 전원 연결</span><div><strong>XDM-CTR100 ${count}대에 전원 직접 연결</strong><p>매트릭스 카드(CIS100·COS100)에 연결하는 CTR100은 전원을 직접 연결해야 하며, 이 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다. 전원 공급 장비를 BOM에 자동 추가했습니다(제공 구성도 기준 16포트당 1대). 현행 모델명과 포트 용량은 제조사 확인이 필요합니다.</p></div></div>`:'';
     }
-    function linksViewV3(){
+    // 04 전송기(2-2, Analog Way 구조 — 시안 configurator-aw-style.html?step=4): 왼쪽 목록(카드별 묶음 제목+선택 행) | 오른쪽 고정 미리보기(세그먼트로 고른 슬롯의 연결 흐름).
+    // 01/02와 같은 rt-cg-split/rt-cg-list/rt-cg-row/rt-cg-preview/rt-cg-dot/rt-cg-seg 틀을 그대로 쓰고, 이 화면에만 있는 모양(묶음 제목+채널 선택, 흐름 그림, 접이식 라인업)만 새로 더한다.
+    function linksViewV4(){
       const remote=currentSlots().filter(slot=>['CAT','FIBER'].includes(slotCard(slot.id)?.[3]));
       const hdmiExtend=currentSlots().filter(slot=>{const c=slotCard(slot.id);return c&&c[3]==='HDMI'&&choices(slot,c).includes(RtCore.psePair)});
-      const tile=(slot,option,link)=>{const info=extenderInfo[option],selected=link.device===option;return `<button type="button" class="rt-ext-option ${info?'':'rt-ext-option-plain'}" data-link-device="${esc(option)}" data-owner="${slot.id}" aria-pressed="${selected}">${info&&(info.image||info.images)?`<span class="rt-ext-option-image ${info.images?'rt-ext-option-image-pair':''}">${(info.images||[info.image]).map(src=>`<img src="${src}" alt="" loading="lazy">`).join('')}</span>`:''}<span class="rt-ext-option-copy"><strong>${esc(info?.model||option)}${info?.recommended?'<em>기본 연동</em>':''}</strong><small>${esc(info?.role||'호환 전송 장비')}</small>${info?`<span>${info.specs.map(esc).join('<br>')}</span>`:''}</span><span class="rt-ext-option-state" aria-hidden="true">${selected?'✓ 연결됨':'선택'}</span></button>`};
-      const none=(slot,link)=>`<button type="button" class="rt-ext-option rt-ext-option-none" data-link-device="" data-owner="${slot.id}" aria-pressed="${!link.device}"><span class="rt-ext-option-copy"><strong>연결하지 않음</strong><small>이 카드의 포트를 다른 장비와 직접 연결</small></span><span class="rt-ext-option-state" aria-hidden="true">${link.device?'선택':'✓ 선택됨'}</span></button>`;
-      const block=slot=>{const c=slotCard(slot.id),opts=choices(slot,c),link=state.links[slot.id]||{device:'',count:0,distance:'30'};return `<section class="rt-link-card"><div class="rt-link-card-head">${photoCardFamilies.has(state.family)?`<img src="${cardAsset(c[0])}" alt="">`:''}<div><span class="rt-eyebrow">${slotCard(slot.id)[3]==='HDMI'?(slot.dir==='input'?'HDMI INPUT · 원격 소스 → HDBaseT 연장 → 카드':'HDMI OUTPUT · 카드 → HDBaseT 연장 → 원격 디스플레이'):(slot.dir==='input'?'INPUT · 소스 → 송신기(TX) → 카드':'OUTPUT · 카드 → 수신기(RX) → 디스플레이')}</span><h3>${esc(slot.label)} · ${esc(c[0])}</h3></div><label class="rt-link-count">연결 채널<select data-link="count" data-owner="${slot.id}" ${link.device?'':'disabled'}>${Array.from({length:c[2]+1},(_,i)=>`<option value="${i}" ${link.count===i?'selected':''}>${i} / ${c[2]}채널</option>`).join('')}</select></label></div>${opts.length?`<div class="rt-ext-options" role="group" aria-label="${esc(slot.label)} 전송 장비 선택">${opts.map(option=>tile(slot,option,link)).join('')}${none(slot,link)}</div>`:'<div class="rt-notice">이 카드와 전송 장비의 직접 호환 관계는 아직 확인되지 않았습니다.</div>'}</section>`};
+      const allSlots=[...remote,...hdmiExtend];
+      // linkPreviewSlot은 previewSide와 같은 순수 화면 상태다. 가족·모델 변경 때 null로 되돌아가고(클릭 디스패처),
+      // 카드 제거 등으로 지금 미리보고 있던 슬롯이 목록에서 사라지면 렌더링 시점에 첫 슬롯으로 다시 잡는다.
+      if(allSlots.length&&!allSlots.some(s=>s.id===linkPreviewSlot))linkPreviewSlot=allSlots[0].id;
+      const shortLabel=slot=>slot.id.replace(/^in-/,'IN ').replace(/^out-/,'OUT ').toUpperCase();
+      const dirWord=slot=>slot.dir==='input'?'입력':'출력';
+      const row=(slot,option,link)=>{
+        const info=extenderInfo[option],selected=link.device===option;
+        return `<button type="button" class="rt-cg-row" data-link-device="${esc(option)}" data-owner="${slot.id}" aria-pressed="${selected}"><span class="rt-cg-row-head"><strong>${esc(info?.model||option)}${info?.recommended?'<em>기본 연동</em>':''}<small>${esc(info?.role||'호환 전송 장비')}</small></strong><span class="rt-cg-dot" aria-hidden="true"></span></span>${info?`<ul class="rt-cg-row-specs">${info.specs.slice(0,2).map(s=>`<li>${esc(s)}</li>`).join('')}</ul>`:''}</button>`;
+      };
+      const none=(slot,link)=>`<button type="button" class="rt-cg-row" data-link-device="" data-owner="${slot.id}" aria-pressed="${!link.device}"><span class="rt-cg-row-head"><strong>연결하지 않음</strong><span class="rt-cg-dot" aria-hidden="true"></span></span><ul class="rt-cg-row-specs"><li>이 카드의 포트를 다른 장비와 직접 연결</li></ul></button>`;
+      const countSelect=slot=>{const c=slotCard(slot.id),link=state.links[slot.id]||{device:'',count:0,distance:'30'};return `<select data-link="count" data-owner="${slot.id}" ${link.device?'':'disabled'}>${Array.from({length:c[2]+1},(_,i)=>`<option value="${i}" ${link.count===i?'selected':''}>${i} / ${c[2]}채널</option>`).join('')}</select>`};
+      const group=slot=>{
+        const c=slotCard(slot.id),opts=choices(slot,c),link=state.links[slot.id]||{device:'',count:0,distance:'30'};
+        const rows=opts.length?`${opts.map(option=>row(slot,option,link)).join('')}${none(slot,link)}`:'<div class="rt-notice">이 카드와 전송 장비의 직접 호환 관계는 아직 확인되지 않았습니다.</div>';
+        return `<div class="rt-cg-link-group" data-owner-group="${slot.id}"><div class="rt-cg-link-group-head"><button type="button" class="rt-cg-link-group-title" data-link-preview="${slot.id}" aria-pressed="${slot.id===linkPreviewSlot}"><strong>${shortLabel(slot)} · ${esc(c[0])} · ${dirWord(slot)} ${c[2]}채널</strong></button><label class="rt-link-count">연결 채널${countSelect(slot)}</label></div><div class="rt-cg-link-group-rows" role="list">${rows}</div></div>`;
+      };
       const lineupCard=item=>`<article class="rt-ext-lineup-card"><span class="rt-ext-option-image"><img src="${item.image}" alt="${esc(item.model)} 제품 사진" loading="lazy"></span><strong>${esc(item.model)}</strong><small>${esc(item.role)}</small><span class="rt-ext-pair">연동 · ${esc(item.pair)}</span><p>${esc(item.note)}</p><em>${item.page?`카탈로그 p.${item.page}`:'알티컴 홈페이지'}</em></article>`;
       const lineupSection=(family,title,text,items)=>`<section class="rt-ext-lineup" aria-labelledby="rt-ext-lineup-title"><div class="rt-ext-lineup-head"><div><span class="rt-eyebrow">${family} EXTENDER LINEUP</span><h3 id="rt-ext-lineup-title">${title}</h3></div><p>${text}</p></div><div class="rt-ext-lineup-grid">${items.map(lineupCard).join('')}</div></section>`;
       const lineup=state.family==='XDM'?lineupSection('XDM','XDM 연동 전송기','HDBaseT 카드(CIS100·COS100)와 광 카드(FIS100·FOS100)에 연결하는 전송기입니다. 근거: RTCom 종합 카탈로그 p.10~12',extenderLineup):state.family==='VDM'?lineupSection('VDM','VDM 연동 전송기','HDBaseT 카드(CIS4-U·COS4-U)와 광 카드(FIS4-U·FOS4-U)에 연결하는 전송기입니다. 근거: 사용자 확인, 알티컴 홈페이지 VDM EXTENDER',vdmExtenderLineup):'';
+      // 전송기 라인업(2-2 "판 아래 접이식 영역"): 처음부터 펼쳐 둔다 — e2e가 스크롤해서 사진 로딩을 확인하므로 클릭 없이 보여야 한다.
+      const lineupWrap=lineup?`<details open class="rt-ext-lineup-details"><summary>연동 전송기 라인업 펼치기/접기</summary>${lineup}</details>`:'';
       const empty=`<div class="rt-empty rt-link-empty"><strong>현재 구성에는 HDBaseT·광 카드가 없습니다.</strong><p>${state.family==='SPX'?'SPX-COS12(CATx 출력) 카드를 장착하면 SPX-RX가 자동으로 연결되고 여기서 채널 수를 바꿀 수 있습니다.':state.family==='VDM'?'CIS4-U·COS4-U(HDBaseT) 또는 FIS4-U·FOS4-U(광) 카드를 장착하면 CT104-U·CR104-U·FT101-U·FR101-U가 자동으로 연결되고 여기서 채널 수를 바꿀 수 있습니다.':'XDM-CIS100·COS100(HDBaseT) 또는 XDM-FIS100·FOS100(광) 카드를 장착하면 CTR100·FT101·FR101이 자동으로 연결되고 여기서 바꿀 수 있습니다.'}</p><button type="button" class="rt-button" data-jump="2">카드 슬롯으로 돌아가기</button></div>`;
-      const hdmiSection=hdmiExtend.length?`<section class="rt-hdmi-extend" aria-labelledby="rt-hdmi-extend-title"><div class="rt-ext-lineup-head"><div><span class="rt-eyebrow">HDMI EXTENSION · 선택</span><h3 id="rt-hdmi-extend-title">HDMI 카드 연장</h3></div><p>HDMI 입력·출력 포트를 멀리 연결해야 하면 CTR100 PSE와 CTR100을 한 쌍으로 씁니다. 전원은 PSE 쪽에만 연결하고, 두 제품 모두 DIP 스위치로 TX/RX를 설정합니다.</p></div><div class="rt-link-list">${hdmiExtend.map(block).join('')}</div></section>`:'';
-      return heading('04 / EXTENDERS','카드에 연결할 전송 장비를 확인하세요.',remote.length?`HDBaseT·광 카드 ${remote.length}장에 기본 전송기를 연결했습니다. 필요하면 ${state.family==='XDM'?'벽부형이나 ':''}채널 수를 바꾸세요.`:'HDBaseT·광 카드를 장착하면 연동 전송기가 자동으로 연결됩니다.')+`<div class="rt-link-list">${remote.length?remote.map(block).join(''):empty}</div>${powerNotice()}${hdmiSection}${lineup}`;
+      // 왼쪽 목록: 원격(CAT·광) 카드 묶음 → (있으면) HDMI 카드 연장 묶음(우산 아래). "현재 구성에는 HDBaseT·광 카드가 없습니다" 안내는
+      // remote가 없을 때만 뜨고(명세 5번), HDMI 연장 슬롯만 있으면 그 묶음은 그대로 함께 보여준다(옛 화면도 두 안내가 함께 있을 수 있었다).
+      const hdmiGroup=hdmiExtend.length?`<div class="rt-cg-link-umbrella"><div class="rt-cg-link-umbrella-head"><span class="rt-eyebrow">HDMI EXTENSION · 선택</span><h4>HDMI 카드 연장(선택)</h4><p>HDMI 입력·출력 포트를 멀리 연결해야 하면 CTR100 PSE와 CTR100을 한 쌍으로 씁니다. 전원은 PSE 쪽에만 연결하고, 두 제품 모두 DIP 스위치로 TX/RX를 설정합니다.</p></div>${hdmiExtend.map(group).join('')}</div>`:'';
+      const listBody=`${remote.length?remote.map(group).join(''):empty}${hdmiGroup}`;
+      // 오른쪽 미리보기: 세그먼트(01/02의 rt-cg-seg와 같은 틀, 슬롯이 여러 개일 수 있어 줄바꿈만 허용) + 연결 흐름 + 채널 수.
+      const segLabel=slot=>`${shortLabel(slot)}${hdmiExtend.includes(slot)?' (HDMI)':''}`;
+      const seg=allSlots.length?`<span class="rt-cg-seg rt-cg-seg-link" role="group" aria-label="미리보기 카드 선택">${allSlots.map(slot=>`<button type="button" class="${slot.id===linkPreviewSlot?'rt-cg-seg-on':''}" data-link-preview="${slot.id}">${segLabel(slot)}</button>`).join('')}</span>`:'';
+      // 흐름: 입력은 소스→전송기→케이블·거리→카드, 출력은 그 반대(명세 2-2). 전송기를 고르지 않았으면 케이블·전송기 구간 없이 소스/디스플레이↔카드만 보여준다.
+      const flowFor=slot=>{
+        const c=slotCard(slot.id),link=state.links[slot.id]||{device:'',count:0,distance:'30'},info=link.device?extenderInfo[link.device]:null;
+        const cardNode=`<div class="rt-link-flow-node rt-link-flow-card"><img src="${cardAsset(c[0])}" alt="${esc(c[0])}"><strong>${esc(c[0])}</strong><small>${shortLabel(slot)} · ${link.count}채널</small></div>`;
+        const endpointNode=`<div class="rt-link-flow-node rt-link-flow-endpoint"><span class="rt-link-flow-icon" aria-hidden="true">${slot.dir==='input'?'▶':'🖥'}</span><strong>${slot.dir==='input'?'소스 장비':'디스플레이'}</strong></div>`;
+        const arrow='<span class="rt-link-flow-arrow" aria-hidden="true">→</span>';
+        if(!info)return `<div class="rt-link-flow">${slot.dir==='input'?endpointNode+arrow+cardNode:cardNode+arrow+endpointNode}</div>`;
+        const imgs=(info.images||(info.image?[info.image]:[])).filter(Boolean);
+        const extNode=`<div class="rt-link-flow-node rt-link-flow-ext">${imgs.length?`<span class="rt-link-flow-ext-imgs">${imgs.map(src=>`<img src="${src}" alt="">`).join('')}</span>`:''}<strong>${esc(info.model)}</strong><small>${esc(info.role)}</small></div>`;
+        // 케이블·거리 표기는 extenderInfo[device].specs에 이미 있는 문장에서 그대로 뽑는다(새 숫자를 만들지 않는다).
+        const cableLabel=(info.specs||[]).find(s=>/\d+\s*(?:cm|mm|km|m)\b/.test(s))||info.specs?.[0]||'';
+        const cableNode=`<div class="rt-link-flow-cable"><small>${esc(cableLabel)}</small></div>`;
+        return `<div class="rt-link-flow">${slot.dir==='input'?[endpointNode,arrow,extNode,cableNode,cardNode].join(''):[cardNode,cableNode,extNode,arrow,endpointNode].join('')}</div>`;
+      };
+      const previewBody=()=>{
+        const slot=allSlots.find(s=>s.id===linkPreviewSlot);
+        if(!slot)return '<div class="rt-cg-preview-placeholder">카드를 장착하면 연결 흐름이 여기에 표시됩니다.</div>';
+        const c=slotCard(slot.id),link=state.links[slot.id]||{device:'',count:0,distance:'30'};
+        return `${seg}${flowFor(slot)}<div class="rt-link-preview-meta"><strong>채널 ${link.count} / ${c[2]} 연결</strong><span>${shortLabel(slot)} · ${esc(c[0])}</span></div>`;
+      };
+      // powerNotice()는 링크 전체를 합산한 안내라 슬롯마다 다시 보여주면 그대로 반복돼 어색하다(명세는 "흐름 아래"를 우선 시도하라고 하지만,
+      // 채널 수는 미리보기 안에 이미 있고 전원 안내는 카드마다 똑같아 판 전체 아래 한 번만 두는 쪽을 선택했다 — 구현 문서에 남긴 편차).
+      // rt-link-preview: 01/02의 오른쪽 미리보기는 사진 한 장이라 820px 이하 max-height:260px 안에 들어가지만,
+      // 04의 연결 흐름(세그먼트+노드 여러 개)은 그보다 쉽게 커져서 넘친다 — 이 표시가 있을 때만 높이 제한을 풀어준다(styles.css).
+      return heading('04 / EXTENDERS','카드에 연결할 전송 장비를 확인하세요.',remote.length?`HDBaseT·광 카드 ${remote.length}장에 기본 전송기를 연결했습니다. 필요하면 ${state.family==='XDM'?'벽부형이나 ':''}채널 수를 바꾸세요.`:'HDBaseT·광 카드를 장착하면 연동 전송기가 자동으로 연결됩니다.')+`<div class="rt-cg-split"><div class="rt-cg-list" role="list">${listBody}</div><div class="rt-cg-preview rt-link-preview">${previewBody()}</div></div>${powerNotice()}${lineupWrap}`;
     }
     function bom(){return RtCore.bom(state).map(row=>[row.category,row.model,row.quantity])}
     function table(){return `<div class="rt-table-wrap"><table><thead><tr><th>구분</th><th>모델</th><th>수량</th></tr></thead><tbody>${bom().map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')}</tbody></table></div>`}
@@ -216,7 +267,7 @@
     function render(){
       nav.innerHTML=labels.map((label,i)=>`<button type="button" class="rt-step ${i<state.step?'rt-step-done':''} ${i===state.step?'rt-step-current':''}" data-jump="${i}" aria-label="${i+1}단계 ${label}" ${i===state.step?'aria-current="step"':''} ${i>state.maxStep?'disabled':''}><i aria-hidden="true">${i<state.step?'✓':String(i+1).padStart(2,'0')}</i><span class="rt-full-label">${label}</span><span class="rt-short-label" aria-hidden="true">${shortLabels[i]}</span></button>`).join('');
       if(state.step!==2)modalSlot=null;
-      main.innerHTML=[familyView,chassisViewV2,cardsViewV4,linksViewV3,reviewViewV2,exportView][state.step]();
+      main.innerHTML=[familyView,chassisViewV2,cardsViewV4,linksViewV4,reviewViewV2,exportView][state.step]();
       openCardModal();
       root.querySelector('.rt-summary').innerHTML=`<strong>${state.family}</strong>${state.model?' / '+state.model:' 제품군'}<br>${state.step>1?'카드 구성 검토 중':'카테고리: 매트릭스'}`;
       const next=root.querySelector('[data-action=next]');
@@ -290,7 +341,9 @@
     root.addEventListener('click',event=>{const b=event.target.closest('button');if(!b||!root.contains(b)||b.disabled)return;
       // 02 섀시 미리보기 정면/후면 토글: 화면 상태만 바꾸는 순수 토글이라 실행 취소·자동 저장 대상이 아니다.
       if(b.dataset.cgSide){previewSide=b.dataset.cgSide;render();return}
-      if(b.dataset.family){if(state.family!==b.dataset.family){if(!confirmReset())return;state.family=b.dataset.family;state.model=null;state.placements={};state.portAssignments={};state.links={};state.maxStep=0;state.slot='in-a'}previewSide='front';changed();return}if(b.dataset.model){if(state.model!==b.dataset.model){if(!confirmReset())return;state.model=b.dataset.model;state.placements={};state.portAssignments={};state.links={};state.maxStep=1;state.slot=currentSlots()[0].id}previewSide='front';changed();return}if(b.dataset.slot){state.slot=b.dataset.slot;modalSlot=b.dataset.slot;changed();return}if(b.dataset.modalClose!==undefined){closeCardModal();return}if(b.dataset.linkDevice!==undefined){const id=b.dataset.owner,old=state.links[id]||{device:'',count:0,distance:'30'},slot=currentSlots().find(item=>item.id===id),c=slot&&slotCard(slot.id);if(!c||(b.dataset.linkDevice&&!choices(slot,c).includes(b.dataset.linkDevice)))return;if(old.device===b.dataset.linkDevice)return;old.device=b.dataset.linkDevice;old.count=old.device?(old.count||c[2]):0;state.links[id]=old;syncPorts();changed();return}if(b.dataset.card){const reopen=modalSlot;modalSlot=null;if(state.placements[state.slot]===b.dataset.card){closeCardModal(reopen);return}focusSlotAfterRender=reopen;changedSlot=state.slot;state.placements[state.slot]=b.dataset.card;const selectedCard=b.dataset.card==='BLANK'?null:card(b.dataset.card);const autoLink=selectedCard?RtCore.defaultLink(b.dataset.card,selectedCard[2]):null;if(autoLink)state.links[state.slot]=autoLink;else delete state.links[state.slot];syncPorts();changed();return}if(b.dataset.format){state.format=b.dataset.format;changed();return}if(b.dataset.jump!==undefined){const n=Number(b.dataset.jump);if(n<=state.maxStep){state.step=n;changed()}return}if(b.dataset.action==='remove'){focusSlotAfterRender=modalSlot;changedSlot=state.slot;modalSlot=null;delete state.placements[state.slot];delete state.links[state.slot];syncPorts();changed();return}
+      // 04 전송기 오른쪽 미리보기 세그먼트(왼쪽 묶음 제목 버튼도 같은 속성을 쓴다): previewSide와 같은 순수 화면 토글이다.
+      if(b.dataset.linkPreview){linkPreviewSlot=b.dataset.linkPreview;render();return}
+      if(b.dataset.family){if(state.family!==b.dataset.family){if(!confirmReset())return;state.family=b.dataset.family;state.model=null;state.placements={};state.portAssignments={};state.links={};state.maxStep=0;state.slot='in-a'}previewSide='front';linkPreviewSlot=null;changed();return}if(b.dataset.model){if(state.model!==b.dataset.model){if(!confirmReset())return;state.model=b.dataset.model;state.placements={};state.portAssignments={};state.links={};state.maxStep=1;state.slot=currentSlots()[0].id}previewSide='front';linkPreviewSlot=null;changed();return}if(b.dataset.slot){state.slot=b.dataset.slot;modalSlot=b.dataset.slot;changed();return}if(b.dataset.modalClose!==undefined){closeCardModal();return}if(b.dataset.linkDevice!==undefined){const id=b.dataset.owner,old=state.links[id]||{device:'',count:0,distance:'30'},slot=currentSlots().find(item=>item.id===id),c=slot&&slotCard(slot.id);if(!c||(b.dataset.linkDevice&&!choices(slot,c).includes(b.dataset.linkDevice)))return;linkPreviewSlot=id;if(old.device===b.dataset.linkDevice){render();return}old.device=b.dataset.linkDevice;old.count=old.device?(old.count||c[2]):0;state.links[id]=old;syncPorts();changed();return}if(b.dataset.card){const reopen=modalSlot;modalSlot=null;if(state.placements[state.slot]===b.dataset.card){closeCardModal(reopen);return}focusSlotAfterRender=reopen;changedSlot=state.slot;state.placements[state.slot]=b.dataset.card;const selectedCard=b.dataset.card==='BLANK'?null:card(b.dataset.card);const autoLink=selectedCard?RtCore.defaultLink(b.dataset.card,selectedCard[2]):null;if(autoLink)state.links[state.slot]=autoLink;else delete state.links[state.slot];syncPorts();changed();return}if(b.dataset.format){state.format=b.dataset.format;changed();return}if(b.dataset.jump!==undefined){const n=Number(b.dataset.jump);if(n<=state.maxStep){state.step=n;changed()}return}if(b.dataset.action==='remove'){focusSlotAfterRender=modalSlot;changedSlot=state.slot;modalSlot=null;delete state.placements[state.slot];delete state.links[state.slot];syncPorts();changed();return}
       // "남은 N칸 블랭크로 채우기"(2-3): 빈 슬롯만 BLANK로 바꾸고, 이미 넣은 카드는 그대로 둔다. 실행 취소 1단계.
       if(b.dataset.action==='fill-blanks'){const filled=RtCore.fillBlanks(state);state.placements=filled.placements;syncPorts();changed();return}
       if(b.dataset.action==='back'){state.step=Math.max(0,state.step-1);changed();return}if(b.dataset.action==='next'){state.step=state.step===5?0:state.step+1;state.maxStep=Math.max(state.maxStep,state.step);changed()}});
