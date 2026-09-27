@@ -205,6 +205,51 @@
       {"n": 3, "label": "DC 5V", "desc": "전원 어댑터 5V 2A", "x1": 598, "x2": 641}
     ]
   },
+  "edidSwitch": {
+    "image": "Front",
+    "x1": 495, "y1": 46, "x2": 535, "y2": 89,
+    "label": "EDID 로터리 스위치",
+    "desc": "전면 파란색 EDID 로터리 스위치로 디스플레이 EDID를 선택한다. HD-13U와 달리 별도 SET 버튼이 없어, 로터리를 'F'로 돌리기만 하면 OUTPUT 1에 연결된 디스플레이의 EDID를 바로 읽어 FLASH에 저장한다.",
+    "default": "1 = 3840x2160p@60 PCM 2CH(기본값)",
+    "steps": [
+      {
+        "title": "외부 EDID 저장(External EDID Setting)",
+        "items": [
+          "EDID를 저장할 디스플레이를 OUTPUT 1에 연결한다.",
+          "전면 로터리 스위치를 '0'에서 'F(Store External EDID)'로 돌리면 OUTPUT 1의 EDID를 읽어 FLASH에 저장한다.",
+          "로터리 스위치를 '0'번으로 돌린 뒤 전원 케이블을 1회 탈착한다.",
+          "EDID 저장이 되지 않았을 때는 1920x1080p 60Hz PCM 2CH로 설정된다."
+        ]
+      },
+      {
+        "title": "내부 EDID 지정(Internal EDID Setting)",
+        "items": [
+          "EDID를 적용할 디스플레이를 OUTPUT 1에 연결한다.",
+          "전면 로터리 스위치를 원하는 EDID 번호에 맞춘다.",
+          "연결된 디스플레이가 깜빡이며 해당 EDID로 출력된다. 완전한 적용을 위해 전원 케이블을 1회 탈착한다."
+        ]
+      }
+    ],
+    "table": [
+      {"code": "0", "function": "FLASH에 저장된 외부 EDID"},
+      {"code": "1", "function": "3840x2160p@60 PCM 2CH(기본값)", "highlight": true},
+      {"code": "2", "function": "3840x2160p@60 Multi"},
+      {"code": "3", "function": "3840x2160p@60 Dolby"},
+      {"code": "4", "function": "3840x2160p@30 PCM 2CH"},
+      {"code": "5", "function": "3840x2160p@30 Multi"},
+      {"code": "6", "function": "3840x2160p@30 Dolby"},
+      {"code": "7", "function": "1920x1080p@60 PCM 2CH", "highlight": true},
+      {"code": "8", "function": "1920x1080p@60 Multi"},
+      {"code": "9", "function": "1920x1080p@60 Dolby"},
+      {"code": "A", "function": "1920x1080p@60 DVI"},
+      {"code": "B", "function": "1920x1200@60 DVI"},
+      {"code": "C", "function": "미사용(Nothing)"},
+      {"code": "D", "function": "Firmware Download Mode"},
+      {"code": "E", "function": "미사용(Nothing)"},
+      {"code": "F", "function": "외부 EDID를 FLASH에 저장(Store External EDID, OUTPUT 1번 연결 확인)"}
+    ],
+    "source": "M1"
+  },
   "sources": [
     {
       "code": "C",
@@ -217,6 +262,12 @@
       "name": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
       "page": "35",
       "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
+    },
+    {
+      "code": "M1",
+      "name": "HD-104U 사용자 매뉴얼 Ver.1.1",
+      "page": "7",
+      "scope": "제조사 공식 출처 — 사용자 제공 PDF(.source-materials/RTcom_Manual_HD-104U_Ver1.1.pdf, 배포 제외)"
     }
   ],
   "issues": [
@@ -225,6 +276,12 @@
       "status": "INFO",
       "title": "실크 표기 변경 예정",
       "detail": "카탈로그 모델명은 HD-104U입니다. 제품 인쇄(실크) 표기는 앞으로 HD-14U로 바뀔 예정이며, 두 이름은 같은 제품입니다."
+    },
+    {
+      "code": "I5",
+      "status": "INFO",
+      "title": "로터리 자주 쓰는 코드 강조",
+      "detail": "사용자 요청(2026-09-27 \"분배기에 로터리중 1,7번 bold를 줘 가장 많이쓰거든\")에 따라 EDID 코드표에서 1번(4K 60Hz)과 7번(1080p 60Hz)을 굵게 강조했다(edidSwitch.table[].highlight)."
     }
   ]
 }

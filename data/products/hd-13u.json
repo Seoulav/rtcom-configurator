@@ -234,13 +234,13 @@
     ],
     "table": [
       {"code": "0", "function": "FLASH에 저장된 외부 EDID(기본값)"},
-      {"code": "1", "function": "3840x2160p@60 PCM 2CH"},
+      {"code": "1", "function": "3840x2160p@60 PCM 2CH", "highlight": true},
       {"code": "2", "function": "3840x2160p@60 Multi"},
       {"code": "3", "function": "3840x2160p@60 Dolby"},
       {"code": "4", "function": "3840x2160p@30 PCM 2CH"},
       {"code": "5", "function": "3840x2160p@30 Multi"},
       {"code": "6", "function": "3840x2160p@30 Dolby"},
-      {"code": "7", "function": "1920x1080p@60 PCM 2CH"},
+      {"code": "7", "function": "1920x1080p@60 PCM 2CH", "highlight": true},
       {"code": "8", "function": "1920x1080p@60 Multi"},
       {"code": "9", "function": "1920x1080p@60 Dolby"},
       {"code": "A", "function": "1920x1080p@60 DVI"},
@@ -272,5 +272,12 @@
       "scope": "제조사 공식 출처 — 사용자 제공 PDF(.source-materials/RTcom_Manual_HD-13U_Ver1.2.pdf, 배포 제외)"
     }
   ],
-  "issues": []
+  "issues": [
+    {
+      "code": "I5",
+      "status": "INFO",
+      "title": "로터리 자주 쓰는 코드 강조",
+      "detail": "사용자 요청(2026-09-27 \"분배기에 로터리중 1,7번 bold를 줘 가장 많이쓰거든\")에 따라 EDID 코드표에서 1번(4K 60Hz)과 7번(1080p 60Hz)을 굵게 강조했다(edidSwitch.table[].highlight)."
+    }
+  ]
 }

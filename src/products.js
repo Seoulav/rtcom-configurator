@@ -152,8 +152,10 @@
       if(!videoIn||!videoOut)return null;
       const inTotal=parseInt(videoIn.quantity,10),outTotal=parseInt(videoOut.quantity,10);
       const inN=Math.min(inTotal,8),outN=Math.min(outTotal,12);
-      // 오디오 입력은 io(Audio 그룹)에 있으면 그것을, 없으면 overview의 "오디오 병합/삽입" 문구를 근거로 인정한다(HD-210U·HD-13U 등 이미 개요에 있는 사실).
+      // 오디오 입력(병합·믹스)·출력(추출·디먹스)은 io(Audio 그룹)에 있으면 그것을, 없으면 overview의 문구를 근거로 인정한다
+      // (HD-13U는 제품사양 표에 오디오 단자가 없어 io에 안 적었지만 개요에 "병합 및 추출"이 이미 있다 — issues I2 참고).
       const audioIn=io.find(port=>port.direction==='IN'&&port.group==='Audio')||(/오디오\s*(병합|삽입)/.test(item.overview||'')?{signal:'Analog Audio'}:null);
+      const audioOut=io.find(port=>port.direction==='OUT'&&port.group==='Audio')||(/오디오[^.]*추출|추출[^.]*오디오/.test(item.overview||'')?{signal:'Analog Audio'}:null);
       // 입력·출력이 모두 여럿이면 매트릭스 전환(각 출력이 독립), 출력이 1개면 여러 입력 중 하나를 고르는 선택기다.
       // 입출력이 둘 이상이라고 매트릭스인 것은 아니다(HD-210U는 2입력 중 1개를 골라 10출력에 같은 영상을 보내는 분배기). 0.34 검수에서
       // 입출력 수 기준(inN>1&&outN>1)을 되돌려, 일체형 매트릭스이거나 제품 문구에 매트릭스라고 적힌 경우(HDS-42MU "4x2 Matrix Switcher")만 매트릭스로 본다.
@@ -182,7 +184,7 @@
           const cy=y+chipH/2;
           bodyMarkup+=`<path d="M${leftX+chipW} ${cy}C${leftX+chipW+32} ${cy} ${leftX+chipW+32} ${midY} ${nodeX-22} ${midY}" fill="none" stroke="${A}" stroke-width="3"/>`;
         });
-        if(audioIn){const joinY=isMatrix?midY+Math.max(52,chipYs.length*(chipH+chipVGap)-chipVGap)/2:midY+21;bodyMarkup+=`<path d="M${leftX+chipW} ${audioY+audioH/2}C${leftX+chipW+42} ${audioY+audioH/2} ${nodeX} ${audioY+audioH/2} ${nodeX} ${joinY}" fill="none" stroke="${M}" stroke-width="1.8" stroke-dasharray="4 3"/>`;}
+        if(audioIn){const joinY=isMatrix?midY+Math.max(52,chipYs.length*(chipH+chipVGap)-chipVGap)/2:midY+21;bodyMarkup+=`<path d="M${leftX+chipW} ${audioY+audioH/2}C${leftX+chipW+42} ${audioY+audioH/2} ${nodeX} ${audioY+audioH/2} ${nodeX} ${joinY}" fill="none" stroke="${M}" stroke-width="1.8" stroke-dasharray="4 3"/><rect x="${leftX+chipW+8}" y="${audioY+audioH+2}" width="30" height="15" rx="7" fill="#fff"/><text x="${leftX+chipW+23}" y="${audioY+audioH+13}" text-anchor="middle" font-size="10" font-weight="700" fill="${M}">병합</text>`;}
         if(isMatrix){
           const boxW=68,boxH=Math.max(52,chipYs.length*(chipH+chipVGap)-chipVGap);
           bodyMarkup+=`<rect x="${nodeX-boxW/2}" y="${midY-boxH/2}" width="${boxW}" height="${boxH}" rx="14" fill="#fff" stroke="${A}" stroke-width="3"/><text x="${nodeX}" y="${midY+5}" text-anchor="middle" font-size="12" font-weight="700" fill="${A}">매트릭스</text>`;
@@ -193,6 +195,8 @@
         }
       }else{
         nodeRight=leftX+chipW;
+        // 입력이 1개뿐인 분배기(HD-13U 등)는 선택 노드가 없어 오디오 병합 선도 안 그려졌다 — 대역폭 띠로 들어가기 직전 지점에 합류시킨다.
+        if(audioIn)bodyMarkup+=`<path d="M${leftX+chipW} ${audioY+audioH/2}C${leftX+chipW+30} ${audioY+audioH/2} ${leftX+chipW+30} ${midY} ${nodeRight+18} ${midY}" fill="none" stroke="${M}" stroke-width="1.8" stroke-dasharray="4 3"/><rect x="${leftX+chipW+8}" y="${audioY+audioH+2}" width="30" height="15" rx="7" fill="#fff"/><text x="${leftX+chipW+23}" y="${audioY+audioH+13}" text-anchor="middle" font-size="10" font-weight="700" fill="${M}">병합</text>`;
       }
 
       const bandX1=nodeRight+22,bandWidth=280,bandX2=bandX1+bandWidth,bandY=midY;
@@ -204,7 +208,7 @@
       const hdcp=(item.specifications||[]).find(spec=>/HDCP/.test(spec.name));
       // HDCP 값은 제품마다 "HDCP 2.2 support", "HDCP Compliant v2.2 지원"처럼 달라 앞의 HDCP·Compliant·v를 걷어내고 한 번만 붙인다(0.34 검수: "HDCP HDCP Compliant v2.2").
       const hdcpVersion=hdcp&&hdcp.value.replace(/지원|support/ig,'').replace(/^\s*HDCP\s*/i,'').replace(/Compliant\s*/i,'').replace(/^v(?=\d)/i,'').trim();
-      const protoBits=[videoIn.protocol,hdcp&&(hdcpVersion?`HDCP ${hdcpVersion}`:'HDCP'),audioIn&&'오디오 병합'].filter(Boolean);
+      const protoBits=[videoIn.protocol,hdcp&&(hdcpVersion?`HDCP ${hdcpVersion}`:'HDCP'),audioIn&&'오디오 병합',audioOut&&'오디오 추출'].filter(Boolean);
       if(protoBits.length)bodyMarkup+=`<text x="${(bandX1+bandX2)/2}" y="${bandY+28}" text-anchor="middle" font-size="11" font-weight="600" fill="${M}">${svgEsc(protoBits.join(' · '))}</text>`;
 
       const cols=Math.min(outN,5),rows=Math.ceil(outN/cols);
@@ -228,10 +232,18 @@
       const captionText=multiview.length?`OUT 1–${matrixCount} 매트릭스 · ${multiview.join('·')} 멀티뷰`:`${outCaption} · ${sameSignal}`;
       bodyMarkup+=`<text x="${panelX+panelW/2}" y="${panelY+panelH+16}" text-anchor="middle" font-size="11.5" font-weight="700" fill="${PI}">${svgEsc(captionText)}</text>`;
 
+      // 오디오 추출(디먹스): 캡션 아래에 AUDIO OUT 칩을 두고 대역폭 띠에서 점선으로 이어 "병합"과 대칭으로 보이게 한다.
+      let audioOutBottom=panelY+panelH+16;
+      if(audioOut){
+        const audioOutW=104,audioOutH=30,aoX=panelX+panelW/2-audioOutW/2,aoY=panelY+panelH+34;
+        bodyMarkup+=`<path d="M${bandX2} ${bandY+7}C${bandX2} ${aoY+audioOutH/2} ${aoX+audioOutW/2} ${aoY+audioOutH/2} ${aoX+audioOutW/2} ${aoY}" fill="none" stroke="${M}" stroke-width="1.8" stroke-dasharray="4 3"/><rect x="${aoX}" y="${aoY}" width="${audioOutW}" height="${audioOutH}" rx="15" fill="rgba(118,118,128,.10)"/><text x="${aoX+audioOutW/2}" y="${aoY+audioOutH/2+4}" text-anchor="middle" font-size="11.5" font-weight="600" fill="${M}">AUDIO OUT</text><rect x="${aoX+audioOutW+6}" y="${aoY+7}" width="30" height="15" rx="7" fill="#fff"/><text x="${aoX+audioOutW+21}" y="${aoY+18}" text-anchor="middle" font-size="10" font-weight="700" fill="${M}">추출</text>`;
+        audioOutBottom=aoY+audioOutH;
+      }
+
       // 캡션 글자가 출력 격자보다 넓을 수 있어(예: 매트릭스 전환 문구) SVG 너비에 여유를 둔다.
       const captionHalfWidth=captionText.length*3.6+20;
-      const width=Math.max(panelX+panelW+20,panelX+panelW/2+captionHalfWidth+20);
-      const height=Math.max(leftBottom+20,panelY+panelH+38,midY+70);
+      const width=Math.max(panelX+panelW+20,panelX+panelW/2+captionHalfWidth+20,audioOut?panelX+panelW/2+52+40:0);
+      const height=Math.max(leftBottom+20,panelY+panelH+38,midY+70,audioOutBottom+16);
       return diagramWrap(bodyMarkup,width,height,[]);
     }
     function cableDiagram(item){
@@ -414,7 +426,7 @@
             ${es.desc?`<p class="rt-pg-edid-desc">${esc(es.desc)}</p>`:''}
             ${es.default?`<p class="rt-pg-hint"><span class="rt-pg-pill">기본값 — ${esc(es.default)}</span></p>`:''}
             ${stepsHtml?`<div class="rt-pg-edid-steps">${stepsHtml}</div>`:''}
-            ${table(['코드','기능'],es.table.map(row=>[esc(row.code),esc(row.function)]))}
+            ${table(['코드','기능'],es.table.map(row=>row.highlight?[`<b>${esc(row.code)}</b>`,`<b>${esc(row.function)}</b>`]:[esc(row.code),esc(row.function)]))}
           </div>
         </div>
       </section>`;
