@@ -62,6 +62,19 @@ function validate(product,file,ids){
     if('title' in (map||{})&&(typeof map.title!=='string'||!map.title))fail('portMap.title은 비어 있지 않은 문자열이어야 함');
     if('displayWidth' in (map||{})&&(typeof map.displayWidth!=='number'||map.displayWidth<240||map.displayWidth>760))fail('portMap.displayWidth는 240~760 사이 숫자여야 함');
     if(maps.length>1&&!map?.title)fail('portMap이 여러 장이면 각 장에 title(예: "송신기 CT104-U")이 있어야 함');
+    // 번호 규칙(사용자 요청 2026-09-27, 모든 제품 동일): HDMI 입력 → HDMI 출력 → 오디오 → 전송 → 제어 → 표시·조작 → 전원(마지막).
+    // 번호는 1부터 빈칸 없이 이어지고, 전원 단자는 맨 뒤에 둔다. 송신기·수신기를 한 사진에 담은 장(label "· 송신기"/"· 수신기")은 기기마다 전원을 맨 뒤에 둔다.
+    if(map&&Array.isArray(map.items)&&map.items.length){
+      const ns=map.items.map(item=>item.n).sort((a,b)=>a-b);
+      if(ns.some((n,i)=>n!==i+1))fail(`portMap 번호는 1부터 빈칸 없이 이어져야 함(${map.title||map.image}: ${ns.join(',')})`);
+      const isPower=item=>!/LED/i.test(item.label)&&/^(DC|\+12V|AC)|전원/.test(item.label);
+      const groups=[...new Set(map.items.map(item=>(item.label.match(/· (송신기|수신기)$/)||[])[1]||''))];
+      for(const g of groups){
+        const inGroup=map.items.filter(item=>((item.label.match(/· (송신기|수신기)$/)||[])[1]||'')===g).sort((a,b)=>a.n-b.n);
+        const firstPower=inGroup.findIndex(isPower);
+        if(firstPower>=0&&inGroup.slice(firstPower).some(item=>!isPower(item)))fail(`portMap 전원 단자는 맨 뒤 번호여야 함(${map.title||map.image}${g?' '+g:''})`);
+      }
+    }
     const photo=(product.images||[]).find(image=>image.role===map?.image),[width,height]=String(photo?.resolution||'').split(/[×x]/).map(Number);
     if(!Array.isArray(map?.items)||!map.items.length)fail('portMap.items는 비어 있지 않은 배열이어야 함');
     else for(const item of map.items){
@@ -85,6 +98,20 @@ function validate(product,file,ids){
     }
   }
   for(const entry of product.lineup||[])if('rackUnits' in entry&&(typeof entry.rackUnits!=='number'||entry.rackUnits<=0))fail(`lineup[].rackUnits는 양수여야 함(${entry.model})`);
+  // audioMux: 오디오 병합(MUX)·추출(DEMUX)을 동시에 쓰지 않고 하나를 골라 쓰는 제품(HD-13U, 사용자 확인 2026-09-27)
+  if('audioMux' in product){
+    const am=product.audioMux;
+    if(!am||am.mode!=='select')fail('audioMux.mode는 "select"여야 함');
+    else if(!codes.has(am.source))fail(`audioMux.source(${am.source})가 sources에 없음`);
+    if(am&&'modes' in am){
+      if(!Array.isArray(am.modes)||am.modes.length!==2)fail('audioMux.modes는 병합·추출 2개여야 함');
+      else for(const mode of am.modes){
+        if(!['MUX','DEMUX'].includes(mode.name)||typeof mode.title!=='string'||!mode.title)fail('audioMux.modes 항목은 name(MUX|DEMUX)·title을 갖춰야 함');
+        if(!Array.isArray(mode.rows)||!mode.rows.length||mode.rows.some(row=>typeof row.label!=='string'||!row.label||typeof row.text!=='string'||!row.text))fail(`audioMux.modes[].rows는 label·text를 갖춘 배열이어야 함(${mode.name})`);
+        if('flow' in mode&&(!Array.isArray(mode.flow)||mode.flow.length<2))fail(`audioMux.modes[].flow는 2칸 이상 배열이어야 함(${mode.name})`);
+      }
+    }
+  }
   if('videoModes' in product){
     const vm=product.videoModes;
     if(!vm||!Array.isArray(vm.modes)||!vm.modes.length)fail('videoModes.modes는 비어 있지 않은 배열이어야 함');

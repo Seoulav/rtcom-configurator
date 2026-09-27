@@ -92,6 +92,20 @@
       "title": "제조사 연결 다이어그램",
       "language": "en/ko",
       "note": "카탈로그 46쪽판 34쪽"
+    },
+    {
+      "type": "ProductSheet",
+      "status": "FOUND",
+      "title": "HD-13U 제품 안내서",
+      "language": "ko",
+      "note": "1–2쪽 · 사용자 제공, 배포 제외"
+    },
+    {
+      "type": "Manual",
+      "status": "FOUND",
+      "title": "HD-13U 사용자 매뉴얼 Ver.1.2",
+      "language": "ko",
+      "note": "7–8쪽 · 사용자 제공, 배포 제외"
     }
   ],
   "features": [
@@ -104,7 +118,11 @@
       "source": "C"
     },
     {
-      "text": "HDMI OUTPUT 1번에 실리는 오디오는 전면 로터리 스위치를 '0'에 두고 SET 버튼을 눌러 'Stereo Audio'(3.5mm AUDIO IN을 믹스)와 'HDMI Audio'(HDMI에 원래 실린 오디오 그대로)를 서로 바꿔가며 고른다 — 이 둘은 동시에 쓸 수 없고 반드시 하나만 선택된다. 오디오 추출은 이 선택과 무관하게 별도로 동작한다: HDMI 입력이 연결돼 있으면 그 입력에 실린 오디오가 항상 3.5mm AUDIO OUT으로 나간다. 다만 AUDIO IN에 연결한 오디오가 AUDIO OUT으로 그대로 나오지는 않는다(직결 패스스루 아님).",
+      "text": "오디오 병합(MUX)과 추출(DEMUX)은 입력된 HDMI 오디오를 기준으로 하나를 선택해서 쓴다. 전면 로터리 스위치를 '0'에 두고 SET 버튼을 누를 때마다 'Stereo Audio'(병합)와 'HDMI Audio'(추출)가 바뀐다.",
+      "source": "U"
+    },
+    {
+      "text": "병합(Stereo Audio)을 고르면 3.5mm AUDIO IN의 소리가 HDMI OUTPUT 1번에만 믹스되고, 추출(HDMI Audio)을 고르면 입력된 HDMI 소리가 3.5mm AUDIO OUT으로 나온다. 쉽게 정리한 표는 '07 오디오 설정'에 있다.",
       "source": "M1"
     }
   ],
@@ -171,6 +189,15 @@
       "condition": "",
       "source": "C",
       "verification": "VERIFIED"
+    },
+    {
+      "group": "General",
+      "name": "인증",
+      "value": "KC 인증",
+      "unit": "",
+      "condition": "제품 안내서 2쪽",
+      "source": "S1",
+      "verification": "VERIFIED"
     }
   ],
   "io": [
@@ -203,7 +230,7 @@
       "direction": "IN",
       "quantity": "1",
       "protocol": "",
-      "condition": "HDMI OUTPUT 1번에 병합(전면 로터리 0 + SET으로 Stereo Audio 모드) · 후면 사진 AUDIO IN, 매뉴얼 7쪽",
+      "condition": "병합(MUX) 선택 시 HDMI OUTPUT 1번에 믹스(전면 로터리 0 + SET으로 Stereo Audio) · 제품 안내서 2쪽, 매뉴얼 7쪽",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -214,7 +241,7 @@
       "direction": "OUT",
       "quantity": "1",
       "protocol": "",
-      "condition": "HDMI 입력 오디오 추출 · 후면 사진 AUDIO OUT, 매뉴얼 7쪽",
+      "condition": "추출(DEMUX) 선택 시 입력된 HDMI 오디오 출력 · 제품 안내서 2쪽, 매뉴얼 7쪽",
       "source": "M1",
       "verification": "VERIFIED"
     }
@@ -224,9 +251,9 @@
     "image": "Rear",
     "items": [
       {"n": 1, "label": "HDMI IN", "desc": "소스 연결, 3개 출력으로 동일하게 분배", "x1": 136, "x2": 206},
-      {"n": 2, "label": "AUDIO IN", "desc": "3.5mm 아날로그 오디오 병합", "x1": 541, "x2": 563},
-      {"n": 3, "label": "HDMI OUT 1–3", "desc": "3개 모두 같은 영상", "x1": 237, "x2": 508},
-      {"n": 4, "label": "AUDIO OUT", "desc": "3.5mm 아날로그 오디오 추출", "x1": 581, "x2": 601},
+      {"n": 3, "label": "AUDIO IN", "desc": "3.5mm 아날로그 오디오 병합(MUX 선택 시 OUT 1번)", "x1": 541, "x2": 563},
+      {"n": 2, "label": "HDMI OUT 1–3", "desc": "3개 모두 같은 영상", "x1": 237, "x2": 508},
+      {"n": 4, "label": "AUDIO OUT", "desc": "3.5mm 아날로그 오디오 추출(DEMUX 선택 시)", "x1": 581, "x2": 601},
       {"n": 5, "label": "DC 5V", "desc": "전원 어댑터 5V 2A", "x1": 55, "x2": 100}
     ]
   },
@@ -292,7 +319,51 @@
       "name": "HD-13U 사용자 매뉴얼 Ver.1.2",
       "page": "7-8",
       "scope": "제조사 공식 출처 — 사용자 제공 PDF(.source-materials/RTcom_Manual_HD-13U_Ver1.2.pdf, 배포 제외)"
+    },
+    {
+      "code": "S1",
+      "name": "HD-13U 제품 안내서(Product Sheet)",
+      "page": "1–2",
+      "scope": "제조사 공식 출처 — 사용자 제공 PDF(.source-materials/RTcom_ProductSheet_HD-13U.pdf, 배포 제외)"
+    },
+    {
+      "code": "U",
+      "name": "서울영상테크 SI사업본부 확인",
+      "page": "",
+      "scope": "사용자 확인(2026-09-27) — 오디오 병합(MUX)·추출(DEMUX)은 선택해서 쓰는 방식"
     }
   ],
+  "audioMux": {
+    "mode": "select",
+    "source": "U",
+    "howTo": "전면 파란색 로터리 스위치를 '0'에 맞추고 SET 버튼을 누를 때마다 병합과 추출이 번갈아 바뀐다. 두 가지를 동시에 쓸 수는 없다.",
+    "modes": [
+      {
+        "name": "MUX",
+        "title": "병합",
+        "setting": "Stereo Audio",
+        "flow": ["AUDIO IN", "HDMI OUT 1"],
+        "rows": [
+          {"label": "이럴 때", "text": "노트북 같은 외부 기기의 소리를 화면 소리로 넣고 싶을 때"},
+          {"label": "연결", "text": "외부 오디오를 3.5mm AUDIO IN에 연결한다."},
+          {"label": "소리가 나오는 곳", "text": "HDMI OUT 1번에 연결한 디스플레이로만 나온다."},
+          {"label": "확인 방법", "text": "전면 OUTPUT 1번 LED가 깜빡인다."}
+        ]
+      },
+      {
+        "name": "DEMUX",
+        "title": "추출",
+        "setting": "HDMI Audio",
+        "flow": ["HDMI IN", "AUDIO OUT"],
+        "rows": [
+          {"label": "이럴 때", "text": "소스의 HDMI 소리를 앰프·스피커로 따로 빼고 싶을 때"},
+          {"label": "연결", "text": "3.5mm AUDIO OUT을 앰프나 스피커에 연결한다."},
+          {"label": "소리가 나오는 곳", "text": "입력된 HDMI 소리가 AUDIO OUT으로 나온다. HDMI OUT 1–3에는 원래 HDMI 소리가 그대로 실린다."},
+          {"label": "확인 방법", "text": "전면 OUTPUT 1번 LED가 깜빡이지 않는다."}
+        ]
+      }
+    ],
+    "note": "AUDIO IN에 넣은 소리는 AUDIO OUT으로 그대로 나오지 않는다(바로 통과하지 않음)."
+  },
   "issues": []
 }

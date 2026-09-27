@@ -35,6 +35,8 @@
     const route=()=>{const match=location.hash.match(/^#products(?:\/([a-z0-9-]+))?$/);return match?{products:true,id:match[1]||null}:{products:false}};
     const reviewBadge=item=>item.packageStatus==='REVIEW REQUIRED'?'<span class="rt-pg-badge" title="카탈로그 안에서 표기가 서로 다른 항목이 있습니다">표기 검토 필요</span>':'';
     const matches=item=>(filter==='all'||item.group===filter)&&(!query||[item.productName,item.model,...(item.aliases||[]),item.english,item.korean,...(item.categories||[])].join(' ').toLowerCase().includes(query));
+    // 모델명의 하이픈(예: CT103-U-H)에서 줄이 바뀌면 "CR103-"과 "U"로 잘린 것처럼 보인다. 문자는 그대로 두고 " / " 앞뒤에서만 줄이 바뀌게 한다(PR #22 요청, 0.47).
+    const noBreak=value=>String(value??'').split(' / ').map(part=>`<span class="rt-nowrap">${esc(part)}</span>`).join(' / ');
     const shortConnector=connector=>(connector||'').replace(/\([^)]*\)/g,'').split(/[,/]/)[0].trim();
     const verification=value=>value&&value!=='VERIFIED'?` <span class="rt-pg-badge">${value==='REVIEW REQUIRED'?'검토 필요':esc(value)}</span>`:'';
     const isSizeSpec=spec=>spec.group==='Physical'&&(spec.name==='무게'||spec.name.startsWith('크기'));
@@ -208,7 +210,10 @@
       const hdcp=(item.specifications||[]).find(spec=>/HDCP/.test(spec.name));
       // HDCP 값은 제품마다 "HDCP 2.2 support", "HDCP Compliant v2.2 지원"처럼 달라 앞의 HDCP·Compliant·v를 걷어내고 한 번만 붙인다(0.34 검수: "HDCP HDCP Compliant v2.2").
       const hdcpVersion=hdcp&&hdcp.value.replace(/지원|support/ig,'').replace(/^\s*HDCP\s*/i,'').replace(/Compliant\s*/i,'').replace(/^v(?=\d)/i,'').trim();
-      const protoBits=[videoIn.protocol,hdcp&&(hdcpVersion?`HDCP ${hdcpVersion}`:'HDCP'),audioIn&&'오디오 병합',audioOut&&'오디오 추출'].filter(Boolean);
+      // 병합(MUX)과 추출(DEMUX)을 하나만 골라 쓰는 제품(audioMux.mode "select", HD-13U)은 "또는"으로 이어 동시에 되는 것처럼 보이지 않게 한다.
+      const audioSelect=audioIn&&audioOut&&item.audioMux?.mode==='select';
+      const audioBits=audioSelect?['오디오 병합(OUT 1) 또는 추출 중 선택']:[audioIn&&'오디오 병합',audioOut&&'오디오 추출'];
+      const protoBits=[videoIn.protocol,hdcp&&(hdcpVersion?`HDCP ${hdcpVersion}`:'HDCP'),...audioBits].filter(Boolean);
       if(protoBits.length)bodyMarkup+=`<text x="${(bandX1+bandX2)/2}" y="${bandY+28}" text-anchor="middle" font-size="11" font-weight="600" fill="${M}">${svgEsc(protoBits.join(' · '))}</text>`;
 
       const cols=Math.min(outN,5),rows=Math.ceil(outN/cols);
@@ -279,8 +284,24 @@
       const distanceLines=distanceSpecs.map(cableLabelFor);
       const [txLabel,rxLabel]=isTransceiver?[item.model.split(' / ')[0],item.model.split(' / ')[0]]:(item.model.includes(' / ')?item.model.split(' / '):[item.model,item.model]);
       const pseCombo=item.id==='xdm-ctr100';
+      // 0.47: XDM-CTR100 PSE를 별도 제품(xdm-ctr100-pse)으로 나눴다. PSE는 매트릭스 카드에 직결할 수 없으므로 PSE 조합만 그린다.
+      const pseOnly=item.id==='xdm-ctr100-pse';
       let bodyMarkup,width,height,captions;
-      if(pseCombo){
+      if(pseOnly){
+        width=980;
+        const boxW=170,boxH=70,iconX=60,leftBoxX=210,cardX=600,dstX=920,rowY=100;
+        height=240+(distanceLines.length?40:0);
+        bodyMarkup=`<text x="${width/2}" y="32" text-anchor="middle" font-size="11" font-weight="700" fill="#687386">PSE 조합 · PSE에만 전원 연결, 상대 기기는 CAT 케이블로 전원을 받음(PD)</text>`;
+        bodyMarkup+=monitorIcon(iconX,rowY,'소스 기기')+arrow(iconX+24,rowY,leftBoxX-6,rowY,COLOR_IN);
+        bodyMarkup+=deviceBox(leftBoxX,rowY-boxH/2,boxW,boxH,'XDM-CTR100 PSE','전원 연결(POE 공급측)');
+        bodyMarkup+=`<path d="M${leftBoxX+boxW} ${rowY}L${cardX} ${rowY}" stroke="${cableColor}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/><text x="${(leftBoxX+boxW+cardX)/2}" y="${rowY-14}" text-anchor="middle" font-size="10" font-weight="700" fill="${cableColor}">${svgEsc(cableName)} · 신호+전원 동시 공급</text>`;
+        bodyMarkup+=deviceBox(cardX,rowY-boxH/2,boxW,boxH,'XDM-CTR100 · CT/CR103','전원 케이블 불필요(PD)');
+        bodyMarkup+=arrow(cardX+boxW+6,rowY,dstX-24,rowY,COLOR_OUT)+monitorIcon(dstX,rowY,'디스플레이');
+        bodyMarkup+=`<text x="${width/2}" y="${rowY+boxH/2+26}" text-anchor="middle" font-size="10" fill="#687386">PSE[TX 모드] ↔ XDM-CTR100[RX 모드]·XDM-CR103 · PSE[RX 모드] ↔ XDM-CTR100[TX 모드]·XDM-CT103</text>`;
+        bodyMarkup+=`<text x="${width/2}" y="${rowY+boxH/2+44}" text-anchor="middle" font-size="10" fill="#687386">TX/RX는 각 기기 딥 스위치로 선택 · XDM-CIS100·COS100 카드에는 PSE가 아닌 XDM-CTR100을 직결</text>`;
+        if(distanceLines.length)bodyMarkup+=distanceLines.map((line,i)=>`<text x="24" y="${rowY+boxH/2+70+i*15}" text-anchor="start" font-size="10" font-weight="600" fill="${cableColor}">${svgEsc(line)}</text>`).join('');
+        captions=[[COLOR_IN,'입력'],[cableColor,cableName],[COLOR_OUT,'출력']];
+      } else if(pseCombo){
         width=980;
         const boxW=170,boxH=70;
         const iconX=60,leftBoxX=210,cardX=600,dstX=920;
@@ -366,7 +387,7 @@
         svgBody+=`<path d="M${x1} ${B+8}V${B-6}H${x2}V${B+8}" fill="none" stroke="${COLOR_IN}" stroke-width="1.5"/><path d="M${cx} ${B-6}V${B-14}" stroke="${COLOR_IN}" stroke-width="1.5"/><circle cx="${cx}" cy="${B-24}" r="10" fill="${COLOR_IN}"/><text x="${cx}" y="${B-20}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">${it.n}</text>`;
       });
       const seg=map.title?`<span class="rt-pg-seg"><span class="rt-pg-on">${esc(map.title)}</span></span>`:`<span class="rt-pg-seg"><span class="${map.image==='Front'?'rt-pg-on':''}">정면</span><span class="${map.image==='Rear'?'rt-pg-on':''}">후면</span></span>`;
-      const ports=`<div class="rt-pg-ports">${map.items.map(it=>`<div class="rt-pg-port"><b><span class="rt-pg-n">${it.n}</span>${esc(it.label)}</b>${esc(it.desc)}</div>`).join('')}</div>`;
+      const ports=`<div class="rt-pg-ports">${[...map.items].sort((a,b)=>a.n-b.n).map(it=>`<div class="rt-pg-port"><b><span class="rt-pg-n">${it.n}</span>${esc(it.label)}</b>${esc(it.desc)}</div>`).join('')}</div>`;
       const note=map.note?`<p class="rt-pg-hint">${esc(map.note)}</p>`:'';
       return `${seg}<div class="rt-pg-panel"><div class="rt-pg-svg-wrap"><svg viewBox="0 0 ${W+X0*2} ${H}" width="100%"${map.displayWidth?` style="display:block;max-width:${map.displayWidth}px;margin:0 auto"`:''} role="img" aria-label="${esc(map.title||'')} 단자 지도">${svgBody}</svg></div></div>${ports}${note}`;
     }
@@ -387,7 +408,7 @@
       return `${headerBlock({icon:GROUP_ICON.series,title:'알티컴 제품정보',subtitle:'RTCOM PRODUCTS · 카탈로그(2026) 기준 매트릭스·분배기·전송기·케이블',back:false,print:false})}
       <section class="rt-pg-card"><div class="rt-pg-tools"><div class="rt-pg-seg" role="group" aria-label="제품 분류">${groups.map(([id,label])=>`<span data-product-filter="${id}" role="button" tabindex="0" aria-pressed="${filter===id}" class="${filter===id?'rt-pg-on':''}">${label} (${counts[id]})</span>`).join('')}</div><label class="rt-pg-search"><span class="rt-visually-hidden">제품 검색</span><input type="search" data-product-search placeholder="모델명·기능 검색 (예: HDMI, 광, 4K)" value="${esc(query)}"></label></div>
       <p class="rt-pg-count" role="status">${items.length}개 제품</p>
-      ${items.length?`<ul class="rt-pg-grid">${items.map(item=>`<li><a class="rt-pg-gridcard" href="#products/${item.id}"><span class="rt-pg-photo">${item.cardImage?`<img src="${image(item.cardImage)}" alt="" loading="lazy">`:'<span aria-hidden="true">RTCOM</span>'}</span><span class="rt-pg-body"><span class="rt-pg-group">${esc(groupLabel[item.group])}</span><strong>${esc(item.productName)}</strong><span class="rt-pg-card-lead">${esc(item.lead?firstSentence(item.lead).replace(/\*\*/g,''):item.korean)}</span>${reviewBadge(item)}</span></a></li>`).join('')}</ul>`:'<p class="rt-pg-empty">조건에 맞는 제품이 없습니다. 검색어를 지우거나 다른 분류를 선택하세요.</p>'}</section>`;
+      ${items.length?`<ul class="rt-pg-grid">${items.map(item=>`<li><a class="rt-pg-gridcard" href="#products/${item.id}"><span class="rt-pg-photo">${item.cardImage?`<img src="${image(item.cardImage)}" alt="" loading="lazy">`:'<span aria-hidden="true">RTCOM</span>'}</span><span class="rt-pg-body"><span class="rt-pg-group">${esc(groupLabel[item.group])}</span><strong>${noBreak(item.productName)}</strong><span class="rt-pg-card-lead">${esc(item.lead?firstSentence(item.lead).replace(/\*\*/g,''):item.korean)}</span>${reviewBadge(item)}</span></a></li>`).join('')}</ul>`:'<p class="rt-pg-empty">조건에 맞는 제품이 없습니다. 검색어를 지우거나 다른 분류를 선택하세요.</p>'}</section>`;
     }
 
     // ---- 기록·원본 영역(2-6) ----
@@ -456,6 +477,23 @@
       </section>`;
     }
 
+    // ---- 오디오 설정(병합 MUX·추출 DEMUX 중 선택, HD-13U). 매뉴얼 문장을 "이럴 때·연결·소리가 나오는 곳·확인 방법"으로 풀어 두 칸으로 보여준다 ----
+    function audioMuxSection(item){
+      const am=item.audioMux;
+      if(!am||!am.modes?.length)return '';
+      const idx=String(6+(item.videoModes?1:0)+(item.edidSwitch?.table?.length?1:0)).padStart(2,'0');
+      const arrow='<svg viewBox="0 0 16 10" width="16" height="10" aria-hidden="true"><path d="M1 5h12M9 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+      return `<section class="rt-pg-card rt-pg-audio" style="margin-top:18px"><h2><span class="rt-pg-idx">${idx}</span>오디오 설정 <span class="rt-pg-note">— 병합과 추출 중 하나를 골라 쓴다</span></h2>
+        ${am.howTo?`<p class="rt-pg-audio-how">${esc(am.howTo)}</p>`:''}
+        <div class="rt-pg-audio-modes">${am.modes.map(mode=>`<div class="rt-pg-audio-mode rt-pg-audio-${mode.name==='MUX'?'mux':'demux'}">
+          <div class="rt-pg-audio-head"><b>${esc(mode.title)}</b><small>${esc(mode.name)}${mode.setting?` · ${esc(mode.setting)}`:''}</small></div>
+          ${mode.flow?.length?`<div class="rt-pg-audio-flow">${mode.flow.map(step=>`<span>${esc(step)}</span>`).join(arrow)}</div>`:''}
+          <dl>${mode.rows.map(row=>`<dt>${esc(row.label)}</dt><dd>${esc(row.text)}</dd>`).join('')}</dl>
+        </div>`).join('')}</div>
+        ${am.note?`<p class="rt-pg-hint">※ ${esc(am.note)}</p>`:''}
+      </section>`;
+    }
+
     // ---- 단일 제품 템플릿(분배기·일체형·전송기·케이블) — 명세 2-2·2-4 ----
     // ---- 제품 사진 확대(돋보기). 01 위에 큰 사진 띠를 두고, 누르면 크게 보고 한 번 더 누르면 확대/축소한다 ----
     function heroGallery(item,images){
@@ -471,7 +509,7 @@
       const diagram=connectionDiagram(item);
       const portSection=item.group!=='cable'?(portMapDiagram(item)||portCards(item)):null;
       const related=Object.values((item.related||[]).filter(link=>byId[link.target]).reduce((all,link)=>{if(!all[link.target]||link.relation!=='PART_OF_SERIES')all[link.target]=link;return all},{}));
-      return `${headerBlock({icon:GROUP_ICON[item.group],title:esc(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,diagram:!!photo})}
+      return `${headerBlock({icon:GROUP_ICON[item.group],title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,diagram:!!photo})}
       ${heroGallery(item,images)}
       <div class="rt-pg-cols">
         <div class="rt-pg-col">
@@ -479,7 +517,7 @@
             <p class="rt-pg-lead">${leadFor(item)}</p>
             ${factsList(facts)}
             ${item.catalogPages?`<p class="rt-pg-hint"><span class="rt-pg-pill">카탈로그 46쪽판 ${esc(item.catalogPages)}쪽 대조</span></p>`:''}
-            ${related.length?`<p class="rt-pg-hint"><b>관련 제품</b> ${related.map(link=>`<a href="#products/${link.target}">${esc(byId[link.target].productName)}</a>`).join(' · ')}</p>`:''}
+            ${related.length?`<p class="rt-pg-hint"><b>관련 제품</b> ${related.map(link=>`<a href="#products/${link.target}">${noBreak(byId[link.target].productName)}</a>`).join(' · ')}</p>`:''}
           </section>
           <section class="rt-pg-card rt-pg-col-mobile-4"><h2><span class="rt-pg-idx">04</span>제품 사양</h2>${specTable(orderedSpecs)}</section>
           ${(item.features||[]).length?`<section class="rt-pg-card rt-pg-col-mobile-5"><h2><span class="rt-pg-idx">05</span>주요 기능</h2><ul class="rt-pg-checks">${item.features.map(feature=>`<li><i><svg width="11" height="11" viewBox="0 0 12 12"><path d="M2 6.3l2.6 2.5L10 3.4" fill="none" stroke="#fff" stroke-width="2"/></svg></i><span>${esc(feature.text)}</span></li>`).join('')}</ul></section>`:''}
@@ -490,7 +528,7 @@
           ${recordSection(item,diagram,photo)}
         </div>
       </div>
-      ${videoModesSection(item)}${edidSwitchSection(item)}`;
+      ${videoModesSection(item)}${edidSwitchSection(item)}${audioMuxSection(item)}`;
     }
 
     // ---- 시리즈 템플릿(XDM·VDM·SPX) — 명세 2-3 ----
@@ -513,7 +551,7 @@
       const SIG_NAME={HDMI:'HDMI',DP:'DisplayPort',SDI:'SDI',CAT:'HDBaseT·CATx',FIBER:'광'};
       const legendKeys=[...new Set([...inCards,...outCards].map(card=>card[3]))];
       const arch=seriesSignalSvg(item.name||family,inCards,outCards,SIG_COLOR);
-      return `${headerBlock({icon:GROUP_ICON.series,title:esc(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,cta:`<a class="rt-pg-btn rt-pg-primary" href="#matrix-configurator" data-configure-family="${esc(family)}">${esc(family)} 구성기에서 구성하기 →</a>`})}
+      return `${headerBlock({icon:GROUP_ICON.series,title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,cta:`<a class="rt-pg-btn rt-pg-primary" href="#matrix-configurator" data-configure-family="${esc(family)}">${esc(family)} 구성기에서 구성하기 →</a>`})}
       <div class="rt-pg-cols">
         <div class="rt-pg-col">
           <section class="rt-pg-card rt-pg-col-mobile-1"><h2><span class="rt-pg-idx">01</span>한눈에 보기</h2><p class="rt-pg-lead">${leadFor(item)}</p>${factsList(facts)}${item.catalogPages?`<p class="rt-pg-hint"><span class="rt-pg-pill">카탈로그 46쪽판 ${esc(item.catalogPages)}쪽 대조</span></p>`:''}</section>

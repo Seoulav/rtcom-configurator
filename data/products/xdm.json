@@ -382,7 +382,12 @@
     {
       "relation": "PART_OF_SERIES",
       "target": "xdm-ctr100",
-      "note": "XDM 전용 HDBaseT 송·수신기(PSE 포함) · XDM-CIS100/COS100 호환"
+      "note": "XDM 전용 HDBaseT 송·수신기 · XDM-CIS100/COS100 호환"
+    },
+    {
+      "relation": "PART_OF_SERIES",
+      "target": "xdm-ctr100-pse",
+      "note": "XDM-CTR100의 PoE 전원 공급(PSE) 모델 · XDM-CTR100, XDM-CT/CR103과 사용"
     },
     {
       "relation": "PART_OF_SERIES",

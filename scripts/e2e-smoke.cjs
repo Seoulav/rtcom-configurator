@@ -227,9 +227,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     // 0.33 — 제품정보 글래스 디자인(rt-pg-*)으로 목록·상세 마크업이 바뀌었다.
     await page.click('a[data-view-tab="products"]');
     await page.waitForSelector('.rt-pg-gridcard');
-    check('제품정보 탭을 누르면 구성기를 숨기고 제품 27종 목록을 표시',await page.locator('.rt-configurator-view').isHidden()&&await page.locator('.rt-pg-gridcard').count()===27);
+    check('제품정보 탭을 누르면 구성기를 숨기고 제품 28종 목록을 표시',await page.locator('.rt-configurator-view').isHidden()&&await page.locator('.rt-pg-gridcard').count()===28);
     await page.click('[data-product-filter="extender"]');
-    check('전송기 분류는 11종',await page.locator('.rt-pg-gridcard').count()===11);
+    check('전송기 분류는 12종',await page.locator('.rt-pg-gridcard').count()===12);
     await page.click('[data-product-filter="all"]');
     await page.fill('[data-product-search]','QMS');
     check('검색어 QMS로 일체형 매트릭스 2종이 남음',await page.locator('.rt-pg-gridcard').count()===2);
@@ -256,7 +256,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('CT104-U/CR104-U 단자 지도가 송신기·수신기 사진 두 장으로 나옴',extenderMaps.length===2&&extenderMaps[0].includes('송신기 CT104-U')&&extenderMaps[1].includes('수신기 CR104-U'),JSON.stringify(extenderMaps));
     await page.goBack();
     await page.waitForSelector('.rt-pg-gridcard');
-    check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-pg-gridcard').count()===27);
+    check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-pg-gridcard').count()===28);
     // 0.43 벽부형 단자 지도: 송신기·수신기 두 장, 세로 괄호(side left/right) 번호표 11개(0.46에서 HDMI IN 1·2를 한 번호로 묶음), 사진에 보이지 않는 옆면 단자 안내(note).
     await page.goto(`${home}#products/ft103-u-h-fr103-u`,{waitUntil:'networkidle'});
     await page.waitForSelector('#rt-pg-title');
@@ -265,6 +265,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
     await page.waitForSelector('#rt-pg-title');
     check('HD-13U 상세는 02 신호 흐름에 자동 생성 SVG를 보여주고, 제조사 원본 다이어그램 버튼으로 기록 영역의 사진을 펼침',await page.locator('.rt-pg-svg-wrap svg').first().isVisible());
+    // 0.47 오디오 설정: 병합(MUX)·추출(DEMUX)은 하나를 골라 쓴다(사용자 확인). 신호 흐름 문구와 07 카드 두 칸, 단자 지도 번호 순서(HDMI 입력 → 출력 → 오디오 → 전원)를 본다.
+    const audioCard=await page.evaluate(()=>({modes:document.querySelectorAll('.rt-pg-audio .rt-pg-audio-mode').length,flow:document.querySelector('.rt-pg-svg-wrap svg')?.textContent.includes('또는 추출 중 선택'),order:[...document.querySelectorAll('.rt-pg-port b')].map(b=>b.textContent.trim()).slice(0,5).join('|')}));
+    check('HD-13U 오디오 설정 카드가 병합·추출 두 칸으로 나오고 신호 흐름에 "선택"이 표시되며 단자 번호가 HDMI 입력·출력·오디오·전원 순',audioCard.modes===2&&audioCard.flow&&audioCard.order==='1HDMI IN|2HDMI OUT 1–3|3AUDIO IN|4AUDIO OUT|5DC 5V',JSON.stringify(audioCard));
     await page.click('[data-open-diagram]');
     await page.waitForSelector('.rt-pg-diagram-photo img');
     await page.waitForLoadState('networkidle');

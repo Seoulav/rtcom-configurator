@@ -75,7 +75,7 @@ rtcom-configurator가 **추가한 필드**는 다음과 같습니다.
   - `VERIFIED`: 카탈로그 값과 일치합니다.
   - `REVIEW REQUIRED`: 카탈로그 안에서 표기가 서로 어긋납니다. **값은 원문 그대로 두고** 상태로만 표시합니다. 상세 내용은 `issues`에 있습니다.
 
-### 3.3 대상 제품 (27종, 2026-09-27 갱신)
+### 3.3 대상 제품 (28종, 2026-09-27 갱신)
 
 AV Portal과 같은 제외 모델을 적용했습니다(HS-88MX, HS-88M-U, HD-D104U, HD-D108U). HD-104U와 HD-108U는 서로 다른 제품이라 **포함**합니다.
 
@@ -102,7 +102,8 @@ AV Portal과 같은 제외 모델을 적용했습니다(HS-88MX, HS-88M-U, HD-D1
 | 전송기 | `obhd-2c` | OBHD-2C | 41 | VERIFIED |
 | 전송기 | `obux-1c` | OBUX-1C | 42 | REVIEW REQUIRED |
 | 전송기 | `xdm-ct103-cr103` | XDM-CT103 / XDM-CR103 | 11 | REVIEW REQUIRED |
-| 전송기 | `xdm-ctr100` | XDM-CTR100 / XDM-CTR100 PSE | 10 | REVIEW REQUIRED |
+| 전송기 | `xdm-ctr100` | XDM-CTR100 | 10 | REVIEW REQUIRED |
+| 전송기 | `xdm-ctr100-pse` | XDM-CTR100 PSE | 10 | VERIFIED |
 | 전송기 | `xdm-ft101-fr101` | XDM-FT101 / XDM-FR101 | 12 | VERIFIED |
 | 케이블 | `ahoc` | AHOC | 45 | VERIFIED |
 | 케이블 | `hoc-ux` | HOC-UX | 43 | VERIFIED |
@@ -131,7 +132,7 @@ AV Portal과 같은 제외 모델을 적용했습니다(HS-88MX, HS-88M-U, HD-D1
   - 공개 데이터 수정
   - 카탈로그 PDF 재배포
 - **완료 조건**
-  - 27종이 AV Portal에 공개 데이터 그대로 표시됩니다.
+  - 28종이 AV Portal에 공개 데이터 그대로 표시됩니다.
   - 내부 자료 1건 이상이 `id`로 연결되어 **로그인한 사용자에게만** 보입니다.
   - 공개 배포물(있다면)에 내부 필드가 없다는 것을 검사로 확인합니다.
 - **선행 조건**
@@ -179,3 +180,10 @@ rtcom-configurator 머리글의 "AV Portal에서 제품 찾기" 링크는 AV Por
 - 같은 제품의 다른 모델명입니다. 예: `hd-104u`의 `aliases: ["HD-14U"]`(새 실크 표기), `hd-108u`의 `aliases: ["HD-18U"]`
 - 정식 키는 계속 `model`(HD-104U·HD-108U)입니다. AV Portal에서 검색할 때 aliases도 함께 찾으면 두 이름 모두로 검색됩니다.
 - `productName`은 화면용으로 두 이름을 함께 적습니다("HD-104U (HD-14U)"). 없어도 동작합니다.
+
+## XDM-CTR100 PSE 분리 (0.47 이후)
+
+- 사용자 요청("ctr100과 ctr100 pse는 별도 모델이라 나누어줘")으로 한 제품이던 `xdm-ctr100`을 두 제품으로 나눴습니다.
+  - `xdm-ctr100`: `model`이 `"XDM-CTR100 / XDM-CTR100 PSE"`에서 `"XDM-CTR100"`으로 바뀌었습니다. PSE 전용 크기·무게·전원·KC 행과 PSE 사진은 빠졌습니다.
+  - `xdm-ctr100-pse`(새 id): `model` `"XDM-CTR100 PSE"`. 무게는 제조사 제품 안내서 값 0.34kg입니다(사용자 결정 2026-09-27).
+- AV Portal에 이전 합본 `model` 키로 연결한 내부 자료가 있으면 `rtcomId` 기준으로 다시 연결합니다. PSE 관련 내부 자료는 `xdm-ctr100-pse`로 옮깁니다.

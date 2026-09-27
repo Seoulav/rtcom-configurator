@@ -1,49 +1,49 @@
 {
-  "id": "xdm-ctr100",
+  "id": "xdm-ctr100-pse",
   "group": "extender",
   "manufacturer": "RTCOM",
-  "productName": "XDM-CTR100",
-  "model": "XDM-CTR100",
+  "productName": "XDM-CTR100 PSE",
+  "model": "XDM-CTR100 PSE",
   "series": "XDM Series Extender",
-  "seriesNote": "XDM 시리즈 전용 HDBaseT 3.0 송·수신 겸용 전송기다. PoE 전원 공급 모델은 XDM-CTR100 PSE(별도 제품)다.",
+  "seriesNote": "XDM 시리즈 전용 HDBaseT 3.0 송·수신 겸용 전송기의 PoE 전원 공급(PSE) 모델이다.",
   "itemType": "PRODUCT",
   "categories": [
     "영상",
     "Video",
     "Extender"
   ],
-  "english": "HDBaseT 3.0 HDMI transceiver (TX/RX selectable by DIP switch) carrying uncompressed 4K60 4:4:4 up to 100m; runs without its own power supply when paired with the XDM-CTR100 PSE.",
-  "korean": "HDBaseT 3.0 기술로 압축하지 않은 4K60Hz 4:4:4 HDMI 신호를 최대 100m 전송하는 송·수신 겸용 전송기다.",
-  "subtitle": "XDM Series Extender · HDBaseT 3.0 송·수신 겸용",
-  "lead": "HDBaseT 3.0 기술로 압축하지 않은 4K60Hz 4:4:4 HDMI 신호를 **최대 100m** 전송하는 송·수신 겸용 전송기입니다. XDM-CTR100 PSE와 연결하면 전원 케이블 없이 씁니다.",
+  "english": "PoE PSE model of the XDM-CTR100 HDBaseT 3.0 transceiver: carries uncompressed 4K60 4:4:4 up to 100m and powers the paired XDM-CTR100 or XDM-CT103/CR103 over the CAT cable.",
+  "korean": "HDBaseT 3.0 기술로 4K60Hz 4:4:4 HDMI 신호를 최대 100m 전송하면서, CAT 케이블로 상대 XDM-CTR100·XDM-CT103/CR103에 전원을 함께 공급하는 PSE 모델이다.",
+  "subtitle": "XDM Series Extender · HDBaseT 3.0 송·수신 겸용 · PoE 전원 공급(PSE)",
+  "lead": "HDBaseT 3.0으로 4K60Hz 4:4:4 HDMI 신호를 최대 100m 전송하면서, **CAT 케이블로 상대 기기에 전원을 함께 공급**하는 PSE 모델입니다. PSE에만 전원을 연결합니다.",
   "catalogPages": "10",
-  "verificationSummary": "알티컴 종합 카탈로그(2026-03, 48쪽판) 10쪽의 XDM-CTR100·XDM-CTR100 PSE 소개와 제품사양 표에서 확인했고, 새 카탈로그(46쪽판) 10쪽과 줄 단위로 재대조했다(차이 없음). 0.47에서 XDM-CTR100 PSE를 별도 제품(xdm-ctr100-pse)으로 나눴다(사용자 요청).",
+  "verificationSummary": "알티컴 종합 카탈로그(46쪽판) 10쪽의 XDM-CTR100 PSE 소개와 제품사양 표, 사용자 제공 XDM-CTR100 PSE 제품 안내서(1–2쪽)와 XDM-CTR100 매뉴얼 Ver.1.4(PSE 동일 사양)로 확인했다. 0.47에서 XDM-CTR100과 별도 제품으로 나눴다(사용자 요청).",
   "packageStatus": "VERIFIED",
-  "overview": "XDM-CTR100은 HDBaseT 3.0 기술이 적용되어 압축하지 않은 True 4K 4096x2160@60Hz(4:4:4), 3840x2160@60Hz(4:4:4) 해상도의 HDMI 신호를 케이블에 따라 최대 100m까지 전송하는 HDMI 송·수신기다. 하나의 기기에서 설정으로 송신기 또는 수신기 역할을 바꿀 수 있으며, 송신기로 쓰면 XDM-CIS100, 수신기로 쓰면 XDM-COS100과 호환된다. RS-232+ 기능으로 XDM 매트릭스의 커맨드를 통해 XDM-CTR100의 RS-232에 연결된 외부기기를 제어할 수 있다.\n\nXDM-CTR100 PSE(별도 제품)와 함께 쓰면 XDM-CTR100은 PD(Powered Devices) 모드로 동작해 전원 케이블 없이 사용할 수 있다. XDM-CIS100·COS100 카드에 직접 연결할 때는 전원을 직접 연결한다. 케이블별 최대 사용 거리는 제조사 문의 사항으로 적혀 있다.",
+  "overview": "XDM-CTR100 PSE는 PoE 기능의 PSE(Power Sourcing Equipment) 장비로, CAT 케이블을 통해 PD 장비(XDM-CTR100)에 신호와 전원을 동시에 공급한다. XDM-CTR100 및 벽부형 XDM-CT103/CR103과 함께 사용할 수 있다.\n\nXDM-CTR100 PSE와 XDM-CTR100을 함께 쓰면 XDM-CTR100은 PD(Powered Devices) 모드로 동작해 전원 케이블 없이 사용할 수 있고, 이때 PSE 쪽에는 전원 케이블을 연결해야 한다. PSE 모델도 XDM-CTR100과 같이 설정으로 송신기 또는 수신기 역할을 바꿀 수 있다. 케이블별 최대 사용 거리는 제조사 문의 사항으로 적혀 있다.\n\nXDM-CIS100·COS100 카드에는 PSE를 직결할 수 없고, 카드에는 XDM-CTR100을 연결한다.",
   "images": [
     {
       "role": "Main",
-      "file": "xdm-ctr100-main.webp",
-      "alt": "RTCOM XDM-CTR100 상판",
-      "note": "Main · XDM-CTR100 제품 사진",
+      "file": "xdm-ctr100-pse-main.webp",
+      "alt": "RTCOM XDM-CTR100 PSE 사선 사진",
+      "note": "Main · XDM-CTR100 PSE 제품 안내서 1쪽 사진",
       "provider": "RTCOM",
-      "model": "XDM-CTR100",
-      "source": "R",
+      "model": "XDM-CTR100 PSE",
+      "source": "S1",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "210×129"
+      "resolution": "448×280"
     },
     {
       "role": "Rear",
-      "file": "xdm-ctr100-rear.webp",
-      "alt": "RTCOM XDM-CTR100 양쪽 단자면(DIP 스위치면, HDBaseT·HDMI IN/OUT·Phoenix 단자면)",
-      "note": "Rear · 카탈로그 10쪽 XDM-CTR100 단자면 사진",
+      "file": "xdm-ctr100-pse-rear.webp",
+      "alt": "RTCOM XDM-CTR100 PSE 앞면(위)과 뒷면(아래)",
+      "note": "Rear · XDM-CTR100 PSE 제품 안내서 1쪽 앞면·뒷면 사진",
       "provider": "RTCOM",
-      "model": "XDM-CTR100",
-      "source": "C",
+      "model": "XDM-CTR100 PSE",
+      "source": "S1",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "563×350"
+      "resolution": "418×236"
     }
   ],
   "imageStatuses": [
@@ -84,12 +84,12 @@
       "status": "FOUND",
       "title": "XDM-CTR100 사용자 매뉴얼 Ver.1.4",
       "language": "ko",
-      "note": "4–9쪽 · 사용자 제공, 배포 제외"
+      "note": "4쪽 \"XDM-CTR100-PSE 동일 사양\" · 사용자 제공, 배포 제외"
     }
   ],
   "features": [
     {
-      "text": "XDM-CIS100·XDM-COS100 카드에 직접 연결할 때는 PSE를 쓸 수 없어 XDM-CTR100에 전원을 직접 연결한다. TX/RX는 DIP 스위치로 선택한다.",
+      "text": "XDM-CIS100·XDM-COS100 카드에는 PSE를 직결할 수 없다. 카드에는 XDM-CTR100을 연결하고, PSE는 XDM-CTR100이나 벽부형 XDM-CT103/CR103과 짝으로 쓴다.",
       "source": "U"
     },
     {
@@ -101,15 +101,19 @@
       "source": "C"
     },
     {
-      "text": "송신기로 쓰면 XDM-CIS100, 수신기로 쓰면 XDM-COS100과 호환된다.",
-      "source": "C"
-    },
-    {
       "text": "RS-232+ 기능으로 XDM 매트릭스 커맨드를 통해 연결된 외부기기를 RS-232로 제어할 수 있다.",
       "source": "C"
     },
     {
+      "text": "XDM-CTR100 PSE는 CAT 케이블로 PD 장비(XDM-CTR100)에 신호와 전원을 동시에 공급한다.",
+      "source": "C"
+    },
+    {
       "text": "PSE와 함께 쓰면 XDM-CTR100은 PD 모드로 동작해 전원 케이블 없이 사용할 수 있고, PSE 쪽에 전원 케이블을 연결한다.",
+      "source": "C"
+    },
+    {
+      "text": "XDM-CTR100 PSE는 XDM-CTR100과 벽부형 XDM-CT103/CR103과 함께 사용할 수 있다.",
       "source": "C"
     },
     {
@@ -122,6 +126,10 @@
     },
     {
       "text": "앞면 LED 4개(Rx Signal, Tx Signal, Tx/Rx, Link)로 동작 상태를 보여 준다.",
+      "source": "S1"
+    },
+    {
+      "text": "PSE[TX 모드]는 XDM-CTR100[RX 모드] 또는 XDM-CR103과, PSE[RX 모드]는 XDM-CTR100[TX 모드] 또는 XDM-CT103과 CAT6A·CAT7(BELDEN 10GXE02 S/FTP) 케이블로 연결한다.",
       "source": "S1"
     },
     {
@@ -258,28 +266,37 @@
     {
       "group": "Physical",
       "name": "크기(W×D×H)",
-      "value": "127.8×73.2×30.3",
+      "value": "127.4×88×30.1",
       "unit": "mm",
-      "condition": "XDM-CTR100",
-      "source": "C",
+      "condition": "XDM-CTR100 PSE · 제품 안내서 1쪽 127.4×88×30.1mm(5.02×3.46×1.19in) · 카탈로그 원문은 \"107.4 [127.4]\"",
+      "source": "S1",
       "verification": "VERIFIED"
     },
     {
       "group": "Physical",
       "name": "무게",
-      "value": "0.28",
+      "value": "0.34",
       "unit": "kg",
-      "condition": "XDM-CTR100 (0.62lbs)",
-      "source": "C",
+      "condition": "XDM-CTR100 PSE · 제조사 제품 안내서 1쪽 0.34kg(0.71lbs) 기준(사용자 결정 2026-09-27) · 이전 실사용 확인값은 0.28kg",
+      "source": "S1",
       "verification": "VERIFIED"
     },
     {
       "group": "Power",
       "name": "전원",
-      "value": "DC +12V 1A 이상",
+      "value": "DC 12V 1A",
       "unit": "",
-      "condition": "XDM-CTR100 · XDM-CTR100 PSE와 연결되면 PD 모드로 CAT 케이블에서 전원을 받아 연결하지 않음 · 매뉴얼 4·9쪽",
-      "source": "M1",
+      "condition": "XDM-CTR100 PSE · PSE에 전원을 연결하고, PSE와 연결된 XDM-CTR100·XDM-CT103·XDM-CR103에는 연결하지 않음 · 제품 안내서 1·2쪽",
+      "source": "S1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "General",
+      "name": "인증",
+      "value": "KC 인증",
+      "unit": "",
+      "condition": "XDM-CTR100 PSE · 제품 안내서 2쪽",
+      "source": "S1",
       "verification": "VERIFIED"
     }
   ],
@@ -344,92 +361,87 @@
     {
       "relation": "PART_OF_SERIES",
       "target": "xdm",
-      "note": "XDM 시리즈 전용 HDBaseT 전송기"
+      "note": "XDM 시리즈 전용 HDBaseT 전송기(PSE 모델)"
     },
     {
       "relation": "WORKS_WITH",
-      "target": "xdm",
-      "note": "XDM-CIS100(TX 모드)·XDM-COS100(RX 모드) 카드"
-    },
-    {
-      "relation": "WORKS_WITH",
-      "target": "xdm-ctr100-pse",
-      "note": "PSE와 연결하면 PD 모드로 전원 케이블 없이 사용"
+      "target": "xdm-ctr100",
+      "note": "CAT 케이블로 XDM-CTR100에 신호와 전원 공급(PD 모드)"
     },
     {
       "relation": "WORKS_WITH",
       "target": "xdm-ct103-cr103",
-      "note": "벽부형 XDM-CT103(RX 모드)·XDM-CR103(TX 모드)과 연결"
+      "note": "벽부형 XDM-CT103/CR103에 PoE 전원 공급"
     }
   ],
   "portMap": {
     "image": "Rear",
+    "title": "위 앞면, 아래 뒷면",
     "items": [
       {
         "n": 4,
         "label": "HDBaseT",
-        "desc": "RJ45 · CAT 케이블로 XDM 카드 또는 상대 CTR100과 연결",
-        "x1": 104,
-        "x2": 168,
+        "desc": "RJ45 · CAT 케이블로 XDM-CTR100이나 XDM-CT103/CR103과 연결, 신호와 전원을 함께 공급",
+        "x1": 41,
+        "x2": 102,
         "side": "bottom",
-        "y": 310
+        "y": 226
       },
       {
         "n": 1,
         "label": "HDMI IN",
         "desc": "TX 모드에서 HDMI 소스 입력",
-        "x1": 181,
-        "x2": 239,
+        "x1": 115,
+        "x2": 171,
         "side": "bottom",
-        "y": 310
+        "y": 226
       },
       {
         "n": 2,
         "label": "HDMI OUT",
         "desc": "RX 모드에서 디스플레이 출력",
-        "x1": 265,
-        "x2": 325,
+        "x1": 197,
+        "x2": 252,
         "side": "bottom",
-        "y": 310
+        "y": 226
       },
       {
         "n": 3,
         "label": "AUDIO · RS-232",
         "desc": "5핀(L·R·접지·Tx·Rx) · 아날로그 스테레오 오디오 출력과 RS-232+ 제어",
-        "x1": 340,
-        "x2": 404,
+        "x1": 267,
+        "x2": 333,
         "side": "bottom",
-        "y": 310
+        "y": 226
       },
       {
         "n": 7,
         "label": "DC IN",
-        "desc": "DC 12V 1A 이상 · XDM-CTR100 PSE와 연결되면 PD 모드라 연결하지 않음",
-        "x1": 410,
-        "x2": 451,
+        "desc": "DC 12V 1A · PSE에는 반드시 연결(상대 기기에 전원 공급)",
+        "x1": 336,
+        "x2": 378,
         "side": "bottom",
-        "y": 310
+        "y": 226
       },
       {
         "n": 5,
         "label": "TX/RX DIP 스위치",
         "desc": "1번 ON = TX · 2번 ON = RX · 3번 ON = Long Reach(1080p 150m) · 스위치를 내리면 ON",
-        "x1": 181,
-        "x2": 229,
+        "x1": 100,
+        "x2": 142,
         "side": "top",
-        "y": 42
+        "y": 4
       },
       {
         "n": 6,
         "label": "상태 LED",
         "desc": "Rx Signal(RX 모드) · Tx Signal(TX 모드) · Tx/Rx·Link(정상 연결)",
-        "x1": 112,
-        "x2": 166,
+        "x1": 32,
+        "x2": 86,
         "side": "top",
-        "y": 42
+        "y": 4
       }
-    ],
-    "title": "위 앞면, 아래 뒷면"
+    ]
   },
   "sources": [
     {
