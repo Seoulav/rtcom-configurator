@@ -93,6 +93,13 @@
       "title": "제조사 연결 다이어그램",
       "language": "en/ko",
       "note": "카탈로그 46쪽판 33쪽"
+    },
+    {
+      "type": "Manual",
+      "status": "FOUND",
+      "title": "HDS-42MU 사용자 매뉴얼 Ver.1.0",
+      "language": "ko",
+      "note": "4·6–9쪽 · 사용자 제공, 배포 제외"
     }
   ],
   "features": [
@@ -113,12 +120,20 @@
       "source": "C"
     },
     {
-      "text": "오디오 병합(Audio Insertion): HDMI OUTPUT에 실리는 오디오는 전면 딥스위치 1번으로 'HDMI Embedded Audio'(선택된 입력의 오디오 그대로)와 '3.5mm Stereo Audio'(외부 아날로그 입력을 병합)를 서로 바꿔가며 고른다 — 이 둘은 동시에 쓸 수 없고 반드시 하나만 선택되며, 전환 후 전원 케이블을 1회 탈착해야 적용된다. 오디오 추출(Audio Extraction)은 이 선택과 무관하게 별도로 동작한다: 현재 선택된 입력 포트의 오디오가 별도 설정 없이 항상 3.5mm Stereo Audio 출력 단자로 나간다.",
-      "source": "M1"
+      "text": "오디오는 병합과 추출 중 하나만 쓴다. 딥 스위치 1번 ON = 병합(3.5mm 소리를 HDMI에 실음), OFF = 추출(HDMI 원래 소리를 3.5mm로도 냄). 바꾼 뒤 전원 케이블을 한 번 뺐다 꽂는다. 한눈에 보는 표는 '07 오디오 설정'에 있다.",
+      "source": "U"
     },
     {
       "text": "Priority 기능: 딥스위치로 채널 스위칭 방식을 선택할 수 있다.",
       "source": "C"
+    },
+    {
+      "text": "딥 스위치 3번 ON이면 분배 기능(Distributor)이 켜져 출력 1번과 2번에 같은 영상이 나온다. 바꾼 뒤 전원 케이블을 1회 탈착한다.",
+      "source": "M1"
+    },
+    {
+      "text": "딥 스위치 2번 ON이면 Priority가 켜져 입력 1번이 우선한다. 입력 1번에 신호가 없으면 다음 입력으로 자동 전환되고, 입력 1번에 신호가 들어오면 다시 1번으로 돌아온다. OFF이면 마지막에 들어온 신호를 출력한다(오토셀렉팅). 바꾼 뒤 전원 케이블을 1회 탈착한다.",
+      "source": "M1"
     },
     {
       "text": "EDID 마인더 기능: 외부 연결된 디스플레이 EDID를 저장하고 내부 저장된 EDID를 사용할 수 있다.",
@@ -189,7 +204,7 @@
       "name": "크기(W×D×H)",
       "value": "232×80×30",
       "unit": "mm",
-      "condition": "",
+      "condition": "카탈로그 46쪽판 33쪽(3.14in) 기준 · 매뉴얼 Ver.1.0 4쪽은 232×65×30mm",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -233,7 +248,7 @@
       "direction": "IN",
       "quantity": "1",
       "protocol": "",
-      "condition": "",
+      "condition": "병합(MUX) 선택 시 HDMI 출력에 실림 · 딥 스위치 1번 ON · 매뉴얼 7쪽",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -244,7 +259,7 @@
       "direction": "OUT",
       "quantity": "1",
       "protocol": "",
-      "condition": "",
+      "condition": "추출(DEMUX) 선택 시 선택된 입력의 HDMI 소리 출력 · 딥 스위치 1번 OFF · 매뉴얼 7쪽",
       "source": "C",
       "verification": "VERIFIED"
     }
@@ -255,8 +270,8 @@
     "items": [
       {"n": 1, "label": "IN 1–4", "desc": "HDMI 소스 4대 연결", "x1": 125, "x2": 436},
       {"n": 2, "label": "OUT 1–2", "desc": "선택한 입력을 매트릭스 전환해 출력", "x1": 464, "x2": 606},
-      {"n": 3, "label": "AUDIO IN", "desc": "3.5mm 아날로그 오디오 병합", "x1": 635, "x2": 653},
-      {"n": 4, "label": "AUDIO OUT", "desc": "3.5mm 아날로그 오디오 추출", "x1": 675, "x2": 692},
+      {"n": 3, "label": "AUDIO IN", "desc": "3.5mm 아날로그 오디오 병합(MUX 선택 시)", "x1": 635, "x2": 653},
+      {"n": 4, "label": "AUDIO OUT", "desc": "3.5mm 아날로그 오디오 추출(DEMUX 선택 시)", "x1": 675, "x2": 692},
       {"n": 5, "label": "RS-232", "desc": "터미널 블록, 외부 제어", "x1": 706, "x2": 753},
       {"n": 6, "label": "DC 5V", "desc": "전원 어댑터 5V 2A", "x1": 74, "x2": 100}
     ]
@@ -266,7 +281,7 @@
     "x1": 315, "y1": 71, "x2": 349, "y2": 104,
     "label": "EDID 로터리 스위치",
     "desc": "전면 파란색 EDID 로터리 스위치로 디스플레이 EDID를 선택한다. HD-13U와 달리 별도 SET 버튼이 없어, 로터리를 돌린 뒤 전원 케이블을 1회 탈착해야 적용된다.",
-    "default": "매뉴얼에 기본값 표시 없음 — 0 = Throughpass(OUTPUT에 연결된 디스플레이의 EDID를 그대로 전달)",
+    "default": "0 = Throughpass(외부 EDID 저장: OUTPUT에 연결된 디스플레이의 EDID를 저장해 사용)",
     "steps": [
       {
         "title": "외부 EDID 저장(External EDID Setting)",
@@ -317,16 +332,41 @@
     {
       "code": "M1",
       "name": "HDS-42MU 사용자 매뉴얼 Ver.1.0",
-      "page": "7-8",
+      "page": "4, 6-9",
       "scope": "제조사 공식 출처 — 사용자 제공 PDF(.source-materials/RTcom_Manual_HDS-42MU_Ver1.0.pdf, 배포 제외)"
+    },
+    {
+      "code": "U",
+      "name": "서울영상테크 SI사업본부 확인",
+      "page": "",
+      "scope": "사용자 확인(2026-09-27) — 오디오 병합(MUX)·추출(DEMUX)은 둘 중 하나만 동작하고 딥 스위치로 선택, HDS-21U·HDS-42MU 같은 방식"
     }
   ],
-  "issues": [
-    {
-      "code": "I5",
-      "status": "INFO",
-      "title": "EDID 로터리 스위치 추가 + 오디오 병합 딥스위치 배타 명시",
-      "detail": "사용자 제공 매뉴얼(2026-09-27)을 근거로 전면 EDID 로터리 스위치 데이터를 추가하고, 오디오 병합 딥스위치 1번이 'HDMI Embedded'/'3.5mm Stereo' 중 하나만 선택되는 배타적 기능임을 명시했다(사용자 요청 \"edid로타리가 있는 모든제품은 edid설정이 13u처럼 동일하게 mux demux는 둘중 1개 동작만 가능하고 dip스위치를 선택헤야해\")."
-    }
-  ]
+  "audioMux": {
+    "mode": "select",
+    "source": "U",
+    "howTo": "전면 딥 스위치 1번 하나로 고른다(ON = 병합, OFF = 추출). 스위치를 바꾼 뒤 전원 케이블을 한 번 뺐다 꽂으면 적용된다. 두 가지를 동시에 쓸 수는 없다.",
+    "modes": [
+      {
+        "name": "MUX",
+        "title": "병합",
+        "setting": "딥 스위치 1번 ON · 3.5mm Stereo Audio",
+        "flow": ["AUDIO IN", "HDMI OUT"],
+        "rows": [
+          {"label": "소리가 나오는 곳", "text": "3.5mm AUDIO IN에 넣은 소리가 HDMI 출력(디스플레이)으로 나온다."}
+        ]
+      },
+      {
+        "name": "DEMUX",
+        "title": "추출",
+        "setting": "딥 스위치 1번 OFF · HDMI Embedded Audio",
+        "flow": ["HDMI IN", "AUDIO OUT"],
+        "rows": [
+          {"label": "소리가 나오는 곳", "text": "HDMI 원래 소리가 디스플레이로 그대로 가고, 3.5mm AUDIO OUT으로도 나온다."}
+        ]
+      }
+    ],
+    "note": "나가는 소리의 볼륨은 RS-232 명령으로 0.5dB 단위로 조절하거나 뮤트할 수 있다(매뉴얼 9쪽, 예: *000V54! = 0dB에서 2dB로)."
+  },
+  "issues": []
 }

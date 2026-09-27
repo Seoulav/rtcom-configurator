@@ -268,6 +268,15 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     // 0.47 오디오 설정: 병합(MUX)·추출(DEMUX)은 하나를 골라 쓴다(사용자 확인). 신호 흐름 문구와 07 카드 두 칸, 단자 지도 번호 순서(HDMI 입력 → 출력 → 오디오 → 전원)를 본다.
     const audioCard=await page.evaluate(()=>({modes:document.querySelectorAll('.rt-pg-audio .rt-pg-audio-mode').length,flow:document.querySelector('.rt-pg-svg-wrap svg')?.textContent.includes('또는 추출 중 선택'),order:[...document.querySelectorAll('.rt-pg-port b')].map(b=>b.textContent.trim()).slice(0,5).join('|')}));
     check('HD-13U 오디오 설정 카드가 병합·추출 두 칸으로 나오고 신호 흐름에 "선택"이 표시되며 단자 번호가 HDMI 입력·출력·오디오·전원 순',audioCard.modes===2&&audioCard.flow&&audioCard.order==='1HDMI IN|2HDMI OUT 1–3|3AUDIO IN|4AUDIO OUT|5DC 5V',JSON.stringify(audioCard));
+    // 0.49 HDS-21U·HDS-42MU도 같은 방식(딥 스위치 1번 선택, 사용자 확인·매뉴얼 Ver.1.0). 신호 흐름 문구에는 HD-13U 전용 "(OUT 1)"이 붙지 않는다.
+    for(const id of ['hds-21u','hds-42mu']){
+      await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
+      await page.waitForSelector('#rt-pg-title');
+      const hdsAudio=await page.evaluate(()=>({modes:document.querySelectorAll('.rt-pg-audio .rt-pg-audio-mode').length,dip:document.querySelector('.rt-pg-audio-how')?.textContent.includes('딥 스위치 1번'),flow:[...document.querySelectorAll('.rt-pg-svg-wrap svg')].some(svg=>svg.textContent.includes('오디오 병합 또는 추출 중 선택')&&!svg.textContent.includes('(OUT 1)'))}));
+      check(`${id} 오디오 설정 카드가 딥 스위치 1번 기준 병합·추출 두 칸으로 나오고 신호 흐름에 "선택"이 표시됨`,hdsAudio.modes===2&&hdsAudio.dip&&hdsAudio.flow,JSON.stringify(hdsAudio));
+    }
+    await page.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
+    await page.waitForSelector('#rt-pg-title');
     await page.click('[data-open-diagram]');
     await page.waitForSelector('.rt-pg-diagram-photo img');
     await page.waitForLoadState('networkidle');
