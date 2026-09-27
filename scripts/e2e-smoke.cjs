@@ -319,17 +319,26 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.waitForSelector('#rt-pg-title');
     check('HD-13U 상세는 03 Signal Flow에 자동 생성 SVG를 보여주고, 제조사 원본 다이어그램 버튼으로 기록 영역의 사진을 펼침',await page.locator('.rt-pg-svg-wrap svg').first().isVisible());
     // 0.47 오디오 설정: 병합(MUX)·추출(DEMUX)은 하나를 골라 쓴다(사용자 확인). 신호 흐름 문구와 07 카드 두 칸, 단자 지도 번호 순서(HDMI 입력 → 출력 → 오디오 → 전원)를 본다.
-    const audioCard=await page.evaluate(()=>({modes:document.querySelectorAll('.rt-pg-audio .rt-pg-audio-mode').length,flow:[...document.querySelectorAll('.rt-pg-svg-wrap svg')].some(svg=>svg.textContent.includes('또는 추출 중 선택')),order:[...document.querySelectorAll('.rt-pg-port b')].map(b=>b.textContent.trim()).slice(0,5).join('|')}));
-    check('HD-13U 오디오 설정 카드가 병합·추출 두 칸으로 나오고 신호 흐름에 "선택"이 표시되며 단자 번호가 HDMI 입력·출력·오디오·전원 순',audioCard.modes===2&&audioCard.flow&&audioCard.order==='1HDMI IN|2HDMI OUT 1–3|3AUDIO IN|4AUDIO OUT|5DC 5V',JSON.stringify(audioCard));
+    const audioCard=await page.evaluate(()=>({modes:document.querySelectorAll('.rt-pg-audio .rt-pg-audio-mode').length,flow:[...document.querySelectorAll('.rt-pg-svg-wrap svg')].some(svg=>svg.textContent.includes('또는 추출 중 선택')),order:[...document.querySelectorAll('.rt-pg-port b')].map(b=>b.textContent.trim()).join('|')}));
+    check('HD-13U 오디오 설정 카드가 병합·추출 두 칸으로 나오고 신호 흐름에 "선택"이 표시되며 단자 번호가 HDMI 입력·출력·오디오·정면 MODE·SET·전원 순(0.66 정면 번호 추가)',audioCard.modes===2&&audioCard.flow&&audioCard.order==='1HDMI IN|2HDMI OUT 1–3|3AUDIO IN|4AUDIO OUT|5MODE|6SET|7DC 5V',JSON.stringify(audioCard));
     // 0.59 — EDID 코드표가 길면(16행) 세로로 너무 길어지므로 좌우 두 표로 나눠 펼친다(사용자 요청 2026-09-27 "좌우표를 펼쳐서하면 줄여줘").
     const edidTables=await page.evaluate(()=>{const wrap=document.querySelector('.rt-pg-edid-tables');if(!wrap)return null;const tables=[...wrap.querySelectorAll('table')];return {count:tables.length,rows:tables.map(t=>t.querySelectorAll('tbody tr').length)}});
     check('HD-13U 06 EDID 설정 코드표가 좌우 두 표로 나뉨',edidTables&&edidTables.count===2&&edidTables.rows[0]===8&&edidTables.rows[1]===8,JSON.stringify(edidTables));
     // 0.58~0.59: 06 EDID 설정(항상 전체 폭)과 위 두 칸(01~05)의 높이 차이가 크지 않아야 오른쪽 칸에 빈 공간이 크게 남지 않는다(사용자 확인 2026-09-27 "06 EDID설정 깨진ㄷ").
     const colGap=await page.evaluate(()=>{const cols=[...document.querySelectorAll('.rt-pg-col')].map(c=>c.getBoundingClientRect().height);return Math.abs(cols[0]-cols[1])});
     check('HD-13U 01~05 두 칸의 높이 차이가 크지 않음(오른쪽 빈 공간 방지)',colGap<600,JSON.stringify({colGap}));
-    // 0.55: 2U 미만(HD-13U)은 정면·후면 버튼 없이 정면 사진과 포트 연결면을 함께 보여준다.
+    // 0.66: 분배기 4종(HD-13U·HD-104U·HD-108U·HD-210U)은 HDS처럼 앞면·뒷면 합성 사진 한 장에 정면 로터리(·SET·MODE)까지 번호를 붙인다(사용자 지적 "3분배기 로터리 번호 표기 누락").
+    for(const [id,pins,front] of [['hd-13u',7,['MODE','SET']],['hd-104u',4,['EDID']],['hd-108u',4,['EDID']],['hd-210u',6,['EDID','MODE']]]){
+      await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
+      await page.waitForSelector('.rt-pg-panel svg');
+      const dm=await page.evaluate(()=>({faces:document.querySelectorAll('.rt-pg-face').length,toggle:document.querySelectorAll('[data-pm-side]').length,pins:[...document.querySelectorAll('.rt-pg-port b')].map(b=>b.textContent.trim().replace(/^\d+/,''))}));
+      check(`${id} 단자 지도가 앞면·뒷면 합성 사진 한 장에 ${pins}개 번호(정면 ${front.join('·')} 포함, 전원 마지막)로 나옴`,dm.faces===0&&dm.toggle===0&&dm.pins.length===pins&&front.every(label=>dm.pins.includes(label))&&/^DC/.test(dm.pins[pins-1]),JSON.stringify(dm));
+    }
+    // 0.55: 2U 미만(XDM-FT101/FR101)은 정면·후면 버튼 없이 정면 사진과 포트 연결면을 함께 보여준다.
+    await page.goto(`${home}#products/xdm-ft101-fr101`,{waitUntil:'networkidle'});
+    await page.waitForSelector('.rt-pg-panel svg');
     const hdFaces=await page.evaluate(()=>({face:!!document.querySelector('.rt-pg-face:not([hidden]) img'),toggle:document.querySelectorAll('[data-pm-side]').length}));
-    check('2U 미만 제품(HD-13U)은 정면 사진과 후면 단자 지도를 함께 보여주고 정면·후면 버튼이 없음',hdFaces.face&&hdFaces.toggle===0,JSON.stringify(hdFaces));
+    check('2U 미만 제품(XDM-FT101/FR101)은 정면 사진과 후면 단자 지도를 함께 보여주고 정면·후면 버튼이 없음',hdFaces.face&&hdFaces.toggle===0,JSON.stringify(hdFaces));
     await page.goto(`${home}#products/qms-88ux`,{waitUntil:'networkidle'});
     await page.waitForSelector('[data-pm-side="front"]');
     const beforeToggle=await page.evaluate(()=>({front:document.querySelector('[data-pm-face="front"]').hidden,rear:document.querySelector('[data-pm-face="rear"]').hidden}));
@@ -397,6 +406,13 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.waitForFunction(()=>document.querySelector('.rt-pg-edid img')?.naturalWidth>0);
     const obhd=await page.evaluate(()=>({codes:[...document.querySelectorAll('.rt-pg-edid .rt-pg-rotary-row .rt-pg-rotary svg')].map(svg=>(svg.getAttribute('aria-label').match(/(\w)번$/)||[])[1]).join(''),def:document.querySelector('.rt-pg-edid .rt-pg-rotary.is-default figcaption em')?.textContent,idx:document.querySelector('.rt-pg-edid')?.closest('section')?.querySelector('.rt-pg-idx')?.textContent,rows:document.querySelectorAll('.rt-pg-edid .rt-pg-tablewrap tbody tr').length}));
     check('OBHD-2C 06 EDID 설정에 MODE 로터리 0~D 14칸과 C번 기본값, 코드표 14행이 나옴',obhd.codes==='0123456789ABCD'&&obhd.def==='C번 · 기본값'&&obhd.idx==='06'&&obhd.rows===14,JSON.stringify(obhd));
+    // 0.65 XDM-CTR100·CTR100 PSE 06 딥 스위치 설정(매뉴얼 Ver.1.4 5쪽, 사용자 요청 "ctr100, pse 모두 딥스위치 그려줘"): 1·2번 TX/RX 조합이 3번 전송 거리보다 먼저, 아래쪽이 ON, 검은 몸체.
+    for(const id of ['xdm-ctr100','xdm-ctr100-pse']){
+      await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
+      await page.waitForSelector('.rt-pg-dip');
+      const ctr=await page.evaluate(()=>({heads:[...document.querySelectorAll('.rt-pg-dip .rt-pg-dip-head b')].map(b=>b.textContent).join('|'),combos:document.querySelectorAll('.rt-pg-dip-combos figure').length,idx:document.querySelector('.rt-pg-dip .rt-pg-idx')?.textContent,down:document.querySelector('.rt-pg-dip h2')?.textContent.includes('아래쪽이 ON'),tx:document.querySelector('.rt-pg-dip')?.textContent.includes('TX 모드')&&document.querySelector('.rt-pg-dip')?.textContent.includes('RX 모드')}));
+      check(`${id} 06 딥 스위치 설정이 1·2번 TX/RX 모드 2칸 → 3번 전송 거리 순서, 아래쪽 ON으로 나옴`,ctr.heads==='1·2번|3번'&&ctr.combos===2&&ctr.idx==='06'&&ctr.down&&ctr.tx,JSON.stringify(ctr));
+    }
     // 0.64 SPX는 HDBaseT가 아닌 CATx 전송(사용자 확인 2026-09-27): SPX 시리즈 상세 신호 범례와 SPX-TX/RX 어디에도 HDBaseT가 나오지 않는다.
     for(const id of ['spx','spx-rx-tx']){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});

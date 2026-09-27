@@ -45,6 +45,18 @@
       "resolution": "716×178"
     },
     {
+      "role": "Other",
+      "file": "hd-13u-front-rear.webp",
+      "alt": "RTCOM HD-13U 앞면(위)과 뒷면(아래)",
+      "note": "Other · 정면·후면 사진을 위아래로 합성(단자 지도용)",
+      "provider": "RTCOM",
+      "model": "HD-13U",
+      "source": "C",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "718×445"
+    },
+    {
       "role": "Diagram",
       "file": "hd-13u-diagram.webp",
       "alt": "RTCOM HD-13U 연결 다이어그램(제조사 제공)",
@@ -244,42 +256,71 @@
   ],
   "related": [],
   "portMap": {
-    "image": "Rear",
+    "image": "Other",
+    "title": "위 앞면, 아래 뒷면",
     "items": [
       {
         "n": 1,
         "label": "HDMI IN",
         "desc": "소스 연결, 3개 출력으로 동일하게 분배",
         "x1": 136,
-        "x2": 206
+        "x2": 206,
+        "side": "top",
+        "y": 267
       },
       {
         "n": 3,
         "label": "AUDIO IN",
         "desc": "3.5mm 아날로그 오디오 병합(MUX 선택 시 OUT 1번)",
         "x1": 541,
-        "x2": 563
+        "x2": 563,
+        "side": "top",
+        "y": 267
       },
       {
         "n": 2,
         "label": "HDMI OUT 1–3",
         "desc": "3개 모두 같은 영상",
         "x1": 237,
-        "x2": 508
+        "x2": 508,
+        "side": "top",
+        "y": 267
       },
       {
         "n": 4,
         "label": "AUDIO OUT",
         "desc": "3.5mm 아날로그 오디오 추출(DEMUX 선택 시)",
         "x1": 581,
-        "x2": 601
+        "x2": 601,
+        "side": "top",
+        "y": 267
       },
       {
-        "n": 5,
+        "n": 7,
         "label": "DC 5V",
         "desc": "전원 어댑터 5V 2A",
         "x1": 55,
-        "x2": 100
+        "x2": 100,
+        "side": "top",
+        "y": 267
+      },
+      {
+        "label": "MODE",
+        "desc": "전면 파란색 MODE 로터리 스위치. EDID 선택은 '06 EDID 설정', 오디오 병합·추출 선택은 '07 오디오 설정' 참고",
+        "x1": 179,
+        "x2": 219,
+        "side": "top",
+        "y": 0,
+        "n": 5
+      },
+      {
+        "label": "SET",
+        "desc": "외부 EDID 저장·오디오 병합/추출 선택 때 누르는 버튼('06 EDID 설정'·'07 오디오 설정' 참고)",
+        "x1": 326,
+        "x2": 350,
+        "side": "top",
+        "y": 0,
+        "n": 6
       }
     ]
   },

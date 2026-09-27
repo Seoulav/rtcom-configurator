@@ -93,7 +93,7 @@
       "source": "C"
     },
     {
-      "text": "TX/RX 겸용 지원(전면 딥 스위치 1번 ON=TX·XDM-CIS100 호환, 2번 ON=RX·XDM-COS100 호환, 3번 ON=Long Reach 1080p 최대 150m, 4번 사용 안 함)",
+      "text": "TX/RX 겸용 지원(TX는 XDM-CIS100, RX는 XDM-COS100 카드와 짝, Long Reach 1080p 최대 150m)",
       "source": "M1"
     },
     {
@@ -123,7 +123,7 @@
       "name": "최대 해상도",
       "value": "4096x2160@60Hz, 3840x2160@60Hz",
       "unit": "",
-      "condition": "4:4:4 · XDM-CTR100·XDM-CTR100 PSE 공통",
+      "condition": "4:4:4",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -132,7 +132,7 @@
       "name": "최대 전송거리",
       "value": "100",
       "unit": "m",
-      "condition": "4K60Hz 4:4:4, BELDEN 10GXE02(S/FTP, CAT6A) 케이블 기준 · XDM-CTR100·XDM-CTR100 PSE 공통",
+      "condition": "4K60Hz 4:4:4, BELDEN 10GXE02(S/FTP, CAT6A) 케이블 기준",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -141,7 +141,7 @@
       "name": "최대 전송거리",
       "value": "80",
       "unit": "m",
-      "condition": "4K60Hz 4:4:4, CI6522(SF/UTP, CAT6) 케이블 사용 시 · XDM-CTR100·XDM-CTR100 PSE 공통 · 케이블별 상이",
+      "condition": "4K60Hz 4:4:4, CI6522(SF/UTP, CAT6) 케이블 사용 시 · 케이블별 상이",
       "source": "U",
       "verification": "VERIFIED"
     },
@@ -150,16 +150,16 @@
       "name": "최대 전송거리",
       "value": "150",
       "unit": "m",
-      "condition": "Long Reach 모드(딥 스위치 3번 ON), 1920x1080p · XDM-CTR100·XDM-CTR100 PSE 공통",
+      "condition": "Long Reach 모드(딥 스위치 3번 ON), 1920x1080p",
       "source": "M1",
       "verification": "VERIFIED"
     },
     {
       "group": "Transmission",
-      "name": "지원 케이블",
+      "name": "권장 케이블",
       "value": "CAT6a, CAT7",
       "unit": "",
-      "condition": "XDM-CTR100·XDM-CTR100 PSE 공통",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -168,7 +168,7 @@
       "name": "규격",
       "value": "HDBaseT 3.0, HDMI v2.0",
       "unit": "",
-      "condition": "XDM-CTR100·XDM-CTR100 PSE 공통",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -177,7 +177,7 @@
       "name": "HDCP",
       "value": "HDCP 2.2 support",
       "unit": "",
-      "condition": "XDM-CTR100·XDM-CTR100 PSE 공통",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -186,7 +186,7 @@
       "name": "EDID",
       "value": "Supports EDID",
       "unit": "",
-      "condition": "XDM-CTR100·XDM-CTR100 PSE 공통",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -204,7 +204,7 @@
       "name": "크기(W×D×H)",
       "value": "127.8×73.2×30.3",
       "unit": "mm",
-      "condition": "XDM-CTR100",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -213,7 +213,7 @@
       "name": "무게",
       "value": "0.28",
       "unit": "kg",
-      "condition": "XDM-CTR100 (0.62lbs)",
+      "condition": "0.62lbs",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -222,7 +222,7 @@
       "name": "전원",
       "value": "DC +12V 1A 이상",
       "unit": "",
-      "condition": "XDM-CTR100 · XDM-CTR100 PSE와 연결되면 PD 모드로 CAT 케이블에서 전원을 받아 연결하지 않음",
+      "condition": "XDM-CTR100 PSE와 연결되면 PD 모드로 CAT 케이블에서 전원을 받아 연결하지 않음",
       "source": "M1",
       "verification": "VERIFIED"
     }
@@ -357,7 +357,7 @@
       {
         "n": 5,
         "label": "TX/RX DIP 스위치",
-        "desc": "1번 ON = TX · 2번 ON = RX · 3번 ON = Long Reach(1080p 150m) · 스위치를 내리면 ON",
+        "desc": "1번 ON = TX · 2번 ON = RX · 3번 ON = Long Reach(1080p 150m) · 스위치를 내리면 ON. 설정 방법은 '06 딥 스위치 설정' 참고",
         "x1": 181,
         "x2": 229,
         "side": "top",
@@ -413,5 +413,55 @@
       "scope": "제조사 공식 출처 — 사용자 제공 PDF(.source-materials/RTcom_Manual_XDM-CTR100_Ver1.4.pdf, 배포 제외). XDM-CTR100 PSE도 같은 사양(매뉴얼 4쪽)"
     }
   ],
-  "issues": []
+  "issues": [],
+  "dipSwitch": {
+    "place": "전면",
+    "label": "TX/RX 딥 스위치",
+    "count": 4,
+    "onUp": false,
+    "color": "black",
+    "source": "M1",
+    "rows": [
+      {
+        "n": 3,
+        "title": "전송 거리",
+        "off": {
+          "name": "Normal",
+          "text": "일반 모드. True 4K 영상을 보낸다(케이블에 따라 최대 100m)."
+        },
+        "on": {
+          "name": "Long Reach",
+          "text": "1920x1080p 영상을 최대 150m까지 보낸다."
+        }
+      }
+    ],
+    "combos": [
+      {
+        "title": "TX/RX 모드",
+        "switches": [
+          1,
+          2
+        ],
+        "items": [
+          {
+            "set": [
+              "on",
+              "off"
+            ],
+            "name": "TX 모드",
+            "text": "HDMI IN에 연결한 소스를 보낸다. 매트릭스 XDM-CIS100 입력 카드와 짝으로 쓴다."
+          },
+          {
+            "set": [
+              "off",
+              "on"
+            ],
+            "name": "RX 모드",
+            "text": "받은 영상을 HDMI OUT으로 디스플레이에 내보낸다. 매트릭스 XDM-COS100 출력 카드와 짝으로 쓴다."
+          }
+        ]
+      }
+    ],
+    "note": "4번은 사용하지 않는다. 출고 상태는 모든 스위치 OFF(레버가 위)이며, 사용 전에 1번(TX) 또는 2번(RX) 중 하나만 ON으로 내린다."
+  }
 }
