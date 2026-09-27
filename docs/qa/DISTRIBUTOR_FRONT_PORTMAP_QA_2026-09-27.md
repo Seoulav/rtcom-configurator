@@ -30,8 +30,17 @@
 
 ## 5. 후속 후보
 
-- XDM-FT101/FR101·MR-4S·QMS-44UX·QMS-88UX도 정면 사진이 번호 없이 따로 보입니다. FT101은 정면 MODE 로터리가 있어 같은 방식으로 바꿀 수 있습니다(사용자 확인 후).
+- MR-4S·QMS-44UX·QMS-88UX는 정면 사진이 번호 없이 따로 보입니다(설정 스위치 카드 없음). XDM-FT101/FR101은 0.68.0에서 반영했습니다(§7).
 
 ## 6. 되돌리기
 
 해당 커밋을 `git revert`합니다(합성 사진 4장, `portMap`, `images` Other가 함께 빠짐).
+
+## 7. 후속: XDM-FT101/FR101 (0.68.0 준비)
+
+- 사용자가 XDM-FT101/FR101 매뉴얼 Ver.1.3을 다시 보내, 앞서 제안한 "FT101 정면 번호"를 같은 방식으로 반영했습니다(`.source-materials/RTcom_Manual_XDM-FT101-FR101_Ver1.3.pdf`와 SHA-256 같음).
+- 합성 사진 `xdm-ft101-fr101-front-rear.webp` 691×703: 위 매뉴얼 6쪽 전면 사진(691×432, 검은 배경 사선 사진), 흰 여백 80px, 아래 후면 사진(515×191, 가운데 정렬 x+88).
+- FT101은 이미 `Other` 역할 사진(XDM-FR101 상판)이 있어, `portMap.file`로 번호를 얹을 사진 파일을 직접 고르게 했습니다(`src/products.js` portMapBlock, validator에 "file이 역할과 맞는 images에 있어야 함" 규칙 추가). 다른 제품은 `file`이 없어 동작이 같습니다.
+- 번호: 1 HDMI IN · 2 AUDIO · RS-232 · 3 FIBER OUT · **4 MODE 로터리 · 5 S/P**(Mini USB 서비스 포트) · 6 DC IN. 정면 괄호는 사진 가장자리 대신 로터리·S/P 바로 위(y 272·300)에 둡니다.
+- e2e: 분배기 합성 사진 검사에 FT101(6개, MODE·S/P, 전원 마지막) 추가, 0.55 "2U 미만 정면 사진 함께" 검사 대상은 MR-4S로 옮김.
+- 화면: `docs/qa/distributor-portmap-screens/xdm-ft101-fr101-pm-1280.png`, `-390.png`.

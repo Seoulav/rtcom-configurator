@@ -68,6 +68,18 @@
       "officialSource": true,
       "verificationStatus": "FOUND",
       "resolution": "691×432"
+    },
+    {
+      "role": "Other",
+      "file": "xdm-ft101-fr101-front-rear.webp",
+      "alt": "RTCOM XDM-FT101 송신기 앞면(위, 매뉴얼 사진)과 뒷면(아래)",
+      "note": "Other · 매뉴얼 6쪽 전면 사진과 후면 사진을 위아래로 합성(단자 지도용)",
+      "provider": "RTCOM",
+      "model": "XDM-FT101",
+      "source": "M1",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "691×703"
     }
   ],
   "imageStatuses": [
@@ -370,35 +382,63 @@
     }
   ],
   "portMap": {
-    "image": "Rear",
+    "image": "Other",
+    "file": "xdm-ft101-fr101-front-rear.webp",
+    "title": "위 앞면(송신기), 아래 뒷면",
     "items": [
       {
         "n": 1,
         "label": "HDMI IN",
         "desc": "HDMI 소스 연결(XDM-FT101)",
-        "x1": 158,
-        "x2": 222
+        "x1": 246,
+        "x2": 310,
+        "side": "top",
+        "y": 512
       },
       {
         "n": 2,
         "label": "AUDIO · RS-232",
         "desc": "오디오 삽입 + RS-232, 같은 5핀 Phoenix 단자",
-        "x1": 246,
-        "x2": 326
+        "x1": 334,
+        "x2": 414,
+        "side": "top",
+        "y": 512
       },
       {
         "n": 3,
         "label": "FIBER OUT",
         "desc": "광 출력(1 LC)",
-        "x1": 340,
-        "x2": 400
+        "x1": 428,
+        "x2": 488,
+        "side": "top",
+        "y": 512
+      },
+      {
+        "n": 6,
+        "label": "DC IN",
+        "desc": "전원 입력",
+        "x1": 170,
+        "x2": 220,
+        "side": "top",
+        "y": 512
       },
       {
         "n": 4,
-        "label": "DC IN",
-        "desc": "전원 입력",
-        "x1": 82,
-        "x2": 132
+        "label": "MODE",
+        "desc": "전면 파란색 MODE 로터리 스위치로 EDID와 오디오(Source·Analog)를 함께 고름. '06 EDID 설정' 참고",
+        "x1": 262,
+        "x2": 308,
+        "side": "top",
+        "y": 272
+      },
+      {
+        "n": 5,
+        "label": "S/P",
+        "desc": "Mini USB 서비스 포트(펌웨어 업데이트)",
+        "x1": 334,
+        "x2": 362,
+        "side": "top",
+        "y": 300
       }
     ]
   },

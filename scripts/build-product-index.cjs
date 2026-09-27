@@ -58,6 +58,8 @@ function validate(product,file,ids){
     for(const map of maps){
     if(!map||!['Rear','Front','Perspective','Main','Other'].includes(map.image))fail('portMap.image는 Rear·Front·Perspective·Main·Other 중 하나여야 함');
     else if(!(product.images||[]).some(image=>image.role===map.image))fail(`portMap.image(${map.image})에 해당하는 이미지가 images에 없음`);
+    // 0.68 portMap.file: 같은 역할(role) 사진이 여러 장일 때 번호를 얹을 사진 파일을 직접 고른다(XDM-FT101/FR101 앞면·뒷면 합성).
+    if(map&&'file' in map&&!(product.images||[]).some(image=>image.file===map.file&&image.role===map.image))fail(`portMap.file(${map.file})이 역할 ${map.image}인 images에 없음`);
     if('note' in (map||{})&&(typeof map.note!=='string'||!map.note))fail('portMap.note는 비어 있지 않은 문자열이어야 함');
     if('title' in (map||{})&&(typeof map.title!=='string'||!map.title))fail('portMap.title은 비어 있지 않은 문자열이어야 함');
     if('displayWidth' in (map||{})&&(typeof map.displayWidth!=='number'||map.displayWidth<240||map.displayWidth>760))fail('portMap.displayWidth는 240~760 사이 숫자여야 함');
@@ -75,7 +77,7 @@ function validate(product,file,ids){
         if(firstPower>=0&&inGroup.slice(firstPower).some(item=>!isPower(item)))fail(`portMap 전원 단자는 맨 뒤 번호여야 함(${map.title||map.image}${g?' '+g:''})`);
       }
     }
-    const photo=(product.images||[]).find(image=>image.role===map?.image),[width,height]=String(photo?.resolution||'').split(/[×x]/).map(Number);
+    const photo=(product.images||[]).find(image=>image.role===map?.image&&(!map?.file||image.file===map.file)),[width,height]=String(photo?.resolution||'').split(/[×x]/).map(Number);
     if(!Array.isArray(map?.items)||!map.items.length)fail('portMap.items는 비어 있지 않은 배열이어야 함');
     else for(const item of map.items){
       const vertical=item.side==='left'||item.side==='right';

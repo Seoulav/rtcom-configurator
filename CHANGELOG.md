@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- **XDM-FT101/FR101 단자 지도 정면 번호**(사용자 제공 매뉴얼 Ver.1.3 재전달, 0.66 분배기와 같은 방식, 0.68.0 목표): 매뉴얼 전면 사진과 후면 사진을 위아래로 합성한 한 장에 4 MODE 로터리·5 S/P 번호를 더했습니다(1 HDMI IN · 2 AUDIO·RS-232 · 3 FIBER OUT · 6 DC IN). 같은 역할 사진이 이미 있어 `portMap.file`로 사진 파일을 직접 고르게 했습니다(validator 규칙 추가). QA: `docs/qa/DISTRIBUTOR_FRONT_PORTMAP_QA_2026-09-27.md` §7.
 - **0.66.0 배포 기록**: `docs/qa/DEPLOYMENT_0.66_2026-09-27.md`(PR #48 → main 병합·배포, 공개 파일 202/202 일치, 브랜치 배포 없음)
 - **0.64.0 배포 기록**: `docs/qa/DEPLOYMENT_0.64_2026-09-27.md`(PR #45 → main 병합·배포, 공개 파일 197/197 일치, 브랜치 배포 없음)
 - **0.61.0 배포 기록**: `docs/qa/DEPLOYMENT_0.61_2026-09-27.md`(PR #41 → main 병합·배포, 공개 파일 192/192 일치, 브랜치 배포 없음)

@@ -388,7 +388,7 @@
       return blocks.length?blocks.join(''):null;
     }
     function portMapBlock(item,map){
-      const photo=(item.images||[]).find(img=>img.role===map.image);
+      const photo=(item.images||[]).find(img=>img.role===map.image&&(!map.file||img.file===map.file));
       if(!photo||!photo.resolution)return null;
       const [rw,rh]=photo.resolution.split(/[×x]/).map(Number);
       if(!rw||!rh)return null;
