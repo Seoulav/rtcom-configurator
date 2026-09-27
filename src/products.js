@@ -529,7 +529,8 @@
     // ---- 전면 컨트롤 강조(EDID 로터리 스위치 등, 0.35). edidSwitch가 있을 때만 전체 폭 카드로 보여준다 ----
     // ---- EDID 로터리 대표 설정 그림(0.59, 사용자 요청 "EDID 로터리 스위치도 대표적인 것을 DIP 스위치처럼 예상 이미지 만들어봐줘") ----
     // 제품 사진과 같은 파란 16단(0~F) 로터리를 그리고, 화살표가 고른 코드를 가리키게 한다. 0이 위쪽이고 시계 방향으로 1, 2 … F 순서다.
-    function rotaryGraphic(code){
+    // opts.name: 화면 읽기 이름(기본 "EDID 로터리", 오디오 설정은 "MODE 로터리").
+    function rotaryGraphic(code,opts={}){
       const idx=parseInt(code,16);
       const S=112,c=S/2,labels='0123456789ABCDEF'.split('');
       const at=(i,r)=>{const a=(i*22.5-90)*Math.PI/180;return [c+r*Math.cos(a),c+r*Math.sin(a)]};
@@ -539,7 +540,7 @@
       const deg=idx*22.5;
       body+=`<g transform="rotate(${deg} ${c} ${c})"><rect x="${c-3}" y="${c-16}" width="6" height="32" rx="2" fill="#1C1C1E"/><path d="M${c} ${c-27}l-6 9h12z" fill="#1C1C1E"/></g>`;
       labels.forEach((label,i)=>{const [x,y]=at(i,47);const on=i===idx;body+=on?`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="8" fill="#007AFF"/><text x="${x.toFixed(1)}" y="${(y+3.5).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">${label}</text>`:`<text x="${x.toFixed(1)}" y="${(y+3.2).toFixed(1)}" text-anchor="middle" font-size="9" font-weight="600" fill="#8A8A8E">${label}</text>`;});
-      return `<svg viewBox="0 0 ${S} ${S}" width="${S}" height="${S}" role="img" aria-label="EDID 로터리 ${esc(code)}번">${body}</svg>`;
+      return `<svg viewBox="0 0 ${S} ${S}" width="${S}" height="${S}" role="img" aria-label="${esc(opts.name||'EDID 로터리')} ${esc(code)}번">${body}</svg>`;
     }
     // 대표 설정: 기본값 코드(edidSwitch.default의 "0 = …" 앞 글자)와 자주 쓰는 코드(table[].highlight)를 코드 순으로 최대 4개 보여준다.
     function edidExamples(es){
@@ -603,6 +604,31 @@
     }
     // ---- 오디오 설정(병합 MUX·추출 DEMUX 중 선택, HD-13U). 매뉴얼 문장을 "이럴 때·연결·소리가 나오는 곳·확인 방법"으로 풀어 두 칸으로 보여준다 ----
     // HDS-21U·HDS-42MU는 딥 스위치 1번으로 고르므로 이 카드 대신 딥 스위치 설정 카드에서 함께 설명한다(사용자 요청 2026-09-27).
+    // ---- 오디오 설정 순서 그림(0.61, 사용자 요청 "DIP 이미지처럼 불 켜짐", "분배기 로터리 이미지 그대로 활용해줘, 통일감이 없어") ----
+    // EDID 설정 카드의 대표 설정 줄(rt-pg-rotary-row·rt-pg-rotary 칸, 112px 그림, 파란 글자 캡션)을 그대로 쓴다.
+    // ① MODE 로터리를 panel.rotary.value에 맞춤 → ② SET 누름 → ③④ 모드별 확인 LED(panel.target)가 깜빡임(led "blink") / 깜빡이지 않음("steady").
+    // 깜빡임은 CSS 애니메이션(rt-pg-led-blink)으로 보여주고, 움직임 줄이기 설정이나 인쇄에서도 알 수 있게 LED 둘레에 빛 표시를 함께 그린다.
+    function setButtonGraphic(label){
+      const S=112,c=S/2;
+      const body=`<circle cx="${c}" cy="${c-4}" r="30" fill="#1C1C1E"/><circle cx="${c}" cy="${c-4}" r="15" fill="#48484A" stroke="#8E8E93" stroke-width="1.5"/><circle cx="${c}" cy="${c-4}" r="21" fill="none" stroke="#007AFF" stroke-width="3"/><path d="M${c} ${c-50}v12M${c-6} ${c-44}l6 6 6-6" fill="none" stroke="#007AFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><text x="${c}" y="${c+42}" text-anchor="middle" font-size="11" font-weight="800" fill="#1C1C1E">${esc(label)}</text>`;
+      return `<svg viewBox="0 0 ${S} ${S}" width="${S}" height="${S}" role="img" aria-label="${esc(label)} 버튼 누름">${body}</svg>`;
+    }
+    function ledGraphic(label,blink){
+      const S=112,c=S/2,cy=c-4;
+      let body=`<circle cx="${c}" cy="${cy}" r="30" fill="#1C1C1E"/><circle cx="${c}" cy="${cy}" r="18" fill="#34C759" opacity=".25"/>`;
+      if(blink)body+=`<g stroke="#34C759" stroke-width="2.2" stroke-linecap="round">${[0,45,90,135,180,225,270,315].map(a=>{const r1=14,r2=22,rad=a*Math.PI/180;return `<path d="M${(c+r1*Math.cos(rad)).toFixed(1)} ${(cy+r1*Math.sin(rad)).toFixed(1)}L${(c+r2*Math.cos(rad)).toFixed(1)} ${(cy+r2*Math.sin(rad)).toFixed(1)}"/>`}).join('')}</g>`;
+      body+=`<circle cx="${c}" cy="${cy}" r="8" fill="#34C759"${blink?' class="rt-pg-led-blink"':''}/><text x="${c}" y="${c+42}" text-anchor="middle" font-size="11" font-weight="800" fill="#1C1C1E">${esc(label)}</text>`;
+      return `<svg viewBox="0 0 ${S} ${S}" width="${S}" height="${S}" role="img" aria-label="${esc(label)} LED ${blink?'깜빡임':'깜빡이지 않음'}">${body}</svg>`;
+    }
+    function audioStepsRow(am){
+      const pn=am.panel;
+      if(!pn)return '';
+      const value=String(pn.rotary?.value??'0').toUpperCase(),rlabel=pn.rotary?.label||'MODE';
+      const tiles=[`<figure class="rt-pg-rotary">${rotaryGraphic(value,{name:`${rlabel} 로터리`})}<figcaption><em>① ${esc(value)}번</em>${esc(rlabel)} 로터리를 ${esc(value)}에 맞춤</figcaption></figure>`,
+        `<figure class="rt-pg-rotary">${setButtonGraphic(pn.button||'SET')}<figcaption><em>② ${esc(pn.button||'SET')} 누름</em>누를 때마다 병합 ↔ 추출</figcaption></figure>`,
+        ...am.modes.filter(mode=>mode.led).map(mode=>`<figure class="rt-pg-rotary rt-pg-audio-step-${mode.led}">${ledGraphic(pn.target,mode.led==='blink')}<figcaption><em>${esc(mode.title)}</em>${esc(pn.target)} LED ${mode.led==='blink'?'깜빡임':'깜빡이지 않음'}</figcaption></figure>`)];
+      return `<div class="rt-pg-rotary-row rt-pg-audio-steps" aria-label="오디오 병합·추출 전환 순서">${tiles.join('')}</div>`;
+    }
     function audioMuxSection(item){
       const am=item.audioMux;
       if(!am||!am.modes?.length)return '';
@@ -610,6 +636,7 @@
       const arrow='<svg viewBox="0 0 16 10" width="16" height="10" aria-hidden="true"><path d="M1 5h12M9 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
       return `<section class="rt-pg-card rt-pg-audio" style="margin-top:18px"><h2><span class="rt-pg-idx">${idx}</span>오디오 설정 <span class="rt-pg-note">— 병합과 추출 중 하나를 골라 쓴다</span></h2>
         ${am.howTo?`<p class="rt-pg-audio-how">${esc(am.howTo)}</p>`:''}
+        ${audioStepsRow(am)}
         <div class="rt-pg-audio-modes">${am.modes.map(mode=>`<div class="rt-pg-audio-mode rt-pg-audio-${mode.name==='MUX'?'mux':'demux'}">
           <div class="rt-pg-audio-head"><b>${esc(mode.title)}</b><small>${esc(mode.name)}${mode.setting?` · ${esc(mode.setting)}`:''}</small></div>
           ${mode.flow?.length?`<div class="rt-pg-audio-flow">${mode.flow.map(step=>`<span>${esc(step)}</span>`).join(arrow)}</div>`:''}
@@ -636,7 +663,10 @@
       // edidSwitch는 사진+안내 2장+코드표(최대 12행)까지 있어 05 옆 좁은 칸(360px)에 넣으면 오른쪽 칸(02·03·기록)보다 훨씬 길어져 빈 공간이 크게 남는다(사용자 확인 2026-09-27 "06 EDID설정 깨진ㄷ").
       // videoModes·audioMux는 상대적으로 짧아 좁은 칸에 넣어도 균형이 맞으므로 이 둘만 05 옆에 붙이고, edidSwitch·dipSwitch는 항상 전체 폭 아래에 둔다.
       if(hasVideoModes){sideCard=videoModesSection(item);belowCards=edidSwitchSection(item)}
-      else if(hasAudioMux){sideCard=audioMuxSection(item);belowCards=edidSwitchSection(item)}
+      // 오디오 설정(병합·추출 두 칸)도 좁은 칸에서는 오른쪽 칸이 잘리고, EDID 설정(06)보다 먼저 보여 번호가 07 → 06 순서로 뒤집혔다(사용자 지적 2026-09-27 "13U 07 오디오가 잘린다").
+      // 그래서 EDID 설정이 있는 제품은 06 EDID → 07 오디오 순서로 둘 다 전체 폭 아래에 두고, EDID가 없을 때만 오디오 설정을 05 옆에 붙인다.
+      else if(hasAudioMux&&!item.edidSwitch?.table?.length){sideCard=audioMuxSection(item)}
+      else if(hasAudioMux){belowCards=`${edidSwitchSection(item)}${audioMuxSection(item)}`}
       else{belowCards=edidSwitchSection(item)}
       belowCards+=dipSwitchSection(item);
       // 휴대폰(1000px 이하)에서는 .rt-pg-col이 사라지고 rt-pg-col-mobile-N 순서로만 쌓이므로, sideCard도 순서 클래스가 있어야 05 다음(01~05, 06, 07 기록)으로 나온다(없으면 order:0이라 맨 앞으로 감).

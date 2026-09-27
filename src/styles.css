@@ -856,3 +856,10 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 /* 0.60 04 제품 사양 표 줄 간격 약 15% 축소(사용자 요청 "04 사양도 상하 간격을 15% 정도 줄여도 되겠다"): 한 줄 행 37px → 31px */
 #rtcom-design .rt-pg-spec-table th,#rtcom-design .rt-pg-spec-table td{padding-top:6px;padding-bottom:6px}
 #rtcom-design .rt-pg-spec-table td .rt-pg-note-line{margin-top:2px}
+
+/* 0.61 오디오 설정 순서 그림(EDID 대표 설정 칸과 같은 모양: 로터리 → SET → LED 불 켜짐) */
+#rtcom-design .rt-pg-audio-steps{margin:0 0 14px}
+@media(max-width:720px){#rtcom-design .rt-pg-audio-steps{grid-template-columns:repeat(2,1fr)}}
+#rtcom-design .rt-pg-led-blink{animation:rt-pg-led-blink 1s steps(1,end) infinite}
+@keyframes rt-pg-led-blink{50%{fill:#2F3A31}}
+@media (prefers-reduced-motion:reduce){#rtcom-design .rt-pg-led-blink{animation:none}}

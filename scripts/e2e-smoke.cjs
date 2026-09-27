@@ -352,7 +352,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     for(const [id,codes] of [['hd-13u','0,1,7'],['hds-42mu','0,3,9'],['ft103-u-h-fr103-u','0,3,6']]){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
       await page.waitForSelector('#rt-pg-title');
-      const rot=await page.evaluate(()=>({codes:[...document.querySelectorAll('.rt-pg-rotary svg')].map(svg=>svg.getAttribute('aria-label').replace(/\D/g,'')).join(','),def:document.querySelectorAll('.rt-pg-rotary.is-default').length}));
+      const rot=await page.evaluate(()=>({codes:[...document.querySelectorAll('.rt-pg-edid .rt-pg-rotary-row .rt-pg-rotary svg')].map(svg=>svg.getAttribute('aria-label').replace(/\D/g,'')).join(','),def:document.querySelectorAll('.rt-pg-edid .rt-pg-rotary-row .rt-pg-rotary.is-default').length}));
       check(`${id} EDID 로터리 대표 설정 그림이 ${codes}번으로 나오고 기본값이 1개 표시됨`,rot.codes===codes&&rot.def===1,JSON.stringify(rot));
     }
     // 0.60 신호 흐름 잘림: AUDIO OUT 칩·"추출" 표시 등 그림 요소가 SVG 틀(viewBox) 밖으로 나가지 않는다(HDS-21U "추출" 잘림, 사용자 지적 2026-09-27). 글자 위쪽 여백은 1px까지 허용한다.
@@ -362,6 +362,21 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       const clipped=await page.evaluate(()=>{const svg=[...document.querySelectorAll('.rt-pg-svg-wrap svg')].find(s=>s.textContent.includes('HDMI IN'));if(!svg)return ['svg 없음'];const vb=svg.viewBox.baseVal;return [...svg.querySelectorAll('text,rect')].filter(el=>{const bb=el.getBBox();return bb.x<vb.x-1||bb.y<vb.y-1||bb.x+bb.width>vb.x+vb.width+1||bb.y+bb.height>vb.y+vb.height+1}).map(el=>(el.textContent||el.tagName).slice(0,20))});
       check(`${id} 신호 흐름 그림 요소가 틀 밖으로 잘리지 않음`,clipped.length===0,JSON.stringify(clipped));
     }
+    // 0.61 HD-210U 딥 스위치 설정(매뉴얼 Ver.1.2 7쪽: 1번 오디오 병합, 2번 DDC). 병합만 되고 추출(AUDIO OUT)은 없다(사용자 확인 2026-09-27).
+    await page.goto(`${home}#products/hd-210u`,{waitUntil:'networkidle'});
+    await page.waitForSelector('#rt-pg-title');
+    const dip210=await page.evaluate(()=>({rows:document.querySelectorAll('.rt-pg-dip .rt-pg-dip-row').length,svgs:document.querySelectorAll('.rt-pg-dip svg[aria-label^="딥 스위치"]').length,idx:document.querySelector('.rt-pg-dip .rt-pg-idx')?.textContent,audioOut:[...document.querySelectorAll('.rt-pg-svg-wrap svg')].some(s=>s.textContent.includes('AUDIO OUT'))}));
+    check('HD-210U 07 딥 스위치 설정이 1번 오디오 병합·2번 DDC 두 행(그림 4개)으로 나오고 신호 흐름에 AUDIO OUT이 없음',dip210.rows===2&&dip210.svgs===4&&dip210.idx==='07'&&!dip210.audioOut,JSON.stringify(dip210));
+    // 0.61 HD-13U 07 오디오 설정은 06 EDID 설정 다음 전체 폭에 둔다(좁은 칸에서 추출 칸이 잘리고 번호가 07 → 06으로 뒤집히던 문제, 사용자 지적 2026-09-27).
+    await page.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
+    await page.waitForSelector('.rt-pg-audio');
+    const audio13=await page.evaluate(()=>{const a=document.querySelector('.rt-pg-audio');const order=[...document.querySelectorAll('.rt-pg-card h2 .rt-pg-idx')].map(s=>s.textContent);return {inCol:!!a.closest('.rt-pg-col'),overflow:a.scrollWidth>a.clientWidth+1,after:order.indexOf('07')>order.indexOf('06')}});
+    check('HD-13U 07 오디오 설정이 06 EDID 설정 다음 전체 폭에 나오고 잘리지 않음',!audio13.inCol&&!audio13.overflow&&audio13.after,JSON.stringify(audio13));
+    // 0.61 HD-13U 오디오 설정 전면 패널 그림: 병합은 OUT 1 LED가 깜빡이고(rt-pg-led-blink), 추출은 켜진 채 깜빡이지 않는다(사용자 요청 2026-09-27 "DIP 이미지처럼 불 켜짐").
+    await page.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
+    await page.waitForSelector('.rt-pg-audio-steps');
+    const panel13=await page.evaluate(()=>{const row=document.querySelector('.rt-pg-audio-steps');return {tiles:row.querySelectorAll('.rt-pg-rotary').length,blink:row.querySelectorAll('.rt-pg-led-blink').length,labels:[...row.querySelectorAll('svg')].map(s=>s.getAttribute('aria-label')).join('|')}});
+    check('HD-13U 오디오 설정이 EDID 대표 설정과 같은 칸 4개(MODE 0번 → SET 누름 → 병합 깜빡임·추출 깜빡이지 않음)로 나옴',panel13.tiles===4&&panel13.blink===1&&panel13.labels==='MODE 로터리 0번|SET 버튼 누름|OUT 1 LED 깜빡임|OUT 1 LED 깜빡이지 않음',JSON.stringify(panel13));
     // 0.55 QMS-88UX 06 화면 구성 모드: 레이아웃 버튼을 누르면 해당 도해로 미리보기가 바뀐다(사용자 요청 2026-09-27).
     await page.goto(`${home}#products/qms-88ux`,{waitUntil:'networkidle'});
     await page.waitForSelector('[data-layout-chip]');
@@ -490,7 +505,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await mobile.goto(`${home}#products/hd-210u`,{waitUntil:'networkidle'});
     await mobile.waitForSelector('.rt-pg-idx');
     const idxOrder=await mobile.evaluate(()=>[...document.querySelectorAll('.rt-pg-idx')].map(el=>({text:el.textContent,top:el.getBoundingClientRect().top})).sort((a,b)=>a.top-b.top).map(x=>x.text));
-    check('휴대폰에서 HD-210U 제품 상세는 01부터 순서대로 보임(06이 맨 위로 올라가지 않음)',idxOrder.join(',')==='01,02,03,04,05,06',JSON.stringify(idxOrder));
+    check('휴대폰에서 HD-210U 제품 상세는 01부터 순서대로 보임(06이 맨 위로 올라가지 않음, 0.61부터 07 딥 스위치 설정 포함)',idxOrder.join(',')==='01,02,03,04,05,06,07',JSON.stringify(idxOrder));
     await phone.close();
   }finally{
     await browser.close();

@@ -104,11 +104,11 @@
       "source": "C"
     },
     {
-      "text": "전면 딥 스위치 1번으로 오디오 소스를 고른다. ON이면 3.5mm 스테레오 입력을 HDMI 신호에 병합해 모든 출력으로 보내고, OFF이면 HDMI에 실린 원래 오디오를 그대로 보낸다.",
+      "text": "오디오 병합 지원(딥 스위치 1번, 07 딥 스위치 설정 참고)",
       "source": "M-HD210"
     },
     {
-      "text": "전면 딥 스위치 2번으로 DDC 동작 방식을 고른다. ON이면 DDC Level Shifter, OFF이면 DDC Buffer 모드다.",
+      "text": "DDC Buffer·Level Shifter 선택 지원(딥 스위치 2번)",
       "source": "M-HD210"
     },
     {
@@ -182,24 +182,6 @@
       "unit": "kg",
       "condition": "",
       "source": "C",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "Control",
-      "name": "딥 스위치 1 · 오디오",
-      "value": "ON: 3.5mm Stereo Audio 병합 / OFF: HDMI Audio",
-      "unit": "",
-      "condition": "전면",
-      "source": "M-HD210",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "Control",
-      "name": "딥 스위치 2 · DDC",
-      "value": "ON: DDC Level Shifter / OFF: DDC Buffer",
-      "unit": "",
-      "condition": "전면",
-      "source": "M-HD210",
       "verification": "VERIFIED"
     }
   ],
@@ -279,7 +261,7 @@
     "x2": 803,
     "y2": 79,
     "label": "EDID 로터리 스위치",
-    "desc": "전면 파란색 로터리 스위치로 EDID를 고른다. 오른쪽 빨간 MODE 딥 스위치는 1번 오디오(ON: 3.5mm 병합 / OFF: HDMI 오디오), 2번 DDC(ON: Level Shifter / OFF: Buffer)다.",
+    "desc": "전면 파란색 로터리 스위치로 EDID를 고른다. 오른쪽 빨간 MODE 딥 스위치는 '07 딥 스위치 설정' 참고.",
     "default": "0 = FLASH에 저장된 외부 EDID · EDID 오류 시 1920x1080p 60 2CH",
     "steps": [
       {
@@ -368,6 +350,40 @@
       }
     ],
     "source": "M-HD210"
+  },
+  "dipSwitch": {
+    "label": "MODE 딥 스위치",
+    "count": 3,
+    "onUp": true,
+    "source": "M-HD210",
+    "rows": [
+      {
+        "n": 1,
+        "title": "오디오 병합",
+        "off": {
+          "name": "HDMI 오디오",
+          "text": "HDMI에 실린 원래 소리(HDMI Audio)가 모든 출력으로 나간다."
+        },
+        "on": {
+          "name": "병합",
+          "text": "3.5mm AUDIO IN 소리(Stereo Audio)가 모든 출력(OUT 1~10)에 믹스되어 나간다."
+        },
+        "note": "HD-210U는 병합만 되고, 소리를 따로 빼내는 추출(AUDIO OUT)은 없다."
+      },
+      {
+        "n": 2,
+        "title": "DDC 방식",
+        "off": {
+          "name": "DDC Buffer",
+          "text": "DDC 버퍼 모드가 선택된다."
+        },
+        "on": {
+          "name": "DDC Level Shifter",
+          "text": "DDC Level Shifter 모드가 선택된다."
+        },
+        "note": "DDC는 소스와 디스플레이가 EDID·HDCP 정보를 주고받는 통신선이다."
+      }
+    ]
   },
   "sources": [
     {
