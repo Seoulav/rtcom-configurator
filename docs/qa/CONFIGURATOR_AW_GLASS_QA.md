@@ -192,3 +192,11 @@
 - `git diff --check`: 통과(출력 없음)
 
 바꾼 파일: `scripts/e2e-smoke.cjs`(검사 3개 추가 + 기존 04 폭 검사에 뷰포트 값 표시), `docs/qa/CONFIGURATOR_AW_GLASS_QA.md`(이 절), `CHANGELOG.md`(0.38.0 항목에 한 줄 추가). `src/`·`data/`·`index.html`은 건드리지 않았습니다. 버전 번호도 그대로 0.38.0입니다.
+
+## Opus 검수 (2026-09-27, e2e 회귀 검사 `53cda81`)
+
+- Sonnet이 추가한 검사 3개(PC 흐름 한 줄, PC 미리보기 sticky, 휴대폰 세로 흐름)를 확인했습니다.
+- 수정: sticky 검사가 페이지 절대 위치(`목록 높이/2`)로 스크롤하던 것을 04 판(`.rt-cg-split`) 윗변 기준으로 바꿨습니다. 머리 영역 높이가 바뀌어도 판 안쪽을 스크롤한 상태에서 검사합니다.
+- 수정: CHANGELOG의 검사 추가 기록을 이미 병합·배포된 0.38.0 항목에서 `Unreleased`로 옮겼습니다.
+- 회귀 확인: "0.38 검수(Opus)" CSS 블록을 뺀 뒤 `node scripts/package-site.cjs`로 배포본을 다시 만들고 e2e를 돌리면, 새 검사 3개만 FAIL이고 76/79입니다. 블록을 되돌리면 79/79입니다. e2e는 `dist/`를 읽으므로, 소스를 바꾼 뒤에는 반드시 배포본을 다시 만들어야 합니다(`npm run e2e`는 두 단계를 함께 실행합니다).
+- 검증: `node --test` 37/37, `build-product-index --check` 27종, `package-site` 통과, e2e 79/79, `git diff --check` 통과
