@@ -336,6 +336,7 @@
   "audioMux": {
     "mode": "select",
     "source": "U",
+    "caption": "오디오 병합(OUT 1) 또는 추출 중 선택",
     "howTo": "전면 파란색 로터리 스위치를 '0'에 맞추고 SET 버튼을 누를 때마다 병합과 추출이 번갈아 바뀐다. 두 가지를 동시에 쓸 수는 없다.",
     "modes": [
       {
@@ -344,9 +345,7 @@
         "setting": "Stereo Audio",
         "flow": ["AUDIO IN", "HDMI OUT 1"],
         "rows": [
-          {"label": "이럴 때", "text": "노트북 같은 외부 기기의 소리를 화면 소리로 넣고 싶을 때"},
-          {"label": "연결", "text": "외부 오디오를 3.5mm AUDIO IN에 연결한다."},
-          {"label": "소리가 나오는 곳", "text": "HDMI OUT 1번에 연결한 디스플레이로만 나온다."},
+          {"label": "소리가 나오는 곳", "text": "3.5mm AUDIO IN에 넣은 소리가 HDMI OUT 1번(디스플레이)으로만 나온다."},
           {"label": "확인 방법", "text": "전면 OUTPUT 1번 LED가 깜빡인다."}
         ]
       },
@@ -356,9 +355,7 @@
         "setting": "HDMI Audio",
         "flow": ["HDMI IN", "AUDIO OUT"],
         "rows": [
-          {"label": "이럴 때", "text": "소스의 HDMI 소리를 앰프·스피커로 따로 빼고 싶을 때"},
-          {"label": "연결", "text": "3.5mm AUDIO OUT을 앰프나 스피커에 연결한다."},
-          {"label": "소리가 나오는 곳", "text": "입력된 HDMI 소리가 AUDIO OUT으로 나온다. HDMI OUT 1–3에는 원래 HDMI 소리가 그대로 실린다."},
+          {"label": "소리가 나오는 곳", "text": "HDMI 원래 소리가 OUT 1–3으로 그대로 가고, 3.5mm AUDIO OUT으로도 나온다."},
           {"label": "확인 방법", "text": "전면 OUTPUT 1번 LED가 깜빡이지 않는다."}
         ]
       }

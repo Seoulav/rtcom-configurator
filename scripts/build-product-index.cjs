@@ -103,6 +103,7 @@ function validate(product,file,ids){
     const am=product.audioMux;
     if(!am||am.mode!=='select')fail('audioMux.mode는 "select"여야 함');
     else if(!codes.has(am.source))fail(`audioMux.source(${am.source})가 sources에 없음`);
+    if(am&&'caption' in am&&(typeof am.caption!=='string'||!am.caption))fail('audioMux.caption은 비어 있지 않은 문자열이어야 함');
     if(am&&'modes' in am){
       if(!Array.isArray(am.modes)||am.modes.length!==2)fail('audioMux.modes는 병합·추출 2개여야 함');
       else for(const mode of am.modes){

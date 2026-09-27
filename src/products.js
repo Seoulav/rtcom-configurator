@@ -10,15 +10,46 @@
     const tabs=[...root.querySelectorAll('[data-view-tab]')];
     // 제품 사진 돋보기(라이트박스). .rt-products-view는 overflow:hidden이라 안에 두면 position:fixed가 화면 전체를 덮지 못한다.
     // root(#rtcom-design)는 overflow를 걸지 않으므로 그 바로 아래(화면 전환마다 다시 만들지 않도록 한 번만)에 붙인다.
-    root.insertAdjacentHTML('beforeend','<div class="rt-pg-lightbox" role="dialog" aria-modal="true" aria-label="제품 사진 확대" hidden><button type="button" class="rt-pg-lightbox-close" data-zoom-close aria-label="사진 확대 닫기">×</button><div class="rt-pg-lightbox-stage" data-zoom-close><img class="rt-pg-lightbox-img" data-zoom-toggle alt="" loading="lazy"></div><p class="rt-pg-lightbox-hint">사진을 눌러 확대·축소</p></div>');
+    // 0.49: 사용자 LED 계산기 "05 프로세서" 사진 팝업과 같은 방식으로 바꿨다(사용자 요청 2026-09-27).
+    // 제목(제품명)·사진 탭(정면·후면 등)·닫기 버튼이 있는 카드이고, 사진 위에서 커서(휴대폰은 손가락)를 따라 원형 돋보기가 확대해 보여준다.
+    root.insertAdjacentHTML('beforeend','<div class="rt-pg-lightbox" hidden><div class="rt-pg-lb-card" role="dialog" aria-modal="true" aria-label="제품 사진 확대"><div class="rt-pg-lb-head"><div class="rt-pg-lb-title"></div><div class="rt-pg-lb-tabs" role="tablist"></div><button type="button" class="rt-pg-lb-close" data-zoom-close aria-label="사진 확대 닫기">✕</button></div><div class="rt-pg-lb-body"><div class="rt-pg-lb-zoom" title="마우스를 올리면 원형 돋보기로 확대됩니다"><img class="rt-pg-lightbox-img" alt="" draggable="false" loading="lazy"><div class="rt-pg-loupe" hidden></div></div><p class="rt-pg-lb-hint">사진 위에 마우스를 올리면(휴대폰은 누른 채 움직이면) 원형 돋보기로 확대됩니다</p></div></div></div>');
     const lightbox=root.querySelector('.rt-pg-lightbox');
     const lightboxImg=lightbox.querySelector('.rt-pg-lightbox-img');
-    let zoomReturnFocus=null;
+    const loupe=lightbox.querySelector('.rt-pg-loupe');
+    let zoomReturnFocus=null,zoomShots=[];
+    const LOUPE=160,LOUPE_ZOOM=3.1;// 사용자 LED 계산기와 같은 값: 돋보기 원 160px, 배율 3.1
+    function showShot(index){
+      const shot=zoomShots[index];if(!shot)return;
+      lightboxImg.src=shot.src;lightboxImg.alt=shot.alt||'';loupe.hidden=true;
+      lightbox.querySelectorAll('[data-zoom-shot]').forEach(btn=>{const on=Number(btn.dataset.zoomShot)===index;btn.classList.toggle('on',on);btn.setAttribute('aria-selected',String(on))});
+    }
     function openZoom(src,alt,fromEl){
-      lightboxImg.src=src;lightboxImg.alt=alt||'';lightboxImg.classList.remove('rt-pg-zoomed');lightboxImg.style.transformOrigin='';
+      // 같은 사진 띠(.rt-pg-hero)의 사진을 모두 탭으로 만든다. 누른 사진이 처음 선택된다.
+      const strip=fromEl?.closest('.rt-pg-hero');
+      const buttons=strip?[...strip.querySelectorAll('[data-zoom-src]')]:[];
+      zoomShots=buttons.length?buttons.map(btn=>({src:btn.dataset.zoomSrc,alt:btn.dataset.zoomAlt,label:btn.querySelector('.rt-pg-hero-cap')?.textContent||'사진'})):[{src,alt,label:'사진'}];
+      const start=Math.max(0,buttons.indexOf(fromEl));
+      lightbox.querySelector('.rt-pg-lb-title').textContent=strip?.dataset.zoomTitle||alt||'';
+      lightbox.querySelector('.rt-pg-lb-tabs').innerHTML=zoomShots.length>1?zoomShots.map((shot,index)=>`<button type="button" role="tab" data-zoom-shot="${index}">${esc(shot.label)}</button>`).join(''):'';
+      showShot(start);
       lightbox.hidden=false;zoomReturnFocus=fromEl||null;lightbox.querySelector('[data-zoom-close]').focus();
     }
-    function closeZoom(){lightbox.hidden=true;lightboxImg.src='';zoomReturnFocus?.focus({preventScroll:true});zoomReturnFocus=null}
+    function closeZoom(){lightbox.hidden=true;lightboxImg.src='';loupe.hidden=true;zoomReturnFocus?.focus({preventScroll:true});zoomReturnFocus=null}
+    function moveLoupe(event){
+      if(!lightboxImg.complete||!lightboxImg.naturalWidth)return;
+      const rect=lightboxImg.getBoundingClientRect();
+      if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom){loupe.hidden=true;return}
+      const x=event.clientX-rect.left,y=event.clientY-rect.top;
+      loupe.hidden=false;
+      loupe.style.left=`${lightboxImg.offsetLeft+x-LOUPE/2}px`;
+      loupe.style.top=`${lightboxImg.offsetTop+y-LOUPE/2}px`;
+      loupe.style.backgroundImage=`url("${lightboxImg.currentSrc||lightboxImg.src}")`;
+      loupe.style.backgroundSize=`${rect.width*LOUPE_ZOOM}px ${rect.height*LOUPE_ZOOM}px`;
+      loupe.style.backgroundPosition=`${LOUPE/2-x*LOUPE_ZOOM}px ${LOUPE/2-y*LOUPE_ZOOM}px`;
+    }
+    lightbox.addEventListener('pointermove',moveLoupe);
+    lightbox.addEventListener('pointerdown',event=>{if(event.target===lightboxImg)moveLoupe(event)});
+    ['pointerleave','pointerup','pointercancel'].forEach(type=>lightbox.addEventListener(type,()=>{loupe.hidden=true}));
     const groups=[['all','전체'],['series','매트릭스 시리즈'],['integrated','일체형 매트릭스'],['distribution','분배기·선택기'],['extender','전송기'],['cable','케이블']];
     const groupLabel=Object.fromEntries(groups);
     const roleLabel={Main:'대표',Front:'전면',Rear:'후면',Perspective:'사선',Diagram:'구성도',Other:'기타'};
@@ -212,30 +243,47 @@
       const hdcpVersion=hdcp&&hdcp.value.replace(/지원|support/ig,'').replace(/^\s*HDCP\s*/i,'').replace(/Compliant\s*/i,'').replace(/^v(?=\d)/i,'').trim();
       // 병합(MUX)과 추출(DEMUX)을 하나만 골라 쓰는 제품(audioMux.mode "select", HD-13U)은 "또는"으로 이어 동시에 되는 것처럼 보이지 않게 한다.
       const audioSelect=audioIn&&audioOut&&item.audioMux?.mode==='select';
-      const audioBits=audioSelect?['오디오 병합(OUT 1) 또는 추출 중 선택']:[audioIn&&'오디오 병합',audioOut&&'오디오 추출'];
+      const audioBits=audioSelect?[item.audioMux.caption||'오디오 병합 또는 추출 중 선택']:[audioIn&&'오디오 병합',audioOut&&'오디오 추출'];
       const protoBits=[videoIn.protocol,hdcp&&(hdcpVersion?`HDCP ${hdcpVersion}`:'HDCP'),...audioBits].filter(Boolean);
       if(protoBits.length)bodyMarkup+=`<text x="${(bandX1+bandX2)/2}" y="${bandY+28}" text-anchor="middle" font-size="11" font-weight="600" fill="${M}">${svgEsc(protoBits.join(' · '))}</text>`;
 
-      const cols=Math.min(outN,5),rows=Math.ceil(outN/cols);
+      // 멀티뷰 전용 출력(QMS-88UX의 9·10번 등): videoModes의 QUAD 요약 "출력 9·10번 전용"에서 번호를 읽어 매트릭스 출력과 분리된 별도 갈래로 그린다.
+      const quadMode=(item.videoModes?.modes||[]).find(mode=>mode.name==='QUAD');
+      const multiview=((quadMode?.summary||'').match(/출력\s*([\d·,\s]+)번\s*전용/)||[])[1]?.split(/[·,\s]+/).map(Number).filter(n=>n>=1&&n<=outN)||[];
+      const matrixPorts=Array.from({length:outN},(_,i)=>i+1).filter(n=>!multiview.includes(n));
+
       const cellW=32,cellH=23,cellGap=8,panelPad=14;
+      const cols=Math.min(matrixPorts.length,5),rows=Math.ceil(matrixPorts.length/cols);
       const gridW=cols*cellW+(cols-1)*cellGap,gridH=rows*(cellH+13)+(rows-1)*cellGap;
       const panelX=bandX2+20,panelW=gridW+panelPad*2,panelH=gridH+panelPad*2+10;
       const panelY=Math.max(10,bandY-panelH/2);
       bodyMarkup+=`<rect x="${panelX}" y="${panelY}" width="${panelW}" height="${panelH}" rx="16" fill="rgba(137,68,171,.09)"/>`;
-      // 멀티뷰 전용 출력(QMS-88UX의 9·10번 등): videoModes의 QUAD 요약 "출력 9·10번 전용"에서 번호를 읽어 4분할 화면으로 따로 그린다.
-      const quadMode=(item.videoModes?.modes||[]).find(mode=>mode.name==='QUAD');
-      const multiview=((quadMode?.summary||'').match(/출력\s*([\d·,\s]+)번\s*전용/)||[])[1]?.split(/[·,\s]+/).map(Number).filter(n=>n>=1&&n<=outN)||[];
-      for(let i=0;i<outN;i++){
+      matrixPorts.forEach((n,i)=>{
         const c=i%cols,r=Math.floor(i/cols);
         const x=panelX+panelPad+c*(cellW+cellGap),y=panelY+panelPad+r*(cellH+13+cellGap)+8;
-        const mv=multiview.includes(i+1);
-        bodyMarkup+=`<rect x="${x}" y="${y}" width="${cellW}" height="${cellH}" rx="4" fill="${mv?'#F3EEFF':'#fff'}" stroke="${P}" stroke-width="1.8"/>${mv?`<path d="M${x+cellW/2} ${y+2}V${y+cellH-2}M${x+2} ${y+cellH/2}H${x+cellW-2}" stroke="${P}" stroke-width="1" opacity=".55"/>`:''}<path d="M${x+cellW/2} ${y+cellH}v5M${x+cellW/2-7} ${y+cellH+6}h14" stroke="${P}" stroke-width="1.6"/><text x="${x+cellW/2}" y="${y+cellH/2+3.5}" text-anchor="middle" font-size="9" font-weight="700" fill="${PI}">${i+1}</text>`;
-      }
-      const outCaption=outTotal>outN?`OUT 1–${outN} 외 ${outTotal-outN}개`:outN===1?'OUT':`OUT 1–${outN}`;
-      const sameSignal=outN===1?'선택한 입력 출력':isMatrix?'독립 출력':'같은 영상';
-      const matrixCount=outN-multiview.length;
-      const captionText=multiview.length?`OUT 1–${matrixCount} 매트릭스 · ${multiview.join('·')} 멀티뷰`:`${outCaption} · ${sameSignal}`;
+        bodyMarkup+=`<rect x="${x}" y="${y}" width="${cellW}" height="${cellH}" rx="4" fill="#fff" stroke="${P}" stroke-width="1.8"/><path d="M${x+cellW/2} ${y+cellH}v5M${x+cellW/2-7} ${y+cellH+6}h14" stroke="${P}" stroke-width="1.6"/><text x="${x+cellW/2}" y="${y+cellH/2+3.5}" text-anchor="middle" font-size="9" font-weight="700" fill="${PI}">${n}</text>`;
+      });
+      const outCaption=outTotal>outN?`OUT 1–${outN} 외 ${outTotal-outN}개`:matrixPorts.length===1?'OUT':`OUT ${matrixPorts[0]}–${matrixPorts[matrixPorts.length-1]}`;
+      const sameSignal=matrixPorts.length===1?'선택한 입력 출력':isMatrix?'독립 출력':'같은 영상';
+      const captionText=`${outCaption} · ${sameSignal}${multiview.length?' 매트릭스':''}`;
       bodyMarkup+=`<text x="${panelX+panelW/2}" y="${panelY+panelH+16}" text-anchor="middle" font-size="11.5" font-weight="700" fill="${PI}">${svgEsc(captionText)}</text>`;
+
+      // 멀티뷰 전용 출력: 매트릭스 출력과 같은 대역폭 띠에서 갈라져 나오는 별도 갈래로, 위쪽에 자체 패널과 캡션을 둔다.
+      if(multiview.length){
+        const mvCols=Math.min(multiview.length,5),mvRows=Math.ceil(multiview.length/mvCols);
+        const mvGridW=mvCols*cellW+(mvCols-1)*cellGap,mvGridH=mvRows*(cellH+13)+(mvRows-1)*cellGap;
+        const mvPanelW=mvGridW+panelPad*2,mvPanelH=mvGridH+panelPad*2+10;
+        const mvPanelX=panelX,mvPanelY=Math.max(10,panelY-mvPanelH-46);
+        bodyMarkup+=`<path d="M${bandX2} ${bandY-7}C${bandX2} ${mvPanelY+mvPanelH/2} ${mvPanelX-20} ${mvPanelY+mvPanelH/2} ${mvPanelX} ${mvPanelY+mvPanelH/2}" fill="none" stroke="${PI}" stroke-width="1.8" stroke-dasharray="4 3"/>`;
+        bodyMarkup+=`<rect x="${mvPanelX}" y="${mvPanelY}" width="${mvPanelW}" height="${mvPanelH}" rx="16" fill="rgba(137,68,171,.16)"/>`;
+        multiview.forEach((n,i)=>{
+          const c=i%mvCols,r=Math.floor(i/mvCols);
+          const x=mvPanelX+panelPad+c*(cellW+cellGap),y=mvPanelY+panelPad+r*(cellH+13+cellGap)+8;
+          bodyMarkup+=`<rect x="${x}" y="${y}" width="${cellW}" height="${cellH}" rx="4" fill="#F3EEFF" stroke="${P}" stroke-width="1.8"/><path d="M${x+cellW/2} ${y+2}V${y+cellH-2}M${x+2} ${y+cellH/2}H${x+cellW-2}" stroke="${P}" stroke-width="1" opacity=".55"/><path d="M${x+cellW/2} ${y+cellH}v5M${x+cellW/2-7} ${y+cellH+6}h14" stroke="${P}" stroke-width="1.6"/><text x="${x+cellW/2}" y="${y+cellH/2+3.5}" text-anchor="middle" font-size="9" font-weight="700" fill="${PI}">${n}</text>`;
+        });
+        const mvCaption=`${multiview.join('·')} 멀티뷰`;
+        bodyMarkup+=`<text x="${mvPanelX+mvPanelW/2}" y="${mvPanelY+mvPanelH+16}" text-anchor="middle" font-size="11.5" font-weight="700" fill="${PI}">${svgEsc(mvCaption)}</text>`;
+      }
 
       // 오디오 추출(디먹스): 캡션 아래에 AUDIO OUT 칩을 두고 대역폭 띠에서 점선으로 이어 "병합"과 대칭으로 보이게 한다.
       let audioOutBottom=panelY+panelH+16;
@@ -246,7 +294,7 @@
       }
 
       // 캡션 글자가 출력 격자보다 넓을 수 있어(예: 매트릭스 전환 문구) SVG 너비에 여유를 둔다.
-      const captionHalfWidth=captionText.length*3.6+20;
+      const captionHalfWidth=Math.max(captionText.length,multiview.length?`${multiview.join('·')} 멀티뷰`.length:0)*3.6+20;
       const width=Math.max(panelX+panelW+20,panelX+panelW/2+captionHalfWidth+20,audioOut?panelX+panelW/2+52+40:0);
       const height=Math.max(leftBottom+20,panelY+panelH+38,midY+70,audioOutBottom+16);
       return diagramWrap(bodyMarkup,width,height,[]);
@@ -498,7 +546,7 @@
     // ---- 제품 사진 확대(돋보기). 01 위에 큰 사진 띠를 두고, 누르면 크게 보고 한 번 더 누르면 확대/축소한다 ----
     function heroGallery(item,images){
       if(!images.length)return '';
-      return `<section class="rt-pg-hero" aria-label="${esc(item.productName)} 제품 사진"><div class="rt-pg-hero-scroll">${images.map(img=>`<button type="button" class="rt-pg-hero-item" data-zoom-src="${esc(image(img.file))}" data-zoom-alt="${esc(img.alt||item.productName)}"><img src="${image(img.file)}" alt="${esc(img.alt||item.productName)}" loading="lazy"><span class="rt-pg-hero-cap">${esc(roleLabel[img.role]||img.role)}</span><span class="rt-pg-hero-zoom" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="10" cy="10" r="6.5"/><path d="M14.7 14.7 20 20"/></svg></span></button>`).join('')}</div></section>`;
+      return `<section class="rt-pg-hero" aria-label="${esc(item.productName)} 제품 사진" data-zoom-title="${esc(item.productName)}"><div class="rt-pg-hero-scroll">${images.map(img=>`<button type="button" class="rt-pg-hero-item" data-zoom-src="${esc(image(img.file))}" data-zoom-alt="${esc(img.alt||item.productName)}"><img src="${image(img.file)}" alt="${esc(img.alt||item.productName)}" loading="lazy"><span class="rt-pg-hero-cap">${esc(roleLabel[img.role]||img.role)}</span><span class="rt-pg-hero-zoom" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="10" cy="10" r="6.5"/><path d="M14.7 14.7 20 20"/></svg></span></button>`).join('')}</div></section>`;
     }
     function singleDetailView(item,byId){
       const images=(item.images||[]).filter(img=>img.role!=='Diagram');
@@ -640,14 +688,10 @@
       if(zoomOpenBtn){openZoom(zoomOpenBtn.dataset.zoomSrc,zoomOpenBtn.dataset.zoomAlt,zoomOpenBtn);return}
     });
     lightbox.addEventListener('click',event=>{
-      const toggle=event.target.closest('[data-zoom-toggle]');
-      if(toggle){
-        const zoomed=toggle.classList.toggle('rt-pg-zoomed');
-        if(zoomed){const rect=toggle.getBoundingClientRect();toggle.style.transformOrigin=`${((event.clientX-rect.left)/rect.width*100).toFixed(1)}% ${((event.clientY-rect.top)/rect.height*100).toFixed(1)}%`}
-        else toggle.style.transformOrigin='';
-        return;
-      }
-      if(event.target.closest('[data-zoom-close]'))closeZoom();
+      const tab=event.target.closest('[data-zoom-shot]');
+      if(tab){showShot(Number(tab.dataset.zoomShot));return}
+      // 카드 바깥 어두운 곳이나 ✕를 누르면 닫는다.
+      if(event.target===lightbox||event.target.closest('[data-zoom-close]'))closeZoom();
     });
     body.addEventListener('keydown',event=>{
       const filterBtn=event.target.closest('[data-product-filter]');
