@@ -15,6 +15,11 @@
 - **0.46.0 배포 기록**: `docs/qa/DEPLOYMENT_0.46_2026-09-27.md`(브랜치 배포가 끝난 뒤 배포 작업 실행, 공개 파일 187/187 일치)
 - **0.45.0 배포 기록**: `docs/qa/DEPLOYMENT_0.45_2026-09-27.md`. GitHub 기본 브랜치 배포가 저장소 전체로 사이트를 덮어쓴 문제를 찾아, 배포 작업을 다시 실행해 되돌렸습니다(공개 파일 186/186 일치).
 
+## 0.68.0
+
+- **XDM-FT101/FR101 단자 지도 정면 번호**(사용자 제공 매뉴얼 Ver.1.3 재전달, 0.66 분배기와 같은 방식): 매뉴얼 전면 사진과 후면 사진을 위아래로 합성한 한 장에 4 MODE 로터리·5 S/P 번호를 더했습니다(1 HDMI IN · 2 AUDIO·RS-232 · 3 FIBER OUT · 6 DC IN). 같은 역할 사진이 이미 있어 `portMap.file`로 사진 파일을 직접 고르게 했습니다(validator 규칙 추가). QA: `docs/qa/DISTRIBUTOR_FRONT_PORTMAP_QA_2026-09-27.md` §7.
+- **제품 상세 문체 통일 1·3·4번 + HDS-21U 딥 스위치 3번 정정**(사용자 제안서 검토 승인): HD-D102U 05 주요 기능 6개 항목을 영문에서 "~ 지원" 명사형으로 전면 재작성(HDMI/HDCP/EDID·오디오 포맷 고유명사·수치는 보존). HDS-21U·HDS-42MU "Audio Extraction 기능: RS232로 Audio Volume Up/Down 제어"를 "오디오 추출 기능: RS-232로 음량 조절 지원"으로 통일. HD-210U EDID 코드표 "Nothing"을 형제 제품과 같은 "미사용(Nothing)"으로 통일. **사용자가 추가로 제공한 HDS-21U·HDS-42MU 공식 매뉴얼 Ver.1.0 원본 대조 중 발견**: HDS-21U는 매뉴얼에 딥 스위치 3번("분배") 절 자체가 없고 출력이 1개(HDMI Single Link 1 port)라 성립할 수 없는 기능이었음 — 0.64.0에서 "HDS-42MU와 같다"고 잘못 반영했던 3번 행을 삭제하고 "3번 스위치는 기능이 없다" 안내로 정정(HD-210U 0.66.0과 같은 방식). QA: `docs/qa/PRODUCT_COPY_STYLE_FIX_2026-09-28.md`.
+
 ## 0.66.0
 
 - **분배기 4종 단자 지도 정면 번호**(사용자 지적 "3분배기 로터리 번호 표기 누락", HD-13U 화면 첨부): HD-13U·HD-104U·HD-108U·HD-210U의 02 Port Map이 후면에만 번호를 붙이고 정면은 번호 없는 사진으로만 보여 EDID/MODE 로터리 번호가 빠져 있었습니다. HDS-21U·HDS-42MU와 같이 정면·후면 사진을 위아래로 합성한 한 장(`*-front-rear.webp`, `images` Other)에 번호를 이어 붙였습니다. HD-13U 5 MODE 로터리·6 SET·7 DC 5V, HD-104U·HD-108U 3 EDID 로터리·4 전원, HD-210U 4 EDID 로터리·5 MODE 딥 스위치·6 DC 12V(전원은 마지막). 0.55 "2U 미만은 정면 사진과 포트 연결면 함께" e2e 기준 제품은 XDM-FT101/FR101로 옮겼습니다. QA: `docs/qa/DISTRIBUTOR_FRONT_PORTMAP_QA_2026-09-27.md`.

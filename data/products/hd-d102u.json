@@ -88,27 +88,27 @@
       "source": "C"
     },
     {
-      "text": "최대 4K2K@60Hz with 24bit RGB/YCBCR 4:4:4",
+      "text": "최대 4K2K@60Hz, 24비트 RGB/YCbCr 4:4:4 지원",
       "source": "C"
     },
     {
-      "text": "VESA format: 최대 QSXGA@60HZ",
+      "text": "VESA 해상도 QSXGA@60Hz까지 지원",
       "source": "C"
     },
     {
-      "text": "Supports LPCM 7.1CH, Dolby True HD, and DTS-HD Master Audio",
+      "text": "LPCM 7.1CH, Dolby True HD, DTS-HD Master Audio 지원",
       "source": "C"
     },
     {
-      "text": "Built-in equalizer, retiming and driver",
+      "text": "이퀄라이저·리타이밍·드라이버 내장 지원",
       "source": "C"
     },
     {
-      "text": "Smart EDID, STP(4K60Hz) mode and TV(copy OUT1) Mode",
+      "text": "스마트 EDID, STP(4K60Hz) 모드, TV(OUT1 복사) 모드 지원",
       "source": "C"
     },
     {
-      "text": "Compact design for an easy and flexible installation",
+      "text": "설치가 쉬운 컴팩트 구조 지원",
       "source": "C"
     }
   ],

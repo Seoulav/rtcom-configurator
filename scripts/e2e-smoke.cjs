@@ -328,17 +328,18 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     const colGap=await page.evaluate(()=>{const cols=[...document.querySelectorAll('.rt-pg-col')].map(c=>c.getBoundingClientRect().height);return Math.abs(cols[0]-cols[1])});
     check('HD-13U 01~05 두 칸의 높이 차이가 크지 않음(오른쪽 빈 공간 방지)',colGap<600,JSON.stringify({colGap}));
     // 0.66: 분배기 4종(HD-13U·HD-104U·HD-108U·HD-210U)은 HDS처럼 앞면·뒷면 합성 사진 한 장에 정면 로터리(·SET·MODE)까지 번호를 붙인다(사용자 지적 "3분배기 로터리 번호 표기 누락").
-    for(const [id,pins,front] of [['hd-13u',7,['MODE','SET']],['hd-104u',4,['EDID']],['hd-108u',4,['EDID']],['hd-210u',6,['EDID','MODE']]]){
+    // 0.68 XDM-FT101/FR101도 같은 방식(매뉴얼 Ver.1.3 전면 사진 + 후면, portMap.file로 합성 사진 선택): 4 MODE 로터리·5 S/P·6 DC IN.
+    for(const [id,pins,front] of [['hd-13u',7,['MODE','SET']],['hd-104u',4,['EDID']],['hd-108u',4,['EDID']],['hd-210u',6,['EDID','MODE']],['xdm-ft101-fr101',6,['MODE','S/P']]]){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
       await page.waitForSelector('.rt-pg-panel svg');
       const dm=await page.evaluate(()=>({faces:document.querySelectorAll('.rt-pg-face').length,toggle:document.querySelectorAll('[data-pm-side]').length,pins:[...document.querySelectorAll('.rt-pg-port b')].map(b=>b.textContent.trim().replace(/^\d+/,''))}));
       check(`${id} 단자 지도가 앞면·뒷면 합성 사진 한 장에 ${pins}개 번호(정면 ${front.join('·')} 포함, 전원 마지막)로 나옴`,dm.faces===0&&dm.toggle===0&&dm.pins.length===pins&&front.every(label=>dm.pins.includes(label))&&/^DC/.test(dm.pins[pins-1]),JSON.stringify(dm));
     }
-    // 0.55: 2U 미만(XDM-FT101/FR101)은 정면·후면 버튼 없이 정면 사진과 포트 연결면을 함께 보여준다.
-    await page.goto(`${home}#products/xdm-ft101-fr101`,{waitUntil:'networkidle'});
+    // 0.55: 2U 미만(MR-4S)은 정면·후면 버튼 없이 정면 사진과 포트 연결면을 함께 보여준다(0.68부터 FT101은 합성 사진이라 MR-4S로 확인).
+    await page.goto(`${home}#products/mr-4s`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-panel svg');
     const hdFaces=await page.evaluate(()=>({face:!!document.querySelector('.rt-pg-face:not([hidden]) img'),toggle:document.querySelectorAll('[data-pm-side]').length}));
-    check('2U 미만 제품(XDM-FT101/FR101)은 정면 사진과 후면 단자 지도를 함께 보여주고 정면·후면 버튼이 없음',hdFaces.face&&hdFaces.toggle===0,JSON.stringify(hdFaces));
+    check('2U 미만 제품(MR-4S)은 정면 사진과 후면 단자 지도를 함께 보여주고 정면·후면 버튼이 없음',hdFaces.face&&hdFaces.toggle===0,JSON.stringify(hdFaces));
     await page.goto(`${home}#products/qms-88ux`,{waitUntil:'networkidle'});
     await page.waitForSelector('[data-pm-side="front"]');
     const beforeToggle=await page.evaluate(()=>({front:document.querySelector('[data-pm-face="front"]').hidden,rear:document.querySelector('[data-pm-face="rear"]').hidden}));
@@ -349,8 +350,8 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.waitForSelector('#rt-pg-title');
     // 0.49 HDS-21U·HDS-42MU도 같은 방식(딥 스위치 1번 선택, 사용자 확인·매뉴얼 Ver.1.0). 신호 흐름 문구에는 HD-13U 전용 "(OUT 1)"이 붙지 않는다.
     // 0.58 두 제품은 07 오디오 설정 카드 대신 07 딥 스위치 설정 카드로 스위치 번호마다 OFF·ON 그림을 보여준다(사용자 요청 2026-09-27).
-    // 0.64 HDS-21U 딥 스위치는 HDS-42MU와 같다(1 오디오·2 Priority·3 분배, 사용자 확인 2026-09-27).
-    for(const [id,rows] of [['hds-21u',3],['hds-42mu',3]]){
+    // 0.68 HDS-21U 딥 스위치는 1 오디오·2 Priority 2개뿐이다(사용자 제공 매뉴얼 Ver.1.0 확인 2026-09-28, HDS-42MU 전용 3번 분배는 없음 — 0.64의 "3번 분배" 반영은 매뉴얼과 어긋나 되돌림). HDS-42MU는 1 오디오·2 Priority·3 분배 3개 그대로.
+    for(const [id,rows] of [['hds-21u',2],['hds-42mu',3]]){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
       await page.waitForSelector('#rt-pg-title');
       const hdsDip=await page.evaluate(()=>({audio:document.querySelectorAll('.rt-pg-audio').length,rows:document.querySelectorAll('.rt-pg-dip .rt-pg-dip-row').length,svgs:document.querySelectorAll('.rt-pg-dip svg[aria-label^="딥 스위치"]').length,idx:document.querySelector('.rt-pg-dip .rt-pg-idx')?.textContent,first:document.querySelector('.rt-pg-dip .rt-pg-dip-row')?.textContent.includes('병합'),flow:[...document.querySelectorAll('.rt-pg-svg-wrap svg')].some(svg=>svg.textContent.includes('오디오 병합 또는 추출 중 선택')&&!svg.textContent.includes('(OUT 1)')),overflow:document.documentElement.scrollWidth>innerWidth+1}));
