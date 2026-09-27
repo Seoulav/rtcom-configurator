@@ -11,6 +11,10 @@
     const roleLabel={Main:'대표',Front:'전면',Rear:'후면',Perspective:'사선',Diagram:'구성도',Other:'기타'};
     const directionLabel={IN:'입력',OUT:'출력',BIDIR:'입출력'};
     const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[char]);
+    // 모델명의 하이픈(예: CT103-U-H)에서 줄바꿈이 일어나면 "CR103-\nU"처럼 잘린 것처럼 보인다.
+    // 문자는 그대로 두고(검색·복사·textContent 비교에 영향 없음) 슬래시(" / ") 앞뒤에서만 줄바꿈되도록
+    // 슬래시로 나눈 각 조각을 white-space:nowrap으로 감싼다.
+    const noBreak=value=>String(value??'').split(' / ').map(part=>`<span style="white-space:nowrap">${esc(part)}</span>`).join(' / ');
     const image=file=>`output/design/assets/products/${encodeURIComponent(file)}`;
     let index=null,filter='all',query='';
     const details=new Map();
@@ -25,7 +29,7 @@
       const counts=Object.fromEntries(groups.map(([id])=>[id,id==='all'?index.products.length:index.products.filter(item=>item.group===id).length]));
       return `<div class="rt-products-tools"><div class="rt-products-tabs" role="group" aria-label="제품 분류">${groups.map(([id,label])=>`<button type="button" data-product-filter="${id}" aria-pressed="${filter===id}">${label} <b>${counts[id]}</b></button>`).join('')}</div><label class="rt-products-search"><span class="rt-visually-hidden">제품 검색</span><input type="search" data-product-search placeholder="모델명·기능 검색 (예: HDMI, 광, 4K)" value="${esc(query)}"></label></div>
       <p class="rt-products-count" role="status">${items.length}개 제품</p>
-      ${items.length?`<ul class="rt-product-grid">${items.map(item=>`<li><a class="rt-product-card" href="#products/${item.id}"><span class="rt-product-visual">${item.cardImage?`<img src="${image(item.cardImage)}" alt="" loading="lazy">`:'<span aria-hidden="true">RTCOM</span>'}</span><span class="rt-product-card-body"><span class="rt-product-group">${esc(groupLabel[item.group])}${item.catalogPages?` · 카탈로그 ${esc(item.catalogPages)}쪽`:''}</span><strong>${esc(item.productName)}</strong><span class="rt-product-en">${esc(item.english)}</span><span class="rt-product-ko">${esc(item.korean)}</span>${reviewBadge(item)}</span></a></li>`).join('')}</ul>`:'<p class="rt-products-empty">조건에 맞는 제품이 없습니다. 검색어를 지우거나 다른 분류를 선택하세요.</p>'}`;
+      ${items.length?`<ul class="rt-product-grid">${items.map(item=>`<li><a class="rt-product-card" href="#products/${item.id}"><span class="rt-product-visual">${item.cardImage?`<img src="${image(item.cardImage)}" alt="" loading="lazy">`:'<span aria-hidden="true">RTCOM</span>'}</span><span class="rt-product-card-body"><span class="rt-product-group">${esc(groupLabel[item.group])}${item.catalogPages?` · 카탈로그 ${esc(item.catalogPages)}쪽`:''}</span><strong>${noBreak(item.productName)}</strong><span class="rt-product-en">${esc(item.english)}</span><span class="rt-product-ko">${esc(item.korean)}</span>${reviewBadge(item)}</span></a></li>`).join('')}</ul>`:'<p class="rt-products-empty">조건에 맞는 제품이 없습니다. 검색어를 지우거나 다른 분류를 선택하세요.</p>'}`;
     }
     const table=(head,rows)=>rows.length?`<div class="rt-product-table-wrap"><table class="rt-product-table"><thead><tr>${head.map(cell=>`<th scope="col">${cell}</th>`).join('')}</tr></thead><tbody>${rows.map(row=>`<tr>${row.map((cell,i)=>`<td data-label="${head[i]}">${cell}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`:'';
     // 사양 분류(그룹)마다 작은 색 점을 붙여 한눈에 구분되게 한다(캡처로 받은 에이앤티 표 디자인 참고, 2026-09-27).
@@ -107,10 +111,25 @@
       const distanceSpec=(item.specifications||[]).find(spec=>/전송거리/.test(spec.name));
       const cableName=isFiber?'광케이블':'HDBaseT(CATx)';
       const cableDistance=distanceSpec?`최대 ${distanceSpec.value}${distanceSpec.unit?` ${distanceSpec.unit}`:''}`:'';
-      const [txLabel,rxLabel]=isTransceiver?[item.model.split(' / ')[0],item.model.split(' / ')[0]]:(item.model.includes(' / ')?item.model.split(' / '):[item.model,item.model]);
-      // XDM-CTR100은 PSE(전원 공급 장비)가 별도 판매 모델이라, TX/RX 표시 대신 실제로 쓰는 두 조합(매트릭스 카드 직결 · PSE 조합)을 보여준다.
-      // 근거: docs/evidence/RTCOM_MATRIX_EVIDENCE_AND_GAPS.md U03·U04(사용자 확인 2026-09-26).
+      const extras=io.filter(port=>port!==txVideo&&port!==rxVideo&&port!==transmission&&!/Transmission/.test(port.group||'')).map(port=>shortConnector(port.connector));
+      const note=extras.length?`<p class="rt-product-diagram-note">그 외 신호(${[...new Set(extras)].map(esc).join(', ')})는 위 입출력 표를 확인하세요.</p>`:'';
+      // XDM-CTR100은 PSE(전원 공급 장비)가 별도 판매 모델(id: xdm-ctr100-pse)이라, TX/RX 표시 대신 실제로 쓰는 조합을 보여준다.
+      // 근거: docs/evidence/RTCOM_MATRIX_EVIDENCE_AND_GAPS.md U03·U04(사용자 확인 2026-09-26), 사용자 확인(2026-09-27, 두 모델 분리 요청).
       const pseCombo=item.id==='xdm-ctr100';
+      const pseOnly=item.id==='xdm-ctr100-pse';
+      if(pseOnly){
+        // PSE는 매트릭스 카드에 직결할 수 없어(카드에는 CTR100만 직결 가능), CTR100과 짝을 이루는 조합 하나만 보여준다.
+        const width=980,height=220,midY=110,boxW=170,boxH=76;
+        const srcX=60,pseX=210,ctrX=width-210-boxW,dstX=width-60;
+        let body=monitorIcon(srcX,midY,'소스 기기')+arrow(srcX+24,midY,pseX-6,midY,COLOR_IN);
+        body+=deviceBox(pseX,midY-boxH/2,boxW,boxH,'XDM-CTR100 PSE','전원 연결(POE 공급측)');
+        body+=`<path d="M${pseX+boxW} ${midY}L${ctrX} ${midY}" stroke="${cableColor}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/><text x="${(pseX+boxW+ctrX)/2}" y="${midY-20}" text-anchor="middle" font-size="11" font-weight="700" fill="${cableColor}">${svgEsc(cableName)} · 신호+전원 동시 공급</text>${cableDistance?`<text x="${(pseX+boxW+ctrX)/2}" y="${midY-6}" text-anchor="middle" font-size="10" fill="${cableColor}">${svgEsc(cableDistance)}</text>`:''}`;
+        body+=deviceBox(ctrX,midY-boxH/2,boxW,boxH,'XDM-CTR100','전원 케이블 불필요(PD)');
+        body+=arrow(ctrX+boxW+6,midY,dstX-24,midY,COLOR_OUT)+monitorIcon(dstX,midY,'디스플레이');
+        body+=`<text x="${width/2}" y="${midY+boxH/2+22}" text-anchor="middle" font-size="10" fill="#687386">TX/RX는 각 기기 DIP 스위치로 선택 · 매트릭스 카드(XDM-CIS100·COS100)에는 PSE가 아닌 CTR100을 직결</text>`;
+        return diagramWrap(body,width,height,[[COLOR_IN,'입력'],[cableColor,cableName],[COLOR_OUT,'출력']])+note;
+      }
+      const [txLabel,rxLabel]=isTransceiver?[item.model.split(' / ')[0],item.model.split(' / ')[0]]:(item.model.includes(' / ')?item.model.split(' / '):[item.model,item.model]);
       const width=980,height=pseCombo?320:220,midY=pseCombo?100:110,boxW=170,boxH=76;
       const srcX=60,txX=210,rxX=width-210-boxW,dstX=width-60;
       let body=monitorIcon(srcX,midY,pseCombo?'소스/매트릭스':'소스 기기')+arrow(srcX+24,midY,txX-6,midY,COLOR_IN);
@@ -127,8 +146,6 @@
         body+=deviceBox(ctrX,y2-boxH/2,boxW,boxH,'XDM-CTR100','전원 케이블 불필요(PD)');
         body+=`<text x="${width/2}" y="${y2+boxH/2+22}" text-anchor="middle" font-size="10" fill="#687386">TX/RX는 각 기기 DIP 스위치로 선택 · CIS100·COS100 카드에 직결할 때는 이 조합 대신 CTR100에 전원을 직접 연결</text>`;
       }
-      const extras=io.filter(port=>port!==txVideo&&port!==rxVideo&&port!==transmission&&!/Transmission/.test(port.group||'')).map(port=>shortConnector(port.connector));
-      const note=extras.length?`<p class="rt-product-diagram-note">그 외 신호(${[...new Set(extras)].map(esc).join(', ')})는 위 입출력 표를 확인하세요.</p>`:'';
       const captions=pseCombo?[[COLOR_IN,'입력'],[cableColor,cableName],[COLOR_OUT,'출력']]:[[COLOR_IN,'입력(소스 → TX)'],[cableColor,cableName],[COLOR_OUT,'출력(RX → 디스플레이)']];
       return diagramWrap(body,width,height,captions)+note;
     }
@@ -148,7 +165,7 @@
       const sizeSpecs=allSpecs.filter(isSizeSpec).map(spec=>[esc(spec.name.replace('크기(W×D×H)','크기')),`${esc(spec.value)}${spec.unit?` ${esc(spec.unit)}`:''}`]);
       const specs=allSpecs.filter(spec=>!isSizeSpec(spec));
       const io=(item.io||[]).map(port=>[esc(port.group),esc(directionLabel[port.direction]||port.direction),esc(port.connector),esc(port.quantity),`${esc(port.signal)}${port.protocol?` · ${esc(port.protocol)}`:''}${verification(port.verification)}`,esc(port.condition)]);
-      const lineup=(item.lineup||[]).map(entry=>[`<b>${esc(entry.model)}</b>`,esc(entry.kind),esc(entry.summary)]);
+      const lineup=(item.lineup||[]).map(entry=>[`<b>${noBreak(entry.model)}</b>`,esc(entry.kind),esc(entry.summary)]);
       // 같은 대상이 여러 관계로 적혀 있으면(예: 시리즈 소속 + 카드 연동) 한 번만 보이고, 구체적인 연동 설명을 우선한다.
       const related=Object.values((item.related||[]).filter(link=>byId[link.target]).reduce((all,link)=>{if(!all[link.target]||link.relation!=='PART_OF_SERIES')all[link.target]=link;return all},{}));
       const issues=(item.issues||[]);
@@ -160,9 +177,9 @@
       return `<article class="rt-product-detail" aria-labelledby="rt-product-title">
         <a class="rt-product-back" href="#products">← 제품 목록</a>
         <div class="rt-product-hero"><div class="rt-product-gallery">${images.length?images.map(img=>`<figure><img src="${image(img.file)}" alt="${esc(img.alt||item.productName)}" loading="lazy"><figcaption>${[img.role==='Other'?'':roleLabel[img.role]||img.role,(img.note||'').replace(/^[A-Za-z]+ · /,'')].filter(Boolean).map(esc).join(' · ')}</figcaption></figure>`).join(''):'<p class="rt-products-empty">등록된 이미지가 없습니다.</p>'}</div>
-        <div class="rt-product-headline"><span class="rt-eyebrow">${esc(groupLabel[item.group])} · ${esc(item.manufacturer)}</span><h2 id="rt-product-title" tabindex="-1">${esc(item.productName)}</h2><p class="rt-product-en">${esc(item.english)}</p><p class="rt-product-ko">${esc(item.korean)}</p>${reviewBadge(item)}
-        ${item.group==='series'?`<a class="rt-button rt-primary rt-product-configure" href="#matrix-configurator" data-configure-family="${esc(item.model.split(' ')[0])}">${esc(item.model.split(' ')[0])} 구성기에서 구성하기 →</a>`:''}
-        ${related.length?`<div class="rt-product-related"><b>관련 제품</b>${related.map(link=>`<a href="#products/${link.target}">${esc(byId[link.target].productName)}${link.note?` <small>${esc(link.note)}</small>`:''}</a>`).join('')}</div>`:''}</div></div>
+        <div class="rt-product-headline"><span class="rt-eyebrow">${esc(groupLabel[item.group])} · ${esc(item.manufacturer)}</span><h2 id="rt-product-title" tabindex="-1">${noBreak(item.productName)}</h2><p class="rt-product-en">${esc(item.english)}</p><p class="rt-product-ko">${esc(item.korean)}</p>${reviewBadge(item)}
+        ${item.group==='series'?`<a class="rt-button rt-primary rt-product-configure" href="#matrix-configurator" data-configure-family="${esc(item.model.split(' ')[0])}">${noBreak(item.model.split(' ')[0])} 구성기에서 구성하기 →</a>`:''}
+        ${related.length?`<div class="rt-product-related"><b>관련 제품</b>${related.map(link=>`<a href="#products/${link.target}">${noBreak(byId[link.target].productName)}${link.note?` <small>${esc(link.note)}</small>`:''}</a>`).join('')}</div>`:''}</div></div>
         ${facts.length?`<ul class="rt-product-facts">${facts.map(fact=>`<li><b>${esc(fact.value)}</b><span>${esc(fact.label)}</span></li>`).join('')}</ul>`:''}
         ${item.overview?`<section class="rt-product-overview"><h3>개요</h3>${headline?`<p class="rt-product-overview-headline">${esc(headline)}</p>`:''}${[restOfFirst.join(' '),...overviewParagraphs.slice(1)].filter(Boolean).map(paragraph=>`<p>${esc(paragraph)}</p>`).join('')}</section>`:''}
         ${(item.features||[]).length||sizeSpecs.length?`<div class="rt-product-side-row">

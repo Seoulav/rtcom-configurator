@@ -1,47 +1,35 @@
 {
-  "id": "xdm-ctr100",
+  "id": "xdm-ctr100-pse",
   "group": "extender",
   "manufacturer": "RTCOM",
-  "productName": "XDM-CTR100",
-  "model": "XDM-CTR100",
+  "productName": "XDM-CTR100 PSE",
+  "model": "XDM-CTR100 PSE",
   "series": "XDM Series Extender",
-  "seriesNote": "XDM 시리즈 전용 HDBaseT 3.0 송·수신 겸용 전송기다.",
+  "seriesNote": "XDM 시리즈 전용 HDBaseT 3.0 송·수신 겸용 전송기이자 PoE 전원 공급(PSE) 모델이다.",
   "itemType": "PRODUCT",
   "categories": [
     "영상",
     "Video",
     "Extender"
   ],
-  "english": "HDBaseT 3.0 HDMI transceiver (TX/RX selectable) carrying uncompressed 4K60 4:4:4 up to 100m over CAT cable.",
-  "korean": "HDBaseT 3.0 기술로 압축하지 않은 4K60Hz 4:4:4 HDMI 신호를 최대 100m 전송하는 송·수신 겸용 전송기다.",
+  "english": "HDBaseT 3.0 HDMI transceiver (TX/RX selectable) that also acts as PoE PSE, supplying signal and power together over CAT cable to XDM-CTR100 or wall-plate XDM-CT103/CR103.",
+  "korean": "HDBaseT 3.0 기술로 압축하지 않은 4K60Hz 4:4:4 HDMI 신호를 최대 100m 전송하는 송·수신 겸용 전송기이며, PoE 기능의 PSE(Power Sourcing Equipment)로 CAT 케이블을 통해 PD 장비에 신호와 전원을 동시에 공급한다.",
   "catalogPages": "10",
-  "verificationSummary": "알티컴 종합 카탈로그(2026-03, 48쪽판) 10쪽의 XDM-CTR100 소개와 제품사양 표에서 확인했고, 새 카탈로그(46쪽판) 10쪽과 줄 단위로 재대조했다(차이 없음).",
+  "verificationSummary": "알티컴 종합 카탈로그(2026-03, 48쪽판) 10쪽의 XDM-CTR100 PSE 소개와 제품사양 표에서 확인했고, 새 카탈로그(46쪽판) 10쪽과 줄 단위로 재대조했다(차이 없음).",
   "packageStatus": "VERIFIED",
-  "overview": "XDM-CTR100은 HDBaseT 3.0 기술이 적용되어 압축하지 않은 True 4K 4096x2160@60Hz(4:4:4), 3840x2160@60Hz(4:4:4) 해상도의 HDMI 신호를 케이블에 따라 최대 100m까지 전송하는 HDMI 송·수신기다. 하나의 기기에서 설정으로 송신기 또는 수신기 역할을 바꿀 수 있으며, 송신기로 쓰면 XDM-CIS100, 수신기로 쓰면 XDM-COS100과 호환된다. RS-232+ 기능으로 XDM 매트릭스의 커맨드를 통해 XDM-CTR100의 RS-232에 연결된 외부기기를 제어할 수 있다.\n\nXDM-CTR100 PSE(별매)와 CAT 케이블로 연결하면 XDM-CTR100은 PD(Powered Devices) 모드로 동작해 전원 케이블 없이 사용할 수 있다. XDM-CTR100과 XDM-CTR100 PSE는 카탈로그·판매 단위가 서로 다른 별도 모델이다.",
+  "overview": "XDM-CTR100 PSE는 POE 기능에서의 PSE(Power Sourcing Equipment) 장비로, CAT 케이블을 통하여 PD 장비(XDM-CTR100)에 신호와 전원을 동시에 공급하는 기능을 갖고 있다. XDM-CTR100 PSE 제품은 CTR100 제품과 벽부형 XDM-CT103/CR103과 사용 가능하다.\n\nXDM-CTR100 PSE와 XDM-CTR100 제품을 함께 사용할 시, XDM-CTR100 제품은 PD(Powered Devices) 모드로 운용되어 전원 케이블 연결 없이 사용 가능하다. 이때 PSE 제품에는 전원 케이블 연결을 해주어야 원활한 사용이 가능하다.\n\nXDM-CTR100과 동일하게 손쉬운 설정으로 송신기 혹은 수신기의 역할로 변환할 수 있다. 케이블별 최대 사용 거리는 제조사 문의 사항으로 적혀 있다.",
   "images": [
     {
       "role": "Main",
-      "file": "xdm-ctr100-main.webp",
-      "alt": "RTCOM XDM-CTR100 상판",
-      "note": "Main · XDM-CTR100 제품 사진",
+      "file": "xdm-ctr100-perspective.webp",
+      "alt": "RTCOM XDM-CTR100 PSE 사선 사진",
+      "note": "Main · XDM-CTR100 PSE 제품 사진",
       "provider": "RTCOM",
-      "model": "XDM-CTR100",
+      "model": "XDM-CTR100 PSE",
       "source": "R",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "210×129"
-    },
-    {
-      "role": "Rear",
-      "file": "xdm-ctr100-rear.webp",
-      "alt": "RTCOM XDM-CTR100 양쪽 단자면(DIP 스위치면, HDBaseT·HDMI IN/OUT·Phoenix 단자면)",
-      "note": "Rear · 카탈로그 10쪽 XDM-CTR100 단자면 사진",
-      "provider": "RTCOM",
-      "model": "XDM-CTR100",
-      "source": "C",
-      "officialSource": true,
-      "verificationStatus": "FOUND",
-      "resolution": "563×350"
+      "resolution": "224×131"
     }
   ],
   "imageStatuses": [
@@ -55,7 +43,7 @@
     },
     {
       "role": "Rear",
-      "status": "FOUND"
+      "status": "MISSING"
     }
   ],
   "documents": [
@@ -73,19 +61,19 @@
       "source": "C"
     },
     {
-      "text": "하나의 기기에서 설정으로 송신기 또는 수신기 역할을 바꿀 수 있다.",
+      "text": "CAT 케이블로 PD 장비(XDM-CTR100)에 신호와 전원을 동시에 공급한다.",
       "source": "C"
     },
     {
-      "text": "송신기로 쓰면 XDM-CIS100, 수신기로 쓰면 XDM-COS100과 호환된다.",
+      "text": "XDM-CTR100과 함께 쓰면 XDM-CTR100은 PD 모드로 동작해 전원 케이블 없이 사용할 수 있고, PSE 쪽에 전원 케이블을 연결한다.",
       "source": "C"
     },
     {
-      "text": "RS-232+ 기능으로 XDM 매트릭스 커맨드를 통해 연결된 외부기기를 RS-232로 제어할 수 있다.",
+      "text": "XDM-CTR100과 벽부형 XDM-CT103/CR103과 함께 사용할 수 있다.",
       "source": "C"
     },
     {
-      "text": "별매 XDM-CTR100 PSE와 CAT 케이블로 연결하면 PD 모드로 동작해 전원 케이블 없이 사용할 수 있다.",
+      "text": "XDM-CTR100과 동일하게 하나의 기기에서 설정으로 송신기 또는 수신기 역할을 바꿀 수 있다.",
       "source": "C"
     }
   ],
@@ -154,20 +142,11 @@
       "verification": "VERIFIED"
     },
     {
-      "group": "Control",
-      "name": "RS-232",
-      "value": "RS-232+ (XDM 매트릭스 커맨드로 외부기기 제어)",
-      "unit": "",
-      "condition": "소개문 기준",
-      "source": "C",
-      "verification": "VERIFIED"
-    },
-    {
       "group": "Physical",
       "name": "크기(W×D×H)",
-      "value": "127.8×73.2×30.3",
+      "value": "107.4 [127.4]×88×30.1",
       "unit": "mm",
-      "condition": "",
+      "condition": "원문 대괄호 표기 그대로",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -176,8 +155,8 @@
       "name": "무게",
       "value": "0.28",
       "unit": "kg",
-      "condition": "0.62lbs",
-      "source": "C",
+      "condition": "사용자 확인(2026-09-27), CTR100과 동일 · 카탈로그 원문은 \"0.34kg(약 0.71lb.)\"",
+      "source": "U",
       "verification": "VERIFIED"
     }
   ],
@@ -211,7 +190,7 @@
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "HDBaseT 3.0",
-      "condition": "TX/RX 설정에 따라 송신 또는 수신",
+      "condition": "TX/RX 설정에 따라 송신 또는 수신 · PoE로 PD 장비에 신호+전원 동시 공급",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -231,17 +210,17 @@
     {
       "relation": "PART_OF_SERIES",
       "target": "xdm",
-      "note": "XDM 시리즈 전용 HDBaseT 전송기"
+      "note": "XDM 시리즈 전용 HDBaseT 전송기 겸 PoE 전원 공급(PSE) 모델"
     },
     {
       "relation": "WORKS_WITH",
-      "target": "xdm",
-      "note": "XDM-CIS100(송신기 설정)·XDM-COS100(수신기 설정) 카드"
+      "target": "xdm-ctr100",
+      "note": "PoE로 전원 공급. 함께 쓰면 CTR100은 전원 케이블 없이(PD 모드) 사용 가능"
     },
     {
       "relation": "WORKS_WITH",
-      "target": "xdm-ctr100-pse",
-      "note": "별매 PoE 전원 공급 장비. 함께 쓰면 CTR100은 전원 케이블 없이(PD 모드) 사용 가능"
+      "target": "xdm-ct103-cr103",
+      "note": "벽부형 CT103/CR103에도 PoE 전원 공급 가능"
     }
   ],
   "sources": [
@@ -267,7 +246,7 @@
       "code": "U",
       "name": "서울영상테크 SI사업본부 확인",
       "page": "",
-      "scope": "사용자 확인(2026-09-27) — 카탈로그가 '케이블 별 상이, 상세 문의'로만 표기한 항목의 실사용 확인 거리"
+      "scope": "사용자 확인(2026-09-27) — 카탈로그가 '케이블 별 상이, 상세 문의'로만 표기하거나(전송거리) 원문 자체 환산이 맞지 않는(무게) 항목의 실사용 확인 값"
     }
   ],
   "issues": [
@@ -275,25 +254,31 @@
       "code": "I1",
       "status": "INFO",
       "title": "이미지 출처",
-      "detail": "저장소에 있던 RTCOM 제품 사진(output/design/assets/extenders)을 흰 배경 webp로 변환했다. 카탈로그 인쇄 사진과 같은 촬영본이며 해상도가 낮다. Rear는 카탈로그 10쪽의 XDM-CTR100 단자면 사진을 220dpi로 잘라냈다."
+      "detail": "저장소에 있던 RTCOM 제품 사진(output/design/assets/extenders)을 흰 배경 webp로 변환했다. 카탈로그 인쇄 사진과 같은 촬영본이며 해상도가 낮다. 별도의 PSE 전용 단자면 사진은 없어 Rear 이미지는 등록하지 않았다(공통 단자 배치는 XDM-CTR100 페이지의 Rear 사진 참고)."
     },
     {
       "code": "I2",
       "status": "INFO",
       "title": "별매 모델 분리(2026-09-27)",
-      "detail": "0.27까지는 XDM-CTR100과 XDM-CTR100 PSE를 한 페이지(id: xdm-ctr100)로 같이 다뤘다. 사용자 확인(\"CTR100과 CTR100 PSE는 별도 모델이라 나누어줘\")에 따라 XDM-CTR100 PSE를 별도 제품(id: xdm-ctr100-pse)으로 분리했다. 이 페이지는 이제 XDM-CTR100 단일 모델만 다룬다."
+      "detail": "0.27까지는 XDM-CTR100과 XDM-CTR100 PSE를 한 페이지(id: xdm-ctr100)로 같이 다뤘다. 사용자 확인(\"CTR100과 CTR100 PSE는 별도 모델이라 나누어줘\")에 따라 이 페이지(id: xdm-ctr100-pse)로 분리했다."
     },
     {
       "code": "I3",
       "status": "INFO",
-      "title": "PSE 조합 전원 기준(참고)",
-      "detail": "근거 문서 U03·U04(사용자 확인 2026-09-26): CIS100·COS100 카드에 연결할 때는 PSE를 쓸 수 없어 CTR100에 전원을 직접 연결하고, CTR100 PSE + CTR100 조합에서는 PSE 쪽에만 전원을 연결한다. TX/RX는 DIP 스위치로 선택한다. 카탈로그 밖 확인 사항이라 사양 값에는 넣지 않았다."
+      "title": "무게 정정(카탈로그 오기 → 실사용 확인)",
+      "detail": "두 카탈로그판 모두 PSE 무게를 '0.34kg(약 0.71lb.)'로 적었지만 0.34kg은 약 0.75lb라 원문 안에서도 환산이 안 맞았다. 사용자(서울영상테크 SI사업본부, 2026-09-27) 확인 결과 PSE의 실사용 무게는 XDM-CTR100과 같은 0.28kg이라, 이 값으로 정정하고 출처를 'U'로 표시했다."
     },
     {
       "code": "I4",
       "status": "INFO",
+      "title": "전원 조합 기준(참고)",
+      "detail": "근거 문서 U03·U04(사용자 확인 2026-09-26): CIS100·COS100 카드에 연결할 때는 PSE를 쓸 수 없어 CTR100에 전원을 직접 연결하고, CTR100 PSE + CTR100 조합에서는 PSE 쪽에만 전원을 연결한다. TX/RX는 DIP 스위치로 선택한다. 카탈로그 밖 확인 사항이라 사양 값에는 넣지 않았다."
+    },
+    {
+      "code": "I5",
+      "status": "INFO",
       "title": "케이블별 최대 전송거리 추가(카탈로그 밖 확인 사항)",
-      "detail": "카탈로그 10쪽 본문은 '자세한 케이블 별 최대 사용 가능 거리는 당사(031-447-0250)로 문의 부탁드립니다'라고만 적어, BELDEN 10GXE02(S/FTP, CAT6A) 100m 외의 케이블별 거리는 카탈로그에 없다. 사용자(서울영상테크 SI사업본부, 2026-09-27)가 CI6522(SF/UTP, CAT6) 케이블 사용 시 80m로 확인해 주어 출처 'U'로 추가했다. '지원 케이블' 사양 행(CAT6a, CAT7)은 카탈로그 원문 그대로이며, CI6522는 CAT6(비-CAT6a) 케이블로 카탈로그가 명시한 지원 목록과 등급이 다르다는 점을 함께 남긴다."
+      "detail": "카탈로그 10쪽 본문은 '자세한 케이블 별 최대 사용 가능 거리는 당사(031-447-0250)로 문의 부탁드립니다'라고만 적어, BELDEN 10GXE02(S/FTP, CAT6A) 100m 외의 케이블별 거리는 카탈로그에 없다. 사용자(서울영상테크 SI사업본부, 2026-09-27)가 CI6522(SF/UTP, CAT6) 케이블 사용 시 80m로 확인해 주어 출처 'U'로 추가했다."
     }
   ]
 }

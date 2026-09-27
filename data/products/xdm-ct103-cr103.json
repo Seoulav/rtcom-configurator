@@ -270,7 +270,7 @@
     },
     {
       "relation": "WORKS_WITH",
-      "target": "xdm-ctr100",
+      "target": "xdm-ctr100-pse",
       "note": "XDM-CTR100 PSE로 PoE 전원 공급"
     }
   ],
