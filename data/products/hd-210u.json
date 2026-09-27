@@ -201,15 +201,6 @@
       "condition": "전면 · 매뉴얼 7쪽",
       "source": "M-HD210",
       "verification": "VERIFIED"
-    },
-    {
-      "group": "Control",
-      "name": "EDID 로터리 스위치",
-      "value": "0: 저장한 외부 EDID · 1~B: 내장 EDID · F: OUTPUT 1 디스플레이 EDID 저장",
-      "unit": "",
-      "condition": "전면 파란색 로터리 · 기본값 1920×1080p 2CH · 설정 뒤 전원 케이블 1회 탈착 · 매뉴얼 8쪽",
-      "source": "M-HD210",
-      "verification": "VERIFIED"
     }
   ],
   "io": [
@@ -256,6 +247,101 @@
       {"n": 3, "label": "HDMI OUT 1–10", "desc": "10개 모두 같은 영상", "x1": 220, "x2": 880},
       {"n": 4, "label": "DC 12V", "desc": "전원 어댑터 12V 2A", "x1": 912, "x2": 940}
     ]
+  },
+  "edidSwitch": {
+    "image": "Front",
+    "x1": 772,
+    "y1": 51,
+    "x2": 803,
+    "y2": 79,
+    "label": "EDID 로터리 스위치",
+    "desc": "전면 파란색 로터리 스위치로 EDID를 고른다. 오른쪽 빨간 MODE 딥 스위치는 1번 오디오(ON: 3.5mm 병합 / OFF: HDMI 오디오), 2번 DDC(ON: Level Shifter / OFF: Buffer)다.",
+    "default": "0 = FLASH에 저장된 외부 EDID · EDID 오류 시 1920x1080p 60 2CH",
+    "steps": [
+      {
+        "title": "외부 EDID 저장(External EDID Setting)",
+        "items": [
+          "EDID를 저장할 디스플레이를 OUTPUT 1에 연결한다.",
+          "전원을 켠 상태에서 로터리 스위치를 '0'에서 'F [Store External EDID]'로 돌리면 OUTPUT 1 디스플레이의 EDID를 읽어 FLASH에 저장한다.",
+          "로터리 스위치를 '0'으로 돌려 놓고 HD-210U 전원 케이블을 한 번 뺐다 꽂는다."
+        ]
+      },
+      {
+        "title": "내부 EDID 지정(Internal EDID Setting)",
+        "items": [
+          "디스플레이를 OUTPUT에 연결한다.",
+          "로터리 스위치를 원하는 EDID 번호에 맞춘다. 디스플레이가 한 번 깜빡이며 그 EDID로 출력된다.",
+          "설정을 확정하려면 HD-210U 전원 케이블을 한 번 뺐다 꽂는다."
+        ]
+      }
+    ],
+    "table": [
+      {
+        "code": "0",
+        "function": "FLASH에 저장된 외부 EDID"
+      },
+      {
+        "code": "1",
+        "function": "3840x2160p@60 PCM 2CH"
+      },
+      {
+        "code": "2",
+        "function": "3840x2160p@60 Multi"
+      },
+      {
+        "code": "3",
+        "function": "3840x2160p@60 Dolby"
+      },
+      {
+        "code": "4",
+        "function": "3840x2160p@30 PCM 2CH"
+      },
+      {
+        "code": "5",
+        "function": "3840x2160p@30 Multi"
+      },
+      {
+        "code": "6",
+        "function": "3840x2160p@30 Dolby"
+      },
+      {
+        "code": "7",
+        "function": "1920x1080p@60 PCM 2CH"
+      },
+      {
+        "code": "8",
+        "function": "1920x1080p@60 Multi"
+      },
+      {
+        "code": "9",
+        "function": "1920x1080p@60 Dolby"
+      },
+      {
+        "code": "A",
+        "function": "1920x1080p@60 DVI"
+      },
+      {
+        "code": "B",
+        "function": "1920x1200@60 DVI"
+      },
+      {
+        "code": "C",
+        "function": "Nothing"
+      },
+      {
+        "code": "D",
+        "function": "Firmware Download Mode"
+      },
+      {
+        "code": "E",
+        "function": "Nothing"
+      },
+      {
+        "code": "F",
+        "function": "OUTPUT 1 디스플레이 EDID를 FLASH에 저장(Store External EDID)"
+      }
+    ],
+    "source": "M-HD210"
   },
   "sources": [
     {
