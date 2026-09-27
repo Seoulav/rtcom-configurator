@@ -281,21 +281,22 @@
           const x=mvPanelX+panelPad+c*(cellW+cellGap),y=mvPanelY+panelPad+r*(cellH+13+cellGap)+8;
           bodyMarkup+=`<rect x="${x}" y="${y}" width="${cellW}" height="${cellH}" rx="4" fill="#F3EEFF" stroke="${P}" stroke-width="1.8"/><path d="M${x+cellW/2} ${y+2}V${y+cellH-2}M${x+2} ${y+cellH/2}H${x+cellW-2}" stroke="${P}" stroke-width="1" opacity=".55"/><path d="M${x+cellW/2} ${y+cellH}v5M${x+cellW/2-7} ${y+cellH+6}h14" stroke="${P}" stroke-width="1.6"/><text x="${x+cellW/2}" y="${y+cellH/2+3.5}" text-anchor="middle" font-size="9" font-weight="700" fill="${PI}">${n}</text>`;
         });
-        const mvCaption=`${multiview.join('·')} 멀티뷰`;
+        const mvCaption=`${multiview.join('·')}번 각 4분할 · 합쳐서 최대 8입력`;
         bodyMarkup+=`<text x="${mvPanelX+mvPanelW/2}" y="${mvPanelY+mvPanelH+16}" text-anchor="middle" font-size="11.5" font-weight="700" fill="${PI}">${svgEsc(mvCaption)}</text>`;
       }
 
       // 오디오 추출(디먹스): 캡션 아래에 AUDIO OUT 칩을 두고 대역폭 띠에서 점선으로 이어 "병합"과 대칭으로 보이게 한다.
+      // 멀티뷰 갈래(위쪽)와 같은 모양으로 그려서(대역폭 띠 오른쪽 끝 → 짧게 왼쪽으로 들어가는 곡선) 점선이 패널을 가로지르지 않게 한다.
       let audioOutBottom=panelY+panelH+16;
       if(audioOut){
-        const audioOutW=104,audioOutH=30,aoX=panelX+panelW/2-audioOutW/2,aoY=panelY+panelH+34;
-        bodyMarkup+=`<path d="M${bandX2} ${bandY+7}C${bandX2} ${aoY+audioOutH/2} ${aoX+audioOutW/2} ${aoY+audioOutH/2} ${aoX+audioOutW/2} ${aoY}" fill="none" stroke="${M}" stroke-width="1.8" stroke-dasharray="4 3"/><rect x="${aoX}" y="${aoY}" width="${audioOutW}" height="${audioOutH}" rx="15" fill="rgba(118,118,128,.10)"/><text x="${aoX+audioOutW/2}" y="${aoY+audioOutH/2+4}" text-anchor="middle" font-size="11.5" font-weight="600" fill="${M}">AUDIO OUT</text><rect x="${aoX+audioOutW+6}" y="${aoY+7}" width="30" height="15" rx="7" fill="#fff"/><text x="${aoX+audioOutW+21}" y="${aoY+18}" text-anchor="middle" font-size="10" font-weight="700" fill="${M}">추출</text>`;
+        const audioOutW=104,audioOutH=30,aoX=panelX,aoY=panelY+panelH+34,aoMidY=aoY+audioOutH/2;
+        bodyMarkup+=`<path d="M${bandX2} ${bandY+7}C${bandX2} ${aoMidY} ${aoX-20} ${aoMidY} ${aoX} ${aoMidY}" fill="none" stroke="${M}" stroke-width="1.8" stroke-dasharray="4 3"/><rect x="${aoX}" y="${aoY}" width="${audioOutW}" height="${audioOutH}" rx="15" fill="rgba(118,118,128,.10)"/><text x="${aoX+audioOutW/2}" y="${aoMidY+4}" text-anchor="middle" font-size="11.5" font-weight="600" fill="${M}">AUDIO OUT</text><rect x="${aoX+audioOutW+6}" y="${aoY+7}" width="30" height="15" rx="7" fill="#fff"/><text x="${aoX+audioOutW+21}" y="${aoY+18}" text-anchor="middle" font-size="10" font-weight="700" fill="${M}">추출</text>`;
         audioOutBottom=aoY+audioOutH;
       }
 
       // 캡션 글자가 출력 격자보다 넓을 수 있어(예: 매트릭스 전환 문구) SVG 너비에 여유를 둔다.
-      const captionHalfWidth=Math.max(captionText.length,multiview.length?`${multiview.join('·')} 멀티뷰`.length:0)*3.6+20;
-      const width=Math.max(panelX+panelW+20,panelX+panelW/2+captionHalfWidth+20,audioOut?panelX+panelW/2+52+40:0);
+      const captionHalfWidth=Math.max(captionText.length,multiview.length?`${multiview.join('·')}번 각 4분할 · 합쳐서 최대 8입력`.length:0)*3.6+20;
+      const width=Math.max(panelX+panelW+20,panelX+panelW/2+captionHalfWidth+20);
       const height=Math.max(leftBottom+20,panelY+panelH+38,midY+70,audioOutBottom+16);
       return diagramWrap(bodyMarkup,width,height,[]);
     }
@@ -461,15 +462,16 @@
 
     // ---- 기록·원본 영역(2-6) ----
     function recordSection(item,diagramHtml,photo){
-      const io=(item.io||[]).map(port=>[esc(port.group),esc(directionLabel[port.direction]||port.direction),esc(port.connector),esc(port.quantity),`${esc(port.signal)}${port.protocol?` · ${esc(port.protocol)}`:''}${verification(port.verification)}`,esc(port.condition)]);
-      const issues=item.issues||[];
-      const sources=(item.sources||[]).map(source=>`${esc(source.name)}${source.page?` ${esc(source.page)}쪽`:''}${source.url&&/^https?:\/\//.test(source.url)?` — <a href="${esc(source.url)}" target="_blank" rel="noopener">열기 ↗</a>`:''}`);
-      const count=io.length+issues.length+sources.length;
+      // 입출력 단자 표는 TX 쪽 → (구분 없음) → RX 쪽 순, 각 쪽 안에서는 영상 → 오디오 → 전송 → 제어, 같은 종류는 입력 → 출력 → 양방향 순으로 정렬한다.
+      const sideRank=group=>group.startsWith('TX')?0:group.startsWith('RX')?2:1;
+      const typeRank=group=>{const i=['Video','Audio','Transmission','Control'].indexOf(group.replace(/^(TX|RX)\s*·\s*/,''));return i<0?4:i};
+      const dirRank=direction=>({IN:0,OUT:1,BIDIR:2})[direction]??3;
+      const sortedIo=[...(item.io||[])].sort((a,b)=>sideRank(a.group)-sideRank(b.group)||typeRank(a.group)-typeRank(b.group)||dirRank(a.direction)-dirRank(b.direction));
+      const io=sortedIo.map(port=>[esc(port.group),esc(directionLabel[port.direction]||port.direction),esc(port.connector),esc(port.quantity),`${esc(port.signal)}${port.protocol?` · ${esc(port.protocol)}`:''}${verification(port.verification)}`,esc(port.condition)]);
+      const count=io.length;
       return `<details class="rt-pg-record"${item.packageStatus==='REVIEW REQUIRED'?' open':''}><summary>자료 출처·검토 기록 (${count}건)${reviewBadge(item)}</summary><div class="rt-pg-record-body">
-        ${photo?`<div id="rt-pg-diagram-photo"><h4>제조사 원본 다이어그램</h4><div class="rt-pg-diagram-photo"><img src="${image(photo.file)}" alt="${esc(photo.alt||`${item.productName} 연결 다이어그램`)}" loading="lazy"></div>${photo.note?`<p class="rt-pg-diagram-caption">${esc((photo.note||'').replace(/^[A-Za-z]+ · /,''))}</p>`:''}${photo.diagramMismatch?`<p class="rt-pg-diagram-mismatch"><b>표기 다름</b> ${esc(photo.diagramMismatch)}</p>`:''}</div>`:''}
+        ${photo?`<div id="rt-pg-diagram-photo"><h4>제조사 원본 다이어그램</h4><div class="rt-pg-diagram-photo"><img src="${image(photo.file)}" alt="${esc(photo.alt||`${item.productName} 연결 다이어그램`)}" loading="lazy"></div>${photo.note?`<p class="rt-pg-diagram-caption">${esc((photo.note||'').replace(/^[A-Za-z]+ · /,''))}</p>`:''}</div>`:''}
         ${io.length?`<div><h4>입출력 단자</h4>${table(['분류','방향','단자','수량','신호','조건'],io)}</div>`:''}
-        ${issues.length?`<div><h4>참고 사항</h4><ul>${issues.map(issue=>`<li data-status="${esc(issue.status)}"><b>${esc(issue.title)}</b> ${esc(issue.detail)}</li>`).join('')}</ul></div>`:''}
-        <div><h4>출처</h4><p>${esc(item.verificationSummary)}</p>${sources.length?`<ul>${sources.map(source=>`<li>${source}</li>`).join('')}</ul>`:''}<p class="rt-pg-hint">공개 브로셔 수준 정보입니다. 최신 사양·납품 조건은 제조사 또는 서울영상테크에 확인하세요.</p></div>
       </div></details>`;
     }
 
