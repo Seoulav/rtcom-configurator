@@ -302,30 +302,5 @@
       "scope": "사용자 위임(2026-09-27) — 카탈로그 내부 충돌·오기 정리"
     }
   ],
-  "issues": [
-    {
-      "code": "R1",
-      "status": "INFO",
-      "title": "[판단] XDM-CR103 오디오 방향 표기",
-      "detail": "수신기인 XDM-CR103의 Number of port가 송신기와 같은 '1 HDMI, 1 HDBaseT, 1 Audio In'으로 적혀 있다. 46쪽판 11쪽도 줄 단위로 동일하게 CR103 행에 '1 Audio In'을 반복해, 새 카탈로그로도 방향 오기 여부를 확인할 수 없다. 원문대로 IN으로 두고 REVIEW REQUIRED를 유지한다. → 판단: 수신기이므로 오디오는 출력(추출)이 맞다고 확정하고 direction을 OUT으로 정정한다(§6)."
-    },
-    {
-      "code": "R2",
-      "status": "INFO",
-      "title": "[판단] XDM-CT103 무게 환산 불일치",
-      "detail": "XDM-CT103 무게는 '0.34kg (1.0lb.)'로 적혀 있지만 0.34kg은 약 0.75lb다. 같은 크기의 XDM-CR103은 약 0.26kg이다. 46쪽판 11쪽도 줄 단위로 동일한 값을 반복해 두 판 모두 같은 오기가 있다. kg 값을 그대로 두고 REVIEW REQUIRED를 유지한다. → 판단: kg과 lb 환산이 맞지 않아 lb 표기는 condition에서 빼고 kg 원문(0.34 kg)만 표시한다(§6 원칙 3)."
-    },
-    {
-      "code": "I1",
-      "status": "INFO",
-      "title": "이미지 출처",
-      "detail": "저장소에 있던 RTCOM 제품 사진(output/design/assets/extenders)을 흰 배경 webp로 변환했다. 카탈로그 인쇄 사진과 같은 촬영본이며 해상도가 낮다."
-    },
-    {
-      "code": "I2",
-      "status": "INFO",
-      "title": "이미지 역할 표기",
-      "detail": "짝 제품이라 Main에는 송신기 XDM-CT103, Other(기타) 자리에는 수신기 XDM-CR103 정면 사진을 넣었다."
-    }
-  ]
+  "issues": []
 }

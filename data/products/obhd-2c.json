@@ -252,36 +252,5 @@
       "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
     }
   ],
-  "issues": [
-    {
-      "code": "I3",
-      "status": "INFO",
-      "title": "광 단자 io 미작성",
-      "detail": "제품사양은 입력·출력단자 모두 HDMI(female), LC connector(female)로 적어 송·수신기별 광 단자 방향과 수량을 표에서 구분할 수 없다. 소개문의 광케이블 2가닥만 사양에 적었다."
-    },
-    {
-      "code": "I1",
-      "status": "INFO",
-      "title": "이미지 출처",
-      "detail": "카탈로그에 인쇄된 제품 사진을 해당 쪽에서 220dpi로 잘라냈다(도면이 아닌 사진). 원본 인쇄 사진 해상도가 낮아 확대 시 흐릴 수 있다."
-    },
-    {
-      "code": "I2",
-      "status": "INFO",
-      "title": "이미지 역할 표기",
-      "detail": "짝 제품이라 Main에는 송신기(TX), Other(기타)에는 수신기(RX) 사진을 넣었다. 각 이미지의 alt·note에 TX/RX를 적었다."
-    },
-    {
-      "code": "I2",
-      "status": "INFO",
-      "title": "광 커넥터 TX/RX 배정은 추정",
-      "detail": "카탈로그 41쪽은 입력단자·출력단자에 HDMI와 LC connector를 함께 표기하고 TX/RX를 구분하지 않는다. 광 파이버 익스텐더의 일반적 구조(TX가 HDMI를 광으로 변환해 내보내고 RX가 광을 받아 HDMI로 복원)에 따라 TX 출력·RX 입력으로 배정했다."
-    },
-    {
-      "code": "I4",
-      "status": "INFO",
-      "title": "46쪽판 재검증 결과 — 변동 없음",
-      "detail": "새 카탈로그(46쪽판) 39쪽 본문을 옛 카탈로그(48쪽판) 41쪽과 대조한 결과 공백 제외 완전히 동일한 문구다. 광 단자 io 미작성(I3) 등 기존 기록에 변경 사항이 없다."
-    }
-  ]
+  "issues": []
 }
