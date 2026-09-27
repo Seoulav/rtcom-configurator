@@ -300,9 +300,12 @@
       const isFiber=/광|Fiber|SC|LC/i.test(`${transmission.connector} ${transmission.signal} ${transmission.protocol}`);
       const cableColor=isFiber?COLOR_FIBER:COLOR_COPPER;
       const distanceSpecs=(item.specifications||[]).filter(spec=>/전송거리/.test(spec.name));
-      const cableName=isFiber?'광케이블':'HDBaseT(CATx)';
+      // HDBaseT를 쓰지 않는 CATx 전송기(SPX-TX/RX)는 "CATx"로만 적고, 거리 조건의 해상도 부분(4K 60Hz·1080p·Long Reach)을 표시에 쓴다(0.62).
+      const isHDBaseT=/HDBaseT/i.test(JSON.stringify([item.english,item.korean,item.overview,item.features]));
+      const cableName=isFiber?'광케이블':isHDBaseT?'HDBaseT(CATx)':'CATx';
       const cableLabelFor=spec=>{
         const m=(spec.condition||'').match(/(BELDEN\s*)?([A-Z0-9]+)\s*\(([^)]+)\)/);
+        if(!m&&!isFiber&&!isHDBaseT){const seg=(spec.condition||'').split('·').map(s=>s.replace(/\([^)]*\)/g,'').trim()).find(s=>/4K|1080p|Long Reach/i.test(s));if(seg)return `${seg.replace(/\s*모드$/,'')} 최대 ${spec.value}${spec.unit||''}`;}
         if(!m)return `최대 ${spec.value}${spec.unit||''}`;
         const mod=m[3].split(',')[0].trim();
         return `${m[1]||''}${m[2]}(${mod}) 최대 ${spec.value}${spec.unit||''}`;
@@ -582,17 +585,20 @@
     // ---- 딥 스위치 설정(0.58, 사용자 요청 "딥스위치를 만들어서 설정값을 설명하면 어때?") ----
     // 스위치 번호마다 OFF·ON 두 그림을 나란히 그린다. 설명하는 스위치만 또렷하게, 나머지는 흐리게 그린다. 위쪽이 ON(dipSwitch.onUp).
     // HDS-21U·HDS-42MU는 오디오 병합·추출도 딥 스위치 1번으로 고르므로 07 오디오 설정 카드를 이 카드로 바꿨다.
+    // target: 설명하는 스위치 번호(on이 그 상태) 또는 {번호:true/false} 묶음(EDID처럼 두 스위치 조합을 그릴 때, SPX-TX 3·4번).
     function dipGraphic(count,target,on,onUp){
+      const states=typeof target==='object'?target:{[target]:on};
       const sw=20,gap=8,x0=34,y0=10,h=44,W=x0+count*(sw+gap)+4,H=y0+h+22;
       let body=`<rect x="${x0-8}" y="${y0-6}" width="${count*(sw+gap)+8}" height="${h+12}" rx="4" fill="#D7302B"/>`;
-      body+=`<text x="4" y="${y0+12}" font-size="11" font-weight="800" fill="#1c1c1e">ON</text><path d="M14 ${y0+h-2}V${y0+18}M10 ${y0+22}l4-5 4 5" fill="none" stroke="#1c1c1e" stroke-width="1.6"/>`;
+      // 위쪽이 ON이면 "ON"을 위에 두고 화살표가 위를, 아래쪽이 ON(SPX-TX)이면 "ON"을 아래에 두고 화살표가 아래를 가리킨다.
+      body+=onUp?`<text x="4" y="${y0+12}" font-size="11" font-weight="800" fill="#1c1c1e">ON</text><path d="M14 ${y0+h-2}V${y0+18}M10 ${y0+22}l4-5 4 5" fill="none" stroke="#1c1c1e" stroke-width="1.6"/>`:`<text x="4" y="${y0+h}" font-size="11" font-weight="800" fill="#1c1c1e">ON</text><path d="M14 ${y0+2}V${y0+h-18}M10 ${y0+h-22}l4 5 4-5" fill="none" stroke="#1c1c1e" stroke-width="1.6"/>`;
       for(let i=1;i<=count;i++){
-        const x=x0+(i-1)*(sw+gap),active=i===target,up=onUp?on:!on;
+        const x=x0+(i-1)*(sw+gap),active=i in states,up=onUp?states[i]:!states[i];
         body+=`<rect x="${x}" y="${y0}" width="${sw}" height="${h}" rx="2" fill="${active?'#6E1411':'#B9534F'}"/>`;
         if(active)body+=`<rect x="${x+2}" y="${up?y0+2:y0+h-20}" width="${sw-4}" height="18" rx="2" fill="#fff" stroke="#007AFF" stroke-width="2"/>`;
         body+=`<text x="${x+sw/2}" y="${y0+h+17}" text-anchor="middle" font-size="12" font-weight="${active?800:600}" fill="${active?'#1c1c1e':'#a1a1a6'}">${i}</text>`;
       }
-      return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="딥 스위치 ${target}번 ${on?'ON':'OFF'}">${body}</svg>`;
+      return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="딥 스위치 ${Object.entries(states).map(([n,v])=>`${n}번 ${v?'ON':'OFF'}`).join(' · ')}">${body}</svg>`;
     }
     // dipSwitch.order: ["on","off"]이면 ON 칸을 왼쪽에 둔다(HDS-21U·HDS-42MU, 사용자 요청 2026-09-27 "딥스위치 값 서로 좌우 위치 변경해줘"). 없으면 OFF → ON.
     function dipSwitchSection(item){
@@ -600,8 +606,10 @@
       if(!ds||!ds.rows?.length)return '';
       const idx=String(6+(item.videoModes?1:0)+(item.edidSwitch?.table?.length?1:0)+(item.audioMux?.modes?.length?1:0)).padStart(2,'0');
       const state=(label,on,st,n)=>`<figure class="rt-pg-dip-state${on?' is-on':''}">${dipGraphic(ds.count,n,on,ds.onUp!==false)}<figcaption><em>${label}${st.name?` · ${esc(st.name)}`:''}</em>${esc(st.text)}</figcaption></figure>`;
+      // combos: 두 개 이상 스위치를 함께 바꿔 고르는 설정(SPX-TX 3·4번 EDID). 조합마다 그림 하나와 이름·설명을 한 칸에 둔다.
+      const combos=(ds.combos||[]).map(cb=>`<div class="rt-pg-dip-row"><div class="rt-pg-dip-head"><b>${cb.switches.join('·')}번</b><span>${esc(cb.title)}</span></div><div class="rt-pg-dip-combos">${cb.items.map(it=>`<figure class="rt-pg-dip-state${it.default?' is-on':''}">${dipGraphic(ds.count,Object.fromEntries(cb.switches.map((n,i)=>[n,it.set[i]==='on'])),null,ds.onUp!==false)}<figcaption><em>${cb.switches.map((n,i)=>`${n} ${it.set[i].toUpperCase()}`).join(' · ')}${it.default?' · 기본값':''}</em><b>${esc(it.name)}</b> ${esc(it.text)}</figcaption></figure>`).join('')}</div></div>`).join('');
       const rows=ds.rows.map(row=>`<div class="rt-pg-dip-row"><div class="rt-pg-dip-head"><b>${row.n}번</b><span>${esc(row.title)}</span></div><div class="rt-pg-dip-states">${(ds.order?.[0]==='on'?[['ON',true,row.on],['OFF',false,row.off]]:[['OFF',false,row.off],['ON',true,row.on]]).map(([label,on,st])=>state(label,on,st,row.n)).join('')}</div>${row.note?`<p class="rt-pg-dip-note">${esc(row.note)}</p>`:''}</div>`).join('');
-      return `<section class="rt-pg-card rt-pg-dip" style="margin-top:18px"><h2><span class="rt-pg-idx">${idx}</span>딥 스위치 설정 <span class="rt-pg-note">— 전면 ${esc(ds.label||'딥 스위치')} · ${ds.onUp!==false?'위쪽':'아래쪽'}이 ON</span></h2><div class="rt-pg-dip-rows">${rows}</div>${ds.apply?`<p class="rt-pg-hint">※ ${esc(ds.apply)}</p>`:''}${ds.note?`<p class="rt-pg-hint">※ ${esc(ds.note)}</p>`:''}</section>`;
+      return `<section class="rt-pg-card rt-pg-dip" style="margin-top:18px"><h2><span class="rt-pg-idx">${idx}</span>딥 스위치 설정 <span class="rt-pg-note">— ${esc(ds.place||'전면')} ${esc(ds.label||'딥 스위치')} · ${ds.onUp!==false?'위쪽':'아래쪽'}이 ON</span></h2><div class="rt-pg-dip-rows">${rows}${combos}</div>${ds.apply?`<p class="rt-pg-hint">※ ${esc(ds.apply)}</p>`:''}${ds.note?`<p class="rt-pg-hint">※ ${esc(ds.note)}</p>`:''}</section>`;
     }
     // ---- 오디오 설정(병합 MUX·추출 DEMUX 중 선택, HD-13U). 매뉴얼 문장을 "이럴 때·연결·소리가 나오는 곳·확인 방법"으로 풀어 두 칸으로 보여준다 ----
     // HDS-21U·HDS-42MU는 딥 스위치 1번으로 고르므로 이 카드 대신 딥 스위치 설정 카드에서 함께 설명한다(사용자 요청 2026-09-27).

@@ -17,7 +17,7 @@
   "subtitle": "XDM Series Extender · 광 송·수신기",
   "lead": "True 4K60Hz 4:4:4 HDMI v2.0 신호를 **광케이블로 싱글모드 최대 2km, 멀티모드 최대 300m** 전송합니다. 오디오·RS-232+ 기능을 지원합니다.",
   "catalogPages": "12",
-  "verificationSummary": "알티컴 종합 카탈로그(2026-03, 48쪽판) 12쪽의 XDM-FT101·XDM-FR101 소개와 제품사양 표에서 확인했고, 새 카탈로그(46쪽판) 12쪽과 줄 단위로 재대조했다(차이 없음).",
+  "verificationSummary": "알티컴 종합 카탈로그(2026-03, 48쪽판) 12쪽의 XDM-FT101·XDM-FR101 소개와 제품사양 표에서 확인했고, 새 카탈로그(46쪽판) 12쪽과 줄 단위로 재대조했다(차이 없음). XDM-FT101/FR101 사용자 매뉴얼 Ver.1.3(4~11쪽)으로 전원·LED·S/P 단자·EDID/오디오 로터리 스위치를 보완했다.",
   "packageStatus": "VERIFIED",
   "overview": "XDM-FT101/XDM-FR101은 True 4K 4096x2160@60Hz(4:4:4), 3840x2160@60Hz(4:4:4) 해상도의 HDMI v2.0 신호를 싱글모드 광케이블 사용 시 최대 2km, 멀티모드 광케이블 사용 시 최대 300m까지 전송하는 광 송·수신기다.\n\nXDM-FT101은 XDM-FIS100과, XDM-FR101은 XDM-FOS100과 호환된다. RS-232+ 기능으로 XDM 매트릭스의 커맨드를 통해 광 송·수신기의 RS-232 단자에 연결된 외부기기를 제어할 수 있다. 송신기는 Phoenix 5p 단자로 스테레오 오디오를 삽입하고, 수신기는 같은 방식으로 스테레오 오디오를 추출한다.",
   "images": [
@@ -56,6 +56,18 @@
       "officialSource": true,
       "verificationStatus": "FOUND",
       "resolution": "515×191"
+    },
+    {
+      "role": "Front",
+      "file": "xdm-ft101-fr101-front.webp",
+      "alt": "RTCOM XDM-FT101 송신기 전면(Signal·Link LED, MODE 로터리, S/P 단자)",
+      "note": "Front · 매뉴얼 6쪽 XDM-FT101 사진",
+      "provider": "RTCOM",
+      "model": "XDM-FT101",
+      "source": "M1",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "691×432"
     }
   ],
   "imageStatuses": [
@@ -65,7 +77,7 @@
     },
     {
       "role": "Front",
-      "status": "MISSING"
+      "status": "FOUND"
     },
     {
       "role": "Rear",
@@ -87,6 +99,13 @@
       "title": "알티컴 종합 카탈로그 2026 (국문)",
       "language": "ko",
       "note": "12쪽"
+    },
+    {
+      "type": "Manual",
+      "status": "FOUND",
+      "title": "XDM-FT101/FR101 사용자 매뉴얼 Ver.1.3",
+      "language": "ko",
+      "note": "4–11쪽(원본 비공개 보관)"
     }
   ],
   "features": [
@@ -107,7 +126,11 @@
       "source": "U"
     },
     {
-      "text": "송신기는 스테레오 오디오 삽입, 수신기는 스테레오 오디오 추출 지원",
+      "text": "EDID 마인더 기능 지원(내장 EDID 선택, XDM-FT101 MODE 로터리)",
+      "source": "M1"
+    },
+    {
+      "text": "오디오 병합(FT101)·추출(FR101) 지원",
       "source": "C"
     }
   ],
@@ -155,6 +178,24 @@
       "unit": "",
       "condition": "XDM-FT101·XDM-FR101 공통",
       "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "name": "광 출력",
+      "value": "-10 dBm 이상",
+      "unit": "",
+      "condition": "2km 전송 후 · XDM-FT101 출력/XDM-FR101 입력",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "name": "전원",
+      "value": "DC +12V 1A",
+      "unit": "",
+      "condition": "XDM-FT101·XDM-FR101 각각",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
@@ -240,6 +281,28 @@
       "verification": "VERIFIED"
     },
     {
+      "group": "TX · Control",
+      "connector": "Mini USB(S/P)",
+      "signal": "USB",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "XDM-FT101 · 펌웨어 업데이트",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "TX · Power",
+      "connector": "DC IN(+12V·GND)",
+      "signal": "DC 12V",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "XDM-FT101 · +12V 1A",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
       "group": "RX · Video",
       "connector": "Female HDMI connector",
       "signal": "HDMI",
@@ -281,6 +344,28 @@
       "protocol": "",
       "condition": "XDM-FR101 · 오디오와 같은 5p 단자",
       "source": "C",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Control",
+      "connector": "Mini USB(S/P)",
+      "signal": "USB",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "XDM-FR101 · 펌웨어 업데이트",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Power",
+      "connector": "DC IN(+12V·GND)",
+      "signal": "DC 12V",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "XDM-FR101 · +12V 1A",
+      "source": "M1",
       "verification": "VERIFIED"
     }
   ],
@@ -353,7 +438,69 @@
       "name": "서울영상테크 SI사업본부 확인",
       "page": "",
       "scope": "사용자 확인(2026-09-27) — RS-232+ 단자로 AMX 등 통합 제어 시스템의 RS-232 신호를 매트릭스 카드·전송기를 거쳐 반대편으로 패스스루하는 사용 방식"
+    },
+    {
+      "code": "M1",
+      "name": "XDM-FT101/FR101 사용자 매뉴얼 Ver.1.3",
+      "page": "4–11",
+      "scope": "제조사 공식 출처(사용자 제공 2026-09-27, .source-materials/RTcom_Manual_XDM-FT101-FR101_Ver1.3.pdf)"
     }
   ],
-  "issues": []
+  "issues": [],
+  "edidSwitch": {
+    "image": "Front",
+    "x1": 260,
+    "y1": 279,
+    "x2": 309,
+    "y2": 333,
+    "label": "MODE 로터리 스위치",
+    "desc": "XDM-FT101 전면 MODE 로터리 스위치 하나로 EDID와 오디오를 함께 고른다. 0~3번은 HDMI에 실린 원래 소리(Source), 8~11번은 3핀 L·R 단자의 아날로그 오디오를 HDMI에 병합한다(Analog). 병합한 소리는 XDM-FR101 HDMI 출력과 L·R 오디오 출력으로 나간다.",
+    "default": "0 = Through pass · Source 오디오",
+    "steps": [
+      {
+        "title": "설정 방법",
+        "items": [
+          "제품 하단 스티커를 참조해 전면 로터리 스위치를 원하는 번호에 맞춘다(10번=A, 11번=B).",
+          "오디오 병합은 8·9·10·11번 중 하나에 맞추고 전원을 연결한 뒤, 후면 L·R·⏚ 단자에 3핀 Phoenix 오디오 케이블을 연결한다."
+        ]
+      }
+    ],
+    "table": [
+      {
+        "code": "0",
+        "function": "Through pass · Source 오디오"
+      },
+      {
+        "code": "1",
+        "function": "1920x1080@60 · Source 오디오"
+      },
+      {
+        "code": "2",
+        "function": "3840x2160@30 · Source 오디오"
+      },
+      {
+        "code": "3",
+        "function": "3840x2160@60 · Source 오디오",
+        "highlight": true
+      },
+      {
+        "code": "8",
+        "function": "Through pass · Analog 오디오(병합)",
+        "highlight": true
+      },
+      {
+        "code": "9",
+        "function": "1920x1080@60 · Analog 오디오(병합)"
+      },
+      {
+        "code": "A",
+        "function": "3840x2160@30 · Analog 오디오(병합, 10번)"
+      },
+      {
+        "code": "B",
+        "function": "3840x2160@60 · Analog 오디오(병합, 11번)"
+      }
+    ],
+    "source": "M1"
+  }
 }

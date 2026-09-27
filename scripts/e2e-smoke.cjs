@@ -369,6 +369,16 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       const order=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-dip .rt-pg-dip-row')].map(row=>[...row.querySelectorAll('.rt-pg-dip-state em')].map(em=>em.textContent.split(' ')[0]).join('/')));
       check(`${id} 딥 스위치 칸이 ${first==='ON'?'ON → OFF':'OFF → ON'} 순서`,order.length>0&&order.every(o=>o===(first==='ON'?'ON/OFF':'OFF/ON')),JSON.stringify(order));
     }
+    // 0.62 SPX-TX/RX 전송기(매뉴얼 Ver.2.0): 전송기 목록에 나오고, 단자 지도 2장(TX·RX), 딥 스위치(아래쪽이 ON) 1·2번 + 3·4번 EDID 조합 4칸, 신호 흐름은 HDBaseT가 아닌 CATx.
+    await page.goto(`${home}#products/spx-rx-tx`,{waitUntil:'networkidle'});
+    await page.waitForSelector('#rt-pg-title');
+    const spxrt=await page.evaluate(()=>({maps:document.querySelectorAll('.rt-pg-portmap svg image, .rt-pg-portmap image').length||document.querySelectorAll('[data-pm-map], .rt-pg-pm').length,rows:document.querySelectorAll('.rt-pg-dip .rt-pg-dip-row').length,combos:document.querySelectorAll('.rt-pg-dip-combos figure').length,down:document.querySelector('.rt-pg-dip h2')?.textContent.includes('아래쪽이 ON'),flow:[...document.querySelectorAll('.rt-pg-svg-wrap svg')].map(s=>s.textContent).join(' '),broken:[...document.images].filter(i=>i.complete&&!i.naturalWidth).length}));
+    check('SPX-TX/RX 상세에 딥 스위치 3행(1·2번, 3·4번 조합 4칸, 아래쪽이 ON)과 CATx 신호 흐름이 나오고 깨진 사진이 없음',spxrt.rows===3&&spxrt.combos===4&&spxrt.down&&spxrt.flow.includes('CATx')&&!spxrt.flow.includes('HDBaseT')&&spxrt.broken===0,JSON.stringify({...spxrt,flow:spxrt.flow.slice(0,80)}));
+    // 0.62 XDM-FT101/FR101 EDID·오디오 로터리(매뉴얼 Ver.1.3): 0(기본값)·3·8번 대표 설정 그림.
+    await page.goto(`${home}#products/xdm-ft101-fr101`,{waitUntil:'networkidle'});
+    await page.waitForSelector('.rt-pg-edid');
+    const ftRot=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-edid .rt-pg-rotary-row .rt-pg-rotary svg')].map(svg=>svg.getAttribute('aria-label').replace(/\D/g,'')).join(','));
+    check('XDM-FT101/FR101 EDID 설정에 로터리 0·3·8번 대표 그림이 나옴',ftRot==='0,3,8',ftRot);
     // 0.61 HD-210U 딥 스위치 설정(매뉴얼 Ver.1.2 7쪽: 1번 오디오 병합, 2번 DDC). 병합만 되고 추출(AUDIO OUT)은 없다(사용자 확인 2026-09-27).
     await page.goto(`${home}#products/hd-210u`,{waitUntil:'networkidle'});
     await page.waitForSelector('#rt-pg-title');

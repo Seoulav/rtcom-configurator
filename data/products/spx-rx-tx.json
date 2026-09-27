@@ -15,11 +15,11 @@
   "english": "CATx (RJ45) HDMI 2.0 transmitter/receiver for the SPX Series, 4K60 4:4:4, 18Gbps, HDCP 2.2.",
   "korean": "4K 60Hz 4:4:4 HDMI 2.0 신호를 CATx(RJ45) 케이블로 보내고 받는 SPX 시리즈용 송·수신기다.",
   "subtitle": "SPX Series Extender · CATx 송·수신기",
-  "lead": "4K 60Hz 4:4:4 HDMI 2.0 신호를 **CATx(RJ45) 케이블로 CAT6 기준 4K60 최대 50m, 1080p 최대 60m** 전송합니다. SPX-RX는 SPX-COS12 카드와 함께 쓰며 메인프레임에서 CAT으로 전원을 받습니다(POC).",
+  "lead": "4K 60Hz 4:4:4 HDMI 2.0 신호를 **CAT5e/6 케이블로 4K60 최대 50m, 1080p 최대 60m** 전송합니다. PoC로 송·수신기 중 한쪽에만 전원을 연결해도 되며, SPX-COS12 카드에 연결한 SPX-RX는 매트릭스에서 전원을 받습니다.",
   "catalogPages": "15–16",
-  "verificationSummary": "알티컴 종합 카탈로그(46쪽판) 16쪽 SPX-RX/TX 공통 사양 표와 15쪽 I/O 보드 공통 기능(CATx 전송거리)·주요기능(POC)에서 확인했다. 모델별 크기·무게·단자 수는 카탈로그에 없다.",
+  "verificationSummary": "SPX-TX/RX 사용자 매뉴얼 Ver.2.0(4~11쪽: 사양 표·전면 패널·딥 스위치·주요 특징·사용 방법)과 알티컴 종합 카탈로그(46쪽판) 15~16쪽에서 확인했다.",
   "packageStatus": "VERIFIED",
-  "overview": "SPX-TX/SPX-RX는 SPX 시리즈 매트릭스와 함께 쓰는 CATx(RJ45) 송·수신기다. 4K 60Hz 4:4:4, 18Gbps, HDCP 2.2를 지원한다.\n\nSPX-TX는 HDMI 신호를 받아 CATx(RJ45)로 보내고, SPX-RX는 CATx(RJ45)로 받은 신호를 HDMI 2.0으로 출력한다. SPX-RX는 CATx 출력 보드 SPX-COS12(CAT Output with SPX-Rx)와 짝을 이루며, 메인프레임의 POC(Power Over CAT) 기능으로 전원을 공급받는다. CATx 인터페이스는 CAT6 기준 4K 60Hz 165ft(50m), 1080p 198ft(60m)까지 출력할 수 있다.",
+  "overview": "SPX-TX/SPX-RX는 4K 60Hz HDMI 신호를 CAT5e/6 케이블로 장거리 전송하는 SPX 시리즈용 송·수신기다. SPX-RX는 True HDMI 2.0 4K 60Hz 4:4:4를 지원하는 SPX 시리즈 매트릭스와 호환된다.\n\nSPX-TX는 딥 스위치로 오디오 병합(3.5mm Stereo)·장거리 모드·내장 EDID를 설정하고, SPX-RX는 후면 3.5mm 단자로 오디오를 추출한다. PoC(Power over Cable) 기능으로 송·수신기 중 한쪽에만 전원 케이블을 연결해도 되고, SPX-COS12 카드에 연결한 SPX-RX는 매트릭스 전원이 켜져 있으면 별도 전원 없이 동작한다. CAT5e/6 기준 4K 60Hz 최대 50m(165ft), 1080p 최대 60m(198ft), Long Reach 모드에서 1080p 최대 100m까지 전송한다.",
   "images": [
     {
       "role": "Main",
@@ -32,6 +32,30 @@
       "officialSource": true,
       "verificationStatus": "FOUND",
       "resolution": "688×580"
+    },
+    {
+      "role": "Perspective",
+      "file": "spx-rx-tx-tx.webp",
+      "alt": "RTCOM SPX-TX 송신기 전면(위)과 단자면(아래)",
+      "note": "Perspective · 매뉴얼 6쪽 SPX-TX 사진 두 장을 위아래로 합성",
+      "provider": "RTCOM",
+      "model": "SPX-TX",
+      "source": "M1",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "671×655"
+    },
+    {
+      "role": "Other",
+      "file": "spx-rx-tx-rx.webp",
+      "alt": "RTCOM SPX-RX 수신기 전면(위)과 단자면(아래)",
+      "note": "Other · 매뉴얼 7쪽 SPX-RX 사진 두 장을 위아래로 합성",
+      "provider": "RTCOM",
+      "model": "SPX-RX",
+      "source": "M1",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "712×653"
     }
   ],
   "imageStatuses": [
@@ -49,11 +73,11 @@
     },
     {
       "role": "Perspective",
-      "status": "MISSING"
+      "status": "FOUND"
     },
     {
       "role": "Other",
-      "status": "MISSING"
+      "status": "FOUND"
     }
   ],
   "documents": [
@@ -63,6 +87,13 @@
       "title": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
       "language": "ko",
       "note": "15–16쪽"
+    },
+    {
+      "type": "Manual",
+      "status": "FOUND",
+      "title": "SPX-TX/RX 사용자 매뉴얼 Ver.2.0",
+      "language": "ko",
+      "note": "4–11쪽(원본 비공개 보관)"
     }
   ],
   "features": [
@@ -71,26 +102,42 @@
       "source": "C2"
     },
     {
-      "text": "CATx(RJ45) 전송 지원(CAT6 기준 4K60 최대 50m, 1080p 최대 60m)",
-      "source": "C2"
+      "text": "HDMI 2.0, HDR(Static) 지원",
+      "source": "M1"
     },
     {
-      "text": "POC(Power Over CAT) 지원(SPX-RX, 메인프레임에서 전원 공급)",
-      "source": "C2"
+      "text": "CAT5e/6 전송 지원(4K60 최대 50m, 1080p 최대 60m)",
+      "source": "M1"
+    },
+    {
+      "text": "Long Reach 모드 지원(1080p 최대 100m)",
+      "source": "M1"
+    },
+    {
+      "text": "PoC(Power over Cable) 지원(송·수신기 중 한쪽만 전원 연결)",
+      "source": "M1"
+    },
+    {
+      "text": "오디오 병합(TX)·추출(RX) 지원",
+      "source": "M1"
+    },
+    {
+      "text": "내장 EDID 지원",
+      "source": "M1"
     },
     {
       "text": "SPX-COS12(CATx 출력 보드)와 SPX-RX 연동 지원",
-      "source": "C2"
+      "source": "M1"
     }
   ],
   "specifications": [
     {
       "group": "Video",
       "name": "최대 해상도",
-      "value": "4K 60Hz 4:4:4",
+      "value": "3840x2160p 60Hz 4:4:4(8-bit)",
       "unit": "",
       "condition": "SPX-TX·SPX-RX 공통",
-      "source": "C2",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
@@ -104,11 +151,20 @@
     },
     {
       "group": "Video",
-      "name": "HDCP",
-      "value": "HDCP 2.2",
+      "name": "지원 사양",
+      "value": "HDMI 2.0, HDR(Static)",
       "unit": "",
       "condition": "SPX-TX·SPX-RX 공통",
-      "source": "C2",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "HDCP",
+      "value": "HDCP v2.2",
+      "unit": "",
+      "condition": "SPX-TX·SPX-RX 공통",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
@@ -116,8 +172,8 @@
       "name": "최대 전송거리",
       "value": "50",
       "unit": "m",
-      "condition": "CAT6 · 4K 60Hz(165ft)",
-      "source": "C2",
+      "condition": "CAT5e/6 · 4K 60Hz(165ft)",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
@@ -125,63 +181,174 @@
       "name": "최대 전송거리",
       "value": "60",
       "unit": "m",
-      "condition": "CAT6 · 1080p(198ft)",
-      "source": "C2",
+      "condition": "CAT5e/6 · 1080p(198ft)",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "name": "최대 전송거리",
+      "value": "100",
+      "unit": "m",
+      "condition": "Long Reach 모드 · 1920x1080p",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
       "group": "Power",
       "name": "전원",
-      "value": "POC(Power Over CAT)",
+      "value": "DC +12V 1A 이상",
       "unit": "",
-      "condition": "SPX-RX · 메인프레임에서 공급",
-      "source": "C2",
+      "condition": "SPX-TX·SPX-RX 공통 · PoC로 한쪽만 연결 가능",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "크기(W×D×H)",
+      "value": "88.3×60.8×24.4",
+      "unit": "mm",
+      "condition": "SPX-TX·SPX-RX 공통",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "무게",
+      "value": "0.18",
+      "unit": "kg",
+      "condition": "SPX-TX·SPX-RX 각각(0.4lbs)",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Environment",
+      "name": "동작 온도·습도",
+      "value": "10~40°C, 10~80%",
+      "unit": "",
+      "condition": "불응축",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Environment",
+      "name": "MTBF",
+      "value": "50,000",
+      "unit": "시간",
+      "condition": "90% 수준",
+      "source": "M1",
       "verification": "VERIFIED"
     }
   ],
   "io": [
     {
       "group": "TX · Video",
-      "connector": "HDMI",
+      "connector": "HDMI 19 Pin Female",
       "signal": "HDMI",
       "direction": "IN",
       "quantity": "1",
-      "protocol": "",
+      "protocol": "HDMI 2.0",
       "condition": "SPX-TX",
-      "source": "C2",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
       "group": "TX · Transmission",
-      "connector": "RJ45",
+      "connector": "RJ-45",
       "signal": "CATx",
       "direction": "OUT",
       "quantity": "1",
       "protocol": "",
-      "condition": "SPX-TX",
-      "source": "C2",
+      "condition": "SPX-TX · CAT OUT",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "TX · Audio",
+      "connector": "3.5mm Audio Stereo",
+      "signal": "Stereo Audio",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "SPX-TX · 오디오 병합(딥 스위치 1번 ON)",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "TX · Control",
+      "connector": "Mini USB",
+      "signal": "USB",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "SPX-TX · 펌웨어 업데이트",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "TX · Power",
+      "connector": "DC Power Jack",
+      "signal": "DC 12V",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "SPX-TX · +12V 1A 이상",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
       "group": "RX · Video",
-      "connector": "HDMI",
+      "connector": "HDMI 19 Pin Female",
       "signal": "HDMI",
       "direction": "OUT",
       "quantity": "1",
       "protocol": "HDMI 2.0",
       "condition": "SPX-RX",
-      "source": "C2",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
       "group": "RX · Transmission",
-      "connector": "RJ45",
+      "connector": "RJ-45",
       "signal": "CATx",
       "direction": "IN",
       "quantity": "1",
       "protocol": "",
-      "condition": "SPX-RX",
-      "source": "C2",
+      "condition": "SPX-RX · CAT IN",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Audio",
+      "connector": "3.5mm Audio Stereo",
+      "signal": "Stereo Audio",
+      "direction": "OUT",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "SPX-RX · 오디오 추출",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Control",
+      "connector": "Mini USB",
+      "signal": "USB",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "SPX-RX · 펌웨어 업데이트",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Power",
+      "connector": "DC Power Jack",
+      "signal": "DC 12V",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "SPX-RX · +12V 1A 이상 · SPX-COS12 연결 시 불필요",
+      "source": "M1",
       "verification": "VERIFIED"
     }
   ],
@@ -209,7 +376,222 @@
       "name": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
       "page": "15–16",
       "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
+    },
+    {
+      "code": "M1",
+      "name": "SPX-TX/RX 사용자 매뉴얼 Ver.2.0",
+      "page": "4–11",
+      "scope": "제조사 공식 출처(사용자 제공 2026-09-27, .source-materials/RTcom_Manual_SPX-TX-RX_Ver2.0.pdf)"
     }
   ],
-  "issues": []
+  "issues": [],
+  "portMap": [
+    {
+      "image": "Perspective",
+      "title": "송신기 SPX-TX",
+      "items": [
+        {
+          "n": 1,
+          "label": "HDMI IN",
+          "desc": "HDMI 소스 연결",
+          "x1": 134,
+          "x2": 274,
+          "side": "bottom",
+          "y": 655
+        },
+        {
+          "n": 2,
+          "label": "CAT OUT",
+          "desc": "RJ-45 · SPX-RX와 CAT5e/6 케이블로 연결",
+          "x1": 409,
+          "x2": 549,
+          "side": "bottom",
+          "y": 655
+        },
+        {
+          "n": 3,
+          "label": "AUDIO IN",
+          "desc": "3.5mm 스테레오 오디오 입력(병합)",
+          "x1": 319,
+          "x2": 364,
+          "side": "bottom",
+          "y": 655
+        },
+        {
+          "n": 4,
+          "label": "DIP S/W",
+          "desc": "오디오·장거리 모드·EDID 설정, 07 딥 스위치 설정 참고",
+          "x1": 220,
+          "x2": 252,
+          "side": "top",
+          "y": 150
+        },
+        {
+          "n": 5,
+          "label": "S/P",
+          "desc": "Mini USB · 펌웨어 업데이트",
+          "x1": 393,
+          "x2": 437,
+          "side": "top",
+          "y": 150
+        },
+        {
+          "n": 6,
+          "label": "LED",
+          "desc": "빨간색 Signal(전원), 녹색 Link(신호 정상)",
+          "x1": 468,
+          "x2": 490,
+          "side": "top",
+          "y": 150
+        },
+        {
+          "n": 7,
+          "label": "DC IN",
+          "desc": "DC 12V 1A 이상 · PoC로 한쪽만 연결 가능",
+          "x1": 568,
+          "x2": 614,
+          "side": "top",
+          "y": 150
+        }
+      ]
+    },
+    {
+      "image": "Other",
+      "title": "수신기 SPX-RX",
+      "items": [
+        {
+          "n": 1,
+          "label": "CAT IN",
+          "desc": "RJ-45 · SPX-TX 또는 SPX-COS12 카드와 연결",
+          "x1": 429,
+          "x2": 569,
+          "side": "bottom",
+          "y": 653
+        },
+        {
+          "n": 2,
+          "label": "HDMI OUT",
+          "desc": "디스플레이 연결",
+          "x1": 154,
+          "x2": 294,
+          "side": "bottom",
+          "y": 653
+        },
+        {
+          "n": 3,
+          "label": "AUDIO OUT",
+          "desc": "3.5mm 스테레오 오디오 출력(추출)",
+          "x1": 339,
+          "x2": 384,
+          "side": "bottom",
+          "y": 653
+        },
+        {
+          "n": 4,
+          "label": "S/P",
+          "desc": "Mini USB · 펌웨어 업데이트",
+          "x1": 440,
+          "x2": 478,
+          "side": "top",
+          "y": 160
+        },
+        {
+          "n": 5,
+          "label": "LED",
+          "desc": "빨간색 Signal(전원), 녹색 Link(신호 정상)",
+          "x1": 513,
+          "x2": 535,
+          "side": "top",
+          "y": 160
+        },
+        {
+          "n": 6,
+          "label": "DC IN",
+          "desc": "DC 12V 1A 이상 · SPX-COS12 연결 시 매트릭스에서 PoC 공급",
+          "x1": 620,
+          "x2": 668,
+          "side": "top",
+          "y": 160
+        }
+      ]
+    }
+  ],
+  "dipSwitch": {
+    "place": "측면",
+    "label": "딥 스위치(SPX-TX)",
+    "count": 4,
+    "onUp": false,
+    "source": "M1",
+    "rows": [
+      {
+        "n": 1,
+        "title": "오디오 모드",
+        "off": {
+          "name": "HDMI Source",
+          "text": "HDMI에 실린 원래 소리를 보낸다."
+        },
+        "on": {
+          "name": "Analog",
+          "text": "3.5mm AUDIO IN 소리를 HDMI에 병합해 보낸다(SPX-RX HDMI 출력·AUDIO OUT으로 나감)."
+        }
+      },
+      {
+        "n": 2,
+        "title": "전송 거리",
+        "off": {
+          "name": "Normal",
+          "text": "일반 모드(4K60 최대 50m, 1080p 최대 60m)."
+        },
+        "on": {
+          "name": "Long reach",
+          "text": "1920x1080p 영상을 최대 100m까지 보낸다."
+        }
+      }
+    ],
+    "combos": [
+      {
+        "title": "EDID 설정",
+        "switches": [
+          3,
+          4
+        ],
+        "items": [
+          {
+            "set": [
+              "off",
+              "off"
+            ],
+            "name": "Through-pass",
+            "text": "디스플레이 EDID를 그대로 쓴다.",
+            "default": true
+          },
+          {
+            "set": [
+              "on",
+              "off"
+            ],
+            "name": "1920x1080p 60Hz",
+            "text": "내장 EDID"
+          },
+          {
+            "set": [
+              "off",
+              "on"
+            ],
+            "name": "4K 30Hz",
+            "text": "내장 EDID"
+          },
+          {
+            "set": [
+              "on",
+              "on"
+            ],
+            "name": "4K 60Hz",
+            "text": "내장 EDID"
+          }
+        ]
+      }
+    ],
+    "note": "SPX-TX에만 있다. 출고 상태는 모든 스위치 OFF이며, 제품 하단 스티커에서 스위치 방향을 확인한다."
+  }
 }
