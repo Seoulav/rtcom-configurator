@@ -1,0 +1,75 @@
+/* 매트릭스 구성기 · LED 구성기(svt-led-calculator styles.css v456) 디자인 계승 시안.
+   화면 구조(HTML·클래스)는 바꾸지 않고 이 스타일만 덧씌운다. 시안 전용 — 실제 적용은 프롬프트 7에서 src/styles.css로 옮긴다. */
+@font-face{font-family:"Pretendard Variable";font-weight:45 920;font-style:normal;font-display:swap;src:url("/fonts/PretendardVariable.woff2") format("woff2-variations")}
+html body{background:radial-gradient(58vw 58vw at 12% -8%,rgba(0,122,255,.28),transparent 60%),radial-gradient(50vw 50vw at 92% 4%,rgba(191,90,242,.22),transparent 60%),radial-gradient(60vw 60vw at 78% 96%,rgba(48,209,196,.20),transparent 62%),radial-gradient(46vw 46vw at 6% 92%,rgba(255,149,0,.16),transparent 60%),#EEF1F6 !important;background-attachment:fixed !important}
+html body #rtcom-design,html body #rtcom-design>section{background:transparent !important}
+html body::before{display:none;content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(58vw 58vw at 12% -8%,rgba(0,122,255,.28),transparent 60%),radial-gradient(50vw 50vw at 92% 4%,rgba(191,90,242,.22),transparent 60%),radial-gradient(60vw 60vw at 78% 96%,rgba(48,209,196,.20),transparent 62%),radial-gradient(46vw 46vw at 6% 92%,rgba(255,149,0,.16),transparent 60%)}
+html body #rtcom-design{--rt-bg:#fff;--rt-soft:rgba(118,118,128,.08);--rt-ink:#1C1C1E;--rt-muted:#8A8A8E;--rt-line:rgba(60,60,67,.12);--rt-accent:#007AFF;--rt-tint:rgba(0,122,255,.12);--rt-cta:#007AFF;--rt-cta-ink:#fff;
+ --g-fill:rgba(255,255,255,.62);--g-stroke:rgba(255,255,255,.7);--g-shadow:0 1px 2px rgba(20,26,40,.04),0 18px 48px -20px rgba(20,26,40,.28);--field:rgba(118,118,128,.10);
+ font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"SF Pro Display","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;font-size:14px;line-height:1.45;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;color:#1C1C1E}
+html body #rtcom-design *{font-family:inherit}
+/* 유리 판 */
+html body #rtcom-design .rt-top,html body #rtcom-design .rt-workspace,html body #rtcom-design .rt-nav,html body #rtcom-design .rt-main,html body #rtcom-design .rt-footer{background:var(--g-fill);border:1px solid var(--g-stroke);border-radius:24px;box-shadow:var(--g-shadow);-webkit-backdrop-filter:saturate(180%) blur(30px);backdrop-filter:saturate(180%) blur(30px)}
+/* 머리: LED 구성기 앱 아이콘 + 27px 제목 + 대문자 부제 */
+html body #rtcom-design .rt-top{background:transparent;border-color:transparent;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;padding:14px 22px}
+html body #rtcom-design .rt-brand-mark{width:52px;height:52px;border-radius:14px;background:linear-gradient(150deg,#0A84FF,#5E5CE6 55%,#BF5AF2);box-shadow:inset 0 0 0 1px rgba(255,255,255,.35),0 8px 20px -6px rgba(10,132,255,.6);position:relative;overflow:hidden;font-size:28px}
+html body #rtcom-design .rt-brand-mark::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.28),rgba(255,255,255,0) 46%)}
+html body #rtcom-design .rt-brand{font-size:27px;font-weight:800;letter-spacing:-.02em;color:#1C1C1E}html body #rtcom-design .rt-brand span{color:#007AFF}
+html body #rtcom-design .rt-brand-sub{font-size:11px;color:#8A8A8E;letter-spacing:.02em;font-weight:500}
+/* 보기 전환 탭 → iOS 세그먼트 */
+html body #rtcom-design .rt-view-tabs{padding:2px;gap:2px;border-radius:11px;background:rgba(118,118,128,.14)}
+html body #rtcom-design .rt-view-tabs a{border-radius:9px;padding:8px 16px;font-size:13px;font-weight:600;color:#1C1C1E}
+html body #rtcom-design .rt-view-tabs a[aria-current=page]{background:#fff;color:#1C1C1E;box-shadow:0 3px 8px rgba(0,0,0,.14),0 1px 2px rgba(0,0,0,.10)}
+/* 알약 버튼 */
+html body #rtcom-design .rt-button,html body #rtcom-design .rt-meta a,html body #rtcom-design .rt-top a.rt-button{font-size:13px;font-weight:600;border:1px solid transparent;border-radius:980px;background:var(--field);color:#007AFF;box-shadow:none}
+html body #rtcom-design .rt-button:disabled{color:#8A8A8E;opacity:.6}
+html body #rtcom-design .rt-button.rt-primary{background:#007AFF;color:#fff;box-shadow:0 6px 16px -6px #007AFF}
+html body #rtcom-design .rt-button.rt-primary *{color:#fff}
+/* 페이지 제목 */
+html body #rtcom-design .rt-configurator-title>span{color:#8A8A8E;font-size:11px;letter-spacing:.02em;font-weight:600}
+html body #rtcom-design .rt-configurator-title h1,html body #rtcom-design .rt-configurator-title h2{font-size:27px;font-weight:800;letter-spacing:-.02em}
+html body #rtcom-design .rt-configurator-title p{color:#8A8A8E;font-size:12px}
+/* 단계 표시 → 번호형 세그먼트 */
+html body #rtcom-design .rt-nav{padding:6px;gap:4px;border-radius:18px}
+html body #rtcom-design .rt-step{min-height:44px;border-radius:13px;background:transparent;color:#8A8A8E;font-weight:600;font-size:13px}
+html body #rtcom-design .rt-step i{background:transparent;color:#8A8A8E;font-style:normal;font-weight:700;font-size:13px}
+html body #rtcom-design .rt-step[aria-current=step]{background:#fff;color:#1C1C1E;box-shadow:0 3px 8px rgba(0,0,0,.14),0 1px 2px rgba(0,0,0,.10)}
+html body #rtcom-design .rt-step[aria-current=step] i{color:#007AFF}
+/* 단계 제목: "01 / PRODUCT FAMILY" → LED 카드 제목 규칙(번호 파랑 + 회색 대문자) */
+html body #rtcom-design .rt-main{padding:26px 26px 24px}
+html body #rtcom-design .rt-eyebrow{font-size:14px;font-weight:700;letter-spacing:.04em;color:#007AFF}
+html body #rtcom-design .rt-main h2{font-size:21px;font-weight:800;letter-spacing:-.02em;color:#1C1C1E}
+html body #rtcom-design .rt-main h2+p,html body #rtcom-design .rt-section-head p{font-size:13px;color:#8A8A8E}
+/* 선택 카드(제품군·섀시·카드·전송기) */
+html body #rtcom-design .rt-family,html body #rtcom-design .rt-model,html body #rtcom-design .rt-card-option,html body #rtcom-design .rt-card-choice,html body #rtcom-design .rt-ext-option,html body #rtcom-design .rt-link,html body #rtcom-design .rt-link-card,html body #rtcom-design .rt-preview,html body #rtcom-design .rt-validation,html body #rtcom-design .rt-paper{border:1px solid rgba(60,60,67,.10);border-radius:20px;background:rgba(255,255,255,.78);box-shadow:0 1px 2px rgba(20,26,40,.04),0 10px 26px -18px rgba(20,26,40,.3)}
+html body #rtcom-design .rt-family[aria-pressed=true],html body #rtcom-design .rt-model[aria-pressed=true],html body #rtcom-design .rt-card-option[aria-pressed=true],html body #rtcom-design .rt-ext-option[aria-pressed=true]{border-color:transparent;box-shadow:0 0 0 2px #007AFF,0 10px 26px -14px rgba(0,122,255,.55);background:#fff}
+html body #rtcom-design .rt-radio{border-color:rgba(60,60,67,.2)}
+html body #rtcom-design [aria-pressed=true] .rt-radio{background:#007AFF;border-color:#007AFF;color:#fff}
+html body #rtcom-design .rt-family h3,html body #rtcom-design .rt-family strong{font-weight:800;letter-spacing:-.02em}
+html body #rtcom-design .rt-tag,html body #rtcom-design .rt-pill{border:0;border-radius:980px;background:var(--field);color:#3A3A3C;font-weight:600;font-size:11.5px}
+/* 작업 영역 */
+html body #rtcom-design .rt-frame-area,html body #rtcom-design .rt-card-drawer{background:rgba(255,255,255,.55);border-radius:20px;box-shadow:inset 0 0 0 1px rgba(60,60,67,.08)}
+html body #rtcom-design .rt-frame-count span{background:var(--field);border-radius:980px;color:#3A3A3C;font-weight:600}
+html body #rtcom-design .rt-frame-count b,html body #rtcom-design .rt-channel-summary b{color:#007AFF}
+html body #rtcom-design .rt-stage-note,html body #rtcom-design .rt-model-list-intro{background:rgba(0,122,255,.08);color:#3A3A3C;border-radius:13px}
+html body #rtcom-design .rt-pro-tip{background:linear-gradient(150deg,#0A84FF,#5E5CE6);box-shadow:0 10px 22px -10px rgba(10,132,255,.6)}
+html body #rtcom-design .rt-selected-card-summary{background:rgba(0,122,255,.08);box-shadow:inset 0 0 0 1px rgba(0,122,255,.18)}
+/* 후면 판넬 선택 표시: 주황 → 파랑 */
+html body #rtcom-design .rt-hardware-slot[aria-pressed=true],html body #rtcom-design .rt-visual-slot[aria-pressed=true]{border-color:#0A84FF;box-shadow:0 0 0 2px rgba(10,132,255,.35)}
+html body #rtcom-design .rt-empty-slot b{color:#409CFF}
+html body #rtcom-design .rt-rear-dense .rt-hardware-slot .rt-slot-card-name{background:rgba(10,132,255,.18);color:#0057D8}
+/* 표 */
+html body #rtcom-design table{font-size:12.5px}
+html body #rtcom-design th{font-size:10.5px;letter-spacing:.03em;text-transform:uppercase;color:#8A8A8E;font-weight:700;background:var(--field)}
+html body #rtcom-design td{border-color:rgba(60,60,67,.12);color:#3A3A3C}
+/* 모달 */
+html body #rtcom-design .rt-card-modal{border-radius:24px;background:rgba(255,255,255,.86);-webkit-backdrop-filter:saturate(180%) blur(30px);backdrop-filter:saturate(180%) blur(30px);border:1px solid rgba(255,255,255,.7)}
+html body #rtcom-design .rt-footer{display:flex}
+
+/* 작업 영역 안쪽 소제목(REAR VIEW, MY CONFIGURATION 등)은 LED 카드 제목 크기 */
+html body #rtcom-design .rt-main .rt-frame-area .rt-eyebrow,html body #rtcom-design .rt-main aside .rt-eyebrow,html body #rtcom-design .rt-main .rt-card-drawer .rt-eyebrow{font-size:12px;letter-spacing:.04em;color:#8A8A8E}
+html body #rtcom-design .rt-main aside h3,html body #rtcom-design .rt-frame-area h3{font-size:21px;font-weight:800;letter-spacing:-.02em}
+@media(max-width:720px){html body #rtcom-design .rt-brand{font-size:21px}html body #rtcom-design .rt-main{padding:18px}html body #rtcom-design .rt-main h2{font-size:19px}}
+html body #rtcom-design .rt-family[aria-pressed=true] .rt-radio,html body #rtcom-design .rt-model[aria-pressed=true] .rt-radio{background:#007AFF;border-color:#007AFF;color:#fff}
+html body #rtcom-design .rt-family-title{font-weight:800;letter-spacing:-.02em}
+html body #rtcom-design .rt-family-en{color:#8A8A8E;font-weight:500}
