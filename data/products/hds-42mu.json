@@ -202,10 +202,10 @@
     {
       "group": "Physical",
       "name": "크기(W×D×H)",
-      "value": "232×80×30",
+      "value": "232×65×30",
       "unit": "mm",
-      "condition": "카탈로그 46쪽판 33쪽(3.14in) 기준 · 매뉴얼 Ver.1.0 4쪽은 232×65×30mm",
-      "source": "C",
+      "condition": "",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
