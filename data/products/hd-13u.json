@@ -201,15 +201,6 @@
       "condition": "",
       "source": "C",
       "verification": "VERIFIED"
-    },
-    {
-      "group": "General",
-      "name": "인증",
-      "value": "KC 인증",
-      "unit": "",
-      "condition": "",
-      "source": "S1",
-      "verification": "VERIFIED"
     }
   ],
   "io": [
