@@ -853,3 +853,6 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-edid-body .rt-pg-tablewrap th,#rtcom-design .rt-pg-edid-body .rt-pg-tablewrap td{padding:3px 8px}
 #rtcom-design .rt-pg-edid-body .rt-pg-tablewrap th{padding-top:5px;padding-bottom:5px}
 #rtcom-design .rt-pg-edid-body .rt-pg-tablewrap td:first-child{width:44px;text-align:center}
+/* 0.60 04 제품 사양 표 줄 간격 약 15% 축소(사용자 요청 "04 사양도 상하 간격을 15% 정도 줄여도 되겠다"): 한 줄 행 37px → 31px */
+#rtcom-design .rt-pg-spec-table th,#rtcom-design .rt-pg-spec-table td{padding-top:6px;padding-bottom:6px}
+#rtcom-design .rt-pg-spec-table td .rt-pg-note-line{margin-top:2px}
