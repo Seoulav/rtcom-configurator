@@ -149,7 +149,7 @@
       "name": "출력단자",
       "value": "HDMI(female), SC connector(female), Analog Stereo Audio Output",
       "unit": "",
-      "condition": "원문: \"HDMI(female), SC connector(female), Analog Stereo Audio Input\" — 수신기 사진의 Audio OUT 표기, 소개문의 De-embedded(오디오 추출) 기능으로 출력 확정",
+      "condition": "",
       "source": "J",
       "verification": "VERIFIED"
     },
@@ -189,7 +189,7 @@
       "direction": "IN",
       "quantity": "1",
       "protocol": "",
-      "condition": "TX · 수량은 카탈로그 사진(HDMI IN) 기준",
+      "condition": "TX",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -211,7 +211,7 @@
       "direction": "OUT",
       "quantity": "1",
       "protocol": "",
-      "condition": "TX · 사진 표기 Fiber OUT",
+      "condition": "TX · Fiber OUT",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -222,7 +222,7 @@
       "direction": "IN",
       "quantity": "1",
       "protocol": "",
-      "condition": "RX · 사진 표기 Fiber IN",
+      "condition": "RX · Fiber IN",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -233,7 +233,7 @@
       "direction": "OUT",
       "quantity": "1",
       "protocol": "",
-      "condition": "RX · 수량은 카탈로그 사진(HDMI OUT) 기준",
+      "condition": "RX",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -244,7 +244,7 @@
       "direction": "OUT",
       "quantity": "1",
       "protocol": "",
-      "condition": "RX · 오디오 추출. 표 출력단자 칸은 원문에 'Audio Input'으로 적혀 있었으나 Output으로 확정",
+      "condition": "RX · 오디오 추출",
       "source": "J",
       "verification": "VERIFIED"
     }

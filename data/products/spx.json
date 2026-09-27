@@ -166,7 +166,7 @@
       "name": "입력 신호",
       "value": "HDMI",
       "unit": "",
-      "condition": "카탈로그에 실린 입력 보드는 SPX-HIS8(HDMI)뿐 · CATx 입력 보드는 카탈로그 미수록",
+      "condition": "입력 보드는 SPX-HIS8(HDMI)",
       "source": "J",
       "verification": "VERIFIED"
     },

@@ -239,7 +239,7 @@
       "name": "슬롯당 포트",
       "value": "4",
       "unit": "포트",
-      "condition": "카탈로그 6~9쪽 입출력 슬롯 사양 기준",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     }

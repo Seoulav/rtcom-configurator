@@ -104,15 +104,7 @@
       "source": "C"
     },
     {
-      "text": "전면 딥 스위치 1번으로 오디오 소스를 고른다. ON이면 3.5mm 스테레오 입력을 HDMI 신호에 병합해 모든 출력으로 보내고, OFF이면 HDMI에 실린 원래 오디오를 그대로 보낸다.",
-      "source": "M-HD210"
-    },
-    {
-      "text": "전면 딥 스위치 2번으로 DDC 동작 방식을 고른다. ON이면 DDC Level Shifter, OFF이면 DDC Buffer 모드다.",
-      "source": "M-HD210"
-    },
-    {
-      "text": "전면 파란색 로터리 스위치로 EDID를 고른다. F에 두면 OUTPUT 1에 연결한 디스플레이의 EDID를 FLASH에 저장하고, 0에 두면 저장한 EDID를 쓴다. 1~B는 내장 EDID(4K60·4K30·1080p60, PCM 2CH·Multi·Dolby, DVI)다.",
+      "text": "3.5mm 아날로그 오디오를 HDMI 신호에 병합할 수 있다.",
       "source": "M-HD210"
     },
     {
@@ -171,7 +163,7 @@
       "name": "크기(W×D×H)",
       "value": "355×85.6×30",
       "unit": "mm",
-      "condition": "14×3.4×1.2in · 매뉴얼 Ver.1.2 일반 사양 기준(카탈로그 46쪽판 37쪽은 335mm로 표기)",
+      "condition": "14×3.4×1.2in",
       "source": "M-HD210",
       "verification": "VERIFIED"
     },
@@ -189,7 +181,7 @@
       "name": "딥 스위치 1 · 오디오",
       "value": "ON: 3.5mm Stereo Audio 병합 / OFF: HDMI Audio",
       "unit": "",
-      "condition": "전면 · 매뉴얼 7쪽",
+      "condition": "전면",
       "source": "M-HD210",
       "verification": "VERIFIED"
     },
@@ -198,7 +190,7 @@
       "name": "딥 스위치 2 · DDC",
       "value": "ON: DDC Level Shifter / OFF: DDC Buffer",
       "unit": "",
-      "condition": "전면 · 매뉴얼 7쪽",
+      "condition": "전면",
       "source": "M-HD210",
       "verification": "VERIFIED"
     }
@@ -233,7 +225,7 @@
       "direction": "IN",
       "quantity": "1",
       "protocol": "",
-      "condition": "HDMI 신호에 병합(전면 딥 스위치 1번 ON) · 매뉴얼 4쪽 입력 신호 \"3.5mm Stereo 1 port\", 후면 사진 AUDIO IN",
+      "condition": "HDMI 신호에 병합(전면 딥 스위치 1번 ON)",
       "source": "M-HD210",
       "verification": "VERIFIED"
     }

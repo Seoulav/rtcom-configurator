@@ -93,15 +93,15 @@
       "source": "C"
     },
     {
-      "text": "FT103-U-H는 HDMI 입력 2개를 앞면 INPUT 버튼으로 전환한다. 입력 LED는 HDMI가 연결되면 노란색, 케이블만 연결되면 주황색으로 켜진다.",
+      "text": "FT103-U-H는 HDMI 입력 2개를 앞면 INPUT 버튼으로 전환한다.",
       "source": "M1"
     },
     {
-      "text": "최대 Ultra 4K 4096x2160 24/25/30Hz를 지원하며, 싱글모드 2km·멀티모드 500m까지 4K 30Hz 신호를 전송한다.",
+      "text": "최대 Ultra 4K 4096x2160 30Hz를 지원한다.",
       "source": "M1"
     },
     {
-      "text": "FT103-U-H의 3.5mm AUDIO 단자로 넣은 아날로그 오디오를 HDMI에 병합하고(로터리 E + SET), FR103-U의 3.5mm 단자로 오디오를 추출한다.",
+      "text": "송신기는 3.5mm 아날로그 오디오 병합, 수신기는 오디오 추출을 지원한다.",
       "source": "M1"
     },
     {
@@ -123,7 +123,7 @@
       "name": "입력 신호",
       "value": "HDMI 2 Ports, 3.5mm Stereo Audio 1 Port",
       "unit": "",
-      "condition": "FT103-U-H · HDMI1·HDMI2는 앞면 INPUT 버튼으로 선택 · 매뉴얼 4·6쪽",
+      "condition": "FT103-U-H · HDMI1·HDMI2는 앞면 INPUT 버튼으로 선택",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -141,7 +141,7 @@
       "name": "입력 신호",
       "value": "Fiber Optical Input (> -10dbm after 6,600ft (2km) transmission)",
       "unit": "",
-      "condition": "FR103-U · 원문: \"Fiber Optical Output (> -10dbm after 6,600ft (2km) transmission)\" — 입력 칸의 Output은 오기로 판단해 Input으로 정정",
+      "condition": "FR103-U",
       "source": "J",
       "verification": "VERIFIED"
     },
@@ -150,7 +150,7 @@
       "name": "출력 신호",
       "value": "HDMI 1 Port, 3.5mm Stereo Audio 1 Port",
       "unit": "",
-      "condition": "FR103-U · 매뉴얼 5쪽",
+      "condition": "FR103-U",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -168,7 +168,7 @@
       "name": "지원 해상도",
       "value": "최대 Ultra 4K 4096x2160p 24/25/30Hz 4:4:4",
       "unit": "",
-      "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0 · FT103-U-H·FR103-U 공통 · 매뉴얼 4·5쪽(카탈로그 27쪽 해상도 표는 1080p까지만 적음)",
+      "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0 · FT103-U-H·FR103-U 공통",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -177,7 +177,7 @@
       "name": "최대 전송거리",
       "value": "2",
       "unit": "km",
-      "condition": "Single Mode Fiber · 4K 30Hz · 6,600ft · FT103-U-H·FR103-U 공통 · 매뉴얼 11쪽",
+      "condition": "Single Mode Fiber · 4K 30Hz · 6,600ft · FT103-U-H·FR103-U 공통",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -186,7 +186,7 @@
       "name": "최대 전송거리",
       "value": "500",
       "unit": "m",
-      "condition": "Multi Mode Fiber · 4K 30Hz · 1,650ft · FT103-U-H·FR103-U 공통 · 매뉴얼 11쪽",
+      "condition": "Multi Mode Fiber · 4K 30Hz · 1,650ft · FT103-U-H·FR103-U 공통",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -195,7 +195,7 @@
       "name": "광 커넥터",
       "value": "2LC Optical Connector",
       "unit": "",
-      "condition": "FT103-U-H·FR103-U 공통 · 옆면 FIBER OUT/IN · 매뉴얼 4·5·7쪽",
+      "condition": "FT103-U-H·FR103-U 공통 · 옆면 FIBER OUT/IN",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -204,7 +204,7 @@
       "name": "EDID",
       "value": "EDID 마인더(외부 EDID 저장·내장 EDID 선택)",
       "unit": "",
-      "condition": "FT103-U-H 앞면 MODE 로터리 · 매뉴얼 6·9·11쪽",
+      "condition": "FT103-U-H 앞면 MODE 로터리",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -231,7 +231,7 @@
       "name": "전원",
       "value": "DC +12V 2A",
       "unit": "",
-      "condition": "FT103-U-H·FR103-U 공통 · 매뉴얼은 DC +12V 1A 이상",
+      "condition": "FT103-U-H·FR103-U 공통 · DC +12V 1A 이상",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -262,7 +262,7 @@
       "direction": "IN",
       "quantity": "2",
       "protocol": "HDMI 1.4",
-      "condition": "FT103-U-H · HDMI1·HDMI2, 앞면 INPUT 버튼으로 선택 · 매뉴얼 4·6쪽",
+      "condition": "FT103-U-H · HDMI1·HDMI2, 앞면 INPUT 버튼으로 선택",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -273,7 +273,7 @@
       "direction": "IN",
       "quantity": "1",
       "protocol": "",
-      "condition": "FT103-U-H · 카탈로그 27쪽 제품사양표 Input Signal 기준",
+      "condition": "FT103-U-H",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -284,7 +284,7 @@
       "direction": "OUT",
       "quantity": "1",
       "protocol": "",
-      "condition": "FT103-U-H · 옆면 FIBER OUT · 매뉴얼 4·7쪽",
+      "condition": "FT103-U-H · 옆면 FIBER OUT",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -295,7 +295,7 @@
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
-      "condition": "FT103-U-H · 매뉴얼 4·5쪽 3p Phoenix(for RS-232)",
+      "condition": "FT103-U-H · 3p Phoenix(RS-232)",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -306,7 +306,7 @@
       "direction": "OUT",
       "quantity": "1",
       "protocol": "HDMI 1.4",
-      "condition": "FR103-U · 수량은 카탈로그 사진 기준",
+      "condition": "FR103-U",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -317,7 +317,7 @@
       "direction": "IN",
       "quantity": "1",
       "protocol": "",
-      "condition": "FR103-U · 옆면 FIBER IN · 매뉴얼 5·7쪽",
+      "condition": "FR103-U · 옆면 FIBER IN",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -328,7 +328,7 @@
       "direction": "OUT",
       "quantity": "1",
       "protocol": "",
-      "condition": "FR103-U · 오디오 추출 · 매뉴얼 5·9·10쪽(7쪽 앞면 설명의 \"입력 포트\"는 오기로 판단)",
+      "condition": "FR103-U · 오디오 추출",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -339,7 +339,7 @@
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
-      "condition": "FR103-U · 매뉴얼 4·5쪽 3p Phoenix(for RS-232)",
+      "condition": "FR103-U · 3p Phoenix(RS-232)",
       "source": "M1",
       "verification": "VERIFIED"
     }
@@ -361,7 +361,7 @@
         {
           "n": 1,
           "label": "HDMI IN 1·2",
-          "desc": "HDMI 소스 2대 · INPUT 버튼으로 선택, 연결되면 LED 노란색",
+          "desc": "HDMI 소스 2대 · INPUT 버튼으로 선택, 신호가 있으면 LED 노란색·케이블만 연결되면 주황색",
           "side": "left",
           "x": 95,
           "y1": 258,

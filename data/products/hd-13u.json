@@ -118,12 +118,8 @@
       "source": "C"
     },
     {
-      "text": "오디오 병합(MUX)과 추출(DEMUX)은 입력된 HDMI 오디오를 기준으로 하나를 선택해서 쓴다. 전면 로터리 스위치를 '0'에 두고 SET 버튼을 누를 때마다 'Stereo Audio'(병합)와 'HDMI Audio'(추출)가 바뀐다.",
+      "text": "오디오 병합(MUX)과 추출(DEMUX) 중 하나를 골라 쓴다.",
       "source": "U"
-    },
-    {
-      "text": "병합(Stereo Audio)을 고르면 3.5mm AUDIO IN의 소리가 HDMI OUTPUT 1번에만 믹스되고, 추출(HDMI Audio)을 고르면 입력된 HDMI 소리가 3.5mm AUDIO OUT으로 나온다. 쉽게 정리한 표는 '07 오디오 설정'에 있다.",
-      "source": "M1"
     }
   ],
   "specifications": [
@@ -195,7 +191,7 @@
       "name": "인증",
       "value": "KC 인증",
       "unit": "",
-      "condition": "제품 안내서 2쪽",
+      "condition": "",
       "source": "S1",
       "verification": "VERIFIED"
     }
@@ -230,7 +226,7 @@
       "direction": "IN",
       "quantity": "1",
       "protocol": "",
-      "condition": "병합(MUX) 선택 시 HDMI OUTPUT 1번에 믹스(전면 로터리 0 + SET으로 Stereo Audio) · 제품 안내서 2쪽, 매뉴얼 7쪽",
+      "condition": "병합(MUX) 선택 시 HDMI OUTPUT 1번에 믹스(전면 로터리 0 + SET으로 Stereo Audio)",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -241,7 +237,7 @@
       "direction": "OUT",
       "quantity": "1",
       "protocol": "",
-      "condition": "추출(DEMUX) 선택 시 입력된 HDMI 오디오 출력 · 제품 안내서 2쪽, 매뉴얼 7쪽",
+      "condition": "추출(DEMUX) 선택 시 입력된 HDMI 오디오 출력",
       "source": "M1",
       "verification": "VERIFIED"
     }

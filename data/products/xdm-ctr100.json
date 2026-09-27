@@ -89,7 +89,7 @@
   ],
   "features": [
     {
-      "text": "XDM-CIS100·XDM-COS100 카드에 직접 연결할 때는 PSE를 쓸 수 없어 XDM-CTR100에 전원을 직접 연결한다. TX/RX는 DIP 스위치로 선택한다.",
+      "text": "XDM 카드에 직접 연결할 때는 PSE를 쓸 수 없어 XDM-CTR100에 전원을 직접 연결한다.",
       "source": "U"
     },
     {
@@ -113,27 +113,11 @@
       "source": "C"
     },
     {
-      "text": "TX 모드에서는 HDMI IN에 소스를, RX 모드에서는 HDMI OUT에 디스플레이를 연결한다.",
-      "source": "S1"
-    },
-    {
-      "text": "후면 5핀 단자의 L·R·접지로 아날로그 스테레오 오디오를 출력해 스피커에 바로 연결할 수 있다.",
-      "source": "S1"
-    },
-    {
-      "text": "앞면 LED 4개(Rx Signal, Tx Signal, Tx/Rx, Link)로 동작 상태를 보여 준다.",
-      "source": "S1"
-    },
-    {
-      "text": "전면 딥 스위치로 모드를 고른다: TX 모드는 1번 ON, RX 모드는 2번 ON, 3번을 ON으로 두면 Long Reach 모드로 1920x1080p를 최대 150m까지 전송한다(4번은 사용하지 않음, 스위치를 내리면 ON).",
+      "text": "딥 스위치로 TX·RX 모드와 Long Reach(1080p 최대 150m) 모드를 고른다.",
       "source": "M1"
     },
     {
-      "text": "정상 동작하면 TX 모드는 Link·Tx/Rx·Tx Signal LED가, RX 모드는 Link·Tx/Rx·Rx Signal LED가 켜진다.",
-      "source": "M1"
-    },
-    {
-      "text": "HDMI 입력의 오디오가 5핀 단자의 스테레오 출력(L·R·접지)으로 추출된다.",
+      "text": "HDMI 입력의 오디오를 5핀 단자의 아날로그 스테레오 출력으로 추출한다.",
       "source": "M1"
     }
   ],
@@ -161,7 +145,7 @@
       "name": "최대 전송거리",
       "value": "80",
       "unit": "m",
-      "condition": "4K60Hz 4:4:4, CI6522(SF/UTP, CAT6) 케이블 사용 시 · XDM-CTR100·XDM-CTR100 PSE 공통 · 케이블별 상이(카탈로그 원문은 \"케이블 별 상이, 상세 문의\"로만 표기)",
+      "condition": "4K60Hz 4:4:4, CI6522(SF/UTP, CAT6) 케이블 사용 시 · XDM-CTR100·XDM-CTR100 PSE 공통 · 케이블별 상이",
       "source": "U",
       "verification": "VERIFIED"
     },
@@ -170,7 +154,7 @@
       "name": "최대 전송거리",
       "value": "150",
       "unit": "m",
-      "condition": "Long Reach 모드(딥 스위치 3번 ON), 1920x1080p · XDM-CTR100·XDM-CTR100 PSE 공통 · 매뉴얼 5쪽",
+      "condition": "Long Reach 모드(딥 스위치 3번 ON), 1920x1080p · XDM-CTR100·XDM-CTR100 PSE 공통",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -224,7 +208,7 @@
       "name": "딥 스위치 · TX 모드",
       "value": "1 ON · 2 OFF · 3 OFF",
       "unit": "",
-      "condition": "XDM-CTR100·XDM-CTR100 PSE 공통 · 스위치를 내리면 ON, 출고 시 모두 OFF · 매뉴얼 5쪽",
+      "condition": "XDM-CTR100·XDM-CTR100 PSE 공통 · 스위치를 내리면 ON, 출고 시 모두 OFF",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -233,7 +217,7 @@
       "name": "딥 스위치 · RX 모드",
       "value": "1 OFF · 2 ON · 3 OFF",
       "unit": "",
-      "condition": "XDM-CTR100·XDM-CTR100 PSE 공통 · 스위치를 내리면 ON, 출고 시 모두 OFF · 매뉴얼 5쪽",
+      "condition": "XDM-CTR100·XDM-CTR100 PSE 공통 · 스위치를 내리면 ON, 출고 시 모두 OFF",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -242,7 +226,7 @@
       "name": "딥 스위치 3 · 전송 모드",
       "value": "ON: Long Reach / OFF: Normal",
       "unit": "",
-      "condition": "XDM-CTR100·XDM-CTR100 PSE 공통 · 스위치를 내리면 ON, 출고 시 모두 OFF · 매뉴얼 5쪽 · Long Reach는 1920x1080p 최대 150m",
+      "condition": "XDM-CTR100·XDM-CTR100 PSE 공통 · 스위치를 내리면 ON, 출고 시 모두 OFF · Long Reach는 1920x1080p 최대 150m",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -251,7 +235,7 @@
       "name": "딥 스위치 4",
       "value": "사용 안 함",
       "unit": "",
-      "condition": "XDM-CTR100·XDM-CTR100 PSE 공통 · 스위치를 내리면 ON, 출고 시 모두 OFF · 매뉴얼 5쪽",
+      "condition": "XDM-CTR100·XDM-CTR100 PSE 공통 · 스위치를 내리면 ON, 출고 시 모두 OFF",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -278,7 +262,7 @@
       "name": "전원",
       "value": "DC +12V 1A 이상",
       "unit": "",
-      "condition": "XDM-CTR100 · XDM-CTR100 PSE와 연결되면 PD 모드로 CAT 케이블에서 전원을 받아 연결하지 않음 · 매뉴얼 4·9쪽",
+      "condition": "XDM-CTR100 · XDM-CTR100 PSE와 연결되면 PD 모드로 CAT 케이블에서 전원을 받아 연결하지 않음",
       "source": "M1",
       "verification": "VERIFIED"
     }
@@ -324,7 +308,7 @@
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
-      "condition": "5핀 중 접지·Tx·Rx · RS-232C 통신(RS-232+ 제어) · 매뉴얼 6쪽 · 원문 \"RS-232/Audio out 1\" 표기",
+      "condition": "5핀 중 접지·Tx·Rx · RS-232C 통신(RS-232+ 제어)",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -335,7 +319,7 @@
       "direction": "OUT",
       "quantity": "1",
       "protocol": "",
-      "condition": "5핀 중 L·R·접지 · HDMI 입력 오디오 추출 · 매뉴얼 6·8쪽, 제품 안내서 1쪽(안내서 2쪽 사양표의 \"Audio Input\"은 오기로 판단)",
+      "condition": "5핀 중 L·R·접지 · HDMI 입력 오디오 추출",
       "source": "M1",
       "verification": "VERIFIED"
     }
