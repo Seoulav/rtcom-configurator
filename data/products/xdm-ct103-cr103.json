@@ -101,35 +101,19 @@
       "source": "C"
     },
     {
-      "text": "XDM-CT103은 XDM-CIS100과, XDM-CR103은 XDM-COS100과 사용할 수 있다.",
-      "source": "C"
-    },
-    {
-      "text": "XDM 슬롯과 함께 쓰면 PoE로 Cat 케이블을 통해 신호와 전원을 함께 공급받아 별도 전원 케이블이 필요 없다.",
-      "source": "C"
-    },
-    {
-      "text": "XDM-CTR100 PSE와 함께 쓸 때도 별도 전원 케이블 없이 사용할 수 있다.",
-      "source": "C"
-    },
-    {
-      "text": "XDM-CT103은 XDM-CIS100 카드, RX 모드로 설정한 XDM-CTR100, XDM-CR103과 CAT6a U/FTP 케이블로 연결해 사용한다.",
+      "text": "XDM-CT103은 XDM-CIS100 카드·XDM-CTR100(RX 모드)·XDM-CR103과, XDM-CR103은 XDM-COS100 카드·XDM-CTR100(TX 모드)·XDM-CT103과 연결한다.",
       "source": "M1"
     },
     {
-      "text": "XDM-CR103은 XDM-COS100 카드, TX 모드로 설정한 XDM-CTR100, XDM-CT103과 연결해 사용한다. XDM-COS100 카드나 XDM-CTR100 PSE와 연결하면 PoE로 전원을 받아 별도 전원을 연결하지 않는다.",
+      "text": "COS100 카드나 CTR100 PSE와 연결하면 PoE로 전원을 받아 별도 전원 케이블이 필요 없다.",
       "source": "M2"
     },
     {
-      "text": "XDM-CR103은 HDMI 오디오를 앞면 3.5mm Audio OUT 단자로 추출한다.",
-      "source": "M2"
-    },
-    {
-      "text": "전면 Mode 딥 스위치 1번을 ON으로 두면 3핀 오디오 단자로 넣은 아날로그 오디오가 HDMI에 병합되어 XDM-CTR100(RX 모드) 또는 XDM-CR103의 HDMI 출력으로 나간다.",
+      "text": "XDM-CT103은 3핀 아날로그 오디오를 HDMI에 병합하고, XDM-CR103은 HDMI 오디오를 3.5mm로 추출한다.",
       "source": "M1"
     },
     {
-      "text": "딥 스위치 2번을 ON(Long Reach)으로 두면 1920x1080p 영상을 최대 150m까지 전송한다.",
+      "text": "Long Reach 모드로 1920x1080p를 최대 150m까지 전송한다.",
       "source": "M1"
     }
   ],
@@ -139,7 +123,7 @@
       "name": "입력 신호",
       "value": "HDMI 1 Port, 3-pin Stereo 1 Port",
       "unit": "",
-      "condition": "XDM-CT103 · 매뉴얼 4쪽",
+      "condition": "XDM-CT103",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -148,7 +132,7 @@
       "name": "출력 신호",
       "value": "HDBaseT 1 Port",
       "unit": "",
-      "condition": "XDM-CT103 · 매뉴얼 4쪽",
+      "condition": "XDM-CT103",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -157,7 +141,7 @@
       "name": "입력 신호",
       "value": "HDBaseT 1 Port",
       "unit": "",
-      "condition": "XDM-CR103 · 매뉴얼 4쪽",
+      "condition": "XDM-CR103",
       "source": "M2",
       "verification": "VERIFIED"
     },
@@ -166,7 +150,7 @@
       "name": "출력 신호",
       "value": "HDMI 1 Port, 3.5mm Stereo Audio 1 Port",
       "unit": "",
-      "condition": "XDM-CR103 · 매뉴얼 4쪽",
+      "condition": "XDM-CR103",
       "source": "M2",
       "verification": "VERIFIED"
     },
@@ -193,7 +177,7 @@
       "name": "최대 전송거리",
       "value": "150",
       "unit": "m",
-      "condition": "Long Reach 모드(딥 스위치 2번 ON), 1920x1080p · XDM-CT103 · 매뉴얼 5쪽",
+      "condition": "Long Reach 모드(딥 스위치 2번 ON), 1920x1080p · XDM-CT103",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -247,7 +231,7 @@
       "name": "전원(어댑터)",
       "value": "DC +12V 1A 이상",
       "unit": "",
-      "condition": "XDM-CT103 · XDM-CIS100 카드나 XDM-CTR100 PSE와 연결하면 PoE로 전원을 받아 연결하지 않음(사용자 확인) · 그 밖에는 어댑터 연결 · 매뉴얼 4·8쪽",
+      "condition": "XDM-CT103 · XDM-CIS100 카드나 XDM-CTR100 PSE와 연결하면 PoE로 전원을 받아 연결하지 않음 · 그 밖에는 어댑터 연결",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -256,7 +240,7 @@
       "name": "전원(어댑터)",
       "value": "DC +12V 1A 이상",
       "unit": "",
-      "condition": "XDM-CR103 · XDM-COS100 카드나 XDM-CTR100 PSE와 연결하면 PoE로 전원을 받아 연결하지 않음(사용자 확인) · 그 밖에는 어댑터 연결 · 매뉴얼 4·8쪽",
+      "condition": "XDM-CR103 · XDM-COS100 카드나 XDM-CTR100 PSE와 연결하면 PoE로 전원을 받아 연결하지 않음 · 그 밖에는 어댑터 연결",
       "source": "M2",
       "verification": "VERIFIED"
     },
@@ -274,7 +258,7 @@
       "name": "무게",
       "value": "0.45",
       "unit": "kg",
-      "condition": "XDM-CT103 · 매뉴얼 4쪽 1lbs(0.45Kg) · 카탈로그 11쪽은 0.34kg(1.0lb와 환산이 맞지 않음)",
+      "condition": "XDM-CT103 · 1lbs",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -283,7 +267,7 @@
       "name": "무게",
       "value": "0.26",
       "unit": "kg",
-      "condition": "XDM-CR103 · 매뉴얼 4쪽 0.57lbs(0.26Kg)와 같음",
+      "condition": "XDM-CR103 · 0.57lbs",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -292,7 +276,7 @@
       "name": "딥 스위치 1 · 오디오",
       "value": "ON: 3-pin Stereo Audio 병합 / OFF: Source Audio(HDMI)",
       "unit": "",
-      "condition": "XDM-CT103 전면 Mode · 스위치를 내리면 ON, 출고 시 모두 OFF · 매뉴얼 5쪽",
+      "condition": "XDM-CT103 전면 Mode · 스위치를 내리면 ON, 출고 시 모두 OFF",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -301,7 +285,7 @@
       "name": "딥 스위치 2 · 전송 모드",
       "value": "ON: Long Reach / OFF: Normal",
       "unit": "",
-      "condition": "XDM-CT103 전면 Mode · 매뉴얼 5쪽",
+      "condition": "XDM-CT103 전면 Mode",
       "source": "M1",
       "verification": "VERIFIED"
     }
@@ -336,7 +320,7 @@
       "direction": "IN",
       "quantity": "1",
       "protocol": "",
-      "condition": "XDM-CT103 · L·접지·R 3핀, 딥 스위치 1번 ON일 때 HDMI에 병합 · 매뉴얼 5쪽",
+      "condition": "XDM-CT103 · L·접지·R 3핀, 딥 스위치 1번 ON일 때 HDMI에 병합",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -369,7 +353,7 @@
       "direction": "OUT",
       "quantity": "1",
       "protocol": "",
-      "condition": "XDM-CR103 · 앞면 Audio OUT, HDMI 오디오 추출 · 매뉴얼 4·5·8쪽(카탈로그의 \"1 Audio In\"·3핀 표기는 오기)",
+      "condition": "XDM-CR103 · 앞면 Audio OUT, HDMI 오디오 추출",
       "source": "M2",
       "verification": "VERIFIED"
     }

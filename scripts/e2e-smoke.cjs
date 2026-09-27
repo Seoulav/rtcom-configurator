@@ -236,9 +236,10 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.fill('[data-product-search]','');
     await page.click('a.rt-pg-gridcard[href="#products/ct104-u-cr104-u"]');
     await page.waitForSelector('.rt-pg-tablewrap');
-    check('제품 카드를 누르면 상세(사양 표·입출력·출처)를 표시',(await page.locator('#rt-pg-title').textContent()).includes('CT104-U')&&await page.locator('.rt-pg-tablewrap table tbody tr').count()>3);
+    check('제품 카드를 누르면 상세(사양 표·입출력)를 표시',(await page.locator('#rt-pg-title').textContent()).includes('CT104-U')&&await page.locator('.rt-pg-tablewrap table tbody tr').count()>3);
     await page.click('.rt-pg-record summary');
-    check('자료 출처·검토 기록을 펼치면 출처가 보임',await page.locator('.rt-pg-record[open]').count()===1&&(await page.locator('.rt-pg-record-body').textContent()).includes('카탈로그'));
+    // 0.52: 이름을 "제조사 자료"로 바꾸고 표기 다름·참고 사항·출처·카탈로그 쪽 대조 표시를 화면에서 뺐다(사용자 요청).
+    check('제조사 자료를 펼치면 입출력 단자 표가 보이고 표기 다름·출처는 보이지 않음',await page.locator('.rt-pg-record[open]').count()===1&&(await page.locator('.rt-pg-record summary').textContent()).startsWith('제조사 자료')&&(await page.locator('.rt-pg-record-body').textContent()).includes('HDMI')&&await page.locator('.rt-pg-diagram-mismatch').count()===0&&!(await page.locator('.rt-pg-record-body').textContent()).includes('종합 카탈로그')&&!(await page.locator('.rt-products-body').textContent()).includes('쪽 대조'));
     await page.waitForLoadState('networkidle');
     check('상세 이미지가 모두 열림',(await page.$$eval('.rt-pg-hero-item img',images=>images.filter(image=>!image.complete||image.naturalWidth===0).length))===0);
     // 0.49 — 사진 팝업(사용자 LED 계산기 "05 프로세서" 방식): 사진을 누르면 제목·사진 탭·닫기 버튼이 있는 카드가 열리고,
@@ -377,12 +378,12 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await mobile.waitForTimeout(1000);
     const fit=await mobile.$eval('button[data-slot="out-2"]',slot=>{const s=slot.getBoundingClientRect(),i=slot.querySelector('img.rt-faceplate').getBoundingClientRect();return [s.width-i.width,s.height-i.height,Math.abs(s.left-i.left),Math.abs(s.top-i.top)]});
     check('터치 휴대폰에서 세로 슬롯에 장착한 판넬이 슬롯을 꽉 채움(좌우 끝 잘림 없음)',fit.every(value=>Math.abs(value)<0.6),JSON.stringify(fit.map(value=>value.toFixed(2))));
-    // 출처(sources)에 슬래시로 이어진 긴 파일 경로(U09 근거 문서 등)가 있으면 줄바꿈 지점이 없어 가로로 넘칠 수 있다(사용자 제보, 라이브 사이트 점검).
+    // 자료 출처·검토 기록(입출력 단자 표만 남음, 0.52부터 표기 다름·참고 사항·출처는 화면에서 뺌)이 휴대폰에서 가로로 넘치지 않는지 확인한다.
     await mobile.goto(`${home}#products/ct104-u-cr104-u`,{waitUntil:'networkidle'});
     await mobile.waitForSelector('.rt-pg-record');
     await mobile.click('.rt-pg-record summary');
     await mobile.waitForSelector('.rt-pg-record[open]');
-    check('휴대폰에서 출처의 긴 파일 경로도 화면 폭을 넘지 않음',(await mobile.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth))===0);
+    check('휴대폰에서 자료 출처·검토 기록이 화면 폭을 넘지 않음',(await mobile.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth))===0);
     // 0.36 — HD-104U(새 실크 HD-14U)처럼 같은 제품의 다른 이름: 옛 주소가 정식 id로 이동하고 제품명에 두 이름이 함께 보인다.
     await mobile.goto(`${home}#products/hd-14u`,{waitUntil:'networkidle'});
     await mobile.waitForFunction(()=>location.hash==='#products/hd-104u'&&document.querySelector('#rt-pg-title'));

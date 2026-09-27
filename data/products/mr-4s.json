@@ -167,7 +167,7 @@
       "name": "무게",
       "value": "1.81",
       "unit": "kg",
-      "condition": "4.0lbs · 프레임 단독 무게로 확정. 원문 문구 'for each of Tx and Rx'는 전송기 설명을 옮겨 적은 것으로 판단해 condition에만 남김",
+      "condition": "4.0lbs · 프레임 단독",
       "source": "J",
       "verification": "VERIFIED"
     }

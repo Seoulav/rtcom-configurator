@@ -186,7 +186,7 @@
       "name": "무게",
       "value": "0.34",
       "unit": "kg",
-      "condition": "0.75lbs · 원문 단일 표기",
+      "condition": "0.75lbs",
       "source": "C",
       "verification": "VERIFIED"
     }
@@ -199,7 +199,7 @@
       "direction": "IN",
       "quantity": "1",
       "protocol": "",
-      "condition": "TX · 수량은 카탈로그 사진(HDMI IN) 기준",
+      "condition": "TX",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -210,7 +210,7 @@
       "direction": "OUT",
       "quantity": "1",
       "protocol": "",
-      "condition": "TX · 카탈로그 41쪽 입력단자·출력단자 표(HDMI+LC connector 병기)에서 TX 쪽 광 출력으로 추정",
+      "condition": "TX",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -221,7 +221,7 @@
       "direction": "OUT",
       "quantity": "1",
       "protocol": "",
-      "condition": "RX · 수량은 카탈로그 사진(HDMI OUT) 기준",
+      "condition": "RX",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -232,7 +232,7 @@
       "direction": "IN",
       "quantity": "1",
       "protocol": "",
-      "condition": "RX · 카탈로그 41쪽 입력단자·출력단자 표(HDMI+LC connector 병기)에서 RX 쪽 광 입력으로 추정",
+      "condition": "RX",
       "source": "C",
       "verification": "VERIFIED"
     }

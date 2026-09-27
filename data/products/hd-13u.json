@@ -118,12 +118,8 @@
       "source": "C"
     },
     {
-      "text": "오디오 병합(MUX)과 추출(DEMUX)은 입력된 HDMI 오디오를 기준으로 하나를 선택해서 쓴다. 전면 로터리 스위치를 '0'에 두고 SET 버튼을 누를 때마다 'Stereo Audio'(병합)와 'HDMI Audio'(추출)가 바뀐다.",
+      "text": "오디오는 로터리 '0'+SET 버튼으로 병합(Stereo Audio, 3.5mm 소리를 OUTPUT 1에 믹스)과 추출(HDMI Audio, 입력 소리를 AUDIO OUT으로)을 번갈아 고른다. 자세한 표는 '07 오디오 설정' 참고.",
       "source": "U"
-    },
-    {
-      "text": "병합(Stereo Audio)을 고르면 3.5mm AUDIO IN의 소리가 HDMI OUTPUT 1번에만 믹스되고, 추출(HDMI Audio)을 고르면 입력된 HDMI 소리가 3.5mm AUDIO OUT으로 나온다. 쉽게 정리한 표는 '07 오디오 설정'에 있다.",
-      "source": "M1"
     }
   ],
   "specifications": [
@@ -195,7 +191,7 @@
       "name": "인증",
       "value": "KC 인증",
       "unit": "",
-      "condition": "제품 안내서 2쪽",
+      "condition": "",
       "source": "S1",
       "verification": "VERIFIED"
     }
@@ -230,7 +226,7 @@
       "direction": "IN",
       "quantity": "1",
       "protocol": "",
-      "condition": "병합(MUX) 선택 시 HDMI OUTPUT 1번에 믹스(전면 로터리 0 + SET으로 Stereo Audio) · 제품 안내서 2쪽, 매뉴얼 7쪽",
+      "condition": "병합(MUX) 선택 시 HDMI OUTPUT 1번에 믹스(전면 로터리 0 + SET으로 Stereo Audio)",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -241,7 +237,7 @@
       "direction": "OUT",
       "quantity": "1",
       "protocol": "",
-      "condition": "추출(DEMUX) 선택 시 입력된 HDMI 오디오 출력 · 제품 안내서 2쪽, 매뉴얼 7쪽",
+      "condition": "추출(DEMUX) 선택 시 입력된 HDMI 오디오 출력",
       "source": "M1",
       "verification": "VERIFIED"
     }
@@ -250,16 +246,49 @@
   "portMap": {
     "image": "Rear",
     "items": [
-      {"n": 1, "label": "HDMI IN", "desc": "소스 연결, 3개 출력으로 동일하게 분배", "x1": 136, "x2": 206},
-      {"n": 3, "label": "AUDIO IN", "desc": "3.5mm 아날로그 오디오 병합(MUX 선택 시 OUT 1번)", "x1": 541, "x2": 563},
-      {"n": 2, "label": "HDMI OUT 1–3", "desc": "3개 모두 같은 영상", "x1": 237, "x2": 508},
-      {"n": 4, "label": "AUDIO OUT", "desc": "3.5mm 아날로그 오디오 추출(DEMUX 선택 시)", "x1": 581, "x2": 601},
-      {"n": 5, "label": "DC 5V", "desc": "전원 어댑터 5V 2A", "x1": 55, "x2": 100}
+      {
+        "n": 1,
+        "label": "HDMI IN",
+        "desc": "소스 연결, 3개 출력으로 동일하게 분배",
+        "x1": 136,
+        "x2": 206
+      },
+      {
+        "n": 3,
+        "label": "AUDIO IN",
+        "desc": "3.5mm 아날로그 오디오 병합(MUX 선택 시 OUT 1번)",
+        "x1": 541,
+        "x2": 563
+      },
+      {
+        "n": 2,
+        "label": "HDMI OUT 1–3",
+        "desc": "3개 모두 같은 영상",
+        "x1": 237,
+        "x2": 508
+      },
+      {
+        "n": 4,
+        "label": "AUDIO OUT",
+        "desc": "3.5mm 아날로그 오디오 추출(DEMUX 선택 시)",
+        "x1": 581,
+        "x2": 601
+      },
+      {
+        "n": 5,
+        "label": "DC 5V",
+        "desc": "전원 어댑터 5V 2A",
+        "x1": 55,
+        "x2": 100
+      }
     ]
   },
   "edidSwitch": {
     "image": "Front",
-    "x1": 179, "y1": 75, "x2": 219, "y2": 113,
+    "x1": 179,
+    "y1": 75,
+    "x2": 219,
+    "y2": 113,
     "label": "MODE 로터리 스위치",
     "desc": "전면 파란색 로터리 스위치로 EDID를 선택한다. SET 버튼과 함께 쓰면 OUTPUT 1에 연결된 디스플레이의 EDID를 FLASH에 저장할 수도 있다(EDID 마인더).",
     "default": "0 = FLASH에 저장된 외부 EDID(기본값 3840x2160p@60 PCM 2CH)",
@@ -282,22 +311,72 @@
       }
     ],
     "table": [
-      {"code": "0", "function": "FLASH에 저장된 외부 EDID(기본값)"},
-      {"code": "1", "function": "3840x2160p@60 PCM 2CH", "highlight": true},
-      {"code": "2", "function": "3840x2160p@60 Multi"},
-      {"code": "3", "function": "3840x2160p@60 Dolby"},
-      {"code": "4", "function": "3840x2160p@30 PCM 2CH"},
-      {"code": "5", "function": "3840x2160p@30 Multi"},
-      {"code": "6", "function": "3840x2160p@30 Dolby"},
-      {"code": "7", "function": "1920x1080p@60 PCM 2CH", "highlight": true},
-      {"code": "8", "function": "1920x1080p@60 Multi"},
-      {"code": "9", "function": "1920x1080p@60 Dolby"},
-      {"code": "A", "function": "1920x1080p@60 DVI"},
-      {"code": "B", "function": "1920x1200@60 DVI"},
-      {"code": "C", "function": "미사용(Nothing)"},
-      {"code": "D", "function": "Firmware Download Mode"},
-      {"code": "E", "function": "미사용(Nothing)"},
-      {"code": "F", "function": "외부 EDID를 FLASH에 저장(Store External EDID, OUTPUT 1번 연결 확인)"}
+      {
+        "code": "0",
+        "function": "FLASH에 저장된 외부 EDID(기본값)"
+      },
+      {
+        "code": "1",
+        "function": "3840x2160p@60 PCM 2CH",
+        "highlight": true
+      },
+      {
+        "code": "2",
+        "function": "3840x2160p@60 Multi"
+      },
+      {
+        "code": "3",
+        "function": "3840x2160p@60 Dolby"
+      },
+      {
+        "code": "4",
+        "function": "3840x2160p@30 PCM 2CH"
+      },
+      {
+        "code": "5",
+        "function": "3840x2160p@30 Multi"
+      },
+      {
+        "code": "6",
+        "function": "3840x2160p@30 Dolby"
+      },
+      {
+        "code": "7",
+        "function": "1920x1080p@60 PCM 2CH",
+        "highlight": true
+      },
+      {
+        "code": "8",
+        "function": "1920x1080p@60 Multi"
+      },
+      {
+        "code": "9",
+        "function": "1920x1080p@60 Dolby"
+      },
+      {
+        "code": "A",
+        "function": "1920x1080p@60 DVI"
+      },
+      {
+        "code": "B",
+        "function": "1920x1200@60 DVI"
+      },
+      {
+        "code": "C",
+        "function": "미사용(Nothing)"
+      },
+      {
+        "code": "D",
+        "function": "Firmware Download Mode"
+      },
+      {
+        "code": "E",
+        "function": "미사용(Nothing)"
+      },
+      {
+        "code": "F",
+        "function": "외부 EDID를 FLASH에 저장(Store External EDID, OUTPUT 1번 연결 확인)"
+      }
     ],
     "source": "M1"
   },
@@ -343,20 +422,38 @@
         "name": "MUX",
         "title": "병합",
         "setting": "Stereo Audio",
-        "flow": ["AUDIO IN", "HDMI OUT 1"],
+        "flow": [
+          "AUDIO IN",
+          "HDMI OUT 1"
+        ],
         "rows": [
-          {"label": "소리가 나오는 곳", "text": "3.5mm AUDIO IN에 넣은 소리가 HDMI OUT 1번(디스플레이)으로만 나온다."},
-          {"label": "확인 방법", "text": "전면 OUTPUT 1번 LED가 깜빡인다."}
+          {
+            "label": "소리가 나오는 곳",
+            "text": "3.5mm AUDIO IN에 넣은 소리가 HDMI OUT 1번(디스플레이)으로만 나온다."
+          },
+          {
+            "label": "확인 방법",
+            "text": "전면 OUTPUT 1번 LED가 깜빡인다."
+          }
         ]
       },
       {
         "name": "DEMUX",
         "title": "추출",
         "setting": "HDMI Audio",
-        "flow": ["HDMI IN", "AUDIO OUT"],
+        "flow": [
+          "HDMI IN",
+          "AUDIO OUT"
+        ],
         "rows": [
-          {"label": "소리가 나오는 곳", "text": "HDMI 원래 소리가 OUT 1–3으로 그대로 가고, 3.5mm AUDIO OUT으로도 나온다."},
-          {"label": "확인 방법", "text": "전면 OUTPUT 1번 LED가 깜빡이지 않는다."}
+          {
+            "label": "소리가 나오는 곳",
+            "text": "HDMI 원래 소리가 OUT 1–3으로 그대로 가고, 3.5mm AUDIO OUT으로도 나온다."
+          },
+          {
+            "label": "확인 방법",
+            "text": "전면 OUTPUT 1번 LED가 깜빡이지 않는다."
+          }
         ]
       }
     ],

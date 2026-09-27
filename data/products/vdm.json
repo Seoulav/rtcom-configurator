@@ -130,7 +130,7 @@
       "name": "최대 해상도",
       "value": "3840×2160@30Hz",
       "unit": "",
-      "condition": "4:4:4 · 보드별 사양과 일치하는 대표값 · 원문: \"Up to 4K30Hz (3840x2160@60Hz 4:2:0, 3840x2160@30Hz 4:4:4)\"",
+      "condition": "4:4:4",
       "source": "J",
       "verification": "VERIFIED"
     },
@@ -157,7 +157,7 @@
       "name": "입력 신호",
       "value": "HDMI(DVI 1.0 호환), 3G-SDI, HDBaseT, Fiber",
       "unit": "",
-      "condition": "VGA는 현행 보드·전송기에 없어 제외(CT102-U·FT102-U 제외 결정과 일치) · 원문: \"HDMI, 3G-SDI, HDBaseT, Fiber, DVI, VGA\"",
+      "condition": "",
       "source": "J",
       "verification": "VERIFIED"
     },
@@ -166,7 +166,7 @@
       "name": "출력 신호",
       "value": "HDMI(DVI 1.0 호환), 3G-SDI, HDBaseT, Fiber",
       "unit": "",
-      "condition": "VGA는 현행 보드·전송기에 없어 제외(CT102-U·FT102-U 제외 결정과 일치) · 원문: \"HDMI, 3G-SDI, HDBaseT, Fiber, DVI, VGA\"",
+      "condition": "",
       "source": "J",
       "verification": "VERIFIED"
     },
