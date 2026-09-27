@@ -13,6 +13,8 @@
   - 사양: PSE 크기 127.4×88×30.1mm(카탈로그의 "107.4 [127.4]" 정리), PSE 전원 DC 12V 1A(PSE에 연결, PSE와 연결된 CTR100·CT103·CR103은 연결하지 않음), KC 인증
   - 입출력 표에 5핀 오디오 출력 행을 추가하고, 주요 기능에 모드별 연결 방법·오디오 출력·LED·PSE 조합 4줄을 넣었습니다.
 - **XDM-CTR100 매뉴얼 Ver.1.4로 딥 스위치 설정 보강**(사용자 요청 "ctr100 딥스위치 설정 보강"): 딥 스위치 4개의 설정(TX 모드 1 ON·2 OFF·3 OFF, RX 모드 1 OFF·2 ON·3 OFF, 3번 Long Reach 1080p 150m, 4번 사용 안 함, 내리면 ON·출고 시 모두 OFF)을 사양 표에 넣고, 단자 지도의 딥 스위치·LED 설명과 주요 기능(모드별 LED, 오디오 추출)을 보강했습니다. CTR100 전원(DC +12V 1A 이상, PSE와 연결되면 연결하지 않음)과 Long Reach 150m 행도 추가했습니다(매뉴얼 4–9쪽).
+- **XDM-CR103 매뉴얼 Ver.1.1 반영**(사용자 제공): 매뉴얼 앞면·뒷면 사진으로 수신기 단자 지도 5개(HDMI OUT, Audio OUT, Link·Signal LED, HDBaseT IN, DC IN)를 CT103 옆에 추가했습니다. 오디오 단자는 카탈로그의 "1 Audio In"·3핀 표기와 달리 **3.5mm 스테레오 출력**으로 확정했고, 입력·출력 신호 행을 넣었습니다. 연결 상대(XDM-COS100, XDM-CTR100 TX 모드, XDM-CT103)와 전원(DC +12V 1A 이상)도 매뉴얼로 확인했습니다. CR103에는 Mode 딥 스위치가 없습니다.
+- **e2e 안정화**: 구성기 VDM-16X 후면 슬롯 검사가 슬롯 판과 사진이 다 그려지기 전에 세어 한 번 실패했습니다. 슬롯 8칸과 사진 로딩을 기다린 뒤 검사하도록 고쳤습니다(검사 조건은 그대로, 3회 연속 84/84).
 - **운영 규칙**: `CLAUDE.md` 저장소 역할에, 병합 뒤 브랜치 배포가 저장소 전체를 올릴 수 있으니 우리 배포 작업을 실행하고 `CLAUDE.md` 404를 확인한다는 절차를 적었습니다.
 - **검증**: `node --test tests/*.test.cjs`(37/37) · `node scripts/build-product-index.cjs --check`(27개) · `node scripts/package-site.cjs` · `node scripts/e2e-smoke.cjs` · `git diff --check`
 
