@@ -301,7 +301,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     if(listHeight>previewHeight){
       // sticky는 부모 컨테이너(.rt-cg-split, 높이 = 목록 높이)를 벗어나는 순간 풀린다. 문서 맨 아래(document.body.scrollHeight)까지
       // 스크롤하면 그 경계를 넘어가 버려(직접 확인함) 정상 상태에서도 오탐 FAIL이 난다. 목록 높이의 절반만큼만 스크롤해 안전하게 확인한다.
-      const scrollTarget=Math.round(listHeight/2);
+      // 페이지 절대 위치가 아니라 판(.rt-cg-split) 윗변 기준으로 재야, 머리 영역 높이가 바뀌어도 판 안쪽을 스크롤한 상태가 된다.
+      const splitTop=await pc.$eval('.rt-cg-split:has(.rt-link-preview)',el=>el.getBoundingClientRect().top+window.scrollY);
+      const scrollTarget=Math.round(splitTop+listHeight/2);
       await pc.evaluate((y)=>window.scrollTo(0,y),scrollTarget);
       await pc.waitForTimeout(150);
       const previewTop=await pc.$eval('.rt-cg-preview.rt-link-preview',el=>el.getBoundingClientRect().top);

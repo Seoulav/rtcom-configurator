@@ -4,7 +4,8 @@
 
 ## Unreleased
 
-- 없음
+- **0.38.0 Opus 검수 수정(`45b5b38`)에 e2e 회귀 검사 3개 추가**(`53cda81`, 0.38.0 배포 뒤 추가라 Unreleased에 기록): PC(1280px) 흐름 한 줄(노드 세로 중심 차이 2px 이하) · PC(1280px) 목록이 미리보기보다 길 때 스크롤해도 미리보기가 8~16px에 붙어있음(sticky) · 휴대폰(390px) 흐름이 세로로 쌓임(`flex-direction:column`). "0.38 검수(Opus)" CSS 블록을 잠깐 지우고 돌려 3개 모두 FAIL(나머지 76개는 그대로 PASS)함을 확인한 뒤 복원했습니다(79/79). 기록은 `docs/qa/CONFIGURATOR_AW_GLASS_QA.md`에 있습니다.
+- **0.38.0 배포 기록**: `docs/qa/DEPLOYMENT_0.38_2026-09-27.md`(run `36303395870`, 공개 파일 182개가 로컬 배포본과 같음을 확인)
 
 ## 0.38.0
 
@@ -15,7 +16,6 @@
   - **명세 대비 판단(편차)**: (1) 명세 예시는 채널 수 선택 컨트롤을 묶음 제목 줄에 그리지 않지만(시안 PNG 참고), 스펙 본문은 "선택 행 + 연결 채널 수 선택"을 요구해 본문을 따랐습니다. (2) 명세는 "흐름 아래에 채널 N/M과 전원 안내를 둔다"고 하지만, 전원 안내(`powerNotice()`)는 링크 전체 합산값이라 슬롯마다 반복해 보여주면 어색해 판 전체 아래 한 번만 두고, 채널 수만 미리보기 안에 남겼습니다. (3) "현재 구성에는 HDBaseT·광 카드가 없습니다" 안내는 원격 카드가 없을 때만 뜨게 하고 HDMI 카드 연장 묶음은 있으면 함께 보여줘, 두 안내가 동시에 있을 수 있던 0.37.0 이전 동작을 유지했습니다.
   - **검증**: `node --test tests/*.test.cjs`(37/37, 변경 없음) · `node scripts/build-product-index.cjs --check`(27개) · `node scripts/package-site.cjs` · `node scripts/e2e-smoke.cjs`(전역 playwright, **76/76**, 04 세그먼트 전환·390px 폭 검사 추가) · `git diff --check`. XDM(CIS100+COS100+HDMI 연장)·SPX(COS12)·VDM(CIS4-U+FOS4-U) 3가지 구성을 1280px·390px로 캡처해 시안과 대조했습니다(`docs/qa/CONFIGURATOR_AW_GLASS_QA.md`). 01·02·03·05·06 단계와 제품정보(`#products`) 화면은 건드리지 않았습니다.
 - **Opus 검수 수정**(`45b5b38`): PC(821px 이상)에서 04 연결 흐름이 두 줄로 꺾이던 것을 한 줄로 두고, 오른쪽 미리보기를 위쪽 정렬·`position:sticky`로 바꿨습니다(04 판만 `overflow:clip`). 560px 이하에서는 흐름을 세로로 쌓습니다. 세 제품군의 전송기 자동 연결·전원 안내·BOM 수량은 0.37과 같습니다. 기록은 `docs/qa/CONFIGURATOR_AW_GLASS_QA.md` 맨 아래에 있습니다.
-- **위 Opus 검수 수정에 e2e 회귀 검사 3개 추가**: PC(1280px) 흐름 한 줄(노드 세로 중심 차이 2px 이하) · PC(1280px) 목록이 미리보기보다 길 때 스크롤해도 미리보기가 8~16px에 붙어있음(sticky) · 휴대폰(390px) 흐름이 세로로 쌓임(`flex-direction:column`). "0.38 검수(Opus)" CSS 블록을 잠깐 지우고 돌려 3개 모두 FAIL(나머지 76개는 그대로 PASS)함을 확인한 뒤 복원했습니다(79/79). 기록은 `docs/qa/CONFIGURATOR_AW_GLASS_QA.md`에 있습니다.
 
 ## 0.37.0
 
