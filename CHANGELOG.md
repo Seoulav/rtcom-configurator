@@ -4,6 +4,29 @@
 
 ## Unreleased
 
+- **0.45.0 배포 기록**: `docs/qa/DEPLOYMENT_0.45_2026-09-27.md`. GitHub 기본 브랜치 배포가 저장소 전체로 사이트를 덮어쓴 문제를 찾아, 배포 작업을 다시 실행해 되돌렸습니다(공개 파일 186/186 일치).
+
+## 0.46.0
+
+- **XDM-CTR100 PSE 제품 안내서 반영**(사용자 제공 2026-09-27): 앞서 해석하지 못했던 CTR100 항목을 채웠습니다.
+  - 단자 지도: HDMI IN은 TX 모드 소스 입력, HDMI OUT은 RX 모드 디스플레이 출력입니다. 5핀 단자의 오디오는 아날로그 스테레오 출력입니다(2쪽 사양표의 "Audio Input"은 1쪽 설명·주요 기능과 달라 오기로 판단). 앞면 상태 LED 4개(Rx Signal·Tx Signal·Tx/Rx·Link)를 추가했습니다.
+  - 사양: PSE 크기 127.4×88×30.1mm(카탈로그의 "107.4 [127.4]" 정리), PSE 전원 DC 12V 1A(PSE에 연결, PSE와 연결된 CTR100·CT103·CR103은 연결하지 않음), KC 인증
+  - 입출력 표에 5핀 오디오 출력 행을 추가하고, 주요 기능에 모드별 연결 방법·오디오 출력·LED·PSE 조합 4줄을 넣었습니다.
+- **XDM-CTR100 매뉴얼 Ver.1.4로 딥 스위치 설정 보강**(사용자 요청 "ctr100 딥스위치 설정 보강"): 딥 스위치 4개의 설정(TX 모드 1 ON·2 OFF·3 OFF, RX 모드 1 OFF·2 ON·3 OFF, 3번 Long Reach 1080p 150m, 4번 사용 안 함, 내리면 ON·출고 시 모두 OFF)을 사양 표에 넣고, 단자 지도의 딥 스위치·LED 설명과 주요 기능(모드별 LED, 오디오 추출)을 보강했습니다. CTR100 전원(DC +12V 1A 이상, PSE와 연결되면 연결하지 않음)과 Long Reach 150m 행도 추가했습니다(매뉴얼 4–9쪽).
+- **XDM-CR103 매뉴얼 Ver.1.1 반영**(사용자 제공): 매뉴얼 앞면·뒷면 사진으로 수신기 단자 지도 5개(HDMI OUT, Audio OUT, Link·Signal LED, HDBaseT IN, DC IN)를 CT103 옆에 추가했습니다. 오디오 단자는 카탈로그의 "1 Audio In"·3핀 표기와 달리 **3.5mm 스테레오 출력**으로 확정했고, 입력·출력 신호 행을 넣었습니다. 연결 상대(XDM-COS100, XDM-CTR100 TX 모드, XDM-CT103)와 전원(DC +12V 1A 이상)도 매뉴얼로 확인했습니다. CR103에는 Mode 딥 스위치가 없습니다.
+- **e2e 안정화**: 구성기 VDM-16X 후면 슬롯 검사가 슬롯 판과 사진이 다 그려지기 전에 세어 한 번 실패했습니다. 슬롯 8칸과 사진 로딩을 기다린 뒤 검사하도록 고쳤습니다(검사 조건은 그대로, 3회 연속 84/84).
+- **운영 규칙**: `CLAUDE.md` 저장소 역할에, 병합 뒤 브랜치 배포가 저장소 전체를 올릴 수 있으니 우리 배포 작업을 실행하고 `CLAUDE.md` 404를 확인한다는 절차를 적었습니다.
+- **검증**: `node --test tests/*.test.cjs`(37/37) · `node scripts/build-product-index.cjs --check`(27개) · `node scripts/package-site.cjs` · `node scripts/e2e-smoke.cjs` · `git diff --check`
+
+## 0.45.0
+
+- **벽부형 3종을 사용자 제공 매뉴얼로 보완**(사용자 요청 2026-09-27, 매뉴얼 3권 업로드, "ctr100 pse랑 사용하면 전원연결안해되"): 0.42에서 사진이 흐리거나 작아 단자 지도를 못 넣은 3종에 사진 기준 단자 지도를 넣고 사양을 매뉴얼 기준으로 고쳤습니다. 기록은 `docs/qa/MANUAL_WALLPLATE_QA_2026-09-27.md`에 있습니다.
+  - XDM-CT103: 매뉴얼 앞면·뒷면 사진으로 단자 지도 6개. XDM-CR103도 전원 연결 방식(XDM-COS100·XDM-CTR100 PSE와 연결하면 전원 불필요)과 연결 상대를 CT103과 같게 적었습니다(사용자 확인 "cr103도 동일"). 전원 DC +12V 1A 이상(XDM-CIS100·XDM-CTR100 PSE와 연결하면 PoE라 연결하지 않음, 사용자 확인), Long Reach 1080p 150m, 딥 스위치 1·2 행을 추가했습니다. 무게는 0.45kg(매뉴얼)로 고쳤습니다.
+  - CT103-U-H/CR103-U: HDMI 입력을 2개로 고쳤습니다(FT-103-U-H 매뉴얼과 같은 판넬 배치). CT103-U-H 해상도를 4K 24/25/30Hz로 바꾸고, CR103-U에 3.5mm 오디오 출력을 추가했습니다. 수신기 사진은 매뉴얼 사진으로 바꿨습니다.
+  - FT103-U-H/FR103-U: HDMI 입력 2개, 4K 24/25/30Hz, 2LC 광 커넥터를 반영했습니다. EDID 설정 카드(로터리 0~F, 외부 EDID 저장, 외부 오디오 병합)를 추가하고, 송신기·수신기 사진을 매뉴얼 사진으로 바꿨습니다.
+  - 코드: 단자 지도에 세로 괄호(`side: left/right`), 표시 폭(`displayWidth`), 사진에 보이지 않는 단자 안내(`note`)를 추가했습니다. `edidSwitch.image`는 단자 지도와 같은 사진 역할을 받습니다. validator와 e2e(벽부형 단자 지도 검사)를 함께 넣었습니다.
+- **검증**: `node --test tests/*.test.cjs`(37/37) · `node scripts/build-product-index.cjs --check`(27개) · `node scripts/package-site.cjs` · `node scripts/e2e-smoke.cjs`(84/84) · `git diff --check`. 390px에서 세 제품 모두 가로 넘침이 없습니다.
+
 ## 0.44.0
 
 - **분배기·선택기 필터 정렬 — 분배기(Splitter)를 먼저, 셀렉터(Switcher)를 나중에**(사용자 요청 "분배기, 셀렉터 순으로 나오게해줘", 0.43.0의 HDMI 출력 개수 순 정렬에 이어): `build-product-index.cjs`가 `categories`의 `Splitter`/`Switcher` 표기로 먼저 나누고, 같은 종류 안에서는 기존처럼 HDMI 출력 개수 순으로 정렬합니다. 결과 순서는 HD-D102U(2분배)·HD-13U(3분배)·HD-104U(4분배)·HD-108U(8분배)·HD-210U(10분배) 다음 HDS-21U(2×1 셀렉터)·HDS-42MU(4×2 셀렉터)입니다.

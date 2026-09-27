@@ -11,38 +11,38 @@
     "Video",
     "Extender"
   ],
-  "english": "Wall-plate fiber optic transmitter/receiver pair for DVI/HDMI, audio and RS-232 up to 2km single-mode or 500m multi-mode, rated up to WUXGA/1080p.",
-  "korean": "DVI·HDMI 신호와 오디오·RS-232를 광케이블로 싱글모드 최대 2km, 멀티모드 최대 500m 전송하는 벽부형 광 송·수신기이며, 해상도 표는 WUXGA/1080p까지다.",
+  "english": "Wall-plate fiber optic transmitter/receiver pair for HDMI (2 inputs on TX), audio and RS-232 up to 2km single-mode or 500m multi-mode, up to 4K 24/25/30Hz.",
+  "korean": "HDMI(송신기 입력 2개)와 오디오·RS-232를 광케이블로 싱글모드 최대 2km, 멀티모드 최대 500m 전송하는 벽부형 광 송·수신기이며, 최대 4K 30Hz를 지원한다.",
   "subtitle": "VDM Series Extender · 벽부형 광 송·수신기",
-  "lead": "DVI·HDMI와 오디오·RS-232 신호를 **광케이블로 싱글모드 최대 2km, 멀티모드 최대 500m** 전송하는 벽부형 송·수신기입니다. 해상도 표는 WUXGA/1080p까지입니다.",
+  "lead": "DVI·HDMI와 오디오·RS-232 신호를 **광케이블로 싱글모드 최대 2km, 멀티모드 최대 500m** 전송하는 벽부형 송·수신기입니다. 최대 4K 24/25/30Hz를 지원하고, 송신기는 HDMI 입력 2개를 앞면 버튼으로 전환합니다.",
   "catalogPages": "25",
-  "verificationSummary": "알티컴 종합 카탈로그(2026-03) 27쪽의 FT103-U-H/FR103-U 소개와 FT103-U-H·FR103-U 제품사양 표에서 확인했다.",
+  "verificationSummary": "알티컴 종합 카탈로그(2026-03) 27쪽의 FT103-U-H/FR103-U 소개와 FT103-U-H·FR103-U 제품사양 표에서 확인했다. 사용자 매뉴얼 Ver.1.4(4–11쪽)로 입력 수·해상도·광 커넥터·EDID 설정을 보완했다.",
   "packageStatus": "VERIFIED",
-  "overview": "FT103-U-H와 FR103-U는 비디오와 오디오, RS-232 신호를 광케이블을 통해 장거리 전송하기 위한 벽부형 송신기와 수신기다. FT103-U-H는 비디오·오디오·RS-232 신호를 광신호로 변환하고, FR103-U는 광신호를 다시 비디오·오디오·RS-232 신호로 복원한다. 두 제품 모두 디지털 신호인 DVI 또는 HDMI를 지원한다.\n\n광신호를 사용해 최대 2km까지 전송할 수 있으며, 외부 신호의 영향으로부터 안전하게 신호를 전송할 수 있어 보안이 필요한 기업이나 군부대, 정부기관 등에 적합한 전송장비다. 제품사양의 지원 해상도는 PC WUXGA(1920x1200@60Hz), HDTV 1080p까지로, 다른 VDM 광 전송기의 4K 표기와 다르다.",
+  "overview": "FT103-U-H와 FR103-U는 비디오와 오디오, RS-232 신호를 광케이블을 통해 장거리 전송하기 위한 벽부형 송신기와 수신기다. FT103-U-H는 비디오·오디오·RS-232 신호를 광신호로 변환하고, FR103-U는 광신호를 다시 비디오·오디오·RS-232 신호로 복원한다. 두 제품 모두 디지털 신호인 DVI 또는 HDMI를 지원한다.\n\n광신호를 사용해 최대 2km까지 전송할 수 있으며, 외부 신호의 영향으로부터 안전하게 신호를 전송할 수 있어 보안이 필요한 기업이나 군부대, 정부기관 등에 적합한 전송장비다. 사용자 매뉴얼 기준 지원 해상도는 최대 Ultra 4K 4096x2160 24/25/30Hz다(카탈로그 해상도 표는 1080p까지만 적음).",
   "images": [
     {
       "role": "Main",
-      "file": "ft103-u-h-fr103-u-main.webp",
-      "alt": "RTCOM FT103-U-H 벽부형 광 송신기(TX) 전면",
-      "note": "Main · TX FT103-U-H 카탈로그 사진",
+      "file": "ft103-u-h-manual-tx.webp",
+      "alt": "RTCOM FT103-U-H 벽부형 광 송신기(TX) 앞면",
+      "note": "Main · TX FT-103-U-H 사용자 매뉴얼 Ver.1.4 6쪽 제품 사진",
       "provider": "RTCOM",
       "model": "FT103-U-H",
-      "source": "C",
+      "source": "M1",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "380×374"
+      "resolution": "669×682"
     },
     {
       "role": "Other",
-      "file": "ft103-u-h-fr103-u-perspective.webp",
-      "alt": "RTCOM FR103-U 벽부형 광 수신기(RX) 전면",
-      "note": "Other · RX FR103-U 카탈로그 사진(정면)",
+      "file": "ft103-u-h-manual-rx.webp",
+      "alt": "RTCOM FR103-U 벽부형 광 수신기(RX) 앞면",
+      "note": "Other · RX FR-103-U 사용자 매뉴얼 Ver.1.4 7쪽 제품 사진",
       "provider": "RTCOM",
       "model": "FR103-U",
-      "source": "C",
+      "source": "M1",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "383×371"
+      "resolution": "386×375"
     }
   ],
   "imageStatuses": [
@@ -74,6 +74,13 @@
       "title": "알티컴 종합 카탈로그 2026 (국문)",
       "language": "ko",
       "note": "27쪽"
+    },
+    {
+      "type": "Manual",
+      "status": "FOUND",
+      "title": "FT-103-U-H / FR-103-U 사용자 매뉴얼 Ver.1.4",
+      "language": "ko",
+      "note": "4–11쪽 · 사용자 제공, 배포 제외"
     }
   ],
   "features": [
@@ -84,6 +91,22 @@
     {
       "text": "FT103-U-H와 FR103-U는 디지털 신호인 DVI 또는 HDMI를 지원한다.",
       "source": "C"
+    },
+    {
+      "text": "FT103-U-H는 HDMI 입력 2개를 앞면 INPUT 버튼으로 전환한다. 입력 LED는 HDMI가 연결되면 노란색, 케이블만 연결되면 주황색으로 켜진다.",
+      "source": "M1"
+    },
+    {
+      "text": "최대 Ultra 4K 4096x2160 24/25/30Hz를 지원하며, 싱글모드 2km·멀티모드 500m까지 4K 30Hz 신호를 전송한다.",
+      "source": "M1"
+    },
+    {
+      "text": "FT103-U-H의 3.5mm AUDIO 단자로 넣은 아날로그 오디오를 HDMI에 병합하고(로터리 E + SET), FR103-U의 3.5mm 단자로 오디오를 추출한다.",
+      "source": "M1"
+    },
+    {
+      "text": "VDM 매트릭스의 FIS4-U 카드에는 FT103-U-H를, FOS4-U 카드에는 FR103-U를 광케이블로 연결해 쓴다.",
+      "source": "M1"
     },
     {
       "text": "싱글모드 광케이블로 최대 2km, 멀티모드 광케이블로 최대 500m 전송한다.",
@@ -98,10 +121,10 @@
     {
       "group": "Video",
       "name": "입력 신호",
-      "value": "DVI / HDMI (TMDS), 3.5mm Stereo Audio",
+      "value": "HDMI 2 Ports, 3.5mm Stereo Audio 1 Port",
       "unit": "",
-      "condition": "FT103-U-H",
-      "source": "C",
+      "condition": "FT103-U-H · HDMI1·HDMI2는 앞면 INPUT 버튼으로 선택 · 매뉴얼 4·6쪽",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
@@ -125,10 +148,10 @@
     {
       "group": "Video",
       "name": "출력 신호",
-      "value": "DVI / HDMI (TMDS), 3.5mm stereo audio",
+      "value": "HDMI 1 Port, 3.5mm Stereo Audio 1 Port",
       "unit": "",
-      "condition": "FR103-U",
-      "source": "C",
+      "condition": "FR103-U · 매뉴얼 5쪽",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
@@ -143,10 +166,10 @@
     {
       "group": "Video",
       "name": "지원 해상도",
-      "value": "PC: VGA ~ WUXGA (최대 1920x1200@60Hz), HDTV: 480i ~ 1080p",
+      "value": "최대 Ultra 4K 4096x2160p 24/25/30Hz 4:4:4",
       "unit": "",
-      "condition": "FT103-U-H·FR103-U 공통 · 제품사양 표가 1080p까지만 기재해 최대 1920×1200@60Hz/1080p로 확정(4K 미지원)",
-      "source": "J",
+      "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0 · FT103-U-H·FR103-U 공통 · 매뉴얼 4·5쪽(카탈로그 27쪽 해상도 표는 1080p까지만 적음)",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
@@ -154,8 +177,8 @@
       "name": "최대 전송거리",
       "value": "2",
       "unit": "km",
-      "condition": "Single Mode Fiber · 1920x1200@60Hz 또는 1080p · 6,600ft · FT103-U-H·FR103-U 공통",
-      "source": "C",
+      "condition": "Single Mode Fiber · 4K 30Hz · 6,600ft · FT103-U-H·FR103-U 공통 · 매뉴얼 11쪽",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
@@ -163,8 +186,26 @@
       "name": "최대 전송거리",
       "value": "500",
       "unit": "m",
-      "condition": "Multi Mode Fiber · 1920x1200@60Hz 또는 1080p · 1,650ft · FT103-U-H·FR103-U 공통",
-      "source": "C",
+      "condition": "Multi Mode Fiber · 4K 30Hz · 1,650ft · FT103-U-H·FR103-U 공통 · 매뉴얼 11쪽",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "name": "광 커넥터",
+      "value": "2LC Optical Connector",
+      "unit": "",
+      "condition": "FT103-U-H·FR103-U 공통 · 옆면 FIBER OUT/IN · 매뉴얼 4·5·7쪽",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "EDID",
+      "value": "EDID 마인더(외부 EDID 저장·내장 EDID 선택)",
+      "unit": "",
+      "condition": "FT103-U-H 앞면 MODE 로터리 · 매뉴얼 6·9·11쪽",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
@@ -190,7 +231,7 @@
       "name": "전원",
       "value": "DC +12V 2A",
       "unit": "",
-      "condition": "FT103-U-H·FR103-U 공통",
+      "condition": "FT103-U-H·FR103-U 공통 · 매뉴얼은 DC +12V 1A 이상",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -219,10 +260,10 @@
       "connector": "HDMI",
       "signal": "DVI / HDMI (TMDS)",
       "direction": "IN",
-      "quantity": "1",
+      "quantity": "2",
       "protocol": "HDMI 1.4",
-      "condition": "FT103-U-H · 카탈로그 27쪽 제품사양표 Input Signal 기준(사진에는 형태가 비슷한 단자가 2개 보이나 표에 구분이 없어 수량 1로 기록, 둘째 단자 용도 미확인)",
-      "source": "C",
+      "condition": "FT103-U-H · HDMI1·HDMI2, 앞면 INPUT 버튼으로 선택 · 매뉴얼 4·6쪽",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
@@ -238,24 +279,24 @@
     },
     {
       "group": "TX · Transmission",
-      "connector": "광 단자(커넥터 형식 미기재)",
+      "connector": "2LC 광 커넥터",
       "signal": "Fiber Optical",
       "direction": "OUT",
       "quantity": "1",
       "protocol": "",
-      "condition": "FT103-U-H · 카탈로그 27쪽 제품사양표 Output Signal 기준",
-      "source": "C",
+      "condition": "FT103-U-H · 옆면 FIBER OUT · 매뉴얼 4·7쪽",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
       "group": "TX · Control",
-      "connector": "Phoenix connector(녹색, 핀 수 미기재)",
+      "connector": "3핀 Phoenix(Tx·Rx·접지)",
       "signal": "RS-232",
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
-      "condition": "FT103-U-H · 커넥터 핀 수 미기재",
-      "source": "C",
+      "condition": "FT103-U-H · 매뉴얼 4·5쪽 3p Phoenix(for RS-232)",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
@@ -271,13 +312,13 @@
     },
     {
       "group": "RX · Transmission",
-      "connector": "광 단자(커넥터 형식 미기재)",
+      "connector": "2LC 광 커넥터",
       "signal": "Fiber Optical",
       "direction": "IN",
       "quantity": "1",
       "protocol": "",
-      "condition": "FR103-U · 카탈로그 27쪽 제품사양표 Input Signal 기준(원문 칸 이름은 Output이나 수신기의 광 입력)",
-      "source": "C",
+      "condition": "FR103-U · 옆면 FIBER IN · 매뉴얼 5·7쪽",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
@@ -287,19 +328,19 @@
       "direction": "OUT",
       "quantity": "1",
       "protocol": "",
-      "condition": "FR103-U · 카탈로그 27쪽 제품사양표 Output Signal 기준",
-      "source": "C",
+      "condition": "FR103-U · 오디오 추출 · 매뉴얼 5·9·10쪽(7쪽 앞면 설명의 \"입력 포트\"는 오기로 판단)",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
       "group": "RX · Control",
-      "connector": "Phoenix connector(녹색, 핀 수 미기재)",
+      "connector": "3핀 Phoenix(Tx·Rx·접지)",
       "signal": "RS-232",
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
-      "condition": "FR103-U · 커넥터 핀 수 미기재",
-      "source": "C",
+      "condition": "FR103-U · 매뉴얼 4·5쪽 3p Phoenix(for RS-232)",
+      "source": "M1",
       "verification": "VERIFIED"
     }
   ],
@@ -310,6 +351,227 @@
       "note": "VDM 시리즈 전송기"
     }
   ],
+  "portMap": [
+    {
+      "image": "Main",
+      "title": "송신기 FT103-U-H",
+      "displayWidth": 600,
+      "note": "옆면(사진에 보이지 않음): DC IN(DC 12V 1A 이상), FIBER OUT(2LC 광 커넥터)",
+      "items": [
+        {
+          "n": 1,
+          "label": "HDMI IN 1",
+          "desc": "HDMI 소스 1 · 연결되면 LED 노란색",
+          "side": "left",
+          "x": 95,
+          "y1": 258,
+          "y2": 302
+        },
+        {
+          "n": 2,
+          "label": "HDMI IN 2",
+          "desc": "HDMI 소스 2",
+          "side": "left",
+          "x": 95,
+          "y1": 400,
+          "y2": 446
+        },
+        {
+          "n": 3,
+          "label": "INPUT 버튼",
+          "desc": "HDMI 1·2 입력 전환 · 외부 EDID 저장 때도 사용",
+          "x1": 255,
+          "x2": 292,
+          "side": "top",
+          "y": 205
+        },
+        {
+          "n": 4,
+          "label": "SET 토글",
+          "desc": "MODE 로터리 설정 실행(EDID·외부 오디오·자동 스위칭)",
+          "x1": 330,
+          "x2": 372,
+          "side": "top",
+          "y": 190
+        },
+        {
+          "n": 5,
+          "label": "MODE 로터리",
+          "desc": "EDID·오디오 선택(06 EDID 설정 참고)",
+          "x1": 315,
+          "x2": 378,
+          "side": "bottom",
+          "y": 460
+        },
+        {
+          "n": 6,
+          "label": "POWER · ST LED",
+          "desc": "전원 · 입력 신호 상태",
+          "x1": 495,
+          "x2": 568,
+          "side": "top",
+          "y": 172
+        },
+        {
+          "n": 7,
+          "label": "AUDIO IN",
+          "desc": "3.5mm · 로터리 E + SET으로 HDMI에 병합",
+          "side": "right",
+          "x": 648,
+          "y1": 312,
+          "y2": 372
+        },
+        {
+          "n": 8,
+          "label": "RS-232",
+          "desc": "3핀(Tx·Rx·접지)",
+          "side": "right",
+          "x": 648,
+          "y1": 412,
+          "y2": 500
+        }
+      ]
+    },
+    {
+      "image": "Other",
+      "title": "수신기 FR103-U",
+      "displayWidth": 520,
+      "note": "옆면(사진에 보이지 않음): DC IN(DC 12V 1A 이상), FIBER IN(2LC 광 커넥터)",
+      "items": [
+        {
+          "n": 1,
+          "label": "HDMI OUT",
+          "desc": "디스플레이 연결",
+          "x1": 92,
+          "x2": 144,
+          "side": "bottom",
+          "y": 200
+        },
+        {
+          "n": 2,
+          "label": "POWER LED",
+          "desc": "전원 표시",
+          "x1": 262,
+          "x2": 276,
+          "side": "top",
+          "y": 96
+        },
+        {
+          "n": 3,
+          "label": "AUDIO OUT",
+          "desc": "3.5mm 스테레오 오디오 출력(추출)",
+          "side": "right",
+          "x": 324,
+          "y1": 168,
+          "y2": 198
+        },
+        {
+          "n": 4,
+          "label": "RS-232",
+          "desc": "3핀(Tx·Rx·접지)",
+          "side": "right",
+          "x": 324,
+          "y1": 222,
+          "y2": 252
+        }
+      ]
+    }
+  ],
+  "edidSwitch": {
+    "image": "Main",
+    "x1": 315,
+    "y1": 405,
+    "x2": 378,
+    "y2": 457,
+    "label": "MODE 로터리 스위치 (EDID Select)",
+    "desc": "송신기 앞면 파란색 로터리 스위치로 EDID·외부 오디오·자동 스위칭을 고르고, 가운데 SET 토글로 실행한다.",
+    "default": "0 = Flash에 저장된 외부 EDID",
+    "steps": [
+      {
+        "title": "외부 EDID 저장",
+        "items": [
+          "FR103-U에 원하는 디스플레이를 연결하고, FT103-U-H와 FR103-U를 광케이블로 연결한다.",
+          "로터리 스위치를 'F'에 맞추고 INPUT Select 버튼을 누르면 외부 EDID를 읽어 FLASH에 저장한다.",
+          "전원 케이블을 뺐다가 로터리 스위치를 '0'에 맞추고 저장됐는지 확인한 뒤 사용한다."
+        ]
+      },
+      {
+        "title": "외부 오디오 병합",
+        "items": [
+          "전원을 연결하고 로터리 스위치를 'E'에 맞춘다.",
+          "SET 토글 스위치를 누른 뒤, 병합할 오디오를 3.5mm AUDIO 단자에 연결한다.",
+          "병합된 오디오는 FR103-U의 HDMI 출력으로 나온다."
+        ]
+      }
+    ],
+    "table": [
+      {
+        "code": "0",
+        "function": "Flash에 저장된 외부 EDID(기본값)"
+      },
+      {
+        "code": "1",
+        "function": "1920x1200@60 DVI"
+      },
+      {
+        "code": "2",
+        "function": "1920x1080@60 DVI"
+      },
+      {
+        "code": "3",
+        "function": "1920x1080@60 PCM 2CH"
+      },
+      {
+        "code": "4",
+        "function": "1920x1080@60 Multi"
+      },
+      {
+        "code": "5",
+        "function": "1920x1080@60 Dolby"
+      },
+      {
+        "code": "6",
+        "function": "3840x2160p@30 PCM 2CH"
+      },
+      {
+        "code": "7",
+        "function": "3840x2160p@30 Multi"
+      },
+      {
+        "code": "8",
+        "function": "3840x2160p@30 Dolby"
+      },
+      {
+        "code": "9",
+        "function": "사용 안 함"
+      },
+      {
+        "code": "A",
+        "function": "사용 안 함"
+      },
+      {
+        "code": "B",
+        "function": "펌웨어 다운로드"
+      },
+      {
+        "code": "C",
+        "function": "사용 안 함"
+      },
+      {
+        "code": "D",
+        "function": "자동 스위칭 ON/OFF"
+      },
+      {
+        "code": "E",
+        "function": "외부 스테레오 오디오 ON/OFF"
+      },
+      {
+        "code": "F",
+        "function": "외부 EDID 저장(수신기 연결 필수)"
+      }
+    ],
+    "source": "M1"
+  },
   "sources": [
     {
       "code": "C",
@@ -328,6 +590,12 @@
       "name": "서울영상테크 SI사업본부 검토 판단",
       "page": "",
       "scope": "사용자 위임(2026-09-27) — 카탈로그 내부 충돌·오기 정리"
+    },
+    {
+      "code": "M1",
+      "name": "FT-103-U-H / FR-103-U 사용자 매뉴얼 Ver.1.4",
+      "page": "4–11",
+      "scope": "제조사 공식 출처 — 사용자 제공 PDF(.source-materials/RTcom_Manual_FT-FR-103-U-H_Ver1.4.pdf, 배포 제외)"
     }
   ],
   "issues": []

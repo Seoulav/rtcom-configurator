@@ -202,6 +202,8 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.click('button[data-model="VDM-16X"]');
     await page.click('[data-action="next"]');
     await page.waitForLoadState('networkidle');
+    // 슬롯 판과 후면 사진이 다 그려지기 전에 세면 가끔 실패했다(2026-09-27 한 번 재현). 슬롯 8칸과 사진 로딩을 기다린 뒤 검사한다.
+    await page.waitForFunction(()=>{const image=document.querySelector('.rt-rack-photo-image');return document.querySelectorAll('.rt-rack-photo .rt-rack-slot').length>=8&&image&&image.complete&&image.naturalWidth>0},null,{timeout:10000}).catch(()=>{});
     check('VDM-16X는 매뉴얼 후면 사진 위에 입력 4·출력 4 슬롯이 모두 흰 빈칸으로 표시됨(블랭크 자동 없음)',await page.locator('.rt-rack-photo .rt-rack-slot-empty').count()===8&&await page.locator('.rt-rack-photo .rt-rack-slot-blank').count()===0&&await page.$eval('.rt-rack-photo-image',image=>image.naturalWidth>0));
     await page.locator('button[data-slot="in-1"]').click();
     await page.locator('.rt-card-modal .rt-card-choice[data-card="HIS4-U"]').click();
@@ -255,6 +257,11 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.goBack();
     await page.waitForSelector('.rt-pg-gridcard');
     check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-pg-gridcard').count()===27);
+    // 0.43 벽부형 단자 지도: 송신기·수신기 두 장, 세로 괄호(side left/right) 번호표 12개, 사진에 보이지 않는 옆면 단자 안내(note).
+    await page.goto(`${home}#products/ft103-u-h-fr103-u`,{waitUntil:'networkidle'});
+    await page.waitForSelector('#rt-pg-title');
+    const wallMap=await page.evaluate(()=>{const svgs=[...document.querySelectorAll('.rt-pg-panel svg[aria-label$="단자 지도"]')];return {maps:svgs.length,pins:svgs.reduce((n,svg)=>n+svg.querySelectorAll('circle').length,0),note:[...document.querySelectorAll('.rt-pg-hint')].some(el=>el.textContent.includes('옆면(사진에 보이지 않음)'))}});
+    check('FT103-U-H/FR103-U 벽부형 단자 지도가 두 장·번호표 12개·옆면 단자 안내로 나옴',wallMap.maps===2&&wallMap.pins===12&&wallMap.note,JSON.stringify(wallMap));
     await page.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
     await page.waitForSelector('#rt-pg-title');
     check('HD-13U 상세는 02 신호 흐름에 자동 생성 SVG를 보여주고, 제조사 원본 다이어그램 버튼으로 기록 영역의 사진을 펼침',await page.locator('.rt-pg-svg-wrap svg').first().isVisible());
