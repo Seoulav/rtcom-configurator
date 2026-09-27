@@ -102,6 +102,10 @@
     {
       "text": "EDID 마인더 기능: 외부 연결된 디스플레이 EDID를 저장하고 내부 저장된 EDID를 사용할 수 있다.",
       "source": "C"
+    },
+    {
+      "text": "오디오 병합(믹스)과 추출(디먹스)을 동시에 쓸 수 있다: 전면 로터리 스위치를 '0'에 두고 SET 버튼으로 Stereo Audio 모드를 선택하면 3.5mm AUDIO IN의 오디오가 HDMI OUTPUT 1번에만 믹스되어 나가고, HDMI 입력이 연결돼 있으면 이 병합 여부와 관계없이 그 오디오가 항상 3.5mm AUDIO OUT으로 추출된다. 다만 AUDIO IN에 연결한 오디오가 AUDIO OUT으로 그대로 나오지는 않는다(직결 패스스루 아님).",
+      "source": "M1"
     }
   ],
   "specifications": [
