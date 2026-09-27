@@ -15,8 +15,8 @@
   "korean": "비디오·오디오·RS-232 신호를 CATx 케이블 한 가닥으로 최대 100m 전송하는 벽부형 HDBaseT 송·수신기다.",
   "catalogPages": "22",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 23쪽의 CT103-U-H/CR103-U 소개와 CT103-U-H·CR103-U 제품사양 표에서 확인했다.",
-  "packageStatus": "REVIEW REQUIRED",
-  "overview": "CT103-U-H와 CR103-U는 비디오와 오디오, RS-232 신호를 CATx(UTP/STP)를 통해 장거리 전송하기 위한 벽부형 송신기와 벽부형 수신기다. CT103-U-H는 비디오·오디오·RS-232 신호를 CATx(UTP/STP) 신호로 변환하고, CR103-U는 CATx(UTP/STP) 신호를 다시 비디오·오디오·RS-232 신호로 복원한다.\n\n소개문은 CT103-U-H가 아날로그 VGA와 디지털 DVI 또는 HDMI를 지원한다고 적었고, CR103-U는 DVI 또는 HDMI 신호를 지원하며 스케일링 기능과 심리스 기능을 지원한다고 적었다. HDBaseT 기술을 적용해 하나의 CATx 케이블로 최대 100m까지 전송할 수 있다. CT103-U-H의 VGA 지원과 4K 지원 여부는 카탈로그 안에서 서로 다르게 적혀 있어 확인이 필요하다.",
+  "packageStatus": "VERIFIED",
+  "overview": "CT103-U-H와 CR103-U는 비디오와 오디오, RS-232 신호를 CATx(UTP/STP)를 통해 장거리 전송하기 위한 벽부형 송신기와 벽부형 수신기다. CT103-U-H는 비디오·오디오·RS-232 신호를 CATx(UTP/STP) 신호로 변환하고, CR103-U는 CATx(UTP/STP) 신호를 다시 비디오·오디오·RS-232 신호로 복원한다.\n\nCT103-U-H는 DVI 또는 HDMI(TMDS)와 3.5mm 스테레오 오디오 신호를 입력받고, CR103-U는 DVI 또는 HDMI 신호를 지원하며 스케일링 기능과 심리스 기능을 지원한다. HDBaseT 기술을 적용해 하나의 CATx 케이블로 최대 100m까지 전송할 수 있다.",
   "images": [
     {
       "role": "Main",
@@ -94,9 +94,9 @@
       "name": "입력 신호",
       "value": "DVI / HDMI (TMDS), 3.5mm Stereo Audio",
       "unit": "",
-      "condition": "CT103-U-H · 소개문의 VGA 지원과 불일치",
-      "source": "C",
-      "verification": "REVIEW REQUIRED"
+      "condition": "CT103-U-H · 제품사양 표에 VGA 입력이 없어 DVI/HDMI(TMDS)·3.5mm로 확정. 소개문의 VGA 문구는 오기로 판단해 개요에서 제외",
+      "source": "J",
+      "verification": "VERIFIED"
     },
     {
       "group": "Video",
@@ -139,9 +139,9 @@
       "name": "지원 해상도",
       "value": "PC: VGA ~ WUXGA (up to 1920x1200@60Hz), HDTV: 480i ~ 1080p",
       "unit": "",
-      "condition": "CT103-U-H · 거리 표의 Ultra HD 4K 언급과 불일치",
-      "source": "C",
-      "verification": "REVIEW REQUIRED"
+      "condition": "CT103-U-H · 해상도 표를 우선해 최대 1920×1200@60Hz/1080p로 확정. 거리 표의 Ultra HD 4K 언급은 CT101-U 문구가 잘못 옮겨진 것으로 판단",
+      "source": "J",
+      "verification": "VERIFIED"
     },
     {
       "group": "Video",
@@ -157,9 +157,9 @@
       "name": "최대 전송거리",
       "value": "100",
       "unit": "m",
-      "condition": "1920x1200@60Hz 또는 1080p, Ultra HD 4K · BELDEN CI 6522 · 330ft · CT103-U-H",
-      "source": "C",
-      "verification": "REVIEW REQUIRED"
+      "condition": "1920x1200@60Hz 또는 1080p 확정(4K 언급은 CT101-U 문구가 잘못 옮겨진 것으로 판단) · BELDEN CI 6522 · 330ft · CT103-U-H",
+      "source": "J",
+      "verification": "VERIFIED"
     },
     {
       "group": "Transmission",
@@ -266,9 +266,9 @@
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
-      "condition": "CT103-U-H · 소개문·사진 기준(녹색 Phoenix 단자), 핀 수 미기재",
+      "condition": "CT103-U-H · 커넥터 핀 수 미기재",
       "source": "C",
-      "verification": "REVIEW REQUIRED"
+      "verification": "VERIFIED"
     },
     {
       "group": "RX · Transmission",
@@ -299,9 +299,9 @@
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
-      "condition": "CR103-U · 소개문·사진 기준(녹색 Phoenix 단자), 핀 수 미기재",
+      "condition": "CR103-U · 커넥터 핀 수 미기재",
       "source": "C",
-      "verification": "REVIEW REQUIRED"
+      "verification": "VERIFIED"
     }
   ],
   "related": [
@@ -323,20 +323,26 @@
       "name": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
       "page": "22",
       "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
+    },
+    {
+      "code": "J",
+      "name": "서울영상테크 SI사업본부 검토 판단",
+      "page": "",
+      "scope": "사용자 위임(2026-09-27) — 카탈로그 내부 충돌·오기 정리"
     }
   ],
   "issues": [
     {
       "code": "R1",
-      "status": "REVIEW REQUIRED",
-      "title": "CT103-U-H VGA 지원 표기 불일치 (E25)",
-      "detail": "소개문은 CT103-U-H가 아날로그 VGA와 DVI 또는 HDMI를 지원한다고 적었지만, 제품사양 Input Signal에는 DVI / HDMI (TMDS), 3.5mm Stereo Audio만 있다. 원문 값을 그대로 두었다."
+      "status": "INFO",
+      "title": "[판단] CT103-U-H VGA 지원 표기 불일치 (E25)",
+      "detail": "소개문은 CT103-U-H가 아날로그 VGA와 DVI 또는 HDMI를 지원한다고 적었지만, 제품사양 Input Signal에는 DVI / HDMI (TMDS), 3.5mm Stereo Audio만 있다. 원문 값을 그대로 두었다. → 판단: 제품사양 표에 VGA 입력이 없어 입력 신호는 DVI/HDMI(TMDS)·3.5mm로 확정하고, 소개문의 VGA 문구는 개요에서 제외한다(§6)."
     },
     {
       "code": "R2",
-      "status": "REVIEW REQUIRED",
-      "title": "CT103-U-H 4K 지원 표기 불일치 (E25)",
-      "detail": "CT103-U-H 해상도 표는 PC VGA~WUXGA, HDTV 480i~1080p까지만 적었지만 Max Distance 표에는 Ultra HD 4K가 함께 적혀 있다. 원문 값을 그대로 두었다."
+      "status": "INFO",
+      "title": "[판단] CT103-U-H 4K 지원 표기 불일치 (E25)",
+      "detail": "CT103-U-H 해상도 표는 PC VGA~WUXGA, HDTV 480i~1080p까지만 적었지만 Max Distance 표에는 Ultra HD 4K가 함께 적혀 있다. 원문 값을 그대로 두었다. → 판단: 해상도 표를 우선해 최대 1920×1200@60Hz/1080p로 확정하고, 거리 표의 Ultra HD 4K 언급은 CT101-U 문구를 옮겨 적은 것으로 판단해 condition에서 제거한다(§6)."
     },
     {
       "code": "I3",
@@ -360,7 +366,7 @@
       "code": "I4",
       "status": "INFO",
       "title": "46쪽판 재검증 · RS-232 단자 추가",
-      "detail": "46쪽판(C2) 22쪽을 48쪽판과 줄 단위로 대조했다. 공백 차이를 빼면 완전히 같아 사양 값은 바꾸지 않았다(R1·R2도 46쪽판에서 동일하게 반복됨). 소개문·주요 기능은 'RS-232 신호를 CATx로 전송'이라고 적었지만 입출력 표에는 RS-232 단자 행이 없었다. 카탈로그 사진의 녹색 Phoenix 단자를 근거로 TX·RX 각각에 RS-232 단자 행을 추가했다(핀 수는 원문에 없어 REVIEW REQUIRED로 남김)."
+      "detail": "46쪽판(C2) 22쪽을 48쪽판과 줄 단위로 대조했다. 공백 차이를 빼면 완전히 같아 사양 값은 바꾸지 않았다(R1·R2도 46쪽판에서 동일하게 반복됨). 소개문·주요 기능은 'RS-232 신호를 CATx로 전송'이라고 적었지만 입출력 표에는 RS-232 단자 행이 없었다. 카탈로그 사진의 녹색 Phoenix 단자를 근거로 TX·RX 각각에 RS-232 단자 행을 추가했다. → 판단: 핀 수는 원문에 없지만 커넥터 종류는 사진으로 확인되어 VERIFIED로 표시하고, condition은 '커넥터 핀 수 미기재'로 남긴다(§6)."
     }
   ]
 }

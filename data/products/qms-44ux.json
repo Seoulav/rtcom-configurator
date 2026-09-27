@@ -15,7 +15,7 @@
   "korean": "심리스 스위칭·2x2 비디오 월·쿼드 뷰·PIP 기능을 갖춘 4K 60Hz 4x4 HDMI 매트릭스 스위처다.",
   "catalogPages": "27",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 29쪽의 소개·주요기능·제품사양·크기 및 무게·제품 이미지에서 확인했다.",
-  "packageStatus": "REVIEW REQUIRED",
+  "packageStatus": "VERIFIED",
   "overview": "QMS-44UX는 다재다능한 4K 60Hz Matrix Switcher다. 4x4 HDMI Matrix로서 Seamless Switching, 2x2 Video Wall, 2x2 Quad Viewer, PIP 기능을 갖추고 있다.\n\nRS-232C, LAN(TCP/IP), 전면 버튼으로 제어할 수 있다.",
   "images": [
     {
@@ -47,7 +47,6 @@
       "file": "qms-44ux-diagram.webp",
       "alt": "RTCOM QMS-44UX 연결 다이어그램(제조사 제공)",
       "note": "Diagram · 카탈로그 46쪽판 27쪽 제조사 제공 연결 다이어그램",
-      "diagramMismatch": "제조사 원본 그림의 전원 표기(+12V DC 5A)가 제품사양 표(DC 12V 2A)와 다릅니다 — 포트 수·전원 표기는 제품사양 표 기준으로 확인하세요.",
       "provider": "RTCOM",
       "model": "QMS-44UX",
       "source": "C2",
@@ -195,11 +194,11 @@
     {
       "group": "Power",
       "name": "전원공급",
-      "value": "DC 12V 2A",
+      "value": "DC 12V 5A",
       "unit": "",
-      "condition": "제품사양 표 기준. 연결도에는 +12V DC 5A로 표기",
-      "source": "C",
-      "verification": "REVIEW REQUIRED"
+      "condition": "매뉴얼 KV.04 구성품·전원 사양·연결도 라벨 세 곳이 모두 5A로 일치 · 원문: 제품사양 표 \"DC 12V 2A\"",
+      "source": "M-Q44",
+      "verification": "VERIFIED"
     },
     {
       "group": "Physical",
@@ -279,14 +278,26 @@
       "name": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
       "page": "27",
       "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
+    },
+    {
+      "code": "M-Q44",
+      "name": "알티컴 QMS-44UX 사용자 매뉴얼 KV.04",
+      "page": "3, 6, 11",
+      "scope": "사용자 제공(2026-09-27) — PDF는 저장소에 넣지 않음, 요약은 docs/evidence/QMS_VIDEO_MODES.md"
+    },
+    {
+      "code": "J",
+      "name": "서울영상테크 SI사업본부 검토 판단",
+      "page": "",
+      "scope": "사용자 위임(2026-09-27) — 카탈로그 내부 충돌·오기 정리"
     }
   ],
   "issues": [
     {
       "code": "R1",
-      "status": "REVIEW REQUIRED",
-      "title": "전원 사양 표기 불일치",
-      "detail": "제품사양 표는 전원공급을 DC 12V 2A로 적었으나 같은 쪽 연결도의 후면 라벨은 +12V DC 5A로 적혀 있다. 값은 제품사양 표 원문을 유지했다."
+      "status": "INFO",
+      "title": "[판단] 전원 사양 표기 불일치",
+      "detail": "제품사양 표는 전원공급을 DC 12V 2A로 적었으나 같은 쪽 연결도의 후면 라벨은 +12V DC 5A로 적혀 있다. 값은 제품사양 표 원문을 유지했다. → 판단: 매뉴얼(M-Q44) 구성품·전원 사양·연결도 라벨 세 곳이 모두 5A로 일치해 DC 12V 5A로 정정한다. 제품사양 표의 2A는 condition에 원문으로 남긴다(§6)."
     },
     {
       "code": "I1",
