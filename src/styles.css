@@ -555,7 +555,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:-1px}
 
 /* 화면 구성 모드(QMS 전용, 6-B 7장). docs/mockups/qms-44ux-video-modes-desktop.png 참고, 새 글래스 토큰으로 다시 칠함 */
-#rtcom-design .rt-pg-vmode{display:grid;grid-template-columns:190px 1fr;gap:16px;align-items:start}
+#rtcom-design .rt-pg-vmode{display:grid;grid-template-columns:190px minmax(0,1fr);gap:16px;align-items:start}
 #rtcom-design .rt-pg-vmode-tile{background:#1C1C1E;border-radius:20px;padding:18px;color:#fff;text-align:center}
 #rtcom-design .rt-pg-vmode-tile b{display:block;font-size:16px;font-weight:800;margin-bottom:12px}
 #rtcom-design .rt-pg-vmode-tile small{display:block;margin-top:12px;font-size:10.5px;color:rgba(255,255,255,.55)}
@@ -564,7 +564,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-vmode-icons svg{width:24px;height:24px;color:#6CA6FF}
 #rtcom-design .rt-pg-vmode-icons span{font-size:8.5px;font-weight:700;letter-spacing:.04em;color:rgba(255,255,255,.8)}
 #rtcom-design .rt-pg-vmode-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-#rtcom-design .rt-pg-vmode-card{background:var(--pg-field-fill);border-radius:16px;padding:16px}
+#rtcom-design .rt-pg-vmode-card{background:var(--pg-field-fill);border-radius:16px;padding:16px;min-width:0}
 #rtcom-design .rt-pg-vmode-card-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
 #rtcom-design .rt-pg-vmode-card-head svg{width:22px;height:22px;color:var(--pg-accent);flex:none}
 #rtcom-design .rt-pg-vmode-card-head b{display:block;font-size:14px;font-weight:800;color:var(--pg-ink)}

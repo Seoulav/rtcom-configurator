@@ -384,6 +384,13 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.locator('[data-layout-chip]',{hasText:'3-SIDE RIGHT'}).click();
     const afterLayout=await page.evaluate(()=>({name:document.querySelector('[data-layout-name]').textContent,on:document.querySelector('.rt-pg-layout-chip.on')?.textContent,rects:document.querySelectorAll('[data-layout-preview] svg rect').length}));
     check('QMS-88UX 06 화면 구성 모드에서 레이아웃 버튼을 누르면 미리보기 도해가 바뀜',beforeLayout==='QUAD'&&afterLayout.name==='3-SIDE RIGHT'&&afterLayout.on==='3-SIDE RIGHT'&&afterLayout.rects===4,JSON.stringify({beforeLayout,afterLayout}));
+    // 0.62 — videoModes(QMS) 카드 4개+레이아웃 칩 12개까지 있어 05 옆 좁은 칸에 넣으면 글자가 카드 밖으로 넘쳤다(사용자 확인 2026-09-27 "06화면모드 짤린다"). 전체 폭 아래로 되돌려 카드 안에서 텍스트가 넘치지 않는지 확인.
+    for(const id of ['qms-88ux','qms-44ux']){
+      await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
+      await page.waitForSelector('.rt-pg-vmode-card');
+      const vmodeOverflow=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-vmode-card')].map(card=>({card:Math.round(card.scrollWidth-card.clientWidth),p:[...card.querySelectorAll('p')].map(p=>Math.round(p.scrollWidth-p.clientWidth))})).filter(x=>x.card>1||x.p.some(v=>v>1)));
+      check(`${id} 06 화면 구성 모드 카드 안 글자가 카드 밖으로 넘치지 않음(전체 폭 아래)`,vmodeOverflow.length===0,JSON.stringify(vmodeOverflow));
+    }
     // 0.55~0.58 HDS-21U·HDS-42MU 단자 지도: 정면·후면 선택 버튼 없이 한 합성 사진(위 앞면, 아래 뒷면)에 번호가 이어지고, EDID 로터리·MODE 딥 스위치가 전원(마지막) 앞에 옴(사용자 요청 2026-09-27).
     for(const id of ['hds-21u','hds-42mu']){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});

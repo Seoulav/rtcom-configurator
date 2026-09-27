@@ -656,13 +656,13 @@
       const diagram=connectionDiagram(item);
       const portSection=item.group!=='cable'?(portMapDiagram(item)||portCards(item)):null;
       const related=Object.values((item.related||[]).filter(link=>byId[link.target]).reduce((all,link)=>{if(!all[link.target]||link.relation!=='PART_OF_SERIES')all[link.target]=link;return all},{}));
-      // videoModes·audioMux 카드만 05 주요 기능 오른쪽에 붙이고, edidSwitch·dipSwitch는 전체 폭 아래에 둔다(사용자 요청 2026-09-27, 아래 이유 참고).
+      // audioMux 카드만 05 주요 기능 오른쪽에 붙이고, videoModes·edidSwitch·dipSwitch는 전체 폭 아래에 둔다(사용자 요청 2026-09-27, 아래 이유 참고).
       const hasVideoModes=!!item.videoModes?.modes?.length;
       const hasAudioMux=!!item.audioMux?.modes?.length;
       let sideCard='',belowCards='';
       // edidSwitch는 사진+안내 2장+코드표(최대 12행)까지 있어 05 옆 좁은 칸(360px)에 넣으면 오른쪽 칸(02·03·기록)보다 훨씬 길어져 빈 공간이 크게 남는다(사용자 확인 2026-09-27 "06 EDID설정 깨진ㄷ").
-      // videoModes·audioMux는 상대적으로 짧아 좁은 칸에 넣어도 균형이 맞으므로 이 둘만 05 옆에 붙이고, edidSwitch·dipSwitch는 항상 전체 폭 아래에 둔다.
-      if(hasVideoModes){sideCard=videoModesSection(item);belowCards=edidSwitchSection(item)}
+      // videoModes(QMS)도 모드 카드 4개+레이아웃 칩 12개까지 있어 좁은 칸에서는 글자가 카드 밖으로 넘친다(사용자 확인 2026-09-27 "06화면모드 짤린다"). audioMux만 상대적으로 짧아 05 옆에 붙이고, 나머지는 항상 전체 폭 아래에 둔다.
+      if(hasVideoModes){belowCards=`${videoModesSection(item)}${edidSwitchSection(item)}`}
       // 오디오 설정(병합·추출 두 칸)도 좁은 칸에서는 오른쪽 칸이 잘리고, EDID 설정(06)보다 먼저 보여 번호가 07 → 06 순서로 뒤집혔다(사용자 지적 2026-09-27 "13U 07 오디오가 잘린다").
       // 그래서 EDID 설정이 있는 제품은 06 EDID → 07 오디오 순서로 둘 다 전체 폭 아래에 두고, EDID가 없을 때만 오디오 설정을 05 옆에 붙인다.
       else if(hasAudioMux&&!item.edidSwitch?.table?.length){sideCard=audioMuxSection(item)}
