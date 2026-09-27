@@ -280,9 +280,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     // 0.33 — 제품정보 글래스 디자인(rt-pg-*)으로 목록·상세 마크업이 바뀌었다.
     await page.click('a[data-view-tab="products"]');
     await page.waitForSelector('.rt-pg-gridcard');
-    check('제품정보 탭을 누르면 구성기를 숨기고 제품 28종 목록을 표시',await page.locator('.rt-configurator-view').isHidden()&&await page.locator('.rt-pg-gridcard').count()===28);
+    check('제품정보 탭을 누르면 구성기를 숨기고 제품 29종 목록(0.62부터 SPX-TX/RX 포함)을 표시',await page.locator('.rt-configurator-view').isHidden()&&await page.locator('.rt-pg-gridcard').count()===29);
     await page.click('[data-product-filter="extender"]');
-    check('전송기 분류는 12종',await page.locator('.rt-pg-gridcard').count()===12);
+    check('전송기 분류는 13종(0.62부터 SPX-TX/RX 포함)',await page.locator('.rt-pg-gridcard').count()===13);
     await page.click('[data-product-filter="all"]');
     await page.fill('[data-product-search]','QMS');
     check('검색어 QMS로 일체형 매트릭스 2종이 남음',await page.locator('.rt-pg-gridcard').count()===2);
@@ -304,7 +304,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('CT104-U/CR104-U 단자 지도가 송신기·수신기 사진 두 장으로 나옴',extenderMaps.length===2&&extenderMaps[0].includes('송신기 CT104-U')&&extenderMaps[1].includes('수신기 CR104-U'),JSON.stringify(extenderMaps));
     await page.goBack();
     await page.waitForSelector('.rt-pg-gridcard');
-    check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-pg-gridcard').count()===28);
+    check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-pg-gridcard').count()===29);
     // 0.43 벽부형 단자 지도: 송신기·수신기 두 장, 세로 괄호(side left/right) 번호표 11개(0.46에서 HDMI IN 1·2를 한 번호로 묶음), 사진에 보이지 않는 옆면 단자 안내(note).
     await page.goto(`${home}#products/ft103-u-h-fr103-u`,{waitUntil:'networkidle'});
     await page.waitForSelector('#rt-pg-title');

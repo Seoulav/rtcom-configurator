@@ -1,0 +1,215 @@
+{
+  "id": "spx-rx-tx",
+  "group": "extender",
+  "manufacturer": "RTCOM",
+  "productName": "SPX-TX / SPX-RX",
+  "model": "SPX-TX / SPX-RX",
+  "series": "SPX Series Extender",
+  "seriesNote": "SPX 시리즈용 CATx(RJ45) 송신기(TX)와 수신기(RX)다. 카탈로그에는 두 제품이 공통 사양 한 표로 실려 있다.",
+  "itemType": "PRODUCT",
+  "categories": [
+    "영상",
+    "Video",
+    "Extender"
+  ],
+  "english": "CATx (RJ45) HDMI 2.0 transmitter/receiver for the SPX Series, 4K60 4:4:4, 18Gbps, HDCP 2.2.",
+  "korean": "4K 60Hz 4:4:4 HDMI 2.0 신호를 CATx(RJ45) 케이블로 보내고 받는 SPX 시리즈용 송·수신기다.",
+  "subtitle": "SPX Series Extender · CATx 송·수신기",
+  "lead": "4K 60Hz 4:4:4 HDMI 2.0 신호를 **CATx(RJ45) 케이블로 CAT6 기준 4K60 최대 50m, 1080p 최대 60m** 전송합니다. SPX-RX는 SPX-COS12 카드와 함께 쓰며 메인프레임에서 CAT으로 전원을 받습니다(POC).",
+  "catalogPages": "15–16",
+  "verificationSummary": "알티컴 종합 카탈로그(46쪽판) 16쪽 SPX-RX/TX 공통 사양 표와 15쪽 I/O 보드 공통 기능(CATx 전송거리)·주요기능(POC)에서 확인했다. 모델별 크기·무게·단자 수는 카탈로그에 없다.",
+  "packageStatus": "VERIFIED",
+  "overview": "SPX-TX/SPX-RX는 SPX 시리즈 매트릭스와 함께 쓰는 CATx(RJ45) 송·수신기다. 4K 60Hz 4:4:4, 18Gbps, HDCP 2.2를 지원한다.\n\nSPX-TX는 HDMI 신호를 받아 CATx(RJ45)로 보내고, SPX-RX는 CATx(RJ45)로 받은 신호를 HDMI 2.0으로 출력한다. SPX-RX는 CATx 출력 보드 SPX-COS12(CAT Output with SPX-Rx)와 짝을 이루며, 메인프레임의 POC(Power Over CAT) 기능으로 전원을 공급받는다. CATx 인터페이스는 CAT6 기준 4K 60Hz 165ft(50m), 1080p 198ft(60m)까지 출력할 수 있다.",
+  "images": [
+    {
+      "role": "Main",
+      "file": "spx-rx-tx-main.webp",
+      "alt": "RTCOM SPX-TX·SPX-RX 송·수신기(상판과 단자면)",
+      "note": "Main · 카탈로그 16쪽 SPX-RX/TX 제품 사진",
+      "provider": "RTCOM",
+      "model": "SPX-TX / SPX-RX",
+      "source": "C2",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "688×580"
+    }
+  ],
+  "imageStatuses": [
+    {
+      "role": "Main",
+      "status": "FOUND"
+    },
+    {
+      "role": "Front",
+      "status": "MISSING"
+    },
+    {
+      "role": "Rear",
+      "status": "MISSING"
+    },
+    {
+      "role": "Perspective",
+      "status": "MISSING"
+    },
+    {
+      "role": "Other",
+      "status": "MISSING"
+    }
+  ],
+  "documents": [
+    {
+      "type": "Catalog",
+      "status": "FOUND",
+      "title": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
+      "language": "ko",
+      "note": "15–16쪽"
+    }
+  ],
+  "features": [
+    {
+      "text": "4K 60Hz 4:4:4 · 18Gbps · HDCP 2.2 지원",
+      "source": "C2"
+    },
+    {
+      "text": "CATx(RJ45) 전송 지원(CAT6 기준 4K60 최대 50m, 1080p 최대 60m)",
+      "source": "C2"
+    },
+    {
+      "text": "POC(Power Over CAT) 지원(SPX-RX, 메인프레임에서 전원 공급)",
+      "source": "C2"
+    },
+    {
+      "text": "SPX-COS12(CATx 출력 보드)와 SPX-RX 연동 지원",
+      "source": "C2"
+    }
+  ],
+  "specifications": [
+    {
+      "group": "Video",
+      "name": "최대 해상도",
+      "value": "4K 60Hz 4:4:4",
+      "unit": "",
+      "condition": "SPX-TX·SPX-RX 공통",
+      "source": "C2",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "비디오 대역폭",
+      "value": "18",
+      "unit": "Gbps",
+      "condition": "SPX-TX·SPX-RX 공통",
+      "source": "C2",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "HDCP",
+      "value": "HDCP 2.2",
+      "unit": "",
+      "condition": "SPX-TX·SPX-RX 공통",
+      "source": "C2",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "name": "최대 전송거리",
+      "value": "50",
+      "unit": "m",
+      "condition": "CAT6 · 4K 60Hz(165ft)",
+      "source": "C2",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "name": "최대 전송거리",
+      "value": "60",
+      "unit": "m",
+      "condition": "CAT6 · 1080p(198ft)",
+      "source": "C2",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "name": "전원",
+      "value": "POC(Power Over CAT)",
+      "unit": "",
+      "condition": "SPX-RX · 메인프레임에서 공급",
+      "source": "C2",
+      "verification": "VERIFIED"
+    }
+  ],
+  "io": [
+    {
+      "group": "TX · Video",
+      "connector": "HDMI",
+      "signal": "HDMI",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "SPX-TX",
+      "source": "C2",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "TX · Transmission",
+      "connector": "RJ45",
+      "signal": "CATx",
+      "direction": "OUT",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "SPX-TX",
+      "source": "C2",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Video",
+      "connector": "HDMI",
+      "signal": "HDMI",
+      "direction": "OUT",
+      "quantity": "1",
+      "protocol": "HDMI 2.0",
+      "condition": "SPX-RX",
+      "source": "C2",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Transmission",
+      "connector": "RJ45",
+      "signal": "CATx",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "SPX-RX",
+      "source": "C2",
+      "verification": "VERIFIED"
+    }
+  ],
+  "related": [
+    {
+      "relation": "PART_OF_SERIES",
+      "target": "spx",
+      "note": "SPX 시리즈 CATx 전송기"
+    },
+    {
+      "relation": "WORKS_WITH",
+      "target": "spx",
+      "note": "SPX-COS12(CATx 출력 보드) ↔ SPX-RX"
+    }
+  ],
+  "sources": [
+    {
+      "code": "C",
+      "name": "알티컴 종합 카탈로그 2026 (국문)",
+      "page": "15–16",
+      "scope": "제조사 공식 출처"
+    },
+    {
+      "code": "C2",
+      "name": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
+      "page": "15–16",
+      "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
+    }
+  ],
+  "issues": []
+}

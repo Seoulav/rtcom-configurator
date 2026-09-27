@@ -85,15 +85,15 @@
   ],
   "features": [
     {
-      "text": "벽부형 송신기와 수신기로 비디오·오디오·RS-232 신호를 CATx(UTP/STP)로 장거리 전송한다.",
+      "text": "벽부형 송·수신기로 비디오·오디오·RS-232 신호 CATx(UTP/STP) 장거리 전송 지원",
       "source": "C"
     },
     {
-      "text": "CT103-U-H는 HDMI 입력 2개를 앞면 INPUT 버튼으로 전환해 보낸다.",
+      "text": "HDMI 입력 2개 전환 지원(CT103-U-H 앞면 INPUT 버튼)",
       "source": "J"
     },
     {
-      "text": "HDBaseT 기술을 적용해 CATx 케이블 한 가닥으로 최대 100m 전송한다.",
+      "text": "HDBaseT 기술로 CATx 케이블 한 가닥 최대 100m 전송 지원",
       "source": "C"
     },
     {
