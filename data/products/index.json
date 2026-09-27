@@ -98,23 +98,6 @@
       "cardImage": "qms-88ux-front.webp"
     },
     {
-      "id": "hds-21u",
-      "group": "distribution",
-      "productName": "HDS-21U",
-      "model": "HDS-21U",
-      "itemType": "PRODUCT",
-      "categories": [
-        "영상",
-        "Video",
-        "Switcher"
-      ],
-      "english": "2x1 HDMI 2.0 4K60 switcher with audio extraction/insertion, priority and EDID minder",
-      "korean": "오디오 추출·삽입, Priority, EDID 마인더 기능을 갖춘 2입력 1출력 HDMI 2.0 4K 선택기다.",
-      "catalogPages": "32",
-      "packageStatus": "VERIFIED",
-      "cardImage": "hds-21u-front.webp"
-    },
-    {
       "id": "hd-d102u",
       "group": "distribution",
       "productName": "HD-D102U",
@@ -130,23 +113,6 @@
       "catalogPages": "29",
       "packageStatus": "VERIFIED",
       "cardImage": "hd-d102u-perspective.webp"
-    },
-    {
-      "id": "hds-42mu",
-      "group": "distribution",
-      "productName": "HDS-42MU",
-      "model": "HDS-42MU",
-      "itemType": "PRODUCT",
-      "categories": [
-        "영상",
-        "Video",
-        "Switcher"
-      ],
-      "english": "4x2 HDMI 2.0 4K60 matrix switcher with audio extraction/insertion, priority and EDID minder",
-      "korean": "4입력 2출력 매트릭스 스위칭과 오디오 추출·삽입, EDID 마인더 기능을 갖춘 HDMI 2.0 4K 선택기다.",
-      "catalogPages": "33",
-      "packageStatus": "VERIFIED",
-      "cardImage": "hds-42mu-front.webp"
     },
     {
       "id": "hd-13u",
@@ -221,6 +187,40 @@
       "catalogPages": "37",
       "packageStatus": "VERIFIED",
       "cardImage": "hd-210u-front.webp"
+    },
+    {
+      "id": "hds-21u",
+      "group": "distribution",
+      "productName": "HDS-21U",
+      "model": "HDS-21U",
+      "itemType": "PRODUCT",
+      "categories": [
+        "영상",
+        "Video",
+        "Switcher"
+      ],
+      "english": "2x1 HDMI 2.0 4K60 switcher with audio extraction/insertion, priority and EDID minder",
+      "korean": "오디오 추출·삽입, Priority, EDID 마인더 기능을 갖춘 2입력 1출력 HDMI 2.0 4K 선택기다.",
+      "catalogPages": "32",
+      "packageStatus": "VERIFIED",
+      "cardImage": "hds-21u-front.webp"
+    },
+    {
+      "id": "hds-42mu",
+      "group": "distribution",
+      "productName": "HDS-42MU",
+      "model": "HDS-42MU",
+      "itemType": "PRODUCT",
+      "categories": [
+        "영상",
+        "Video",
+        "Switcher"
+      ],
+      "english": "4x2 HDMI 2.0 4K60 matrix switcher with audio extraction/insertion, priority and EDID minder",
+      "korean": "4입력 2출력 매트릭스 스위칭과 오디오 추출·삽입, EDID 마인더 기능을 갖춘 HDMI 2.0 4K 선택기다.",
+      "catalogPages": "33",
+      "packageStatus": "VERIFIED",
+      "cardImage": "hds-42mu-front.webp"
     },
     {
       "id": "ct101-u-cr101-u",

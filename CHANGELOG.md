@@ -4,6 +4,11 @@
 
 ## Unreleased
 
+## 0.44.0
+
+- **분배기·선택기 필터 정렬 — 분배기(Splitter)를 먼저, 셀렉터(Switcher)를 나중에**(사용자 요청 "분배기, 셀렉터 순으로 나오게해줘", 0.43.0의 HDMI 출력 개수 순 정렬에 이어): `build-product-index.cjs`가 `categories`의 `Splitter`/`Switcher` 표기로 먼저 나누고, 같은 종류 안에서는 기존처럼 HDMI 출력 개수 순으로 정렬합니다. 결과 순서는 HD-D102U(2분배)·HD-13U(3분배)·HD-104U(4분배)·HD-108U(8분배)·HD-210U(10분배) 다음 HDS-21U(2×1 셀렉터)·HDS-42MU(4×2 셀렉터)입니다.
+- **검증**: `node --test tests/*.test.cjs`(37/37) · `node scripts/build-product-index.cjs --check`(27개) · `node scripts/package-site.cjs` · `node scripts/e2e-smoke.cjs`(83/83) · `git diff --check`.
+
 ## 0.43.0
 
 - **HDS-21U·HDS-42MU에 EDID 로터리 스위치 추가**(사용자 제공 매뉴얼 Ver.1.0 근거): 두 제품 다 전면 파란 로터리로 EDID를 설정하는데도 `edidSwitch`가 없었던 것을, HD-13U와 같은 형식(사진 위 위치 표시·코드표 0~B·설정 절차)으로 채웠습니다. 좌표는 전면 사진에서 파란 스위치를 색상으로 검출해 확인했습니다.

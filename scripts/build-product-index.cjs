@@ -118,10 +118,15 @@ function build(){
     const n=port&&parseInt(port.quantity,10);
     return Number.isFinite(n)?n:null;
   };
+  // 분배기(Splitter)를 먼저, 셀렉터(Switcher)를 나중에 보여준다(사용자 요청 2026-09-27 "분배기, 셀렉터 순으로 나오게해줘").
+  const DIST_TYPES=['Splitter','Switcher'];
+  const distType=product=>{const i=DIST_TYPES.findIndex(type=>(product.categories||[]).includes(type));return i<0?DIST_TYPES.length:i};
   const list=products.map(([,product])=>product).sort((a,b)=>{
     const groupDiff=order(a)-order(b);
     if(groupDiff)return groupDiff;
     if(a.group==='distribution'&&b.group==='distribution'){
+      const typeDiff=distType(a)-distType(b);
+      if(typeDiff)return typeDiff;
       const qa=hdmiOutQty(a),qb=hdmiOutQty(b);
       if(qa!==null&&qb!==null&&qa!==qb)return qa-qb;
     }
