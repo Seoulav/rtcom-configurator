@@ -372,6 +372,11 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.waitForSelector('.rt-pg-audio');
     const audio13=await page.evaluate(()=>{const a=document.querySelector('.rt-pg-audio');const order=[...document.querySelectorAll('.rt-pg-card h2 .rt-pg-idx')].map(s=>s.textContent);return {inCol:!!a.closest('.rt-pg-col'),overflow:a.scrollWidth>a.clientWidth+1,after:order.indexOf('07')>order.indexOf('06')}});
     check('HD-13U 07 오디오 설정이 06 EDID 설정 다음 전체 폭에 나오고 잘리지 않음',!audio13.inCol&&!audio13.overflow&&audio13.after,JSON.stringify(audio13));
+    // 0.61 HD-13U 오디오 설정 전면 패널 그림: 병합은 OUT 1 LED가 깜빡이고(rt-pg-led-blink), 추출은 켜진 채 깜빡이지 않는다(사용자 요청 2026-09-27 "DIP 이미지처럼 불 켜짐").
+    await page.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
+    await page.waitForSelector('.rt-pg-audio-panel');
+    const panel13=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-audio-mode')].map(m=>({blink:m.querySelectorAll('.rt-pg-led-blink').length,label:m.querySelector('.rt-pg-audio-panel')?.getAttribute('aria-label')||''})));
+    check('HD-13U 오디오 설정 패널 그림이 병합(OUT 1 깜빡임)·추출(깜빡이지 않음) 두 장으로 나옴',panel13.length===2&&panel13[0].blink===1&&panel13[1].blink===0&&panel13[0].label.includes('깜빡임')&&panel13[1].label.includes('깜빡이지 않음'),JSON.stringify(panel13));
     // 0.55 QMS-88UX 06 화면 구성 모드: 레이아웃 버튼을 누르면 해당 도해로 미리보기가 바뀐다(사용자 요청 2026-09-27).
     await page.goto(`${home}#products/qms-88ux`,{waitUntil:'networkidle'});
     await page.waitForSelector('[data-layout-chip]');

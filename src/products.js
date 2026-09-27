@@ -603,6 +603,29 @@
     }
     // ---- 오디오 설정(병합 MUX·추출 DEMUX 중 선택, HD-13U). 매뉴얼 문장을 "이럴 때·연결·소리가 나오는 곳·확인 방법"으로 풀어 두 칸으로 보여준다 ----
     // HDS-21U·HDS-42MU는 딥 스위치 1번으로 고르므로 이 카드 대신 딥 스위치 설정 카드에서 함께 설명한다(사용자 요청 2026-09-27).
+    // ---- 오디오 설정 전면 패널 그림(0.61, 사용자 요청 "HD-13U 07 오디오 설정 부분을 DIP 이미지처럼 불 켜짐을 만들어줘") ----
+    // 로터리를 panel.rotary.value에 맞추고 SET 버튼을 누르는 모습과, 확인용 LED(panel.target)가 깜빡이는지(mode.led "blink") 켜진 채인지("steady")를 그린다.
+    // 깜빡임은 CSS 애니메이션(rt-pg-led-blink)으로 보여주고, 움직임 줄이기 설정이나 인쇄에서도 알 수 있게 LED 둘레에 빛 표시를 함께 그린다.
+    function audioPanelGraphic(panel,mode){
+      const leds=panel.leds||[];
+      const W=300,H=92,py=10,ph=52,cx=34,cy=py+ph/2-2,bx=78;
+      let body=`<rect x="4" y="${py}" width="${W-8}" height="${ph}" rx="6" fill="#1C1C1E"/>`;
+      body+=`<circle cx="${cx}" cy="${cy}" r="12" fill="#1E7BE6" stroke="#0B4FA8" stroke-width="1.5"/><circle cx="${cx}" cy="${cy}" r="6.5" fill="#E9F2FF"/><path d="M${cx} ${cy-9}v10" stroke="#1C1C1E" stroke-width="3" stroke-linecap="round"/>`;
+      body+=`<rect x="${cx-9}" y="${py+ph+4}" width="18" height="15" rx="7.5" fill="#007AFF"/><text x="${cx}" y="${py+ph+15}" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">${esc(panel.rotary?.value??'0')}</text>`;
+      body+=`<text x="${cx}" y="${py+ph-4}" text-anchor="middle" font-size="7.5" font-weight="700" fill="#C7C7CC">${esc(panel.rotary?.label||'MODE')}</text>`;
+      body+=`<circle cx="${bx}" cy="${cy}" r="7" fill="#48484A" stroke="#8E8E93" stroke-width="1"/><circle cx="${bx}" cy="${cy}" r="10.5" fill="none" stroke="#007AFF" stroke-width="2"/>`;
+      body+=`<text x="${bx}" y="${py+ph-4}" text-anchor="middle" font-size="7.5" font-weight="700" fill="#C7C7CC">${esc(panel.button||'SET')}</text><text x="${bx}" y="${py+ph+15}" text-anchor="middle" font-size="10" font-weight="800" fill="#007AFF">누름</text>`;
+      const x0=118,gap=(W-24-x0)/Math.max(1,leds.length-1);
+      leds.forEach((label,i)=>{
+        const x=x0+i*gap,on=label===panel.target,blink=on&&mode.led==='blink';
+        if(on)body+=`<circle cx="${x}" cy="${cy}" r="10" fill="#34C759" opacity=".22"/>`;
+        if(blink)body+=`<g stroke="#34C759" stroke-width="1.6" stroke-linecap="round">${[0,60,120,180,240,300].map(a=>{const r1=8.5,r2=12.5,rad=a*Math.PI/180;return `<path d="M${(x+r1*Math.cos(rad)).toFixed(1)} ${(cy+r1*Math.sin(rad)).toFixed(1)}L${(x+r2*Math.cos(rad)).toFixed(1)} ${(cy+r2*Math.sin(rad)).toFixed(1)}"/>`}).join('')}</g>`;
+        body+=`<circle cx="${x}" cy="${cy}" r="4.5" fill="${on?'#34C759':'#2F3A31'}"${blink?' class="rt-pg-led-blink"':''}/>`;
+        body+=`<text x="${x}" y="${py+ph-4}" text-anchor="middle" font-size="7.5" font-weight="${on?800:600}" fill="${on?'#fff':'#8E8E93'}">${esc(label)}</text>`;
+        if(on)body+=`<text x="${x}" y="${py+ph+15}" text-anchor="middle" font-size="10" font-weight="800" fill="${blink?'#248A3D':'#6E6E73'}">${blink?'깜빡임':'깜빡이지 않음'}</text>`;
+      });
+      return `<svg class="rt-pg-audio-panel" viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${esc(`${panel.rotary?.label||'MODE'} ${panel.rotary?.value??'0'} + ${panel.button||'SET'} → ${panel.target} LED ${mode.led==='blink'?'깜빡임':'깜빡이지 않음'}`)}">${body}</svg>`;
+    }
     function audioMuxSection(item){
       const am=item.audioMux;
       if(!am||!am.modes?.length)return '';
@@ -613,6 +636,7 @@
         <div class="rt-pg-audio-modes">${am.modes.map(mode=>`<div class="rt-pg-audio-mode rt-pg-audio-${mode.name==='MUX'?'mux':'demux'}">
           <div class="rt-pg-audio-head"><b>${esc(mode.title)}</b><small>${esc(mode.name)}${mode.setting?` · ${esc(mode.setting)}`:''}</small></div>
           ${mode.flow?.length?`<div class="rt-pg-audio-flow">${mode.flow.map(step=>`<span>${esc(step)}</span>`).join(arrow)}</div>`:''}
+          ${am.panel&&mode.led?audioPanelGraphic(am.panel,mode):''}
           <dl>${mode.rows.map(row=>`<dt>${esc(row.label)}</dt><dd>${esc(row.text)}</dd>`).join('')}</dl>
         </div>`).join('')}</div>
         ${am.note?`<p class="rt-pg-hint">※ ${esc(am.note)}</p>`:''}

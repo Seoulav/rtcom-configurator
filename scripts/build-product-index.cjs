@@ -130,12 +130,21 @@ function validate(product,file,ids){
     if(!am||am.mode!=='select')fail('audioMux.mode는 "select"여야 함');
     else if(!codes.has(am.source))fail(`audioMux.source(${am.source})가 sources에 없음`);
     if(am&&'caption' in am&&(typeof am.caption!=='string'||!am.caption))fail('audioMux.caption은 비어 있지 않은 문자열이어야 함');
+    // audioMux.panel: 전면 패널 그림(0.61, HD-13U). 로터리 값·버튼 이름과, LED 이름 목록 안에 확인용 LED(target)가 있어야 한다.
+    if(am&&'panel' in am){
+      const pn=am.panel;
+      if(!pn||!Array.isArray(pn.leds)||!pn.leds.length||pn.leds.some(label=>typeof label!=='string'||!label))fail('audioMux.panel.leds는 비어 있지 않은 문자열 배열이어야 함');
+      else if(!pn.leds.includes(pn.target))fail(`audioMux.panel.target(${pn.target})이 leds에 없음`);
+      if(pn&&(typeof pn.button!=='string'||!pn.button))fail('audioMux.panel.button은 비어 있지 않은 문자열이어야 함');
+      if(pn&&pn.rotary&&(typeof pn.rotary.value!=='string'||!pn.rotary.value))fail('audioMux.panel.rotary.value는 비어 있지 않은 문자열이어야 함');
+    }
     if(am&&'modes' in am){
       if(!Array.isArray(am.modes)||am.modes.length!==2)fail('audioMux.modes는 병합·추출 2개여야 함');
       else for(const mode of am.modes){
         if(!['MUX','DEMUX'].includes(mode.name)||typeof mode.title!=='string'||!mode.title)fail('audioMux.modes 항목은 name(MUX|DEMUX)·title을 갖춰야 함');
         if(!Array.isArray(mode.rows)||!mode.rows.length||mode.rows.some(row=>typeof row.label!=='string'||!row.label||typeof row.text!=='string'||!row.text))fail(`audioMux.modes[].rows는 label·text를 갖춘 배열이어야 함(${mode.name})`);
         if('flow' in mode&&(!Array.isArray(mode.flow)||mode.flow.length<2))fail(`audioMux.modes[].flow는 2칸 이상 배열이어야 함(${mode.name})`);
+        if('led' in mode&&!['blink','steady'].includes(mode.led))fail(`audioMux.modes[].led는 "blink" 또는 "steady"여야 함(${mode.name})`);
       }
     }
   }

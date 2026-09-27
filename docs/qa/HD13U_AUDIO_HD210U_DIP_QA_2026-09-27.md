@@ -12,6 +12,15 @@
 - 결과(1280px): 오디오 설정 카드 넘침 없음, 카드 순서 01·04·05 | 02·03 | 06·07. 왼쪽 칸(01·04·05)이 오른쪽 칸(02·03·제조사 자료)보다 약 270px 짧아 05 아래에 빈 공간이 생깁니다.
 - 동작 방식은 그대로입니다: 병합(MUX)·추출(DEMUX)을 모두 지원하지만 로터리 '0' + SET 버튼으로 하나만 골라 씁니다.
 
+## 2-1. HD-13U 오디오 설정 전면 패널 그림(추가 요청)
+
+- 요청: "HD-13U 07 오디오 설정 부분을 DIP 이미지처럼 불 켜짐을 만들어줘"
+- 병합·추출 칸마다 흐름 칩 아래에 전면 패널 그림(`audioPanelGraphic`)을 넣었습니다. 파란 MODE 로터리를 0에 맞춘 모습, SET 버튼(파란 테두리, "누름"), Status·IN·OUT 1·2·3 LED를 제품 정면 순서대로 그립니다.
+- 확인용 LED(OUT 1)만 초록으로 켜고 나머지는 어둡게 그립니다(딥 스위치 그림에서 설명하는 번호만 또렷하게 그린 것과 같은 방식). 병합은 OUT 1 둘레에 빛 표시를 그리고 1초 간격으로 깜빡이게 하며 아래에 "깜빡임"을 적습니다. 추출은 켜진 채 "깜빡이지 않음"입니다. 근거는 기존 확인 방법 문장(매뉴얼 Ver.1.2 7~8쪽, "전면 OUTPUT 1번 LED가 깜빡인다/깜빡이지 않는다")입니다.
+- Status·IN·OUT 2·3 LED가 실제로 켜져 있는지는 매뉴얼에 없어 어둡게 두었습니다. 움직임 줄이기 설정(`prefers-reduced-motion`)에서는 애니메이션을 끄고 빛 표시로만 구분합니다.
+- 데이터: `audioMux.panel` = `{rotary:{label:"MODE",value:"0"}, button:"SET", leds:["Status","IN","OUT 1","2","3"], target:"OUT 1"}`, `modes[].led` = `blink`(병합)·`steady`(추출). validator가 `target`이 `leds`에 있는지, `led` 값이 둘 중 하나인지 검사합니다.
+- 화면: `docs/qa/hd13u-hd210u-screens/panel-desk.png`, `panel-mob.png`
+
 ## 3. HD-210U 07 딥 스위치 설정
 
 - 근거: HD-210U 사용자 매뉴얼 Ver.1.2 7쪽 "오디오 병합 및 추출", "DDC Buffer / DDC Level Shifter 선택"(사용자 제공, `sources` 코드 `M-HD210`).
@@ -33,7 +42,7 @@
 - `node --test tests/*.test.cjs`: 39/39 통과
 - `node scripts/build-product-index.cjs --check`: 28개 통과
 - `node scripts/package-site.cjs`: 통과
-- `node scripts/e2e-smoke.cjs`: 112/112 통과(휴대폰 HD-210U 카드 순서 기대값을 01~07로 갱신)
+- `node scripts/e2e-smoke.cjs`: 113/113 통과(휴대폰 HD-210U 카드 순서 기대값을 01~07로 갱신, HD-13U 패널 그림 확인 추가)
 - `git diff --check`: 통과
 - 화면: `docs/qa/hd13u-hd210u-screens/`(HD-13U 07 오디오 설정, HD-210U 07 딥 스위치 설정)
 

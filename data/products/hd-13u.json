@@ -417,6 +417,21 @@
     "source": "U",
     "caption": "오디오 병합(OUT 1) 또는 추출 중 선택",
     "howTo": "전면 파란색 로터리 스위치를 '0'에 맞추고 SET 버튼을 누를 때마다 병합과 추출이 번갈아 바뀐다. 두 가지를 동시에 쓸 수는 없다.",
+    "panel": {
+      "rotary": {
+        "label": "MODE",
+        "value": "0"
+      },
+      "button": "SET",
+      "leds": [
+        "Status",
+        "IN",
+        "OUT 1",
+        "2",
+        "3"
+      ],
+      "target": "OUT 1"
+    },
     "modes": [
       {
         "name": "MUX",
@@ -435,7 +450,8 @@
             "label": "확인 방법",
             "text": "전면 OUTPUT 1번 LED가 깜빡인다."
           }
-        ]
+        ],
+        "led": "blink"
       },
       {
         "name": "DEMUX",
@@ -454,7 +470,8 @@
             "label": "확인 방법",
             "text": "전면 OUTPUT 1번 LED가 깜빡이지 않는다."
           }
-        ]
+        ],
+        "led": "steady"
       }
     ],
     "note": "AUDIO IN에 넣은 소리는 AUDIO OUT으로 그대로 나오지 않는다(바로 통과하지 않음)."
