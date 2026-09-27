@@ -28,6 +28,9 @@
       ${items.length?`<ul class="rt-product-grid">${items.map(item=>`<li><a class="rt-product-card" href="#products/${item.id}"><span class="rt-product-visual">${item.cardImage?`<img src="${image(item.cardImage)}" alt="" loading="lazy">`:'<span aria-hidden="true">RTCOM</span>'}</span><span class="rt-product-card-body"><span class="rt-product-group">${esc(groupLabel[item.group])}${item.catalogPages?` · 카탈로그 ${esc(item.catalogPages)}쪽`:''}</span><strong>${esc(item.productName)}</strong><span class="rt-product-en">${esc(item.english)}</span><span class="rt-product-ko">${esc(item.korean)}</span>${reviewBadge(item)}</span></a></li>`).join('')}</ul>`:'<p class="rt-products-empty">조건에 맞는 제품이 없습니다. 검색어를 지우거나 다른 분류를 선택하세요.</p>'}`;
     }
     const table=(head,rows)=>rows.length?`<div class="rt-product-table-wrap"><table class="rt-product-table"><thead><tr>${head.map(cell=>`<th scope="col">${cell}</th>`).join('')}</tr></thead><tbody>${rows.map(row=>`<tr>${row.map((cell,i)=>`<td data-label="${head[i]}">${cell}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`:'';
+    // 사양 분류(그룹)마다 작은 색 점을 붙여 한눈에 구분되게 한다(캡처로 받은 에이앤티 표 디자인 참고, 2026-09-27).
+    const GROUP_DOT={Video:'#3978ee',Transmission:'#1f9d7c',Power:'#c17a1f',Audio:'#a855c9',Control:'#7669ef'};
+    const specTable=specs=>specs.length?`<div class="rt-product-table-wrap"><table class="rt-product-table rt-product-spec-table"><thead><tr><th scope="col">구분</th><th scope="col">사양</th></tr></thead><tbody>${specs.map(spec=>`<tr><td data-label="구분"><span class="rt-product-spec-dot" style="background:${GROUP_DOT[spec.group]||'#8a94a6'}" title="${esc(spec.group)}"></span>${esc(spec.name)}</td><td data-label="사양">${esc(spec.value)}${spec.unit?` ${esc(spec.unit)}`:''}${verification(spec.verification)}${spec.condition?`<span class="rt-product-spec-note">${esc(spec.condition)}</span>`:''}</td></tr>`).join('')}</tbody></table></div>`:'';
     const verification=value=>value&&value!=='VERIFIED'?` <span class="rt-product-badge">${value==='REVIEW REQUIRED'?'검토 필요':esc(value)}</span>`:'';
     const isSizeSpec=spec=>spec.group==='Physical'&&(spec.name==='무게'||spec.name.startsWith('크기'));
     // 에이앤미디어(antez.co.kr) 알티컴 제품 페이지 표기(2026-09-27 확인)를 참고한 배치: 개요 첫 문장 굵게 → 한눈에 보기 칩(대역폭·해상도·입출력) →
@@ -105,16 +108,29 @@
       const cableName=isFiber?'광케이블':'HDBaseT(CATx)';
       const cableDistance=distanceSpec?`최대 ${distanceSpec.value}${distanceSpec.unit?` ${distanceSpec.unit}`:''}`:'';
       const [txLabel,rxLabel]=isTransceiver?[item.model.split(' / ')[0],item.model.split(' / ')[0]]:(item.model.includes(' / ')?item.model.split(' / '):[item.model,item.model]);
-      const width=980,height=220,midY=110,boxW=170,boxH=76;
+      // XDM-CTR100은 PSE(전원 공급 장비)가 별도 판매 모델이라, TX/RX 표시 대신 실제로 쓰는 두 조합(매트릭스 카드 직결 · PSE 조합)을 보여준다.
+      // 근거: docs/evidence/RTCOM_MATRIX_EVIDENCE_AND_GAPS.md U03·U04(사용자 확인 2026-09-26).
+      const pseCombo=item.id==='xdm-ctr100';
+      const width=980,height=pseCombo?320:220,midY=pseCombo?100:110,boxW=170,boxH=76;
       const srcX=60,txX=210,rxX=width-210-boxW,dstX=width-60;
-      let body=monitorIcon(srcX,midY,'소스 기기')+arrow(srcX+24,midY,txX-6,midY,COLOR_IN);
+      let body=monitorIcon(srcX,midY,pseCombo?'소스/매트릭스':'소스 기기')+arrow(srcX+24,midY,txX-6,midY,COLOR_IN);
+      if(pseCombo)body+=`<text x="${width/2}" y="${midY-56}" text-anchor="middle" font-size="11" font-weight="700" fill="#687386">조합 1 · XDM-CIS100·COS100 카드에 직결(전원 직접 연결, PSE 사용 불가)</text>`;
       body+=deviceBox(txX,midY-boxH/2,boxW,boxH,txLabel,isTransceiver?'송신 모드':'송신기(TX)');
       body+=`<path d="M${txX+boxW} ${midY}L${rxX} ${midY}" stroke="${cableColor}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/><text x="${(txX+boxW+rxX)/2}" y="${midY-20}" text-anchor="middle" font-size="11" font-weight="700" fill="${cableColor}">${svgEsc(cableName)}</text>${cableDistance?`<text x="${(txX+boxW+rxX)/2}" y="${midY-6}" text-anchor="middle" font-size="10" fill="${cableColor}">${svgEsc(cableDistance)}</text>`:''}`;
       body+=deviceBox(rxX,midY-boxH/2,boxW,boxH,rxLabel,isTransceiver?'수신 모드':'수신기(RX)');
       body+=arrow(rxX+boxW+6,midY,dstX-24,midY,COLOR_OUT)+monitorIcon(dstX,midY,'디스플레이');
+      if(pseCombo){
+        const y2=240,pseX=txX,ctrX=rxX;
+        body+=`<text x="${width/2}" y="${y2-56}" text-anchor="middle" font-size="11" font-weight="700" fill="#687386">조합 2 · 매트릭스 카드에 연결하지 않을 때</text>`;
+        body+=deviceBox(pseX,y2-boxH/2,boxW,boxH,'XDM-CTR100 PSE','전원 연결(POE 공급측)');
+        body+=`<path d="M${pseX+boxW} ${y2}L${ctrX} ${y2}" stroke="${cableColor}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/><text x="${(pseX+boxW+ctrX)/2}" y="${y2-14}" text-anchor="middle" font-size="10" font-weight="700" fill="${cableColor}">${svgEsc(cableName)} · 신호+전원 동시 공급</text>`;
+        body+=deviceBox(ctrX,y2-boxH/2,boxW,boxH,'XDM-CTR100','전원 케이블 불필요(PD)');
+        body+=`<text x="${width/2}" y="${y2+boxH/2+22}" text-anchor="middle" font-size="10" fill="#687386">TX/RX는 각 기기 DIP 스위치로 선택 · CIS100·COS100 카드에 직결할 때는 이 조합 대신 CTR100에 전원을 직접 연결</text>`;
+      }
       const extras=io.filter(port=>port!==txVideo&&port!==rxVideo&&port!==transmission&&!/Transmission/.test(port.group||'')).map(port=>shortConnector(port.connector));
       const note=extras.length?`<p class="rt-product-diagram-note">그 외 신호(${[...new Set(extras)].map(esc).join(', ')})는 위 입출력 표를 확인하세요.</p>`:'';
-      return diagramWrap(body,width,height,[[COLOR_IN,'입력(소스 → TX)'],[cableColor,cableName],[COLOR_OUT,'출력(RX → 디스플레이)']])+note;
+      const captions=pseCombo?[[COLOR_IN,'입력'],[cableColor,cableName],[COLOR_OUT,'출력']]:[[COLOR_IN,'입력(소스 → TX)'],[cableColor,cableName],[COLOR_OUT,'출력(RX → 디스플레이)']];
+      return diagramWrap(body,width,height,captions)+note;
     }
     function connectionDiagram(item){
       // 제조사가 직접 그린 연결 다이어그램(images 안의 role:"Diagram")이 있으면 그것을 쓰고, 자동 생성 도식은 만들지 않는다.
@@ -130,7 +146,7 @@
       const images=(item.images||[]).filter(img=>img.role!=='Diagram');
       const allSpecs=item.specifications||[];
       const sizeSpecs=allSpecs.filter(isSizeSpec).map(spec=>[esc(spec.name.replace('크기(W×D×H)','크기')),`${esc(spec.value)}${spec.unit?` ${esc(spec.unit)}`:''}`]);
-      const specs=allSpecs.filter(spec=>!isSizeSpec(spec)).map(spec=>[esc(spec.name),`${esc(spec.value)}${spec.unit?` ${esc(spec.unit)}`:''}${verification(spec.verification)}${spec.condition?`<span class="rt-product-spec-note">${esc(spec.condition)}</span>`:''}`]);
+      const specs=allSpecs.filter(spec=>!isSizeSpec(spec));
       const io=(item.io||[]).map(port=>[esc(port.group),esc(directionLabel[port.direction]||port.direction),esc(port.connector),esc(port.quantity),`${esc(port.signal)}${port.protocol?` · ${esc(port.protocol)}`:''}${verification(port.verification)}`,esc(port.condition)]);
       const lineup=(item.lineup||[]).map(entry=>[`<b>${esc(entry.model)}</b>`,esc(entry.kind),esc(entry.summary)]);
       // 같은 대상이 여러 관계로 적혀 있으면(예: 시리즈 소속 + 카드 연동) 한 번만 보이고, 구체적인 연동 설명을 우선한다.
@@ -154,19 +170,32 @@
           ${sizeSpecs.length?`<section class="rt-product-box rt-product-box-size"><h3>크기 및 무게</h3><ul class="rt-product-size">${sizeSpecs.map(([label,value])=>`<li><span>${label}</span><b>${value}</b></li>`).join('')}</ul></section>`:''}
         </div>`:''}
         ${lineup.length?`<section><h3>구성 제품</h3>${table(['모델','구분','요약'],lineup)}</section>`:''}
-        ${specs.length?`<section><h3>제품 사양</h3>${table(['구분','사양'],specs)}</section>`:''}
+        ${specs.length?`<section><h3>제품 사양</h3>${specTable(specs)}</section>`:''}
         ${diagram?`<section class="rt-product-diagram"><h3>연결 다이어그램</h3>${diagram}</section>`:''}
         ${io.length?`<section><h3>입출력 단자</h3>${table(['분류','방향','단자','수량','신호','조건'],io)}</section>`:''}
         ${issues.length?`<section><h3>확인 사항</h3><ul class="rt-product-issues">${issues.map(issue=>`<li data-status="${esc(issue.status)}"><b>${esc(issue.title)}</b> ${esc(issue.detail)}</li>`).join('')}</ul></section>`:''}
         <section class="rt-product-source"><h3>출처</h3><p>${esc(item.verificationSummary)}</p>${sources.length?`<ul>${sources.map(source=>`<li>${source}</li>`).join('')}</ul>`:''}<p class="rt-product-note">공개 브로셔 수준 정보입니다. 최신 사양·납품 조건은 제조사 또는 서울영상테크에 확인하세요.</p></section>
       </article>`;
     }
+    // 다이어그램 캔버스가 화면보다 넓어 가로 스크롤이 필요하면 오른쪽 끝에 그러데이션을 보여 "잘린 것"이 아니라
+    // "더 있음"임을 알린다(2026-09-27 사용자 피드백: 휴대폰에서 오른쪽이 그냥 잘려 보임).
+    function initDiagramScroll(container){
+      container.querySelectorAll('.rt-product-diagram-canvas').forEach(canvas=>{
+        const update=()=>{
+          const hasMore=canvas.scrollWidth-canvas.clientWidth-canvas.scrollLeft>4;
+          canvas.classList.toggle('rt-has-more',hasMore);
+        };
+        update();
+        canvas.addEventListener('scroll',update,{passive:true});
+      });
+    }
+    window.addEventListener('resize',()=>initDiagramScroll(body));
     function show(state){
       view.hidden=!state.products;configurator.hidden=state.products;
       for(const tab of tabs){const active=(tab.dataset.viewTab==='products')===state.products;tab.setAttribute('aria-current',active?'page':'false')}
       if(!state.products)return;
       body.innerHTML='<p class="rt-products-count" role="status">제품 정보를 불러오는 중입니다…</p>';
-      loadIndex().then(()=>state.id?loadDetail(state.id).then(item=>{if(route().id!==state.id)return;body.innerHTML=detailView(item);body.querySelector('#rt-product-title')?.focus({preventScroll:true});window.scrollTo({top:view.offsetTop-8})}):(body.innerHTML=listView()))
+      loadIndex().then(()=>state.id?loadDetail(state.id).then(item=>{if(route().id!==state.id)return;body.innerHTML=detailView(item);body.querySelector('#rt-product-title')?.focus({preventScroll:true});window.scrollTo({top:view.offsetTop-8});initDiagramScroll(body)}):(body.innerHTML=listView()))
         .catch(()=>{body.innerHTML=`<p class="rt-products-empty">제품 정보를 불러오지 못했습니다. <a href="#products">목록으로</a></p>`});
     }
     body.addEventListener('click',event=>{

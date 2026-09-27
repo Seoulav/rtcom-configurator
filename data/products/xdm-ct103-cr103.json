@@ -15,7 +15,7 @@
   "english": "1-gang wall-plate HDBaseT 3.0 HDMI transmitter/receiver pair for uncompressed 4K60 4:4:4 up to 100m, PoE-powered from XDM slots or XDM-CTR100 PSE.",
   "korean": "HDBaseT 3.0 기술로 압축하지 않은 4K60Hz 4:4:4 HDMI 신호를 최대 100m 전송하는 1 Gang 벽부형 송·수신기다.",
   "catalogPages": "11",
-  "verificationSummary": "알티컴 종합 카탈로그(2026-03) 11쪽의 XDM-CT103·XDM-CR103 소개와 제품사양 표에서 확인했다.",
+  "verificationSummary": "알티컴 종합 카탈로그(2026-03, 48쪽판) 11쪽의 XDM-CT103·XDM-CR103 소개와 제품사양 표에서 확인했고, 새 카탈로그(46쪽판) 11쪽과 줄 단위로 재대조했다(차이 없음).",
   "packageStatus": "REVIEW REQUIRED",
   "overview": "XDM-CT103은 HDBaseT 3.0 기술이 적용되어 압축하지 않은 True 4K 4096x2160@60Hz(4:4:4), 3840x2160@60Hz(4:4:4) 해상도의 HDMI 신호를 케이블에 따라 최대 100m까지 전송하는 HDMI 1 Gang 벽부형 송신기이며 XDM-CIS100과 호환된다. XDM-CR103은 같은 신호를 최대 100m까지 받는 1 Gang 벽부형 수신기이며 XDM-COS100과 사용할 수 있다.\n\n벽부형 제품은 슬롯과 함께 쓰면 PoE 기능으로 별도 전원 케이블 없이 Cat 케이블을 통해 신호와 전원을 공급받는다. XDM-CTR100 PSE와도 사용할 수 있으며, 이때도 XDM-CT103/CR103에 별도 전원 케이블을 연결하지 않아도 된다. 케이블별 최대 사용 거리는 제조사 문의 사항으로 적혀 있다.",
   "images": [
@@ -286,6 +286,12 @@
       "name": "저장소 기존 제품 사진(output/design/assets)",
       "page": "",
       "scope": "구성기 화면에서 사용 중인 RTCOM 제품 사진"
+    },
+    {
+      "code": "C2",
+      "name": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
+      "page": "11",
+      "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
     }
   ],
   "issues": [
@@ -293,13 +299,13 @@
       "code": "R1",
       "status": "REVIEW REQUIRED",
       "title": "XDM-CR103 오디오 방향 표기",
-      "detail": "수신기인 XDM-CR103의 Number of port가 송신기와 같은 '1 HDMI, 1 HDBaseT, 1 Audio In'으로 적혀 있다. 수신기의 오디오 단자 방향이 맞는지 확인이 필요하다. 원문대로 IN으로 두었다."
+      "detail": "수신기인 XDM-CR103의 Number of port가 송신기와 같은 '1 HDMI, 1 HDBaseT, 1 Audio In'으로 적혀 있다. 46쪽판 11쪽도 줄 단위로 동일하게 CR103 행에 '1 Audio In'을 반복해, 새 카탈로그로도 방향 오기 여부를 확인할 수 없다. 원문대로 IN으로 두고 REVIEW REQUIRED를 유지한다."
     },
     {
       "code": "R2",
       "status": "REVIEW REQUIRED",
       "title": "XDM-CT103 무게 환산 불일치",
-      "detail": "XDM-CT103 무게는 '0.34kg (1.0lb.)'로 적혀 있지만 0.34kg은 약 0.75lb다. 같은 크기의 XDM-CR103은 약 0.26kg이다. kg 값을 그대로 두었다."
+      "detail": "XDM-CT103 무게는 '0.34kg (1.0lb.)'로 적혀 있지만 0.34kg은 약 0.75lb다. 같은 크기의 XDM-CR103은 약 0.26kg이다. 46쪽판 11쪽도 줄 단위로 동일한 값을 반복해 두 판 모두 같은 오기가 있다. kg 값을 그대로 두고 REVIEW REQUIRED를 유지한다."
     },
     {
       "code": "I1",

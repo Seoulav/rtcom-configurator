@@ -354,10 +354,13 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 
 /* 0.21 — 연결 다이어그램(에이앤미디어 antez.co.kr 방식 참고): 데이터 기반 자동 생성 SVG */
 #rtcom-design .rt-product-diagram{padding:18px 20px;border-radius:16px;background:#f7f9fd;box-shadow:inset 0 0 0 1px #e2e8f1}
-#rtcom-design .rt-product-diagram-canvas{width:100%;max-width:900px;margin:0 auto;overflow-x:auto}
+#rtcom-design .rt-product-diagram-canvas{position:relative;width:100%;max-width:900px;margin:0 auto;overflow-x:auto}
 #rtcom-design .rt-product-diagram-canvas svg{width:100%;min-width:620px;height:auto;display:block}
 #rtcom-design .rt-product-diagram-hint{display:none;margin:8px 0 0;color:#56627a;font-size:11px;text-align:center}
 @media(max-width:720px){#rtcom-design .rt-product-diagram-hint{display:block}}
+/* 0.28 — 가로 스크롤이 필요한 다이어그램의 오른쪽 끝에 그러데이션을 보여 "잘림"이 아니라 "더 있음"을 알린다 */
+#rtcom-design .rt-product-diagram-canvas.rt-has-more::after{content:"";position:absolute;top:0;right:0;bottom:0;width:32px;background:linear-gradient(to right,rgba(247,249,253,0),#f7f9fd 80%);pointer-events:none}
+#rtcom-design .rt-product-diagram-photo.rt-has-more::after{background:linear-gradient(to right,rgba(255,255,255,0),#fff 80%)}
 #rtcom-design .rt-product-diagram-legend{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:14px 20px}
 #rtcom-design .rt-product-diagram-legend li{display:flex;align-items:center;gap:6px;font-size:12px;color:#4d5d75;font-weight:700}
 #rtcom-design .rt-product-diagram-legend li span{width:12px;height:12px;border-radius:3px;display:inline-block}
@@ -370,3 +373,13 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 /* 0.25 — 제조사 제공 연결 다이어그램(카탈로그 원본 이미지). 자동 생성 SVG와 같은 스크롤 규칙을 쓴다 */
 #rtcom-design .rt-product-diagram-photo{padding:0;background:#fff}
 #rtcom-design .rt-product-diagram-photo img{width:100%;min-width:620px;display:block;border-radius:10px}
+
+/* 0.26 — 제품 사양 표 디자인 다듬기: 사용자가 캡처로 준 자료(에이앤티) 참고, 분류별 색 점으로 구분 */
+#rtcom-design .rt-product-spec-table thead tr{background:linear-gradient(120deg,#3978ee,#7669ef)}
+#rtcom-design .rt-product-spec-table th{background:transparent;color:#fff;font-size:12px;letter-spacing:.3px}
+#rtcom-design .rt-product-spec-table tbody tr:nth-child(even){background:#f7f9fd}
+#rtcom-design .rt-product-spec-table tbody tr:hover{background:#eef2ff}
+#rtcom-design .rt-product-spec-table td:first-child{display:flex;align-items:center;gap:8px;font-weight:650;color:#333d52;white-space:nowrap}
+#rtcom-design .rt-product-spec-dot{flex:0 0 auto;width:8px;height:8px;border-radius:999px}
+#rtcom-design .rt-product-spec-table td:last-child{font-weight:600;color:#1f2532}
+@media(max-width:560px){#rtcom-design .rt-product-spec-table td:first-child{white-space:normal}}

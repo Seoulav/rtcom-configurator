@@ -15,7 +15,7 @@
   "english": "Fiber optic HDMI 2.0 transmitter/receiver pair for 4K60 4:4:4 up to 2km single-mode or 300m multi-mode, with audio and RS-232+.",
   "korean": "True 4K60Hz 4:4:4 HDMI v2.0 신호를 싱글모드 광케이블로 최대 2km, 멀티모드로 최대 300m 전송하는 광 송·수신기다.",
   "catalogPages": "12",
-  "verificationSummary": "알티컴 종합 카탈로그(2026-03) 12쪽의 XDM-FT101·XDM-FR101 소개와 제품사양 표에서 확인했다.",
+  "verificationSummary": "알티컴 종합 카탈로그(2026-03, 48쪽판) 12쪽의 XDM-FT101·XDM-FR101 소개와 제품사양 표에서 확인했고, 새 카탈로그(46쪽판) 12쪽과 줄 단위로 재대조했다(차이 없음).",
   "packageStatus": "VERIFIED",
   "overview": "XDM-FT101/XDM-FR101은 True 4K 4096x2160@60Hz(4:4:4), 3840x2160@60Hz(4:4:4) 해상도의 HDMI v2.0 신호를 싱글모드 광케이블 사용 시 최대 2km, 멀티모드 광케이블 사용 시 최대 300m까지 전송하는 광 송·수신기다.\n\nXDM-FT101은 XDM-FIS100과, XDM-FR101은 XDM-FOS100과 호환된다. RS-232+ 기능으로 XDM 매트릭스의 커맨드를 통해 광 송·수신기의 RS-232 단자에 연결된 외부기기를 제어할 수 있다. 송신기는 Phoenix 5p 단자로 스테레오 오디오를 삽입하고, 수신기는 같은 방식으로 스테레오 오디오를 추출한다.",
   "images": [
@@ -306,9 +306,21 @@
       "name": "저장소 기존 제품 사진(output/design/assets)",
       "page": "",
       "scope": "구성기 화면에서 사용 중인 RTCOM 제품 사진"
+    },
+    {
+      "code": "C2",
+      "name": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
+      "page": "12",
+      "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
     }
   ],
   "issues": [
+    {
+      "code": "I3",
+      "status": "INFO",
+      "title": "새 카탈로그 재대조 결과",
+      "detail": "46쪽판 12쪽 XDM-FT101·XDM-FR101 소개문·제품사양 표를 48쪽판 12쪽과 줄 단위로 비교한 결과 완전히 동일했다(diff 없음). 값 변경 없음."
+    },
     {
       "code": "I1",
       "status": "INFO",
