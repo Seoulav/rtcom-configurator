@@ -117,6 +117,10 @@
     {
       "text": "EDID 마인더 기능 지원(외부 EDID 저장, 내장 EDID 선택)",
       "source": "C"
+    },
+    {
+      "text": "다단 증폭(캐스케이드 연결) 최대 3단 지원",
+      "source": "U"
     }
   ],
   "specifications": [
@@ -366,6 +370,12 @@
       "name": "HD-108U 사용자 매뉴얼 Ver.1.1",
       "page": "7",
       "scope": "제조사 공식 출처 — 사용자 제공 PDF(.source-materials/RTcom_Manual_HD-108U_Ver1.1.pdf, 배포 제외)"
+    },
+    {
+      "code": "U",
+      "name": "서울영상테크 SI사업본부 확인",
+      "page": "",
+      "scope": "사용자 확인(2026-09-27) — 3~10분배기(HD-13U·HD-104U·HD-108U·HD-210U) 다단 증폭 최대 3단 지원"
     }
   ],
   "issues": [
