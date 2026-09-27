@@ -1,9 +1,9 @@
 {
-  "id": "hd-18u",
+  "id": "hd-108u",
   "group": "distribution",
   "manufacturer": "RTCOM",
-  "productName": "HD-18U",
-  "model": "HD-18U",
+  "productName": "HD-108U",
+  "model": "HD-108U",
   "series": "1x8 HDMI 18Gbps Splitter",
   "itemType": "PRODUCT",
   "categories": [
@@ -18,15 +18,15 @@
   "catalogPages": "36",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 38쪽의 소개·주요기능·제품사양·크기 및 무게·제품 이미지에서 확인했다.",
   "packageStatus": "VERIFIED",
-  "overview": "HD-18U는 HDMI 신호용 고성능 분배기다. True HDMI 2.0 3840x2160p 60Hz 크로마샘플링 4:4:4 해상도를 지원한다.\n\n하나의 HDMI 입력신호를 신호의 손실 없이 8개의 동일한 출력으로 분배하며 HDCP(고대역 디지털 콘텐츠 보호)와 EDID(디스플레이 식별 정보)를 완벽 지원하여 호환 이슈 없이 사용할 수 있다. 외부 EDID와 내부에 저장된 EDID를 사용할 수 있어 EDID 마인더 기능도 수행한다.",
+  "overview": "HD-108U는 HDMI 신호용 고성능 분배기다. True HDMI 2.0 3840x2160p 60Hz 크로마샘플링 4:4:4 해상도를 지원한다.\n\n하나의 HDMI 입력신호를 신호의 손실 없이 8개의 동일한 출력으로 분배하며 HDCP(고대역 디지털 콘텐츠 보호)와 EDID(디스플레이 식별 정보)를 완벽 지원하여 호환 이슈 없이 사용할 수 있다. 외부 EDID와 내부에 저장된 EDID를 사용할 수 있어 EDID 마인더 기능도 수행한다.",
   "images": [
     {
       "role": "Front",
-      "file": "hd-18u-front.webp",
-      "alt": "RTCOM HD-18U 전면",
+      "file": "hd-108u-front.webp",
+      "alt": "RTCOM HD-108U 전면",
       "note": "Front · 카탈로그 제품 이미지",
       "provider": "RTCOM",
-      "model": "HD-18U",
+      "model": "HD-108U",
       "source": "C",
       "officialSource": true,
       "verificationStatus": "FOUND",
@@ -34,11 +34,11 @@
     },
     {
       "role": "Rear",
-      "file": "hd-18u-rear.webp",
-      "alt": "RTCOM HD-18U 후면",
+      "file": "hd-108u-rear.webp",
+      "alt": "RTCOM HD-108U 후면",
       "note": "Rear · 카탈로그 제품 이미지",
       "provider": "RTCOM",
-      "model": "HD-18U",
+      "model": "HD-108U",
       "source": "C",
       "officialSource": true,
       "verificationStatus": "FOUND",
@@ -46,11 +46,11 @@
     },
     {
       "role": "Diagram",
-      "file": "hd-18u-diagram.webp",
-      "alt": "RTCOM HD-18U 연결 다이어그램(제조사 제공)",
+      "file": "hd-108u-diagram.webp",
+      "alt": "RTCOM HD-108U 연결 다이어그램(제조사 제공)",
       "note": "Diagram · 카탈로그 46쪽판 36쪽 제조사 제공 연결 다이어그램",
       "provider": "RTCOM",
-      "model": "HD-18U",
+      "model": "HD-108U",
       "source": "C2",
       "officialSource": true,
       "verificationStatus": "FOUND"
@@ -221,7 +221,7 @@
       "code": "I2",
       "status": "INFO",
       "title": "모델 구분",
-      "detail": "HD-D108U(33쪽)와는 다른 제품이며, 이 파일은 38쪽 HD-18U 내용만 사용했다."
+      "detail": "HD-D108U(33쪽)와는 다른 제품이며, 이 파일은 38쪽 HD-108U 내용만 사용했다."
     },
     {
       "code": "I1",
@@ -232,8 +232,8 @@
     {
       "code": "I3",
       "status": "INFO",
-      "title": "모델명 정정 근거",
-      "detail": "저장소가 처음 썼던 알티컴 종합 카탈로그(48쪽, 국문)에는 이 제품이 \"HD-108U\"로 인쇄돼 있었다. 사용자가 제공한 두 번째 카탈로그(RTcom_catalogue, 46쪽, 2026-09-27)와 에이앤미디어(antez.co.kr) 화면 모두 \"HD-18U\"로 일치해, 첫 카탈로그의 오기로 보고 모델명을 정정했다(HD-108U → HD-18U)."
+      "title": "모델명 표기 이력",
+      "detail": "0.24.0에서는 저장소가 처음 썼던 48쪽 카탈로그의 \"HD-108U\" 인쇄를 오기로 보고, 사용자가 제공한 46쪽 카탈로그와 에이앤미디어(antez.co.kr) 화면의 \"HD-18U\" 표기에 맞춰 모델명을 HD-18U로 정정했다. 이후 사용자(서울영상테크 SI사업본부, 2026-09-27)가 \"전체 카탈로그에 HD-104U, HD-108U로 나와 있으며 추후 실크(제품 인쇄 라벨)만 14U·18U로 변경 예정\"이라고 확인해, 현재 정식 모델명은 다시 HD-108U로 되돌렸다(0.36.0 이후). 46쪽 카탈로그·antez.co.kr의 18U 표기는 앞으로 실크가 바뀔 예정 명칭을 미리 반영한 것으로 보인다."
     },
     {
       "code": "I4",

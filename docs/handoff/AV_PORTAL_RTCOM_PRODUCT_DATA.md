@@ -86,9 +86,9 @@ AV Portal과 같은 제외 모델을 적용했습니다(HS-88MX, HS-88M-U, HD-D1
 | 매트릭스 시리즈 | `xdm` | XDM Series | 4–12 | REVIEW REQUIRED |
 | 일체형 매트릭스 | `qms-44ux` | QMS-44UX | 29 | REVIEW REQUIRED |
 | 일체형 매트릭스 | `qms-88ux` | QMS-88UX | 30 | REVIEW REQUIRED |
+| 분배기·선택기 | `hd-104u` | HD-104U | 37 | REVIEW REQUIRED |
+| 분배기·선택기 | `hd-108u` | HD-108U | 38 | VERIFIED |
 | 분배기·선택기 | `hd-13u` | HD-13U | 36 | VERIFIED |
-| 분배기·선택기 | `hd-14u` | HD-14U | 37 | REVIEW REQUIRED |
-| 분배기·선택기 | `hd-18u` | HD-18U | 38 | VERIFIED |
 | 분배기·선택기 | `hd-210u` | HD-210U | 39 | VERIFIED |
 | 분배기·선택기 | `hd-d102u` | HD-D102U | 31 | VERIFIED |
 | 분배기·선택기 | `hds-21u` | HDS-21U | 34 | VERIFIED |

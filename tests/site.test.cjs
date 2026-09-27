@@ -127,7 +127,7 @@ test('public product data (0.19) is valid, brochure-level only and listed in ind
   const count=group=>index.products.filter(product=>product.group===group).length;
   assert.deepEqual({series:count('series'),integrated:count('integrated'),distribution:count('distribution'),extender:count('extender'),cable:count('cable')},{series:3,integrated:2,distribution:7,extender:11,cable:4});
   for(const model of EXCLUDED)assert.equal(index.products.some(product=>product.model===model),false,`${model} is excluded like AV Portal`);
-  for(const model of ['HD-14U','HD-18U','QMS-44UX','MR-4S'])assert.ok(index.products.some(product=>product.model===model),`missing ${model}`);
+  for(const model of ['HD-104U','HD-108U','QMS-44UX','MR-4S'])assert.ok(index.products.some(product=>product.model===model),`missing ${model}`);
   for(const product of index.products)assert.ok(product.cardImage,`${product.id} needs a card image`);
   const html=read('index.html');
   assert.match(html,/<section class="rt-products-view" aria-label="알티컴 제품정보" hidden>/);
