@@ -132,15 +132,15 @@
       "source": "C"
     },
     {
-      "text": "오디오 병합(MUX)과 추출(DEMUX) 중 하나를 골라 쓴다.",
-      "source": "U"
-    },
-    {
-      "text": "Priority 기능(딥 스위치 2번): 입력 1~4번 중 1번 우선순위, 신호 없으면 다른 입력으로 자동 절체 후 1번 신호가 돌아오면 다시 절체",
+      "text": "Priority 기능 지원(딥 스위치 2번, 입력 1번 우선)",
       "source": "C"
     },
     {
-      "text": "오디오는 딥 스위치 1번으로 병합(ON, 3.5mm 소리를 HDMI에 병합)과 추출(OFF, HDMI 소리를 3.5mm로 추출) 중 하나만 쓴다. 자세한 표는 '07 오디오 설정' 참고.",
+      "text": "출력 1·2번 분배 지원(딥 스위치 3번)",
+      "source": "M1"
+    },
+    {
+      "text": "오디오 병합·추출 선택 지원(딥 스위치 1번, 07 딥 스위치 설정 참고)",
       "source": "M1"
     },
     {
@@ -148,7 +148,7 @@
       "source": "C"
     },
     {
-      "text": "버튼, RS232, IR 리모콘으로 제어한다.",
+      "text": "버튼, RS232, IR 리모콘 제어 지원",
       "source": "C"
     }
   ],
@@ -223,33 +223,6 @@
       "unit": "kg",
       "condition": "",
       "source": "C",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "Control",
-      "name": "딥 스위치 1 · 오디오",
-      "value": "ON: 병합(3.5mm Stereo Audio) / OFF: 추출(HDMI Embedded Audio)",
-      "unit": "",
-      "condition": "전면 · 바꾼 뒤 전원 케이블 1회 탈착",
-      "source": "M1",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "Control",
-      "name": "딥 스위치 2 · Priority",
-      "value": "ON: 입력 1번 우선(신호 없으면 다음 입력으로 자동 전환) / OFF: 마지막에 들어온 신호 출력",
-      "unit": "",
-      "condition": "전면 · 바꾼 뒤 전원 케이블 1회 탈착",
-      "source": "M1",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "Control",
-      "name": "딥 스위치 3 · 분배",
-      "value": "ON: 출력 1·2번에 같은 영상 / OFF: 출력별 입력 선택",
-      "unit": "",
-      "condition": "전면 · 바꾼 뒤 전원 케이블 1회 탈착",
-      "source": "M1",
       "verification": "VERIFIED"
     }
   ],
@@ -361,7 +334,7 @@
       {
         "n": 7,
         "label": "MODE",
-        "desc": "전면 빨간색 딥 스위치 4개: 1번 오디오 병합·추출, 2번 Priority(입력 1~4번 중 1번 우선), 3번 출력 1·2번 분배, 04 제품 사양 참고",
+        "desc": "전면 빨간색 딥 스위치 3개(1번 오디오 병합·추출, 2번 Priority, 3번 출력 1·2번 분배). 설정 방법은 '07 딥 스위치 설정' 참고",
         "x1": 365,
         "x2": 396,
         "side": "top",
@@ -483,43 +456,56 @@
       "scope": "사용자 확인(2026-09-27) — 오디오 병합(MUX)·추출(DEMUX)은 둘 중 하나만 동작하고 딥 스위치로 선택, HDS-21U·HDS-42MU 같은 방식"
     }
   ],
-  "audioMux": {
-    "mode": "select",
-    "source": "U",
-    "howTo": "전면 딥 스위치 1번 하나로 고른다(ON = 병합, OFF = 추출). 스위치를 바꾼 뒤 전원 케이블을 한 번 뺐다 꽂으면 적용된다. 두 가지를 동시에 쓸 수는 없다.",
-    "modes": [
+  "dipSwitch": {
+    "label": "MODE",
+    "count": 3,
+    "onUp": true,
+    "source": "M1",
+    "rows": [
       {
-        "name": "MUX",
-        "title": "병합",
-        "setting": "딥 스위치 1번 ON · 3.5mm Stereo Audio",
-        "flow": [
-          "AUDIO IN",
-          "HDMI OUT"
-        ],
-        "rows": [
-          {
-            "label": "소리가 나오는 곳",
-            "text": "3.5mm AUDIO IN에 넣은 소리가 HDMI 출력(디스플레이)으로 나온다."
-          }
-        ]
+        "n": 1,
+        "title": "오디오 병합·추출",
+        "off": {
+          "name": "추출",
+          "text": "HDMI 원래 소리(HDMI Embedded Audio)가 디스플레이로 그대로 가고, 3.5mm AUDIO OUT으로도 나온다."
+        },
+        "on": {
+          "name": "병합",
+          "text": "3.5mm AUDIO IN에 넣은 소리(3.5mm Stereo Audio)가 HDMI 출력(디스플레이)으로 나온다."
+        },
+        "note": "병합과 추출은 동시에 쓸 수 없고, 둘 중 하나를 골라 쓴다."
       },
       {
-        "name": "DEMUX",
-        "title": "추출",
-        "setting": "딥 스위치 1번 OFF · HDMI Embedded Audio",
-        "flow": [
-          "HDMI IN",
-          "AUDIO OUT"
-        ],
-        "rows": [
-          {
-            "label": "소리가 나오는 곳",
-            "text": "HDMI 원래 소리가 디스플레이로 그대로 가고, 3.5mm AUDIO OUT으로도 나온다."
-          }
-        ]
+        "n": 2,
+        "title": "Priority",
+        "off": {
+          "name": "오토 셀렉팅",
+          "text": "마지막에 신호가 들어온 입력을 출력한다."
+        },
+        "on": {
+          "name": "입력 1번 우선",
+          "text": "입력 1번을 우선 출력하고, 1번 신호가 없으면 다음 입력으로 자동 전환한다. 1번 신호가 돌아오면 다시 1번으로 돌아간다."
+        }
+      },
+      {
+        "n": 3,
+        "title": "분배",
+        "off": {
+          "name": "출력별 선택",
+          "text": "출력 1·2번이 각각 다른 입력을 고를 수 있다."
+        },
+        "on": {
+          "name": "분배",
+          "text": "출력 1·2번에 같은 영상이 나온다."
+        }
       }
     ],
+    "apply": "스위치를 바꾼 뒤 전원 케이블을 한 번 뺐다 꽂아야 적용된다.",
     "note": "나가는 소리의 볼륨은 RS-232 명령으로 0.5dB 단위로 조절하거나 뮤트할 수 있다(매뉴얼 9쪽, 예: *000V54! = 0dB에서 2dB로)."
+  },
+  "audioMux": {
+    "mode": "select",
+    "source": "U"
   },
   "issues": []
 }

@@ -326,11 +326,12 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
     await page.waitForSelector('#rt-pg-title');
     // 0.49 HDS-21U·HDS-42MU도 같은 방식(딥 스위치 1번 선택, 사용자 확인·매뉴얼 Ver.1.0). 신호 흐름 문구에는 HD-13U 전용 "(OUT 1)"이 붙지 않는다.
-    for(const id of ['hds-21u','hds-42mu']){
+    // 0.58 두 제품은 07 오디오 설정 카드 대신 07 딥 스위치 설정 카드로 스위치 번호마다 OFF·ON 그림을 보여준다(사용자 요청 2026-09-27).
+    for(const [id,rows] of [['hds-21u',2],['hds-42mu',3]]){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
       await page.waitForSelector('#rt-pg-title');
-      const hdsAudio=await page.evaluate(()=>({modes:document.querySelectorAll('.rt-pg-audio .rt-pg-audio-mode').length,dip:document.querySelector('.rt-pg-audio-how')?.textContent.includes('딥 스위치 1번'),flow:[...document.querySelectorAll('.rt-pg-svg-wrap svg')].some(svg=>svg.textContent.includes('오디오 병합 또는 추출 중 선택')&&!svg.textContent.includes('(OUT 1)'))}));
-      check(`${id} 오디오 설정 카드가 딥 스위치 1번 기준 병합·추출 두 칸으로 나오고 신호 흐름에 "선택"이 표시됨`,hdsAudio.modes===2&&hdsAudio.dip&&hdsAudio.flow,JSON.stringify(hdsAudio));
+      const hdsDip=await page.evaluate(()=>({audio:document.querySelectorAll('.rt-pg-audio').length,rows:document.querySelectorAll('.rt-pg-dip .rt-pg-dip-row').length,svgs:document.querySelectorAll('.rt-pg-dip svg[aria-label^="딥 스위치"]').length,idx:document.querySelector('.rt-pg-dip .rt-pg-idx')?.textContent,first:document.querySelector('.rt-pg-dip .rt-pg-dip-row')?.textContent.includes('병합'),flow:[...document.querySelectorAll('.rt-pg-svg-wrap svg')].some(svg=>svg.textContent.includes('오디오 병합 또는 추출 중 선택')&&!svg.textContent.includes('(OUT 1)')),overflow:document.documentElement.scrollWidth>innerWidth+1}));
+      check(`${id} 07 딥 스위치 설정 카드가 오디오 설정 카드를 대신하고 스위치 ${rows}개 행·OFF/ON 그림 ${rows*2}개, 신호 흐름에 "선택"이 표시됨`,hdsDip.audio===0&&hdsDip.rows===rows&&hdsDip.svgs===rows*2&&hdsDip.idx==='07'&&hdsDip.first&&hdsDip.flow&&!hdsDip.overflow,JSON.stringify(hdsDip));
     }
     // 0.55 QMS-88UX 06 화면 구성 모드: 레이아웃 버튼을 누르면 해당 도해로 미리보기가 바뀐다(사용자 요청 2026-09-27).
     await page.goto(`${home}#products/qms-88ux`,{waitUntil:'networkidle'});
