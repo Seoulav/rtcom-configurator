@@ -105,7 +105,20 @@ function build(){
   const ids=new Set(products.map(([,product])=>product.id));
   const errors=products.flatMap(([name,product])=>validate(product,path.join(DIR,name),ids));
   const order=product=>GROUPS.indexOf(product.group);
-  const list=products.map(([,product])=>product).sort((a,b)=>order(a)-order(b)||a.productName.localeCompare(b.productName,'en'));
+  const hdmiOutQty=product=>{
+    const port=(product.io||[]).find(row=>row.direction==='OUT'&&/HDMI/i.test(row.connector||''));
+    const n=port&&parseInt(port.quantity,10);
+    return Number.isFinite(n)?n:null;
+  };
+  const list=products.map(([,product])=>product).sort((a,b)=>{
+    const groupDiff=order(a)-order(b);
+    if(groupDiff)return groupDiff;
+    if(a.group==='distribution'&&b.group==='distribution'){
+      const qa=hdmiOutQty(a),qb=hdmiOutQty(b);
+      if(qa!==null&&qb!==null&&qa!==qb)return qa-qb;
+    }
+    return a.productName.localeCompare(b.productName,'en');
+  });
   const card=product=>{const images=product.images||[];return (images.find(image=>image.role==='Main')||images.find(image=>image.role==='Front')||images[0]||{}).file||null};
   const index={
     schema:SCHEMA,
