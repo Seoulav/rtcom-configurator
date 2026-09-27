@@ -44,6 +44,18 @@
       "officialSource": true,
       "verificationStatus": "FOUND",
       "resolution": "1189×383"
+    },
+    {
+      "role": "Front",
+      "file": "obhd-2c-tx-front.webp",
+      "alt": "RTCOM OBHD-2C 송신기(TX) 전면(VIDEO·AUDIO·PWR·EDID LED, EDID S/W 버튼, MODE 로터리, S/P 단자)",
+      "note": "Front · 카탈로그 41쪽 TX 전면 사진을 잘라 2배로 키움",
+      "provider": "RTCOM",
+      "model": "OBHD-2C",
+      "source": "C",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "970×220"
     }
   ],
   "imageStatuses": [
@@ -53,7 +65,7 @@
     },
     {
       "role": "Front",
-      "status": "MISSING"
+      "status": "FOUND"
     },
     {
       "role": "Rear",
@@ -310,7 +322,108 @@
       "name": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
       "page": "39",
       "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
+    },
+    {
+      "code": "M1",
+      "name": "OBHD-2C 사용자 매뉴얼 KV01",
+      "page": "3-8",
+      "scope": "제조사 공식 출처 — 사용자 제공 PDF(.source-materials/RTcom_Manual_OBHD-2C_KV01.pdf, 배포 제외)"
     }
   ],
-  "issues": []
+  "issues": [],
+  "edidSwitch": {
+    "image": "Front",
+    "x1": 652,
+    "y1": 44,
+    "x2": 742,
+    "y2": 132,
+    "label": "MODE 로터리 스위치",
+    "desc": "송신기(TX) 전면 파란 MODE 로터리 스위치로 EDID Library의 해상도를 고른다. EDID S/W 버튼을 누르면 연결한 디스플레이의 EDID를 송신기에 저장할 수 있다(EDID Emulation). 로터리 번호는 매뉴얼 EDID Library 표 순서대로 적었으며 제조사 확인 전이다.",
+    "default": "C = HD1080p(2CH) · 1920x1080@60Hz(초기값)",
+    "steps": [
+      {
+        "title": "EDID 저장(Emulation)",
+        "items": [
+          "송신기와 디스플레이 기기를 HDMI 케이블로 연결한다.",
+          "EDID S/W 버튼을 누르면 디스플레이의 EDID 정보가 복사되어 송신기 EEPROM에 저장된다. 이후 송신기가 디스플레이 역할을 한다."
+        ]
+      }
+    ],
+    "table": [
+      {
+        "code": "0",
+        "function": "800x600@60Hz",
+        "caption": "800×600@60"
+      },
+      {
+        "code": "1",
+        "function": "1024x768@60Hz",
+        "caption": "1024×768@60"
+      },
+      {
+        "code": "2",
+        "function": "1280x768@60Hz",
+        "caption": "1280×768@60"
+      },
+      {
+        "code": "3",
+        "function": "1280x1024@60Hz",
+        "caption": "1280×1024@60"
+      },
+      {
+        "code": "4",
+        "function": "1360x768@60Hz",
+        "caption": "1360×768@60"
+      },
+      {
+        "code": "5",
+        "function": "1366x768@60Hz",
+        "caption": "1366×768@60"
+      },
+      {
+        "code": "6",
+        "function": "1400x1050@60Hz",
+        "caption": "1400×1050@60"
+      },
+      {
+        "code": "7",
+        "function": "1600x900@60Hz",
+        "caption": "1600×900@60"
+      },
+      {
+        "code": "8",
+        "function": "1600x1200@60Hz",
+        "caption": "1600×1200@60"
+      },
+      {
+        "code": "9",
+        "function": "1680x1050@60Hz",
+        "caption": "1680×1050@60"
+      },
+      {
+        "code": "A",
+        "function": "1920x1200@60Hz",
+        "caption": "1920×1200@60"
+      },
+      {
+        "code": "B",
+        "function": "HD1080i@60Hz",
+        "caption": "1080i@60"
+      },
+      {
+        "code": "C",
+        "function": "HD1080p(2CH) · 1920x1080@60Hz",
+        "caption": "1080p 2CH",
+        "highlight": true
+      },
+      {
+        "code": "D",
+        "function": "HD1080p(Multi) · 1920x1080@60Hz 멀티채널 오디오",
+        "caption": "1080p Multi"
+      }
+    ],
+    "source": "M1",
+    "examples": "all",
+    "rotaryName": "MODE 로터리"
+  }
 }

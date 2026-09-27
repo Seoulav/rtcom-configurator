@@ -390,6 +390,13 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.waitForSelector('.rt-pg-edid');
     const ftRot=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-edid .rt-pg-rotary-row .rt-pg-rotary svg')].map(svg=>(svg.getAttribute('aria-label').match(/(\w)번$/)||[])[1]).join(','));
     check('XDM-FT101/FR101 EDID 설정에 로터리 전체 8칸(Source 0~3, Analog 8~B)이 나옴',ftRot==='0,1,2,3,8,9,A,B',ftRot);
+    // 0.65 OBHD-2C EDID 로터리(매뉴얼 KV01 EDID Library 14종, 사용자 요청 "그려줘"): 0~D 전체 14칸, C번이 기본값, 06 EDID 설정, 정면 사진 로드.
+    await page.goto(`${home}#products/obhd-2c`,{waitUntil:'networkidle'});
+    await page.waitForSelector('.rt-pg-edid');
+    await page.$eval('.rt-pg-edid img',img=>img.scrollIntoView());
+    await page.waitForFunction(()=>document.querySelector('.rt-pg-edid img')?.naturalWidth>0);
+    const obhd=await page.evaluate(()=>({codes:[...document.querySelectorAll('.rt-pg-edid .rt-pg-rotary-row .rt-pg-rotary svg')].map(svg=>(svg.getAttribute('aria-label').match(/(\w)번$/)||[])[1]).join(''),def:document.querySelector('.rt-pg-edid .rt-pg-rotary.is-default figcaption em')?.textContent,idx:document.querySelector('.rt-pg-edid')?.closest('section')?.querySelector('.rt-pg-idx')?.textContent,rows:document.querySelectorAll('.rt-pg-edid .rt-pg-tablewrap tbody tr').length}));
+    check('OBHD-2C 06 EDID 설정에 MODE 로터리 0~D 14칸과 C번 기본값, 코드표 14행이 나옴',obhd.codes==='0123456789ABCD'&&obhd.def==='C번 · 기본값'&&obhd.idx==='06'&&obhd.rows===14,JSON.stringify(obhd));
     // 0.64 SPX는 HDBaseT가 아닌 CATx 전송(사용자 확인 2026-09-27): SPX 시리즈 상세 신호 범례와 SPX-TX/RX 어디에도 HDBaseT가 나오지 않는다.
     for(const id of ['spx','spx-rx-tx']){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
