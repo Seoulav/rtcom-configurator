@@ -231,17 +231,8 @@
       "name": "전원(어댑터)",
       "value": "DC +12V 1A 이상",
       "unit": "",
-      "condition": "XDM-CT103 · XDM-CIS100 카드나 XDM-CTR100 PSE와 연결하면 PoE로 전원을 받아 연결하지 않음 · 그 밖에는 어댑터 연결",
-      "source": "M1",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "Power",
-      "name": "전원(어댑터)",
-      "value": "DC +12V 1A 이상",
-      "unit": "",
-      "condition": "XDM-CR103 · XDM-COS100 카드나 XDM-CTR100 PSE와 연결하면 PoE로 전원을 받아 연결하지 않음 · 그 밖에는 어댑터 연결",
-      "source": "M2",
+      "condition": "XDM-CT103·XDM-CR103 공통 · 전용 카드(CIS100/COS100)나 XDM-CTR100 PSE와 연결하면 PoE로 전원을 받아 연결하지 않음 · 그 밖에는 어댑터 연결",
+      "source": "U",
       "verification": "VERIFIED"
     },
     {
