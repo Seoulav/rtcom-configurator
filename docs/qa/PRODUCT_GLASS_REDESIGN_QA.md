@@ -46,3 +46,21 @@
 - 분배기·일체형 8종, 전송기 11종, 케이블 4종의 `lead`·`subtitle`·`portMap` 채우기.
 - QMS-44UX·QMS-88UX "06 화면 구성 모드"(videoModes) 데이터 형식 정의 및 재도색.
 - 케이블 템플릿(2-4)의 실제 데이터 적용(현재는 함수만 준비, 표시 문구는 폴백 상태).
+
+## Opus 검수 (2026-09-27, 0.33.0 반영 직후)
+
+| 항목 | 결과 |
+|---|---|
+| `node --test` | 30/30 통과 |
+| `build-product-index --check` | 27종 통과 |
+| e2e | 55/55 → 검사 4개 추가 후 59/59 통과(전역 playwright, `NODE_PATH=$(npm root -g)`) |
+| `git diff --check` | **실패 → 수정**: `fonts/OFL.txt` 줄 끝 공백(라이선스 문구는 그대로, 공백만 제거) |
+| 휴대폰 390px 카드 잘림 | **버그 → 수정**: 휴대폰 규칙 `.rt-pg-cols`(flex)가 PC 격자의 `align-items:start`를 물려받아 카드가 내용물 폭(606px)으로 커지고 오른쪽이 잘렸음. 페이지 가로 스크롤은 없어서 기존 검사로는 잡히지 않았음. `align-items:stretch` + `.rt-pg-card{min-width:0}`으로 고치고, e2e에 "휴대폰에서 제품 카드가 모두 화면 폭 안에 들어감"(HD-210U·XDM·CT101-U·HOC-UX)을 추가 |
+| 구성기 화면 | 배치·동작은 그대로. 다만 Pretendard 글꼴 파일이 생기면서 구성기 글자도 이 글꼴로 바뀜(원래 font-family 첫 순위). 예상된 방향이고 e2e 휴대폰 검사 통과 |
+| XSS | `lead`는 이스케이프 후 `**…**` 한 곳만 `<b>`로 바꿈. 안전 |
+| 데이터 | HD-210U·XDM·VDM·SPX의 lead·subtitle·portMap·rackUnits가 승인 시안과 일치 |
+
+### 6-B로 넘기는 시안 차이
+1. **02 신호 흐름(분배기·일체형)**: 승인 시안은 "IN 1·2 → 1개 선택 → 18Gbps·4K60 4:4:4 띠 → 화면 10대 격자 + AUDIO IN 점선"인데, 구현은 예전 자동 도식(소스 → 기기 상자 → 디스플레이 4대)을 그대로 씁니다. 6-B에서 분배기·일체형 9종 공통으로 시안 방식으로 바꿉니다(`docs/mockups/hd-210u-glass-style.html`의 flow SVG).
+2. **핵심 수치 해상도 칸**: `up to 3840x2160p@60Hz`가 큰 글씨로 두 줄이 됩니다. 시안처럼 `4K` + `60Hz 4:4:4` 짧은 표기로 바꿉니다(값은 사양 행에서 뽑고 원문은 사양 표에 남김).
+3. **QMS 화면 구성 모드**: 6-A에서 미룸. 6-B에서 데이터(`docs/evidence/QMS_VIDEO_MODES.md`)부터 넣습니다.

@@ -422,7 +422,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-btn.rt-pg-primary{background:var(--pg-accent);color:#fff;box-shadow:0 6px 16px -6px var(--pg-accent)}
 #rtcom-design .rt-pg-cols{display:grid;grid-template-columns:360px 1fr;gap:22px;align-items:start}
 #rtcom-design .rt-pg-col{display:flex;flex-direction:column;gap:18px;min-width:0}
-#rtcom-design .rt-pg-card{background:var(--pg-glass-fill);backdrop-filter:var(--pg-glass-blur);-webkit-backdrop-filter:var(--pg-glass-blur);border:1px solid var(--pg-glass-stroke);border-radius:var(--pg-r-card);padding:22px;box-shadow:var(--pg-shadow-card)}
+#rtcom-design .rt-pg-card{background:var(--pg-glass-fill);backdrop-filter:var(--pg-glass-blur);-webkit-backdrop-filter:var(--pg-glass-blur);border:1px solid var(--pg-glass-stroke);border-radius:var(--pg-r-card);padding:22px;box-shadow:var(--pg-shadow-card);min-width:0}
 #rtcom-design .rt-pg-card h2{font-size:15px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--pg-muted);margin:0 0 16px;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
 #rtcom-design .rt-pg-card h2 .rt-pg-idx{color:var(--pg-accent);font-size:14px;font-weight:700}
 #rtcom-design .rt-pg-card h2 .rt-pg-note{text-transform:none;letter-spacing:0;font-weight:500}
@@ -526,7 +526,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 /* 1000px 이하에서는 두 칸이 한 줄로 접힌다. 명세 2-2 "01→02→03→04→05 순서로 쌓는다"를 지키려면
    두 .rt-pg-col을 display:contents로 지워 카드들을 .rt-pg-cols 하나의 flex 흐름으로 합치고 order로 다시 줄 세운다. */
 @media(max-width:1000px){
-  #rtcom-design .rt-pg-cols{display:flex;flex-direction:column;gap:18px}
+  #rtcom-design .rt-pg-cols{display:flex;flex-direction:column;gap:18px;align-items:stretch}
   #rtcom-design .rt-pg-col{display:contents}
   #rtcom-design .rt-pg-ports{grid-template-columns:1fr 1fr}
   #rtcom-design .rt-pg-col-mobile-1{order:1}#rtcom-design .rt-pg-col-mobile-2{order:2}#rtcom-design .rt-pg-col-mobile-3{order:3}#rtcom-design .rt-pg-col-mobile-4{order:4}#rtcom-design .rt-pg-col-mobile-5{order:5}#rtcom-design .rt-pg-col-mobile-6{order:6}
