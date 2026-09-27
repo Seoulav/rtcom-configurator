@@ -100,11 +100,19 @@
       "source": "C"
     },
     {
-      "text": "EDID 마인더 기능: 외부 연결된 디스플레이 EDID 저장, 내부 저장된 EDID 사용",
+      "text": "오디오 병합 지원(3.5mm Stereo Audio를 모든 출력에 믹스)",
+      "source": "M-HD210"
+    },
+    {
+      "text": "EDID 마인더 기능 지원(외부 EDID 저장, 내장 EDID 선택)",
       "source": "C"
     },
     {
-      "text": "두 입력 중 신호 있는 쪽 자동 선택",
+      "text": "DDC Buffer·Level Shifter 선택 지원",
+      "source": "M-HD210"
+    },
+    {
+      "text": "입력 자동 선택 지원(두 입력 중 신호가 있는 쪽)",
       "source": "M-HD210"
     }
   ],
