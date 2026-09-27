@@ -10,6 +10,8 @@
   - 단자 지도에 선택 항목 `portMap.items[].side:"bottom"`을 추가했습니다. 아랫줄 단자의 괄호를 사진 아래에 그리며, validator가 top/bottom만 허용합니다.
   - QMS-44UX: DC 12V·RS-232C·LAN 번호표가 옆 빈 곳을 가리키고, 입력·출력 괄호가 마지막 단자보다 길던 것을 고쳤습니다.
   - QMS-88UX 사양 "제어"에 남아 있던 IR Remote Control을 뺐습니다(46쪽판 28쪽은 3가지, issues I3와 일치).
+- **6-B 단자 지도 번호표 좌표 전수 재측정**(0.34.0 검수): HD-13U·HD-14U·HD-18U·HDS-21U·HDS-42MU·XDM-FT101/FR101의 번호표가 옆 단자를 가리키거나(HD-14U·HD-18U의 1번이 HDMI OUT 1 위) 사진 밖으로 나가 있었습니다(XDM-FT101 x2=790, 사진 폭 515px). 각 사진에 픽셀 눈금을 겹쳐 단자 가장자리를 다시 재고 고쳤습니다. MR-4S는 오차 범위만 다듬었습니다. 재발을 막기 위해 validator가 번호표 좌표가 사진 가로 폭(`resolution`) 안에 있는지 검사합니다.
+- **신호 흐름 표기**: HDCP 값에 붙은 "HDCP·Compliant·v"를 정리해 "HDCP HDCP Compliant v2.2"처럼 겹쳐 나오던 문구를 "HDCP 2.2"로 고쳤습니다. `videoModes` QUAD 요약에 "출력 9·10번 전용"이 있는 제품(QMS-88UX)은 해당 출력을 4분할 화면 아이콘으로 구분하고, 캡션을 "OUT 1–8 매트릭스 · 9·10 멀티뷰"로 표시합니다.
 
 ## 0.34.0
 
