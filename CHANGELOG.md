@@ -4,7 +4,7 @@
 
 ## Unreleased
 
-## 0.43.0
+## 0.45.0
 
 - **벽부형 3종을 사용자 제공 매뉴얼로 보완**(사용자 요청 2026-09-27, 매뉴얼 3권 업로드, "ctr100 pse랑 사용하면 전원연결안해되"): 0.42에서 사진이 흐리거나 작아 단자 지도를 못 넣은 3종에 사진 기준 단자 지도를 넣고 사양을 매뉴얼 기준으로 고쳤습니다. 기록은 `docs/qa/MANUAL_WALLPLATE_QA_2026-09-27.md`에 있습니다.
   - XDM-CT103: 매뉴얼 앞면·뒷면 사진으로 단자 지도 6개. 전원 DC +12V 1A 이상(XDM-CIS100·XDM-CTR100 PSE와 연결하면 PoE라 연결하지 않음, 사용자 확인), Long Reach 1080p 150m, 딥 스위치 1·2 행을 추가했습니다. 무게는 0.45kg(매뉴얼)로 고쳤습니다.
@@ -12,6 +12,19 @@
   - FT103-U-H/FR103-U: HDMI 입력 2개, 4K 24/25/30Hz, 2LC 광 커넥터를 반영했습니다. EDID 설정 카드(로터리 0~F, 외부 EDID 저장, 외부 오디오 병합)를 추가하고, 송신기·수신기 사진을 매뉴얼 사진으로 바꿨습니다.
   - 코드: 단자 지도에 세로 괄호(`side: left/right`), 표시 폭(`displayWidth`), 사진에 보이지 않는 단자 안내(`note`)를 추가했습니다. `edidSwitch.image`는 단자 지도와 같은 사진 역할을 받습니다. validator와 e2e(벽부형 단자 지도 검사)를 함께 넣었습니다.
 - **검증**: `node --test tests/*.test.cjs`(37/37) · `node scripts/build-product-index.cjs --check`(27개) · `node scripts/package-site.cjs` · `node scripts/e2e-smoke.cjs`(84/84) · `git diff --check`. 390px에서 세 제품 모두 가로 넘침이 없습니다.
+
+## 0.44.0
+
+- **분배기·선택기 필터 정렬 — 분배기(Splitter)를 먼저, 셀렉터(Switcher)를 나중에**(사용자 요청 "분배기, 셀렉터 순으로 나오게해줘", 0.43.0의 HDMI 출력 개수 순 정렬에 이어): `build-product-index.cjs`가 `categories`의 `Splitter`/`Switcher` 표기로 먼저 나누고, 같은 종류 안에서는 기존처럼 HDMI 출력 개수 순으로 정렬합니다. 결과 순서는 HD-D102U(2분배)·HD-13U(3분배)·HD-104U(4분배)·HD-108U(8분배)·HD-210U(10분배) 다음 HDS-21U(2×1 셀렉터)·HDS-42MU(4×2 셀렉터)입니다.
+- **검증**: `node --test tests/*.test.cjs`(37/37) · `node scripts/build-product-index.cjs --check`(27개) · `node scripts/package-site.cjs` · `node scripts/e2e-smoke.cjs`(83/83) · `git diff --check`.
+
+## 0.43.0
+
+- **HDS-21U·HDS-42MU에 EDID 로터리 스위치 추가**(사용자 제공 매뉴얼 Ver.1.0 근거): 두 제품 다 전면 파란 로터리로 EDID를 설정하는데도 `edidSwitch`가 없었던 것을, HD-13U와 같은 형식(사진 위 위치 표시·코드표 0~B·설정 절차)으로 채웠습니다. 좌표는 전면 사진에서 파란 스위치를 색상으로 검출해 확인했습니다.
+- **오디오 병합 설명 정정**(사용자 지적 "병합 추출은 입력소스에 대해서ㄱ런거냐 착각하지마"): HDS-21U·HDS-42MU의 "HDMI 입력에 실리는 오디오는 딥스위치로 고른다"는 표현이 실제로는 출력 특성(딥스위치가 고르는 건 OUTPUT에 실리는 오디오)이라 "HDMI OUTPUT에 실리는 오디오"로 고쳤습니다. 오디오 추출은 매뉴얼 원문대로 "선택된 입력 포트의 오디오"로 그대로 뒀습니다. HD-13U·HD-210U는 이미 맞게 쓰여 있어 바꾸지 않았습니다.
+- **분배기·선택기 필터 정렬**(사용자 요청 "분배기 필터 눌렀을 2분배기부터 10분배가 순차적으로 나오게해줘"): `build-product-index.cjs`가 `distribution` 그룹 안에서 HDMI 출력 개수(io[].direction==='OUT') 기준으로 정렬하도록 고쳐, HDS-21U(1)·HD-D102U(2)·HDS-42MU(2)·HD-13U(3)·HD-104U(4)·HD-108U(8)·HD-210U(10) 순서로 나옵니다.
+- **XDM-CTR100 "02 신호 흐름" 케이블 거리 표기 정리**(사용자 요청 "BELDEN 10GXE02(S/FTP) 100m, ci6522(sf/utp) 80m 2번 신호 흐름 하단 한쪽편에 배치"): 케이블 구간마다 흩어져 있던 거리 표시를 지우고, 다이어그램 하단 왼쪽 한 곳에 "BELDEN 10GXE02(S/FTP) 최대 100m" / "CI6522(SF/UTP) 최대 80m" 두 줄로 모아 표시합니다. 케이블명은 각 제품 `specifications[].condition`에서 정규식으로 뽑아내므로 다른 전송기(단일 거리)에도 그대로 적용되고, 괄호 표기가 없는 제품은 기존처럼 "최대 100m" 형태로 표시됩니다.
+- **검증**: `node --test tests/*.test.cjs`(37/37) · `node scripts/build-product-index.cjs --check`(27개) · `node scripts/package-site.cjs` · `node scripts/e2e-smoke.cjs`(83/83) · `git diff --check`. XDM-CTR100·CT104-U/CR104-U·HDS-21U 상세를 Playwright 스크린샷으로 직접 확인(케이블 거리 두 줄이 다른 라벨과 겹치지 않음, EDID 코드표·절차가 HD-13U와 같은 형식으로 보임).
 
 ## 0.42.0
 

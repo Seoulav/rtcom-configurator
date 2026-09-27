@@ -124,7 +124,25 @@ function build(){
   const ids=new Set(products.map(([,product])=>product.id));
   const errors=products.flatMap(([name,product])=>validate(product,path.join(DIR,name),ids));
   const order=product=>GROUPS.indexOf(product.group);
-  const list=products.map(([,product])=>product).sort((a,b)=>order(a)-order(b)||a.productName.localeCompare(b.productName,'en'));
+  const hdmiOutQty=product=>{
+    const port=(product.io||[]).find(row=>row.direction==='OUT'&&/HDMI/i.test(row.connector||''));
+    const n=port&&parseInt(port.quantity,10);
+    return Number.isFinite(n)?n:null;
+  };
+  // 분배기(Splitter)를 먼저, 셀렉터(Switcher)를 나중에 보여준다(사용자 요청 2026-09-27 "분배기, 셀렉터 순으로 나오게해줘").
+  const DIST_TYPES=['Splitter','Switcher'];
+  const distType=product=>{const i=DIST_TYPES.findIndex(type=>(product.categories||[]).includes(type));return i<0?DIST_TYPES.length:i};
+  const list=products.map(([,product])=>product).sort((a,b)=>{
+    const groupDiff=order(a)-order(b);
+    if(groupDiff)return groupDiff;
+    if(a.group==='distribution'&&b.group==='distribution'){
+      const typeDiff=distType(a)-distType(b);
+      if(typeDiff)return typeDiff;
+      const qa=hdmiOutQty(a),qb=hdmiOutQty(b);
+      if(qa!==null&&qb!==null&&qa!==qb)return qa-qb;
+    }
+    return a.productName.localeCompare(b.productName,'en');
+  });
   const card=product=>{const images=product.images||[];return (images.find(image=>image.role==='Main')||images.find(image=>image.role==='Front')||images[0]||{}).file||null};
   const index={
     schema:SCHEMA,

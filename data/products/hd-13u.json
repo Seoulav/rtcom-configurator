@@ -104,7 +104,7 @@
       "source": "C"
     },
     {
-      "text": "오디오 병합(믹스)과 추출(디먹스)을 동시에 쓸 수 있다: 전면 로터리 스위치를 '0'에 두고 SET 버튼으로 Stereo Audio 모드를 선택하면 3.5mm AUDIO IN의 오디오가 HDMI OUTPUT 1번에만 믹스되어 나가고, HDMI 입력이 연결돼 있으면 이 병합 여부와 관계없이 그 오디오가 항상 3.5mm AUDIO OUT으로 추출된다. 다만 AUDIO IN에 연결한 오디오가 AUDIO OUT으로 그대로 나오지는 않는다(직결 패스스루 아님).",
+      "text": "HDMI OUTPUT 1번에 실리는 오디오는 전면 로터리 스위치를 '0'에 두고 SET 버튼을 눌러 'Stereo Audio'(3.5mm AUDIO IN을 믹스)와 'HDMI Audio'(HDMI에 원래 실린 오디오 그대로)를 서로 바꿔가며 고른다 — 이 둘은 동시에 쓸 수 없고 반드시 하나만 선택된다. 오디오 추출은 이 선택과 무관하게 별도로 동작한다: HDMI 입력이 연결돼 있으면 그 입력에 실린 오디오가 항상 3.5mm AUDIO OUT으로 나간다. 다만 AUDIO IN에 연결한 오디오가 AUDIO OUT으로 그대로 나오지는 않는다(직결 패스스루 아님).",
       "source": "M1"
     }
   ],
