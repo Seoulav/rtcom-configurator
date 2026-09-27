@@ -10,7 +10,7 @@
     const tabs=[...root.querySelectorAll('[data-view-tab]')];
     // 제품 사진 돋보기(라이트박스). .rt-products-view는 overflow:hidden이라 안에 두면 position:fixed가 화면 전체를 덮지 못한다.
     // root(#rtcom-design)는 overflow를 걸지 않으므로 그 바로 아래(화면 전환마다 다시 만들지 않도록 한 번만)에 붙인다.
-    root.insertAdjacentHTML('beforeend','<div class="rt-pg-lightbox" hidden><button type="button" class="rt-pg-lightbox-close" data-zoom-close aria-label="사진 확대 닫기">×</button><div class="rt-pg-lightbox-stage" data-zoom-close><img class="rt-pg-lightbox-img" data-zoom-toggle alt="" loading="lazy"></div><p class="rt-pg-lightbox-hint">사진을 눌러 확대·축소</p></div>');
+    root.insertAdjacentHTML('beforeend','<div class="rt-pg-lightbox" role="dialog" aria-modal="true" aria-label="제품 사진 확대" hidden><button type="button" class="rt-pg-lightbox-close" data-zoom-close aria-label="사진 확대 닫기">×</button><div class="rt-pg-lightbox-stage" data-zoom-close><img class="rt-pg-lightbox-img" data-zoom-toggle alt="" loading="lazy"></div><p class="rt-pg-lightbox-hint">사진을 눌러 확대·축소</p></div>');
     const lightbox=root.querySelector('.rt-pg-lightbox');
     const lightboxImg=lightbox.querySelector('.rt-pg-lightbox-img');
     let zoomReturnFocus=null;
