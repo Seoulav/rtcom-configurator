@@ -163,9 +163,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     // 0.19 알티컴 공개 제품정보: 같은 화면 안에서 #products 주소 조각으로만 전환한다.
     await page.click('a[data-view-tab="products"]');
     await page.waitForSelector('.rt-product-card');
-    check('제품정보 탭을 누르면 구성기를 숨기고 제품 29종 목록을 표시',await page.locator('.rt-configurator-view').isHidden()&&await page.locator('.rt-product-card').count()===29);
+    check('제품정보 탭을 누르면 구성기를 숨기고 제품 27종 목록을 표시',await page.locator('.rt-configurator-view').isHidden()&&await page.locator('.rt-product-card').count()===27);
     await page.click('[data-product-filter="extender"]');
-    check('전송기 분류는 13종',await page.locator('.rt-product-card').count()===13);
+    check('전송기 분류는 11종',await page.locator('.rt-product-card').count()===11);
     await page.click('[data-product-filter="all"]');
     await page.fill('[data-product-search]','QMS');
     check('검색어 QMS로 일체형 매트릭스 2종이 남음',await page.locator('.rt-product-card').count()===2);
@@ -180,7 +180,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('CT104-U/CR104-U 상세에 TX·케이블·RX 연결 다이어그램이 보임',await page.locator('.rt-product-diagram svg').isVisible()&&(await page.locator('.rt-product-diagram-legend').textContent()).includes('HDBaseT'));
     await page.goBack();
     await page.waitForSelector('.rt-product-card');
-    check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-product-card').count()===29);
+    check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-product-card').count()===27);
     await page.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-product-diagram svg');
     check('HD-13U 상세에 분배기(소스→기기→디스플레이 3대) 다이어그램이 보임',await page.locator('.rt-product-diagram svg').isVisible()&&await page.locator('.rt-product-diagram-canvas text:has-text("HD-13U")').count()===1);
@@ -226,6 +226,10 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await mobile.waitForTimeout(1000);
     const fit=await mobile.$eval('button[data-slot="out-2"]',slot=>{const s=slot.getBoundingClientRect(),i=slot.querySelector('img.rt-faceplate').getBoundingClientRect();return [s.width-i.width,s.height-i.height,Math.abs(s.left-i.left),Math.abs(s.top-i.top)]});
     check('터치 휴대폰에서 세로 슬롯에 장착한 판넬이 슬롯을 꽉 채움(좌우 끝 잘림 없음)',fit.every(value=>Math.abs(value)<0.6),JSON.stringify(fit.map(value=>value.toFixed(2))));
+    // 출처(sources)에 슬래시로 이어진 긴 파일 경로(U09 근거 문서 등)가 있으면 줄바꿈 지점이 없어 가로로 넘칠 수 있다(사용자 제보, 라이브 사이트 점검).
+    await mobile.goto(`${home}#products/ct104-u-cr104-u`,{waitUntil:'networkidle'});
+    await mobile.waitForSelector('.rt-product-source');
+    check('휴대폰에서 출처의 긴 파일 경로도 화면 폭을 넘지 않음',(await mobile.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth))===0);
     await phone.close();
   }finally{
     await browser.close();

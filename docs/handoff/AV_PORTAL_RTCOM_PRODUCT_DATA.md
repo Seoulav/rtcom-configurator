@@ -75,7 +75,7 @@ rtcom-configurator가 **추가한 필드**는 다음과 같습니다.
   - `VERIFIED`: 카탈로그 값과 일치합니다.
   - `REVIEW REQUIRED`: 카탈로그 안에서 표기가 서로 어긋납니다. **값은 원문 그대로 두고** 상태로만 표시합니다. 상세 내용은 `issues`에 있습니다.
 
-### 3.3 대상 제품 (29종)
+### 3.3 대상 제품 (27종, 2026-09-27 갱신)
 
 AV Portal과 같은 제외 모델을 적용했습니다(HS-88MX, HS-88M-U, HD-D104U, HD-D108U). HD-104U와 HD-108U는 서로 다른 제품이라 **포함**합니다.
 
@@ -86,19 +86,17 @@ AV Portal과 같은 제외 모델을 적용했습니다(HS-88MX, HS-88M-U, HD-D1
 | 매트릭스 시리즈 | `xdm` | XDM Series | 4–12 | REVIEW REQUIRED |
 | 일체형 매트릭스 | `qms-44ux` | QMS-44UX | 29 | REVIEW REQUIRED |
 | 일체형 매트릭스 | `qms-88ux` | QMS-88UX | 30 | REVIEW REQUIRED |
-| 분배기·선택기 | `hd-104u` | HD-104U | 37 | REVIEW REQUIRED |
-| 분배기·선택기 | `hd-108u` | HD-108U | 38 | VERIFIED |
 | 분배기·선택기 | `hd-13u` | HD-13U | 36 | VERIFIED |
+| 분배기·선택기 | `hd-14u` | HD-14U | 37 | REVIEW REQUIRED |
+| 분배기·선택기 | `hd-18u` | HD-18U | 38 | VERIFIED |
 | 분배기·선택기 | `hd-210u` | HD-210U | 39 | VERIFIED |
 | 분배기·선택기 | `hd-d102u` | HD-D102U | 31 | VERIFIED |
 | 분배기·선택기 | `hds-21u` | HDS-21U | 34 | VERIFIED |
 | 분배기·선택기 | `hds-42mu` | HDS-42MU | 35 | VERIFIED |
 | 전송기 | `ct101-u-cr101-u` | CT101-U / CR101-U | 21 | REVIEW REQUIRED |
-| 전송기 | `ct102-u-cr102-u` | CT102-U / CR102-U | 22 | REVIEW REQUIRED |
 | 전송기 | `ct103-u-h-cr103-u` | CT103-U-H / CR103-U | 23 | REVIEW REQUIRED |
 | 전송기 | `ct104-u-cr104-u` | CT104-U / CR104-U | 24 | VERIFIED |
 | 전송기 | `ft101-u-fr101-u` | FT101-U / FR101-U | 25 | REVIEW REQUIRED |
-| 전송기 | `ft102-u-fr102-u` | FT102-U / FR102-U | 26 | REVIEW REQUIRED |
 | 전송기 | `ft103-u-h-fr103-u` | FT103-U-H / FR103-U | 27 | REVIEW REQUIRED |
 | 전송기 | `mr-4s` | MR-4S | 40 | REVIEW REQUIRED |
 | 전송기 | `obhd-2c` | OBHD-2C | 41 | VERIFIED |
@@ -133,7 +131,7 @@ AV Portal과 같은 제외 모델을 적용했습니다(HS-88MX, HS-88M-U, HD-D1
   - 공개 데이터 수정
   - 카탈로그 PDF 재배포
 - **완료 조건**
-  - 29종이 AV Portal에 공개 데이터 그대로 표시됩니다.
+  - 27종이 AV Portal에 공개 데이터 그대로 표시됩니다.
   - 내부 자료 1건 이상이 `id`로 연결되어 **로그인한 사용자에게만** 보입니다.
   - 공개 배포물(있다면)에 내부 필드가 없다는 것을 검사로 확인합니다.
 - **선행 조건**

@@ -2,6 +2,9 @@
 const fs=require('node:fs');
 const path=require('node:path');
 const output=path.resolve('dist');
+// 이전 빌드에서 지워지거나 이름이 바뀐 파일(예: hd-104u.json → hd-14u.json)이 dist에 그대로 남아
+// 옛 제품 상세가 계속 열리는 일이 없도록, 매번 dist를 비우고 새로 만든다.
+fs.rmSync(output,{recursive:true,force:true});
 fs.mkdirSync(output,{recursive:true});
 const cardAssets=fs.readdirSync('output/design/assets/cards').map(name=>`output/design/assets/cards/${name}`);
 const frameAssets=fs.readdirSync('output/design/assets/frames').map(name=>`output/design/assets/frames/${name}`);

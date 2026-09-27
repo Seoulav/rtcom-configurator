@@ -9,7 +9,7 @@ const DIR='data/products';
 const IMAGE_DIR='output/design/assets/products';
 const SCHEMA='rtcom.products.v1';
 const GROUPS=['series','integrated','distribution','extender','cable'];
-// AV Portal과 같은 제외 모델(2026-09-26 사용자 결정). HD-104U·HD-108U는 다른 제품이므로 제외하지 않는다.
+// AV Portal과 같은 제외 모델(2026-09-26 사용자 결정). HD-14U(구 HD-104U)·HD-18U(구 HD-108U)는 HD-D104U·HD-D108U와 다른 제품이므로 제외하지 않는다.
 const EXCLUDED=['HS-88MX','HS-88M-U','HD-D104U','HD-D108U'];
 // 공개 저장소에 들어가면 안 되는 내부 정보 단어(2026-09-26 §9 결정).
 const FORBIDDEN=/단가|원가|매입|마진|거래처|공급가|견적가|판매가|소비자가|재고|내부\s*메모|\bprice\b|\bcost\b|\bmargin\b/i;

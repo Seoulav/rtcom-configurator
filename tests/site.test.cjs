@@ -86,7 +86,11 @@ test('rear photo slot zones stay inside each photo and match the card faceplate 
 });
 
 test('static package ships only configurator files and redirects legacy portal URLs',()=>{
+  // 0.24: 이전 빌드에서 삭제·이름이 바뀐 파일이 dist에 남아 옛 제품 상세가 계속 열리지 않도록, 매번 dist를 비우고 다시 만든다.
+  fs.mkdirSync('dist',{recursive:true});
+  fs.writeFileSync('dist/hd-104u-stale-build-leftover.json','{}');
   execFileSync(process.execPath,['scripts/package-site.cjs'],{stdio:'ignore'});
+  assert.equal(fs.existsSync('dist/hd-104u-stale-build-leftover.json'),false,'package-site.cjs must clear dist before rebuilding, not leave stale files from a previous build');
   const files=[];
   const walk=dir=>{for(const entry of fs.readdirSync(dir,{withFileTypes:true})){const full=path.join(dir,entry.name);entry.isDirectory()?walk(full):files.push(path.relative('dist',full).split(path.sep).join('/'))}};
   walk('dist');
@@ -114,9 +118,9 @@ test('public product data (0.19) is valid, brochure-level only and listed in ind
   assert.equal(read('data/products/index.json'),text,'run node scripts/build-product-index.cjs');
   assert.equal(index.schema,'rtcom.products.v1');
   const count=group=>index.products.filter(product=>product.group===group).length;
-  assert.deepEqual({series:count('series'),integrated:count('integrated'),distribution:count('distribution'),extender:count('extender'),cable:count('cable')},{series:3,integrated:2,distribution:7,extender:13,cable:4});
+  assert.deepEqual({series:count('series'),integrated:count('integrated'),distribution:count('distribution'),extender:count('extender'),cable:count('cable')},{series:3,integrated:2,distribution:7,extender:11,cable:4});
   for(const model of EXCLUDED)assert.equal(index.products.some(product=>product.model===model),false,`${model} is excluded like AV Portal`);
-  for(const model of ['HD-104U','HD-108U','QMS-44UX','MR-4S'])assert.ok(index.products.some(product=>product.model===model),`missing ${model}`);
+  for(const model of ['HD-14U','HD-18U','QMS-44UX','MR-4S'])assert.ok(index.products.some(product=>product.model===model),`missing ${model}`);
   for(const product of index.products)assert.ok(product.cardImage,`${product.id} needs a card image`);
   const html=read('index.html');
   assert.match(html,/<section class="rt-products-view" aria-label="알티컴 제품정보" hidden>/);
