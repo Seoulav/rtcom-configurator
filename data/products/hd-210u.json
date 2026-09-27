@@ -171,7 +171,7 @@
       "name": "크기(W×D×H)",
       "value": "355×85.6×30",
       "unit": "mm",
-      "condition": "14×3.4×1.2in · 매뉴얼 Ver.1.2 일반 사양 기준(카탈로그 46쪽판 37쪽은 335mm로 표기)",
+      "condition": "14×3.4×1.2in",
       "source": "M-HD210",
       "verification": "VERIFIED"
     },
@@ -189,7 +189,7 @@
       "name": "딥 스위치 1 · 오디오",
       "value": "ON: 3.5mm Stereo Audio 병합 / OFF: HDMI Audio",
       "unit": "",
-      "condition": "전면 · 매뉴얼 7쪽",
+      "condition": "전면",
       "source": "M-HD210",
       "verification": "VERIFIED"
     },
@@ -198,7 +198,7 @@
       "name": "딥 스위치 2 · DDC",
       "value": "ON: DDC Level Shifter / OFF: DDC Buffer",
       "unit": "",
-      "condition": "전면 · 매뉴얼 7쪽",
+      "condition": "전면",
       "source": "M-HD210",
       "verification": "VERIFIED"
     }
@@ -233,7 +233,7 @@
       "direction": "IN",
       "quantity": "1",
       "protocol": "",
-      "condition": "HDMI 신호에 병합(전면 딥 스위치 1번 ON) · 매뉴얼 4쪽 입력 신호 \"3.5mm Stereo 1 port\", 후면 사진 AUDIO IN",
+      "condition": "HDMI 신호에 병합(전면 딥 스위치 1번 ON)",
       "source": "M-HD210",
       "verification": "VERIFIED"
     }

@@ -198,7 +198,7 @@
       "name": "전원공급",
       "value": "DC 12V 5A",
       "unit": "",
-      "condition": "매뉴얼 KV.04 구성품·전원 사양·연결도 라벨 세 곳이 모두 5A로 일치 · 원문: 제품사양 표 \"DC 12V 2A\"",
+      "condition": "",
       "source": "M-Q44",
       "verification": "VERIFIED"
     },

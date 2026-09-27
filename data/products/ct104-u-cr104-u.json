@@ -227,7 +227,7 @@
       "direction": "IN",
       "quantity": "1",
       "protocol": "HDMI 1.4",
-      "condition": "CT104-U · 수량은 제품 사진(HDMI IN) 기준",
+      "condition": "CT104-U",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -249,7 +249,7 @@
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
-      "condition": "CT104-U · 사진 표기 RS232C",
+      "condition": "CT104-U · RS232C",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -271,7 +271,7 @@
       "direction": "OUT",
       "quantity": "1",
       "protocol": "HDMI 1.4",
-      "condition": "CR104-U · 수량은 제품 사진(HDMI OUT) 기준",
+      "condition": "CR104-U",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -282,7 +282,7 @@
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
-      "condition": "CR104-U · 사진 표기 RS232C",
+      "condition": "CR104-U · RS232C",
       "source": "C",
       "verification": "VERIFIED"
     }

@@ -191,7 +191,7 @@
       "name": "인증",
       "value": "KC 인증",
       "unit": "",
-      "condition": "제품 안내서 2쪽",
+      "condition": "",
       "source": "S1",
       "verification": "VERIFIED"
     }
@@ -226,7 +226,7 @@
       "direction": "IN",
       "quantity": "1",
       "protocol": "",
-      "condition": "병합(MUX) 선택 시 HDMI OUTPUT 1번에 믹스(전면 로터리 0 + SET으로 Stereo Audio) · 제품 안내서 2쪽, 매뉴얼 7쪽",
+      "condition": "병합(MUX) 선택 시 HDMI OUTPUT 1번에 믹스(전면 로터리 0 + SET으로 Stereo Audio)",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -237,7 +237,7 @@
       "direction": "OUT",
       "quantity": "1",
       "protocol": "",
-      "condition": "추출(DEMUX) 선택 시 입력된 HDMI 오디오 출력 · 제품 안내서 2쪽, 매뉴얼 7쪽",
+      "condition": "추출(DEMUX) 선택 시 입력된 HDMI 오디오 출력",
       "source": "M1",
       "verification": "VERIFIED"
     }

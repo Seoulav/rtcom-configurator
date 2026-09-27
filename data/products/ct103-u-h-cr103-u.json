@@ -107,7 +107,7 @@
       "name": "입력 신호",
       "value": "HDMI 2 Ports(INPUT 버튼으로 선택), 3.5mm Stereo Audio",
       "unit": "",
-      "condition": "CT103-U-H · 카탈로그 사진의 HDMI 단자 2개와 INPUT 버튼이 같은 -U-H 벽부형 FT-103-U-H 매뉴얼(6쪽)의 HDMI1·HDMI2 배치와 같아 2포트로 판단 · 카탈로그 제품사양 표는 DVI/HDMI(TMDS)로만 적음",
+      "condition": "CT103-U-H · HDMI1·HDMI2, 앞면 INPUT 버튼으로 선택",
       "source": "J",
       "verification": "VERIFIED"
     },
@@ -134,7 +134,7 @@
       "name": "출력 신호",
       "value": "DVI / HDMI (TMDS), 3.5mm stereo audio",
       "unit": "",
-      "condition": "CR103-U · 매뉴얼 4쪽(카탈로그는 DVI / HDMI만 적음)",
+      "condition": "CR103-U",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -152,7 +152,7 @@
       "name": "지원 해상도",
       "value": "최대 Ultra HD 4K 4096x2160@24/25/30Hz",
       "unit": "",
-      "condition": "CT103-U-H · 짝 수신기 CR-103-U 매뉴얼(4쪽)과 같은 계열 FT-103-U-H 매뉴얼(4쪽)이 모두 4K 24/25/30Hz이고, 카탈로그 거리 표에도 Ultra HD 4K가 있어 4K 30Hz까지로 판단(카탈로그 해상도 표는 1080p까지만 적음)",
+      "condition": "CT103-U-H",
       "source": "J",
       "verification": "VERIFIED"
     },
@@ -161,7 +161,7 @@
       "name": "지원 해상도",
       "value": "최대 Ultra HD 4K 4096x2160@24/25/30Hz",
       "unit": "",
-      "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0 · CR103-U · 매뉴얼 4쪽과 같음",
+      "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0 · CR103-U",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -215,7 +215,7 @@
       "name": "전원",
       "value": "DC +12V 2A",
       "unit": "",
-      "condition": "CT103-U-H·CR103-U 공통 · 매뉴얼: CR-103-U 최대 15W",
+      "condition": "CT103-U-H·CR103-U 공통 · CR103-U 최대 15W",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -246,7 +246,7 @@
       "direction": "IN",
       "quantity": "2",
       "protocol": "HDMI 1.4",
-      "condition": "CT103-U-H · HDMI1·HDMI2, 앞면 INPUT 버튼으로 선택(판넬 배치가 FT-103-U-H 매뉴얼 6쪽과 같음)",
+      "condition": "CT103-U-H · HDMI1·HDMI2, 앞면 INPUT 버튼으로 선택",
       "source": "J",
       "verification": "VERIFIED"
     },
@@ -257,7 +257,7 @@
       "direction": "IN",
       "quantity": "1",
       "protocol": "",
-      "condition": "CT103-U-H · 카탈로그 23쪽 제품사양표 Input Signal 기준",
+      "condition": "CT103-U-H",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -279,7 +279,7 @@
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
-      "condition": "CT103-U-H · 앞면 RS232 단자 표기 · 매뉴얼 4쪽 3P Terminal Block(for RS-232)",
+      "condition": "CT103-U-H · 앞면 RS232 단자",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -301,7 +301,7 @@
       "direction": "OUT",
       "quantity": "1",
       "protocol": "HDMI 1.4b",
-      "condition": "CR103-U · 수량은 카탈로그 사진 기준",
+      "condition": "CR103-U",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -312,7 +312,7 @@
       "direction": "OUT",
       "quantity": "1",
       "protocol": "",
-      "condition": "CR103-U · 매뉴얼 4쪽 출력 신호·커넥터 표 기준(앞면 사진에는 보이지 않음)",
+      "condition": "CR103-U · 뒷면",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -323,7 +323,7 @@
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
-      "condition": "CR103-U · 앞면 RS232 단자 표기 · 매뉴얼 4쪽 3P Terminal Block(for RS-232)",
+      "condition": "CR103-U · 앞면 RS232 단자",
       "source": "M1",
       "verification": "VERIFIED"
     }

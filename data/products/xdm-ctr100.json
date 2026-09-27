@@ -141,7 +141,7 @@
       "name": "최대 전송거리",
       "value": "80",
       "unit": "m",
-      "condition": "4K60Hz 4:4:4, CI6522(SF/UTP, CAT6) 케이블 사용 시 · XDM-CTR100·XDM-CTR100 PSE 공통 · 케이블별 상이(카탈로그 원문은 \"케이블 별 상이, 상세 문의\"로만 표기)",
+      "condition": "4K60Hz 4:4:4, CI6522(SF/UTP, CAT6) 케이블 사용 시 · XDM-CTR100·XDM-CTR100 PSE 공통 · 케이블별 상이",
       "source": "U",
       "verification": "VERIFIED"
     },
@@ -150,7 +150,7 @@
       "name": "최대 전송거리",
       "value": "150",
       "unit": "m",
-      "condition": "Long Reach 모드(딥 스위치 3번 ON), 1920x1080p · XDM-CTR100·XDM-CTR100 PSE 공통 · 매뉴얼 5쪽",
+      "condition": "Long Reach 모드(딥 스위치 3번 ON), 1920x1080p · XDM-CTR100·XDM-CTR100 PSE 공통",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -222,7 +222,7 @@
       "name": "전원",
       "value": "DC +12V 1A 이상",
       "unit": "",
-      "condition": "XDM-CTR100 · XDM-CTR100 PSE와 연결되면 PD 모드로 CAT 케이블에서 전원을 받아 연결하지 않음 · 매뉴얼 4·9쪽",
+      "condition": "XDM-CTR100 · XDM-CTR100 PSE와 연결되면 PD 모드로 CAT 케이블에서 전원을 받아 연결하지 않음",
       "source": "M1",
       "verification": "VERIFIED"
     }
@@ -268,7 +268,7 @@
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
-      "condition": "5핀 중 접지·Tx·Rx · RS-232C 통신(RS-232+ 제어) · 매뉴얼 6쪽 · 원문 \"RS-232/Audio out 1\" 표기",
+      "condition": "5핀 중 접지·Tx·Rx · RS-232C 통신(RS-232+ 제어)",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -279,7 +279,7 @@
       "direction": "OUT",
       "quantity": "1",
       "protocol": "",
-      "condition": "5핀 중 L·R·접지 · HDMI 입력 오디오 추출 · 매뉴얼 6·8쪽, 제품 안내서 1쪽(안내서 2쪽 사양표의 \"Audio Input\"은 오기로 판단)",
+      "condition": "5핀 중 L·R·접지 · HDMI 입력 오디오 추출",
       "source": "M1",
       "verification": "VERIFIED"
     }

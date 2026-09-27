@@ -244,7 +244,7 @@
       "direction": "IN",
       "quantity": "1",
       "protocol": "HDMI 1.4b",
-      "condition": "CT101-U · 수량은 카탈로그 사진(HDMI IN) 기준",
+      "condition": "CT101-U",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -299,7 +299,7 @@
       "direction": "OUT",
       "quantity": "1",
       "protocol": "HDMI 1.4",
-      "condition": "CR101-U · 수량은 카탈로그 사진(HDMI OUT) 기준",
+      "condition": "CR101-U",
       "source": "C",
       "verification": "VERIFIED"
     },
