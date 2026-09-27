@@ -13,7 +13,7 @@
   ],
   "english": "Wall-plate HDBaseT transmitter/receiver pair extending DVI/HDMI, audio and RS-232 up to 100m over one CATx cable; receiver supports scaling and seamless switching.",
   "korean": "비디오·오디오·RS-232 신호를 CATx 케이블 한 가닥으로 최대 100m 전송하는 벽부형 HDBaseT 송·수신기다.",
-  "catalogPages": "23",
+  "catalogPages": "22",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 23쪽의 CT103-U-H/CR103-U 소개와 CT103-U-H·CR103-U 제품사양 표에서 확인했다.",
   "packageStatus": "REVIEW REQUIRED",
   "overview": "CT103-U-H와 CR103-U는 비디오와 오디오, RS-232 신호를 CATx(UTP/STP)를 통해 장거리 전송하기 위한 벽부형 송신기와 벽부형 수신기다. CT103-U-H는 비디오·오디오·RS-232 신호를 CATx(UTP/STP) 신호로 변환하고, CR103-U는 CATx(UTP/STP) 신호를 다시 비디오·오디오·RS-232 신호로 복원한다.\n\n소개문은 CT103-U-H가 아날로그 VGA와 디지털 DVI 또는 HDMI를 지원한다고 적었고, CR103-U는 DVI 또는 HDMI 신호를 지원하며 스케일링 기능과 심리스 기능을 지원한다고 적었다. HDBaseT 기술을 적용해 하나의 CATx 케이블로 최대 100m까지 전송할 수 있다. CT103-U-H의 VGA 지원과 4K 지원 여부는 카탈로그 안에서 서로 다르게 적혀 있어 확인이 필요하다.",
@@ -260,6 +260,17 @@
       "verification": "VERIFIED"
     },
     {
+      "group": "TX · Control",
+      "connector": "Phoenix connector(녹색, 핀 수 미기재)",
+      "signal": "RS-232",
+      "direction": "BIDIR",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "CT103-U-H · 소개문·사진 기준(녹색 Phoenix 단자), 핀 수 미기재",
+      "source": "C",
+      "verification": "REVIEW REQUIRED"
+    },
+    {
       "group": "RX · Transmission",
       "connector": "RJ45 (CATx)",
       "signal": "HDBaseT",
@@ -280,6 +291,17 @@
       "condition": "CR103-U · 수량은 카탈로그 사진 기준",
       "source": "C",
       "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Control",
+      "connector": "Phoenix connector(녹색, 핀 수 미기재)",
+      "signal": "RS-232",
+      "direction": "BIDIR",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "CR103-U · 소개문·사진 기준(녹색 Phoenix 단자), 핀 수 미기재",
+      "source": "C",
+      "verification": "REVIEW REQUIRED"
     }
   ],
   "related": [
@@ -295,6 +317,12 @@
       "name": "알티컴 종합 카탈로그 2026 (국문)",
       "page": "23",
       "scope": "제조사 공식 출처"
+    },
+    {
+      "code": "C2",
+      "name": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
+      "page": "22",
+      "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
     }
   ],
   "issues": [
@@ -327,6 +355,12 @@
       "status": "INFO",
       "title": "이미지 역할 표기",
       "detail": "짝 제품이라 Main에는 송신기(TX), Other(기타)에는 수신기(RX) 사진을 넣었다. 각 이미지의 alt·note에 TX/RX를 적었다."
+    },
+    {
+      "code": "I4",
+      "status": "INFO",
+      "title": "46쪽판 재검증 · RS-232 단자 추가",
+      "detail": "46쪽판(C2) 22쪽을 48쪽판과 줄 단위로 대조했다. 공백 차이를 빼면 완전히 같아 사양 값은 바꾸지 않았다(R1·R2도 46쪽판에서 동일하게 반복됨). 소개문·주요 기능은 'RS-232 신호를 CATx로 전송'이라고 적었지만 입출력 표에는 RS-232 단자 행이 없었다. 카탈로그 사진의 녹색 Phoenix 단자를 근거로 TX·RX 각각에 RS-232 단자 행을 추가했다(핀 수는 원문에 없어 REVIEW REQUIRED로 남김)."
     }
   ]
 }

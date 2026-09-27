@@ -269,6 +269,17 @@
       "verification": "VERIFIED"
     },
     {
+      "group": "TX · Control",
+      "connector": "Phoenix connector(녹색, 핀 수 미기재)",
+      "signal": "RS-232",
+      "direction": "BIDIR",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "CT101-U · 소개문·사진 기준(녹색 Phoenix 단자), 핀 수 미기재",
+      "source": "C",
+      "verification": "REVIEW REQUIRED"
+    },
+    {
       "group": "RX · Transmission",
       "connector": "RJ45 (CATx)",
       "signal": "HDBaseT",
@@ -300,6 +311,17 @@
       "condition": "CR101-U",
       "source": "C",
       "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Control",
+      "connector": "Phoenix connector(녹색, 핀 수 미기재)",
+      "signal": "RS-232",
+      "direction": "BIDIR",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "CR101-U · 소개문·사진 기준(녹색 Phoenix 단자), 핀 수 미기재",
+      "source": "C",
+      "verification": "REVIEW REQUIRED"
     }
   ],
   "related": [
@@ -315,6 +337,12 @@
       "name": "알티컴 종합 카탈로그 2026 (국문)",
       "page": "21",
       "scope": "제조사 공식 출처"
+    },
+    {
+      "code": "C2",
+      "name": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
+      "page": "21",
+      "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
     }
   ],
   "issues": [
@@ -323,6 +351,12 @@
       "status": "REVIEW REQUIRED",
       "title": "CR101-U 무게 환산 불일치",
       "detail": "CR101-U 무게가 '0.5 lbs (0.27 Kg)'로 적혀 있지만 CT101-U는 같은 0.5 lbs를 0.23 Kg으로 적었다. kg 값을 그대로 두었다."
+    },
+    {
+      "code": "I3",
+      "status": "INFO",
+      "title": "46쪽판 재검증 · RS-232 단자 추가",
+      "detail": "46쪽판(C2) 21쪽을 48쪽판과 줄 단위로 대조했다. 공백 차이를 빼면 완전히 같아 사양 값은 바꾸지 않았다. 소개문·주요 기능은 '비디오·오디오·RS-232 신호를 CATx로 전송'이라고 적었지만 입출력 표에는 RS-232 단자 행이 없었다. 카탈로그 사진의 녹색 Phoenix 단자를 근거로 TX·RX 각각에 RS-232 단자 행을 추가했다(핀 수는 원문에 없어 REVIEW REQUIRED로 남김)."
     },
     {
       "code": "I1",

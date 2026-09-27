@@ -13,7 +13,7 @@
   ],
   "english": "Wall-plate fiber optic transmitter/receiver pair for DVI/HDMI, audio and RS-232 up to 2km single-mode or 500m multi-mode, rated up to WUXGA/1080p.",
   "korean": "DVI·HDMI 신호와 오디오·RS-232를 광케이블로 싱글모드 최대 2km, 멀티모드 최대 500m 전송하는 벽부형 광 송·수신기이며, 해상도 표는 WUXGA/1080p까지다.",
-  "catalogPages": "27",
+  "catalogPages": "25",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 27쪽의 FT103-U-H/FR103-U 소개와 FT103-U-H·FR103-U 제품사양 표에서 확인했다.",
   "packageStatus": "REVIEW REQUIRED",
   "overview": "FT103-U-H와 FR103-U는 비디오와 오디오, RS-232 신호를 광케이블을 통해 장거리 전송하기 위한 벽부형 송신기와 수신기다. FT103-U-H는 비디오·오디오·RS-232 신호를 광신호로 변환하고, FR103-U는 광신호를 다시 비디오·오디오·RS-232 신호로 복원한다. 두 제품 모두 디지털 신호인 DVI 또는 HDMI를 지원한다.\n\n광신호를 사용해 최대 2km까지 전송할 수 있으며, 외부 신호의 영향으로부터 안전하게 신호를 전송할 수 있어 보안이 필요한 기업이나 군부대, 정부기관 등에 적합한 전송장비다. 제품사양의 지원 해상도는 PC WUXGA(1920x1200@60Hz), HDTV 1080p까지로, 다른 VDM 광 전송기의 4K 표기와 다르다.",
@@ -246,6 +246,17 @@
       "verification": "VERIFIED"
     },
     {
+      "group": "TX · Control",
+      "connector": "Phoenix connector(녹색, 핀 수 미기재)",
+      "signal": "RS-232",
+      "direction": "BIDIR",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "FT103-U-H · 소개문·사진 기준(녹색 Phoenix 단자), 핀 수 미기재",
+      "source": "C",
+      "verification": "REVIEW REQUIRED"
+    },
+    {
       "group": "RX · Video",
       "connector": "HDMI",
       "signal": "DVI / HDMI (TMDS)",
@@ -277,6 +288,17 @@
       "condition": "FR103-U · 카탈로그 27쪽 제품사양표 Output Signal 기준",
       "source": "C",
       "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Control",
+      "connector": "Phoenix connector(녹색, 핀 수 미기재)",
+      "signal": "RS-232",
+      "direction": "BIDIR",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "FR103-U · 소개문·사진 기준(녹색 Phoenix 단자), 핀 수 미기재",
+      "source": "C",
+      "verification": "REVIEW REQUIRED"
     }
   ],
   "related": [
@@ -292,6 +314,12 @@
       "name": "알티컴 종합 카탈로그 2026 (국문)",
       "page": "27",
       "scope": "제조사 공식 출처"
+    },
+    {
+      "code": "C2",
+      "name": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
+      "page": "25",
+      "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
     }
   ],
   "issues": [
@@ -324,6 +352,12 @@
       "status": "INFO",
       "title": "이미지 역할 표기",
       "detail": "짝 제품이라 Main에는 송신기(TX), Other(기타)에는 수신기(RX) 사진을 넣었다. 각 이미지의 alt·note에 TX/RX를 적었다."
+    },
+    {
+      "code": "I4",
+      "status": "INFO",
+      "title": "46쪽판 재검증 · RS-232 단자 추가",
+      "detail": "46쪽판(C2) 25쪽을 48쪽판과 줄 단위로 대조했다. 공백 차이를 빼면 완전히 같아 사양 값은 바꾸지 않았다(R1·R2도 46쪽판에서 동일하게 반복됨). 소개문·주요 기능은 'RS-232 신호를 광케이블로 전송'이라고 적었지만 입출력 표에는 RS-232 단자 행이 없었다. 카탈로그 사진의 녹색 Phoenix 단자를 근거로 TX·RX 각각에 RS-232 단자 행을 추가했다(핀 수는 원문에 없어 REVIEW REQUIRED로 남김)."
     }
   ]
 }

@@ -14,7 +14,7 @@
   ],
   "english": "4K60 4:4:4 HDMI fiber optic extender over OM3 multi-mode SC fiber up to 300m, with analog audio embedding and de-embedding.",
   "korean": "4K60Hz 4:4:4 HDMI 신호를 OM3 멀티모드(SC) 광케이블로 최대 300m 전송하고, 아날로그 오디오 병합·추출을 지원하는 광 송·수신기다.",
-  "catalogPages": "42",
+  "catalogPages": "40",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 42쪽의 OBUX-1C 소개·주요기능·크기 및 무게·제품사양에서 확인했다.",
   "packageStatus": "REVIEW REQUIRED",
   "overview": "OBUX-1C는 최대 4K 60Hz(4:4:4) 해상도를 지원하는 광 송·수신기로, 멀티모드(SC Type, OM3) 전용 광케이블을 통해 영상 신호를 최대 300m까지 전송한다. 아날로그 오디오 신호의 병합(Embedded)과 추출(De-embedded) 기능을 갖추었다.\n\n압축 없이 원본 영상 신호를 그대로 전송하며, 컬러 딥(Color Depth)과 선명한 화질이 필요한 방송·전시·회의실·컨트롤룸 환경을 대상으로 한다.",

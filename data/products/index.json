@@ -42,7 +42,7 @@
       ],
       "english": "Variety Digital Matrix — modular cross-platform matrix switcher from 8x8 to 288x288 supporting HDMI, HDBaseT, fiber, 3G-SDI, DVI and VGA.",
       "korean": "HDMI·HDBaseT·광·3G-SDI·DVI·VGA 신호를 8x8부터 288x288까지 자유롭게 입출력하는 모듈형 크로스 플랫폼 매트릭스 스위처다.",
-      "catalogPages": "17–27",
+      "catalogPages": "17–20",
       "packageStatus": "REVIEW REQUIRED",
       "cardImage": "vdm-main.webp"
     },
@@ -76,7 +76,7 @@
       ],
       "english": "4x4 4K60 HDMI matrix switcher with seamless switching, video wall, quad view and PIP",
       "korean": "심리스 스위칭·2x2 비디오 월·쿼드 뷰·PIP 기능을 갖춘 4K 60Hz 4x4 HDMI 매트릭스 스위처다.",
-      "catalogPages": "29",
+      "catalogPages": "27",
       "packageStatus": "REVIEW REQUIRED",
       "cardImage": "qms-44ux-front.webp"
     },
@@ -93,7 +93,7 @@
       ],
       "english": "True-4K 8x8 HDMI 2.0 scaling matrix switcher with 8-channel multi-view, video wall and dual mode",
       "korean": "8CH 멀티뷰·비디오 월·듀얼 모드를 지원하는 True-4K 8x8 HDMI 2.0 매트릭스 스위처다.",
-      "catalogPages": "30",
+      "catalogPages": "28",
       "packageStatus": "REVIEW REQUIRED",
       "cardImage": "qms-88ux-front.webp"
     },
@@ -110,7 +110,7 @@
       ],
       "english": "1x3 HDMI 2.0 18Gbps splitter supporting 4K60 4:4:4 with EDID minder",
       "korean": "4K 60Hz 4:4:4와 EDID 마인더를 지원하는 1입력 3출력 HDMI 2.0 18Gbps 분배기다.",
-      "catalogPages": "36",
+      "catalogPages": "34",
       "packageStatus": "VERIFIED",
       "cardImage": "hd-13u-front.webp"
     },
@@ -127,7 +127,7 @@
       ],
       "english": "1x4 HDMI 2.0 18Gbps splitter supporting 4K60 4:4:4 with EDID minder",
       "korean": "4K 60Hz 4:4:4와 EDID 마인더를 지원하는 1입력 4출력 HDMI 2.0 18Gbps 분배기다.",
-      "catalogPages": "37",
+      "catalogPages": "35",
       "packageStatus": "VERIFIED",
       "cardImage": "hd-14u-front.webp"
     },
@@ -144,7 +144,7 @@
       ],
       "english": "1x8 HDMI 2.0 18Gbps splitter supporting 4K60 4:4:4 with EDID minder",
       "korean": "4K 60Hz 4:4:4와 EDID 마인더를 지원하는 1입력 8출력 HDMI 2.0 18Gbps 분배기다.",
-      "catalogPages": "38",
+      "catalogPages": "36",
       "packageStatus": "VERIFIED",
       "cardImage": "hd-18u-front.webp"
     },
@@ -161,7 +161,7 @@
       ],
       "english": "2x10 HDMI 2.0 18Gbps splitter selecting one of two inputs to ten outputs, 4K60 4:4:4",
       "korean": "두 입력 중 하나를 선택해 10개 출력으로 분배하는 4K 60Hz 4:4:4 HDMI 2.0 18Gbps 분배기다.",
-      "catalogPages": "39",
+      "catalogPages": "37",
       "packageStatus": "VERIFIED",
       "cardImage": "hd-210u-front.webp"
     },
@@ -178,7 +178,7 @@
       ],
       "english": "1x2 HDMI 2.0 18Gbps splitter supporting 4K60 4:4:4",
       "korean": "4K 60Hz 4:4:4를 지원하는 1입력 2출력 HDMI 2.0 18Gbps 분배기다.",
-      "catalogPages": "31",
+      "catalogPages": "29",
       "packageStatus": "VERIFIED",
       "cardImage": "hd-d102u-perspective.webp"
     },
@@ -195,7 +195,7 @@
       ],
       "english": "2x1 HDMI 2.0 4K60 switcher with audio extraction/insertion, priority and EDID minder",
       "korean": "오디오 추출·삽입, Priority, EDID 마인더 기능을 갖춘 2입력 1출력 HDMI 2.0 4K 선택기다.",
-      "catalogPages": "34",
+      "catalogPages": "32",
       "packageStatus": "VERIFIED",
       "cardImage": "hds-21u-front.webp"
     },
@@ -212,7 +212,7 @@
       ],
       "english": "4x2 HDMI 2.0 4K60 matrix switcher with audio extraction/insertion, priority and EDID minder",
       "korean": "4입력 2출력 매트릭스 스위칭과 오디오 추출·삽입, EDID 마인더 기능을 갖춘 HDMI 2.0 4K 선택기다.",
-      "catalogPages": "35",
+      "catalogPages": "33",
       "packageStatus": "VERIFIED",
       "cardImage": "hds-42mu-front.webp"
     },
@@ -246,7 +246,7 @@
       ],
       "english": "Wall-plate HDBaseT transmitter/receiver pair extending DVI/HDMI, audio and RS-232 up to 100m over one CATx cable; receiver supports scaling and seamless switching.",
       "korean": "비디오·오디오·RS-232 신호를 CATx 케이블 한 가닥으로 최대 100m 전송하는 벽부형 HDBaseT 송·수신기다.",
-      "catalogPages": "23",
+      "catalogPages": "22",
       "packageStatus": "REVIEW REQUIRED",
       "cardImage": "ct103-u-h-cr103-u-main.webp"
     },
@@ -263,7 +263,7 @@
       ],
       "english": "HDBaseT transmitter/receiver pair extending 4K HDMI and RS-232 up to 100m over CAT5e/CAT6; pairs with VDM CIS4-U/COS4-U cards.",
       "korean": "4K HDMI 신호와 RS-232 신호를 CAT5e/CAT6 케이블 한 가닥으로 최대 100m 전송하는 HDBaseT 송·수신기다.",
-      "catalogPages": "24",
+      "catalogPages": "23",
       "packageStatus": "VERIFIED",
       "cardImage": "ct104-u-cr104-u-main.webp"
     },
@@ -280,7 +280,7 @@
       ],
       "english": "Fiber optic transmitter/receiver pair extending DVI/HDMI, audio and RS-232 up to 2km single-mode or 500m multi-mode; pairs with VDM FIS4-U/FOS4-U cards.",
       "korean": "비디오·오디오·RS-232 신호를 광케이블로 싱글모드 최대 2km, 멀티모드 최대 500m 전송하는 광 송·수신기다.",
-      "catalogPages": "25",
+      "catalogPages": "24",
       "packageStatus": "REVIEW REQUIRED",
       "cardImage": "ft101-u-fr101-u-main.webp"
     },
@@ -297,7 +297,7 @@
       ],
       "english": "Wall-plate fiber optic transmitter/receiver pair for DVI/HDMI, audio and RS-232 up to 2km single-mode or 500m multi-mode, rated up to WUXGA/1080p.",
       "korean": "DVI·HDMI 신호와 오디오·RS-232를 광케이블로 싱글모드 최대 2km, 멀티모드 최대 500m 전송하는 벽부형 광 송·수신기이며, 해상도 표는 WUXGA/1080p까지다.",
-      "catalogPages": "27",
+      "catalogPages": "25",
       "packageStatus": "REVIEW REQUIRED",
       "cardImage": "ft103-u-h-fr103-u-main.webp"
     },
@@ -314,7 +314,7 @@
       ],
       "english": "Rack-mountable modular extension frame holding up to four CATx/fiber transmitter or receiver modules powered from a single adapter, up to 4K30.",
       "korean": "CATx·광 송수신기 모듈을 최대 4개까지 장착하고 하나의 전원 어댑터로 전원을 공급하는 랙 장착형 집합 프레임이다.",
-      "catalogPages": "40",
+      "catalogPages": "38",
       "packageStatus": "REVIEW REQUIRED",
       "cardImage": "mr-4s-front.webp"
     },
@@ -331,7 +331,7 @@
       ],
       "english": "HDMI fiber optic extender pair (TX/RX) for Full HD 1080p60 over two fibers, up to 2km single-mode or 500m multi-mode.",
       "korean": "HDMI 영상 신호를 광케이블 2가닥으로 싱글모드 최대 2km, 멀티모드 최대 500m 전송하는 Full HD 광 송·수신기 한 쌍이다.",
-      "catalogPages": "41",
+      "catalogPages": "39",
       "packageStatus": "VERIFIED",
       "cardImage": "obhd-2c-main.webp"
     },
@@ -348,7 +348,7 @@
       ],
       "english": "4K60 4:4:4 HDMI fiber optic extender over OM3 multi-mode SC fiber up to 300m, with analog audio embedding and de-embedding.",
       "korean": "4K60Hz 4:4:4 HDMI 신호를 OM3 멀티모드(SC) 광케이블로 최대 300m 전송하고, 아날로그 오디오 병합·추출을 지원하는 광 송·수신기다.",
-      "catalogPages": "42",
+      "catalogPages": "40",
       "packageStatus": "REVIEW REQUIRED",
       "cardImage": "obux-1c-main.webp"
     },
@@ -416,7 +416,7 @@
       ],
       "english": "Armored HDMI 2.0b active optical cable, 4K60 4:4:4 HDR, 18Gbps, up to 100m",
       "korean": "케이블 보호기를 갖춘 최대 100m 4K 60Hz 4:4:4 HDR HDMI 2.0b 아머드 액티브 광케이블이다.",
-      "catalogPages": "45",
+      "catalogPages": "43",
       "packageStatus": "VERIFIED",
       "cardImage": "ahoc-main.webp"
     },
@@ -433,7 +433,7 @@
       ],
       "english": "High speed HDMI 2.0b active optical cable, 4K60 4:4:4, 18Gbps, up to 100m",
       "korean": "4K 60Hz 4:4:4·18Gbps를 최대 100m까지 전송하는 HDMI 2.0b 액티브 광케이블이다.",
-      "catalogPages": "43",
+      "catalogPages": "41",
       "packageStatus": "VERIFIED",
       "cardImage": "hoc-ux-main.webp"
     },
@@ -450,7 +450,7 @@
       ],
       "english": "Locking pluggable HDMI 2.0b active optical cable, 4K60 4:4:4 HDR, 18Gbps, up to 100m",
       "korean": "잠금형 분리 커넥터를 갖춘 최대 100m 4K 60Hz 4:4:4 HDR HDMI 2.0b 액티브 광케이블이다.",
-      "catalogPages": "44",
+      "catalogPages": "42",
       "packageStatus": "REVIEW REQUIRED",
       "cardImage": "lhoc-main.webp"
     },
@@ -467,7 +467,7 @@
       ],
       "english": "Ultimate Locking HDMI cable with 360-degree locking switch, 1m to 10m",
       "korean": "어느 방향에서도 고정·해제할 수 있는 360도 잠금 스위치를 갖춘 일체형 잠금 HDMI 케이블이다.",
-      "catalogPages": "46–47",
+      "catalogPages": "44–45",
       "packageStatus": "VERIFIED",
       "cardImage": "umc-main.webp"
     }

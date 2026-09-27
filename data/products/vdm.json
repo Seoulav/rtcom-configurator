@@ -14,7 +14,7 @@
   ],
   "english": "Variety Digital Matrix — modular cross-platform matrix switcher from 8x8 to 288x288 supporting HDMI, HDBaseT, fiber, 3G-SDI, DVI and VGA.",
   "korean": "HDMI·HDBaseT·광·3G-SDI·DVI·VGA 신호를 8x8부터 288x288까지 자유롭게 입출력하는 모듈형 크로스 플랫폼 매트릭스 스위처다.",
-  "catalogPages": "17–27",
+  "catalogPages": "17–20",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 17~27쪽의 소개·LINE-UP·주요기능·제품사양·크기 및 무게·입출력 보드·전송기 사양에서 확인했다.",
   "packageStatus": "REVIEW REQUIRED",
   "overview": "VDM(Variety Digital Matrix Switcher) 시리즈는 디지털 인터페이스인 HDMI, CATx, Fiber, 3G/6G-SDI, DVI와 아날로그 인터페이스인 VGA까지 다양한 입출력 신호를 지원하는 모듈형 크로스 플랫폼 매트릭스 스위처다. 어떤 인터페이스로 입력해도 원하는 인터페이스로 출력할 수 있어 별도의 신호변환기가 필요 없고, 입출력 슬롯을 통해 영상·음성·제어신호를 장거리 전송할 수 있다.\n\n입출력 슬롯의 오디오 단자로 임베디드 오디오를 추출하거나 외부 오디오를 병합할 수 있으며, 후면에 별도 장착하는 오디오 매트릭스를 쓰면 오디오 병합·추출·입출력을 더 자유롭게 구성할 수 있다. 내장 패턴 제너레이터로 설치·운용 중 입력 채널 모니터링과 출력 채널 이상 유무를 확인할 수 있다.\n\n메인프레임은 8x8부터 288x288까지 9가지다. 전면 LCD 터치패널, RS-232, LAN으로 제어하며, 터치패널에서 파워모듈과 CPU 상태, 입력 소스 해상도, 출력 디스플레이 정보와 설정을 확인할 수 있다. 모든 메인프레임에 듀얼 리던던트 파워와 파워 핫스왑이 기본 적용된다.",
@@ -437,6 +437,12 @@
       "status": "INFO",
       "title": "이미지 출처",
       "detail": "카탈로그 도면이 아니라 구성기 저장소에 있던 RTCOM 제품 사진을 webp로 변환했다. Main은 VDM 메인프레임 제품군 사진, Front는 VDM-16X 전면 사진(구성기 프레임 이미지)이다. 사진 속 'Digital Extender' 표기는 실제 제품 전면 인쇄다."
+    },
+    {
+      "code": "I5",
+      "status": "INFO",
+      "title": "카탈로그 쪽 번호를 46쪽판 기준으로 통일(B6)",
+      "detail": "catalogPages를 48쪽판 기준 \"17–27\"에서 46쪽판(C2) 기준 \"17–20\"으로 바꿨다. 48쪽판의 17–27쪽은 VDM 섀시·입출력 보드 소개(17–20쪽 부근)부터 CT101-U~FT103-U-H 전송기 개별 모델 소개(21–27쪽)까지를 폭넓게 가리켰지만, 전송기 개별 모델은 이미 각자 별도 제품 파일(ct101-u-cr101-u.json 등)에서 자기 쪽 번호를 따로 관리한다. 46쪽판에서 VDM 섀시·보드 소개는 17–20쪽에 그대로 있고(밀림 없음), 전송기 개별 모델부터 21쪽 이후 순서가 최대 2쪽까지 밀린다(예: FT103-U-H/FR103-U 27→25). 이 파일의 catalogPages는 VDM 섀시·보드 범위만 가리키도록 좁혔다."
     }
   ]
 }
