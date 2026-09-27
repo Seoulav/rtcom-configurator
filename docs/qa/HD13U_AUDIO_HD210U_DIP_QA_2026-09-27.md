@@ -20,6 +20,7 @@
 - Status·IN·OUT 2·3 LED가 실제로 켜져 있는지는 매뉴얼에 없어 어둡게 두었습니다. 움직임 줄이기 설정(`prefers-reduced-motion`)에서는 애니메이션을 끄고 빛 표시로만 구분합니다.
 - 데이터: `audioMux.panel` = `{rotary:{label:"MODE",value:"0"}, button:"SET", leds:["Status","IN","OUT 1","2","3"], target:"OUT 1"}`, `modes[].led` = `blink`(병합)·`steady`(추출). validator가 `target`이 `leds`에 있는지, `led` 값이 둘 중 하나인지 검사합니다.
 - 로터리 그림 교체(사용자 요청 "MODE 로터리 스위치를 0으로 선택하고 SET 버튼이야. MODE 글자 위 기존 로터리로 변경해줘"): 처음의 작은 손잡이 그림 대신 EDID 설정 카드와 같은 16단(0~F) 로터리(`rotaryGraphic`)를 패널 안에 작게 넣고 0번을 가리키게 했습니다. 어두운 패널 위라 눈금 글자를 밝게 바꾸는 옵션(`dark`)과 다른 그림 안에 넣는 옵션(`box`)을 추가했습니다. 그림 아래 표시는 "0번 선택" · "누름" · "깜빡임/깜빡이지 않음"입니다.
+- 로터리 표시 방식 재조정(사용자 요청 "이 느낌 로터리 써줘", EDID 설정 카드 화면 첨부): 어두운 패널 안에 작게 넣었던 로터리를 빼서, EDID 설정 카드의 대표 설정 그림과 같은 밝은 칸(흰 바탕, 회색 눈금 글자, 파란 로터리, "MODE 0번 선택")으로 따로 두고 "+" 뒤에 SET 버튼·LED만 있는 어두운 패널을 붙였습니다. 휴대폰(720px 이하)에서는 로터리 칸을 위에, 패널을 아래 전체 폭으로 둡니다. 로터리 그림의 화면 읽기 이름은 "MODE 로터리 0번"입니다(`rotaryGraphic(code,{name})`).
 - 화면: `docs/qa/hd13u-hd210u-screens/panel-desk.png`, `panel-mob.png`
 
 ## 3. HD-210U 07 딥 스위치 설정

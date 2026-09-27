@@ -352,7 +352,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     for(const [id,codes] of [['hd-13u','0,1,7'],['hds-42mu','0,3,9'],['ft103-u-h-fr103-u','0,3,6']]){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
       await page.waitForSelector('#rt-pg-title');
-      const rot=await page.evaluate(()=>({codes:[...document.querySelectorAll('.rt-pg-rotary svg')].map(svg=>svg.getAttribute('aria-label').replace(/\D/g,'')).join(','),def:document.querySelectorAll('.rt-pg-rotary.is-default').length}));
+      const rot=await page.evaluate(()=>({codes:[...document.querySelectorAll('.rt-pg-rotary-row .rt-pg-rotary svg')].map(svg=>svg.getAttribute('aria-label').replace(/\D/g,'')).join(','),def:document.querySelectorAll('.rt-pg-rotary-row .rt-pg-rotary.is-default').length}));
       check(`${id} EDID 로터리 대표 설정 그림이 ${codes}번으로 나오고 기본값이 1개 표시됨`,rot.codes===codes&&rot.def===1,JSON.stringify(rot));
     }
     // 0.60 신호 흐름 잘림: AUDIO OUT 칩·"추출" 표시 등 그림 요소가 SVG 틀(viewBox) 밖으로 나가지 않는다(HDS-21U "추출" 잘림, 사용자 지적 2026-09-27). 글자 위쪽 여백은 1px까지 허용한다.
@@ -375,8 +375,8 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     // 0.61 HD-13U 오디오 설정 전면 패널 그림: 병합은 OUT 1 LED가 깜빡이고(rt-pg-led-blink), 추출은 켜진 채 깜빡이지 않는다(사용자 요청 2026-09-27 "DIP 이미지처럼 불 켜짐").
     await page.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-audio-panel');
-    const panel13=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-audio-mode')].map(m=>({blink:m.querySelectorAll('.rt-pg-led-blink').length,label:m.querySelector('.rt-pg-audio-panel')?.getAttribute('aria-label')||''})));
-    check('HD-13U 오디오 설정 패널 그림이 병합(OUT 1 깜빡임)·추출(깜빡이지 않음) 두 장으로 나옴',panel13.length===2&&panel13[0].blink===1&&panel13[1].blink===0&&panel13[0].label.includes('깜빡임')&&panel13[1].label.includes('깜빡이지 않음'),JSON.stringify(panel13));
+    const panel13=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-audio-mode')].map(m=>({blink:m.querySelectorAll('.rt-pg-led-blink').length,label:m.querySelector('.rt-pg-audio-panelrow')?.getAttribute('aria-label')||'',rotary:m.querySelector('.rt-pg-rotary-mini svg')?.getAttribute('aria-label')||''})));
+    check('HD-13U 오디오 설정 패널 그림이 병합(OUT 1 깜빡임)·추출(깜빡이지 않음) 두 장으로 나옴',panel13.length===2&&panel13[0].blink===1&&panel13[1].blink===0&&panel13[0].label.includes('깜빡임')&&panel13[1].label.includes('깜빡이지 않음')&&panel13.every(m=>m.rotary==='MODE 로터리 0번'),JSON.stringify(panel13));
     // 0.55 QMS-88UX 06 화면 구성 모드: 레이아웃 버튼을 누르면 해당 도해로 미리보기가 바뀐다(사용자 요청 2026-09-27).
     await page.goto(`${home}#products/qms-88ux`,{waitUntil:'networkidle'});
     await page.waitForSelector('[data-layout-chip]');
