@@ -257,11 +257,11 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.goBack();
     await page.waitForSelector('.rt-pg-gridcard');
     check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-pg-gridcard').count()===27);
-    // 0.43 벽부형 단자 지도: 송신기·수신기 두 장, 세로 괄호(side left/right) 번호표 12개, 사진에 보이지 않는 옆면 단자 안내(note).
+    // 0.43 벽부형 단자 지도: 송신기·수신기 두 장, 세로 괄호(side left/right) 번호표 11개(0.46에서 HDMI IN 1·2를 한 번호로 묶음), 사진에 보이지 않는 옆면 단자 안내(note).
     await page.goto(`${home}#products/ft103-u-h-fr103-u`,{waitUntil:'networkidle'});
     await page.waitForSelector('#rt-pg-title');
     const wallMap=await page.evaluate(()=>{const svgs=[...document.querySelectorAll('.rt-pg-panel svg[aria-label$="단자 지도"]')];return {maps:svgs.length,pins:svgs.reduce((n,svg)=>n+svg.querySelectorAll('circle').length,0),note:[...document.querySelectorAll('.rt-pg-hint')].some(el=>el.textContent.includes('옆면(사진에 보이지 않음)'))}});
-    check('FT103-U-H/FR103-U 벽부형 단자 지도가 두 장·번호표 12개·옆면 단자 안내로 나옴',wallMap.maps===2&&wallMap.pins===12&&wallMap.note,JSON.stringify(wallMap));
+    check('FT103-U-H/FR103-U 벽부형 단자 지도가 두 장·번호표 11개·옆면 단자 안내로 나옴',wallMap.maps===2&&wallMap.pins===11&&wallMap.note,JSON.stringify(wallMap));
     await page.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
     await page.waitForSelector('#rt-pg-title');
     check('HD-13U 상세는 02 신호 흐름에 자동 생성 SVG를 보여주고, 제조사 원본 다이어그램 버튼으로 기록 영역의 사진을 펼침',await page.locator('.rt-pg-svg-wrap svg').first().isVisible());

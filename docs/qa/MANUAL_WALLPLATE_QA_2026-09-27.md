@@ -27,7 +27,7 @@ CT103-U-H 송신기는 매뉴얼에 사진이 없습니다(매뉴얼은 VGA형 C
 
 ### XDM-CT103 / XDM-CR103
 
-- 단자 지도: 송신기 앞면·뒷면 6개(Signal·Link LED, AUDIO IN, Mode 딥 스위치, HDMI IN, HDBaseT OUT, DC IN)
+- 단자 지도: 송신기 앞면·뒷면 6개(HDMI IN, AUDIO IN, Signal·Link LED, HDBaseT OUT, DC IN, Mode 딥 스위치)
 - 사양 추가
   - 입력 신호 HDMI 1·3-pin Stereo 1, 출력 신호 HDBaseT 1
   - 전원(어댑터) DC +12V 1A 이상. XDM-CIS100 카드나 XDM-CTR100 PSE와 연결하면 PoE로 받아 연결하지 않습니다.
@@ -42,7 +42,7 @@ CT103-U-H 송신기는 매뉴얼에 사진이 없습니다(매뉴얼은 VGA형 C
 - **HDMI 입력 2개**: 카탈로그 사진의 HDMI 단자 2개와 INPUT 버튼 배치가, 같은 -U-H 벽부형인 FT-103-U-H 매뉴얼 6쪽의 HDMI1·HDMI2·INPUT 배치와 같습니다. 그래서 두 번째 단자를 HDMI 입력 2로 판단했습니다(출처 J, 근거 M2).
 - **CT103-U-H 해상도**: 1080p → **최대 4K 4096x2160@24/25/30Hz**. 짝 수신기 CR-103-U 매뉴얼과 FT-103-U-H 매뉴얼이 모두 4K 24/25/30Hz이고, 카탈로그 거리 표에도 Ultra HD 4K가 있습니다(출처 J).
 - CR103-U 출력 신호에 3.5mm 오디오를 추가하고, 입출력 표에 오디오 출력 행을 넣었습니다(매뉴얼 4쪽). 앞면 사진에는 이 단자가 보이지 않아, 단자 지도 안내 줄에 적었습니다.
-- 단자 지도: 송신기 6개(HDMI IN 1·2, INPUT 버튼, POWER·ST LED, AUDIO IN, RS-232), 수신기 3개(HDMI OUT, POWER·ST LED, RS-232)
+- 단자 지도: 송신기 5개(HDMI IN 1·2, POWER·ST LED, AUDIO IN, RS-232, INPUT 버튼), 수신기 3개(HDMI OUT, POWER·ST LED, RS-232)
 
 ### FT103-U-H / FR103-U
 
@@ -50,7 +50,7 @@ CT103-U-H 송신기는 매뉴얼에 사진이 없습니다(매뉴얼은 VGA형 C
 - 해상도: 1080p → **최대 Ultra 4K 4096x2160p 24/25/30Hz**. 싱글모드 2km·멀티모드 500m 모두 4K 30Hz입니다(매뉴얼 11쪽).
 - 광 커넥터 **2LC**를 사양·입출력 표에 적었습니다.
 - EDID 설정 카드(06): MODE 로터리 코드표 0~F, 외부 EDID 저장 절차, 외부 오디오 병합 절차(매뉴얼 6·10·11쪽)
-- 단자 지도: 송신기 8개(HDMI IN 1·2, INPUT, SET, MODE, POWER·ST, AUDIO IN, RS-232), 수신기 4개(HDMI OUT, POWER, AUDIO OUT, RS-232). DC IN과 FIBER 단자는 옆면이라 안내 줄로 적었습니다.
+- 단자 지도: 송신기 7개(HDMI IN 1·2, POWER·ST, AUDIO IN, RS-232, INPUT, SET, MODE), 수신기 4개(HDMI OUT, POWER, AUDIO OUT, RS-232). DC IN과 FIBER 단자는 옆면이라 안내 줄로 적었습니다.
 - FR-103-U 매뉴얼 7쪽 앞면 설명은 AUDIO를 "입력 포트"라고 적었지만, 9·10쪽은 수신기 3.5mm를 출력(추출)으로 설명합니다. 그래서 출력으로 판단했습니다.
 - 소개문(english, korean, lead, overview)의 "WUXGA/1080p까지" 문구를 4K 30Hz로 고쳤습니다.
 
@@ -61,13 +61,22 @@ CT103-U-H 송신기는 매뉴얼에 사진이 없습니다(매뉴얼은 VGA형 C
 - 연결 상대(XDM-COS100, XDM-CTR100 TX 모드, XDM-CT103)와 전원 DC +12V 1A 이상을 매뉴얼로 확인했습니다(사용자 확인 "cr103도 동일"과 같음).
 - CR103 앞면에는 Mode 딥 스위치가 없어, 딥 스위치·Long Reach 행은 CT103에만 둡니다.
 
+### 송신기·수신기 번호 통일(0.46.0, 사용자 요청 "CT·CR 모두 1번이 똑같이")
+
+- 짝 제품은 1번을 HDMI로 두고, 공통 단자(오디오·LED·RS-232·HDBaseT·전원)는 송신기와 수신기가 같은 번호를 쓰게 했습니다. 송신기에만 있는 조작부(INPUT 버튼, SET, MODE, Mode 딥 스위치)는 맨 뒤로 보냈습니다.
+- 두 HDMI 입력은 HD-13U의 "HDMI OUT 1–3"처럼 "HDMI IN 1·2" 한 번호로 묶었습니다.
+- XDM-CT103/CR103: 1 HDMI · 2 AUDIO · 3 Signal·Link LED · 4 HDBaseT · 5 DC IN(송신기 6 Mode 딥 스위치)
+- FT103-U-H/FR103-U: 1 HDMI · 2 LED · 3 AUDIO · 4 RS-232(송신기 5 INPUT · 6 SET · 7 MODE)
+- CT103-U-H/CR103-U: 1 HDMI · 2 LED(송신기 3 AUDIO · 4 RS-232 · 5 INPUT, 수신기 3 RS-232). CR103-U의 오디오 출력은 뒷면이라 사진에 번호를 붙일 수 없어, 수신기 RS-232만 한 칸 당겨졌습니다.
+- CT101-U/CR101-U, CT104-U/CR104-U, FT101-U/FR101-U, OBUX-1C, OBHD-2C는 이미 번호가 같았습니다.
+
 ## 3. 코드 변경
 
 - `portMap.items[].side`에 `left`·`right`(세로 괄호, `y1`·`y2`, 선택 `x`)를 추가했습니다. 단자가 세로로 쌓인 벽부형 판넬용입니다.
 - `portMap.displayWidth`: 이 폭에 맞춰 그리므로, 세로로 긴 사진을 작게 보여도 번호표 글씨 크기가 유지됩니다.
 - `portMap.note`: 사진에 보이지 않는 옆면·뒷면 단자를 한 줄로 안내합니다. 위치를 추측해 괄호를 그리지 않습니다.
 - `edidSwitch.image`에 Main·Other·Perspective도 허용했습니다(단자 지도와 같은 규칙).
-- validator가 위 항목을 모두 검사합니다. e2e에 FT103-U-H 벽부형 단자 지도 검사를 추가했습니다(두 장, 번호표 12개, 옆면 안내).
+- validator가 위 항목을 모두 검사합니다. e2e에 FT103-U-H 벽부형 단자 지도 검사를 추가했습니다(두 장, 옆면 안내, 번호표 수는 0.46 통일 뒤 11개).
 
 ## 4. 검증
 

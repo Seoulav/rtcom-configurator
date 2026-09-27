@@ -344,33 +344,15 @@
       "items": [
         {
           "n": 1,
-          "label": "HDMI IN 1",
-          "desc": "HDMI 소스 1",
+          "label": "HDMI IN 1·2",
+          "desc": "HDMI 소스 2대 · INPUT 버튼으로 선택",
           "side": "left",
           "x": 77,
           "y1": 143,
-          "y2": 164
-        },
-        {
-          "n": 2,
-          "label": "HDMI IN 2",
-          "desc": "HDMI 소스 2",
-          "side": "left",
-          "x": 77,
-          "y1": 209,
           "y2": 231
         },
         {
-          "n": 3,
-          "label": "INPUT 버튼",
-          "desc": "HDMI 1·2 입력 전환",
-          "x1": 148,
-          "x2": 162,
-          "side": "top",
-          "y": 120
-        },
-        {
-          "n": 4,
+          "n": 2,
           "label": "POWER · ST LED",
           "desc": "전원 · 입력 신호 표시",
           "x1": 241,
@@ -379,7 +361,7 @@
           "y": 104
         },
         {
-          "n": 5,
+          "n": 3,
           "label": "AUDIO IN",
           "desc": "3.5mm 스테레오 오디오 입력",
           "side": "right",
@@ -388,13 +370,22 @@
           "y2": 196
         },
         {
-          "n": 6,
+          "n": 4,
           "label": "RS-232",
           "desc": "3핀(Tx·Rx·접지) · 제어 신호 전송",
           "side": "right",
           "x": 291,
           "y1": 209,
           "y2": 237
+        },
+        {
+          "n": 5,
+          "label": "INPUT 버튼",
+          "desc": "HDMI 1·2 입력 전환",
+          "x1": 148,
+          "x2": 162,
+          "side": "top",
+          "y": 120
         }
       ]
     },

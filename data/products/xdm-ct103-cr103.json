@@ -399,12 +399,12 @@
       "items": [
         {
           "n": 1,
-          "label": "Signal · Link LED",
-          "desc": "정상으로 연결되면 켜짐",
-          "side": "left",
-          "x": 40,
-          "y1": 168,
-          "y2": 212
+          "label": "HDMI IN",
+          "desc": "소스 연결(HDMI 2.0, 4K 60Hz 4:4:4)",
+          "x1": 132,
+          "x2": 162,
+          "side": "top",
+          "y": 166
         },
         {
           "n": 2,
@@ -417,24 +417,15 @@
         },
         {
           "n": 3,
-          "label": "Mode 딥 스위치",
-          "desc": "1번 오디오 병합 · 2번 Long Reach(1080p 150m)",
+          "label": "Signal · Link LED",
+          "desc": "정상으로 연결되면 켜짐",
           "side": "left",
           "x": 40,
-          "y1": 288,
-          "y2": 322
+          "y1": 168,
+          "y2": 212
         },
         {
           "n": 4,
-          "label": "HDMI IN",
-          "desc": "소스 연결(HDMI 2.0, 4K 60Hz 4:4:4)",
-          "x1": 132,
-          "x2": 162,
-          "side": "top",
-          "y": 166
-        },
-        {
-          "n": 5,
           "label": "HDBaseT OUT",
           "desc": "RJ45 · XDM-CIS100, XDM-CTR100(RX 모드), XDM-CR103과 CAT6a U/FTP로 연결",
           "side": "right",
@@ -442,13 +433,22 @@
           "y2": 298
         },
         {
-          "n": 6,
+          "n": 5,
           "label": "DC IN",
           "desc": "DC 12V 1A 이상 · XDM-CIS100이나 XDM-CTR100 PSE와 쓰면 연결하지 않음",
           "x1": 315,
           "x2": 352,
           "side": "bottom",
           "y": 348
+        },
+        {
+          "n": 6,
+          "label": "Mode 딥 스위치",
+          "desc": "1번 오디오 병합 · 2번 Long Reach(1080p 150m)",
+          "side": "left",
+          "x": 40,
+          "y1": 288,
+          "y2": 322
         }
       ]
     },
@@ -468,7 +468,7 @@
         },
         {
           "n": 2,
-          "label": "Audio OUT",
+          "label": "AUDIO OUT",
           "desc": "3.5mm 스테레오 · HDMI 오디오 추출",
           "side": "right",
           "x": 180,
@@ -477,7 +477,7 @@
         },
         {
           "n": 3,
-          "label": "Link · Signal LED",
+          "label": "Signal · Link LED",
           "desc": "정상으로 연결되면 켜짐",
           "side": "right",
           "x": 180,
