@@ -824,3 +824,17 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-hint+.rt-pg-seg{margin-top:22px}
 /* 0.47 모델명 줄바꿈: 하이픈(CT103-U-H 등)에서 줄이 바뀌지 않게 하고, " / " 앞뒤에서만 줄을 바꾼다 */
 #rtcom-design .rt-nowrap{white-space:nowrap}
+
+/* 0.58 딥 스위치 설정 카드 */
+#rtcom-design .rt-pg-dip-rows{display:grid;gap:12px}
+#rtcom-design .rt-pg-dip-row{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:center;padding:14px 16px;border-radius:16px;background:var(--pg-field-fill)}
+#rtcom-design .rt-pg-dip-head b{display:block;font-size:15px;font-weight:800;color:var(--pg-ink)}
+#rtcom-design .rt-pg-dip-head span{font-size:13px;font-weight:700;color:var(--pg-ink-2)}
+#rtcom-design .rt-pg-dip-states{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+#rtcom-design .rt-pg-dip-state{margin:0;display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;background:#fff}
+#rtcom-design .rt-pg-dip-state svg{flex:0 0 auto}
+#rtcom-design .rt-pg-dip-state figcaption{font-size:12.5px;line-height:1.5;color:var(--pg-ink-2)}
+#rtcom-design .rt-pg-dip-state em{display:block;font-style:normal;font-size:11px;font-weight:800;letter-spacing:.04em;color:var(--pg-accent)}
+@media(max-width:720px){#rtcom-design .rt-pg-dip-row{grid-template-columns:1fr;padding:12px}#rtcom-design .rt-pg-dip-head b,#rtcom-design .rt-pg-dip-head span{display:inline;margin-right:6px}#rtcom-design .rt-pg-dip-states{grid-template-columns:1fr 1fr;gap:8px}#rtcom-design .rt-pg-dip-state{flex-direction:column;align-items:flex-start;gap:6px;padding:10px}#rtcom-design .rt-pg-dip-state svg{width:100px;height:auto}}
+#rtcom-design .rt-pg-dip-state.is-on{box-shadow:inset 0 0 0 1.5px rgba(0,122,255,.35)}
+#rtcom-design .rt-pg-dip-note{grid-column:1/-1;margin:0;font-size:12.5px;color:var(--pg-ink-2)}

@@ -154,7 +154,8 @@
       const A=COLOR_IN,V='#5E5CE6',P=COLOR_OUT,PI='#8944AB',M='#8A8A8E';
       const sigName=(videoIn.connector.match(/^[A-Za-z]+/)||['HDMI'])[0];
 
-      const chipW=104,chipH=34,chipVGap=12,leftX=10,topPad=20;
+      // 매트릭스는 크로스포인트 상자 위에 제목·예시 표시·출력 번호를 두므로 위쪽 여백을 더 준다.
+      const chipW=104,chipH=34,chipVGap=12,leftX=10,topPad=isMatrix?66:20;
       const chipYs=[];for(let i=0;i<inN;i++)chipYs.push(topPad+i*(chipH+chipVGap));
       const chipsBottom=chipYs[chipYs.length-1]+chipH;
       const audioY=audioIn?chipsBottom+18:null,audioH=30;
@@ -168,19 +169,39 @@
       });
       if(audioIn)bodyMarkup+=`<rect x="${leftX}" y="${audioY}" width="${chipW}" height="${audioH}" rx="15" fill="rgba(118,118,128,.10)"/><text x="${leftX+chipW/2}" y="${audioY+audioH/2+4}" text-anchor="middle" font-size="11.5" font-weight="600" fill="${M}">AUDIO IN</text>`;
 
-      const nodeX=leftX+chipW+70;
+      // 멀티뷰 전용 출력(QMS-88UX의 9·10번 등): videoModes의 QUAD 요약 "출력 9·10번 전용"에서 번호를 읽어 매트릭스 출력과 분리된 별도 갈래로 그린다.
+      const quadMode=(item.videoModes?.modes||[]).find(mode=>mode.name==='QUAD');
+      const multiview=((quadMode?.summary||'').match(/출력\s*([\d·,\s]+)번\s*전용/)||[])[1]?.split(/[·,\s]+/).map(Number).filter(n=>n>=1&&n<=outN)||[];
+      const matrixPorts=Array.from({length:outN},(_,i)=>i+1).filter(n=>!multiview.includes(n));
+
+      // 매트릭스는 입력들이 한 점으로 모였다가 하나의 띠로 나가면 "여러 입력 중 1개 선택 → 분배"로 읽힌다(사용자 지적 2026-09-27, QMS-44UX).
+      // 그래서 상자 안에 입력(가로줄) × 출력(세로줄) 크로스포인트를 그리고, 출력마다 다른 입력을 고른 예시 점을 찍는다(마지막 출력은 첫 출력과 같은 입력 = 한 입력을 여러 출력으로).
+      const xpSx=15,xpPad=16,xpTop=22;
+      const matrixBoxW=Math.max(68,matrixPorts.length*xpSx+xpPad*2-xpSx+8);
+      const nodeX=isMatrix?leftX+chipW+30+matrixBoxW/2:leftX+chipW+70;
       let nodeRight;
       if(inN>1||isMatrix){
-        chipYs.forEach(y=>{
+        if(!isMatrix)chipYs.forEach(y=>{
           const cy=y+chipH/2;
           bodyMarkup+=`<path d="M${leftX+chipW} ${cy}C${leftX+chipW+32} ${cy} ${leftX+chipW+32} ${midY} ${nodeX-22} ${midY}" fill="none" stroke="${A}" stroke-width="3"/>`;
         });
-        if(audioIn){const joinY=isMatrix?midY+Math.max(52,chipYs.length*(chipH+chipVGap)-chipVGap)/2:midY+21;bodyMarkup+=`<path d="M${leftX+chipW} ${audioY+audioH/2}C${leftX+chipW+42} ${audioY+audioH/2} ${nodeX} ${audioY+audioH/2} ${nodeX} ${joinY}" fill="none" stroke="${M}" stroke-width="1.8" stroke-dasharray="4 3"/><rect x="${leftX+chipW+8}" y="${audioY+audioH+2}" width="30" height="15" rx="7" fill="#fff"/><text x="${leftX+chipW+23}" y="${audioY+audioH+13}" text-anchor="middle" font-size="10" font-weight="700" fill="${M}">병합</text>`;}
         if(isMatrix){
-          const boxW=68,boxH=Math.max(52,chipYs.length*(chipH+chipVGap)-chipVGap);
-          bodyMarkup+=`<rect x="${nodeX-boxW/2}" y="${midY-boxH/2}" width="${boxW}" height="${boxH}" rx="14" fill="#fff" stroke="${A}" stroke-width="3"/><text x="${nodeX}" y="${midY+5}" text-anchor="middle" font-size="12" font-weight="700" fill="${A}">매트릭스</text>`;
-          nodeRight=nodeX+boxW/2;
+          const boxW=matrixBoxW,boxX=nodeX-boxW/2,boxY=chipYs[0]-xpTop,boxH=chipsBottom-chipYs[0]+xpTop+12;
+          const colX=j=>boxX+xpPad+4+j*xpSx,rowY=i=>chipYs[i]+chipH/2;
+          bodyMarkup+=`<rect x="${boxX}" y="${boxY}" width="${boxW}" height="${boxH}" rx="14" fill="#fff" stroke="${A}" stroke-width="3"/>`;
+          chipYs.forEach((y,i)=>{bodyMarkup+=`<path d="M${leftX+chipW} ${rowY(i)}H${boxX}" stroke="${A}" stroke-width="3"/><path d="M${boxX+6} ${rowY(i)}H${boxX+boxW-6}" stroke="${A}" stroke-width="1.2" opacity=".35"/>`;});
+          const sel=matrixPorts.map((_,j)=>(j*5+1)%inN);
+          if(sel.length>2)sel[sel.length-1]=sel[0];
+          matrixPorts.forEach((n,j)=>{
+            const x=colX(j);
+            bodyMarkup+=`<path d="M${x} ${boxY+xpTop-6}V${boxY+boxH-8}" stroke="${P}" stroke-width="1.2" opacity=".35"/><text x="${x}" y="${boxY+xpTop-9}" text-anchor="middle" font-size="9" font-weight="700" fill="${PI}">${n}</text>`;
+            chipYs.forEach((_,i)=>{bodyMarkup+=i===sel[j]?`<circle cx="${x}" cy="${rowY(i)}" r="5" fill="${PI}"/>`:`<circle cx="${x}" cy="${rowY(i)}" r="2" fill="#C7C7CC"/>`;});
+          });
+          bodyMarkup+=`<text x="${nodeX}" y="${boxY-26}" text-anchor="middle" font-size="12" font-weight="800" fill="${A}">매트릭스</text><text x="${nodeX}" y="${boxY-10}" text-anchor="middle" font-size="10" font-weight="600" fill="${M}"><tspan fill="${PI}">●</tspan> 선택 예시</text>`;
+          nodeRight=boxX+boxW;
+          if(audioIn){const joinY=boxY+boxH;bodyMarkup+=`<path d="M${leftX+chipW} ${audioY+audioH/2}C${leftX+chipW+42} ${audioY+audioH/2} ${boxX+18} ${audioY+audioH/2} ${boxX+18} ${joinY}" fill="none" stroke="${M}" stroke-width="1.8" stroke-dasharray="4 3"/><rect x="${leftX+chipW+8}" y="${audioY+audioH+2}" width="30" height="15" rx="7" fill="#fff"/><text x="${leftX+chipW+23}" y="${audioY+audioH+13}" text-anchor="middle" font-size="10" font-weight="700" fill="${M}">병합</text>`;}
         }else{
+          if(audioIn)bodyMarkup+=`<path d="M${leftX+chipW} ${audioY+audioH/2}C${leftX+chipW+42} ${audioY+audioH/2} ${nodeX} ${audioY+audioH/2} ${nodeX} ${midY+21}" fill="none" stroke="${M}" stroke-width="1.8" stroke-dasharray="4 3"/><rect x="${leftX+chipW+8}" y="${audioY+audioH+2}" width="30" height="15" rx="7" fill="#fff"/><text x="${leftX+chipW+23}" y="${audioY+audioH+13}" text-anchor="middle" font-size="10" font-weight="700" fill="${M}">병합</text>`;
           bodyMarkup+=`<circle cx="${nodeX}" cy="${midY}" r="21" fill="#fff" stroke="${A}" stroke-width="3"/><path d="M${nodeX-10} ${midY}h20M${nodeX+4} ${midY-7}l7 7-7 7" fill="none" stroke="${A}" stroke-width="2.6" stroke-linecap="round"/><text x="${nodeX}" y="${audioIn?midY-31:midY+41}" text-anchor="middle" font-size="11" font-weight="600" fill="${M}">${inN}개 중 1개 선택</text>`;
           nodeRight=nodeX+21;
         }
@@ -205,11 +226,6 @@
       const protoBits=[videoIn.protocol,hdcp&&(hdcpVersion?`HDCP ${hdcpVersion}`:'HDCP'),...audioBits].filter(Boolean);
       if(protoBits.length)bodyMarkup+=`<text x="${(bandX1+bandX2)/2}" y="${bandY+28}" text-anchor="middle" font-size="11" font-weight="600" fill="${M}">${svgEsc(protoBits.join(' · '))}</text>`;
 
-      // 멀티뷰 전용 출력(QMS-88UX의 9·10번 등): videoModes의 QUAD 요약 "출력 9·10번 전용"에서 번호를 읽어 매트릭스 출력과 분리된 별도 갈래로 그린다.
-      const quadMode=(item.videoModes?.modes||[]).find(mode=>mode.name==='QUAD');
-      const multiview=((quadMode?.summary||'').match(/출력\s*([\d·,\s]+)번\s*전용/)||[])[1]?.split(/[·,\s]+/).map(Number).filter(n=>n>=1&&n<=outN)||[];
-      const matrixPorts=Array.from({length:outN},(_,i)=>i+1).filter(n=>!multiview.includes(n));
-
       const cellW=32,cellH=23,cellGap=8,panelPad=14;
       const cols=Math.min(matrixPorts.length,5),rows=Math.ceil(matrixPorts.length/cols);
       const gridW=cols*cellW+(cols-1)*cellGap,gridH=rows*(cellH+13)+(rows-1)*cellGap;
@@ -222,8 +238,8 @@
         bodyMarkup+=`<rect x="${x}" y="${y}" width="${cellW}" height="${cellH}" rx="4" fill="#fff" stroke="${P}" stroke-width="1.8"/><path d="M${x+cellW/2} ${y+cellH}v5M${x+cellW/2-7} ${y+cellH+6}h14" stroke="${P}" stroke-width="1.6"/><text x="${x+cellW/2}" y="${y+cellH/2+3.5}" text-anchor="middle" font-size="9" font-weight="700" fill="${PI}">${n}</text>`;
       });
       const outCaption=outTotal>outN?`OUT 1–${outN} 외 ${outTotal-outN}개`:matrixPorts.length===1?'OUT':`OUT ${matrixPorts[0]}–${matrixPorts[matrixPorts.length-1]}`;
-      const sameSignal=matrixPorts.length===1?'선택한 입력 출력':isMatrix?'독립 출력':'같은 영상';
-      const captionText=`${outCaption} · ${sameSignal}${multiview.length?' 매트릭스':''}`;
+      const sameSignal=matrixPorts.length===1?'선택한 입력 출력':isMatrix?'출력마다 입력 선택':'같은 영상';
+      const captionText=`${outCaption} · ${sameSignal}${multiview.length&&!isMatrix?' 매트릭스':''}`;
       bodyMarkup+=`<text x="${panelX+panelW/2}" y="${panelY+panelH+16}" text-anchor="middle" font-size="11.5" font-weight="700" fill="${PI}">${svgEsc(captionText)}</text>`;
 
       // 멀티뷰 전용 출력: 매트릭스 출력과 같은 대역폭 띠에서 갈라져 나오는 별도 갈래로, 위쪽에 자체 패널과 캡션을 둔다.
@@ -534,7 +550,31 @@
       </section>`;
     }
 
+    // ---- 딥 스위치 설정(0.58, 사용자 요청 "딥스위치를 만들어서 설정값을 설명하면 어때?") ----
+    // 스위치 번호마다 OFF·ON 두 그림을 나란히 그린다. 설명하는 스위치만 또렷하게, 나머지는 흐리게 그린다. 위쪽이 ON(dipSwitch.onUp).
+    // HDS-21U·HDS-42MU는 오디오 병합·추출도 딥 스위치 1번으로 고르므로 07 오디오 설정 카드를 이 카드로 바꿨다.
+    function dipGraphic(count,target,on,onUp){
+      const sw=20,gap=8,x0=34,y0=10,h=44,W=x0+count*(sw+gap)+4,H=y0+h+22;
+      let body=`<rect x="${x0-8}" y="${y0-6}" width="${count*(sw+gap)+8}" height="${h+12}" rx="4" fill="#D7302B"/>`;
+      body+=`<text x="4" y="${y0+12}" font-size="11" font-weight="800" fill="#1c1c1e">ON</text><path d="M14 ${y0+h-2}V${y0+18}M10 ${y0+22}l4-5 4 5" fill="none" stroke="#1c1c1e" stroke-width="1.6"/>`;
+      for(let i=1;i<=count;i++){
+        const x=x0+(i-1)*(sw+gap),active=i===target,up=onUp?on:!on;
+        body+=`<rect x="${x}" y="${y0}" width="${sw}" height="${h}" rx="2" fill="${active?'#6E1411':'#B9534F'}"/>`;
+        if(active)body+=`<rect x="${x+2}" y="${up?y0+2:y0+h-20}" width="${sw-4}" height="18" rx="2" fill="#fff" stroke="#007AFF" stroke-width="2"/>`;
+        body+=`<text x="${x+sw/2}" y="${y0+h+17}" text-anchor="middle" font-size="12" font-weight="${active?800:600}" fill="${active?'#1c1c1e':'#a1a1a6'}">${i}</text>`;
+      }
+      return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="딥 스위치 ${target}번 ${on?'ON':'OFF'}">${body}</svg>`;
+    }
+    function dipSwitchSection(item){
+      const ds=item.dipSwitch;
+      if(!ds||!ds.rows?.length)return '';
+      const idx=String(6+(item.videoModes?1:0)+(item.edidSwitch?.table?.length?1:0)+(item.audioMux?.modes?.length?1:0)).padStart(2,'0');
+      const state=(label,on,st,n)=>`<figure class="rt-pg-dip-state${on?' is-on':''}">${dipGraphic(ds.count,n,on,ds.onUp!==false)}<figcaption><em>${label}${st.name?` · ${esc(st.name)}`:''}</em>${esc(st.text)}</figcaption></figure>`;
+      const rows=ds.rows.map(row=>`<div class="rt-pg-dip-row"><div class="rt-pg-dip-head"><b>${row.n}번</b><span>${esc(row.title)}</span></div><div class="rt-pg-dip-states">${state('OFF',false,row.off,row.n)}${state('ON',true,row.on,row.n)}</div>${row.note?`<p class="rt-pg-dip-note">${esc(row.note)}</p>`:''}</div>`).join('');
+      return `<section class="rt-pg-card rt-pg-dip" style="margin-top:18px"><h2><span class="rt-pg-idx">${idx}</span>딥 스위치 설정 <span class="rt-pg-note">— 전면 ${esc(ds.label||'딥 스위치')} · ${ds.onUp!==false?'위쪽':'아래쪽'}이 ON</span></h2><div class="rt-pg-dip-rows">${rows}</div>${ds.apply?`<p class="rt-pg-hint">※ ${esc(ds.apply)}</p>`:''}${ds.note?`<p class="rt-pg-hint">※ ${esc(ds.note)}</p>`:''}</section>`;
+    }
     // ---- 오디오 설정(병합 MUX·추출 DEMUX 중 선택, HD-13U). 매뉴얼 문장을 "이럴 때·연결·소리가 나오는 곳·확인 방법"으로 풀어 두 칸으로 보여준다 ----
+    // HDS-21U·HDS-42MU는 딥 스위치 1번으로 고르므로 이 카드 대신 딥 스위치 설정 카드에서 함께 설명한다(사용자 요청 2026-09-27).
     function audioMuxSection(item){
       const am=item.audioMux;
       if(!am||!am.modes?.length)return '';
@@ -568,6 +608,7 @@
       if(hasVideoModes){sideCard=videoModesSection(item);belowCards=`${edidSwitchSection(item)}${audioMuxSection(item)}`}
       else if(hasEdidSwitch){sideCard=edidSwitchSection(item);belowCards=audioMuxSection(item)}
       else{sideCard=audioMuxSection(item)}
+      belowCards+=dipSwitchSection(item);
       // 휴대폰(1000px 이하)에서는 .rt-pg-col이 사라지고 rt-pg-col-mobile-N 순서로만 쌓이므로, sideCard도 순서 클래스가 있어야 05 다음(01~05, 06, 07 기록)으로 나온다(없으면 order:0이라 맨 앞으로 감).
       sideCard=sideCard.replace('class="rt-pg-card', 'class="rt-pg-card rt-pg-col-mobile-6');
       return `${headerBlock({icon:GROUP_ICON[item.group],title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,diagram:!!photo})}

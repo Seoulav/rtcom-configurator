@@ -98,6 +98,32 @@ function validate(product,file,ids){
     }
   }
   for(const entry of product.lineup||[])if('rackUnits' in entry&&(typeof entry.rackUnits!=='number'||entry.rackUnits<=0))fail(`lineup[].rackUnits는 양수여야 함(${entry.model})`);
+  // dipSwitch: 전면 딥 스위치 번호별 OFF·ON 설명(HDS-21U·HDS-42MU, 0.58). 그림은 count개 스위치를 그리고 rows의 번호만 또렷하게 그린다.
+  if('dipSwitch' in product){
+    const ds=product.dipSwitch;
+    if(!ds||!Number.isInteger(ds.count)||ds.count<1||ds.count>12)fail('dipSwitch.count는 1~12 정수여야 함');
+    else{
+      if(!codes.has(ds.source))fail(`dipSwitch.source(${ds.source})가 sources에 없음`);
+      if('onUp' in ds&&typeof ds.onUp!=='boolean')fail('dipSwitch.onUp은 true/false여야 함');
+      for(const key of ['label','apply','note'])if(key in ds&&(typeof ds[key]!=='string'||!ds[key]))fail(`dipSwitch.${key}는 비어 있지 않은 문자열이어야 함`);
+      if(!Array.isArray(ds.rows)||!ds.rows.length)fail('dipSwitch.rows는 비어 있지 않은 배열이어야 함');
+      else{
+        const seen=new Set();
+        for(const row of ds.rows){
+          if(!Number.isInteger(row.n)||row.n<1||row.n>ds.count)fail(`dipSwitch.rows[].n(${row.n})은 1~${ds.count} 정수여야 함`);
+          if(seen.has(row.n))fail(`dipSwitch.rows[].n(${row.n})이 중복됨`);
+          seen.add(row.n);
+          if(typeof row.title!=='string'||!row.title)fail(`dipSwitch.rows[].title이 비어 있음(${row.n}번)`);
+          for(const side of ['off','on']){
+            const st=row[side];
+            if(!st||typeof st.text!=='string'||!st.text)fail(`dipSwitch.rows[].${side}.text가 비어 있음(${row.n}번)`);
+            else if('name' in st&&(typeof st.name!=='string'||!st.name))fail(`dipSwitch.rows[].${side}.name은 비어 있지 않은 문자열이어야 함(${row.n}번)`);
+          }
+          if('note' in row&&(typeof row.note!=='string'||!row.note))fail(`dipSwitch.rows[].note는 비어 있지 않은 문자열이어야 함(${row.n}번)`);
+        }
+      }
+    }
+  }
   // audioMux: 오디오 병합(MUX)·추출(DEMUX)을 동시에 쓰지 않고 하나를 골라 쓰는 제품(HD-13U, 사용자 확인 2026-09-27)
   if('audioMux' in product){
     const am=product.audioMux;
