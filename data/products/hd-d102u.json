@@ -150,24 +150,6 @@
       "verification": "VERIFIED"
     },
     {
-      "group": "Video",
-      "name": "HDMI 규격",
-      "value": "HDMI 2.0b",
-      "unit": "",
-      "condition": "",
-      "source": "C",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "Video",
-      "name": "HDCP",
-      "value": "HDCP 2.2",
-      "unit": "",
-      "condition": "",
-      "source": "C",
-      "verification": "VERIFIED"
-    },
-    {
       "group": "Power",
       "name": "전원공급",
       "value": "DC 5V, 1A",
