@@ -241,11 +241,22 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('자료 출처·검토 기록을 펼치면 출처가 보임',await page.locator('.rt-pg-record[open]').count()===1&&(await page.locator('.rt-pg-record-body').textContent()).includes('카탈로그'));
     await page.waitForLoadState('networkidle');
     check('상세 이미지가 모두 열림',(await page.$$eval('.rt-pg-hero-item img',images=>images.filter(image=>!image.complete||image.naturalWidth===0).length))===0);
-    // 0.39 — 01 위 사진 띠(돋보기): 사진을 누르면 라이트박스가 열리고, 그 안에서 다시 누르면 확대되고, Esc로 닫힌다.
+    // 0.49 — 사진 팝업(사용자 LED 계산기 "05 프로세서" 방식): 사진을 누르면 제목·사진 탭·닫기 버튼이 있는 카드가 열리고,
+    // 사진 위에 마우스를 올리면 원형 돋보기(160px, 3.1배)가 커서를 따라 확대하며, 탭으로 사진을 바꾸고 Esc로 닫는다.
+    const heroCount=await page.locator('.rt-pg-hero-item').count();
     await page.locator('.rt-pg-hero-item').first().click();
-    check('사진을 누르면 돋보기(라이트박스)가 화면 전체로 열림',await page.locator('.rt-pg-lightbox').isVisible()&&await page.$eval('.rt-pg-lightbox',el=>{const r=el.getBoundingClientRect();return r.width===document.documentElement.clientWidth&&r.height===window.innerHeight}));
-    await page.locator('.rt-pg-lightbox-img').click({position:{x:15,y:15}});
-    check('라이트박스 안에서 사진을 다시 누르면 확대됨',await page.locator('.rt-pg-lightbox-img.rt-pg-zoomed').count()===1);
+    await page.waitForFunction(()=>{const img=document.querySelector('.rt-pg-lightbox-img');return img&&img.complete&&img.naturalWidth>0});
+    const lb=await page.evaluate(()=>({card:!!document.querySelector('.rt-pg-lightbox:not([hidden]) .rt-pg-lb-card'),title:document.querySelector('.rt-pg-lb-title').textContent,tabs:document.querySelectorAll('.rt-pg-lb-tabs [data-zoom-shot]').length,on:document.querySelector('.rt-pg-lb-tabs .on')?.dataset.zoomShot}));
+    check('사진을 누르면 제목·사진 탭이 있는 사진 팝업이 열림',lb.card&&lb.title===(await page.locator('#rt-pg-title').textContent()).trim()&&(heroCount<2||lb.tabs===heroCount)&&(heroCount<2||lb.on==='0'),JSON.stringify({...lb,heroCount}));
+    const imgBox=await page.locator('.rt-pg-lightbox-img').boundingBox();
+    await page.mouse.move(imgBox.x+imgBox.width*0.6,imgBox.y+imgBox.height*0.5);
+    const lens=await page.evaluate(()=>{const l=document.querySelector('.rt-pg-loupe');const r=l.getBoundingClientRect();return {shown:!l.hidden,w:Math.round(r.width),bg:l.style.backgroundImage.includes('url(')}});
+    check('사진 위에 마우스를 올리면 원형 돋보기(160px)가 사진을 확대해 보여줌',lens.shown&&lens.w===160&&lens.bg,JSON.stringify(lens));
+    if(heroCount>1){
+      const before=await page.locator('.rt-pg-lightbox-img').getAttribute('src');
+      await page.locator('.rt-pg-lb-tabs [data-zoom-shot="1"]').click();
+      check('사진 탭을 누르면 다른 사진(앞면·뒷면 등)으로 바뀜',(await page.locator('.rt-pg-lightbox-img').getAttribute('src'))!==before&&await page.locator('.rt-pg-lb-tabs [data-zoom-shot="1"].on').count()===1);
+    }
     await page.keyboard.press('Escape');
     check('Esc를 누르면 돋보기가 닫힘',await page.locator('.rt-pg-lightbox').isHidden());
     // 0.21/0.33 연결 다이어그램: "02 신호 흐름"은 항상 자동 생성 SVG를 보여준다(전송기는 TX→케이블→RX 형태). 제조사 원본 사진이 있으면 기록 영역에 따로 둔다.
