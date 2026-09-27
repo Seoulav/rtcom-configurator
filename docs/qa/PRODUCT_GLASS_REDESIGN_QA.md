@@ -96,3 +96,22 @@
 - QMS-88UX·MR-4S의 portMap 좌표는 Opus 재확인이 필요합니다(위 참고).
 - `CARD_EXTENDER_LABEL`은 여전히 `src/app.js`와 별도 관리되는 고정 표입니다.
 - 6-B로 모든 프롬프트 5(제품정보 글래스 디자인) 작업이 끝났습니다. 추가 개편은 새 사용자 요청이 있을 때 진행합니다.
+
+## 6-C 검증 (2026-09-27, 0.35.0) — HD-13U EDID 로터리 스위치
+
+- 근거: 사용자 업로드 `HD-13U 사용자 매뉴얼 Ver.1.2` 7-8쪽, 사용자 요청 "EDID 로터리를 화면에 보였으면해" + "P8페이지 이 내용은 중요한 내용이라서".
+- 구현: `docs/implementation/PRODUCT_GLASS_REDESIGN.md` "6-C" 절 참고(데이터 `edidSwitch`·좌표 확인 방법·UI `edidSwitchSection()`).
+
+| 항목 | 결과 |
+|---|---|
+| `node --test tests/*.test.cjs` | 30/30 통과 |
+| `node scripts/build-product-index.cjs --check` | 27개 통과(`edidSwitch` 형식 검사 포함) |
+| `node scripts/package-site.cjs` | 정상 빌드 |
+| `node scripts/e2e-smoke.cjs`(전역 playwright) | 61/61 통과(휴대폰 카드 폭 검사에 `hd-13u` 추가) |
+| `git diff --check` | 통과 |
+| 마커 위치 확인 | 파란색 MODE 로터리 스위치 RGB 색상 검출(x179–219, y75–113, 원본 718×187px)로 좌표를 잡고, 1280px 캡처 확대(`docs/qa/glass-redesign-screens-6c/hd-13u-edid-marker-zoom.png`)로 원 마커가 실제 스위치 위에 정확히 놓임을 육안 확인 |
+| 휴대폰(390px) | 사진 타일이 텍스트 위로 세로 쌓이고 가로 스크롤 없음(`docs/qa/glass-redesign-screens-6c/hd-13u-edid-390.png`) |
+| 데이터 범위 | HD-13U만 추가. HD-14U 등 다른 EDID 마인더 제품은 근거 매뉴얼이 없어 이번에 추정하지 않았습니다. |
+| 원본 PDF | `.source-materials/RTcom_Manual_HD-13U_Ver1.2.pdf`(gitignore 대상)에만 두고 배포·커밋하지 않았습니다. |
+
+캡처: `docs/qa/glass-redesign-screens-6c/hd-13u-edid-1280.png`(전체 화면 1280px) · `hd-13u-edid-390.png`(전체 화면 390px) · `hd-13u-edid-marker-zoom.png`(마커 확대).

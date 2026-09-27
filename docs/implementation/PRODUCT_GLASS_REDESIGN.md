@@ -125,3 +125,34 @@ CHANGELOG 0.34.0에 적었습니다. 요약: (1) QMS-88UX·MR-4S portMap은 포�
 - QMS-88UX portMap은 위 "Opus 확인 요청" 참고.
 - MR-4S 좌측 전원 커넥터 2개의 정확한 명칭(POWER1/POWER2 등)은 확인하지 못해 "DC 전원"으로만 표기했습니다.
 - `isMatrix` 판정을 `item.group==='integrated'`에서 `inN>1&&outN>1`로 바꿨습니다. 6-A의 QMS 2종은 그대로지만, HDS-42MU(group=distribution)도 이제 매트릭스 노드로 그려집니다 — 위 "시안과 다르게 정한 부분" 참고, 의도된 변경입니다.
+
+## 6-C — EDID 로터리 스위치(HD-13U, 0.35.0)
+
+사용자가 HD-13U 사용자 매뉴얼(Ver.1.2) PDF를 업로드하고 "EDID 로터리를 화면에 보였으면해"라고 요청했습니다. 이어서 "P8페이지 이 내용은 중요한 내용이라서"라고 강조해, 매뉴얼 7-8쪽(디스플레이 정보(EDID) 선택 — 전면 MODE 로터리 스위치·SET 버튼 사용법, EDID 코드표 0~F)을 그대로 화면에 옮기는 것이 목표였습니다.
+
+### 데이터
+
+`data/products/hd-13u.json`에 선택 필드 `edidSwitch`를 추가했습니다.
+- `image`·`x1`/`y1`/`x2`/`y2`: 마커를 그릴 사진(Front)과 그 위 좌표.
+- `label`·`desc`·`default`: 스위치 이름표·설명·기본값(0 = 4K 60Hz PCM 2CH).
+- `steps`: 외부(External) EDID 저장 / 내부(Internal) EDID 지정 절차 각 3단계(매뉴얼 원문 그대로, 새 사실 추가 없음).
+- `table`: 코드 0~F 16행 전체(매뉴얼 EDID Table 그대로).
+- `source`: 새 출처 코드 `M1`(HD-13U 사용자 매뉴얼 Ver.1.2, 7-8쪽). 원본 PDF는 배포 대상이 아니므로 `.source-materials/RTcom_Manual_HD-13U_Ver1.2.pdf`(gitignore 대상, VDM/XDM 매뉴얼과 같은 방식)에만 두고 커밋하지 않았습니다.
+
+### 좌표 확인 방법
+
+`hd-13u-front.webp`(원본 718×187px)를 PIL로 열어 파란색 스위치의 RGB를 색상 임계값(`b>120 and b-r>40 and b-g>10`)으로 검출해 x179–219, y75–113 픽셀 범위를 얻었습니다. 이 범위로 원본 이미지 위에 사각형을 그려 실제 MODE 스위치와 정확히 겹치는지 육안으로 확인했고, 최종적으로 1280px 화면 캡처를 확대해(`docs/qa/glass-redesign-screens-6c/hd-13u-edid-marker-zoom.png`) 렌더링된 원 마커가 실제 스위치 위에 놓임을 다시 확인했습니다.
+
+### UI
+
+`src/products.js`에 `edidSwitchSection(item)`을 새로 추가했습니다. 기존 `portMapDiagram()`(항상 사진 위쪽 끝에서 아래로 내려오는 화살표·번호표를 그리는 방식)은 후면 패널처럼 커넥터가 사진 위쪽 가장자리에 몰려 있다고 가정하므로, 화면 세로 중간에 있는 로터리 스위치에는 맞지 않아 재사용하지 않았습니다. 대신 이미지 원본 해상도(rw·rh) 대비 x1/y1/x2/y2의 백분율 위치를 계산해, `<img>` 위에 절대 위치(`position:absolute; left/top/width/height: %`)로 원형 링과 말풍선 라벨을 얹었습니다. 사진을 감싼 `.rt-pg-edid-photo`는 패딩을 0으로 둬서(패딩이 있으면 절대 위치 백분율의 기준(0%)이 사진 테두리가 아니라 패딩 바깥 모서리가 되어 어긋납니다) 백분율 계산이 사진 픽셀과 정확히 맞도록 했습니다.
+
+카드는 "06 EDID 설정"으로 `videoModesSection()` 다음, `.rt-pg-cols` 바깥 전체 폭에 나타납니다(HD-13U는 videoModes가 없어 06번, 있는 제품은 07번으로 자동 조정). 왼쪽은 어두운 사진 타일(마커 포함), 오른쪽은 설명·기본값 알약·절차 2단(외부/내부)·코드표(코드·기능 2열)입니다.
+
+### 검증
+
+`scripts/build-product-index.cjs`에 `edidSwitch` 형식 검사를 추가했습니다(image가 images에 있는지, label·x1/y1/x2/y2·table 필수, source가 있으면 sources에 존재, steps가 있으면 title·items 필수). `scripts/e2e-smoke.cjs`의 휴대폰 카드 폭 검사 목록에 `hd-13u`를 추가해 새 "EDID 설정" 카드도 검사 대상에 넣었습니다(61/61 통과). 1280px·390px 캡처로 마커 위치와 모바일 세로 배치를 확인했습니다.
+
+### 범위
+
+이번 데이터는 HD-13U만 대상입니다. HD-14U·HD-18U·HDS-21U·HDS-42MU도 "EDID 마인더" 기능이 있지만, 로터리 스위치 좌표·코드표는 제품마다 다를 수 있어 근거 매뉴얼 없이 추정하지 않았습니다. 같은 매뉴얼을 받으면 같은 `edidSwitch` 필드로 확장할 수 있습니다.

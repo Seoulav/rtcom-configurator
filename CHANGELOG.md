@@ -4,6 +4,13 @@
 
 ## Unreleased
 
+## 0.35.0
+
+- **HD-13U EDID 로터리 스위치 화면 표시**(근거: 사용자가 제공한 `HD-13U 사용자 매뉴얼 Ver.1.2` 7-8쪽, 2026-09-27): 제품 상세에 새 전체 폭 카드 "EDID 설정"을 추가했습니다. 전면 사진 위에 파란색 MODE 로터리 스위치 위치를 원 표시로 강조하고, 매뉴얼의 외부/내부 EDID 설정 절차 2가지와 EDID 코드표(0~F, 16행)를 그대로 옮겼습니다.
+- **데이터(선택 필드, 기존 필드는 바꾸지 않음)**: HD-13U에 `edidSwitch`(image·x1/y1/x2/y2·label·desc·default·steps·table·source)를 추가했습니다. 좌표는 `hd-13u-front.webp` 원본 픽셀(718×187)에서 파란색 스위치 부분을 색상으로 검출해 잡았고 1280px 캡처로 확대해 실제 스위치 위에 표시됨을 확인했습니다. 새 출처 코드 `M1`(HD-13U 사용자 매뉴얼 Ver.1.2)을 추가했고, 원본 PDF는 배포하지 않고 `.source-materials/`(gitignore 대상)에만 둡니다.
+- **UI**: `edidSwitchSection()`을 새로 만들어 `singleDetailView()`에 연결했습니다(`videoModes`가 있는 제품은 07번, 없으면 06번). 사진 위 원 표시·말풍선 라벨은 이미지 원본 해상도 대비 백분율 위치로 그려 반응형에서도 정확한 위치를 유지합니다(`.rt-pg-edid*` CSS, `#rtcom-design .rt-products-view` 범위 안).
+- **검증**: `node --test tests/*.test.cjs`(30/30) · `node scripts/build-product-index.cjs --check`(27개, `edidSwitch` 형식 검사 추가) · `node scripts/package-site.cjs` · `node scripts/e2e-smoke.cjs`(전역 playwright, 61/61 — 휴대폰 카드 폭 검사에 `hd-13u` 추가) · `git diff --check`. 1280px·390px 캡처로 마커 위치와 레이아웃을 확인했습니다(`docs/qa/glass-redesign-screens-6c/`). 구성기 화면(`#matrix-configurator`)은 코드를 건드리지 않았습니다.
+
 ## 0.34.0
 
 - **제품정보 화면 글래스 디자인 6-B**(근거: `docs/handoff/PRODUCT_GLASS_REDESIGN_SPEC.md` 6-B, 승인 시안 `docs/mockups/hd-210u-glass-style.html`·`qms-44ux-video-modes-desktop.png`, 2026-09-27): 6-A에서 남겨둔 나머지 23종(분배기·일체형 8, 전송기 11, 케이블 4)에 `lead`·`subtitle`을 채웠습니다(overview·features·specifications·korean에 이미 있는 사실만 사용, `**굵게**`는 한 곳까지). Rear/Front 사진이 있는 10종(HD-13U·HD-14U·HD-18U·HDS-21U·HDS-42MU·QMS-44UX·QMS-88UX·MR-4S·XDM-FT101/FR101, HD-210U는 6-A에서 이미 완료)에 `portMap`을 추가했습니다. 좌표는 각 webp를 직접 열어 원본 픽셀 기준으로 잡았고 1280px 캡처로 번호표 위치를 확인했습니다(XDM-CTR100은 Rear 사진이 상판·후면 두 장면을 한 장에 합친 구도라 번호표가 엉뚱한 곳을 가리키게 되어 portMap을 넣지 않고 입출력 표 카드로 남겼습니다).

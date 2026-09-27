@@ -240,8 +240,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await mobile.waitForSelector('.rt-pg-record[open]');
     check('휴대폰에서 출처의 긴 파일 경로도 화면 폭을 넘지 않음',(await mobile.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth))===0);
     // 카드 자체가 화면 밖으로 밀려나면 페이지 가로 스크롤 없이 오른쪽이 잘린다(0.33 검수에서 발견: 휴대폰 규칙이 PC 격자의 align-items:start를 물려받음).
-    // 넓은 그림은 카드 안(.rt-pg-svg-wrap 등)에서만 좌우로 밀려야 한다. 6-B에서 새로 생긴 케이블(hoc-ux)·QMS 화면 구성 모드(qms-44ux) 템플릿도 검사한다.
-    for(const id of ['hd-210u','xdm','ct101-u-cr101-u','hoc-ux','qms-44ux']){
+    // 넓은 그림은 카드 안(.rt-pg-svg-wrap 등)에서만 좌우로 밀려야 한다. 6-B에서 새로 생긴 케이블(hoc-ux)·QMS 화면 구성 모드(qms-44ux) 템플릿과
+    // EDID 로터리 스위치 카드(hd-13u)도 검사한다.
+    for(const id of ['hd-210u','xdm','ct101-u-cr101-u','hoc-ux','qms-44ux','hd-13u']){
       await mobile.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
       await mobile.waitForSelector('.rt-pg-card');
       const over=await mobile.evaluate(()=>[...document.querySelectorAll('.rt-pg-card')].map(card=>Math.round(card.getBoundingClientRect().right-document.documentElement.clientWidth)).filter(value=>value>1));

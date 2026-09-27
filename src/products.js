@@ -367,6 +367,33 @@
       </section>`;
     }
 
+    // ---- 전면 컨트롤 강조(EDID 로터리 스위치 등, 0.35). edidSwitch가 있을 때만 전체 폭 카드로 보여준다 ----
+    function edidSwitchSection(item){
+      const es=item.edidSwitch;
+      if(!es||!es.table?.length)return '';
+      const photo=(item.images||[]).find(img=>img.role===es.image);
+      if(!photo||!photo.resolution)return '';
+      const [rw,rh]=photo.resolution.split(/[×x]/).map(Number);
+      if(!rw||!rh)return '';
+      const pct=(value,base)=>`${(value/base*100).toFixed(2)}%`;
+      const stepsHtml=(es.steps||[]).map(step=>`<div class="rt-pg-edid-step"><b>${esc(step.title)}</b><ol>${step.items.map(text=>`<li>${esc(text)}</li>`).join('')}</ol></div>`).join('');
+      return `<section class="rt-pg-card" style="margin-top:18px"><h2><span class="rt-pg-idx">${item.videoModes?'07':'06'}</span>EDID 설정</h2>
+        <div class="rt-pg-edid">
+          <div class="rt-pg-edid-photo">
+            <img src="${image(photo.file)}" alt="${esc(photo.alt||item.productName)}" loading="lazy">
+            <span class="rt-pg-edid-ring" style="left:${pct(es.x1,rw)};top:${pct(es.y1,rh)};width:${pct(es.x2-es.x1,rw)};height:${pct(es.y2-es.y1,rh)}"></span>
+            <span class="rt-pg-edid-tag" style="left:${pct((es.x1+es.x2)/2,rw)};top:${pct(es.y1,rh)}">${esc(es.label)}</span>
+          </div>
+          <div class="rt-pg-edid-body">
+            ${es.desc?`<p class="rt-pg-edid-desc">${esc(es.desc)}</p>`:''}
+            ${es.default?`<p class="rt-pg-hint"><span class="rt-pg-pill">기본값 — ${esc(es.default)}</span></p>`:''}
+            ${stepsHtml?`<div class="rt-pg-edid-steps">${stepsHtml}</div>`:''}
+            ${table(['코드','기능'],es.table.map(row=>[esc(row.code),esc(row.function)]))}
+          </div>
+        </div>
+      </section>`;
+    }
+
     // ---- 단일 제품 템플릿(분배기·일체형·전송기·케이블) — 명세 2-2·2-4 ----
     function singleDetailView(item,byId){
       const images=(item.images||[]).filter(img=>img.role!=='Diagram');
@@ -396,7 +423,7 @@
           ${recordSection(item,diagram,photo)}
         </div>
       </div>
-      ${videoModesSection(item)}`;
+      ${videoModesSection(item)}${edidSwitchSection(item)}`;
     }
 
     // ---- 시리즈 템플릿(XDM·VDM·SPX) — 명세 2-3 ----

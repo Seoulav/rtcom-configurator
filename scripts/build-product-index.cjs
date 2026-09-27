@@ -65,6 +65,25 @@ function validate(product,file,ids){
       }
     }
   }
+  // 0.35 — 전면 로터리 스위치 등 단일 컨트롤 표시(선택 필드). 사진 위 x1·y1·x2·y2 영역과 코드표를 검사한다.
+  if('edidSwitch' in product){
+    const es=product.edidSwitch;
+    if(!es||!['Rear','Front'].includes(es.image))fail('edidSwitch.image는 Rear 또는 Front여야 함');
+    else if(!(product.images||[]).some(image=>image.role===es.image))fail(`edidSwitch.image(${es.image})에 해당하는 이미지가 images에 없음`);
+    if(!es||typeof es.label!=='string'||!es.label)fail('edidSwitch.label은 비어 있지 않은 문자열이어야 함');
+    if(!es||[es.x1,es.y1,es.x2,es.y2].some(value=>typeof value!=='number'))fail('edidSwitch는 x1·y1·x2·y2를 모두 숫자로 갖춰야 함');
+    else if(es.x1>=es.x2||es.y1>=es.y2)fail('edidSwitch는 x1<x2, y1<y2 여야 함');
+    if(es&&'source' in es&&es.source&&!codes.has(es.source))fail(`edidSwitch.source(${es.source})가 sources에 없음`);
+    if(es&&(!Array.isArray(es.table)||!es.table.length))fail('edidSwitch.table은 비어 있지 않은 배열이어야 함');
+    else for(const row of es?.table||[])if(typeof row.code!=='string'||!row.code||typeof row.function!=='string'||!row.function)fail('edidSwitch.table 항목은 code·function을 모두 갖춰야 함');
+    if(es&&'steps' in es){
+      if(!Array.isArray(es.steps)||!es.steps.length)fail('edidSwitch.steps는 비어 있지 않은 배열이어야 함');
+      else for(const step of es.steps){
+        if(typeof step.title!=='string'||!step.title)fail('edidSwitch.steps 항목은 title을 갖춰야 함');
+        if(!Array.isArray(step.items)||!step.items.length||step.items.some(text=>typeof text!=='string'||!text))fail(`edidSwitch.steps[].items는 비어 있지 않은 문자열 배열이어야 함(${step.title})`);
+      }
+    }
+  }
   return errors;
 }
 
