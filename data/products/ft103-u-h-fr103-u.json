@@ -141,7 +141,7 @@
     {
       "group": "Video",
       "name": "지원 해상도",
-      "value": "PC: VGA ~ WUXGA (up to 1920x1200@60Hz), HDTV: 480i ~ 1080p",
+      "value": "PC: VGA ~ WUXGA (최대 1920x1200@60Hz), HDTV: 480i ~ 1080p",
       "unit": "",
       "condition": "FT103-U-H·FR103-U 공통 · 4K 표기 없음",
       "source": "C",

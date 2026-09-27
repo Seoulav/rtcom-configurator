@@ -172,3 +172,11 @@
 - **목록 카드 "카탈로그 N쪽" 표기 제거**: 분류 이름 옆의 "· 카탈로그 21쪽" 표기를 목록 카드에서 뺐습니다. `catalogPages` 데이터 자체는 그대로 두었고(상세 페이지 출처 절에서는 여전히 각 출처별 쪽수를 보여줍니다), 목록 카드만 간결하게 정리했습니다.
 - **"확인 사항" 간추림**(사용자 요청, "나중에 해결되면 전부 삭제 예정"): `issues[]`를 그대로 두고 화면에 보여주는 방식만 바꿨습니다. `REVIEW REQUIRED` 항목은 지금처럼 제목+전체 설명을 보여주고, `INFO` 항목(재검증 기록·이미지 출처 등 참고용)은 제목만 보이게 줄였습니다. 재검증 과정에서 남긴 긴 INFO 설명들이 한 번에 사라져 섹션이 훨씬 짧아졌습니다(예: XDM-CTR100은 REVIEW REQUIRED가 없어 4줄짜리 제목 목록만 남음).
 - 검증: 테스트 27 pass, `build-product-index.cjs --check`(28개) 통과, e2e 53/53 passed. Playwright로 케이블 4종 목록 카드(데스크톱 1440px)에서 이미지가 더는 텍스트를 덮지 않음을, XDM-CTR100·SPX 상세에서 사양 표 정렬과 확인 사항 간추림(REVIEW REQUIRED는 전체 설명 유지, INFO는 제목만)을 각각 스크린샷으로 확인했습니다.
+
+## 0.32.0 — "up to" 표기를 "최대"로 통일
+
+- 근거: 사용자 요청 "up to라는 용어는 최대라고 표기 변경해줘".
+- `specifications[].value`와 `features[].text`에 영어 원문 그대로 남아 있던 "up to"(대소문자 무관)를 "최대"로 바꿨습니다. 문장의 나머지 부분(영문 규격 표기 등)은 그대로 두고 이 용어만 치환했습니다.
+- 대상 10개 파일: `hd-13u.json`·`hd-14u.json`·`hd-18u.json`·`hd-210u.json`·`hd-d102u.json`(사양 1건+주요 기능 2건)·`hds-21u.json`·`hds-42mu.json`·`ct101-u-cr101-u.json`(2건)·`ct103-u-h-cr103-u.json`(2건)·`ft103-u-h-fr103-u.json`.
+- 바꾸지 않은 것: 제품명 아래 영어 한 줄 요약(`english` 필드, 예: "Armored HDMI 2.0b active optical cable, ... up to 100m")은 완전한 영어 문장이라 "up to"가 문법적으로 맞습니다. 이 필드는 그대로 두었습니다.
+- 검증: `build-product-index.cjs --check`(28개) 통과, 테스트 27 pass, e2e 53/53 passed.
