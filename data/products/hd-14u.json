@@ -41,6 +41,17 @@
       "officialSource": true,
       "verificationStatus": "FOUND",
       "resolution": "693×169"
+    },
+    {
+      "role": "Diagram",
+      "file": "hd-14u-diagram.webp",
+      "alt": "RTCOM HD-14U 연결 다이어그램(제조사 제공)",
+      "note": "Diagram · 카탈로그 46쪽판 35쪽 제조사 제공 연결 다이어그램",
+      "provider": "RTCOM",
+      "model": "HD-14U",
+      "source": "C2",
+      "officialSource": true,
+      "verificationStatus": "FOUND"
     }
   ],
   "imageStatuses": [
@@ -59,6 +70,10 @@
     {
       "role": "Perspective",
       "status": "MISSING"
+    },
+    {
+      "role": "Diagram",
+      "status": "FOUND"
     }
   ],
   "documents": [
@@ -68,6 +83,13 @@
       "title": "알티컴 종합 카탈로그 2026 (국문)",
       "language": "ko",
       "note": "37쪽"
+    },
+    {
+      "type": "Diagram",
+      "status": "FOUND",
+      "title": "제조사 연결 다이어그램",
+      "language": "en/ko",
+      "note": "카탈로그 46쪽판 35쪽"
     }
   ],
   "features": [
@@ -176,6 +198,12 @@
       "name": "알티컴 종합 카탈로그 2026 (국문)",
       "page": "37",
       "scope": "제조사 공식 출처"
+    },
+    {
+      "code": "C2",
+      "name": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
+      "page": "35",
+      "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
     }
   ],
   "issues": [
@@ -196,6 +224,12 @@
       "status": "INFO",
       "title": "모델명 정정 근거",
       "detail": "저장소가 처음 썼던 알티컴 종합 카탈로그(48쪽, 국문)에는 이 제품이 \"HD-104U\"로 인쇄돼 있었다. 사용자가 제공한 두 번째 카탈로그(RTcom_catalogue, 46쪽, 2026-09-27)와 에이앤미디어(antez.co.kr) 화면 모두 \"HD-14U\"로 일치해, 첫 카탈로그의 오기로 보고 모델명을 정정했다(HD-104U → HD-14U)."
+    },
+    {
+      "code": "I4",
+      "status": "INFO",
+      "title": "연결 다이어그램 출처",
+      "detail": "연결 다이어그램은 처음엔 이 사이트가 입출력 데이터로 자동으로 그렸으나, 사용자가 제공한 두 번째 카탈로그(46쪽판) 35쪽에 제조사가 직접 그린 연결 다이어그램이 있어 그 이미지로 교체했다(2026-09-27)."
     }
   ]
 }

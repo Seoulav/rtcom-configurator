@@ -41,6 +41,17 @@
       "officialSource": true,
       "verificationStatus": "FOUND",
       "resolution": "626×129"
+    },
+    {
+      "role": "Diagram",
+      "file": "qms-88ux-diagram.webp",
+      "alt": "RTCOM QMS-88UX 연결 다이어그램(제조사 제공)",
+      "note": "Diagram · 카탈로그 46쪽판 28쪽 제조사 제공 연결 다이어그램",
+      "provider": "RTCOM",
+      "model": "QMS-88UX",
+      "source": "C2",
+      "officialSource": true,
+      "verificationStatus": "FOUND"
     }
   ],
   "imageStatuses": [
@@ -59,6 +70,10 @@
     {
       "role": "Perspective",
       "status": "MISSING"
+    },
+    {
+      "role": "Diagram",
+      "status": "FOUND"
     }
   ],
   "documents": [
@@ -68,6 +83,13 @@
       "title": "알티컴 종합 카탈로그 2026 (국문)",
       "language": "ko",
       "note": "30쪽"
+    },
+    {
+      "type": "Diagram",
+      "status": "FOUND",
+      "title": "제조사 연결 다이어그램",
+      "language": "en/ko",
+      "note": "카탈로그 46쪽판 28쪽"
     }
   ],
   "features": [
@@ -227,6 +249,12 @@
       "name": "알티컴 종합 카탈로그 2026 (국문)",
       "page": "30",
       "scope": "제조사 공식 출처"
+    },
+    {
+      "code": "C2",
+      "name": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
+      "page": "28",
+      "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
     }
   ],
   "issues": [
@@ -259,6 +287,12 @@
       "status": "INFO",
       "title": "이미지 출처",
       "detail": "별도 원본 파일이 아닌 카탈로그 쪽에 실린 제품 이미지를 220dpi로 발췌했다. 원본 해상도가 낮아 확대 시 흐릴 수 있다."
+    },
+    {
+      "code": "I2",
+      "status": "INFO",
+      "title": "연결 다이어그램 출처",
+      "detail": "연결 다이어그램은 처음엔 이 사이트가 입출력 데이터로 자동으로 그렸으나, 사용자가 제공한 두 번째 카탈로그(46쪽판) 28쪽에 제조사가 직접 그린 연결 다이어그램이 있어 그 이미지로 교체했다(2026-09-27)."
     }
   ]
 }

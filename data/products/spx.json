@@ -42,6 +42,17 @@
       "officialSource": true,
       "verificationStatus": "FOUND",
       "resolution": "715×161"
+    },
+    {
+      "role": "Diagram",
+      "file": "spx-diagram.webp",
+      "alt": "RTCOM SPX-M810 시스템 구성도(Zone별 오디오·비디오, LAN Cable, Control)",
+      "note": "Diagram · 카탈로그 46쪽판 13쪽 제조사 제공 시스템 구성도(SPX-M810 모델 기준)",
+      "provider": "RTCOM",
+      "model": "SPX Series",
+      "source": "C2",
+      "officialSource": true,
+      "verificationStatus": "FOUND"
     }
   ],
   "imageStatuses": [
@@ -60,6 +71,10 @@
     {
       "role": "Perspective",
       "status": "MISSING"
+    },
+    {
+      "role": "Diagram",
+      "status": "FOUND"
     }
   ],
   "documents": [
@@ -69,6 +84,13 @@
       "title": "알티컴 종합 카탈로그 2026 (국문)",
       "language": "ko",
       "note": "13~16쪽"
+    },
+    {
+      "type": "Diagram",
+      "status": "FOUND",
+      "title": "제조사 시스템 구성도(SPX-M810)",
+      "language": "en/ko",
+      "note": "카탈로그 46쪽판 13쪽"
     }
   ],
   "features": [
@@ -312,6 +334,12 @@
       "name": "저장소 기존 제품 사진(output/design/assets)",
       "page": "",
       "scope": "구성기 화면에서 사용 중인 RTCOM 제품 사진"
+    },
+    {
+      "code": "C2",
+      "name": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
+      "page": "13",
+      "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
     }
   ],
   "issues": [
@@ -350,6 +378,12 @@
       "status": "INFO",
       "title": "이미지 출처",
       "detail": "카탈로그 도면이 아니라 구성기 저장소에 있던 RTCOM 제품 사진을 webp로 변환했다. Main은 SPX 메인프레임 제품군과 SPX 전송기 사진, Front는 SPX-M810 전면 사진(구성기 프레임 이미지)이다."
+    },
+    {
+      "code": "I2",
+      "status": "INFO",
+      "title": "연결 다이어그램 출처",
+      "detail": "두 번째 카탈로그(46쪽판) 13쪽의 제조사 시스템 구성도(SPX-M810 모델, HDMI 슬롯 기준)를 그대로 실었다. 다른 SPX 프레임(M1620·M3236·M2472·M24120)의 실제 구성도는 아니다."
     }
   ]
 }

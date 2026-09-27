@@ -182,8 +182,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.waitForSelector('.rt-product-card');
     check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-product-card').count()===27);
     await page.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
-    await page.waitForSelector('.rt-product-diagram svg');
-    check('HD-13U 상세에 분배기(소스→기기→디스플레이 3대) 다이어그램이 보임',await page.locator('.rt-product-diagram svg').isVisible()&&await page.locator('.rt-product-diagram-canvas text:has-text("HD-13U")').count()===1);
+    await page.waitForSelector('.rt-product-diagram-photo img');
+    await page.waitForLoadState('networkidle');
+    check('HD-13U 상세에 제조사가 그린 연결 다이어그램 사진이 보이고 정상적으로 열림(카탈로그 원본)',await page.locator('.rt-product-diagram-photo img').isVisible()&&!(await page.locator('.rt-product-diagram svg').count())&&await page.$eval('.rt-product-diagram-photo img',img=>img.complete&&img.naturalWidth>0));
     check('연결 다이어그램에도 가로 스크롤이 생기지 않음',(await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth))===0);
     await page.goto(`${home}#products/vdm`,{waitUntil:'networkidle'});
     await page.waitForSelector('#rt-product-title');
