@@ -103,7 +103,7 @@
       "source": "C"
     },
     {
-      "text": "EDID 마인더 기능: 외부 연결된 디스플레이 EDID를 저장하고 내부 저장된 EDID를 사용할 수 있다.",
+      "text": "EDID 마인더 기능: 외부 연결된 디스플레이 EDID 저장, 내부 저장된 EDID 사용",
       "source": "C"
     }
   ],

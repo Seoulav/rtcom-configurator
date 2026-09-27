@@ -568,6 +568,8 @@
       if(hasVideoModes){sideCard=videoModesSection(item);belowCards=`${edidSwitchSection(item)}${audioMuxSection(item)}`}
       else if(hasEdidSwitch){sideCard=edidSwitchSection(item);belowCards=audioMuxSection(item)}
       else{sideCard=audioMuxSection(item)}
+      // 휴대폰(1000px 이하)에서는 .rt-pg-col이 사라지고 rt-pg-col-mobile-N 순서로만 쌓이므로, sideCard도 순서 클래스가 있어야 05 다음(01~05, 06, 07 기록)으로 나온다(없으면 order:0이라 맨 앞으로 감).
+      sideCard=sideCard.replace('class="rt-pg-card', 'class="rt-pg-card rt-pg-col-mobile-6');
       return `${headerBlock({icon:GROUP_ICON[item.group],title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,diagram:!!photo})}
       <div class="rt-pg-cols">
         <div class="rt-pg-col">
