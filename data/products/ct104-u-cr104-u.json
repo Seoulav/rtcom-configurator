@@ -79,11 +79,11 @@
   ],
   "features": [
     {
-      "text": "4K 해상도의 HDMI 신호와 RS-232 신호를 CAT5e/CAT6(UTP/STP)로 장거리 전송한다.",
+      "text": "4K HDMI·RS-232 신호 CAT5e/CAT6(UTP/STP) 장거리 전송 지원",
       "source": "C"
     },
     {
-      "text": "HDBaseT 기술을 적용해 CATx 케이블 한 가닥으로 최대 100m 전송한다.",
+      "text": "HDBaseT 기술로 CATx 케이블 한 가닥 최대 100m 전송 지원",
       "source": "C"
     },
     {

@@ -89,39 +89,39 @@
   ],
   "features": [
     {
-      "text": "HDBaseT 3.0으로 압축 없는 True 4K(4096x2160·3840x2160@60Hz 4:4:4) HDMI를 케이블에 따라 최대 100m 전송한다.",
+      "text": "HDBaseT 3.0 무압축 True 4K(4096x2160·3840x2160@60Hz 4:4:4) 최대 100m 전송 지원",
       "source": "C"
     },
     {
-      "text": "CAT 케이블로 PD 장비(XDM-CTR100)에 신호와 전원을 동시에 공급해, XDM-CTR100은 전원 케이블 없이 PD 모드로 동작한다(전원은 PSE 쪽에 연결).",
+      "text": "PoE 전원 공급 지원(CAT 케이블로 XDM-CTR100에 신호·전원 동시 공급, CTR100은 PD 모드로 전원 케이블 불필요)",
       "source": "C"
     },
     {
-      "text": "XDM-CIS100·COS100 카드에는 PSE를 직결할 수 없다 — 카드에는 XDM-CTR100을 연결하고, PSE는 XDM-CTR100이나 벽부형 XDM-CT103/CR103과 짝으로 쓴다.",
+      "text": "XDM-CTR100·벽부형 XDM-CT103/CR103과 짝으로 사용(CIS100·COS100 카드 직결 불가)",
       "source": "U"
     },
     {
-      "text": "한 기기로 TX/RX 겸용: 딥 스위치 1번=TX, 2번=RX, 3번=Long Reach(1080p 최대 150m), 4번은 사용 안 함.",
+      "text": "TX/RX 겸용 지원(딥 스위치 1번=TX, 2번=RX, 3번=Long Reach 1080p 최대 150m, 4번 사용 안 함)",
       "source": "M1"
     },
     {
-      "text": "PSE[TX]는 CTR100[RX]·CR103과, PSE[RX]는 CTR100[TX]·CT103과 CAT6A·CAT7(BELDEN 10GXE02 S/FTP) 케이블로 연결한다.",
+      "text": "PSE[TX]↔CTR100[RX]·CR103, PSE[RX]↔CTR100[TX]·CT103 연결(CAT6A·CAT7, BELDEN 10GXE02 S/FTP)",
       "source": "M1"
     },
     {
-      "text": "RS-232+는 두 가지로 쓴다: 매트릭스 커맨드로 외부기기를 직접 제어하거나, AMX 등 통합 제어 신호를 매트릭스·전송기 너머로 그대로 전달(패스스루)한다.",
+      "text": "RS-232+ 지원(매트릭스 커맨드로 외부기기 제어, AMX 등 통합 제어 신호 패스스루)",
       "source": "U"
     },
     {
-      "text": "TX는 HDMI IN에 소스를, RX는 HDMI OUT에 디스플레이를 연결한다.",
+      "text": "TX·RX 겸용 HDMI 연결(TX: HDMI IN에 소스, RX: HDMI OUT에 디스플레이)",
       "source": "S1"
     },
     {
-      "text": "HDMI 입력 오디오를 후면 5핀 단자(L·R·접지)로 추출해 스피커에 바로 연결",
+      "text": "오디오 추출 지원(후면 5핀 L·R·접지, 스피커 직결)",
       "source": "S1"
     },
     {
-      "text": "전면 LED 4개(Rx Signal·Tx Signal·Tx/Rx·Link)로 동작 상태를 보여준다: 정상 동작 시 TX는 Link·Tx/Rx·Tx Signal, RX는 Link·Tx/Rx·Rx Signal이 켜진다.",
+      "text": "동작 상태 LED 4개 표시 지원(Rx Signal·Tx Signal·Tx/Rx·Link, 정상 시 TX는 Link·Tx/Rx·Tx Signal, RX는 Link·Tx/Rx·Rx Signal 켜짐)",
       "source": "M1"
     }
   ],

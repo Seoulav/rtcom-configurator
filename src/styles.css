@@ -863,3 +863,11 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-led-blink{animation:rt-pg-led-blink 1s steps(1,end) infinite}
 @keyframes rt-pg-led-blink{50%{fill:#2F3A31}}
 @media (prefers-reduced-motion:reduce){#rtcom-design .rt-pg-led-blink{animation:none}}
+/* 0.64 딥 스위치 조합(SPX-TX 3·4번 EDID) */
+#rtcom-design .rt-pg-dip-combos{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+#rtcom-design .rt-pg-dip-combos figcaption b{color:var(--pg-ink);font-weight:800}
+@media(max-width:720px){#rtcom-design .rt-pg-dip-combos{grid-template-columns:1fr 1fr;gap:8px}}
+/* 0.64 로터리 전체 코드 그림(XDM-FT101: Source 0~3 / Analog 8~11 두 줄) */
+#rtcom-design .rt-pg-rotary-group{margin:10px 0 6px;font-size:12px;font-weight:800;color:var(--pg-ink)}
+#rtcom-design .rt-pg-rotary-all{grid-template-columns:repeat(4,1fr);margin-top:0}
+@media(max-width:720px){#rtcom-design .rt-pg-rotary-all{grid-template-columns:repeat(2,1fr)}}
