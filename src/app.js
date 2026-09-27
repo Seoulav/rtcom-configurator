@@ -9,6 +9,8 @@
     const currentSlots=()=>RtCore.slotsFor(state);
     let state=RtCore.initial();
     let modalSlot=null;
+    // 0.55: 카드 팝업의 수량(선택한 슬롯부터 같은 방향 빈 슬롯을 번호 순서로 채움). 팝업을 열 때마다 1로 돌아간다.
+    let modalQty=1;
     // 02 섀시 미리보기의 정면/후면 세그먼트(2-2). 상태 저장·실행 취소 대상이 아닌 순수 화면 토글이다.
     let previewSide='front';
     // 04 전송기 미리보기가 지금 보여주는 슬롯 id(2-2). previewSide와 같은 성격의 순수 화면 상태 — state에 없고 저장·실행 취소 대상이 아니다.
@@ -96,7 +98,7 @@
       'XDM-HOS100':'HDMI 4채널 출력 또는 정사분할(Quad View) 화면 구성에 활용할 수 있습니다.','XDM-DPOS100':'DisplayPort 디스플레이 4채널 출력용입니다.','XDM-COS100':'HDBaseT 3.0 기반 원격 출력 4채널용입니다.','XDM-FOS100':'광 전송 기반의 원거리 출력 4채널용입니다.','XDM-SOS100':'12G-SDI 방송 신호 4채널 출력용입니다.','XDM-WOS100':'4개 레이어를 조합해 월 프로세서처럼 화면 연출에 활용할 수 있습니다.'
     };
     function cardTip(id){return cardTips[id]||'카드 용도와 설치 조건을 검토한 뒤 선택하세요.'}
-    function cardBadge(id){return id==='XDM-WOS100'?'<em>4 LAYER</em>':id==='XDM-HOS100'?'<em>QUAD VIEW</em>':''}
+    function cardBadge(id){return id==='XDM-WOS100'?'<em>4레이어</em>':id==='XDM-HOS100'?'<em>쿼드 뷰</em>':''}
     function choices(s,c){return RtCore.choices(c[0])}
     function persist(){saveLocal()}
     function heading(k,title,desc){return `<div class="rt-eyebrow">${k}</div><h2>${title}</h2><p class="rt-description">${desc}</p>`}
@@ -110,7 +112,7 @@
       }).join('');
       const pf=families[current];
       const preview=`<div class="rt-cg-preview"><img src="${assets[current]}" alt="${current} 제품군 참고 이미지"><div class="rt-cg-preview-cap"><strong>${current} Series</strong><span>${esc(pf.copy)}</span></div><div class="rt-cg-chips">${pf.tags.map(t=>`<em>${esc(t)}</em>`).join('')}</div></div>`;
-      return heading('01 / PRODUCT FAMILY','연결의 시작, 제품군을 선택하세요.','제품군마다 카드와 전송기 선택 항목이 달라집니다.')+`<div class="rt-cg-split"><div class="rt-cg-list" role="list">${rows}</div>${preview}</div>`;
+      return heading('01 / 제품군','연결의 시작, 제품군을 선택하세요.','제품군마다 카드와 전송기 선택 항목이 달라집니다.')+`<div class="rt-cg-split"><div class="rt-cg-list" role="list">${rows}</div>${preview}</div>`;
     }
     function slotPlanFor(model){return RtCore.slotPlan(state.family,model)}
     function documentedSlotCount(model){return slotPlanFor(model)?.[0]||0}
@@ -123,7 +125,7 @@
     const chassisRackU={'XDM-12':'4U','XDM-20':'9U','XDM-36':'9U','XDM-72':'16U','XDM-144':'29U','XDM-216':'40U'};
     function chassisViewV2(){
       const f=families[state.family];
-      const xdmFeature=state.family==='XDM'?'<div class="rt-xdm-feature-note"><span>EDID · LED TIP</span><strong>커스텀 해상도도 설계할 수 있습니다.</strong><p>개선 펌웨어 기준으로 비표준 입력을 원본 패스스루(LED) 또는 4K 업스케일(모니터) 경로로 나눠 검토합니다. 출고용 EDID 주입 조건은 제조사 확인이 필요합니다.</p></div>':'';
+      const xdmFeature=state.family==='XDM'?'<div class="rt-xdm-feature-note"><span>EDID · LED 활용 팁</span><strong>커스텀 해상도도 설계할 수 있습니다.</strong><p>개선 펌웨어 기준으로 비표준 입력을 원본 패스스루(LED) 또는 4K 업스케일(모니터) 경로로 나눠 검토합니다. 출고용 EDID 주입 조건은 제조사 확인이 필요합니다.</p></div>':'';
       const row=(m,i)=>{
         const plan=slotPlanFor(m),selected=state.model===m;
         const maxChannels=state.family!=='SPX'?`${plan?.[0]*4}×${plan?.[1]*4}`:String(f.modelNotes[i]||'').split('·')[0].trim().replace(/\s*×\s*/,'×');
@@ -138,20 +140,27 @@
       const plan=slotPlanFor(previewModel);
       const seg=`<span class="rt-cg-seg" role="group" aria-label="사진 방향"><button type="button" class="${side==='front'?'rt-cg-seg-on':''}" data-cg-side="front">정면</button><button type="button" class="${side==='rear'?'rt-cg-seg-on':''}" data-cg-side="rear">후면</button></span>`;
       const preview=`<div class="rt-cg-preview">${seg}${img?`<img src="${img}" alt="${esc(previewModel)} ${side==='rear'?'후면':'전면'} ${frontDrawings.has(previewModel)&&side==='front'?'도면':'사진'}">`:'<div class="rt-cg-preview-placeholder">사진 준비 중</div>'}<div class="rt-cg-preview-cap"><strong>${esc(previewModel)}</strong><span>${plan?`입력 ${plan[0]} / 출력 ${plan[1]} 슬롯`:'슬롯 구성 제조사 확인 필요'}</span></div></div>`;
-      return heading('02 / CHASSIS','구성의 중심이 될 섀시를 선택하세요.',`${state.family} 제품군 · 메인프레임 ${f.models.length}종`)+`<div class="rt-cg-split"><div class="rt-cg-list" role="list">${f.models.map(row).join('')}</div>${preview}</div>${xdmFeature}`;
+      return heading('02 / 섀시','구성의 중심이 될 섀시를 선택하세요.',`${state.family} 제품군 · 메인프레임 ${f.models.length}종`)+`<div class="rt-cg-split"><div class="rt-cg-list" role="list">${f.models.map(row).join('')}</div>${preview}</div>${xdmFeature}`;
     }
     function cardChoiceModal(){
       if(!modalSlot)return '';
       const slot=currentSlots().find(item=>item.id===modalSlot);
       if(!slot)return '';
       const installed=state.placements[slot.id];
-      const tips=slot.dir==='output'&&state.family==='XDM'?'<div class="rt-output-tips"><div class="rt-pro-tip rt-quad-tip"><span>4분할</span><div><strong>XDM-HOS100 · QUAD VIEW</strong><p>일반 HDMI 4채널 출력 또는 정사분할 화면 구성에 활용할 수 있습니다.</p></div></div><div class="rt-pro-tip"><span>활용 TIP</span><div><strong>XDM-WOS100 · 4 LAYER</strong><p>4개 레이어를 조합해 월 프로세서처럼 화면을 연출할 수 있습니다.</p></div></div></div>':'';
+      const tips=slot.dir==='output'&&state.family==='XDM'?'<div class="rt-output-tips"><div class="rt-pro-tip rt-quad-tip"><span>4분할</span><div><strong>XDM-HOS100 · 쿼드 뷰(4분할)</strong><p>일반 HDMI 4채널 출력 또는 정사분할 화면 구성에 활용할 수 있습니다.</p></div></div><div class="rt-pro-tip"><span>활용 TIP</span><div><strong>XDM-WOS100 · 4레이어</strong><p>4개 레이어를 조합해 월 프로세서처럼 화면을 연출할 수 있습니다.</p></div></div></div>':'';
       const choice=c=>`<button type="button" class="rt-card-choice" data-card="${c[0]}" aria-pressed="${installed===c[0]}"><span class="rt-card-choice-plate"><img src="${cardAsset(c[0])}" alt="${c[0]} 카드 후면 판넬"></span><span class="rt-card-choice-copy"><strong>${c[0]}${cardBadge(c[0])}</strong><small>${esc(c[1])} · ${c[2]}채널</small><span>${esc(cardTip(c[0]))}</span></span><span class="rt-card-choice-state" aria-hidden="true">${installed===c[0]?'장착됨':'선택'}</span></button>`;
       const list=families[state.family][slot.dir];
       // 2-4: 팝업 맨 위에 블랭크 커버(커넥터 없음 · 0포트)를 두고, 그 아래 구분 제목 뒤에 실제 카드 목록이 온다.
       const blankChoice=`<button type="button" class="rt-card-choice rt-card-choice-blank" data-card="BLANK" aria-pressed="${installed==='BLANK'}"><span class="rt-card-choice-copy"><strong>블랭크 커버</strong><small>커넥터 없음 · 빈 슬롯 마감</small><span>카드를 더 넣지 않을 슬롯을 막아 구성을 완성합니다.</span></span><span class="rt-card-choice-state rt-card-choice-zero" aria-hidden="true">0포트</span></button>`;
+      // 0.55 수량: 선택한 슬롯부터 같은 방향 빈 슬롯까지 몇 칸을 한 번에 채울지 고른다(최대 = 채울 수 있는 칸 수).
+      const qtyMax=RtCore.fillTargets(state,slot.id,999).length;modalQty=Math.min(Math.max(1,modalQty),qtyMax);
+      const dirWord=slot.dir==='input'?'입력':'출력';
+      const qtyBar=qtyMax>1?`<div class="rt-card-qty" data-qty-max="${qtyMax}"><span class="rt-card-qty-label">수량</span><div class="rt-card-qty-stepper"><button type="button" data-qty-step="-1" aria-label="수량 줄이기" ${modalQty<=1?'disabled':''}>−</button><output aria-live="polite">${modalQty}</output><button type="button" data-qty-step="1" aria-label="수량 늘리기" ${modalQty>=qtyMax?'disabled':''}>+</button></div><small>${esc(slot.label)}부터 빈 ${dirWord} 슬롯을 번호 순서로 채웁니다 · 최대 ${qtyMax}칸</small></div>`:'';
+      // 0.55 이동: 장착한 카드(블랭크 포함)는 같은 방향 슬롯으로만 옮긴다. 옮길 곳에 카드가 있으면 서로 맞바꾼다.
+      const others=currentSlots().filter(item=>item.dir===slot.dir&&item.id!==slot.id);
+      const moveBar=installed&&others.length?`<div class="rt-card-move"><label for="rt-card-move-target">다른 ${dirWord} 슬롯으로 이동</label><div><select id="rt-card-move-target" data-move-target>${others.map(item=>{const v=state.placements[item.id];return `<option value="${item.id}">${esc(item.label)} · ${v==='BLANK'?'블랭크 (서로 바꿈)':v?`${esc(v)} (서로 바꿈)`:'비어 있음'}</option>`}).join('')}</select><button type="button" class="rt-button" data-action="move-card">이동</button></div></div>`:'';
       const sep=`<p class="rt-card-choice-sep">${slot.dir==='input'?'입력':'출력'} 카드 ${list.length}종 · ${list[0]?.[2]||4}채널</p>`;
-      return `<dialog class="rt-card-modal" aria-labelledby="rt-card-modal-title"><div class="rt-card-modal-head"><div><span class="rt-eyebrow">${slot.dir==='input'?'INPUT':'OUTPUT'} CARD · ${esc(state.model)}</span><h3 id="rt-card-modal-title">${esc(slot.label)} 카드 선택</h3></div><button type="button" class="rt-card-modal-close" data-modal-close aria-label="카드 선택 닫기">×</button></div>${tips}<div class="rt-card-choice-list">${blankChoice}${sep}${list.map(choice).join('')}</div><div class="rt-card-modal-foot"><button type="button" class="rt-button rt-quiet" data-action="remove" ${installed?'':'disabled'}>슬롯 비우기(흰 칸)</button><button type="button" class="rt-button" data-modal-close>닫기</button></div></dialog>`;
+      return `<dialog class="rt-card-modal" aria-labelledby="rt-card-modal-title"><div class="rt-card-modal-head"><div><span class="rt-eyebrow">${slot.dir==='input'?'입력':'출력'} 카드 · ${esc(state.model)}</span><h3 id="rt-card-modal-title">${esc(slot.label)} 카드 선택</h3></div><button type="button" class="rt-card-modal-close" data-modal-close aria-label="카드 선택 닫기">×</button></div>${tips}${qtyBar}${moveBar}<div class="rt-card-choice-list">${blankChoice}${sep}${list.map(choice).join('')}</div><div class="rt-card-modal-foot"><button type="button" class="rt-button rt-quiet" data-action="remove" ${installed?'':'disabled'}>슬롯 비우기(흰 칸)</button><button type="button" class="rt-button" data-modal-close>닫기</button></div></dialog>`;
     }
     function configurationSummary(){
       const slotList=currentSlots(),t=totals(),completion=RtCore.completionFor(state),rows=dir=>{
@@ -164,7 +173,7 @@
       // 슬롯 완성도(2-3): N / 전체, 3색 막대(카드 파랑 · 블랭크 회색 · 빈칸 흰색), 미완성/완성 배지.
       const segbar=`<div class="rt-completion"><div class="rt-completion-head"><span>슬롯 완성도 ${completion.cards+completion.blanks} / ${completion.total}</span><span class="rt-completion-badge ${completion.empty?'rt-completion-badge-no':'rt-completion-badge-ok'}">${completion.empty?'미완성':'완성'}</span></div><div class="rt-completion-bar"><i style="width:${(completion.cards/segTotal*100).toFixed(2)}%;background:#007AFF"></i><i style="width:${(completion.blanks/segTotal*100).toFixed(2)}%;background:#8a94a6"></i></div><div class="rt-completion-legend"><span><i class="rt-completion-dot-card"></i>카드 ${completion.cards}</span><span><i class="rt-completion-dot-blank"></i>블랭크 ${completion.blanks}</span><span><i class="rt-completion-dot-empty"></i>빈칸 ${completion.empty}</span></div></div>`;
       const blankRow=completion.blanks?`<h4>마감재</h4><div class="rt-summary-total"><span>블랭크 커버 (${esc(state.family)})</span><b>× ${completion.blanks}</b></div>`:'';
-      return `<aside class="rt-config-summary" aria-label="구성 요약"><span class="rt-eyebrow">MY CONFIGURATION</span><h3>${esc(state.model)}</h3><p>${state.family} · 입력 ${slotList.filter(item=>item.dir==='input').length} / 출력 ${slotList.filter(item=>item.dir==='output').length} 슬롯</p>${meter('입력',t.input,capacity('input'))}${meter('출력',t.output,capacity('output'))}${segbar}<h4>입력 카드</h4>${rows('input')}<h4>출력 카드</h4>${rows('output')}${blankRow}<div class="rt-summary-total"><span>장착 카드</span><b>${cards}장</b></div><p class="rt-summary-note">${state.family==='SPX'?'다음 단계에서 CATx 출력 카드(COS12)에 연결할 SPX-RX를 확인합니다.':'다음 단계에서 HDBaseT·광 카드에 연결할 전송기를 고릅니다.'}</p></aside>`;
+      return `<aside class="rt-config-summary" aria-label="구성 요약"><span class="rt-eyebrow">내 구성</span><h3>${esc(state.model)}</h3><p>${state.family} · 입력 ${slotList.filter(item=>item.dir==='input').length} / 출력 ${slotList.filter(item=>item.dir==='output').length} 슬롯</p>${meter('입력',t.input,capacity('input'))}${meter('출력',t.output,capacity('output'))}${segbar}<h4>입력 카드</h4>${rows('input')}<h4>출력 카드</h4>${rows('output')}${blankRow}<div class="rt-summary-total"><span>장착 카드</span><b>${cards}장</b></div><p class="rt-summary-note">${state.family==='SPX'?'다음 단계에서 CATx 출력 카드(COS12)에 연결할 SPX-RX를 확인합니다.':'다음 단계에서 HDBaseT·광 카드에 연결할 전송기를 고릅니다.'}</p></aside>`;
     }
     function cardsViewV4(){
       const slotList=currentSlots(),model=state.model,layout=rackLayout(model),plan=slotPlanFor(model),count=plan?.[0]||0;
@@ -178,20 +187,20 @@
         const rawValue=state.placements[slot.id],isBlank=rawValue==='BLANK',c=isBlank?null:slotCard(slot.id),selecting=modalSlot===slot.id;
         const stateClass=c?'rt-rack-slot-filled':isBlank?'rt-rack-slot-blank':'rt-rack-slot-empty';
         const label=c?`${c[0]} 장착됨 · 눌러서 변경`:isBlank?'블랭크 커버 · 눌러서 변경':'비어 있음 · 눌러서 카드 선택';
-        return `<button type="button" class="rt-rack-slot ${stateClass} ${selecting?'rt-rack-slot-selecting':''} ${changed===slot.id?'rt-rack-slot-changed':''}" data-slot="${slot.id}" aria-label="${esc(slot.label)}, ${label}" title="${esc(slot.label)}${c?` · ${c[0]}`:isBlank?' · 블랭크 커버':''}"><span class="rt-rack-slot-no" aria-hidden="true">${shortLabel(slot)}</span>${c?`<img class="rt-faceplate" src="${cardAsset(c[0])}" alt="">`:isBlank?`<img class="rt-faceplate rt-blank-plate" src="${blankPlates[state.family]}" alt="">`:'<span class="rt-rack-slot-add" aria-hidden="true">+</span>'}</button>`;
+        return `<button type="button" class="rt-rack-slot ${stateClass} ${selecting?'rt-rack-slot-selecting':''} ${changed===slot.id?'rt-rack-slot-changed':''}" data-slot="${slot.id}"${rawValue?' draggable="true"':''} aria-label="${esc(slot.label)}, ${label}" title="${esc(slot.label)}${c?` · ${c[0]}`:isBlank?' · 블랭크 커버':''}"><span class="rt-rack-slot-no" aria-hidden="true">${shortLabel(slot)}</span>${c?`<img draggable="false" class="rt-faceplate" src="${cardAsset(c[0])}" alt="">`:isBlank?`<img draggable="false" class="rt-faceplate rt-blank-plate" src="${blankPlates[state.family]}" alt="">`:'<span class="rt-rack-slot-add" aria-hidden="true">+</span>'}</button>`;
       };
-      const bank=(dir,items)=>`<section class="rt-rack-bank rt-rack-bank-${dir}" aria-label="${dir==='input'?'입력':'출력'} 카드 슬롯"><div class="rt-rack-bank-title"><strong>${dir==='input'?'INPUT':'OUTPUT'}</strong><span>${items.filter(item=>slotCard(item.id)).length} / ${items.length}</span></div><div class="rt-rack-grid">${items.map(slotButton).join('')}</div></section>`;
+      const bank=(dir,items)=>`<section class="rt-rack-bank rt-rack-bank-${dir}" aria-label="${dir==='input'?'입력':'출력'} 카드 슬롯"><div class="rt-rack-bank-title"><strong>${dir==='input'?'입력':'출력'}</strong><span>${items.filter(item=>slotCard(item.id)).length} / ${items.length}</span></div><div class="rt-rack-grid">${items.map(slotButton).join('')}</div></section>`;
       const photo=rearPhotos[model];
       const zoneRect=(dir,[x0,y0,x1,y1],items)=>{const [w,h]=photo.size,own=state.family==='SPX'&&layout==='vs',cols=own?items.length:columns,rows=Math.ceil(items.length/cols);return `<section class="rt-rack-zone rt-rack-zone-${dir}" aria-label="${dir==='input'?'입력':'출력'} 카드 슬롯" style="left:${(x0/w*100).toFixed(3)}%;top:${(y0/h*100).toFixed(3)}%;width:${((x1-x0)/w*100).toFixed(3)}%;height:${((y1-y0)/h*100).toFixed(3)}%;--rt-rack-zone-rows:${rows}${own?`;--rt-rack-columns:${cols}`:''}"><div class="rt-rack-grid">${items.map(slotButton).join('')}</div></section>`};
       const zone=(dir,items)=>{const rects=Array.isArray(photo[dir][0])?photo[dir]:[photo[dir]],size=Math.ceil(items.length/rects.length);return rects.map((rect,index)=>zoneRect(dir,rect,items.slice(index*size,(index+1)*size))).join('')};
-      const photoRack=photo?`<figure class="rt-rack-photo rt-rack-${layout}" style="--rt-rack-columns:${columns};--rt-slot-ratio:${slotRatios[state.family]||9.7};--rt-photo-ratio:${(photo.size[0]/photo.size[1]).toFixed(4)}"><img class="rt-rack-photo-image" src="${photo.src}" alt="${esc(model)} 후면 사진"><div class="rt-rack-photo-zones">${zone('input',inputSlots)}${zone('output',outputSlots)}</div><figcaption>후면 ${photo.kind||'사진'} · ${photo.manual||'XDM 국문 매뉴얼'} p.${photo.page} · 선택한 카드만 표시</figcaption></figure>`:'';
+      const photoRack=photo?`<figure class="rt-rack-photo rt-rack-${layout} rt-rack-family-${state.family}" style="--rt-rack-columns:${columns};--rt-slot-ratio:${slotRatios[state.family]||9.7};--rt-photo-ratio:${(photo.size[0]/photo.size[1]).toFixed(4)}"><img class="rt-rack-photo-image" src="${photo.src}" alt="${esc(model)} 후면 사진"><div class="rt-rack-photo-zones">${zone('input',inputSlots)}${zone('output',outputSlots)}</div><figcaption>후면 ${photo.kind||'사진'} · ${photo.manual||'XDM 국문 매뉴얼'} p.${photo.page} · 선택한 카드만 표시</figcaption></figure>`:'';
       const layoutText=!plan?'슬롯 구성 검토용 논리 도식':state.family==='SPX'?`${layout==='vs'?'왼쪽':'상단'} 입력 ${plan[0]}슬롯(카드당 8포트) / ${layout==='vs'?'오른쪽':'하단'} 출력 ${plan[1]}슬롯(카드당 10~12포트)`:`${layout==='vt'?'상단':'왼쪽'} 입력 ${plan[0]}슬롯 / ${layout==='vt'?'하단':'오른쪽'} 출력 ${plan[1]}슬롯 · 카드당 4채널`;
       const completion=RtCore.completionFor(state);
       // 완성 배너(제목 위)·범례·채우기 줄(2-3, 사용자 결정 2026-09-27).
       const doneBanner=completion.total&&!completion.empty?`<div class="rt-slot-done-banner">✓ ${completion.total}개 슬롯을 모두 채웠습니다 · 구성 완성</div>`:'';
       const legend=`<div class="rt-slot-legend"><span><i class="rt-slot-legend-dot rt-slot-legend-empty"></i>빈 슬롯</span><span><i class="rt-slot-legend-dot rt-slot-legend-installed"></i>장착한 카드</span><span><i class="rt-slot-legend-dot rt-slot-legend-blank"></i>블랭크 커버</span><span><i class="rt-slot-legend-dot rt-slot-legend-selecting"></i>선택 중</span></div>`;
       const fillBar=completion.empty?`<div class="rt-slot-fillbar"><span>비어 있는 슬롯 <b>${completion.empty}개</b> — 카드를 더 넣지 않을 슬롯은 블랭크 커버로 막아 구성을 완성하세요.</span><button type="button" class="rt-button rt-primary" data-action="fill-blanks">남은 ${completion.empty}칸 블랭크로 채우기</button></div>`:'';
-      return doneBanner+heading('03 / CARD SLOTS','후면의 빈 슬롯을 눌러 카드를 장착하세요.',`${esc(model)} · ${layoutText}`)+`<div class="rt-config-stage"><section class="rt-rack-canvas"><div class="rt-rack-toolbar"><div><span class="rt-eyebrow">REAR VIEW</span><h3>${esc(model)}</h3></div><div class="rt-frame-count"><span><b>${inputCards}</b> / ${inputSlots.length} INPUT</span><span><b>${outputCards}</b> / ${outputSlots.length} OUTPUT</span></div></div><div class="rt-rack-scroll">${photoRack||`<div class="rt-rack rt-rack-${layout}" style="--rt-rack-columns:${columns};--rt-rack-rows:${Math.max(1,Math.ceil(inputSlots.length/columns))*2};--rt-bank-slots:${columns};--rt-slot-ratio:${slotRatios[state.family]||9.7}"><span class="rt-rack-ear" aria-hidden="true"></span><div class="rt-rack-body">${bank('input',inputSlots)}${bank('output',outputSlots)}<div class="rt-rack-psu" aria-hidden="true"><strong>RTCOM</strong><span>${esc(model)}</span><i></i><small>CONTROL</small><i></i><small>POWER</small></div></div><span class="rt-rack-ear" aria-hidden="true"></span></div>`}</div>${photo||layout!=='h'?'<p class="rt-rack-scroll-hint">좌우로 밀어서 후면 전체를 볼 수 있습니다.</p>':''}${count?'':'<p class="rt-stage-warning">이 프레임은 제조사 후면 도면과 카드 허용표를 확보하기 전까지 논리 도식으로 표시합니다. 물리 설치 위치로 사용하지 마세요.</p>'}${count&&!photo?`<p class="rt-rack-note">${state.family==='VDM'?'VDM 매뉴얼에는 이 프레임의 선 도면만 있어, 슬롯 수는 매뉴얼 기준으로 하고 배치는 도면을 단순화한 그림으로 표시합니다.':'이 프레임은 매뉴얼에 후면 사진이 없어 슬롯 배치를 그림으로 표시합니다.'}</p>`:''}${legend}${fillBar}</section>${configurationSummary()}</div>${cardChoiceModal()}`;
+      return doneBanner+heading('03 / 카드 슬롯','후면의 빈 슬롯을 눌러 카드를 장착하세요.',`${esc(model)} · ${layoutText}`)+`<div class="rt-config-stage"><section class="rt-rack-canvas"><div class="rt-rack-toolbar"><div><span class="rt-eyebrow">후면</span><h3>${esc(model)}</h3></div><div class="rt-frame-count"><span><b>${inputCards}</b> / ${inputSlots.length} 입력</span><span><b>${outputCards}</b> / ${outputSlots.length} 출력</span></div></div><div class="rt-rack-scroll">${photoRack||`<div class="rt-rack rt-rack-${layout}" style="--rt-rack-columns:${columns};--rt-rack-rows:${Math.max(1,Math.ceil(inputSlots.length/columns))*2};--rt-bank-slots:${columns};--rt-slot-ratio:${slotRatios[state.family]||9.7}"><span class="rt-rack-ear" aria-hidden="true"></span><div class="rt-rack-body">${bank('input',inputSlots)}${bank('output',outputSlots)}<div class="rt-rack-psu" aria-hidden="true"><strong>RTCOM</strong><span>${esc(model)}</span><i></i><small>제어</small><i></i><small>전원</small></div></div><span class="rt-rack-ear" aria-hidden="true"></span></div>`}</div>${photo||layout!=='h'?'<p class="rt-rack-scroll-hint">좌우로 밀어서 후면 전체를 볼 수 있습니다.</p>':''}${count?'':'<p class="rt-stage-warning">이 프레임은 제조사 후면 도면과 카드 허용표를 확보하기 전까지 논리 도식으로 표시합니다. 물리 설치 위치로 사용하지 마세요.</p>'}${count&&!photo?`<p class="rt-rack-note">${state.family==='VDM'?'VDM 매뉴얼에는 이 프레임의 선 도면만 있어, 슬롯 수는 매뉴얼 기준으로 하고 배치는 도면을 단순화한 그림으로 표시합니다.':'이 프레임은 매뉴얼에 후면 사진이 없어 슬롯 배치를 그림으로 표시합니다.'}</p>`:''}${legend}${fillBar}</section>${configurationSummary()}</div>${cardChoiceModal()}`;
     }
     function powerNotice(){
       const count=Object.values(state.links).filter(link=>link.device?.startsWith('XDM-CTR100 · ')).reduce((sum,link)=>sum+link.count,0);
@@ -220,14 +229,14 @@
         return `<div class="rt-cg-link-group" data-owner-group="${slot.id}"><div class="rt-cg-link-group-head"><button type="button" class="rt-cg-link-group-title" data-link-preview="${slot.id}" aria-pressed="${slot.id===linkPreviewSlot}"><strong>${shortLabel(slot)} · ${esc(c[0])} · ${dirWord(slot)} ${c[2]}채널</strong></button><label class="rt-link-count">연결 채널${countSelect(slot)}</label></div><div class="rt-cg-link-group-rows" role="list">${rows}</div></div>`;
       };
       const lineupCard=item=>`<article class="rt-ext-lineup-card"><span class="rt-ext-option-image"><img src="${item.image}" alt="${esc(item.model)} 제품 사진" loading="lazy"></span><strong>${esc(item.model)}</strong><small>${esc(item.role)}</small><span class="rt-ext-pair">연동 · ${esc(item.pair)}</span><p>${esc(item.note)}</p><em>${item.page?`카탈로그 p.${item.page}`:'알티컴 홈페이지'}</em></article>`;
-      const lineupSection=(family,title,text,items)=>`<section class="rt-ext-lineup" aria-labelledby="rt-ext-lineup-title"><div class="rt-ext-lineup-head"><div><span class="rt-eyebrow">${family} EXTENDER LINEUP</span><h3 id="rt-ext-lineup-title">${title}</h3></div><p>${text}</p></div><div class="rt-ext-lineup-grid">${items.map(lineupCard).join('')}</div></section>`;
+      const lineupSection=(family,title,text,items)=>`<section class="rt-ext-lineup" aria-labelledby="rt-ext-lineup-title"><div class="rt-ext-lineup-head"><div><span class="rt-eyebrow">${family} 전송기 라인업</span><h3 id="rt-ext-lineup-title">${title}</h3></div><p>${text}</p></div><div class="rt-ext-lineup-grid">${items.map(lineupCard).join('')}</div></section>`;
       const lineup=state.family==='XDM'?lineupSection('XDM','XDM 연동 전송기','HDBaseT 카드(CIS100·COS100)와 광 카드(FIS100·FOS100)에 연결하는 전송기입니다. 근거: RTCom 종합 카탈로그 p.10~12',extenderLineup):state.family==='VDM'?lineupSection('VDM','VDM 연동 전송기','HDBaseT 카드(CIS4-U·COS4-U)와 광 카드(FIS4-U·FOS4-U)에 연결하는 전송기입니다. 근거: 사용자 확인, 알티컴 홈페이지 VDM EXTENDER',vdmExtenderLineup):'';
       // 전송기 라인업(2-2 "판 아래 접이식 영역"): 처음부터 펼쳐 둔다 — e2e가 스크롤해서 사진 로딩을 확인하므로 클릭 없이 보여야 한다.
       const lineupWrap=lineup?`<details open class="rt-ext-lineup-details"><summary>연동 전송기 라인업 펼치기/접기</summary>${lineup}</details>`:'';
       const empty=`<div class="rt-empty rt-link-empty"><strong>현재 구성에는 HDBaseT·광 카드가 없습니다.</strong><p>${state.family==='SPX'?'SPX-COS12(CATx 출력) 카드를 장착하면 SPX-RX가 자동으로 연결되고 여기서 채널 수를 바꿀 수 있습니다.':state.family==='VDM'?'CIS4-U·COS4-U(HDBaseT) 또는 FIS4-U·FOS4-U(광) 카드를 장착하면 CT104-U·CR104-U·FT101-U·FR101-U가 자동으로 연결되고 여기서 채널 수를 바꿀 수 있습니다.':'XDM-CIS100·COS100(HDBaseT) 또는 XDM-FIS100·FOS100(광) 카드를 장착하면 CTR100·FT101·FR101이 자동으로 연결되고 여기서 바꿀 수 있습니다.'}</p><button type="button" class="rt-button" data-jump="2">카드 슬롯으로 돌아가기</button></div>`;
       // 왼쪽 목록: 원격(CAT·광) 카드 묶음 → (있으면) HDMI 카드 연장 묶음(우산 아래). "현재 구성에는 HDBaseT·광 카드가 없습니다" 안내는
       // remote가 없을 때만 뜨고(명세 5번), HDMI 연장 슬롯만 있으면 그 묶음은 그대로 함께 보여준다(옛 화면도 두 안내가 함께 있을 수 있었다).
-      const hdmiGroup=hdmiExtend.length?`<div class="rt-cg-link-umbrella"><div class="rt-cg-link-umbrella-head"><span class="rt-eyebrow">HDMI EXTENSION · 선택</span><h4>HDMI 카드 연장(선택)</h4><p>HDMI 입력·출력 포트를 멀리 연결해야 하면 CTR100 PSE와 CTR100을 한 쌍으로 씁니다. 전원은 PSE 쪽에만 연결하고, 두 제품 모두 DIP 스위치로 TX/RX를 설정합니다.</p></div>${hdmiExtend.map(group).join('')}</div>`:'';
+      const hdmiGroup=hdmiExtend.length?`<div class="rt-cg-link-umbrella"><div class="rt-cg-link-umbrella-head"><span class="rt-eyebrow">HDMI 연장 · 선택</span><h4>HDMI 카드 연장(선택)</h4><p>HDMI 입력·출력 포트를 멀리 연결해야 하면 CTR100 PSE와 CTR100을 한 쌍으로 씁니다. 전원은 PSE 쪽에만 연결하고, 두 제품 모두 DIP 스위치로 TX/RX를 설정합니다.</p></div>${hdmiExtend.map(group).join('')}</div>`:'';
       const listBody=`${remote.length?remote.map(group).join(''):empty}${hdmiGroup}`;
       // 오른쪽 미리보기: 세그먼트(01/02의 rt-cg-seg와 같은 틀, 슬롯이 여러 개일 수 있어 줄바꿈만 허용) + 연결 흐름 + 채널 수.
       const segLabel=slot=>`${shortLabel(slot)}${hdmiExtend.includes(slot)?' (HDMI)':''}`;
@@ -256,12 +265,12 @@
       // 채널 수는 미리보기 안에 이미 있고 전원 안내는 카드마다 똑같아 판 전체 아래 한 번만 두는 쪽을 선택했다 — 구현 문서에 남긴 편차).
       // rt-link-preview: 01/02의 오른쪽 미리보기는 사진 한 장이라 820px 이하 max-height:260px 안에 들어가지만,
       // 04의 연결 흐름(세그먼트+노드 여러 개)은 그보다 쉽게 커져서 넘친다 — 이 표시가 있을 때만 높이 제한을 풀어준다(styles.css).
-      return heading('04 / EXTENDERS','카드에 연결할 전송 장비를 확인하세요.',remote.length?`HDBaseT·광 카드 ${remote.length}장에 기본 전송기를 연결했습니다. 필요하면 ${state.family==='XDM'?'벽부형이나 ':''}채널 수를 바꾸세요.`:'HDBaseT·광 카드를 장착하면 연동 전송기가 자동으로 연결됩니다.')+`<div class="rt-cg-split"><div class="rt-cg-list" role="list">${listBody}</div><div class="rt-cg-preview rt-link-preview">${previewBody()}</div></div>${powerNotice()}${lineupWrap}`;
+      return heading('04 / 전송기','카드에 연결할 전송 장비를 확인하세요.',remote.length?`HDBaseT·광 카드 ${remote.length}장에 기본 전송기를 연결했습니다. 필요하면 ${state.family==='XDM'?'벽부형이나 ':''}채널 수를 바꾸세요.`:'HDBaseT·광 카드를 장착하면 연동 전송기가 자동으로 연결됩니다.')+`<div class="rt-cg-split"><div class="rt-cg-list" role="list">${listBody}</div><div class="rt-cg-preview rt-link-preview">${previewBody()}</div></div>${powerNotice()}${lineupWrap}`;
     }
     function bom(){return RtCore.bom(state).map(row=>[row.category,row.model,row.quantity])}
     function table(){return `<div class="rt-table-wrap"><table><thead><tr><th>구분</th><th>모델</th><th>수량</th></tr></thead><tbody>${bom().map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')}</tbody></table></div>`}
-    function reviewViewV2(){const t=totals(),slotList=currentSlots(),inputCards=slotList.filter(slot=>slot.dir==='input'&&slotCard(slot.id)).length,outputCards=slotList.filter(slot=>slot.dir==='output'&&slotCard(slot.id)).length;return heading('05 / REVIEW','장착한 카드 구성을 확인하세요.','프레임, 입력 카드, 출력 카드와 전송 장비 수량을 검토합니다.')+`<div class="rt-review-head"><div class="rt-review-stat">선택 프레임<strong>${state.model}</strong></div><div class="rt-review-stat">장착 카드<strong>${inputCards} IN / ${outputCards} OUT</strong></div><div class="rt-review-stat">구성 채널<strong>${t.input} IN / ${t.output} OUT</strong></div></div><h3 class="rt-review-title">장비 목록</h3>${table()}${validationView()}<div class="rt-notice">${state.family==='XDM'&&slotList[0].id==='in-1'?`${state.model}은 입력 카드 ${slotList.filter(slot=>slot.dir==='input').length}장과 출력 카드 ${slotList.filter(slot=>slot.dir==='output').length}장, 카드당 4채널을 기준으로 검토합니다.`:'현재 모델은 슬롯 구조 확인이 더 필요합니다.'}</div>`}
-    function exportView(){const data=RtCore.document(state);const content=state.format==='PDF'?`<div class="rt-paper-title">Matrix Configuration</div><p class="rt-caption">${state.family} / ${state.model}</p><div class="rt-line"></div>${table()}<p class="rt-board-note">미검증 검토용 초안 · 실제 설치 승인 자료가 아닙니다.</p>`:`<pre>${esc(state.format==='JSON'?JSON.stringify(data,null,2):RtCore.csv(state))}</pre>`;return heading('06 / EXPORT','구성을 저장하고 공유하세요.','연락처 입력 없이 구성 요약과 장비 목록을 내보내는 흐름입니다.')+`<div class="rt-export"><div class="rt-export-options">${[['PDF','구성 요약 · 슬롯·전송기 연결'],['CSV','장비 목록 · 모델별 수량'],['JSON','구성 저장 · 다시 불러오기']].map(([id,n])=>`<button type="button" class="rt-format" data-format="${id}" aria-pressed="${state.format===id}"><div><strong>${id}</strong><span>${n}</span></div><span class="rt-radio" aria-hidden="true">${state.format===id?'✓':''}</span></button>`).join('')}<p class="rt-board-note">내보낸 자료는 미검증 검토용 초안입니다.<br>PDF는 인쇄 창에서 PDF로 저장하세요.</p></div><div class="rt-paper"><div class="rt-preview-label"><span>RTCOM</span><span class="rt-pill">초안 미리보기</span></div>${content}</div></div><button type="button" class="rt-button rt-primary" data-tool="export">${state.format==='PDF'?'검토용 보고서 인쇄 / PDF':'검토용 '+state.format+' 다운로드'}</button>`}
+    function reviewViewV2(){const t=totals(),slotList=currentSlots(),inputCards=slotList.filter(slot=>slot.dir==='input'&&slotCard(slot.id)).length,outputCards=slotList.filter(slot=>slot.dir==='output'&&slotCard(slot.id)).length;return heading('05 / 구성 검토','장착한 카드 구성을 확인하세요.','프레임, 입력 카드, 출력 카드와 전송 장비 수량을 검토합니다.')+`<div class="rt-review-head"><div class="rt-review-stat">선택 프레임<strong>${state.model}</strong></div><div class="rt-review-stat">장착 카드<strong>${inputCards} IN / ${outputCards} OUT</strong></div><div class="rt-review-stat">구성 채널<strong>${t.input} IN / ${t.output} OUT</strong></div></div><h3 class="rt-review-title">장비 목록</h3>${table()}${validationView()}<div class="rt-notice">${state.family==='XDM'&&slotList[0].id==='in-1'?`${state.model}은 입력 카드 ${slotList.filter(slot=>slot.dir==='input').length}장과 출력 카드 ${slotList.filter(slot=>slot.dir==='output').length}장, 카드당 4채널을 기준으로 검토합니다.`:'현재 모델은 슬롯 구조 확인이 더 필요합니다.'}</div>`}
+    function exportView(){const data=RtCore.document(state);const content=state.format==='PDF'?`<div class="rt-paper-title">Matrix Configuration</div><p class="rt-caption">${state.family} / ${state.model}</p><div class="rt-line"></div>${table()}<p class="rt-board-note">미검증 검토용 초안 · 실제 설치 승인 자료가 아닙니다.</p>`:`<pre>${esc(state.format==='JSON'?JSON.stringify(data,null,2):RtCore.csv(state))}</pre>`;return heading('06 / 내보내기','구성을 저장하고 공유하세요.','연락처 입력 없이 구성 요약과 장비 목록을 내보내는 흐름입니다.')+`<div class="rt-export"><div class="rt-export-options">${[['PDF','구성 요약 · 슬롯·전송기 연결'],['CSV','장비 목록 · 모델별 수량'],['JSON','구성 저장 · 다시 불러오기']].map(([id,n])=>`<button type="button" class="rt-format" data-format="${id}" aria-pressed="${state.format===id}"><div><strong>${id}</strong><span>${n}</span></div><span class="rt-radio" aria-hidden="true">${state.format===id?'✓':''}</span></button>`).join('')}<p class="rt-board-note">내보낸 자료는 미검증 검토용 초안입니다.<br>PDF는 인쇄 창에서 PDF로 저장하세요.</p></div><div class="rt-paper"><div class="rt-preview-label"><span>RTCOM</span><span class="rt-pill">초안 미리보기</span></div>${content}</div></div><button type="button" class="rt-button rt-primary" data-tool="export">${state.format==='PDF'?'검토용 보고서 인쇄 / PDF':'검토용 '+state.format+' 다운로드'}</button>`}
     // 단계 탭(밑줄형, 2-1): 완료 단계는 ✓ + rt-step-done, 현재 단계는 rt-step-current(파란 원·넓은 칸). data-jump 동작·aria-current는 그대로 둔다.
     const shortLabels=['제품군','섀시','카드','전송기','검토','출력'];
     function render(){
@@ -283,6 +292,16 @@
     function changed(){recordHistory();const active=document.activeElement;let focusSelector='';if(active&&root.contains(active)){if(active.dataset.link)focusSelector=`select[data-owner="${active.dataset.owner}"][data-link="${active.dataset.link}"]`;else if(active.dataset.linkDevice!==undefined)focusSelector=`button[data-owner="${active.dataset.owner}"][data-link-device="${active.dataset.linkDevice}"]`;else for(const key of ['family','model','slot','card','format','jump'])if(active.dataset[key]!==undefined){focusSelector=`button[data-${key}="${active.dataset[key]}"]`;break}}render();if(focusSelector)root.querySelector(focusSelector)?.focus({preventScroll:true});persist()}
     let focusSlotAfterRender=null;
     function focusSlot(id){if(id)root.querySelector(`button[data-slot="${id}"]`)?.focus({preventScroll:true})}
+    // 0.55 슬롯 끌어 옮기기(마우스): 장착한 슬롯을 같은 방향(입력↔입력, 출력↔출력) 슬롯에 놓으면 옮기거나 맞바꾼다.
+    // 휴대폰은 끌기 대신 카드 팝업의 "다른 슬롯으로 이동"을 쓴다.
+    let dragFrom=null;
+    const slotDir=id=>id?.startsWith('in-')?'input':id?.startsWith('out-')?'output':null;
+    const clearDrop=()=>root.querySelectorAll('.rt-rack-slot-drop,.rt-rack-slot-dragging').forEach(el=>el.classList.remove('rt-rack-slot-drop','rt-rack-slot-dragging'));
+    root.addEventListener('dragstart',event=>{const b=event.target.closest?.('button[data-slot][draggable="true"]');if(!b)return;dragFrom=b.dataset.slot;event.dataTransfer.effectAllowed='move';event.dataTransfer.setData('text/plain',dragFrom);b.classList.add('rt-rack-slot-dragging')});
+    root.addEventListener('dragover',event=>{const b=event.target.closest?.('button[data-slot]');if(!b||!dragFrom||b.dataset.slot===dragFrom||slotDir(b.dataset.slot)!==slotDir(dragFrom))return;event.preventDefault();event.dataTransfer.dropEffect='move';root.querySelectorAll('.rt-rack-slot-drop').forEach(el=>el!==b&&el.classList.remove('rt-rack-slot-drop'));b.classList.add('rt-rack-slot-drop')});
+    root.addEventListener('dragleave',event=>{const b=event.target.closest?.('button[data-slot]');if(b&&!b.contains(event.relatedTarget))b.classList.remove('rt-rack-slot-drop')});
+    root.addEventListener('drop',event=>{const b=event.target.closest?.('button[data-slot]');const from=dragFrom;dragFrom=null;clearDrop();if(!b||!from)return;event.preventDefault();const moved=RtCore.moveCard(state,from,b.dataset.slot);if(!moved)return;state=moved;changedSlot=b.dataset.slot;changed();announce(`${b.dataset.slot.replace(/^in-/,'입력 슬롯 ').replace(/^out-/,'출력 슬롯 ')}(으)로 옮겼습니다.`)});
+    root.addEventListener('dragend',()=>{dragFrom=null;clearDrop()});
     function openCardModal(){
       const dialog=main.querySelector('.rt-card-modal');
       if(!dialog){if(focusSlotAfterRender){const id=focusSlotAfterRender;focusSlotAfterRender=null;requestAnimationFrame(()=>focusSlot(id))}return}
@@ -306,10 +325,10 @@
       navStep=state.step;
     }
     // 로고(RTCOM Matrix Configurator)를 누르면 확인 후 첫 화면(제품군 선택)으로 간다. 구성은 지우지 않는다.
-    document.querySelector('.rt-brand-lockup')?.addEventListener('click',event=>{
+    document.querySelector('.rt-brand-lockup')?.addEventListener('click',async event=>{
       event.preventDefault();
       if(state.step===0){window.scrollTo({top:0,behavior:'smooth'});return}
-      if(!window.confirm('처음 화면(제품군 선택)으로 이동할까요?\n지금까지 구성한 내용은 그대로 저장되어 있어 다시 이어서 할 수 있습니다.'))return;
+      if(!await rtConfirm({title:'처음 화면으로 갈까요?',message:'지금까지 구성한 내용은 그대로 저장되어 있어 다시 이어서 할 수 있습니다.',ok:'이동'}))return;
       modalSlot=null;state.step=0;changed();window.scrollTo({top:0,behavior:'smooth'});
     });
     window.addEventListener('popstate',event=>{
@@ -319,10 +338,10 @@
       restoringNav=true;state.step=step;changed();restoringNav=false;
     });
     // 제품정보(0.19) 시리즈 상세의 "구성기에서 구성하기": 해당 제품군을 고르고 섀시 선택 단계로 간다.
-    root.addEventListener('rt-configure-family',event=>{
+    root.addEventListener('rt-configure-family',async event=>{
       const family=event.detail;
       if(!families[family])return;
-      if(state.family!==family){if(!confirmReset())return;state.family=family;state.model=null;state.placements={};state.portAssignments={};state.links={};state.slot='in-a'}
+      if(state.family!==family){if(!await confirmReset())return;state.family=family;state.model=null;state.placements={};state.portAssignments={};state.links={};state.slot='in-a'}
       modalSlot=null;state.maxStep=Math.max(state.maxStep,1);state.step=1;changed();window.scrollTo({top:0});
     });
     root.addEventListener('click',event=>{
@@ -338,12 +357,15 @@
         changed();
       }
     });
-    root.addEventListener('click',event=>{const b=event.target.closest('button');if(!b||!root.contains(b)||b.disabled)return;
+    root.addEventListener('click',async event=>{const b=event.target.closest('button');if(!b||!root.contains(b)||b.disabled)return;
       // 02 섀시 미리보기 정면/후면 토글: 화면 상태만 바꾸는 순수 토글이라 실행 취소·자동 저장 대상이 아니다.
+      // 0.55 수량 버튼: 팝업을 다시 그리지 않고 숫자와 버튼 상태만 바꾼다(실행 취소·자동 저장 대상 아님).
+      if(b.dataset.qtyStep){const bar=b.closest('.rt-card-qty'),max=Number(bar?.dataset.qtyMax)||1;modalQty=Math.min(max,Math.max(1,modalQty+Number(b.dataset.qtyStep)));if(bar){bar.querySelector('output').textContent=modalQty;bar.querySelector('[data-qty-step="-1"]').disabled=modalQty<=1;bar.querySelector('[data-qty-step="1"]').disabled=modalQty>=max}return}
+      if(b.dataset.action==='move-card'){const to=b.closest('.rt-card-move')?.querySelector('[data-move-target]')?.value,moved=to&&RtCore.moveCard(state,state.slot,to);if(!moved)return;modalSlot=null;state=moved;changedSlot=to;focusSlotAfterRender=to;changed();announce(`${to.replace(/^in-/,'입력 슬롯 ').replace(/^out-/,'출력 슬롯 ')}(으)로 옮겼습니다.`);return}
       if(b.dataset.cgSide){previewSide=b.dataset.cgSide;render();return}
       // 04 전송기 오른쪽 미리보기 세그먼트(왼쪽 묶음 제목 버튼도 같은 속성을 쓴다): previewSide와 같은 순수 화면 토글이다.
       if(b.dataset.linkPreview){linkPreviewSlot=b.dataset.linkPreview;render();return}
-      if(b.dataset.family){if(state.family!==b.dataset.family){if(!confirmReset())return;state.family=b.dataset.family;state.model=null;state.placements={};state.portAssignments={};state.links={};state.maxStep=0;state.slot='in-a'}previewSide='front';linkPreviewSlot=null;changed();return}if(b.dataset.model){if(state.model!==b.dataset.model){if(!confirmReset())return;state.model=b.dataset.model;state.placements={};state.portAssignments={};state.links={};state.maxStep=1;state.slot=currentSlots()[0].id}previewSide='front';linkPreviewSlot=null;changed();return}if(b.dataset.slot){state.slot=b.dataset.slot;modalSlot=b.dataset.slot;changed();return}if(b.dataset.modalClose!==undefined){closeCardModal();return}if(b.dataset.linkDevice!==undefined){const id=b.dataset.owner,old=state.links[id]||{device:'',count:0,distance:'30'},slot=currentSlots().find(item=>item.id===id),c=slot&&slotCard(slot.id);if(!c||(b.dataset.linkDevice&&!choices(slot,c).includes(b.dataset.linkDevice)))return;linkPreviewSlot=id;if(old.device===b.dataset.linkDevice){render();return}old.device=b.dataset.linkDevice;old.count=old.device?(old.count||c[2]):0;state.links[id]=old;syncPorts();changed();return}if(b.dataset.card){const reopen=modalSlot;modalSlot=null;if(state.placements[state.slot]===b.dataset.card){closeCardModal(reopen);return}focusSlotAfterRender=reopen;changedSlot=state.slot;state.placements[state.slot]=b.dataset.card;const selectedCard=b.dataset.card==='BLANK'?null:card(b.dataset.card);const autoLink=selectedCard?RtCore.defaultLink(b.dataset.card,selectedCard[2]):null;if(autoLink)state.links[state.slot]=autoLink;else delete state.links[state.slot];syncPorts();changed();return}if(b.dataset.format){state.format=b.dataset.format;changed();return}if(b.dataset.jump!==undefined){const n=Number(b.dataset.jump);if(n<=state.maxStep){state.step=n;changed()}return}if(b.dataset.action==='remove'){focusSlotAfterRender=modalSlot;changedSlot=state.slot;modalSlot=null;delete state.placements[state.slot];delete state.links[state.slot];syncPorts();changed();return}
+      if(b.dataset.family){if(state.family!==b.dataset.family){if(!await confirmReset())return;state.family=b.dataset.family;state.model=null;state.placements={};state.portAssignments={};state.links={};state.maxStep=0;state.slot='in-a'}previewSide='front';linkPreviewSlot=null;changed();return}if(b.dataset.model){if(state.model!==b.dataset.model){if(!confirmReset())return;state.model=b.dataset.model;state.placements={};state.portAssignments={};state.links={};state.maxStep=1;state.slot=currentSlots()[0].id}previewSide='front';linkPreviewSlot=null;changed();return}if(b.dataset.slot){state.slot=b.dataset.slot;modalSlot=b.dataset.slot;modalQty=1;changed();return}if(b.dataset.modalClose!==undefined){closeCardModal();return}if(b.dataset.linkDevice!==undefined){const id=b.dataset.owner,old=state.links[id]||{device:'',count:0,distance:'30'},slot=currentSlots().find(item=>item.id===id),c=slot&&slotCard(slot.id);if(!c||(b.dataset.linkDevice&&!choices(slot,c).includes(b.dataset.linkDevice)))return;linkPreviewSlot=id;if(old.device===b.dataset.linkDevice){render();return}old.device=b.dataset.linkDevice;old.count=old.device?(old.count||c[2]):0;state.links[id]=old;syncPorts();changed();return}if(b.dataset.card){const reopen=modalSlot;modalSlot=null;if(state.placements[state.slot]===b.dataset.card){closeCardModal(reopen);return}focusSlotAfterRender=reopen;changedSlot=state.slot;const targets=RtCore.fillTargets(state,state.slot,modalQty);modalQty=1;const selectedCard=b.dataset.card==='BLANK'?null:card(b.dataset.card);for(const id of targets){state.placements[id]=b.dataset.card;const autoLink=selectedCard?RtCore.defaultLink(b.dataset.card,selectedCard[2]):null;if(autoLink)state.links[id]=autoLink;else delete state.links[id]}syncPorts();changed();if(targets.length>1)announce(`${b.dataset.card==='BLANK'?'블랭크 커버':b.dataset.card} ${targets.length}개를 채웠습니다.`);return}if(b.dataset.format){state.format=b.dataset.format;changed();return}if(b.dataset.jump!==undefined){const n=Number(b.dataset.jump);if(n<=state.maxStep){state.step=n;changed()}return}if(b.dataset.action==='remove'){focusSlotAfterRender=modalSlot;changedSlot=state.slot;modalSlot=null;delete state.placements[state.slot];delete state.links[state.slot];syncPorts();changed();return}
       // "남은 N칸 블랭크로 채우기"(2-3): 빈 슬롯만 BLANK로 바꾸고, 이미 넣은 카드는 그대로 둔다. 실행 취소 1단계.
       if(b.dataset.action==='fill-blanks'){const filled=RtCore.fillBlanks(state);state.placements=filled.placements;syncPorts();changed();return}
       if(b.dataset.action==='back'){state.step=Math.max(0,state.step-1);changed();return}if(b.dataset.action==='next'){state.step=state.step===5?0:state.step+1;state.maxStep=Math.max(state.maxStep,state.step);changed()}});
@@ -373,7 +395,25 @@
     let history=[],historyIndex=-1;
     const status=root.querySelector('#save-status');
     function announce(message){status.textContent=message}
-    function confirmReset(){return !Object.keys(state.placements).length || window.confirm('제품군 또는 섀시를 변경하면 카드와 전송기 선택이 초기화됩니다. 변경할까요? 실행 취소로 복원할 수 있습니다.')}
+    // 0.55: 브라우저 기본 confirm 창(주소가 제목으로 나오고 모양을 바꿀 수 없음) 대신 사이트 글래스 스타일 확인 창을 쓴다(사용자 요청 "팝업이 이쁘게 나오게해줘").
+    // Promise<boolean>을 돌려준다. Esc·바깥 누르기·취소는 false, 확인은 true.
+    function rtConfirm({title,message,ok='확인',cancel='취소',tone='info'}){
+      return new Promise(resolve=>{
+        const dialog=document.createElement('dialog');
+        dialog.className=`rt-confirm rt-confirm-${tone}`;
+        dialog.setAttribute('aria-labelledby','rt-confirm-title');
+        const icon=tone==='warn'?'<path d="M12 8v5M12 16.5v.5" stroke-linecap="round"/><path d="M10.3 3.9 2.6 17.2A2 2 0 0 0 4.3 20h15.4a2 2 0 0 0 1.7-2.8L13.7 3.9a2 2 0 0 0-3.4 0Z"/>':'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.5" stroke-linecap="round"/>';
+        dialog.innerHTML=`<div class="rt-confirm-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${icon}</svg></div><h3 id="rt-confirm-title">${esc(title)}</h3>${String(message||'').split('\n').map(line=>`<p>${esc(line)}</p>`).join('')}<div class="rt-confirm-actions"><button type="button" class="rt-confirm-cancel" value="cancel">${esc(cancel)}</button><button type="button" class="rt-confirm-ok" value="ok">${esc(ok)}</button></div>`;
+        let done=false;
+        const finish=result=>{if(done)return;done=true;if(dialog.open)dialog.close();dialog.remove();resolve(result)};
+        dialog.addEventListener('click',event=>{const b=event.target.closest('button');if(b)finish(b.value==='ok');else if(event.target===dialog)finish(false)});
+        dialog.addEventListener('cancel',event=>{event.preventDefault();finish(false)});
+        root.appendChild(dialog);
+        if(typeof dialog.showModal==='function'){dialog.showModal();dialog.querySelector('.rt-confirm-ok').focus()}
+        else{dialog.remove();resolve(window.confirm([title,message].filter(Boolean).join('\n')))}
+      });
+    }
+    function confirmReset(){return Object.keys(state.placements).length?rtConfirm({title:'구성을 바꿀까요?',message:'제품군이나 섀시를 바꾸면 고른 카드와 전송기가 초기화됩니다.\n실행 취소로 되돌릴 수 있습니다.',ok:'변경',tone:'warn'}):Promise.resolve(true)}
     function snapshot(){return JSON.stringify(state)}
     function recordHistory(){
       const value=snapshot();
@@ -414,7 +454,7 @@
       document.getElementById('print-report').innerHTML=`<h1>RTCOM Matrix Configuration</h1><p><strong>미검증 검토용 초안 · 설치 및 구매 승인 자료가 아닙니다.</strong></p><p>${esc(state.family)} / ${esc(state.model||'섀시 미선택')} · ${new Date().toLocaleString('ko-KR')}</p><h2>장비 목록</h2>${table()}<h2>카드 슬롯 구성</h2><table><thead><tr><th>슬롯</th><th>카드</th><th>채널</th><th>전송 장비</th><th>연결 채널</th></tr></thead><tbody>${rows||'<tr><td colspan="5">장착한 카드가 없습니다.</td></tr>'}</tbody></table>${validationView()}<p>카탈로그 버전: ${RtCore.catalogVersion} · 케이블·전원·기본 포함품은 별도 확인이 필요합니다.</p>`;
     }
     window.addEventListener('beforeprint',report);
-    root.addEventListener('click',event=>{
+    root.addEventListener('click',async event=>{
       const button=event.target.closest('[data-tool]');
       if(!button||button.disabled)return;
       const action=button.dataset.tool;
@@ -424,7 +464,7 @@
         historyIndex=next;state=JSON.parse(history[next]);render();saveLocal();return;
       }
       if(action==='reset'){
-        if(!window.confirm('새 구성을 시작할까요? 현재 구성은 실행 취소로 복원할 수 있습니다.'))return;
+        if(!await rtConfirm({title:'새 구성을 시작할까요?',message:'현재 구성은 실행 취소로 되돌릴 수 있습니다.',ok:'새로 시작',tone:'warn'}))return;
         state=RtCore.initial();changed();return;
       }
       if(action==='backup'){download(JSON.stringify(RtCore.document(state),null,2),'application/json;charset=utf-8','json');return}
@@ -440,7 +480,7 @@
       try{
         if(file.size>1024*1024)throw new Error('JSON 파일은 1MB 이하여야 합니다.');
         const candidate=RtCore.parse(await file.text());
-        if(Object.keys(state.placements).length&&!window.confirm('파일의 구성으로 현재 작업을 바꿀까요? 실행 취소로 복원할 수 있습니다.'))return;
+        if(Object.keys(state.placements).length&&!await rtConfirm({title:'불러온 구성으로 바꿀까요?',message:'현재 작업이 파일의 구성으로 바뀝니다.\n실행 취소로 되돌릴 수 있습니다.',ok:'바꾸기',tone:'warn'}))return;
         state=candidate;changed();announce(candidate.notice||'JSON 구성을 불러왔습니다. 검토 결과를 현재 기준으로 다시 계산했습니다.');
       }catch(error){announce('불러오기 실패: '+error.message)}
     });

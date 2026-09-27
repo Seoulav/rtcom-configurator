@@ -120,6 +120,8 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-rack-slot-filled:hover{border-color:#76a2f6}
 #rtcom-design .rt-faceplate{position:absolute;inset:0;width:100%;height:100%;object-fit:fill}
 #rtcom-design .rt-rack-vs .rt-faceplate,#rtcom-design .rt-rack-vt .rt-faceplate{inset:auto;top:50%;left:50%;width:100cqh;height:100cqw;transform:translate(-50%,-50%) rotate(-90deg)}
+/* 0.55: XDM 세로 슬롯은 카드 글자(HI100 등)가 바로 읽히도록 180도 돌린다(-90도 → 90도, 사용자 요청 "xdm슬롯카드 글자가 제대로 보이게 180도 돌려줘"). 실제 XDM-72 후면 사진의 장착 카드와 같은 방향이다. */
+#rtcom-design .rt-rack-family-XDM.rt-rack-vs .rt-faceplate,#rtcom-design .rt-rack-family-XDM.rt-rack-vt .rt-faceplate{transform:translate(-50%,-50%) rotate(90deg)}
 #rtcom-design .rt-rack-slot-no{position:absolute;z-index:1;top:3px;left:3px;padding:1px 4px;border-radius:3px;background:#0d1117c4;color:#d6deea;font-size:9px;font-weight:800;line-height:1.3;white-space:nowrap}
 #rtcom-design .rt-rack-vs .rt-rack-slot-no,#rtcom-design .rt-rack-vt .rt-rack-slot-no{top:auto;bottom:3px;left:50%;padding:4px 1px;writing-mode:vertical-rl;transform:translateX(-50%) rotate(180deg)}
 #rtcom-design .rt-rack-slot-add{position:absolute;inset:0;display:grid;place-items:center;color:#7fa6f5;font-size:20px;font-weight:300}
@@ -171,6 +173,40 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 @media(max-width:720px){#rtcom-design .rt-rack-canvas{padding:12px;border-radius:18px}#rtcom-design .rt-rack-h .rt-rack-body{grid-template-columns:1fr}#rtcom-design .rt-card-modal-head,#rtcom-design .rt-card-choice-list,#rtcom-design .rt-card-modal-foot{padding-left:14px;padding-right:14px}}
 
 
+/* 0.55 카드 팝업 수량·이동, 슬롯 끌어 옮기기(사용자 요청) */
+#rtcom-design .rt-card-qty,#rtcom-design .rt-card-move{margin:14px 22px 0;padding:12px 14px;border-radius:16px;background:#f3f6fb;display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}
+#rtcom-design .rt-card-qty-label,#rtcom-design .rt-card-move label{font-size:13px;font-weight:750;color:var(--rt-ink)}
+#rtcom-design .rt-card-qty small{flex:1 1 220px;font-size:12px;color:var(--rt-muted);line-height:1.45}
+#rtcom-design .rt-card-qty-stepper{display:inline-flex;align-items:center;background:#fff;border:1px solid #dfe6f0;border-radius:999px;padding:3px}
+#rtcom-design .rt-card-qty-stepper button{width:34px;height:34px;border:0;border-radius:50%;background:#edf4ff;color:#3978ee;font-size:18px;font-weight:700;line-height:1;cursor:pointer}
+#rtcom-design .rt-card-qty-stepper button:disabled{opacity:.35;cursor:default}
+#rtcom-design .rt-card-qty-stepper output{min-width:38px;text-align:center;font-size:16px;font-weight:800;color:var(--rt-ink)}
+#rtcom-design .rt-card-move>div{display:flex;gap:8px;flex:1 1 260px}
+#rtcom-design .rt-card-move select{flex:1;min-width:0;height:40px;border:1px solid #dfe6f0;border-radius:12px;background:#fff;padding:0 10px;font:inherit;font-size:13px;color:var(--rt-ink)}
+#rtcom-design .rt-card-move .rt-button{flex:0 0 auto;min-height:40px}
+#rtcom-design .rt-rack-slot[draggable="true"]{cursor:grab}
+#rtcom-design .rt-rack-slot.rt-rack-slot-dragging{opacity:.45}
+#rtcom-design .rt-rack-slot.rt-rack-slot-drop{outline:2px dashed #3978ee;outline-offset:-2px;background:linear-gradient(rgba(57,120,238,.16),rgba(57,120,238,.16)),#fff}
+@media(max-width:720px){#rtcom-design .rt-card-qty,#rtcom-design .rt-card-move{margin:12px 14px 0}}
+/* 0.55 확인 창(브라우저 기본 confirm 대체, 사용자 요청 "팝업이 이쁘게 나오게해줘") */
+#rtcom-design .rt-confirm{width:min(420px,calc(100vw - 32px));padding:28px 24px 20px;border:1px solid #ffffffb3;border-radius:26px;background:#fffffff5;color:var(--rt-ink);box-shadow:0 30px 80px -12px #0f172a66,0 0 0 1px #0f172a0d;text-align:center;overflow:hidden}
+#rtcom-design .rt-confirm[open]{animation:rt-confirm-in .18s ease-out}
+#rtcom-design .rt-confirm::backdrop{background:#0f172a73;-webkit-backdrop-filter:saturate(140%) blur(6px);backdrop-filter:saturate(140%) blur(6px)}
+#rtcom-design .rt-confirm-icon{width:54px;height:54px;margin:0 auto 14px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;background:linear-gradient(155deg,#3978ee,#7767f4);box-shadow:0 10px 22px -10px #3978ee}
+#rtcom-design .rt-confirm-warn .rt-confirm-icon{background:linear-gradient(155deg,#ff9f0a,#ff6b3d);box-shadow:0 10px 22px -10px #ff8a1f}
+#rtcom-design .rt-confirm-icon svg{width:26px;height:26px}
+#rtcom-design .rt-confirm h3{margin:0 0 8px;font-size:19px;font-weight:760;letter-spacing:-.01em;color:var(--rt-ink)}
+#rtcom-design .rt-confirm p{margin:0;font-size:14px;line-height:1.6;color:var(--rt-muted);word-break:keep-all}
+#rtcom-design .rt-confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
+#rtcom-design .rt-confirm-actions button{font-family:inherit;font-size:15px;font-weight:700;line-height:1;height:48px;border-radius:999px;border:0;cursor:pointer;transition:transform .12s ease,filter .12s ease}
+#rtcom-design .rt-confirm-actions button:active{transform:scale(.97)}
+#rtcom-design .rt-confirm-cancel{background:#eef2f8;color:#415069}
+#rtcom-design .rt-confirm-cancel:hover{background:#e3e9f2}
+#rtcom-design .rt-confirm-ok{background:linear-gradient(135deg,#3978ee,#7767f4);color:#fff;box-shadow:0 8px 18px -8px #3978ee}
+#rtcom-design .rt-confirm-ok:hover{filter:brightness(1.06)}
+#rtcom-design .rt-confirm-actions button:focus-visible{outline:3px solid #3978ee66;outline-offset:2px}
+@keyframes rt-confirm-in{from{opacity:0;transform:translateY(8px) scale(.97)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){#rtcom-design .rt-confirm[open]{animation:none}}
 @media print{#rtcom-design .rt-card-modal{display:none}#rtcom-design .rt-rack{filter:none}}
 #rtcom-design .rt-rack-scroll-hint{display:none;margin:0;color:#56627a;font-size:11px;text-align:center}
 @media(max-width:720px){#rtcom-design .rt-rack-scroll-hint{display:block}}
@@ -450,6 +486,13 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-seg{display:inline-flex;gap:2px;padding:2px;background:var(--pg-seg-track);border-radius:11px}
 #rtcom-design .rt-pg-seg span{border-radius:9px;font-weight:600;font-size:13px;padding:7px 14px;color:var(--pg-ink)}
 #rtcom-design .rt-pg-seg span.rt-pg-on{background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.14),0 1px 2px rgba(0,0,0,.10)}
+/* 0.55 2U 이상 정면·후면 버튼, 그보다 작은 제품의 정면 사진 + 포트 연결면 함께 보기 */
+#rtcom-design .rt-pg-seg button{border:0;background:transparent;border-radius:9px;font:inherit;font-weight:600;font-size:13px;padding:7px 14px;color:var(--pg-ink);cursor:pointer}
+#rtcom-design .rt-pg-seg button.rt-pg-on{background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.14),0 1px 2px rgba(0,0,0,.10)}
+#rtcom-design .rt-pg-face{margin:0 0 14px;padding:14px;border-radius:16px;background:#fff;border:1px solid rgba(60,60,67,.10);text-align:center}
+#rtcom-design .rt-pg-face img{display:block;max-width:100%;max-height:220px;margin:0 auto;object-fit:contain}
+#rtcom-design .rt-pg-face-cap{margin:0 0 8px;font-size:12px;font-weight:700;color:var(--pg-muted);text-align:left}
+#rtcom-design .rt-pg-seg+.rt-pg-face{margin-top:12px}
 #rtcom-design .rt-pg-panel{background:#fff;border-radius:var(--pg-r-inner);border:1px solid var(--pg-line);padding:14px 10px 6px;margin-top:14px}
 #rtcom-design .rt-pg-ports{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
 #rtcom-design .rt-pg-port{background:var(--pg-field-fill);border-radius:13px;padding:10px 12px;font-size:12px;color:var(--pg-ink-2);line-height:1.45}

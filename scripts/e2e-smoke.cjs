@@ -48,6 +48,8 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     page.on('response',response=>{if(response.status()>=400&&!response.url().includes('/no-such-page/'))failed.push(`${response.status()} ${response.url().replace(origin,'')}`)});
     page.on('pageerror',error=>errors.push(error.message));
     page.on('dialog',dialog=>dialog.accept());
+    // 0.55: 사이트 확인 창(dialog.rt-confirm)이 떴으면 확인을 누른다(뜨지 않으면 아무것도 하지 않음).
+    const acceptConfirm=async()=>{if(await page.locator('dialog.rt-confirm[open]').count())await page.click('dialog.rt-confirm .rt-confirm-ok')};
     const brokenImages=()=>page.$$eval('img',images=>images.filter(image=>image.complete&&image.naturalWidth===0&&image.loading!=='lazy').map(image=>image.getAttribute('src')));
 
     await page.goto(home,{waitUntil:'networkidle'});
@@ -55,7 +57,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.click('button[data-family="XDM"]');
     await page.click('[data-action="next"]');
     check('섀시 선택 화면에 XDM 프레임 6종 표시(XDM-288 제외)',await page.locator('button[data-model]').count()===6);
-    await page.click('button[data-model="XDM-144"]');
+    await page.click('button[data-model="XDM-144"]');await acceptConfirm();
     await page.click('[data-action="next"]');
     await page.waitForLoadState('networkidle');
     // 사용자 결정 2026-09-27: 빈 슬롯은 흰 빈칸이다. 블랭크 커버 그림은 사용자가 팝업에서 고른 슬롯에만 붙는다(자동으로 씌우지 않는다).
@@ -124,7 +126,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.goto(home,{waitUntil:'networkidle'});
     await page.click('button[data-family="SPX"]');
     await page.click('[data-action="next"]');
-    await page.click('button[data-model="SPX-M3236"]');
+    await page.click('button[data-model="SPX-M3236"]');await acceptConfirm();
     await page.click('[data-action="next"]');
     await page.waitForLoadState('networkidle');
     check('SPX-M3236은 입력 4·출력 3 슬롯이 모두 흰 빈칸으로 표시됨(블랭크 자동 없음)',await page.locator('.rt-rack-hs .rt-rack-slot-empty').count()===7&&await page.locator('.rt-rack-hs .rt-rack-slot-blank').count()===0);
@@ -148,23 +150,63 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     // 제품군을 바꾸면(확인 창 수락) 카드·전송기 선택이 초기화된다.
     await page.click('.rt-step[data-jump="0"]');
     await page.click('button[data-family="XDM"]');
+    // 0.55: 브라우저 기본 confirm 대신 사이트 확인 창(dialog.rt-confirm)이 뜬다. 제목·버튼을 확인하고 "변경"을 누른다.
+    await page.waitForSelector('dialog.rt-confirm[open]');
+    const resetAsk=await page.evaluate(()=>{const d=document.querySelector('dialog.rt-confirm[open]');return {title:d.querySelector('h3').textContent,ok:d.querySelector('.rt-confirm-ok').textContent,cancel:d.querySelector('.rt-confirm-cancel').textContent,modal:d.matches(':modal')}});
+    check('제품군을 바꾸면 사이트 확인 창(제목·취소·변경 버튼, 모달)이 뜸',resetAsk.title==='구성을 바꿀까요?'&&resetAsk.ok==='변경'&&resetAsk.cancel==='취소'&&resetAsk.modal,JSON.stringify(resetAsk));
+    await page.click('dialog.rt-confirm .rt-confirm-ok');
     await page.waitForLoadState('networkidle');
     check('제품군을 바꾸면 카드·전송기 선택이 초기화됨',await page.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.placements)&&Object.keys(await page.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.placements)).length===0&&await page.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.family)==='XDM'&&await page.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.model)===null);
     await page.evaluate(()=>localStorage.clear());
     await page.goto(home,{waitUntil:'networkidle'});
     await page.click('button[data-family="XDM"]');
     await page.click('[data-action="next"]');
-    await page.click('button[data-model="XDM-12"]');
+    await page.click('button[data-model="XDM-12"]');await acceptConfirm();
     await page.click('[data-action="next"]');
     const cardsUrl=page.url();
     await page.goBack();
     const onChassis=await page.locator('.rt-step[aria-current="step"]').getAttribute('data-jump')==='1';
     await page.goForward();
     check('뒤로가기·앞으로가기로 이전·다음 단계를 오가며 주소는 바뀌지 않음',onChassis&&await page.locator('.rt-step[aria-current="step"]').getAttribute('data-jump')==='2'&&page.url()===cardsUrl);
-    let asked='';
-    page.once('dialog',dialog=>{asked=dialog.message()});
     await page.click('.rt-brand-lockup');
+    await page.waitForSelector('dialog.rt-confirm[open]');
+    const asked=await page.locator('dialog.rt-confirm h3').textContent();
+    // 취소를 누르면 창이 닫히고 그대로 남는다(Esc도 같음).
+    await page.keyboard.press('Escape');
+    const stayed=await page.locator('dialog.rt-confirm').count()===0&&await page.locator('.rt-step[aria-current="step"]').getAttribute('data-jump')!=='0';
+    check('확인 창에서 Esc를 누르면 창이 닫히고 현재 단계에 머묾',stayed);
+    await page.click('.rt-brand-lockup');
+    await page.click('dialog.rt-confirm .rt-confirm-ok');
     check('로고를 누르면 확인 창 뒤 첫 화면(제품군)으로 이동하고 구성은 유지됨',/처음 화면/.test(asked)&&await page.locator('.rt-step[aria-current="step"]').getAttribute('data-jump')==='0'&&await page.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.model)==='XDM-12'&&page.url()===cardsUrl);
+    // 0.55 수량 채우기·슬롯 이동(사용자 요청): XDM-36 입력 슬롯 1에서 수량 3으로 HI100을 고르면 1·2·3이 채워지고,
+    // 팝업 "다른 슬롯으로 이동"과 끌어 옮기기로 같은 방향 슬롯끼리 옮길 수 있다.
+    await page.evaluate(()=>localStorage.clear());
+    await page.goto(home,{waitUntil:'networkidle'});
+    await page.click('button[data-family="XDM"]');await acceptConfirm();
+    await page.click('[data-action="next"]');
+    await page.click('button[data-model="XDM-36"]');await acceptConfirm();
+    await page.click('[data-action="next"]');
+    await page.locator('button[data-slot="in-1"]').click();
+    await page.locator('.rt-card-qty [data-qty-step="1"]').click();
+    await page.locator('.rt-card-qty [data-qty-step="1"]').click();
+    const qtyShown=await page.locator('.rt-card-qty output').textContent();
+    await page.locator('.rt-card-modal .rt-card-choice[data-card="XDM-HI100"]').click();
+    const saved=()=>page.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.placements);
+    let moveState=await saved();
+    check('카드 팝업에서 수량 3을 고르면 선택한 슬롯부터 입력 슬롯 3칸이 채워짐',qtyShown==='3'&&moveState['in-1']==='XDM-HI100'&&moveState['in-2']==='XDM-HI100'&&moveState['in-3']==='XDM-HI100'&&!moveState['in-4'],JSON.stringify(moveState));
+    // 0.55: XDM 세로 슬롯 카드 글자가 바로 읽히도록 90도(기존 -90도에서 180도) 회전, 작업 단계 표기는 한글.
+    const xdmFace=await page.evaluate(()=>{const img=document.querySelector('button[data-slot="in-1"] img.rt-faceplate');const m=new DOMMatrix(getComputedStyle(img).transform);return {b:Math.round(m.b),eyebrow:document.querySelector('.rt-main .rt-eyebrow')?.textContent||'',bank:document.querySelector('.rt-rack-bank-title strong, .rt-frame-count')?.textContent||''}});
+    check('XDM 세로 슬롯 카드는 90도로 돌아가 글자가 바로 보이고, 단계 제목·입출력 표기가 한글',xdmFace.b===1&&xdmFace.eyebrow.includes('03 / 카드 슬롯')&&!/INPUT|OUTPUT/.test(xdmFace.bank),JSON.stringify(xdmFace));
+    await page.locator('button[data-slot="in-1"]').click();
+    const moveOptions=await page.$$eval('.rt-card-move option',options=>options.map(option=>option.value));
+    await page.selectOption('.rt-card-move select','in-5');
+    await page.click('.rt-card-move [data-action="move-card"]');
+    moveState=await saved();
+    check('팝업의 "다른 슬롯으로 이동"은 같은 방향 슬롯만 보여 주고 카드를 옮김',moveOptions.length&&moveOptions.every(id=>id.startsWith('in-'))&&!moveState['in-1']&&moveState['in-5']==='XDM-HI100',JSON.stringify({moveOptions:moveOptions.length,moveState}));
+    await page.dragAndDrop('button[data-slot="in-2"]','button[data-slot="in-7"]');
+    await page.dragAndDrop('button[data-slot="in-3"]','button[data-slot="out-1"]');
+    moveState=await saved();
+    check('장착한 슬롯을 끌어 같은 방향 슬롯에 놓으면 옮겨지고, 반대 방향(출력)에는 놓이지 않음',!moveState['in-2']&&moveState['in-7']==='XDM-HI100'&&moveState['in-3']==='XDM-HI100'&&!moveState['out-1'],JSON.stringify(moveState));
     const missing=await page.goto(home+'no-such-page/deep',{waitUntil:'networkidle'});
     check('사이트 안의 없는 주소는 404.html이 구성기 첫 화면으로 보냄',missing&&page.url()===home&&await page.locator('#matrix-configurator').count()===1);
     await page.evaluate(()=>localStorage.clear());
@@ -181,7 +223,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       if(!src||!src.includes(`/frames/spx-${model.slice(4).toLowerCase()}-front.webp`))spxPreviewOk=false;
     }
     check('섀시 목록에서 모델을 고를 때마다 오른쪽 미리보기가 그 모델의 전면 사진으로 바뀜(SPX 5종)',spxPreviewOk);
-    await page.click('button[data-model="SPX-M2472"]');
+    await page.click('button[data-model="SPX-M2472"]');await acceptConfirm();
     await page.click('[data-action="next"]');
     await page.waitForLoadState('networkidle');
     check('SPX-M2472는 매뉴얼 후면 사진 위 세로 슬롯(입력 3·출력 6)으로 표시됨',await page.locator('.rt-rack-photo.rt-rack-vs .rt-rack-zone-input .rt-rack-slot').count()===3&&await page.locator('.rt-rack-photo.rt-rack-vs .rt-rack-zone-output .rt-rack-slot').count()===6&&await page.$eval('.rt-rack-photo-image',image=>image.naturalWidth>0));
@@ -199,7 +241,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     }
     check('VDM 섀시 10종 중 9종(288X 제외)은 매뉴얼 전면 사진 또는 전면 도면을 미리보기에 표시함',vdmFrontCount===9);
     check('VDM-288X는 전면 사진이 없어 미리보기에 "사진 준비 중"이 표시됨',vdm288Placeholder);
-    await page.click('button[data-model="VDM-16X"]');
+    await page.click('button[data-model="VDM-16X"]');await acceptConfirm();
     await page.click('[data-action="next"]');
     await page.waitForLoadState('networkidle');
     // 슬롯 판과 후면 사진이 다 그려지기 전에 세면 가끔 실패했다(2026-09-27 한 번 재현). 슬롯 8칸과 사진 로딩을 기다린 뒤 검사한다.
@@ -218,7 +260,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('VDM CIS4-U·FOS4-U 장착 시 CT104-U·FR101-U가 4채널로 자동 연결되고 VDM 전송기 라인업 4종이 표시됨',await page.locator('button[data-owner="in-2"][data-link-device="CT104-U"][aria-pressed="true"]').count()===1&&await page.locator('button[data-owner="out-1"][data-link-device="FR101-U"][aria-pressed="true"]').count()===1&&await page.locator('select[data-owner="in-2"][data-link="count"]').inputValue()==='4'&&await page.$$eval('.rt-ext-lineup-card img',images=>images.length===4&&images.every(image=>image.naturalWidth>0)));
     await page.click('[data-action="back"]');
     await page.click('[data-action="back"]');
-    await page.click('button[data-model="VDM-256X"]');
+    await page.click('button[data-model="VDM-256X"]');await acceptConfirm();
     await page.click('[data-action="next"]');
     await page.locator('button[data-slot="out-64"]').click();
     await page.locator('.rt-card-modal .rt-card-choice[data-card="COS4-U"]').click();
@@ -263,6 +305,17 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     // 0.47 오디오 설정: 병합(MUX)·추출(DEMUX)은 하나를 골라 쓴다(사용자 확인). 신호 흐름 문구와 07 카드 두 칸, 단자 지도 번호 순서(HDMI 입력 → 출력 → 오디오 → 전원)를 본다.
     const audioCard=await page.evaluate(()=>({modes:document.querySelectorAll('.rt-pg-audio .rt-pg-audio-mode').length,flow:[...document.querySelectorAll('.rt-pg-svg-wrap svg')].some(svg=>svg.textContent.includes('또는 추출 중 선택')),order:[...document.querySelectorAll('.rt-pg-port b')].map(b=>b.textContent.trim()).slice(0,5).join('|')}));
     check('HD-13U 오디오 설정 카드가 병합·추출 두 칸으로 나오고 신호 흐름에 "선택"이 표시되며 단자 번호가 HDMI 입력·출력·오디오·전원 순',audioCard.modes===2&&audioCard.flow&&audioCard.order==='1HDMI IN|2HDMI OUT 1–3|3AUDIO IN|4AUDIO OUT|5DC 5V',JSON.stringify(audioCard));
+    // 0.55: 2U 미만(HD-13U)은 정면·후면 버튼 없이 정면 사진과 포트 연결면을 함께 보여준다.
+    const hdFaces=await page.evaluate(()=>({face:!!document.querySelector('.rt-pg-face:not([hidden]) img'),toggle:document.querySelectorAll('[data-pm-side]').length}));
+    check('2U 미만 제품(HD-13U)은 정면 사진과 후면 단자 지도를 함께 보여주고 정면·후면 버튼이 없음',hdFaces.face&&hdFaces.toggle===0,JSON.stringify(hdFaces));
+    await page.goto(`${home}#products/qms-88ux`,{waitUntil:'networkidle'});
+    await page.waitForSelector('[data-pm-side="front"]');
+    const beforeToggle=await page.evaluate(()=>({front:document.querySelector('[data-pm-face="front"]').hidden,rear:document.querySelector('[data-pm-face="rear"]').hidden}));
+    await page.click('[data-pm-side="front"]');
+    const afterToggle=await page.evaluate(()=>({front:document.querySelector('[data-pm-face="front"]').hidden,rear:document.querySelector('[data-pm-face="rear"]').hidden}));
+    check('2U 이상 제품(QMS-88UX)은 정면·후면 버튼으로 후면 단자 지도와 정면 사진을 바꿔 봄',beforeToggle.front&&!beforeToggle.rear&&!afterToggle.front&&afterToggle.rear,JSON.stringify({beforeToggle,afterToggle}));
+    await page.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
+    await page.waitForSelector('#rt-pg-title');
     // 0.49 HDS-21U·HDS-42MU도 같은 방식(딥 스위치 1번 선택, 사용자 확인·매뉴얼 Ver.1.0). 신호 흐름 문구에는 HD-13U 전용 "(OUT 1)"이 붙지 않는다.
     for(const id of ['hds-21u','hds-42mu']){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
