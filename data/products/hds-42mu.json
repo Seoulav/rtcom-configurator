@@ -124,7 +124,7 @@
       "source": "C"
     },
     {
-      "text": "Audio Extraction 기능: RS232로 Audio Volume Up/Down 제어",
+      "text": "오디오 추출 기능: RS-232로 음량 조절 지원",
       "source": "C"
     },
     {
