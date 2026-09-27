@@ -117,3 +117,39 @@
 - `git diff --check`: 통과(공백 오류 없음)
 - 기존 04 검사(HDBaseT·광 카드 자동 연결, CTR100 PSE 쌍, 전송기 라인업 사진, 전원 경고)는 선택자(`button[data-owner][data-link-device]`, `select[data-owner][data-link="count"]`, `.rt-ext-lineup`, `.rt-ext-lineup-card img`, `.rt-power-notice strong`)를 그대로 써서 모두 회귀 없이 통과했습니다.
 - 01·02·03·05·06 단계와 제품정보(`#products`) 화면은 이번 세션에서 `src/app.js`·`src/styles.css`의 04 관련 부분과 문서/버전 표기만 바꿨고, `git status`로 그 외 파일이 바뀌지 않았음을 확인했습니다.
+
+## Opus 검수 (2026-09-27, 0.38.0 반영 직후)
+
+### 기능 확인(직접 조작)
+
+| 제품군 | 구성 | 결과 |
+|---|---|---|
+| XDM-36 | HDMI 카드 CTR100 PSE 연장 + CIS100·COS100 | CTR100 TX/RX 자동 연결, 전원 경고 "8대", BOM에 CTR100 8대와 전원 장비 1개가 나옵니다. 0.37과 같습니다. |
+| SPX-M3236 | OUT1 COS12 | SPX-RX 12대가 자동으로 연결됩니다. |
+| VDM-16X | IN2 CIS4-U + OUT1 FOS4-U | CT104-U 4대와 FR101-U 4대가 자동으로 연결됩니다. |
+
+전송기 연동, 채널 수 선택, 전원 안내, BOM 수량은 0.38 재구축 뒤에도 바뀌지 않았습니다.
+
+### 찾은 문제와 수정(`src/styles.css` 끝, "0.38 검수(Opus)" 주석 블록)
+
+| 문제 | 원인 | 수정 |
+|---|---|---|
+| PC(1280px)에서 04 연결 흐름(소스 → 전송기 → 케이블 → 카드)이 두 줄로 꺾여, 카드 사진이 둘째 줄 왼쪽으로 떨어집니다. | 흐름 노드와 케이블 칸의 폭이 고정값이고 `flex-wrap:wrap`이라, 오른쪽 미리보기 폭이 좁으면 줄이 바뀝니다. | 821px 이상에서 `flex-wrap:nowrap`으로 두고, 노드(최대 132px)와 케이블 칸(64~96px)이 줄어들 수 있게 했습니다. |
+| 왼쪽 목록이 길면 오른쪽 미리보기가 세로 가운데에 떠서, 화면 위쪽에서는 흐름이 보이지 않습니다. | 미리보기가 `justify-content:center`이고 목록 높이만큼 늘어납니다. | 821px 이상에서 미리보기를 위쪽 정렬하고 `position:sticky; top:12px`로 두었습니다. 부모의 `overflow:hidden`은 sticky를 막기 때문에, 04 판에서만 `overflow:clip`으로 바꿨습니다(모서리 잘림은 그대로 유지됩니다). |
+| 390px에서 흐름 4칸이 가로로 눌려 글자가 겹칩니다. | 좁은 화면용 흐름 규칙이 없습니다. | 560px 이하에서 흐름을 세로로 쌓고, 화살표를 90도 돌리고, 케이블 칸을 세로 점선으로 바꿨습니다. |
+
+캡처로 확인한 내용:
+
+- 1280px에서 흐름이 한 줄로 나옵니다. 스크롤하면 미리보기 top이 12px에 고정됩니다.
+- 세그먼트를 OUT 2로 바꾸면 흐름이 COS100 카드로 바뀝니다.
+- 390px에서는 세로 배치로 나오고 가로 스크롤이 생기지 않습니다.
+
+### 검증
+
+- `node --test tests/*.test.cjs`: 37/37
+- `node scripts/build-product-index.cjs --check`: 27개 통과
+- `node scripts/package-site.cjs`: 통과
+- `node scripts/e2e-smoke.cjs`(전역 playwright): 76/76
+- `git diff --check`: 통과
+
+되돌리는 방법: `src/styles.css` 끝의 "0.38 검수(Opus)" 블록을 지우면 0.38.0 화면으로 돌아갑니다. 데이터와 저장 형식은 바뀌지 않았습니다.
