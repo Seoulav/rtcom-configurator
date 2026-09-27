@@ -101,7 +101,10 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     const linkPreviewCard=await page.locator('.rt-link-flow-card strong').innerText(),linkPreviewImg=await page.locator('.rt-link-flow-card img').getAttribute('src');
     check('04에서 오른쪽 세그먼트를 바꾸면 흐름이 해당 카드로 바뀐다',linkPreviewCard==='XDM-HI100'&&linkPreviewImg.includes('XDM-HI100'));
     const linksOverflow=await page.evaluate(()=>[...document.querySelectorAll('#matrix-configurator *')].map(el=>el.getBoundingClientRect().right-document.documentElement.clientWidth).filter(value=>value>1));
-    check('390px에서 04 카드 폭이 화면 안에 들어간다',linksOverflow.length===0,JSON.stringify(linksOverflow.slice(0,5).map(value=>value.toFixed(1))));
+    check('390px에서 04 카드 폭이 화면 안에 들어간다',linksOverflow.length===0,`뷰포트 ${page.viewportSize().width}px, ${JSON.stringify(linksOverflow.slice(0,5).map(value=>value.toFixed(1)))}`);
+    // 0.38 검수(Opus) 회귀: 560px 이하에서 흐름이 세로로 쌓이는지 확인한다(이 page는 390px 컨텍스트라 그대로 검사할 수 있다).
+    const linkFlowDirection=await page.$eval('.rt-link-flow',el=>getComputedStyle(el).flexDirection);
+    check('휴대폰(390px) 04에서 연결 흐름이 세로로 쌓임(flex-direction:column)',linkFlowDirection==='column',`flex-direction:${linkFlowDirection}`);
     await page.click('[data-action="back"]');
     await page.waitForLoadState('networkidle');
     const broken=await brokenImages();
@@ -267,6 +270,47 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('404 요청 없음',failed.length===0,failed.join(', '));
     check('자바스크립트 오류 없음',errors.length===0,errors.join(' | '));
     await context.close();
+    // 0.38 검수(Opus)가 고친 두 가지(04 연결 흐름 한 줄, 미리보기 sticky)는 PC 폭(1280px)에서만 나타나는 문제였다.
+    // 위 main 컨텍스트는 390px 고정이라 여기서 별도로 1280px 컨텍스트를 열어 확인한다.
+    const pcContext=await browser.newContext({viewport:{width:1280,height:900}});
+    const pc=await pcContext.newPage();
+    await pc.goto(home,{waitUntil:'networkidle'});
+    await pc.click('button[data-family="XDM"]');
+    await pc.click('[data-action="next"]');
+    await pc.click('button[data-model="XDM-36"]');
+    await pc.click('[data-action="next"]');
+    await pc.waitForLoadState('networkidle');
+    // 왼쪽 목록이 오른쪽 미리보기보다 확실히 길어지도록 XDM-36의 입력 9칸 모두 CIS100, 출력 9칸 모두 COS100을 장착한다(sticky 검사용).
+    for(let index=1;index<=9;index++){
+      await pc.click(`button[data-slot="in-${index}"]`);
+      await pc.click('.rt-card-modal .rt-card-choice[data-card="XDM-CIS100"]');
+    }
+    for(let index=1;index<=9;index++){
+      await pc.click(`button[data-slot="out-${index}"]`);
+      await pc.click('.rt-card-modal .rt-card-choice[data-card="XDM-COS100"]');
+    }
+    await pc.click('[data-action="next"]');
+    await pc.waitForLoadState('networkidle');
+    // .rt-link-flow는 align-items:center라 노드마다 높이가 달라도(엔드포인트·전송기·카드 사진 높이가 제각각) 한 줄이면 top은 다르고
+    // "세로 중심"(top+height/2)은 같다. top 자체를 비교하면 정상 상태에서도 오탐 FAIL이 나서(직접 확인함), 세로 중심으로 비교한다.
+    const flowNodes=await pc.$$eval('.rt-link-flow .rt-link-flow-node',nodes=>nodes.map(node=>{const r=node.getBoundingClientRect();return {top:r.top,center:r.top+r.height/2}}));
+    const centers=flowNodes.map(node=>node.center);
+    const flowSpread=centers.length?Math.max(...centers)-Math.min(...centers):Infinity;
+    check('PC(1280px) 04 연결 흐름 노드가 한 줄로 나옴(세로 중심 차이 2px 이하)',flowSpread<=2,`노드 ${flowNodes.length}개, 세로 중심 차이 ${flowSpread.toFixed(1)}px, top 목록 ${JSON.stringify(flowNodes.map(node=>Math.round(node.top)))}`);
+    const [listHeight,previewHeight]=await pc.evaluate(()=>[document.querySelector('.rt-cg-list').getBoundingClientRect().height,document.querySelector('.rt-cg-preview.rt-link-preview').getBoundingClientRect().height]);
+    if(listHeight>previewHeight){
+      // sticky는 부모 컨테이너(.rt-cg-split, 높이 = 목록 높이)를 벗어나는 순간 풀린다. 문서 맨 아래(document.body.scrollHeight)까지
+      // 스크롤하면 그 경계를 넘어가 버려(직접 확인함) 정상 상태에서도 오탐 FAIL이 난다. 목록 높이의 절반만큼만 스크롤해 안전하게 확인한다.
+      const scrollTarget=Math.round(listHeight/2);
+      await pc.evaluate((y)=>window.scrollTo(0,y),scrollTarget);
+      await pc.waitForTimeout(150);
+      const previewTop=await pc.$eval('.rt-cg-preview.rt-link-preview',el=>el.getBoundingClientRect().top);
+      check('PC(1280px) 04 왼쪽 목록이 미리보기보다 길면 스크롤해도 미리보기가 8~16px에 붙어있음(sticky)',previewTop>=8&&previewTop<=16,`목록 ${listHeight.toFixed(0)}px > 미리보기 ${previewHeight.toFixed(0)}px, ${scrollTarget}px 스크롤 후 top ${previewTop.toFixed(1)}px`);
+    }else{
+      // 조건(목록 > 미리보기)이 안 맞으면 저절로 통과하는 일을 막기 위해 FAIL로 처리한다(사용자 지시).
+      check('PC(1280px) 04 왼쪽 목록이 미리보기보다 길면 스크롤해도 미리보기가 8~16px에 붙어있음(sticky)',false,`조건 안 맞음 — 목록 ${listHeight.toFixed(0)}px <= 미리보기 ${previewHeight.toFixed(0)}px`);
+    }
+    await pcContext.close();
     // 터치 휴대폰(pointer:coarse)에서는 버튼 최소 높이 44px 규칙이 있다. 사진 슬롯이 겹치지 않고 판넬이 잘리지 않아야 한다.
     const phone=await browser.newContext({viewport:{width:416,height:900},deviceScaleFactor:3,isMobile:true,hasTouch:true});
     const mobile=await phone.newPage();
