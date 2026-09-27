@@ -433,6 +433,10 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.locator('[data-layout-chip]',{hasText:'3-SIDE RIGHT'}).click();
     const afterLayout=await page.evaluate(()=>({name:document.querySelector('[data-layout-name]').textContent,on:document.querySelector('.rt-pg-layout-chip.on')?.textContent,rects:document.querySelectorAll('[data-layout-preview] svg rect').length}));
     check('QMS-88UX 06 화면 구성 모드에서 레이아웃 버튼을 누르면 미리보기 도해가 바뀜',beforeLayout==='QUAD'&&afterLayout.name==='3-SIDE RIGHT'&&afterLayout.on==='3-SIDE RIGHT'&&afterLayout.rects===4,JSON.stringify({beforeLayout,afterLayout}));
+    // 0.66 — QMS-88UX 출력 9번에 매뉴얼 22~23쪽 Output Option 2·3(비율 유지 없이 그대로 8분할)을 레이아웃 목록 13번째로 추가(사용자 요청 2026-09-27 "출력9에 비율무시8분할도 추가해줘").
+    await page.locator('[data-layout-chip]',{hasText:'8분할(비율무시)'}).click();
+    const split8=await page.evaluate(()=>({name:document.querySelector('[data-layout-name]').textContent,rects:document.querySelectorAll('[data-layout-preview] svg rect').length}));
+    check('QMS-88UX 06 화면 구성 모드에 "8분할(비율무시)" 레이아웃이 있고 8칸 도해로 미리보기됨',split8.name==='8분할(비율무시)'&&split8.rects===8,JSON.stringify(split8));
     // 0.62 — videoModes(QMS) 카드 4개+레이아웃 칩 12개까지 있어 05 옆 좁은 칸에 넣으면 글자가 카드 밖으로 넘쳤다(사용자 확인 2026-09-27 "06화면모드 짤린다"). 전체 폭 아래로 되돌려 카드 안에서 텍스트가 넘치지 않는지 확인.
     for(const id of ['qms-88ux','qms-44ux']){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
