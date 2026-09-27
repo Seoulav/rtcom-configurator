@@ -306,10 +306,10 @@
       navStep=state.step;
     }
     // 로고(RTCOM Matrix Configurator)를 누르면 확인 후 첫 화면(제품군 선택)으로 간다. 구성은 지우지 않는다.
-    document.querySelector('.rt-brand-lockup')?.addEventListener('click',event=>{
+    document.querySelector('.rt-brand-lockup')?.addEventListener('click',async event=>{
       event.preventDefault();
       if(state.step===0){window.scrollTo({top:0,behavior:'smooth'});return}
-      if(!window.confirm('처음 화면(제품군 선택)으로 이동할까요?\n지금까지 구성한 내용은 그대로 저장되어 있어 다시 이어서 할 수 있습니다.'))return;
+      if(!await rtConfirm({title:'처음 화면으로 갈까요?',message:'지금까지 구성한 내용은 그대로 저장되어 있어 다시 이어서 할 수 있습니다.',ok:'이동'}))return;
       modalSlot=null;state.step=0;changed();window.scrollTo({top:0,behavior:'smooth'});
     });
     window.addEventListener('popstate',event=>{
@@ -319,10 +319,10 @@
       restoringNav=true;state.step=step;changed();restoringNav=false;
     });
     // 제품정보(0.19) 시리즈 상세의 "구성기에서 구성하기": 해당 제품군을 고르고 섀시 선택 단계로 간다.
-    root.addEventListener('rt-configure-family',event=>{
+    root.addEventListener('rt-configure-family',async event=>{
       const family=event.detail;
       if(!families[family])return;
-      if(state.family!==family){if(!confirmReset())return;state.family=family;state.model=null;state.placements={};state.portAssignments={};state.links={};state.slot='in-a'}
+      if(state.family!==family){if(!await confirmReset())return;state.family=family;state.model=null;state.placements={};state.portAssignments={};state.links={};state.slot='in-a'}
       modalSlot=null;state.maxStep=Math.max(state.maxStep,1);state.step=1;changed();window.scrollTo({top:0});
     });
     root.addEventListener('click',event=>{
@@ -338,12 +338,12 @@
         changed();
       }
     });
-    root.addEventListener('click',event=>{const b=event.target.closest('button');if(!b||!root.contains(b)||b.disabled)return;
+    root.addEventListener('click',async event=>{const b=event.target.closest('button');if(!b||!root.contains(b)||b.disabled)return;
       // 02 섀시 미리보기 정면/후면 토글: 화면 상태만 바꾸는 순수 토글이라 실행 취소·자동 저장 대상이 아니다.
       if(b.dataset.cgSide){previewSide=b.dataset.cgSide;render();return}
       // 04 전송기 오른쪽 미리보기 세그먼트(왼쪽 묶음 제목 버튼도 같은 속성을 쓴다): previewSide와 같은 순수 화면 토글이다.
       if(b.dataset.linkPreview){linkPreviewSlot=b.dataset.linkPreview;render();return}
-      if(b.dataset.family){if(state.family!==b.dataset.family){if(!confirmReset())return;state.family=b.dataset.family;state.model=null;state.placements={};state.portAssignments={};state.links={};state.maxStep=0;state.slot='in-a'}previewSide='front';linkPreviewSlot=null;changed();return}if(b.dataset.model){if(state.model!==b.dataset.model){if(!confirmReset())return;state.model=b.dataset.model;state.placements={};state.portAssignments={};state.links={};state.maxStep=1;state.slot=currentSlots()[0].id}previewSide='front';linkPreviewSlot=null;changed();return}if(b.dataset.slot){state.slot=b.dataset.slot;modalSlot=b.dataset.slot;changed();return}if(b.dataset.modalClose!==undefined){closeCardModal();return}if(b.dataset.linkDevice!==undefined){const id=b.dataset.owner,old=state.links[id]||{device:'',count:0,distance:'30'},slot=currentSlots().find(item=>item.id===id),c=slot&&slotCard(slot.id);if(!c||(b.dataset.linkDevice&&!choices(slot,c).includes(b.dataset.linkDevice)))return;linkPreviewSlot=id;if(old.device===b.dataset.linkDevice){render();return}old.device=b.dataset.linkDevice;old.count=old.device?(old.count||c[2]):0;state.links[id]=old;syncPorts();changed();return}if(b.dataset.card){const reopen=modalSlot;modalSlot=null;if(state.placements[state.slot]===b.dataset.card){closeCardModal(reopen);return}focusSlotAfterRender=reopen;changedSlot=state.slot;state.placements[state.slot]=b.dataset.card;const selectedCard=b.dataset.card==='BLANK'?null:card(b.dataset.card);const autoLink=selectedCard?RtCore.defaultLink(b.dataset.card,selectedCard[2]):null;if(autoLink)state.links[state.slot]=autoLink;else delete state.links[state.slot];syncPorts();changed();return}if(b.dataset.format){state.format=b.dataset.format;changed();return}if(b.dataset.jump!==undefined){const n=Number(b.dataset.jump);if(n<=state.maxStep){state.step=n;changed()}return}if(b.dataset.action==='remove'){focusSlotAfterRender=modalSlot;changedSlot=state.slot;modalSlot=null;delete state.placements[state.slot];delete state.links[state.slot];syncPorts();changed();return}
+      if(b.dataset.family){if(state.family!==b.dataset.family){if(!await confirmReset())return;state.family=b.dataset.family;state.model=null;state.placements={};state.portAssignments={};state.links={};state.maxStep=0;state.slot='in-a'}previewSide='front';linkPreviewSlot=null;changed();return}if(b.dataset.model){if(state.model!==b.dataset.model){if(!confirmReset())return;state.model=b.dataset.model;state.placements={};state.portAssignments={};state.links={};state.maxStep=1;state.slot=currentSlots()[0].id}previewSide='front';linkPreviewSlot=null;changed();return}if(b.dataset.slot){state.slot=b.dataset.slot;modalSlot=b.dataset.slot;changed();return}if(b.dataset.modalClose!==undefined){closeCardModal();return}if(b.dataset.linkDevice!==undefined){const id=b.dataset.owner,old=state.links[id]||{device:'',count:0,distance:'30'},slot=currentSlots().find(item=>item.id===id),c=slot&&slotCard(slot.id);if(!c||(b.dataset.linkDevice&&!choices(slot,c).includes(b.dataset.linkDevice)))return;linkPreviewSlot=id;if(old.device===b.dataset.linkDevice){render();return}old.device=b.dataset.linkDevice;old.count=old.device?(old.count||c[2]):0;state.links[id]=old;syncPorts();changed();return}if(b.dataset.card){const reopen=modalSlot;modalSlot=null;if(state.placements[state.slot]===b.dataset.card){closeCardModal(reopen);return}focusSlotAfterRender=reopen;changedSlot=state.slot;state.placements[state.slot]=b.dataset.card;const selectedCard=b.dataset.card==='BLANK'?null:card(b.dataset.card);const autoLink=selectedCard?RtCore.defaultLink(b.dataset.card,selectedCard[2]):null;if(autoLink)state.links[state.slot]=autoLink;else delete state.links[state.slot];syncPorts();changed();return}if(b.dataset.format){state.format=b.dataset.format;changed();return}if(b.dataset.jump!==undefined){const n=Number(b.dataset.jump);if(n<=state.maxStep){state.step=n;changed()}return}if(b.dataset.action==='remove'){focusSlotAfterRender=modalSlot;changedSlot=state.slot;modalSlot=null;delete state.placements[state.slot];delete state.links[state.slot];syncPorts();changed();return}
       // "남은 N칸 블랭크로 채우기"(2-3): 빈 슬롯만 BLANK로 바꾸고, 이미 넣은 카드는 그대로 둔다. 실행 취소 1단계.
       if(b.dataset.action==='fill-blanks'){const filled=RtCore.fillBlanks(state);state.placements=filled.placements;syncPorts();changed();return}
       if(b.dataset.action==='back'){state.step=Math.max(0,state.step-1);changed();return}if(b.dataset.action==='next'){state.step=state.step===5?0:state.step+1;state.maxStep=Math.max(state.maxStep,state.step);changed()}});
@@ -373,7 +373,25 @@
     let history=[],historyIndex=-1;
     const status=root.querySelector('#save-status');
     function announce(message){status.textContent=message}
-    function confirmReset(){return !Object.keys(state.placements).length || window.confirm('제품군 또는 섀시를 변경하면 카드와 전송기 선택이 초기화됩니다. 변경할까요? 실행 취소로 복원할 수 있습니다.')}
+    // 0.55: 브라우저 기본 confirm 창(주소가 제목으로 나오고 모양을 바꿀 수 없음) 대신 사이트 글래스 스타일 확인 창을 쓴다(사용자 요청 "팝업이 이쁘게 나오게해줘").
+    // Promise<boolean>을 돌려준다. Esc·바깥 누르기·취소는 false, 확인은 true.
+    function rtConfirm({title,message,ok='확인',cancel='취소',tone='info'}){
+      return new Promise(resolve=>{
+        const dialog=document.createElement('dialog');
+        dialog.className=`rt-confirm rt-confirm-${tone}`;
+        dialog.setAttribute('aria-labelledby','rt-confirm-title');
+        const icon=tone==='warn'?'<path d="M12 8v5M12 16.5v.5" stroke-linecap="round"/><path d="M10.3 3.9 2.6 17.2A2 2 0 0 0 4.3 20h15.4a2 2 0 0 0 1.7-2.8L13.7 3.9a2 2 0 0 0-3.4 0Z"/>':'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.5" stroke-linecap="round"/>';
+        dialog.innerHTML=`<div class="rt-confirm-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${icon}</svg></div><h3 id="rt-confirm-title">${esc(title)}</h3>${String(message||'').split('\n').map(line=>`<p>${esc(line)}</p>`).join('')}<div class="rt-confirm-actions"><button type="button" class="rt-confirm-cancel" value="cancel">${esc(cancel)}</button><button type="button" class="rt-confirm-ok" value="ok">${esc(ok)}</button></div>`;
+        let done=false;
+        const finish=result=>{if(done)return;done=true;if(dialog.open)dialog.close();dialog.remove();resolve(result)};
+        dialog.addEventListener('click',event=>{const b=event.target.closest('button');if(b)finish(b.value==='ok');else if(event.target===dialog)finish(false)});
+        dialog.addEventListener('cancel',event=>{event.preventDefault();finish(false)});
+        root.appendChild(dialog);
+        if(typeof dialog.showModal==='function'){dialog.showModal();dialog.querySelector('.rt-confirm-ok').focus()}
+        else{dialog.remove();resolve(window.confirm([title,message].filter(Boolean).join('\n')))}
+      });
+    }
+    function confirmReset(){return Object.keys(state.placements).length?rtConfirm({title:'구성을 바꿀까요?',message:'제품군이나 섀시를 바꾸면 고른 카드와 전송기가 초기화됩니다.\n실행 취소로 되돌릴 수 있습니다.',ok:'변경',tone:'warn'}):Promise.resolve(true)}
     function snapshot(){return JSON.stringify(state)}
     function recordHistory(){
       const value=snapshot();
@@ -414,7 +432,7 @@
       document.getElementById('print-report').innerHTML=`<h1>RTCOM Matrix Configuration</h1><p><strong>미검증 검토용 초안 · 설치 및 구매 승인 자료가 아닙니다.</strong></p><p>${esc(state.family)} / ${esc(state.model||'섀시 미선택')} · ${new Date().toLocaleString('ko-KR')}</p><h2>장비 목록</h2>${table()}<h2>카드 슬롯 구성</h2><table><thead><tr><th>슬롯</th><th>카드</th><th>채널</th><th>전송 장비</th><th>연결 채널</th></tr></thead><tbody>${rows||'<tr><td colspan="5">장착한 카드가 없습니다.</td></tr>'}</tbody></table>${validationView()}<p>카탈로그 버전: ${RtCore.catalogVersion} · 케이블·전원·기본 포함품은 별도 확인이 필요합니다.</p>`;
     }
     window.addEventListener('beforeprint',report);
-    root.addEventListener('click',event=>{
+    root.addEventListener('click',async event=>{
       const button=event.target.closest('[data-tool]');
       if(!button||button.disabled)return;
       const action=button.dataset.tool;
@@ -424,7 +442,7 @@
         historyIndex=next;state=JSON.parse(history[next]);render();saveLocal();return;
       }
       if(action==='reset'){
-        if(!window.confirm('새 구성을 시작할까요? 현재 구성은 실행 취소로 복원할 수 있습니다.'))return;
+        if(!await rtConfirm({title:'새 구성을 시작할까요?',message:'현재 구성은 실행 취소로 되돌릴 수 있습니다.',ok:'새로 시작',tone:'warn'}))return;
         state=RtCore.initial();changed();return;
       }
       if(action==='backup'){download(JSON.stringify(RtCore.document(state),null,2),'application/json;charset=utf-8','json');return}
@@ -440,7 +458,7 @@
       try{
         if(file.size>1024*1024)throw new Error('JSON 파일은 1MB 이하여야 합니다.');
         const candidate=RtCore.parse(await file.text());
-        if(Object.keys(state.placements).length&&!window.confirm('파일의 구성으로 현재 작업을 바꿀까요? 실행 취소로 복원할 수 있습니다.'))return;
+        if(Object.keys(state.placements).length&&!await rtConfirm({title:'불러온 구성으로 바꿀까요?',message:'현재 작업이 파일의 구성으로 바뀝니다.\n실행 취소로 되돌릴 수 있습니다.',ok:'바꾸기',tone:'warn'}))return;
         state=candidate;changed();announce(candidate.notice||'JSON 구성을 불러왔습니다. 검토 결과를 현재 기준으로 다시 계산했습니다.');
       }catch(error){announce('불러오기 실패: '+error.message)}
     });
