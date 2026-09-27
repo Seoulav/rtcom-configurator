@@ -270,6 +270,20 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       const hdsAudio=await page.evaluate(()=>({modes:document.querySelectorAll('.rt-pg-audio .rt-pg-audio-mode').length,dip:document.querySelector('.rt-pg-audio-how')?.textContent.includes('딥 스위치 1번'),flow:[...document.querySelectorAll('.rt-pg-svg-wrap svg')].some(svg=>svg.textContent.includes('오디오 병합 또는 추출 중 선택')&&!svg.textContent.includes('(OUT 1)'))}));
       check(`${id} 오디오 설정 카드가 딥 스위치 1번 기준 병합·추출 두 칸으로 나오고 신호 흐름에 "선택"이 표시됨`,hdsAudio.modes===2&&hdsAudio.dip&&hdsAudio.flow,JSON.stringify(hdsAudio));
     }
+    // 0.55 QMS-88UX 06 화면 구성 모드: 레이아웃 버튼을 누르면 해당 도해로 미리보기가 바뀐다(사용자 요청 2026-09-27).
+    await page.goto(`${home}#products/qms-88ux`,{waitUntil:'networkidle'});
+    await page.waitForSelector('[data-layout-chip]');
+    const beforeLayout=await page.evaluate(()=>document.querySelector('[data-layout-name]').textContent);
+    await page.locator('[data-layout-chip]',{hasText:'3-SIDE RIGHT'}).click();
+    const afterLayout=await page.evaluate(()=>({name:document.querySelector('[data-layout-name]').textContent,on:document.querySelector('.rt-pg-layout-chip.on')?.textContent,rects:document.querySelectorAll('[data-layout-preview] svg rect').length}));
+    check('QMS-88UX 06 화면 구성 모드에서 레이아웃 버튼을 누르면 미리보기 도해가 바뀜',beforeLayout==='QUAD'&&afterLayout.name==='3-SIDE RIGHT'&&afterLayout.on==='3-SIDE RIGHT'&&afterLayout.rects===4,JSON.stringify({beforeLayout,afterLayout}));
+    // 0.55 HDS-21U·HDS-42MU 단자 지도: 정면·후면 선택 버튼 없이 한 합성 사진(위 앞면, 아래 뒷면)에 번호 1~7이 이어지고, EDID 로터리가 전원(마지막) 앞에 옴(사용자 요청 2026-09-27).
+    for(const id of ['hds-21u','hds-42mu']){
+      await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
+      await page.waitForSelector('.rt-pg-panel svg');
+      const hdsMap=await page.evaluate(()=>({toggle:document.querySelectorAll('.rt-pg-seg span').length,pins:[...document.querySelectorAll('.rt-pg-port b')].map(b=>b.textContent.trim())}));
+      check(`${id} 단자 지도가 선택 버튼 없이 한 사진(위 앞면, 아래 뒷면)에 EDID·전원 포함 7개 번호로 나옴`,hdsMap.toggle===1&&hdsMap.pins.length===7&&hdsMap.pins[5].includes('EDID')&&hdsMap.pins[6].includes('DC 5V'),JSON.stringify(hdsMap));
+    }
     await page.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
     await page.waitForSelector('#rt-pg-title');
     await page.click('[data-open-diagram]');

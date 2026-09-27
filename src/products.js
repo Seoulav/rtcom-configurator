@@ -441,6 +441,45 @@
       DUAL:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="8" rx="1.5"/><rect x="3" y="13" width="18" height="8" rx="1.5"/></svg>'
     };
     const VMODE_NAME_KO={MATRIX:'매트릭스',QUAD:'쿼드 뷰',WALL:'비디오 월',DUAL:'듀얼'};
+    // 레이아웃 이름별 화면 분할 도해(칸 번호·x·y·너비·높이, 0~100 기준). QMS-88UX 매뉴얼(RTcom_Manual_QMS-88UX_KV.03.pdf) 20~21쪽 Layout List 도해를 그대로 옮겼다(사용자 요청 2026-09-27).
+    // 매뉴얼이 없는 QMS-44UX 전용 이름(CASCADE1·4CH-POP·2CH-SIDE·3CH-MODE1) 4종과 WALL·DUAL 레이아웃은 이름 뜻에 맞춰 만든 도식이다.
+    const LAYOUT_SHAPES={
+      'QUAD':[[1,0,0,50,50],[2,50,0,50,50],[3,0,50,50,50],[4,50,50,50,50]],
+      '3-BOTTOM':[[1,0,0,100,50],[2,0,50,33.33,50],[3,33.33,50,33.34,50],[4,66.67,50,33.33,50]],
+      '3-SIDE RIGHT':[[1,0,0,70,100],[2,70,0,30,33.33],[3,70,33.33,30,33.34],[4,70,66.67,30,33.33]],
+      '3-SIDE LEFT':[[2,0,0,30,33.33],[3,0,33.33,30,33.34],[4,0,66.67,30,33.33],[1,30,0,70,100]],
+      'HORIZONTAL PBP':[[1,0,0,50,100],[2,50,0,50,100]],
+      'VERTICAL PBP':[[1,0,0,100,50],[2,0,50,100,50]],
+      'QUAD PBP, PIP':[[1,0,0,50,100],[2,28,62,20,32],[3,50,0,50,100],[4,78,62,20,32]],
+      'SINGLE SELECT A PORT':[[1,0,0,100,100]],
+      '3CH-MODE2':[[3,0,0,30,100],[1,30,0,40,50],[2,30,50,40,50],[4,70,0,30,100]],
+      'USER MODE 1':[[1,0,0,65,100],[2,65,0,35,50],[3,65,50,35,50]],
+      'USER MODE 2':[[1,25,0,50,40],[2,0,40,50,60],[3,50,40,50,60]],
+      'DEFAULT SINGLE':[[1,0,0,100,100]],
+      '2×2':[[1,0,0,50,50],[2,50,0,50,50],[3,0,50,50,50],[4,50,50,50,50]],
+      '2×1':[[1,0,0,50,100],[2,50,0,50,100]],
+      '1×2':[[1,0,0,100,50],[2,0,50,100,50]],
+      '3×1':[[1,0,0,33.33,100],[2,33.33,0,33.34,100],[3,66.67,0,33.33,100]],
+      '1×3':[[1,0,0,100,33.33],[2,0,33.33,100,33.34],[3,0,66.67,100,33.33]],
+      '4×1':[[1,0,0,25,100],[2,25,0,25,100],[3,50,0,25,100],[4,75,0,25,100]],
+      '1×4':[[1,0,0,100,25],[2,0,25,100,25],[3,0,50,100,25],[4,0,75,100,25]],
+      'FULL':[[1,0,0,100,100]],
+      'PBP':[[1,0,0,50,100],[2,50,0,50,100]],
+      'PBP-FULL':[[1,0,0,50,100],[2,50,0,50,100]],
+      'PIP':[[1,0,0,100,100],[2,62,62,32,32]],
+      'USER MODE':[[1,0,0,65,100],[2,65,0,35,50],[3,65,50,35,50]],
+      'CASCADE1':[[1,0,0,100,100],[2,50,50,40,40]],
+      '4CH-POP':[[1,0,0,50,100],[2,28,62,20,32],[3,50,0,50,100],[4,78,62,20,32]],
+      '2CH-SIDE':[[1,0,0,50,100],[2,50,0,50,100]],
+      '3CH-MODE1':[[1,0,0,65,100],[2,65,0,35,50],[3,65,50,35,50]],
+      'USER MODE 3':[[3,0,0,30,100],[1,30,0,40,50],[2,30,50,40,50],[4,70,0,30,100]]
+    };
+    function layoutShapeSvg(name){
+      const cells=LAYOUT_SHAPES[String(name||'').trim().toUpperCase()];
+      if(!cells)return '<div class="rt-pg-layout-missing">도해 준비 중</div>';
+      const rects=cells.map(([n,x,y,w,h])=>`<g><rect x="${x}" y="${y}" width="${w}" height="${h}"/><text x="${x+w/2}" y="${y+h/2}">${n}</text></g>`).join('');
+      return `<svg viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label="${esc(name)} 화면 구성">${rects}</svg>`;
+    }
     function videoModesSection(item){
       const vm=item.videoModes;
       if(!vm||!vm.modes?.length)return '';
@@ -452,7 +491,7 @@
           <div class="rt-pg-vmode-cards">${modes.map(mode=>`<div class="rt-pg-vmode-card">
             <div class="rt-pg-vmode-card-head">${VMODE_ICON[mode.name]||''}<div><b>${esc(VMODE_NAME_KO[mode.name]||mode.name)}</b><small>${esc(mode.name)}</small></div></div>
             <p>${esc(mode.summary)}${mode.detail?` ${esc(mode.detail)}`:''}</p>
-            ${mode.layouts?.length?`<span class="rt-pg-vmode-count">레이아웃 ${mode.layouts.length}종</span><div class="rt-pg-vmode-chips">${mode.layouts.map(layout=>`<span>${esc(layout)}</span>`).join('')}</div>`:''}
+            ${mode.layouts?.length?`<span class="rt-pg-vmode-count">레이아웃 ${mode.layouts.length}종</span><div class="rt-pg-vmode-chips">${mode.layouts.map((layout,index)=>`<button type="button" class="rt-pg-layout-chip${index===0?' on':''}" data-layout-chip data-layout="${esc(layout)}">${esc(layout)}</button>`).join('')}</div><div class="rt-pg-layout-preview" data-layout-preview>${layoutShapeSvg(mode.layouts[0])}<small data-layout-name>${esc(mode.layouts[0])}</small></div>`:''}
           </div>`).join('')}</div>
         </div>
       </section>`;
@@ -645,6 +684,16 @@
       if(diagramBtn){const record=body.querySelector('.rt-pg-record');if(record){record.open=true;record.querySelector('#rt-pg-diagram-photo')?.scrollIntoView({behavior:'smooth',block:'start'})}return}
       const moreBtn=event.target.closest('[data-more-features]');
       if(moreBtn){const more=body.querySelector('[data-feature-more]');if(more){more.hidden=false;moreBtn.hidden=true}return}
+      const layoutChip=event.target.closest('[data-layout-chip]');
+      if(layoutChip){
+        const chips=layoutChip.parentElement;
+        chips.querySelectorAll('[data-layout-chip]').forEach(btn=>btn.classList.toggle('on',btn===layoutChip));
+        const preview=chips.nextElementSibling;
+        if(preview?.matches('[data-layout-preview]')){
+          preview.innerHTML=`${layoutShapeSvg(layoutChip.dataset.layout)}<small data-layout-name>${esc(layoutChip.dataset.layout)}</small>`;
+        }
+        return;
+      }
     });
     body.addEventListener('keydown',event=>{
       const filterBtn=event.target.closest('[data-product-filter]');

@@ -46,6 +46,18 @@
       "resolution": "950×167"
     },
     {
+      "role": "Other",
+      "file": "hds-42mu-front-rear.webp",
+      "alt": "RTCOM HDS-42MU 전면(위)·후면(아래) 합성 사진",
+      "note": "Other · 위 Front·아래 Rear 카탈로그 제품 이미지를 이어붙인 단자 지도 전용 합성 사진(선택 버튼 없이 두 면을 함께 표시, 사용자 요청 2026-09-27)",
+      "provider": "RTCOM",
+      "model": "HDS-42MU",
+      "source": "C",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "950×414"
+    },
+    {
       "role": "Diagram",
       "file": "hds-42mu-diagram.webp",
       "alt": "RTCOM HDS-42MU 연결 다이어그램(제조사 제공)",
@@ -289,49 +301,71 @@
   ],
   "related": [],
   "portMap": {
-    "image": "Rear",
+    "image": "Other",
+    "title": "위 앞면, 아래 뒷면",
     "items": [
       {
         "n": 1,
         "label": "IN 1–4",
         "desc": "HDMI 소스 4대 연결",
         "x1": 125,
-        "x2": 436
+        "x2": 436,
+        "side": "top",
+        "y": 247
       },
       {
         "n": 2,
         "label": "OUT 1–2",
         "desc": "선택한 입력을 매트릭스 전환해 출력",
         "x1": 464,
-        "x2": 606
+        "x2": 606,
+        "side": "top",
+        "y": 247
       },
       {
         "n": 3,
         "label": "AUDIO IN",
         "desc": "3.5mm 아날로그 오디오 병합(MUX 선택 시)",
         "x1": 635,
-        "x2": 653
+        "x2": 653,
+        "side": "top",
+        "y": 247
       },
       {
         "n": 4,
         "label": "AUDIO OUT",
         "desc": "3.5mm 아날로그 오디오 추출(DEMUX 선택 시)",
         "x1": 675,
-        "x2": 692
+        "x2": 692,
+        "side": "top",
+        "y": 247
       },
       {
         "n": 5,
         "label": "RS-232",
         "desc": "터미널 블록, 외부 제어",
         "x1": 706,
-        "x2": 753
+        "x2": 753,
+        "side": "top",
+        "y": 247
       },
       {
         "n": 6,
+        "label": "EDID",
+        "desc": "전면 파란색 EDID 로터리 스위치, 06 EDID 설정 참고",
+        "x1": 315,
+        "x2": 349,
+        "side": "top",
+        "y": 0
+      },
+      {
+        "n": 7,
         "label": "DC 5V",
         "desc": "전원 어댑터 5V 2A",
         "x1": 74,
-        "x2": 100
+        "x2": 100,
+        "side": "top",
+        "y": 247
       }
     ]
   },

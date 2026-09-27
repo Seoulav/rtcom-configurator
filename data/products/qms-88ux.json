@@ -279,7 +279,8 @@
       {
         "name": "QUAD",
         "summary": "출력 9·10번 전용, 한 화면 최대 8분할(8CH Multi-view)",
-        "detail": "입력 1~4(Q1)·5~8(Q2) 두 그룹을 12가지 레이아웃으로 조합해 그룹마다 4분할, 두 그룹을 합치면 8분할로 보여준다."
+        "detail": "입력 1~4(Q1)·5~8(Q2) 두 그룹을 12가지 레이아웃으로 조합해 그룹마다 4분할, 두 그룹을 합치면 8분할로 보여준다.",
+        "layouts": ["QUAD","3-BOTTOM","3-SIDE RIGHT","3-SIDE LEFT","Horizontal PBP","Vertical PBP","Quad PBP, PIP","Single Select a port","3CH-MODE2","USER MODE 1","USER MODE 2","Default Single"]
       },
       {
         "name": "DUAL",
