@@ -172,6 +172,32 @@
     for (const slot of slotsFor(state)) if (!own(placements,slot.id)) placements[slot.id]='BLANK';
     return checkState({...state,placements});
   }
+  // 0.55 수량 채우기(사용자 요청 "카드 선택시 수량을 넣어서 앞슬롯부터 채울수도"): 선택한 슬롯을 먼저 채우고,
+  // 같은 방향(입력·출력)의 빈 슬롯을 번호 순서로 이어서 채울 슬롯 목록을 돌려준다. 선택한 슬롯 뒤쪽을 먼저, 모자라면 앞쪽 빈 슬롯을 쓴다.
+  function fillTargets(state, startId, quantity) {
+    const slots=slotsFor(state),start=slots.find(slot=>slot.id===startId);
+    if (!start) return [];
+    const same=slots.filter(slot=>slot.dir===start.dir),at=same.indexOf(start);
+    const empty=[...same.slice(at+1),...same.slice(0,at)].filter(slot=>!own(state.placements||{},slot.id)).map(slot=>slot.id);
+    const count=Math.max(1,Math.min(Math.floor(Number(quantity))||1,empty.length+1));
+    return [startId,...empty.slice(0,count-1)];
+  }
+  // 0.55 슬롯 이동(사용자 요청 "입력은 입력끼리, 출력도 마찬가지로 이동"): 같은 방향 슬롯끼리만 카드를 옮긴다.
+  // 옮길 곳이 비어 있으면 이동, 카드(또는 블랭크)가 있으면 서로 맞바꾼다. 전송기 연결과 포트 지정도 함께 옮긴다.
+  function moveCard(state, from, to) {
+    const dir=slotDirections[from];
+    if (!dir||dir!==slotDirections[to]||from===to||!own(state.placements||{},from)) return null;
+    const swap=(obj)=>{const next={...(plain(obj)?obj:{})};const a=own(next,from)?next[from]:undefined,b=own(next,to)?next[to]:undefined;delete next[from];delete next[to];if(a!==undefined)next[to]=a;if(b!==undefined)next[from]=b;return next};
+    const placements=swap(state.placements),links=swap(state.links);
+    const ports={};
+    for (const [key,value] of Object.entries(plain(state.portAssignments)?state.portAssignments:{})) {
+      const [slot,port]=key.split(':');
+      ports[slot===from?`${to}:${port}`:slot===to?`${from}:${port}`:key]=value;
+    }
+    const next={...state,placements,links,portAssignments:ports,slot:to};
+    next.portAssignments=syncPorts(next);
+    return next;
+  }
   function requirementSummary(state) {
     const rows=[];
     for (const direction of ['input','output']) {
@@ -270,5 +296,5 @@
       ...bom(state).map(row=>['UNVERIFIED_DRAFT',row.category,row.model,row.quantity,'미검증 검토용 · 케이블/전원/기본 포함품 미확정'])];
     return rows.map(row=>row.map(cell).join(',')).join('\r\n');
   }
-  scope.RtCore={initial,checkState,choices,defaultLink,psePair,slotPlan,syncPorts,slotsFor,requirementSummary,validate,bom,document,parse,csv,completionFor,fillBlanks,catalogVersion,schemaVersion,signalTypes};
+  scope.RtCore={fillTargets,moveCard,initial,checkState,choices,defaultLink,psePair,slotPlan,syncPorts,slotsFor,requirementSummary,validate,bom,document,parse,csv,completionFor,fillBlanks,catalogVersion,schemaVersion,signalTypes};
 })(globalThis);

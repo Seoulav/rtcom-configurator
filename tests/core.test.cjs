@@ -307,3 +307,28 @@ test('SPX-M810 and M1620 warn that ports 11-12 of HOS12/COS12 mirror output 10',
   hos10.portAssignments=core.syncPorts(hos10);
   assert.ok(!core.validate(hos10).issues.some(issue=>issue.code==='SPX_PORT_SPLIT'),'HOS10 has only 10 ports');
 });
+
+test('fillTargets fills the chosen slot first, then empty slots of the same direction in order',()=>{
+  const state=core.checkState({...core.initial(),model:'XDM-36',placements:{'in-3':'XDM-HI100','out-1':'XDM-HOS100'}});
+  assert.deepEqual(core.fillTargets(state,'in-2',4),['in-2','in-4','in-5','in-6']);
+  assert.deepEqual(core.fillTargets(state,'in-8',4),['in-8','in-9','in-1','in-2']);
+  const inputs=core.slotsFor(state).filter(slot=>slot.dir==='input').length;
+  assert.equal(core.fillTargets(state,'in-1',99).length,inputs-1);
+  assert.equal(core.fillTargets(state,'out-2',99).every(id=>id.startsWith('out-')),true);
+  assert.deepEqual(core.fillTargets(state,'in-1',0),['in-1']);
+});
+
+test('moveCard moves within the same direction, swaps occupied slots and carries links and ports',()=>{
+  const moved=core.moveCard(configured(),'in-1','in-3');
+  assert.equal(moved.placements['in-3'],'XDM-CIS100');
+  assert.equal('in-1' in moved.placements,false);
+  assert.deepEqual(moved.links['in-3'],{device:'XDM-CTR100 · TX',count:2,distance:'30'});
+  assert.equal(moved.portAssignments['in-3:1'].tx,'XDM-CTR100 · TX');
+  assert.equal(Object.keys(moved.portAssignments).some(key=>key.startsWith('in-1:')),false);
+  const two=core.checkState({...configured(),placements:{'in-1':'XDM-CIS100','in-2':'XDM-HI100','out-1':'XDM-COS100'}});
+  const swapped=core.moveCard(two,'in-1','in-2');
+  assert.equal(swapped.placements['in-1'],'XDM-HI100');
+  assert.equal(swapped.placements['in-2'],'XDM-CIS100');
+  assert.equal(core.moveCard(configured(),'in-1','out-2'),null);
+  assert.equal(core.moveCard(configured(),'in-2','in-3'),null);
+});

@@ -97,23 +97,23 @@
   ],
   "features": [
     {
-      "text": "HDMI 신호의 스위칭과 스케일링을 지원한다.",
+      "text": "HDMI 신호의 스위칭과 스케일링 지원",
       "source": "C"
     },
     {
-      "text": "신속한 화면 전환이 가능한 심리스 스위칭을 지원한다.",
+      "text": "신속한 화면 전환이 가능한 심리스 스위칭 지원",
       "source": "C"
     },
     {
-      "text": "HDMI 입력 8개 포트와 스케일링이 가능한 HDMI 출력 8개 포트를 지원한다.",
+      "text": "HDMI 입력 8개 포트와 스케일링이 가능한 HDMI 출력 8개 포트 지원",
       "source": "C"
     },
     {
-      "text": "HDMI v2.0, HDCP 2.2를 지원한다.",
+      "text": "HDMI v2.0, HDCP 2.2 지원",
       "source": "C"
     },
     {
-      "text": "매트릭스, 최대 3X3 비디오 월, 쿼드 뷰, 듀얼 모드의 4가지 모드를 지원한다.",
+      "text": "매트릭스, 최대 3X3 비디오 월, 쿼드 뷰, 듀얼 모드의 4가지 모드 지원",
       "source": "C"
     },
     {
@@ -125,15 +125,15 @@
       "source": "M1"
     },
     {
-      "text": "Bezel 조정 기능을 지원한다.",
+      "text": "Bezel 조정 기능 지원",
       "source": "C"
     },
     {
-      "text": "Subtitle 기능을 지원한다.",
+      "text": "Subtitle 기능 지원",
       "source": "C"
     },
     {
-      "text": "전면 LCD 터치 패널, RS-232 제어방식을 지원한다.",
+      "text": "전면 LCD 터치 패널, RS-232 제어방식 지원",
       "source": "C"
     }
   ],
@@ -279,7 +279,8 @@
       {
         "name": "QUAD",
         "summary": "출력 9·10번 전용, 한 화면 최대 8분할(8CH Multi-view)",
-        "detail": "입력 1~4(Q1)·5~8(Q2) 두 그룹을 12가지 레이아웃으로 조합해 그룹마다 4분할, 두 그룹을 합치면 8분할로 보여준다."
+        "detail": "입력 1~4(Q1)·5~8(Q2) 두 그룹을 12가지 레이아웃으로 조합해 그룹마다 4분할, 두 그룹을 합치면 8분할로 보여준다.",
+        "layouts": ["QUAD","3-BOTTOM","3-SIDE RIGHT","3-SIDE LEFT","Horizontal PBP","Vertical PBP","Quad PBP, PIP","Single Select a port","3CH-MODE2","USER MODE 1","USER MODE 2","Default Single"]
       },
       {
         "name": "DUAL",

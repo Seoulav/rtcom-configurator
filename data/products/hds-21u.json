@@ -45,6 +45,18 @@
       "resolution": "783×171"
     },
     {
+      "role": "Other",
+      "file": "hds-21u-front-rear.webp",
+      "alt": "RTCOM HDS-21U 전면(위)·후면(아래) 합성 사진",
+      "note": "Other · 위 Front·아래 Rear 카탈로그 제품 이미지를 이어붙인 단자 지도 전용 합성 사진(선택 버튼 없이 두 면을 함께 표시, 사용자 요청 2026-09-27)",
+      "provider": "RTCOM",
+      "model": "HDS-21U",
+      "source": "C",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "783×421"
+    },
+    {
       "role": "Diagram",
       "file": "hds-21u-diagram.webp",
       "alt": "RTCOM HDS-21U 연결 다이어그램(제조사 제공)",
@@ -103,11 +115,11 @@
   ],
   "features": [
     {
-      "text": "HDMI 2.0, HDCP 2.2를 지원한다.",
+      "text": "HDMI 2.0, HDCP 2.2 지원",
       "source": "C"
     },
     {
-      "text": "HDR을 지원한다.",
+      "text": "HDR 지원",
       "source": "C"
     },
     {
@@ -271,49 +283,71 @@
   ],
   "related": [],
   "portMap": {
-    "image": "Rear",
+    "image": "Other",
+    "title": "위 앞면, 아래 뒷면",
     "items": [
       {
         "n": 1,
         "label": "IN 1·2",
         "desc": "HDMI 소스 2대 연결, Priority·오토셀렉팅으로 선택",
         "x1": 156,
-        "x2": 312
+        "x2": 312,
+        "side": "top",
+        "y": 250
       },
       {
         "n": 2,
         "label": "OUT",
         "desc": "선택한 입력을 출력",
         "x1": 345,
-        "x2": 406
+        "x2": 406,
+        "side": "top",
+        "y": 250
       },
       {
         "n": 3,
         "label": "AUDIO IN",
         "desc": "3.5mm 아날로그 오디오 병합(MUX 선택 시)",
         "x1": 439,
-        "x2": 456
+        "x2": 456,
+        "side": "top",
+        "y": 250
       },
       {
         "n": 4,
         "label": "AUDIO OUT",
         "desc": "3.5mm 아날로그 오디오 추출(DEMUX 선택 시)",
         "x1": 477,
-        "x2": 497
+        "x2": 497,
+        "side": "top",
+        "y": 250
       },
       {
         "n": 5,
         "label": "RS-232",
         "desc": "터미널 블록, 외부 제어",
         "x1": 518,
-        "x2": 565
+        "x2": 565,
+        "side": "top",
+        "y": 250
       },
       {
         "n": 6,
+        "label": "EDID",
+        "desc": "전면 파란색 EDID 로터리 스위치, 06 EDID 설정 참고",
+        "x1": 627,
+        "x2": 664,
+        "side": "top",
+        "y": 0
+      },
+      {
+        "n": 7,
         "label": "DC 5V",
         "desc": "전원 어댑터 5V 2A",
         "x1": 100,
-        "x2": 127
+        "x2": 127,
+        "side": "top",
+        "y": 250
       }
     ]
   },

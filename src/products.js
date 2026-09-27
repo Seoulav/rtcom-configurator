@@ -8,48 +8,6 @@
     const configurator=root.querySelector('.rt-configurator-view');
     const body=view.querySelector('.rt-products-body');
     const tabs=[...root.querySelectorAll('[data-view-tab]')];
-    // 제품 사진 돋보기(라이트박스). .rt-products-view는 overflow:hidden이라 안에 두면 position:fixed가 화면 전체를 덮지 못한다.
-    // root(#rtcom-design)는 overflow를 걸지 않으므로 그 바로 아래(화면 전환마다 다시 만들지 않도록 한 번만)에 붙인다.
-    // 0.49: 사용자 LED 계산기 "05 프로세서" 사진 팝업과 같은 방식으로 바꿨다(사용자 요청 2026-09-27).
-    // 제목(제품명)·사진 탭(정면·후면 등)·닫기 버튼이 있는 카드이고, 사진 위에서 커서(휴대폰은 손가락)를 따라 원형 돋보기가 확대해 보여준다.
-    root.insertAdjacentHTML('beforeend','<div class="rt-pg-lightbox" hidden><div class="rt-pg-lb-card" role="dialog" aria-modal="true" aria-label="제품 사진 확대"><div class="rt-pg-lb-head"><div class="rt-pg-lb-title"></div><div class="rt-pg-lb-tabs" role="tablist"></div><button type="button" class="rt-pg-lb-close" data-zoom-close aria-label="사진 확대 닫기">✕</button></div><div class="rt-pg-lb-body"><div class="rt-pg-lb-zoom" title="마우스를 올리면 원형 돋보기로 확대됩니다"><img class="rt-pg-lightbox-img" alt="" draggable="false" loading="lazy"><div class="rt-pg-loupe" hidden></div></div><p class="rt-pg-lb-hint">사진 위에 마우스를 올리면(휴대폰은 누른 채 움직이면) 원형 돋보기로 확대됩니다</p></div></div></div>');
-    const lightbox=root.querySelector('.rt-pg-lightbox');
-    const lightboxImg=lightbox.querySelector('.rt-pg-lightbox-img');
-    const loupe=lightbox.querySelector('.rt-pg-loupe');
-    let zoomReturnFocus=null,zoomShots=[];
-    const LOUPE=160,LOUPE_ZOOM=3.1;// 사용자 LED 계산기와 같은 값: 돋보기 원 160px, 배율 3.1
-    function showShot(index){
-      const shot=zoomShots[index];if(!shot)return;
-      lightboxImg.src=shot.src;lightboxImg.alt=shot.alt||'';loupe.hidden=true;
-      lightbox.querySelectorAll('[data-zoom-shot]').forEach(btn=>{const on=Number(btn.dataset.zoomShot)===index;btn.classList.toggle('on',on);btn.setAttribute('aria-selected',String(on))});
-    }
-    function openZoom(src,alt,fromEl){
-      // 같은 사진 띠(.rt-pg-hero)의 사진을 모두 탭으로 만든다. 누른 사진이 처음 선택된다.
-      const strip=fromEl?.closest('.rt-pg-hero');
-      const buttons=strip?[...strip.querySelectorAll('[data-zoom-src]')]:[];
-      zoomShots=buttons.length?buttons.map(btn=>({src:btn.dataset.zoomSrc,alt:btn.dataset.zoomAlt,label:btn.querySelector('.rt-pg-hero-cap')?.textContent||'사진'})):[{src,alt,label:'사진'}];
-      const start=Math.max(0,buttons.indexOf(fromEl));
-      lightbox.querySelector('.rt-pg-lb-title').textContent=strip?.dataset.zoomTitle||alt||'';
-      lightbox.querySelector('.rt-pg-lb-tabs').innerHTML=zoomShots.length>1?zoomShots.map((shot,index)=>`<button type="button" role="tab" data-zoom-shot="${index}">${esc(shot.label)}</button>`).join(''):'';
-      showShot(start);
-      lightbox.hidden=false;zoomReturnFocus=fromEl||null;lightbox.querySelector('[data-zoom-close]').focus();
-    }
-    function closeZoom(){lightbox.hidden=true;lightboxImg.src='';loupe.hidden=true;zoomReturnFocus?.focus({preventScroll:true});zoomReturnFocus=null}
-    function moveLoupe(event){
-      if(!lightboxImg.complete||!lightboxImg.naturalWidth)return;
-      const rect=lightboxImg.getBoundingClientRect();
-      if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom){loupe.hidden=true;return}
-      const x=event.clientX-rect.left,y=event.clientY-rect.top;
-      loupe.hidden=false;
-      loupe.style.left=`${lightboxImg.offsetLeft+x-LOUPE/2}px`;
-      loupe.style.top=`${lightboxImg.offsetTop+y-LOUPE/2}px`;
-      loupe.style.backgroundImage=`url("${lightboxImg.currentSrc||lightboxImg.src}")`;
-      loupe.style.backgroundSize=`${rect.width*LOUPE_ZOOM}px ${rect.height*LOUPE_ZOOM}px`;
-      loupe.style.backgroundPosition=`${LOUPE/2-x*LOUPE_ZOOM}px ${LOUPE/2-y*LOUPE_ZOOM}px`;
-    }
-    lightbox.addEventListener('pointermove',moveLoupe);
-    lightbox.addEventListener('pointerdown',event=>{if(event.target===lightboxImg)moveLoupe(event)});
-    ['pointerleave','pointerup','pointercancel'].forEach(type=>lightbox.addEventListener(type,()=>{loupe.hidden=true}));
     const groups=[['all','전체'],['series','매트릭스 시리즈'],['integrated','일체형 매트릭스'],['distribution','분배기·선택기'],['extender','전송기'],['cable','케이블']];
     const groupLabel=Object.fromEntries(groups);
     const roleLabel={Main:'대표',Front:'전면',Rear:'후면',Perspective:'사선',Diagram:'구성도',Other:'기타'};
@@ -399,6 +357,8 @@
     }
 
     // ---- 단자 지도(03 카드). portMap이 있으면 사진 위에 번호표를 얹고, 없으면 io 표에서 뽑은 카드만 보여준다(명세 3장) ----
+    // 크기 사양(W×D×H)의 세 번째 값(높이, mm). 2U(88.9mm) 판단용. 값이 없으면 0.
+    const heightMm=item=>{const spec=(item.specifications||[]).find(row=>/크기/.test(row.name));const parts=String(spec?.value||'').split(/[×x*]/);return parseFloat(parts[2])||0};
     function portMapDiagram(item){
       // portMap은 사진 한 장(객체) 또는 여러 장(배열, 전송기 송신기·수신기 등)이다(0.42). 장마다 사진·번호표·설명 카드를 차례로 그린다.
       const maps=item.portMap?(Array.isArray(item.portMap)?item.portMap:[item.portMap]):[];
@@ -434,10 +394,18 @@
         const B=typeof it.y==='number'?Y0+it.y*s:Y0;
         svgBody+=`<path d="M${x1} ${B+8}V${B-6}H${x2}V${B+8}" fill="none" stroke="${COLOR_IN}" stroke-width="1.5"/><path d="M${cx} ${B-6}V${B-14}" stroke="${COLOR_IN}" stroke-width="1.5"/><circle cx="${cx}" cy="${B-24}" r="10" fill="${COLOR_IN}"/><text x="${cx}" y="${B-20}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">${it.n}</text>`;
       });
-      const seg=map.title?`<span class="rt-pg-seg"><span class="rt-pg-on">${esc(map.title)}</span></span>`:`<span class="rt-pg-seg"><span class="${map.image==='Front'?'rt-pg-on':''}">정면</span><span class="${map.image==='Rear'?'rt-pg-on':''}">후면</span></span>`;
+      // 0.55(사용자 요청 "2U크기 이상 제품은 정면, 후면 버튼을 유지하고 나머지는 앞 또는 정면·포트연결 뒷면 또는 측면이 보이게"):
+      // 높이 2U(88mm) 이상은 정면·후면 버튼으로 사진을 바꿔 보고, 그보다 작은 제품은 버튼 없이 정면 사진과 포트 연결면(후면·측면)을 함께 보여준다.
+      const front=(item.images||[]).find(img=>img.role==='Front');
+      const withFront=!map.title&&front&&map.image!=='Front'&&front.file!==photo.file;
+      const tall=withFront&&heightMm(item)>=88;
+      const sideLabel=map.image==='Rear'?'후면':map.image==='Perspective'?'사선':'포트 연결면';
+      const seg=map.title?`<span class="rt-pg-seg"><span class="rt-pg-on">${esc(map.title)}</span></span>`:tall?`<span class="rt-pg-seg" role="group" aria-label="사진 면 선택"><button type="button" data-pm-side="front" aria-pressed="false">정면</button><button type="button" class="rt-pg-on" data-pm-side="rear" aria-pressed="true">${sideLabel}</button></span>`:'';
+      const frontFigure=withFront?`<figure class="rt-pg-face"${tall?' data-pm-face="front" hidden':''}>${tall?'':'<figcaption class="rt-pg-face-cap">정면</figcaption>'}<img src="${image(front.file)}" alt="${esc(front.alt||`${item.productName} 정면`)}" loading="lazy"></figure>`:'';
+      const sideCap=withFront&&!tall?`<p class="rt-pg-face-cap">${sideLabel} · 포트 연결</p>`:'';
       const ports=`<div class="rt-pg-ports">${[...map.items].sort((a,b)=>a.n-b.n).map(it=>`<div class="rt-pg-port"><b><span class="rt-pg-n">${it.n}</span>${esc(it.label)}</b>${esc(it.desc)}</div>`).join('')}</div>`;
       const note=map.note?`<p class="rt-pg-hint">${esc(map.note)}</p>`:'';
-      return `${seg}<div class="rt-pg-panel"><div class="rt-pg-svg-wrap"><svg viewBox="0 0 ${W+X0*2} ${H}" width="100%"${map.displayWidth?` style="display:block;max-width:${map.displayWidth}px;margin:0 auto"`:''} role="img" aria-label="${esc(map.title||'')} 단자 지도">${svgBody}</svg></div></div>${ports}${note}`;
+      return `${seg}${tall?'':frontFigure}${sideCap}${tall?frontFigure+'<div data-pm-face="rear">':''}<div class="rt-pg-panel"><div class="rt-pg-svg-wrap"><svg viewBox="0 0 ${W+X0*2} ${H}" width="100%"${map.displayWidth?` style="display:block;max-width:${map.displayWidth}px;margin:0 auto"`:''} role="img" aria-label="${esc(map.title||'')} 단자 지도">${svgBody}</svg></div></div>${ports}${note}${tall?'</div>':''}`;
     }
     function portCards(item){
       const io=item.io||[];
@@ -483,6 +451,45 @@
       DUAL:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="8" rx="1.5"/><rect x="3" y="13" width="18" height="8" rx="1.5"/></svg>'
     };
     const VMODE_NAME_KO={MATRIX:'매트릭스',QUAD:'쿼드 뷰',WALL:'비디오 월',DUAL:'듀얼'};
+    // 레이아웃 이름별 화면 분할 도해(칸 번호·x·y·너비·높이, 0~100 기준). QMS-88UX 매뉴얼(RTcom_Manual_QMS-88UX_KV.03.pdf) 20~21쪽 Layout List 도해를 그대로 옮겼다(사용자 요청 2026-09-27).
+    // 매뉴얼이 없는 QMS-44UX 전용 이름(CASCADE1·4CH-POP·2CH-SIDE·3CH-MODE1) 4종과 WALL·DUAL 레이아웃은 이름 뜻에 맞춰 만든 도식이다.
+    const LAYOUT_SHAPES={
+      'QUAD':[[1,0,0,50,50],[2,50,0,50,50],[3,0,50,50,50],[4,50,50,50,50]],
+      '3-BOTTOM':[[1,0,0,100,50],[2,0,50,33.33,50],[3,33.33,50,33.34,50],[4,66.67,50,33.33,50]],
+      '3-SIDE RIGHT':[[1,0,0,70,100],[2,70,0,30,33.33],[3,70,33.33,30,33.34],[4,70,66.67,30,33.33]],
+      '3-SIDE LEFT':[[2,0,0,30,33.33],[3,0,33.33,30,33.34],[4,0,66.67,30,33.33],[1,30,0,70,100]],
+      'HORIZONTAL PBP':[[1,0,0,50,100],[2,50,0,50,100]],
+      'VERTICAL PBP':[[1,0,0,100,50],[2,0,50,100,50]],
+      'QUAD PBP, PIP':[[1,0,0,50,100],[2,28,62,20,32],[3,50,0,50,100],[4,78,62,20,32]],
+      'SINGLE SELECT A PORT':[[1,0,0,100,100]],
+      '3CH-MODE2':[[3,0,0,30,100],[1,30,0,40,50],[2,30,50,40,50],[4,70,0,30,100]],
+      'USER MODE 1':[[1,0,0,65,100],[2,65,0,35,50],[3,65,50,35,50]],
+      'USER MODE 2':[[1,25,0,50,40],[2,0,40,50,60],[3,50,40,50,60]],
+      'DEFAULT SINGLE':[[1,0,0,100,100]],
+      '2×2':[[1,0,0,50,50],[2,50,0,50,50],[3,0,50,50,50],[4,50,50,50,50]],
+      '2×1':[[1,0,0,50,100],[2,50,0,50,100]],
+      '1×2':[[1,0,0,100,50],[2,0,50,100,50]],
+      '3×1':[[1,0,0,33.33,100],[2,33.33,0,33.34,100],[3,66.67,0,33.33,100]],
+      '1×3':[[1,0,0,100,33.33],[2,0,33.33,100,33.34],[3,0,66.67,100,33.33]],
+      '4×1':[[1,0,0,25,100],[2,25,0,25,100],[3,50,0,25,100],[4,75,0,25,100]],
+      '1×4':[[1,0,0,100,25],[2,0,25,100,25],[3,0,50,100,25],[4,0,75,100,25]],
+      'FULL':[[1,0,0,100,100]],
+      'PBP':[[1,0,0,50,100],[2,50,0,50,100]],
+      'PBP-FULL':[[1,0,0,50,100],[2,50,0,50,100]],
+      'PIP':[[1,0,0,100,100],[2,62,62,32,32]],
+      'USER MODE':[[1,0,0,65,100],[2,65,0,35,50],[3,65,50,35,50]],
+      'CASCADE1':[[1,0,0,100,100],[2,50,50,40,40]],
+      '4CH-POP':[[1,0,0,50,100],[2,28,62,20,32],[3,50,0,50,100],[4,78,62,20,32]],
+      '2CH-SIDE':[[1,0,0,50,100],[2,50,0,50,100]],
+      '3CH-MODE1':[[1,0,0,65,100],[2,65,0,35,50],[3,65,50,35,50]],
+      'USER MODE 3':[[3,0,0,30,100],[1,30,0,40,50],[2,30,50,40,50],[4,70,0,30,100]]
+    };
+    function layoutShapeSvg(name){
+      const cells=LAYOUT_SHAPES[String(name||'').trim().toUpperCase()];
+      if(!cells)return '<div class="rt-pg-layout-missing">도해 준비 중</div>';
+      const rects=cells.map(([n,x,y,w,h])=>`<g><rect x="${x}" y="${y}" width="${w}" height="${h}"/><text x="${x+w/2}" y="${y+h/2}">${n}</text></g>`).join('');
+      return `<svg viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label="${esc(name)} 화면 구성">${rects}</svg>`;
+    }
     function videoModesSection(item){
       const vm=item.videoModes;
       if(!vm||!vm.modes?.length)return '';
@@ -494,7 +501,7 @@
           <div class="rt-pg-vmode-cards">${modes.map(mode=>`<div class="rt-pg-vmode-card">
             <div class="rt-pg-vmode-card-head">${VMODE_ICON[mode.name]||''}<div><b>${esc(VMODE_NAME_KO[mode.name]||mode.name)}</b><small>${esc(mode.name)}</small></div></div>
             <p>${esc(mode.summary)}${mode.detail?` ${esc(mode.detail)}`:''}</p>
-            ${mode.layouts?.length?`<span class="rt-pg-vmode-count">레이아웃 ${mode.layouts.length}종</span><div class="rt-pg-vmode-chips">${mode.layouts.map(layout=>`<span>${esc(layout)}</span>`).join('')}</div>`:''}
+            ${mode.layouts?.length?`<span class="rt-pg-vmode-count">레이아웃 ${mode.layouts.length}종</span><div class="rt-pg-vmode-chips">${mode.layouts.map((layout,index)=>`<button type="button" class="rt-pg-layout-chip${index===0?' on':''}" data-layout-chip data-layout="${esc(layout)}">${esc(layout)}</button>`).join('')}</div><div class="rt-pg-layout-preview" data-layout-preview>${layoutShapeSvg(mode.layouts[0])}<small data-layout-name>${esc(mode.layouts[0])}</small></div>`:''}
           </div>`).join('')}</div>
         </div>
       </section>`;
@@ -545,11 +552,6 @@
     }
 
     // ---- 단일 제품 템플릿(분배기·일체형·전송기·케이블) — 명세 2-2·2-4 ----
-    // ---- 제품 사진 확대(돋보기). 01 위에 큰 사진 띠를 두고, 누르면 크게 보고 한 번 더 누르면 확대/축소한다 ----
-    function heroGallery(item,images){
-      if(!images.length)return '';
-      return `<section class="rt-pg-hero" aria-label="${esc(item.productName)} 제품 사진" data-zoom-title="${esc(item.productName)}"><div class="rt-pg-hero-scroll">${images.map(img=>`<button type="button" class="rt-pg-hero-item" data-zoom-src="${esc(image(img.file))}" data-zoom-alt="${esc(img.alt||item.productName)}"><img src="${image(img.file)}" alt="${esc(img.alt||item.productName)}" loading="lazy"><span class="rt-pg-hero-cap">${esc(roleLabel[img.role]||img.role)}</span><span class="rt-pg-hero-zoom" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="10" cy="10" r="6.5"/><path d="M14.7 14.7 20 20"/></svg></span></button>`).join('')}</div></section>`;
-    }
     function singleDetailView(item,byId){
       const images=(item.images||[]).filter(img=>img.role!=='Diagram');
       const photo=(item.images||[]).find(img=>img.role==='Diagram');
@@ -559,8 +561,14 @@
       const diagram=connectionDiagram(item);
       const portSection=item.group!=='cable'?(portMapDiagram(item)||portCards(item)):null;
       const related=Object.values((item.related||[]).filter(link=>byId[link.target]).reduce((all,link)=>{if(!all[link.target]||link.relation!=='PART_OF_SERIES')all[link.target]=link;return all},{}));
+      // "06" 카드(화면 구성 모드 → EDID 설정 → 오디오 설정 순으로 먼저 있는 것 하나)는 05 주요 기능 오른쪽에 붙이고, 나머지는 그대로 전체 폭 아래에 둔다(사용자 요청 2026-09-27).
+      const hasVideoModes=!!item.videoModes?.modes?.length;
+      const hasEdidSwitch=!!item.edidSwitch?.table?.length;
+      let sideCard='',belowCards='';
+      if(hasVideoModes){sideCard=videoModesSection(item);belowCards=`${edidSwitchSection(item)}${audioMuxSection(item)}`}
+      else if(hasEdidSwitch){sideCard=edidSwitchSection(item);belowCards=audioMuxSection(item)}
+      else{sideCard=audioMuxSection(item)}
       return `${headerBlock({icon:GROUP_ICON[item.group],title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,diagram:!!photo})}
-      ${heroGallery(item,images)}
       <div class="rt-pg-cols">
         <div class="rt-pg-col">
           <section class="rt-pg-card rt-pg-col-mobile-1"><h2><span class="rt-pg-idx">01</span>한눈에 보기</h2>
@@ -570,14 +578,15 @@
           </section>
           <section class="rt-pg-card rt-pg-col-mobile-4"><h2><span class="rt-pg-idx">04</span>제품 사양</h2>${specTable(orderedSpecs)}</section>
           ${(item.features||[]).length?`<section class="rt-pg-card rt-pg-col-mobile-5"><h2><span class="rt-pg-idx">05</span>주요 기능</h2><ul class="rt-pg-checks">${item.features.map(feature=>`<li><i><svg width="11" height="11" viewBox="0 0 12 12"><path d="M2 6.3l2.6 2.5L10 3.4" fill="none" stroke="#fff" stroke-width="2"/></svg></i><span>${esc(feature.text)}</span></li>`).join('')}</ul></section>`:''}
+          ${sideCard}
         </div>
         <div class="rt-pg-col">
-          ${diagram?`<section class="rt-pg-card rt-pg-col-mobile-2"><h2><span class="rt-pg-idx">02</span>신호 흐름</h2>${diagram}</section>`:''}
-          ${portSection?`<section class="rt-pg-card rt-pg-col-mobile-3"><h2><span class="rt-pg-idx">03</span>단자 지도 <span class="rt-pg-note">— ${item.portMap?'실제 제품 사진 기준':'입출력 표 기준'}</span></h2>${portSection}</section>`:''}
+          ${portSection?`<section class="rt-pg-card rt-pg-col-mobile-2"><h2><span class="rt-pg-idx">02</span>Port Map <span class="rt-pg-note">— ${item.portMap?'실제 제품 사진 기준':'입출력 표 기준'}</span></h2>${portSection}</section>`:''}
+          ${diagram?`<section class="rt-pg-card rt-pg-col-mobile-3"><h2><span class="rt-pg-idx">03</span>Signal Flow</h2>${diagram}</section>`:''}
           ${recordSection(item,diagram,photo)}
         </div>
       </div>
-      ${videoModesSection(item)}${edidSwitchSection(item)}${audioMuxSection(item)}`;
+      ${belowCards}`;
     }
 
     // ---- 시리즈 템플릿(XDM·VDM·SPX) — 명세 2-3 ----
@@ -681,24 +690,28 @@
       if(configure){event.preventDefault();location.hash='#matrix-configurator';root.dispatchEvent(new CustomEvent('rt-configure-family',{detail:configure.dataset.configureFamily}));return}
       const printBtn=event.target.closest('[data-print]');
       if(printBtn){window.print();return}
+      // 0.55 2U 이상 제품의 정면·후면 버튼: 같은 단자 지도 안에서 정면 사진과 후면 단자 지도를 바꿔 보여준다.
+      const sideBtn=event.target.closest('[data-pm-side]');
+      if(sideBtn){const seg=sideBtn.closest('.rt-pg-seg'),scope=seg?.parentElement;if(scope){seg.querySelectorAll('[data-pm-side]').forEach(btn=>{const on=btn===sideBtn;btn.classList.toggle('rt-pg-on',on);btn.setAttribute('aria-pressed',String(on))});scope.querySelectorAll('[data-pm-face]').forEach(el=>{el.hidden=el.dataset.pmFace!==sideBtn.dataset.pmSide})}return}
       const diagramBtn=event.target.closest('[data-open-diagram]');
       if(diagramBtn){const record=body.querySelector('.rt-pg-record');if(record){record.open=true;record.querySelector('#rt-pg-diagram-photo')?.scrollIntoView({behavior:'smooth',block:'start'})}return}
       const moreBtn=event.target.closest('[data-more-features]');
       if(moreBtn){const more=body.querySelector('[data-feature-more]');if(more){more.hidden=false;moreBtn.hidden=true}return}
-      const zoomOpenBtn=event.target.closest('[data-zoom-src]');
-      if(zoomOpenBtn){openZoom(zoomOpenBtn.dataset.zoomSrc,zoomOpenBtn.dataset.zoomAlt,zoomOpenBtn);return}
-    });
-    lightbox.addEventListener('click',event=>{
-      const tab=event.target.closest('[data-zoom-shot]');
-      if(tab){showShot(Number(tab.dataset.zoomShot));return}
-      // 카드 바깥 어두운 곳이나 ✕를 누르면 닫는다.
-      if(event.target===lightbox||event.target.closest('[data-zoom-close]'))closeZoom();
+      const layoutChip=event.target.closest('[data-layout-chip]');
+      if(layoutChip){
+        const chips=layoutChip.parentElement;
+        chips.querySelectorAll('[data-layout-chip]').forEach(btn=>btn.classList.toggle('on',btn===layoutChip));
+        const preview=chips.nextElementSibling;
+        if(preview?.matches('[data-layout-preview]')){
+          preview.innerHTML=`${layoutShapeSvg(layoutChip.dataset.layout)}<small data-layout-name>${esc(layoutChip.dataset.layout)}</small>`;
+        }
+        return;
+      }
     });
     body.addEventListener('keydown',event=>{
       const filterBtn=event.target.closest('[data-product-filter]');
       if(filterBtn&&(event.key==='Enter'||event.key===' ')){event.preventDefault();filterBtn.click()}
     });
-    document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!lightbox.hidden)closeZoom()});
     body.addEventListener('input',event=>{
       if(!event.target.matches('[data-product-search]'))return;
       query=event.target.value.trim().toLowerCase();
