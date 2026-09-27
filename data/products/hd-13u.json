@@ -114,12 +114,12 @@
       "source": "C"
     },
     {
-      "text": "EDID 마인더 기능: 외부 연결된 디스플레이 EDID 저장, 내부 저장된 EDID 사용",
-      "source": "C"
+      "text": "오디오 병합·추출 선택 지원(둘 중 하나만 사용)",
+      "source": "U"
     },
     {
-      "text": "오디오는 로터리 '0'+SET 버튼으로 병합(Stereo Audio, 3.5mm 소리를 OUTPUT 1에 믹스)과 추출(HDMI Audio, 입력 소리를 AUDIO OUT으로)을 번갈아 고른다. 자세한 표는 '07 오디오 설정' 참고.",
-      "source": "U"
+      "text": "EDID 마인더 기능 지원(외부 EDID 저장, 내장 EDID 선택)",
+      "source": "C"
     }
   ],
   "specifications": [
