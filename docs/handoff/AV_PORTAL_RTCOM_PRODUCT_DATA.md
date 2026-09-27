@@ -154,6 +154,7 @@ rtcom-configurator 머리글의 "AV Portal에서 제품 찾기" 링크는 AV Por
 
 ## 6. 변경 관리
 
+- **0.33 선택 필드 추가**(제품정보 글래스 디자인, `docs/handoff/PRODUCT_GLASS_REDESIGN_SPEC.md` 6-A): `lead`(01 카드 요약, `**한 곳까지**` 굵게 허용)·`subtitle`(머리 부제)·`portMap`(`{image:"Rear"|"Front", items:[{n,label,desc,x1,x2}]}`, 단자 지도 번호표 좌표)·`lineup[].rackUnits`(시리즈 메인프레임 랙 유닛 숫자)를 추가했습니다. 모두 선택 필드라 없어도 화면이 깨지지 않습니다(없으면 개요 첫 문장·io 표 기반 카드로 대신 보여줍니다). `scripts/build-product-index.cjs`가 있을 때만 형식을 검사합니다.
 - **필드 추가**는 같은 `rtcom.products.v1` 안에서 합니다. 읽는 쪽은 모르는 필드를 무시합니다.
 - **필드 삭제·의미 변경**은 `rtcom.products.v2`로 올립니다. rtcom-configurator `CHANGELOG.md`에 먼저 기록합니다.
 - **`id`는 바꾸지 않습니다.** 부득이하면 새 `id`로 추가하고, 옛 `id`는 한 버전 동안 유지하면서 `issues`에 안내합니다.

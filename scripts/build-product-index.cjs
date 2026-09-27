@@ -37,6 +37,23 @@ function validate(product,file,ids){
   for(const link of product.related||[])if(!ids.has(link.target))fail(`related 대상 없음: ${link.target}`);
   const codes=new Set((product.sources||[]).map(source=>source.code));
   for(const row of [...(product.specifications||[]),...(product.io||[]),...(product.features||[])])if(row.source&&!codes.has(row.source))fail(`출처 코드 ${row.source}가 sources에 없음`);
+  // 0.33 — 제품정보 글래스 디자인(선택 필드, docs/handoff/PRODUCT_GLASS_REDESIGN_SPEC.md 3장). 없어도 동작하지만 있으면 형식을 검사한다.
+  if('lead' in product){
+    if(typeof product.lead!=='string'||!product.lead)fail('lead는 비어 있지 않은 문자열이어야 함');
+    else if((()=>{const n=(product.lead.match(/\*\*/g)||[]).length;return n>2||n%2!==0})())fail('lead의 **굵게**는 한 곳까지만, 정확히 여닫혀야 함');
+  }
+  if('subtitle' in product&&(typeof product.subtitle!=='string'||!product.subtitle))fail('subtitle은 비어 있지 않은 문자열이어야 함');
+  if('portMap' in product){
+    const map=product.portMap;
+    if(!map||!['Rear','Front'].includes(map.image))fail('portMap.image는 Rear 또는 Front여야 함');
+    else if(!(product.images||[]).some(image=>image.role===map.image))fail(`portMap.image(${map.image})에 해당하는 이미지가 images에 없음`);
+    if(!Array.isArray(map?.items)||!map.items.length)fail('portMap.items는 비어 있지 않은 배열이어야 함');
+    else for(const item of map.items){
+      if(typeof item.n!=='number'||typeof item.label!=='string'||typeof item.desc!=='string'||typeof item.x1!=='number'||typeof item.x2!=='number')fail('portMap.items 항목은 n·label·desc·x1·x2를 모두 갖춰야 함');
+      else if(item.x1>=item.x2)fail(`portMap.items의 x1(${item.x1})은 x2(${item.x2})보다 작아야 함`);
+    }
+  }
+  for(const entry of product.lineup||[])if('rackUnits' in entry&&(typeof entry.rackUnits!=='number'||entry.rackUnits<=0))fail(`lineup[].rackUnits는 양수여야 함(${entry.model})`);
   return errors;
 }
 

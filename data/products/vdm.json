@@ -14,6 +14,8 @@
   ],
   "english": "Variety Digital Matrix — modular cross-platform matrix switcher from 8x8 to 288x288 supporting HDMI, HDBaseT, fiber, 3G-SDI, DVI and VGA.",
   "korean": "HDMI·HDBaseT·광·3G-SDI·DVI·VGA 신호를 8x8부터 288x288까지 자유롭게 입출력하는 모듈형 크로스 플랫폼 매트릭스 스위처다.",
+  "subtitle": "Variety Digital Matrix · 크로스 플랫폼 모듈형 매트릭스",
+  "lead": "HDMI·HDBaseT·광·3G-SDI를 **한 프레임에서 섞어 쓰는** 크로스 플랫폼 매트릭스입니다. 8×8부터 288×288까지 10가지 프레임으로 소규모 회의실부터 대형 상황실까지 대응합니다.",
   "catalogPages": "17–20",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 17~27쪽의 소개·LINE-UP·주요기능·제품사양·크기 및 무게·입출력 보드·전송기 사양에서 확인했다.",
   "packageStatus": "VERIFIED",
@@ -219,52 +221,62 @@
     {
       "model": "VDM-8X",
       "kind": "메인프레임",
-      "summary": "8×8 · 483×265×132.5mm(W×D×H) · 4.8kg"
+      "summary": "8×8 · 483×265×132.5mm(W×D×H) · 4.8kg",
+      "rackUnits": 3
     },
     {
       "model": "VDM-16X",
       "kind": "메인프레임",
-      "summary": "16×16 · 483×402×310.3mm · 12.8kg"
+      "summary": "16×16 · 483×402×310.3mm · 12.8kg",
+      "rackUnits": 7
     },
     {
       "model": "VDM-32X",
       "kind": "메인프레임",
-      "summary": "32×32 · 483×402×532.6mm · 25.6kg"
+      "summary": "32×32 · 483×402×532.6mm · 25.6kg",
+      "rackUnits": 12
     },
     {
       "model": "VDM-48X",
       "kind": "메인프레임",
-      "summary": "48×48 · 483×402×843.75mm · 38.4kg"
+      "summary": "48×48 · 483×402×843.75mm · 38.4kg",
+      "rackUnits": 19
     },
     {
       "model": "VDM-64X",
       "kind": "메인프레임",
-      "summary": "64×64 · 483×402×1,066mm · 51.2kg"
+      "summary": "64×64 · 483×402×1,066mm · 51.2kg",
+      "rackUnits": 24
     },
     {
       "model": "VDM-80X",
       "kind": "메인프레임",
-      "summary": "80×80 · 483×402×1,199.4mm · 111.13kg(원문 · 계열 비례치 약 64kg과 차이가 커 제조사 확인 중)"
+      "summary": "80×80 · 483×402×1,199.4mm · 111.13kg(원문 · 계열 비례치 약 64kg과 차이가 커 제조사 확인 중)",
+      "rackUnits": 27
     },
     {
       "model": "VDM-128X",
       "kind": "메인프레임",
-      "summary": "128×128 · 483×430×1,643.85mm · 112.4kg"
+      "summary": "128×128 · 483×430×1,643.85mm · 112.4kg",
+      "rackUnits": 37
     },
     {
       "model": "VDM-180X",
       "kind": "메인프레임",
-      "summary": "180×180 · 483×430×1,688.2mm · 116kg"
+      "summary": "180×180 · 483×430×1,688.2mm · 116kg",
+      "rackUnits": 38
     },
     {
       "model": "VDM-256X",
       "kind": "메인프레임",
-      "summary": "256×256 · 2랙 폭 39RU · 매뉴얼 기준(카탈로그 미수록)"
+      "summary": "256×256 · 2랙 폭 39RU · 매뉴얼 기준(카탈로그 미수록)",
+      "rackUnits": 39
     },
     {
       "model": "VDM-288X",
       "kind": "메인프레임",
-      "summary": "288×288 · 922.6×430×1,688.25mm · 140kg"
+      "summary": "288×288 · 922.6×430×1,688.25mm · 140kg",
+      "rackUnits": 38
     },
     {
       "model": "HIS4-U",

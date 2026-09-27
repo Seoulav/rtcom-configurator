@@ -14,6 +14,8 @@
   ],
   "english": "eXtreme Digital Matrix — modular cross-platform 4K60 4:4:4 matrix switcher with HDMI 2.0, DisplayPort 1.2, 12G-SDI, HDBaseT 3.0 and fiber slots.",
   "korean": "HDMI 2.0·DisplayPort 1.2·12G-SDI·HDBaseT 3.0·광 신호를 4K60Hz 4:4:4로 입출력하는 모듈형 크로스 플랫폼 매트릭스 스위처다.",
+  "subtitle": "eXtreme Digital Matrix · 4K60 4:4:4 모듈형 매트릭스",
+  "lead": "HDMI·DisplayPort·12G-SDI·HDBaseT 3.0·광 신호를 **어떤 입력이든 원하는 출력으로** 바꿔 보내는 4K60 4:4:4 모듈형 매트릭스입니다. 카드를 꽂는 만큼 12×12부터 216×216까지 확장합니다.",
   "catalogPages": "4–12",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03, 48쪽판) 4~12쪽의 소개·LINE-UP·주요기능·제품사양·크기 및 무게·입출력 슬롯·전송기 사양에서 확인했고, 새 카탈로그(46쪽판) 4~12쪽과 줄 단위로 재대조해 메인프레임 범위 표기·HDBaseT 3.0 표기·카드 라인업을 재검증했다.",
   "packageStatus": "VERIFIED",
@@ -247,32 +249,38 @@
     {
       "model": "XDM-12",
       "kind": "메인프레임",
-      "summary": "12×12 · 482.6×369.5×177mm(W×D×H) · 10kg · 4U"
+      "summary": "12×12 · 482.6×369.5×177mm(W×D×H) · 10kg · 4U",
+      "rackUnits": 4
     },
     {
       "model": "XDM-20",
       "kind": "메인프레임",
-      "summary": "20×20 · 482.6×369.5×399.2mm · 15kg · 9U"
+      "summary": "20×20 · 482.6×369.5×399.2mm · 15kg · 9U",
+      "rackUnits": 9
     },
     {
       "model": "XDM-36",
       "kind": "메인프레임",
-      "summary": "36×36 · 482.6×402×399.2mm · 19kg · 9U"
+      "summary": "36×36 · 482.6×402×399.2mm · 19kg · 9U",
+      "rackUnits": 9
     },
     {
       "model": "XDM-72",
       "kind": "메인프레임",
-      "summary": "72×72 · 482.6×462.5×710.4mm · 47kg · 16U"
+      "summary": "72×72 · 482.6×462.5×710.4mm · 47kg · 16U",
+      "rackUnits": 16
     },
     {
       "model": "XDM-144",
       "kind": "메인프레임",
-      "summary": "144×144 · 482.6×400×1288.2mm · 70kg · 29U"
+      "summary": "144×144 · 482.6×400×1288.2mm · 70kg · 29U",
+      "rackUnits": 29
     },
     {
       "model": "XDM-216",
       "kind": "메인프레임",
-      "summary": "216×216 · 482.6×452×1777.2mm · 110kg · 40U"
+      "summary": "216×216 · 482.6×452×1777.2mm · 110kg · 40U",
+      "rackUnits": 40
     },
     {
       "model": "XDM-288",

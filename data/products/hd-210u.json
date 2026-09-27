@@ -13,6 +13,8 @@
   ],
   "english": "2x10 HDMI 2.0 18Gbps splitter selecting one of two inputs to ten outputs, 4K60 4:4:4",
   "korean": "두 입력 중 하나를 선택해 10개 출력으로 분배하는 4K 60Hz 4:4:4 HDMI 2.0 18Gbps 분배기다.",
+  "subtitle": "2×10 HDMI 2.0 Splitter · 입력 선택형",
+  "lead": "두 개의 HDMI 소스 중 **하나를 골라 10대의 디스플레이에 똑같이** 보냅니다. 4K 60Hz 4:4:4를 손실 없이 분배합니다.",
   "catalogPages": "37",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 39쪽의 소개·주요기능·제품사양·크기 및 무게·제품 이미지에서 확인했다.",
   "packageStatus": "VERIFIED",
@@ -192,6 +194,15 @@
     }
   ],
   "related": [],
+  "portMap": {
+    "image": "Rear",
+    "items": [
+      {"n": 1, "label": "HDMI IN 1·2", "desc": "소스 2대 연결, 하나를 골라 전체 출력", "x1": 40, "x2": 152},
+      {"n": 2, "label": "AUDIO IN", "desc": "3.5mm 아날로그 오디오 병합", "x1": 170, "x2": 192},
+      {"n": 3, "label": "HDMI OUT 1–10", "desc": "10개 모두 같은 영상", "x1": 220, "x2": 880},
+      {"n": 4, "label": "DC 12V", "desc": "전원 어댑터 12V 2A", "x1": 912, "x2": 940}
+    ]
+  },
   "sources": [
     {
       "code": "C",

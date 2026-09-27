@@ -161,40 +161,46 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.locator('.rt-card-modal .rt-card-choice[data-card="COS4-U"]').click();
     check('VDM-256X는 매뉴얼 후면 도면(랙 2대) 위에 입력 64·출력 64 슬롯이고 64번 슬롯에 카드를 장착할 수 있음',await page.locator('.rt-rack-photo .rt-rack-zone').count()===4&&await page.locator('.rt-rack-slot').count()===128&&await page.locator('button[data-slot="out-64"].rt-rack-slot-filled').count()===1&&await page.$eval('.rt-rack-photo-image',image=>image.naturalWidth>0));
     // 0.19 알티컴 공개 제품정보: 같은 화면 안에서 #products 주소 조각으로만 전환한다.
+    // 0.33 — 제품정보 글래스 디자인(rt-pg-*)으로 목록·상세 마크업이 바뀌었다.
     await page.click('a[data-view-tab="products"]');
-    await page.waitForSelector('.rt-product-card');
-    check('제품정보 탭을 누르면 구성기를 숨기고 제품 27종 목록을 표시',await page.locator('.rt-configurator-view').isHidden()&&await page.locator('.rt-product-card').count()===27);
+    await page.waitForSelector('.rt-pg-gridcard');
+    check('제품정보 탭을 누르면 구성기를 숨기고 제품 27종 목록을 표시',await page.locator('.rt-configurator-view').isHidden()&&await page.locator('.rt-pg-gridcard').count()===27);
     await page.click('[data-product-filter="extender"]');
-    check('전송기 분류는 11종',await page.locator('.rt-product-card').count()===11);
+    check('전송기 분류는 11종',await page.locator('.rt-pg-gridcard').count()===11);
     await page.click('[data-product-filter="all"]');
     await page.fill('[data-product-search]','QMS');
-    check('검색어 QMS로 일체형 매트릭스 2종이 남음',await page.locator('.rt-product-card').count()===2);
+    check('검색어 QMS로 일체형 매트릭스 2종이 남음',await page.locator('.rt-pg-gridcard').count()===2);
     await page.fill('[data-product-search]','');
-    await page.click('a.rt-product-card[href="#products/ct104-u-cr104-u"]');
-    await page.waitForSelector('#rt-product-title');
-    check('제품 카드를 누르면 상세(사양 표·입출력·출처)를 표시',(await page.locator('#rt-product-title').textContent()).includes('CT104-U')&&await page.locator('.rt-product-table tbody tr').count()>3&&await page.locator('.rt-product-source').isVisible());
+    await page.click('a.rt-pg-gridcard[href="#products/ct104-u-cr104-u"]');
+    await page.waitForSelector('.rt-pg-tablewrap');
+    check('제품 카드를 누르면 상세(사양 표·입출력·출처)를 표시',(await page.locator('#rt-pg-title').textContent()).includes('CT104-U')&&await page.locator('.rt-pg-tablewrap table tbody tr').count()>3);
+    await page.click('.rt-pg-record summary');
+    check('자료 출처·검토 기록을 펼치면 출처가 보임',await page.locator('.rt-pg-record[open]').count()===1&&(await page.locator('.rt-pg-record-body').textContent()).includes('카탈로그'));
     await page.waitForLoadState('networkidle');
-    check('상세 이미지가 모두 열림',(await page.$$eval('.rt-product-gallery img',images=>images.filter(image=>!image.complete||image.naturalWidth===0).length))===0);
-    // 0.21 연결 다이어그램: 전송기는 TX→케이블→RX 형태, 시리즈(카드 슬롯이 필요한 XDM 등)는 데이터가 없어 그리지 않는다.
-    await page.waitForSelector('.rt-product-diagram svg');
-    check('CT104-U/CR104-U 상세에 TX·케이블·RX 연결 다이어그램이 보임',await page.locator('.rt-product-diagram svg').isVisible()&&(await page.locator('.rt-product-diagram-legend').textContent()).includes('HDBaseT'));
+    check('상세 이미지가 모두 열림',(await page.$$eval('.rt-pg-gallery img',images=>images.filter(image=>!image.complete||image.naturalWidth===0).length))===0);
+    // 0.21/0.33 연결 다이어그램: "02 신호 흐름"은 항상 자동 생성 SVG를 보여준다(전송기는 TX→케이블→RX 형태). 제조사 원본 사진이 있으면 기록 영역에 따로 둔다.
+    await page.waitForSelector('.rt-pg-svg-wrap svg');
+    check('CT104-U/CR104-U 상세에 TX·케이블·RX 연결 다이어그램이 보임',await page.locator('.rt-pg-svg-wrap svg').first().isVisible()&&(await page.locator('.rt-pg-legend').first().textContent()).includes('HDBaseT'));
     await page.goBack();
-    await page.waitForSelector('.rt-product-card');
-    check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-product-card').count()===27);
+    await page.waitForSelector('.rt-pg-gridcard');
+    check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-pg-gridcard').count()===27);
     await page.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
-    await page.waitForSelector('.rt-product-diagram-photo img');
+    await page.waitForSelector('#rt-pg-title');
+    check('HD-13U 상세는 02 신호 흐름에 자동 생성 SVG를 보여주고, 제조사 원본 다이어그램 버튼으로 기록 영역의 사진을 펼침',await page.locator('.rt-pg-svg-wrap svg').first().isVisible());
+    await page.click('[data-open-diagram]');
+    await page.waitForSelector('.rt-pg-diagram-photo img');
     await page.waitForLoadState('networkidle');
-    check('HD-13U 상세에 제조사가 그린 연결 다이어그램 사진이 보이고 정상적으로 열림(카탈로그 원본)',await page.locator('.rt-product-diagram-photo img').isVisible()&&!(await page.locator('.rt-product-diagram svg').count())&&await page.$eval('.rt-product-diagram-photo img',img=>img.complete&&img.naturalWidth>0));
+    check('제조사 원본 다이어그램 버튼을 누르면 기록 영역이 펼쳐지고 카탈로그 원본 사진이 정상적으로 열림',await page.locator('.rt-pg-record[open]').count()===1&&await page.locator('.rt-pg-diagram-photo img').isVisible()&&await page.$eval('.rt-pg-diagram-photo img',img=>img.complete&&img.naturalWidth>0));
     check('연결 다이어그램에도 가로 스크롤이 생기지 않음',(await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth))===0);
     await page.goto(`${home}#products/vdm`,{waitUntil:'networkidle'});
-    await page.waitForSelector('#rt-product-title');
-    check('시리즈(VDM)에는 연결 다이어그램을 그리지 않음(카드 슬롯 구성이 필요해 단순화하지 않음)',await page.locator('.rt-product-diagram').count()===0);
-    check('제품 상세 주소(#products/vdm)로 바로 들어갈 수 있음',(await page.locator('#rt-product-title').textContent()).includes('VDM'));
+    await page.waitForSelector('#rt-pg-title');
+    check('시리즈(VDM)는 제조사 원본 다이어그램 버튼이 없고 02는 신호 구성 카드임(연결 다이어그램을 그리지 않음)',await page.locator('[data-open-diagram]').count()===0);
+    check('제품 상세 주소(#products/vdm)로 바로 들어갈 수 있음',(await page.locator('#rt-pg-title').textContent()).includes('VDM'));
     await page.click('[data-configure-family="VDM"]');
     await page.waitForSelector('.rt-chassis-card');
     check('시리즈 상세의 "구성기에서 구성하기"는 VDM 섀시 선택 단계로 이동',await page.locator('.rt-products-view').isHidden()&&await page.locator('[data-model="VDM-256X"]').count()===1);
     await page.click('a[data-view-tab="products"]');
-    await page.waitForSelector('.rt-product-card');
+    await page.waitForSelector('.rt-pg-gridcard');
     let productDialog=false;const onProductDialog=()=>{productDialog=true};page.on('dialog',onProductDialog);
     await page.click('.rt-brand-lockup');
     await page.waitForFunction(()=>!document.querySelector('.rt-configurator-view').hidden,null,{timeout:3000}).catch(()=>{});
@@ -229,7 +235,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('터치 휴대폰에서 세로 슬롯에 장착한 판넬이 슬롯을 꽉 채움(좌우 끝 잘림 없음)',fit.every(value=>Math.abs(value)<0.6),JSON.stringify(fit.map(value=>value.toFixed(2))));
     // 출처(sources)에 슬래시로 이어진 긴 파일 경로(U09 근거 문서 등)가 있으면 줄바꿈 지점이 없어 가로로 넘칠 수 있다(사용자 제보, 라이브 사이트 점검).
     await mobile.goto(`${home}#products/ct104-u-cr104-u`,{waitUntil:'networkidle'});
-    await mobile.waitForSelector('.rt-product-source');
+    await mobile.waitForSelector('.rt-pg-record');
+    await mobile.click('.rt-pg-record summary');
+    await mobile.waitForSelector('.rt-pg-record[open]');
     check('휴대폰에서 출처의 긴 파일 경로도 화면 폭을 넘지 않음',(await mobile.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth))===0);
     await phone.close();
   }finally{
