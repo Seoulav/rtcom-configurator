@@ -586,15 +586,17 @@
     // 스위치 번호마다 OFF·ON 두 그림을 나란히 그린다. 설명하는 스위치만 또렷하게, 나머지는 흐리게 그린다. 위쪽이 ON(dipSwitch.onUp).
     // HDS-21U·HDS-42MU는 오디오 병합·추출도 딥 스위치 1번으로 고르므로 07 오디오 설정 카드를 이 카드로 바꿨다.
     // target: 설명하는 스위치 번호(on이 그 상태) 또는 {번호:true/false} 묶음(EDID처럼 두 스위치 조합을 그릴 때, SPX-TX 3·4번).
-    function dipGraphic(count,target,on,onUp){
+    // color: "black"이면 검은 몸체(OBUX-1C Tx), 없으면 빨간 몸체(HDS·HD-210U·SPX-TX).
+    function dipGraphic(count,target,on,onUp,color){
+      const black=color==='black',bodyFill=black?'#2C2C2E':'#D7302B',slotOn=black?'#0B0B0C':'#6E1411',slotOff=black?'#636366':'#B9534F';
       const states=typeof target==='object'?target:{[target]:on};
       const sw=20,gap=8,x0=34,y0=10,h=44,W=x0+count*(sw+gap)+4,H=y0+h+22;
-      let body=`<rect x="${x0-8}" y="${y0-6}" width="${count*(sw+gap)+8}" height="${h+12}" rx="4" fill="#D7302B"/>`;
+      let body=`<rect x="${x0-8}" y="${y0-6}" width="${count*(sw+gap)+8}" height="${h+12}" rx="4" fill="${bodyFill}"/>`;
       // 위쪽이 ON이면 "ON"을 위에 두고 화살표가 위를, 아래쪽이 ON(SPX-TX)이면 "ON"을 아래에 두고 화살표가 아래를 가리킨다.
       body+=onUp?`<text x="4" y="${y0+12}" font-size="11" font-weight="800" fill="#1c1c1e">ON</text><path d="M14 ${y0+h-2}V${y0+18}M10 ${y0+22}l4-5 4 5" fill="none" stroke="#1c1c1e" stroke-width="1.6"/>`:`<text x="4" y="${y0+h}" font-size="11" font-weight="800" fill="#1c1c1e">ON</text><path d="M14 ${y0+2}V${y0+h-18}M10 ${y0+h-22}l4 5 4-5" fill="none" stroke="#1c1c1e" stroke-width="1.6"/>`;
       for(let i=1;i<=count;i++){
         const x=x0+(i-1)*(sw+gap),active=i in states,up=onUp?states[i]:!states[i];
-        body+=`<rect x="${x}" y="${y0}" width="${sw}" height="${h}" rx="2" fill="${active?'#6E1411':'#B9534F'}"/>`;
+        body+=`<rect x="${x}" y="${y0}" width="${sw}" height="${h}" rx="2" fill="${active?slotOn:slotOff}"/>`;
         if(active)body+=`<rect x="${x+2}" y="${up?y0+2:y0+h-20}" width="${sw-4}" height="18" rx="2" fill="#fff" stroke="#007AFF" stroke-width="2"/>`;
         body+=`<text x="${x+sw/2}" y="${y0+h+17}" text-anchor="middle" font-size="12" font-weight="${active?800:600}" fill="${active?'#1c1c1e':'#a1a1a6'}">${i}</text>`;
       }
@@ -605,9 +607,9 @@
       const ds=item.dipSwitch;
       if(!ds||!ds.rows?.length)return '';
       const idx=String(6+(item.videoModes?1:0)+(item.edidSwitch?.table?.length?1:0)+(item.audioMux?.modes?.length?1:0)).padStart(2,'0');
-      const state=(label,on,st,n)=>`<figure class="rt-pg-dip-state${on?' is-on':''}">${dipGraphic(ds.count,n,on,ds.onUp!==false)}<figcaption><em>${label}${st.name?` · ${esc(st.name)}`:''}</em>${esc(st.text)}</figcaption></figure>`;
+      const state=(label,on,st,n)=>`<figure class="rt-pg-dip-state${on?' is-on':''}">${dipGraphic(ds.count,n,on,ds.onUp!==false,ds.color)}<figcaption><em>${label}${st.name?` · ${esc(st.name)}`:''}</em>${esc(st.text)}</figcaption></figure>`;
       // combos: 두 개 이상 스위치를 함께 바꿔 고르는 설정(SPX-TX 3·4번 EDID). 조합마다 그림 하나와 이름·설명을 한 칸에 둔다.
-      const combos=(ds.combos||[]).map(cb=>`<div class="rt-pg-dip-row"><div class="rt-pg-dip-head"><b>${cb.switches.join('·')}번</b><span>${esc(cb.title)}</span></div><div class="rt-pg-dip-combos">${cb.items.map(it=>`<figure class="rt-pg-dip-state${it.default?' is-on':''}">${dipGraphic(ds.count,Object.fromEntries(cb.switches.map((n,i)=>[n,it.set[i]==='on'])),null,ds.onUp!==false)}<figcaption><em>${cb.switches.map((n,i)=>`${n} ${it.set[i].toUpperCase()}`).join(' · ')}${it.default?' · 기본값':''}</em><b>${esc(it.name)}</b> ${esc(it.text)}</figcaption></figure>`).join('')}</div></div>`).join('');
+      const combos=(ds.combos||[]).map(cb=>`<div class="rt-pg-dip-row"><div class="rt-pg-dip-head"><b>${cb.switches.join('·')}번</b><span>${esc(cb.title)}</span></div><div class="rt-pg-dip-combos">${cb.items.map(it=>`<figure class="rt-pg-dip-state${it.default?' is-on':''}">${dipGraphic(ds.count,Object.fromEntries(cb.switches.map((n,i)=>[n,it.set[i]==='on'])),null,ds.onUp!==false,ds.color)}<figcaption><em>${cb.switches.map((n,i)=>`${n} ${it.set[i].toUpperCase()}`).join(' · ')}${it.default?' · 기본값':''}</em><b>${esc(it.name)}</b> ${esc(it.text)}</figcaption></figure>`).join('')}</div></div>`).join('');
       const rows=ds.rows.map(row=>`<div class="rt-pg-dip-row"><div class="rt-pg-dip-head"><b>${row.n}번</b><span>${esc(row.title)}</span></div><div class="rt-pg-dip-states">${(ds.order?.[0]==='on'?[['ON',true,row.on],['OFF',false,row.off]]:[['OFF',false,row.off],['ON',true,row.on]]).map(([label,on,st])=>state(label,on,st,row.n)).join('')}</div>${row.note?`<p class="rt-pg-dip-note">${esc(row.note)}</p>`:''}</div>`).join('');
       return `<section class="rt-pg-card rt-pg-dip" style="margin-top:18px"><h2><span class="rt-pg-idx">${idx}</span>딥 스위치 설정 <span class="rt-pg-note">— ${esc(ds.place||'전면')} ${esc(ds.label||'딥 스위치')} · ${ds.onUp!==false?'위쪽':'아래쪽'}이 ON</span></h2><div class="rt-pg-dip-rows">${rows}${combos}</div>${ds.apply?`<p class="rt-pg-hint">※ ${esc(ds.apply)}</p>`:''}${ds.note?`<p class="rt-pg-hint">※ ${esc(ds.note)}</p>`:''}</section>`;
     }

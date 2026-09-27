@@ -22,6 +22,13 @@
 - 매뉴얼 6쪽 EDID Select Rotary S/W 표: 0 Through pass·1 1920x1080@60·2 3840x2160@30·3 3840x2160@60(Source 오디오), 8·9·10(A)·11(B)는 같은 EDID에 Analog 오디오 병합. 기본값 0. 06 EDID 설정 카드와 대표 그림(0·3·8번)을 추가했습니다. 링 표시는 매뉴얼 전면 사진(`xdm-ft101-fr101-front.webp`)의 MODE 로터리 위치입니다.
 - 사양·입출력 보완: 전원 DC +12V 1A, 광 출력(2km 전송 후 -10 dBm 이상), S/P(Mini USB, 펌웨어), DC IN(+12V·GND) 단자. 매뉴얼 표의 연결 단자에는 "DC Power Jack"이라고 적혀 있지만 사진의 DC IN은 3핀 터미널(+12V·GND)이라, 단자 이름은 사진 표기를 따랐습니다.
 
+## 3-1. OBUX-1C 딥 스위치(사용자 요청 "OBUX-1C 딥스위치 예상 이미지 만들어서 추가해", 매뉴얼 Ver.2.2 제공)
+
+- 근거: 매뉴얼 6~7쪽 "Dip S/W: EDID 설정과 오디오 선택을 위한 딥 스위치", 10쪽 "오디오 병합". 원본은 `.source-materials/RTcom_Manual_OBUX-1C_Ver2.2.pdf`.
+- Tx 전면 Mode 딥 스위치 4핀(검은 몸체): 1번 오디오(OFF HDMI Source 기본값 / ON Analog), 2·3·4번 EDID 조합 5가지(Through-pass 기본값, 1080p60, 2160p30, 2160p60, Through-pass EDID Fix)와 EDID Fix 설정 순서.
+- ON 방향: 매뉴얼에 없습니다. 매뉴얼 사진에서 출고 상태(모두 OFF)의 레버가 위에 있어 아래쪽을 ON으로 그렸고, 카드 안내에 "제품 하단 스티커로 확인"을 적었습니다. 실물 확인이 필요합니다.
+- 보완: 지원 사양(HDMI 2.0b, HDR Static·Dynamic, Dolby Atmos), HDCP v1.x·v2.2, S/P(Mini USB) 단자, 05 주요 기능 2줄.
+
 ## 4. 05 주요 기능 어투 통일
 
 - 29종 전체를 검사해 "~한다/~다." 문장 약 90줄(20개 제품)을 "~ 지원"·명사형으로 바꿨습니다. 뜻은 바꾸지 않았고, 카탈로그 원문 영어 줄(HD-D102U 등)과 "압력 저항 강도: …" 같은 사양 줄은 그대로 두었습니다. 바꾼 뒤 다시 검사해 "~다"로 끝나는 줄이 없음을 확인했습니다.
@@ -31,7 +38,7 @@
 - `node --test tests/*.test.cjs`: 39/39 통과(전송기 13종 기대값)
 - `node scripts/build-product-index.cjs --check`: 29개 통과
 - `node scripts/package-site.cjs`: 통과
-- `node scripts/e2e-smoke.cjs`: 118/118 통과(SPX-TX/RX 딥 스위치·CATx 신호 흐름, FT101 로터리 0·3·8번 확인 추가, 제품 29종·전송기 13종)
+- `node scripts/e2e-smoke.cjs`: 121/121 통과(SPX-TX/RX 딥 스위치·CATx 신호 흐름, FT101 로터리 0·3·8번, OBUX-1C 딥 스위치 확인 추가, 제품 29종·전송기 13종, 구성기 사진 슬롯 검사의 사진 로드 대기 보완)
 - 화면: `docs/qa/spx-txrx-screens/`
 
 ## 6. 되돌리기

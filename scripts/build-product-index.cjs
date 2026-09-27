@@ -106,6 +106,7 @@ function validate(product,file,ids){
       if(!codes.has(ds.source))fail(`dipSwitch.source(${ds.source})가 sources에 없음`);
       if('onUp' in ds&&typeof ds.onUp!=='boolean')fail('dipSwitch.onUp은 true/false여야 함');
       for(const key of ['label','apply','note'])if(key in ds&&(typeof ds[key]!=='string'||!ds[key]))fail(`dipSwitch.${key}는 비어 있지 않은 문자열이어야 함`);
+      if('color' in ds&&!['red','black'].includes(ds.color))fail('dipSwitch.color는 "red" 또는 "black"이어야 함');
       if('place' in ds&&(typeof ds.place!=='string'||!ds.place))fail('dipSwitch.place는 비어 있지 않은 문자열이어야 함');
       for(const cb of ds.combos||[]){
         if(!Array.isArray(cb.switches)||cb.switches.length<2||cb.switches.some(n=>!Number.isInteger(n)||n<1||n>ds.count))fail(`dipSwitch.combos[].switches는 1~${ds.count} 번호 2개 이상이어야 함`);

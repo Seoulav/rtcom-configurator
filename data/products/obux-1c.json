@@ -17,7 +17,7 @@
   "subtitle": "Optical Extender · 4K60 4:4:4 광 송·수신기",
   "lead": "4K60Hz 4:4:4 HDMI 신호를 **OM3 멀티모드 광케이블로 최대 300m** 전송하고, 아날로그 오디오 병합·추출을 지원합니다.",
   "catalogPages": "40",
-  "verificationSummary": "알티컴 종합 카탈로그(2026-03) 42쪽의 OBUX-1C 소개·주요기능·크기 및 무게·제품사양에서 확인했다.",
+  "verificationSummary": "알티컴 종합 카탈로그(2026-03) 42쪽의 OBUX-1C 소개·주요기능·크기 및 무게·제품사양에서 확인했다. OBUX-1C 사용자 매뉴얼 Ver.2.2(4~10쪽)로 Tx 전면 Mode 딥 스위치(오디오·EDID), 지원 사양(HDMI 2.0b·HDR·Dolby Atmos·HDCP 1.x/2.2), S/P 단자를 보완했다.",
   "packageStatus": "VERIFIED",
   "overview": "OBUX-1C는 최대 4K 60Hz(4:4:4) 해상도를 지원하는 광 송·수신기로, 멀티모드(SC Type, OM3) 전용 광케이블을 통해 영상 신호를 최대 300m까지 전송한다. 아날로그 오디오 신호의 병합(Embedded)과 추출(De-embedded) 기능을 갖추었다.\n\n압축 없이 원본 영상 신호를 그대로 전송하며, 컬러 딥(Color Depth)과 선명한 화질이 필요한 방송·전시·회의실·컨트롤룸 환경을 대상으로 한다.",
   "images": [
@@ -75,6 +75,13 @@
       "title": "알티컴 종합 카탈로그 2026 (국문)",
       "language": "ko",
       "note": "42쪽"
+    },
+    {
+      "type": "Manual",
+      "status": "FOUND",
+      "title": "OBUX-1C 사용자 매뉴얼 Ver.2.2",
+      "language": "ko",
+      "note": "4–10쪽(원본 비공개 보관)"
     }
   ],
   "features": [
@@ -93,6 +100,14 @@
     {
       "text": "HDCP 지원",
       "source": "C"
+    },
+    {
+      "text": "HDR(Static·Dynamic), Dolby Atmos 지원",
+      "source": "M1"
+    },
+    {
+      "text": "내장 EDID 지원(Tx Mode 딥 스위치)",
+      "source": "M1"
     },
     {
       "text": "Plug & Play로 쉽게 설치",
@@ -129,10 +144,19 @@
     {
       "group": "Video",
       "name": "HDCP",
-      "value": "지원",
+      "value": "HDCP v1.x, v2.2 지원",
       "unit": "",
       "condition": "",
-      "source": "C",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "지원 사양",
+      "value": "HDMI 2.0b, HDR(Static·Dynamic: HDR+·Dolby Vision 등), Dolby Atmos Audio",
+      "unit": "",
+      "condition": "OBUX-1C Tx·Rx 공통",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
@@ -216,6 +240,17 @@
       "verification": "VERIFIED"
     },
     {
+      "group": "TX · Control",
+      "connector": "Mini USB(S/P)",
+      "signal": "USB",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "TX · 펌웨어 업데이트",
+      "source": "M1",
+      "verification": "VERIFIED"
+    },
+    {
       "group": "RX · Transmission",
       "connector": "SC connector (female)",
       "signal": "Fiber (OM3 Multi Mode)",
@@ -246,6 +281,17 @@
       "protocol": "",
       "condition": "RX · 오디오 추출",
       "source": "J",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Control",
+      "connector": "Mini USB(S/P)",
+      "signal": "USB",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "RX · 펌웨어 업데이트",
+      "source": "M1",
       "verification": "VERIFIED"
     }
   ],
@@ -354,7 +400,94 @@
       "name": "서울영상테크 SI사업본부 검토 판단",
       "page": "",
       "scope": "사용자 위임(2026-09-27) — 카탈로그 내부 충돌·오기 정리"
+    },
+    {
+      "code": "M1",
+      "name": "OBUX-1C 사용자 매뉴얼 Ver.2.2",
+      "page": "4–10",
+      "scope": "제조사 공식 출처(사용자 제공 2026-09-27, .source-materials/RTcom_Manual_OBUX-1C_Ver2.2.pdf)"
     }
   ],
-  "issues": []
+  "issues": [],
+  "dipSwitch": {
+    "place": "전면",
+    "label": "Mode 딥 스위치(Tx)",
+    "count": 4,
+    "onUp": false,
+    "color": "black",
+    "source": "M1",
+    "rows": [
+      {
+        "n": 1,
+        "title": "오디오 모드",
+        "off": {
+          "name": "HDMI Source",
+          "text": "HDMI에 실린 원래 소리를 보낸다(기본값)."
+        },
+        "on": {
+          "name": "Analog",
+          "text": "후면 Audio IN(L·⏚·R) 소리를 HDMI에 병합한다. 병합한 소리는 Rx HDMI 출력과 Audio OUT으로 나간다."
+        }
+      }
+    ],
+    "combos": [
+      {
+        "title": "EDID 설정",
+        "switches": [
+          2,
+          3,
+          4
+        ],
+        "items": [
+          {
+            "set": [
+              "off",
+              "off",
+              "off"
+            ],
+            "name": "Through-pass",
+            "text": "디스플레이 EDID를 그대로 쓴다.",
+            "default": true
+          },
+          {
+            "set": [
+              "on",
+              "off",
+              "off"
+            ],
+            "name": "1920x1080p @60Hz",
+            "text": "내장 EDID"
+          },
+          {
+            "set": [
+              "off",
+              "on",
+              "off"
+            ],
+            "name": "3840x2160p @30Hz",
+            "text": "내장 EDID"
+          },
+          {
+            "set": [
+              "on",
+              "on",
+              "off"
+            ],
+            "name": "3840x2160p @60Hz",
+            "text": "내장 EDID"
+          },
+          {
+            "set": [
+              "on",
+              "on",
+              "on"
+            ],
+            "name": "Through-pass EDID Fix",
+            "text": "Through-pass로 읽은 디스플레이 EDID를 고정한다."
+          }
+        ]
+      }
+    ],
+    "note": "Through-pass EDID Fix: 2·3·4번을 모두 OFF(Through-pass)로 두고 디스플레이 EDID를 Tx에 읽힌 뒤, PC가 연결되어 있으면 그래픽 카드 설정에서 디스플레이 정보를 확인하고(연결되어 있지 않으면 약 5초 뒤) Tx 전원을 끄고 2·3·4번을 모두 ON으로 바꿔 전원을 켜면 그 EDID로 고정된다. ON 방향은 사진 기준(출고 시 모두 OFF, 레버가 위)이며 제품 하단 스티커로 확인한다."
+  }
 }
