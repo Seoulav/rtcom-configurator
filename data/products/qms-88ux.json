@@ -187,9 +187,9 @@
     {
       "group": "Control",
       "name": "제어",
-      "value": "전면 패널, LAN(Telnet & Web Browser), RS-232, IR Remote Control",
+      "value": "전면 패널, LAN(Telnet & Web Browser), RS-232",
       "unit": "",
-      "condition": "",
+      "condition": "46쪽판 28쪽 기준 3가지(옛 48쪽판의 IR Remote Control은 제외, issues I3)",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -258,11 +258,14 @@
   "portMap": {
     "image": "Rear",
     "items": [
-      {"n": 1, "label": "INPUT 1–8", "desc": "HDMI 소스 8대 연결", "x1": 6, "x2": 172},
-      {"n": 2, "label": "OUTPUT 1–10", "desc": "임의의 입력을 매트릭스로 전환해 출력(9·10번은 쿼드뷰 전용)", "x1": 180, "x2": 379},
-      {"n": 3, "label": "RS-232", "desc": "3핀 터미널 블록, 외부 제어", "x1": 386, "x2": 423},
-      {"n": 4, "label": "LAN", "desc": "TCP/IP 제어", "x1": 438, "x2": 454},
-      {"n": 5, "label": "AC 인렛", "desc": "전원 100-200 VAC", "x1": 573, "x2": 610}
+      {"n": 1, "label": "HDMI INPUT 1–8", "desc": "윗줄 · HDMI 소스 8대 연결", "x1": 58, "x2": 475},
+      {"n": 2, "label": "HDMI OUTPUT 1–8", "desc": "아랫줄 · 매트릭스 출력(임의 입력 선택·분배, 출력별 스케일링)", "x1": 58, "x2": 305, "side": "bottom"},
+      {"n": 3, "label": "HDMI OUTPUT 9·10", "desc": "멀티뷰(쿼드 뷰) 전용 출력 · 한 화면에 최대 8분할", "x1": 310, "x2": 372, "side": "bottom"},
+      {"n": 4, "label": "오디오(3-pin)", "desc": "초록 3핀 터미널 2개 · 연결 단자 표의 3-pin phoenix", "x1": 382, "x2": 422, "side": "bottom"},
+      {"n": 5, "label": "LAN", "desc": "TCP/IP 제어(Telnet·웹)", "x1": 436, "x2": 457, "side": "bottom"},
+      {"n": 6, "label": "RS-232", "desc": "D-sub 9핀 · 외부 제어", "x1": 468, "x2": 514, "side": "bottom"},
+      {"n": 7, "label": "Mini USB", "desc": "USB 시리얼 · 연결 단자 표의 Mini USB-serial", "x1": 527, "x2": 543, "side": "bottom"},
+      {"n": 8, "label": "AC 인렛", "desc": "전원 100-200 VAC", "x1": 560, "x2": 598, "side": "bottom"}
     ]
   },
   "sources": [

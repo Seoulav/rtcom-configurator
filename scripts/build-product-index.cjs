@@ -51,6 +51,10 @@ function validate(product,file,ids){
     else for(const item of map.items){
       if(typeof item.n!=='number'||typeof item.label!=='string'||typeof item.desc!=='string'||typeof item.x1!=='number'||typeof item.x2!=='number')fail('portMap.items 항목은 n·label·desc·x1·x2를 모두 갖춰야 함');
       else if(item.x1>=item.x2)fail(`portMap.items의 x1(${item.x1})은 x2(${item.x2})보다 작아야 함`);
+      {const photo=(product.images||[]).find(image=>image.role===map?.image),width=Number(String(photo?.resolution||'').split(/[×x]/)[0]);
+       if(!width)fail(`portMap 사진(${map?.image})에 resolution(가로×세로)이 없음`);
+       else if(item.x1<0||item.x2>width)fail(`portMap.items ${item.label}의 좌표(${item.x1}~${item.x2})가 사진 폭 ${width}px를 벗어남`);}
+      if('side' in item&&!['top','bottom'].includes(item.side))fail(`portMap.items의 side는 top 또는 bottom이어야 함(${item.side})`);
     }
   }
   for(const entry of product.lineup||[])if('rackUnits' in entry&&(typeof entry.rackUnits!=='number'||entry.rackUnits<=0))fail(`lineup[].rackUnits는 양수여야 함(${entry.model})`);
