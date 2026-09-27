@@ -448,7 +448,7 @@
     }
   ],
   "dipSwitch": {
-    "label": "MODE",
+    "label": "빨간색 딥 스위치",
     "count": 3,
     "onUp": true,
     "source": "M1",

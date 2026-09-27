@@ -235,6 +235,8 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.click('button[data-model="SPX-M2472"]');await acceptConfirm();
     await page.click('[data-action="next"]');
     await page.waitForLoadState('networkidle');
+    // 사진이 다 받아지기 전에 naturalWidth를 읽으면 0이라 가끔 실패했다(0.58 확인, 재실행 3회 모두 통과). 사진 로드를 최대 5초 기다린 뒤 본다.
+    await page.waitForFunction(()=>document.querySelector('.rt-rack-photo-image')?.naturalWidth>0,null,{timeout:5000}).catch(()=>{});
     check('SPX-M2472는 매뉴얼 후면 사진 위 세로 슬롯(입력 3·출력 6)으로 표시됨',await page.locator('.rt-rack-photo.rt-rack-vs .rt-rack-zone-input .rt-rack-slot').count()===3&&await page.locator('.rt-rack-photo.rt-rack-vs .rt-rack-zone-output .rt-rack-slot').count()===6&&await page.$eval('.rt-rack-photo-image',image=>image.naturalWidth>0));
     await page.evaluate(()=>localStorage.clear());
     await page.goto(home,{waitUntil:'networkidle'});
@@ -332,6 +334,13 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       await page.waitForSelector('#rt-pg-title');
       const hdsDip=await page.evaluate(()=>({audio:document.querySelectorAll('.rt-pg-audio').length,rows:document.querySelectorAll('.rt-pg-dip .rt-pg-dip-row').length,svgs:document.querySelectorAll('.rt-pg-dip svg[aria-label^="딥 스위치"]').length,idx:document.querySelector('.rt-pg-dip .rt-pg-idx')?.textContent,first:document.querySelector('.rt-pg-dip .rt-pg-dip-row')?.textContent.includes('병합'),flow:[...document.querySelectorAll('.rt-pg-svg-wrap svg')].some(svg=>svg.textContent.includes('오디오 병합 또는 추출 중 선택')&&!svg.textContent.includes('(OUT 1)')),overflow:document.documentElement.scrollWidth>innerWidth+1}));
       check(`${id} 07 딥 스위치 설정 카드가 오디오 설정 카드를 대신하고 스위치 ${rows}개 행·OFF/ON 그림 ${rows*2}개, 신호 흐름에 "선택"이 표시됨`,hdsDip.audio===0&&hdsDip.rows===rows&&hdsDip.svgs===rows*2&&hdsDip.idx==='07'&&hdsDip.first&&hdsDip.flow&&!hdsDip.overflow,JSON.stringify(hdsDip));
+    }
+    // 0.58 매트릭스 신호 흐름: 입력이 한 점으로 모이지 않고 크로스포인트(입력 가로줄 × 출력 세로줄)에서 출력마다 입력을 고른 예시 점을 찍는다(사용자 지적 2026-09-27).
+    for(const [id,ins,outs] of [['qms-44ux',4,4],['qms-88ux',8,8],['hds-42mu',4,2]]){
+      await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
+      await page.waitForSelector('#rt-pg-title');
+      const xp=await page.evaluate(()=>{const svg=[...document.querySelectorAll('.rt-pg-svg-wrap svg')].find(s=>s.textContent.includes('매트릭스')&&s.textContent.includes('선택 예시'));if(!svg)return null;return {picked:svg.querySelectorAll('circle[r="5"]').length,dots:svg.querySelectorAll('circle').length,caption:svg.textContent.includes('출력마다 입력 선택'),old:svg.textContent.includes('독립 출력')}});
+      check(`${id} 신호 흐름이 크로스포인트(${ins}×${outs})와 출력별 선택 예시 점 ${outs}개로 그려짐`,!!xp&&xp.picked===outs&&xp.dots===ins*outs&&xp.caption&&!xp.old,JSON.stringify(xp));
     }
     // 0.55 QMS-88UX 06 화면 구성 모드: 레이아웃 버튼을 누르면 해당 도해로 미리보기가 바뀐다(사용자 요청 2026-09-27).
     await page.goto(`${home}#products/qms-88ux`,{waitUntil:'networkidle'});
