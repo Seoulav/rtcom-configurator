@@ -59,6 +59,19 @@ background:radial-gradient(58vw 58vw at 12% -8%,rgba(0,122,255,.28),transparent 
 .crow{display:grid;grid-template-columns:70px 1fr auto;gap:8px;align-items:center;padding:7px 8px;border-radius:12px;background:var(--field);margin-top:6px}
 .crow img{width:70px;height:20px;object-fit:contain;background:#fff;border-radius:5px}.crow b{font-size:12.5px}.crow small{display:block;font-size:11px;color:var(--muted)}.crow em{font-style:normal;font-size:12px;font-weight:800;color:var(--accent)}
 .io .foot{display:flex;justify-content:space-between;align-items:center;margin-top:18px}
+/* 블랭크 커버 · 완성도 */
+.slot.blank{border-color:#5b626c;background:#3a4048}
+.slot.blank img{width:100cqh;height:100cqw;object-fit:fill;transform:rotate(-90deg);flex:none;position:absolute;opacity:.95}
+.fillbar{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;margin-top:14px;padding:10px 12px;border-radius:14px;background:rgba(0,122,255,.07)}
+.fillbar span{font-size:12.5px;color:var(--ink-2);font-weight:600}.fillbar b{color:var(--accent)}
+.comp{margin:14px 0 4px}.comp .head{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;color:var(--ink-2)}
+.pill{font-size:11px;font-weight:800;padding:3px 9px;border-radius:980px}.pill.no{background:rgba(224,138,32,.14);color:#C7590A}.pill.ok{background:rgba(30,158,82,.14);color:#177A41}
+.segbar{display:flex;height:9px;border-radius:9px;overflow:hidden;background:#fff;box-shadow:inset 0 0 0 1px #c9ced6;margin-top:7px}.segbar i{display:block;height:100%}
+.segleg{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;font-size:11px;color:var(--muted);font-weight:600}.segleg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+.done-banner{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 auto 14px;padding:8px 14px;border-radius:980px;background:rgba(30,158,82,.12);color:#177A41;font-weight:700;font-size:13px;width:max-content}
+.choice.blankopt img{background:#3a4048}
+.choice .zero{color:var(--muted);background:var(--field)}
+.sep{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin:10px 2px 6px}
 /* 카드 선택 팝업 */
 .modal{position:absolute;left:50%;top:120px;transform:translateX(-50%);width:560px;padding:20px;text-align:left;background:rgba(255,255,255,.9);z-index:3}
 .scrim{position:absolute;inset:0;background:rgba(28,28,30,.25);border-radius:24px;z-index:2}
@@ -101,20 +114,26 @@ ${foot('제품군','카드 슬롯 구성')}</div>
 <div class="prev"><span class="seg"><span class="on">정면</span><span>후면</span></span><img class="hero" src="${F}xdm-36-front.webp" alt=""><div class="cap"><b>XDM-36</b><span>9U · 입력 9 / 출력 9 슬롯 · 최대 36×36</span></div><div class="chips"><em>이중화 전원</em><em>핫스왑</em><em>전면 LCD 터치</em></div></div></section>`;
 // 03 카드 슬롯: rearPhotos['XDM-36'] 좌표 그대로
 const W=452,H=419,IN=[9,34,214,252],OUT=[214,34,419,252];
-const placed={'in-1':'XDM-HIS100','in-2':'XDM-CIS100','out-1':'XDM-HOS100','out-2':'XDM-COS100'};
-const zone=(dir,[x0,y0,x1,y1],sel)=>`<div class="zone" style="left:${x0/W*100}%;top:${y0/H*100}%;width:${(x1-x0)/W*100}%;height:${(y1-y0)/H*100}%;grid-template-columns:repeat(9,1fr)">${Array.from({length:9},(_,i)=>{const id=`${dir}-${i+1}`,c=placed[id];return `<div class="slot ${c?'filled':''} ${id===sel?'sel':''}">${c?`<img src="${C}${c}.webp" alt="">`:`<span class="plus">+</span><span class="no">${dir==='in'?'IN':'OUT'} ${i+1}</span>`}</div>`}).join('')}</div>`;
+const BASE={'in-1':'XDM-HIS100','in-2':'XDM-CIS100','out-1':'XDM-HOS100','out-2':'XDM-COS100'};
+let placed=BASE;
+const allIds=[...Array.from({length:9},(_,i)=>'in-'+(i+1)),...Array.from({length:9},(_,i)=>'out-'+(i+1))];
+const zone=(dir,[x0,y0,x1,y1],sel)=>`<div class="zone" style="left:${x0/W*100}%;top:${y0/H*100}%;width:${(x1-x0)/W*100}%;height:${(y1-y0)/H*100}%;grid-template-columns:repeat(9,1fr)">${Array.from({length:9},(_,i)=>{const id=`${dir}-${i+1}`,c=placed[id],bl=c==='BLANK';return `<div class="slot ${bl?'blank':c?'filled':''} ${id===sel?'sel':''}">${c?`<img src="${C}${bl?'XDM-BLANK':c}.webp" alt="">`:`<span class="plus">+</span><span class="no">${dir==='in'?'IN':'OUT'} ${i+1}</span>`}</div>`}).join('')}</div>`;
 const row=(c,t)=>`<div class="crow"><img src="${C}${c}.webp" alt=""><div><b>${c}</b><small>${t}</small></div><em>×1</em></div>`;
-const io=(sel,modal)=>bar(3)+`<section class="glass io rel"><span class="idx">03</span><h2>후면의 빈 칸을 눌러 카드를 장착하세요</h2><p class="sub">XDM-36 · 왼쪽 입력 9슬롯 / 오른쪽 출력 9슬롯 · 카드당 4채널</p>
+const io=(sel,modal)=>{const cards=allIds.filter(i=>placed[i]&&placed[i]!=='BLANK').length,blanks=allIds.filter(i=>placed[i]==='BLANK').length,empty=18-cards-blanks,done=!empty;return bar(3)+`<section class="glass io rel"><span class="idx">03</span>${done?'<div class="done-banner">✓ 18개 슬롯을 모두 채웠습니다 · 구성 완성</div>':''}<h2>후면의 빈 칸을 눌러 카드를 장착하세요</h2><p class="sub">XDM-36 · 왼쪽 입력 9슬롯 / 오른쪽 출력 9슬롯 · 카드당 4채널</p>
 <div class="io-grid"><div class="rackwrap"><div class="rack"><img src="${F}xdm-36-rear.webp" alt="">${zone('in',IN,sel)}${zone('out',OUT,sel)}</div>
-<div class="legend"><span><i style="background:#fff;border:1px solid #c9ced6"></i>빈 슬롯(눌러서 선택)</span><span><i style="background:#1a1f25"></i>장착한 카드</span><span><i style="background:rgba(0,122,255,.2);border:1.5px solid #007AFF"></i>선택 중</span></div></div>
+<div class="legend"><span><i style="background:#fff;border:1px solid #c9ced6"></i>빈 슬롯(눌러서 선택)</span><span><i style="background:#1a1f25"></i>장착한 카드</span><span><i style="background:#3a4048"></i>블랭크 커버</span><span><i style="background:rgba(0,122,255,.2);border:1.5px solid #007AFF"></i>선택 중</span></div>
+${empty?`<div class="fillbar"><span>비어 있는 슬롯 <b>${empty}개</b> — 카드를 더 넣지 않을 슬롯은 블랭크 커버로 막아 구성을 완성하세요.</span><span class="btn primary" style="padding:9px 14px">남은 ${empty}칸 블랭크로 채우기</span></div>`:''}</div>
 <aside class="glass summary"><h3>My configuration</h3><div class="m">XDM-36</div>
 <div class="meter"><div><span>입력</span><span>8 / 36채널</span></div><span><i style="width:22%"></i></span></div><div class="meter"><div><span>출력</span><span>8 / 36채널</span></div><span><i style="width:22%"></i></span></div>
-<p class="grp" style="margin-top:14px">입력 카드</p>${row('XDM-HIS100','HDMI 2.0')}${row('XDM-CIS100','HDBaseT 3.0')}<p class="grp" style="margin-top:12px">출력 카드</p>${row('XDM-HOS100','HDMI 2.0')}${row('XDM-COS100','HDBaseT 3.0')}</aside></div>
-<div class="foot"><span class="btn">← 섀시</span><span class="btn primary">선택 완료 · 전송기 연결 →</span></div>
-${modal?`<div class="scrim"></div><div class="modal glass"><h3>OUT 3 · 출력 카드 선택</h3><p>XDM 출력 카드 6종 · 모두 4채널</p>
-${[['XDM-HOS100','HDMI 2.0 · 월·쿼드',0],['XDM-WOS100','HDMI · Wall Overlay',0],['XDM-DPOS100','DisplayPort 1.2',0],['XDM-SOS100','12G-SDI',1],['XDM-COS100','HDBaseT 3.0 · POE',0],['XDM-FOS100','광 1LC',0]].map(c=>`<div class="choice ${c[2]?'on':''}"><img src="${C}${c[0]}.webp" alt=""><div><b>${c[0]}</b><small>${c[1]}</small></div><em>4포트</em></div>`).join('')}
-<div style="display:flex;justify-content:space-between;margin-top:10px"><span class="btn">슬롯 비우기</span><span class="btn">닫기</span></div></div>`:''}</section>`;
+<div class="comp"><div class="head"><span>슬롯 완성도 ${cards+blanks} / 18</span><span class="pill ${done?'ok':'no'}">${done?'완성':'미완성'}</span></div><div class="segbar"><i style="width:${cards/18*100}%;background:#007AFF"></i><i style="width:${blanks/18*100}%;background:#5b626c"></i></div><div class="segleg"><span><i style="background:#007AFF"></i>카드 ${cards}</span><span><i style="background:#5b626c"></i>블랭크 ${blanks}</span><span><i style="background:#fff;box-shadow:inset 0 0 0 1px #c9ced6"></i>빈칸 ${empty}</span></div></div>
+<p class="grp" style="margin-top:14px">입력 카드</p>${row('XDM-HIS100','HDMI 2.0')}${row('XDM-CIS100','HDBaseT 3.0')}<p class="grp" style="margin-top:12px">출력 카드</p>${row('XDM-HOS100','HDMI 2.0')}${row('XDM-COS100','HDBaseT 3.0')}${blanks?`<p class="grp" style="margin-top:12px">마감재</p><div class="crow"><img src="${C}XDM-BLANK.webp" alt=""><div><b>블랭크 커버</b><small>커넥터 없음 · 부품번호 확인 필요</small></div><em>×${blanks}</em></div>`:''}</aside></div>
+<div class="foot"><span class="btn">← 섀시</span><span class="btn primary">${done?'선택 완료 · 전송기 연결 →':`빈칸 ${empty}개 남음 · 그래도 다음 →`}</span></div>
+${modal?`<div class="scrim"></div><div class="modal glass"><h3>OUT 3 · 출력 카드 선택</h3><p>카드를 넣지 않을 슬롯은 블랭크 커버로 막습니다.</p><div class="choice blankopt on"><img src="${C}XDM-BLANK.webp" alt=""><div><b>블랭크 커버</b><small>커넥터 없음 · 빈 슬롯 마감</small></div><em class="zero">0포트</em></div><p class="sep">출력 카드 6종 · 4채널</p>
+${[['XDM-HOS100','HDMI 2.0 · 월·쿼드',0],['XDM-WOS100','HDMI · Wall Overlay',0],['XDM-DPOS100','DisplayPort 1.2',0],['XDM-SOS100','12G-SDI',0],['XDM-COS100','HDBaseT 3.0 · POE',0],['XDM-FOS100','광 1LC',0]].map(c=>`<div class="choice ${c[2]?'on':''}"><img src="${C}${c[0]}.webp" alt=""><div><b>${c[0]}</b><small>${c[1]}</small></div><em>4포트</em></div>`).join('')}
+<div style="display:flex;justify-content:space-between;margin-top:10px"><span class="btn">슬롯 비우기(흰 칸)</span><span class="btn">닫기</span></div></div>`:''}</section>`};
 S['3']=io('out-3',false);S['3m']=io('out-3',true);
+placed={...BASE,'in-8':'BLANK','in-9':'BLANK','out-9':'BLANK'};S['3b']=io('',false);
+placed=Object.fromEntries(allIds.map(i=>[i,BASE[i]||'BLANK']));S['3c']=io('',false);placed=BASE;
 S['4']=bar(4)+`<section class="glass split"><div class="pick"><span class="idx">04</span><h2>카드에 연결할 전송기를 확인하세요</h2><p class="sub">HDBaseT·광 카드 2장에 기본 전송기를 연결했습니다.</p>
 <p class="grp">IN 2 · XDM-CIS100 · 입력 4채널</p>
 ${opt('XDM-CTR100','송신(TX) · 기본 연동',['4K60 4:4:4 · CAT6A 100m / CAT6 80m','전원 직접 연결(카드 직결 시 PSE 불가)'],1)}
