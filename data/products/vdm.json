@@ -322,11 +322,6 @@
       "summary": "HDBaseT DVI/HDMI·오디오·RS-232 송수신기 · 100m"
     },
     {
-      "model": "CT102-U / CR102-U",
-      "kind": "전송기",
-      "summary": "HDBaseT 송수신기 · 송신기 VGA/DVI/HDMI 입력 · 수신기 스케일링·심리스 · 100m"
-    },
-    {
       "model": "CT103-U-H / CR103-U",
       "kind": "전송기",
       "summary": "HDBaseT 벽부형 송수신기 · 100m"
@@ -342,11 +337,6 @@
       "summary": "광 DVI/HDMI·오디오·RS-232 송수신기 · 싱글모드 2km/멀티모드 500m"
     },
     {
-      "model": "FT102-U / FR102-U",
-      "kind": "전송기",
-      "summary": "광 송수신기 · 송신기 VGA/DVI/HDMI 입력 · 수신기 스케일링·심리스 · 최대 2km"
-    },
-    {
       "model": "FT103-U-H / FR103-U",
       "kind": "전송기",
       "summary": "광 벽부형 DVI/HDMI 송수신기 · 최대 2km"
@@ -357,11 +347,6 @@
       "relation": "PART_OF_SERIES",
       "target": "ct101-u-cr101-u",
       "note": "VDM 시리즈 HDBaseT 송수신기"
-    },
-    {
-      "relation": "PART_OF_SERIES",
-      "target": "ct102-u-cr102-u",
-      "note": "VDM 시리즈 HDBaseT 송수신기(VGA 입력·스케일링)"
     },
     {
       "relation": "PART_OF_SERIES",
@@ -377,11 +362,6 @@
       "relation": "PART_OF_SERIES",
       "target": "ft101-u-fr101-u",
       "note": "VDM 시리즈 광 송수신기 · 구성기에서 FIS4-U↔FT101-U, FOS4-U↔FR101-U 연동(U09)"
-    },
-    {
-      "relation": "PART_OF_SERIES",
-      "target": "ft102-u-fr102-u",
-      "note": "VDM 시리즈 광 송수신기(VGA 입력·스케일링)"
     },
     {
       "relation": "PART_OF_SERIES",
@@ -420,7 +400,7 @@
       "code": "R3",
       "status": "REVIEW REQUIRED",
       "title": "DVI·VGA 신호와 보드 목록 차이",
-      "detail": "18쪽 입출력 신호와 17쪽 소개문은 DVI·VGA(소개문은 3G/6G-SDI도)를 적었지만 19~20쪽 보드 목록에는 VGA 보드나 6G-SDI 보드가 없다. DVI는 HDMI 보드의 'DVI 1.0' 표준으로만 나타나며, VGA 입력은 CT102-U·FT102-U 송신기 사양에서만 확인된다."
+      "detail": "18쪽 입출력 신호와 17쪽 소개문은 DVI·VGA(소개문은 3G/6G-SDI도)를 적었지만 19~20쪽 보드 목록에는 VGA 보드나 6G-SDI 보드가 없다. DVI는 HDMI 보드의 'DVI 1.0' 표준으로만 나타나며, VGA 입력은 CT102-U·FT102-U 송신기 사양에서만 확인된다. CT102-U/CR102-U·FT102-U/FR102-U는 2026-09-27 확인한 최신 카탈로그(RTcom_catalogue, 46쪽)에 실려 있지 않아 공개 목록에서 뺐다(단종 가능성, docs/audit/SITE_SCOPE_REVIEW.md 참고)."
     },
     {
       "code": "R4",

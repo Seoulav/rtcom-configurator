@@ -98,40 +98,6 @@
       "cardImage": "qms-88ux-front.webp"
     },
     {
-      "id": "hd-104u",
-      "group": "distribution",
-      "productName": "HD-104U",
-      "model": "HD-104U",
-      "itemType": "PRODUCT",
-      "categories": [
-        "영상",
-        "Video",
-        "Splitter"
-      ],
-      "english": "1x4 HDMI 2.0 18Gbps splitter supporting 4K60 4:4:4 with EDID minder",
-      "korean": "4K 60Hz 4:4:4와 EDID 마인더를 지원하는 1입력 4출력 HDMI 2.0 18Gbps 분배기다.",
-      "catalogPages": "37",
-      "packageStatus": "REVIEW REQUIRED",
-      "cardImage": "hd-104u-front.webp"
-    },
-    {
-      "id": "hd-108u",
-      "group": "distribution",
-      "productName": "HD-108U",
-      "model": "HD-108U",
-      "itemType": "PRODUCT",
-      "categories": [
-        "영상",
-        "Video",
-        "Splitter"
-      ],
-      "english": "1x8 HDMI 2.0 18Gbps splitter supporting 4K60 4:4:4 with EDID minder",
-      "korean": "4K 60Hz 4:4:4와 EDID 마인더를 지원하는 1입력 8출력 HDMI 2.0 18Gbps 분배기다.",
-      "catalogPages": "38",
-      "packageStatus": "VERIFIED",
-      "cardImage": "hd-108u-front.webp"
-    },
-    {
       "id": "hd-13u",
       "group": "distribution",
       "productName": "HD-13U",
@@ -147,6 +113,40 @@
       "catalogPages": "36",
       "packageStatus": "VERIFIED",
       "cardImage": "hd-13u-front.webp"
+    },
+    {
+      "id": "hd-14u",
+      "group": "distribution",
+      "productName": "HD-14U",
+      "model": "HD-14U",
+      "itemType": "PRODUCT",
+      "categories": [
+        "영상",
+        "Video",
+        "Splitter"
+      ],
+      "english": "1x4 HDMI 2.0 18Gbps splitter supporting 4K60 4:4:4 with EDID minder",
+      "korean": "4K 60Hz 4:4:4와 EDID 마인더를 지원하는 1입력 4출력 HDMI 2.0 18Gbps 분배기다.",
+      "catalogPages": "37",
+      "packageStatus": "REVIEW REQUIRED",
+      "cardImage": "hd-14u-front.webp"
+    },
+    {
+      "id": "hd-18u",
+      "group": "distribution",
+      "productName": "HD-18U",
+      "model": "HD-18U",
+      "itemType": "PRODUCT",
+      "categories": [
+        "영상",
+        "Video",
+        "Splitter"
+      ],
+      "english": "1x8 HDMI 2.0 18Gbps splitter supporting 4K60 4:4:4 with EDID minder",
+      "korean": "4K 60Hz 4:4:4와 EDID 마인더를 지원하는 1입력 8출력 HDMI 2.0 18Gbps 분배기다.",
+      "catalogPages": "38",
+      "packageStatus": "VERIFIED",
+      "cardImage": "hd-18u-front.webp"
     },
     {
       "id": "hd-210u",
@@ -234,23 +234,6 @@
       "cardImage": "ct101-u-cr101-u-main.webp"
     },
     {
-      "id": "ct102-u-cr102-u",
-      "group": "extender",
-      "productName": "CT102-U / CR102-U",
-      "model": "CT102-U / CR102-U",
-      "itemType": "PRODUCT",
-      "categories": [
-        "영상",
-        "Video",
-        "Extender"
-      ],
-      "english": "HDBaseT transmitter/receiver pair for VGA/DVI/HDMI, stereo audio and RS-232 up to 100m over one CATx cable; receiver adds scaling and seamless switching.",
-      "korean": "VGA·DVI·HDMI 신호와 오디오·RS-232를 CATx 케이블 한 가닥으로 최대 100m 전송하는 HDBaseT 송·수신기이며, 수신기는 스케일링과 심리스 기능을 지원한다.",
-      "catalogPages": "22",
-      "packageStatus": "REVIEW REQUIRED",
-      "cardImage": "ct102-u-cr102-u-main.webp"
-    },
-    {
       "id": "ct103-u-h-cr103-u",
       "group": "extender",
       "productName": "CT103-U-H / CR103-U",
@@ -300,23 +283,6 @@
       "catalogPages": "25",
       "packageStatus": "REVIEW REQUIRED",
       "cardImage": "ft101-u-fr101-u-main.webp"
-    },
-    {
-      "id": "ft102-u-fr102-u",
-      "group": "extender",
-      "productName": "FT102-U / FR102-U",
-      "model": "FT102-U / FR102-U",
-      "itemType": "PRODUCT",
-      "categories": [
-        "영상",
-        "Video",
-        "Extender"
-      ],
-      "english": "Fiber optic transmitter/receiver pair for VGA/DVI/HDMI, audio and RS-232 up to 2km single-mode or 500m multi-mode; receiver adds scaling and seamless switching.",
-      "korean": "VGA·DVI·HDMI 신호와 오디오·RS-232를 광케이블로 싱글모드 최대 2km, 멀티모드 최대 500m 전송하는 광 송·수신기이며, 수신기는 스케일링과 심리스 기능을 지원한다.",
-      "catalogPages": "26",
-      "packageStatus": "REVIEW REQUIRED",
-      "cardImage": "ft102-u-fr102-u-main.webp"
     },
     {
       "id": "ft103-u-h-fr103-u",
