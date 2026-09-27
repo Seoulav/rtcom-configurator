@@ -104,38 +104,68 @@
       if(!txVideo||!rxVideo||!transmission)return null;
       const isFiber=/광|Fiber|SC|LC/i.test(`${transmission.connector} ${transmission.signal} ${transmission.protocol}`);
       const cableColor=isFiber?COLOR_FIBER:COLOR_COPPER;
-      const distanceSpec=(item.specifications||[]).find(spec=>/전송거리/.test(spec.name));
+      // 케이블별로 최대 전송거리가 다르면(예: XDM-CTR100의 CAT6A 100m·CAT6 CI6522 80m) 사양에 적힌 행을 모두 보여준다.
+      const distanceSpecs=(item.specifications||[]).filter(spec=>/전송거리/.test(spec.name));
       const cableName=isFiber?'광케이블':'HDBaseT(CATx)';
-      const cableDistance=distanceSpec?`최대 ${distanceSpec.value}${distanceSpec.unit?` ${distanceSpec.unit}`:''}`:'';
+      const cableDistance=distanceSpecs.length?`최대 ${distanceSpecs.map(spec=>`${spec.value}${spec.unit||''}`).join(' / ')}`:'';
       const [txLabel,rxLabel]=isTransceiver?[item.model.split(' / ')[0],item.model.split(' / ')[0]]:(item.model.includes(' / ')?item.model.split(' / '):[item.model,item.model]);
       // XDM-CTR100은 PSE(전원 공급 장비)가 별도 판매 모델이라, TX/RX 표시 대신 실제로 쓰는 두 조합(매트릭스 카드 직결 · PSE 조합)을 보여준다.
       // 근거: docs/evidence/RTCOM_MATRIX_EVIDENCE_AND_GAPS.md U03·U04(사용자 확인 2026-09-26).
+      // 2026-09-27 재검토(docs/audit/PRODUCT_DIAGRAM_REVIEW_2026-09-27.md A1): 조합 1은 CTR100끼리 짝짓지 않는다.
+      // 실제로는 입력 경로(소스→CTR100 TX→HDBaseT→XDM-CIS100 카드)와 출력 경로(XDM-COS100 카드→HDBaseT→CTR100 RX→디스플레이)
+      // 두 줄로 나뉘어 매트릭스 카드와 연결된다.
       const pseCombo=item.id==='xdm-ctr100';
-      const width=980,height=pseCombo?320:220,midY=pseCombo?100:110,boxW=170,boxH=76;
-      const srcX=60,txX=210,rxX=width-210-boxW,dstX=width-60;
-      let body=monitorIcon(srcX,midY,pseCombo?'소스/매트릭스':'소스 기기')+arrow(srcX+24,midY,txX-6,midY,COLOR_IN);
-      if(pseCombo)body+=`<text x="${width/2}" y="${midY-56}" text-anchor="middle" font-size="11" font-weight="700" fill="#687386">조합 1 · XDM-CIS100·COS100 카드에 직결(전원 직접 연결, PSE 사용 불가)</text>`;
-      body+=deviceBox(txX,midY-boxH/2,boxW,boxH,txLabel,isTransceiver?'송신 모드':'송신기(TX)');
-      body+=`<path d="M${txX+boxW} ${midY}L${rxX} ${midY}" stroke="${cableColor}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/><text x="${(txX+boxW+rxX)/2}" y="${midY-20}" text-anchor="middle" font-size="11" font-weight="700" fill="${cableColor}">${svgEsc(cableName)}</text>${cableDistance?`<text x="${(txX+boxW+rxX)/2}" y="${midY-6}" text-anchor="middle" font-size="10" fill="${cableColor}">${svgEsc(cableDistance)}</text>`:''}`;
-      body+=deviceBox(rxX,midY-boxH/2,boxW,boxH,rxLabel,isTransceiver?'수신 모드':'수신기(RX)');
-      body+=arrow(rxX+boxW+6,midY,dstX-24,midY,COLOR_OUT)+monitorIcon(dstX,midY,'디스플레이');
+      let body,width,height,captions;
       if(pseCombo){
-        const y2=240,pseX=txX,ctrX=rxX;
-        body+=`<text x="${width/2}" y="${y2-56}" text-anchor="middle" font-size="11" font-weight="700" fill="#687386">조합 2 · 매트릭스 카드에 연결하지 않을 때</text>`;
-        body+=deviceBox(pseX,y2-boxH/2,boxW,boxH,'XDM-CTR100 PSE','전원 연결(POE 공급측)');
-        body+=`<path d="M${pseX+boxW} ${y2}L${ctrX} ${y2}" stroke="${cableColor}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/><text x="${(pseX+boxW+ctrX)/2}" y="${y2-14}" text-anchor="middle" font-size="10" font-weight="700" fill="${cableColor}">${svgEsc(cableName)} · 신호+전원 동시 공급</text>`;
-        body+=deviceBox(ctrX,y2-boxH/2,boxW,boxH,'XDM-CTR100','전원 케이블 불필요(PD)');
-        body+=`<text x="${width/2}" y="${y2+boxH/2+22}" text-anchor="middle" font-size="10" fill="#687386">TX/RX는 각 기기 DIP 스위치로 선택 · CIS100·COS100 카드에 직결할 때는 이 조합 대신 CTR100에 전원을 직접 연결</text>`;
+        width=980;
+        const boxW=170,boxH=70;
+        const iconX=60,leftBoxX=210,cardX=600,dstX=920;
+        const row1Y=100,row2Y=220,combo2Y=390;
+        height=460;
+        const cableSeg=(y)=>`<path d="M${leftBoxX+boxW} ${y}L${cardX} ${y}" stroke="${cableColor}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/><text x="${(leftBoxX+boxW+cardX)/2}" y="${y-14}" text-anchor="middle" font-size="10" font-weight="700" fill="${cableColor}">${svgEsc(cableName)}</text>${cableDistance?`<text x="${(leftBoxX+boxW+cardX)/2}" y="${y+22}" text-anchor="middle" font-size="9" fill="${cableColor}">${svgEsc(cableDistance)}</text>`:''}`;
+        const cableSeg2=(x1,x2,y)=>`<path d="M${x1+boxW} ${y}L${x2} ${y}" stroke="${cableColor}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/><text x="${(x1+boxW+x2)/2}" y="${y-14}" text-anchor="middle" font-size="10" font-weight="700" fill="${cableColor}">${svgEsc(cableName)} · 신호+전원 동시 공급</text>${cableDistance?`<text x="${(x1+boxW+x2)/2}" y="${y+22}" text-anchor="middle" font-size="9" fill="${cableColor}">${svgEsc(cableDistance)}</text>`:''}`;
+        body=`<text x="${width/2}" y="32" text-anchor="middle" font-size="11" font-weight="700" fill="#687386">조합 1 · XDM-CIS100·COS100 카드에 직결(전원 직접 연결, PSE 사용 불가)</text>`;
+        // 입력 경로: 소스 → CTR100(TX) → HDBaseT → XDM-CIS100 카드
+        body+=monitorIcon(iconX,row1Y,'소스 기기')+arrow(iconX+24,row1Y,leftBoxX-6,row1Y,COLOR_IN);
+        body+=deviceBox(leftBoxX,row1Y-boxH/2,boxW,boxH,'XDM-CTR100','TX · 전원 직접 연결');
+        body+=cableSeg(row1Y);
+        body+=deviceBox(cardX,row1Y-boxH/2,boxW,boxH,'XDM-CIS100','입력 카드(HDBaseT)');
+        // 출력 경로: XDM-COS100 카드 → HDBaseT → CTR100(RX) → 디스플레이
+        body+=deviceBox(leftBoxX,row2Y-boxH/2,boxW,boxH,'XDM-COS100','출력 카드(HDBaseT)');
+        body+=cableSeg(row2Y);
+        body+=deviceBox(cardX,row2Y-boxH/2,boxW,boxH,'XDM-CTR100','RX · 전원 직접 연결');
+        body+=arrow(cardX+boxW+6,row2Y,dstX-24,row2Y,COLOR_OUT)+monitorIcon(dstX,row2Y,'디스플레이');
+        // 조합 2: 매트릭스 카드(HDBaseT 카드) 없이 XDM HDMI 카드(HI100·HIS100·HOS100·WOS100)를 연장하거나 단독 1:1로 쓸 때(core.js psePair)
+        body+=`<text x="${width/2}" y="${combo2Y-56}" text-anchor="middle" font-size="11" font-weight="700" fill="#687386">조합 2 · HDBaseT 카드 없이 연장할 때(XDM HDMI 카드 연장·단독 1:1)</text>`;
+        body+=monitorIcon(iconX,combo2Y,'소스 기기')+arrow(iconX+24,combo2Y,leftBoxX-6,combo2Y,COLOR_IN);
+        body+=deviceBox(leftBoxX,combo2Y-boxH/2,boxW,boxH,'XDM-CTR100 PSE','전원 연결(POE 공급측)');
+        body+=cableSeg2(leftBoxX,cardX,combo2Y);
+        body+=deviceBox(cardX,combo2Y-boxH/2,boxW,boxH,'XDM-CTR100','전원 케이블 불필요(PD)');
+        body+=arrow(cardX+boxW+6,combo2Y,dstX-24,combo2Y,COLOR_OUT)+monitorIcon(dstX,combo2Y,'디스플레이');
+        body+=`<text x="${width/2}" y="${combo2Y+boxH/2+22}" text-anchor="middle" font-size="10" fill="#687386">TX/RX는 각 기기 DIP 스위치로 선택 · CIS100·COS100 카드에 직결할 때는 이 조합 대신 CTR100에 전원을 직접 연결</text>`;
+        captions=[[COLOR_IN,'입력'],[cableColor,cableName],[COLOR_OUT,'출력']];
+      } else {
+        width=980;height=220;
+        const midY=110,boxW=170,boxH=76;
+        const srcX=60,txX=210,rxX=width-210-boxW,dstX=width-60;
+        body=monitorIcon(srcX,midY,'소스 기기')+arrow(srcX+24,midY,txX-6,midY,COLOR_IN);
+        body+=deviceBox(txX,midY-boxH/2,boxW,boxH,txLabel,isTransceiver?'송신 모드':'송신기(TX)');
+        body+=`<path d="M${txX+boxW} ${midY}L${rxX} ${midY}" stroke="${cableColor}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/><text x="${(txX+boxW+rxX)/2}" y="${midY-20}" text-anchor="middle" font-size="11" font-weight="700" fill="${cableColor}">${svgEsc(cableName)}</text>${cableDistance?`<text x="${(txX+boxW+rxX)/2}" y="${midY-6}" text-anchor="middle" font-size="10" fill="${cableColor}">${svgEsc(cableDistance)}</text>`:''}`;
+        body+=deviceBox(rxX,midY-boxH/2,boxW,boxH,rxLabel,isTransceiver?'수신 모드':'수신기(RX)');
+        body+=arrow(rxX+boxW+6,midY,dstX-24,midY,COLOR_OUT)+monitorIcon(dstX,midY,'디스플레이');
+        captions=[[COLOR_IN,'입력(소스 → TX)'],[cableColor,cableName],[COLOR_OUT,'출력(RX → 디스플레이)']];
       }
-      const extras=io.filter(port=>port!==txVideo&&port!==rxVideo&&port!==transmission&&!/Transmission/.test(port.group||'')).map(port=>shortConnector(port.connector));
+      // 커넥터 원문(예: "Female Phoenix connector 5p")보다 신호명(예: RS-232 / Audio)이 더 짧고 알아보기 쉽다.
+      const extras=io.filter(port=>port!==txVideo&&port!==rxVideo&&port!==transmission&&!/Transmission/.test(port.group||'')).map(port=>port.signal||shortConnector(port.connector));
       const note=extras.length?`<p class="rt-product-diagram-note">그 외 신호(${[...new Set(extras)].map(esc).join(', ')})는 위 입출력 표를 확인하세요.</p>`:'';
-      const captions=pseCombo?[[COLOR_IN,'입력'],[cableColor,cableName],[COLOR_OUT,'출력']]:[[COLOR_IN,'입력(소스 → TX)'],[cableColor,cableName],[COLOR_OUT,'출력(RX → 디스플레이)']];
       return diagramWrap(body,width,height,captions)+note;
     }
     function connectionDiagram(item){
       // 제조사가 직접 그린 연결 다이어그램(images 안의 role:"Diagram")이 있으면 그것을 쓰고, 자동 생성 도식은 만들지 않는다.
       const photo=(item.images||[]).find(img=>img.role==='Diagram');
       if(photo)return `<div class="rt-product-diagram-canvas rt-product-diagram-photo"><img src="${image(photo.file)}" alt="${esc(photo.alt||`${item.productName} 연결 다이어그램`)}" loading="lazy"></div>
+      ${photo.note?`<p class="rt-product-diagram-caption">${esc((photo.note||'').replace(/^[A-Za-z]+ · /,''))}</p>`:''}
+      ${photo.diagramMismatch?`<p class="rt-product-diagram-mismatch"><b>표기 다름</b> ${esc(photo.diagramMismatch)}</p>`:''}
       <p class="rt-product-diagram-hint">좌우로 밀어서 볼 수 있습니다.</p>`;
       if(item.group==='distribution'||item.group==='integrated')return splitterDiagram(item);
       if(item.group==='extender')return extenderDiagram(item);

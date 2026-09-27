@@ -47,6 +47,7 @@
       "file": "qms-88ux-diagram.webp",
       "alt": "RTCOM QMS-88UX 연결 다이어그램(제조사 제공)",
       "note": "Diagram · 카탈로그 46쪽판 28쪽 제조사 제공 연결 다이어그램",
+      "diagramMismatch": "제조사 원본 그림은 후면 라벨이 HDMI IN/OUT 1~8·DC+12V로, 실제 제품(출력 10포트[9·10번 쿼드뷰]·100-200 VAC)과 다른 섀시 그림으로 보입니다 — 포트 수·전원 표기는 제품사양 표 기준으로 확인하세요.",
       "provider": "RTCOM",
       "model": "QMS-88UX",
       "source": "C2",

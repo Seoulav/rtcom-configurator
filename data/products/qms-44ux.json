@@ -47,6 +47,7 @@
       "file": "qms-44ux-diagram.webp",
       "alt": "RTCOM QMS-44UX 연결 다이어그램(제조사 제공)",
       "note": "Diagram · 카탈로그 46쪽판 27쪽 제조사 제공 연결 다이어그램",
+      "diagramMismatch": "제조사 원본 그림의 전원 표기(+12V DC 5A)가 제품사양 표(DC 12V 2A)와 다릅니다 — 포트 수·전원 표기는 제품사양 표 기준으로 확인하세요.",
       "provider": "RTCOM",
       "model": "QMS-44UX",
       "source": "C2",
