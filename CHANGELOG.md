@@ -4,6 +4,13 @@
 
 ## Unreleased
 
+- **QMS-88UX·QMS-44UX 단자 지도 번호표 정정**(0.34.0 검수, 사용자 요청 "QMS-88UX MAP 다시 확인"):
+  - QMS-88UX 후면은 두 줄(윗줄 HDMI 입력 8, 아랫줄 HDMI 출력 10 + 제어·전원)인데 "왼쪽 절반 입력 / 오른쪽 절반 출력"으로 잡혀 있었고, 초록 3핀 터미널을 RS-232로 표시했습니다.
+  - 카탈로그 원본 사진(285×59px)을 700dpi로 다시 뽑아 단자 가장자리를 재고, 번호표 8개로 고쳤습니다: 입력 1–8(위), 출력 1–8 매트릭스 · 출력 9·10 멀티뷰 전용 · 오디오 3핀 · LAN · RS-232(D-sub 9핀) · Mini USB · AC 인렛(아래).
+  - 단자 지도에 선택 항목 `portMap.items[].side:"bottom"`을 추가했습니다. 아랫줄 단자의 괄호를 사진 아래에 그리며, validator가 top/bottom만 허용합니다.
+  - QMS-44UX: DC 12V·RS-232C·LAN 번호표가 옆 빈 곳을 가리키고, 입력·출력 괄호가 마지막 단자보다 길던 것을 고쳤습니다.
+  - QMS-88UX 사양 "제어"에 남아 있던 IR Remote Control을 뺐습니다(46쪽판 28쪽은 3가지, issues I3와 일치).
+
 ## 0.34.0
 
 - **제품정보 화면 글래스 디자인 6-B**(근거: `docs/handoff/PRODUCT_GLASS_REDESIGN_SPEC.md` 6-B, 승인 시안 `docs/mockups/hd-210u-glass-style.html`·`qms-44ux-video-modes-desktop.png`, 2026-09-27): 6-A에서 남겨둔 나머지 23종(분배기·일체형 8, 전송기 11, 케이블 4)에 `lead`·`subtitle`을 채웠습니다(overview·features·specifications·korean에 이미 있는 사실만 사용, `**굵게**`는 한 곳까지). Rear/Front 사진이 있는 10종(HD-13U·HD-14U·HD-18U·HDS-21U·HDS-42MU·QMS-44UX·QMS-88UX·MR-4S·XDM-FT101/FR101, HD-210U는 6-A에서 이미 완료)에 `portMap`을 추가했습니다. 좌표는 각 webp를 직접 열어 원본 픽셀 기준으로 잡았고 1280px 캡처로 번호표 위치를 확인했습니다(XDM-CTR100은 Rear 사진이 상판·후면 두 장면을 한 장에 합친 구도라 번호표가 엉뚱한 곳을 가리키게 되어 portMap을 넣지 않고 입출력 표 카드로 남겼습니다).

@@ -300,8 +300,14 @@
       const W=680,s=W/rw,X0=40,Y0=40,H=Y0*2+rh*s;
       const px=x=>X0+x*s;
       let svgBody=`<image href="${image(photo.file)}" x="${X0}" y="${Y0}" width="${W}" height="${rh*s}"/>`;
+      // 위아래 두 줄로 단자가 놓인 후면(QMS-88UX 등)은 아랫줄 단자의 괄호를 사진 아래에 그린다(side:"bottom", 0.34 검수).
+      const YB=Y0+rh*s;
       map.items.forEach(it=>{
         const x1=px(it.x1),x2=px(it.x2),cx=(x1+x2)/2;
+        if(it.side==='bottom'){
+          svgBody+=`<path d="M${x1} ${YB-8}V${YB+6}H${x2}V${YB-8}" fill="none" stroke="${COLOR_IN}" stroke-width="1.5"/><path d="M${cx} ${YB+6}V${YB+14}" stroke="${COLOR_IN}" stroke-width="1.5"/><circle cx="${cx}" cy="${YB+24}" r="10" fill="${COLOR_IN}"/><text x="${cx}" y="${YB+28}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">${it.n}</text>`;
+          return;
+        }
         svgBody+=`<path d="M${x1} ${Y0+8}V${Y0-6}H${x2}V${Y0+8}" fill="none" stroke="${COLOR_IN}" stroke-width="1.5"/><path d="M${cx} ${Y0-6}V${Y0-14}" stroke="${COLOR_IN}" stroke-width="1.5"/><circle cx="${cx}" cy="${Y0-24}" r="10" fill="${COLOR_IN}"/><text x="${cx}" y="${Y0-20}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">${it.n}</text>`;
       });
       const seg=`<span class="rt-pg-seg"><span class="${map.image==='Front'?'rt-pg-on':''}">정면</span><span class="${map.image==='Rear'?'rt-pg-on':''}">후면</span></span>`;
