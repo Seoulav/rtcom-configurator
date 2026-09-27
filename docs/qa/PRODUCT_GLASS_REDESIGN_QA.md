@@ -127,3 +127,23 @@
 - 재발 방지: validator에 "portMap 좌표가 사진 `resolution` 가로 폭 안" 검사를 추가했습니다.
 - HDS-42MU의 "매트릭스" 노드 판단(6-B 보고 b-2)은 카탈로그 33쪽 주요기능 "4x2 Matrix Switcher 기능 지원"과 맞아 유지합니다.
 - XDM-CTR100 번호표 생략(6-B 보고 b-1)도 타당합니다. Rear 사진이 두 면(DIP 스위치면과 커넥터면)을 합친 이미지라서입니다. 단자 카드 방식을 유지합니다.
+
+## 6-C 검증 (2026-09-27, 0.35.0) — HD-13U EDID 로터리 스위치
+
+- 근거: 사용자 업로드 `HD-13U 사용자 매뉴얼 Ver.1.2` 7-8쪽, 사용자 요청 "EDID 로터리를 화면에 보였으면해" + "P8페이지 이 내용은 중요한 내용이라서".
+- 구현: `docs/implementation/PRODUCT_GLASS_REDESIGN.md` "6-C" 절 참고(데이터 `edidSwitch`·좌표 확인 방법·UI `edidSwitchSection()`).
+- 참고: 이 절과 병합된 위 "6-B 번호표 전수 재측정"에서 HD-13U의 기존 **후면(Rear) portMap** 좌표가 재측정됐습니다. `edidSwitch`는 별도의 **전면(Front)** 사진·좌표라 그 재측정과는 무관하며, 색상 검출(그리드 눈금 육안 판독이 아님)로 좌표를 잡아 같은 오차 원인(표시 크기 기준 판독)에 해당하지 않습니다.
+
+| 항목 | 결과 |
+|---|---|
+| `node --test tests/*.test.cjs` | 30/30 통과 |
+| `node scripts/build-product-index.cjs --check` | 27개 통과(`edidSwitch` 형식 검사 포함) |
+| `node scripts/package-site.cjs` | 정상 빌드 |
+| `node scripts/e2e-smoke.cjs`(전역 playwright) | 61/61 통과(휴대폰 카드 폭 검사에 `hd-13u` 추가) |
+| `git diff --check` | 통과 |
+| 마커 위치 확인 | 파란색 MODE 로터리 스위치 RGB 색상 검출(x179–219, y75–113, 원본 718×187px)로 좌표를 잡고, 1280px 캡처 확대(`docs/qa/glass-redesign-screens-6c/hd-13u-edid-marker-zoom.png`)로 원 마커가 실제 스위치 위에 정확히 놓임을 육안 확인 |
+| 휴대폰(390px) | 사진 타일이 텍스트 위로 세로 쌓이고 가로 스크롤 없음(`docs/qa/glass-redesign-screens-6c/hd-13u-edid-390.png`) |
+| 데이터 범위 | HD-13U만 추가. HD-14U 등 다른 EDID 마인더 제품은 근거 매뉴얼이 없어 이번에 추정하지 않았습니다. |
+| 원본 PDF | `.source-materials/RTcom_Manual_HD-13U_Ver1.2.pdf`(gitignore 대상)에만 두고 배포·커밋하지 않았습니다. |
+
+캡처: `docs/qa/glass-redesign-screens-6c/hd-13u-edid-1280.png`(전체 화면 1280px) · `hd-13u-edid-390.png`(전체 화면 390px) · `hd-13u-edid-marker-zoom.png`(마커 확대).
