@@ -858,7 +858,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-spec-table td .rt-pg-note-line{margin-top:2px}
 
 /* 0.61 오디오 설정 전면 패널 그림(LED 불 켜짐) */
-#rtcom-design .rt-pg-audio-panel{display:block;max-width:340px;height:auto;margin:0 0 12px}
+#rtcom-design .rt-pg-audio-panel{display:block;max-width:380px;height:auto;margin:0 0 12px}
 #rtcom-design .rt-pg-led-blink{animation:rt-pg-led-blink 1s steps(1,end) infinite}
 @keyframes rt-pg-led-blink{50%{fill:#2F3A31}}
 @media (prefers-reduced-motion:reduce){#rtcom-design .rt-pg-led-blink{animation:none}}
