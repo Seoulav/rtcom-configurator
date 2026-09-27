@@ -13,6 +13,8 @@
   ],
   "english": "True-4K 8x8 HDMI 2.0 scaling matrix switcher with 8-channel multi-view, video wall and dual mode",
   "korean": "8CH 멀티뷰·비디오 월·듀얼 모드를 지원하는 True-4K 8x8 HDMI 2.0 매트릭스 스위처다.",
+  "subtitle": "8×8 HDMI 2.0 Matrix Switcher · 8CH 멀티뷰",
+  "lead": "8개의 HDMI 입력을 **임의의 출력 포트로 자유롭게 전환**하는 True-4K 매트릭스입니다. 8CH 멀티뷰·비디오 월·듀얼 모드를 지원합니다.",
   "catalogPages": "28",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 30쪽의 소개·주요기능·제품사양·크기 및 무게·제품 이미지에서 확인했다.",
   "packageStatus": "VERIFIED",
@@ -244,6 +246,25 @@
     }
   ],
   "related": [],
+  "videoModes": {
+    "source": "C2",
+    "modes": [
+      {"name": "MATRIX", "summary": "입력 8 → 출력 8 임의 스위칭·분배, 심리스 스위칭"},
+      {"name": "WALL", "summary": "최대 3×3 비디오월, 베젤 조정"},
+      {"name": "QUAD", "summary": "출력 9·10번 전용, 한 화면 최대 8분할(8CH Multi-view)"},
+      {"name": "DUAL", "summary": "듀얼 모드"}
+    ]
+  },
+  "portMap": {
+    "image": "Rear",
+    "items": [
+      {"n": 1, "label": "INPUT 1–8", "desc": "HDMI 소스 8대 연결", "x1": 6, "x2": 172},
+      {"n": 2, "label": "OUTPUT 1–10", "desc": "임의의 입력을 매트릭스로 전환해 출력(9·10번은 쿼드뷰 전용)", "x1": 180, "x2": 379},
+      {"n": 3, "label": "RS-232", "desc": "3핀 터미널 블록, 외부 제어", "x1": 386, "x2": 423},
+      {"n": 4, "label": "LAN", "desc": "TCP/IP 제어", "x1": 438, "x2": 454},
+      {"n": 5, "label": "AC 인렛", "desc": "전원 100-200 VAC", "x1": 573, "x2": 610}
+    ]
+  },
   "sources": [
     {
       "code": "C",

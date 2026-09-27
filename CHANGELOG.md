@@ -4,6 +4,17 @@
 
 ## Unreleased
 
+## 0.34.0
+
+- **제품정보 화면 글래스 디자인 6-B**(근거: `docs/handoff/PRODUCT_GLASS_REDESIGN_SPEC.md` 6-B, 승인 시안 `docs/mockups/hd-210u-glass-style.html`·`qms-44ux-video-modes-desktop.png`, 2026-09-27): 6-A에서 남겨둔 나머지 23종(분배기·일체형 8, 전송기 11, 케이블 4)에 `lead`·`subtitle`을 채웠습니다(overview·features·specifications·korean에 이미 있는 사실만 사용, `**굵게**`는 한 곳까지). Rear/Front 사진이 있는 10종(HD-13U·HD-14U·HD-18U·HDS-21U·HDS-42MU·QMS-44UX·QMS-88UX·MR-4S·XDM-FT101/FR101, HD-210U는 6-A에서 이미 완료)에 `portMap`을 추가했습니다. 좌표는 각 webp를 직접 열어 원본 픽셀 기준으로 잡았고 1280px 캡처로 번호표 위치를 확인했습니다(XDM-CTR100은 Rear 사진이 상판·후면 두 장면을 한 장에 합친 구도라 번호표가 엉뚱한 곳을 가리키게 되어 portMap을 넣지 않고 입출력 표 카드로 남겼습니다).
+- **분배기·일체형(매트릭스) "02 신호 흐름" 재설계**: 승인 시안(HD-210U)의 흐름도 방식 — 입력 칩(개별 번호) → 선택/매트릭스 노드 → 대역폭·해상도 띠 → 출력 화면 격자, 오디오 입력은 점선 — 을 `ioFlowDiagram()`으로 일반화해 분배기·일체형 9종(HD-210U 포함) 전체에 적용했습니다. 입력·출력 수·오디오 유무는 `io` 데이터에서 그대로 뽑습니다. 입력이 1개면 노드 없이 바로 띠로 잇고(분배기), 입력·출력이 모두 여럿이면 "매트릭스" 노드로 표시합니다(QMS 계열, 그리고 4입력·2출력인 HDS-42MU도 실제로는 매트릭스 전환이라 이 규칙을 그대로 적용했습니다).
+- **핵심 수치 해상도 표기 축약**: `up to 3840x2160p@60Hz`처럼 길게 나오던 값을 `shortResolution()` 헬퍼로 "4K"+"60Hz 4:4:4" 형태로 줄였습니다. 크로마(4:4:4 등)가 해상도 사양 행 자체에 없으면 같은 제품의 overview·korean·english에서 찾습니다(새 사실을 만들지 않음). 원문은 제품 사양 표에 그대로 남습니다.
+- **전송기·케이블 템플릿**: 전송기(소스→TX→케이블·거리→RX→디스플레이, 케이블별 거리 여러 줄, XDM-CTR100 0.30.0 두 조합)와 케이블(소스→케이블→디스플레이 한 줄) 템플릿은 6-A에서 이미 만든 로직이 그대로 동작해 추가로 고치지 않았습니다. 이번에 채운 `lead`·`subtitle` 데이터만 새로 반영됩니다.
+- **QMS 화면 구성 모드**(근거: `docs/evidence/QMS_VIDEO_MODES.md`): QMS-44UX(매뉴얼 KV.04 기준, MATRIX·QUAD·WALL·DUAL 4모드에 레이아웃 목록 포함)와 QMS-88UX(카탈로그 46쪽판 28쪽 기준, 요약만)에 `videoModes` 선택 필드를 추가했습니다. "06 화면 구성 모드" 카드를 새로 만들어 왼쪽 "Video Mode" 아이콘 타일 + 오른쪽 모드 카드 4장(레이아웃 칩 포함)을 새 글래스 토큰으로 보여줍니다(참고 시안 `docs/mockups/qms-44ux-video-modes-desktop.png`를 다시 칠함). QMS-44UX 전원(DC 12V 5A)은 §6 판단(0.32.0)에서 이미 반영돼 있어 다시 건드리지 않았습니다. `scripts/build-product-index.cjs`에 `videoModes.modes[].name/summary` 필수, `layouts` 배열 형식, `source` 출처 코드 검사를 추가했습니다.
+- **데이터(선택 필드, 기존 필드는 바꾸지 않음)**: 23종에 `lead`·`subtitle`, 10종에 `portMap`, QMS 2종에 `videoModes`를 추가했습니다.
+- **e2e**: 휴대폰 카드 폭 검사 대상에 케이블(HOC-UX, 6-A에서 이미 포함)에 이어 QMS 화면 구성 모드 템플릿(QMS-44UX)을 추가했습니다(60/60 통과).
+- **검증**: `node --test tests/*.test.cjs`(30/30) · `node scripts/build-product-index.cjs --check`(27개) · `node scripts/package-site.cjs` · `node scripts/e2e-smoke.cjs`(전역 playwright, 60/60) · `git diff --check`. 새 portMap 10종과 QMS 화면 구성 모드 2종을 1280px로 캡처해 번호표 위치·레이아웃을 확인했습니다(`docs/qa/glass-redesign-screens-6b/`).
+
 ## 0.33.0
 
 - **제품정보 화면 글래스 디자인 개편(6-A)**(근거: `docs/handoff/PRODUCT_GLASS_REDESIGN_SPEC.md`, 사용자 승인 시안 `docs/mockups/hd-210u-glass-style.*`·`series-*-glass-style.png`, 2026-09-27): 알티컴 제품정보 화면(`#products`, `#products/<id>`)을 사용자의 LED 구성기(`svt-led-calculator`) 디자인을 계승한 글래스 스타일로 다시 그렸습니다. 매트릭스 구성기 화면(`#matrix-configurator`)은 손대지 않았고, 새 토큰·CSS는 `#rtcom-design .rt-products-view` 범위 안에서만 선언했습니다(`src/styles.css` `rt-pg-*` 접두사, 옛 `rt-product-*` 규칙은 남겨 뒀지만 새 마크업은 쓰지 않습니다).

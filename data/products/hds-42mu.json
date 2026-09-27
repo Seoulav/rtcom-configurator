@@ -14,6 +14,8 @@
   ],
   "english": "4x2 HDMI 2.0 4K60 matrix switcher with audio extraction/insertion, priority and EDID minder",
   "korean": "4입력 2출력 매트릭스 스위칭과 오디오 추출·삽입, EDID 마인더 기능을 갖춘 HDMI 2.0 4K 선택기다.",
+  "subtitle": "4×2 HDMI 2.0 Matrix Switcher · 오디오 추출·삽입",
+  "lead": "네 개의 HDMI 입력 중 원하는 신호를 **두 개의 출력으로 매트릭스 전환**합니다. Priority 오토셀렉팅과 아날로그 오디오 병합·추출을 지원합니다.",
   "catalogPages": "33",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 35쪽의 소개·주요기능·제품사양·크기 및 무게·제품 이미지에서 확인했다.",
   "packageStatus": "VERIFIED",
@@ -248,6 +250,17 @@
     }
   ],
   "related": [],
+  "portMap": {
+    "image": "Rear",
+    "items": [
+      {"n": 1, "label": "IN 1–4", "desc": "HDMI 소스 4대 연결", "x1": 175, "x2": 572},
+      {"n": 2, "label": "OUT 1–2", "desc": "선택한 입력을 매트릭스 전환해 출력", "x1": 591, "x2": 780},
+      {"n": 3, "label": "AUDIO IN", "desc": "3.5mm 아날로그 오디오 병합", "x1": 805, "x2": 825},
+      {"n": 4, "label": "AUDIO OUT", "desc": "3.5mm 아날로그 오디오 추출", "x1": 838, "x2": 858},
+      {"n": 5, "label": "RS-232", "desc": "터미널 블록, 외부 제어", "x1": 875, "x2": 925},
+      {"n": 6, "label": "DC 5V", "desc": "전원 어댑터 5V 2A", "x1": 95, "x2": 135}
+    ]
+  },
   "sources": [
     {
       "code": "C",

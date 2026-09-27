@@ -13,6 +13,8 @@
   ],
   "english": "Rack-mountable modular extension frame holding up to four CATx/fiber transmitter or receiver modules powered from a single adapter, up to 4K30.",
   "korean": "CATx·광 송수신기 모듈을 최대 4개까지 장착하고 하나의 전원 어댑터로 전원을 공급하는 랙 장착형 집합 프레임이다.",
+  "subtitle": "Rack Mountable Modular Extension System",
+  "lead": "CATx·광 송수신기 모듈을 **최대 4개까지 장착**하고 하나의 전원 어댑터로 전원을 공급하는 랙 장착형 집합 프레임입니다.",
   "catalogPages": "38",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 40쪽의 MR-4S 소개·주요기능·활용사례·크기 및 무게·제품사양에서 확인했다.",
   "packageStatus": "VERIFIED",
@@ -172,6 +174,13 @@
   ],
   "io": [],
   "related": [],
+  "portMap": {
+    "image": "Rear",
+    "items": [
+      {"n": 1, "label": "DC 전원", "desc": "DC 12V 3A 전원 입력", "x1": 20, "x2": 95},
+      {"n": 2, "label": "모듈 슬롯 1–4", "desc": "CATx·광 송수신기 모듈 최대 4개 장착(HDMI·RS-232·RJ45)", "x1": 115, "x2": 1140}
+    ]
+  },
   "sources": [
     {
       "code": "C",

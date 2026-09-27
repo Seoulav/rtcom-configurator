@@ -13,6 +13,8 @@
   ],
   "english": "1x8 HDMI 2.0 18Gbps splitter supporting 4K60 4:4:4 with EDID minder",
   "korean": "4K 60Hz 4:4:4와 EDID 마인더를 지원하는 1입력 8출력 HDMI 2.0 18Gbps 분배기다.",
+  "subtitle": "1×8 HDMI 2.0 Splitter · EDID 마인더",
+  "lead": "하나의 HDMI 입력을 **손실 없이 8개의 동일한 출력**으로 분배합니다. 4K 60Hz 4:4:4를 지원합니다.",
   "catalogPages": "36",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 38쪽의 소개·주요기능·제품사양·크기 및 무게·제품 이미지에서 확인했다.",
   "packageStatus": "VERIFIED",
@@ -192,6 +194,14 @@
     }
   ],
   "related": [],
+  "portMap": {
+    "image": "Rear",
+    "items": [
+      {"n": 1, "label": "HDMI IN", "desc": "소스 연결, 8개 출력으로 동일하게 분배", "x1": 165, "x2": 230},
+      {"n": 2, "label": "HDMI OUT 1–8", "desc": "8개 모두 같은 영상", "x1": 236, "x2": 902},
+      {"n": 3, "label": "DC 12V", "desc": "전원 어댑터 12V 2A", "x1": 925, "x2": 985}
+    ]
+  },
   "sources": [
     {
       "code": "C",

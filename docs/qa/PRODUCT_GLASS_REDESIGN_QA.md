@@ -64,3 +64,35 @@
 1. **02 신호 흐름(분배기·일체형)**: 승인 시안은 "IN 1·2 → 1개 선택 → 18Gbps·4K60 4:4:4 띠 → 화면 10대 격자 + AUDIO IN 점선"인데, 구현은 예전 자동 도식(소스 → 기기 상자 → 디스플레이 4대)을 그대로 씁니다. 6-B에서 분배기·일체형 9종 공통으로 시안 방식으로 바꿉니다(`docs/mockups/hd-210u-glass-style.html`의 flow SVG).
 2. **핵심 수치 해상도 칸**: `up to 3840x2160p@60Hz`가 큰 글씨로 두 줄이 됩니다. 시안처럼 `4K` + `60Hz 4:4:4` 짧은 표기로 바꿉니다(값은 사양 행에서 뽑고 원문은 사양 표에 남김).
 3. **QMS 화면 구성 모드**: 6-A에서 미룸. 6-B에서 데이터(`docs/evidence/QMS_VIDEO_MODES.md`)부터 넣습니다.
+
+## 6-B 검증 (2026-09-27, 0.34.0)
+
+| 항목 | 결과 |
+|---|---|
+| `node --test tests/*.test.cjs` | 30/30 통과 |
+| `node scripts/build-product-index.cjs --check` | 27개 통과(videoModes 형식 검사 포함) |
+| `node scripts/package-site.cjs` | 정상 빌드 |
+| `node scripts/e2e-smoke.cjs`(전역 playwright) | 60/60 통과(휴대폰 카드 폭 검사에 QMS-44UX 추가) |
+| `git diff --check` | 통과 |
+
+### 6-B로 넘긴 시안 차이 3건 해소 확인
+
+1. **02 신호 흐름**: `ioFlowDiagram()`으로 전면 재작성해 분배기·일체형 9종(HD-210U 포함) 모두 입력 칩→노드→대역폭 띠→출력 격자 방식으로 바뀌었습니다. 1280px 캡처(`docs/qa/glass-redesign-screens-6b/*-1280.png`, `hd-210u-1280.png`)로 확인.
+2. **핵심 수치 해상도**: `shortResolution()`으로 "4K"+"60Hz 4:4:4" 형태로 축약됨을 위 캡처들에서 확인.
+3. **QMS 화면 구성 모드**: QMS-44UX(레이아웃 포함)·QMS-88UX(요약만) 모두 "06 화면 구성 모드" 카드로 구현됨을 `qms-44ux-videomodes-full.png`·`qms-88ux-videomodes-full.png`에서 확인.
+
+### portMap 10종 — 좌표 확인 목록(Opus 검수용)
+
+`docs/implementation/PRODUCT_GLASS_REDESIGN.md` "6-B" 절의 표와 같습니다. 요약: HD-13U·HD-14U·HD-18U·HDS-21U·HDS-42MU·QMS-44UX·XDM-FT101/FR101은 1280px 캡처에서 번호표가 실제 단자 위에 정확히 놓인 것을 육안으로 확인했습니다(신뢰도 높음). **QMS-88UX**(포트가 매우 촘촘한 저해상도 사진)와 **MR-4S**(반복 모듈 구조)는 개별 포트 대신 구간으로 묶었고 신뢰도가 상대적으로 낮아 Opus 재확인을 요청합니다 — 대상 파일: `docs/qa/glass-redesign-screens-6b/qms-88ux-1280.png`, `mr-4s-1280.png`.
+
+### 회귀 확인
+
+- 전송기(CT104-U/CR104-U)·케이블(LHOC) 템플릿은 6-A 로직을 그대로 써서 코드 변경이 없었고, 1280px·390px 캡처로 레이아웃이 깨지지 않았음을 재확인했습니다(`ct104-u-cr104-u-*.png`, `lhoc-*.png`).
+- XDM-CTR100의 0.30.0 두 조합 다이어그램은 그대로 유지됩니다(`xdm-ctr100-1280.png`).
+- 구성기 화면은 이번 6-B에서 코드를 건드리지 않았습니다(products.js·styles.css의 새 규칙은 모두 `.rt-pg-*`/`.rt-products-view` 범위).
+
+## 남은 위험 / 다음 단계
+
+- QMS-88UX·MR-4S의 portMap 좌표는 Opus 재확인이 필요합니다(위 참고).
+- `CARD_EXTENDER_LABEL`은 여전히 `src/app.js`와 별도 관리되는 고정 표입니다.
+- 6-B로 모든 프롬프트 5(제품정보 글래스 디자인) 작업이 끝났습니다. 추가 개편은 새 사용자 요청이 있을 때 진행합니다.

@@ -14,6 +14,8 @@
   ],
   "english": "Fiber optic transmitter/receiver pair extending DVI/HDMI, audio and RS-232 up to 2km single-mode or 500m multi-mode; pairs with VDM FIS4-U/FOS4-U cards.",
   "korean": "비디오·오디오·RS-232 신호를 광케이블로 싱글모드 최대 2km, 멀티모드 최대 500m 전송하는 광 송·수신기다.",
+  "subtitle": "VDM Series Extender · 광 송·수신기",
+  "lead": "비디오·오디오·RS-232 신호를 **광케이블로 싱글모드 최대 2km, 멀티모드 최대 500m** 전송합니다. VDM FIS4-U/FOS4-U 카드와 짝을 이룹니다.",
   "catalogPages": "24",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 25쪽의 FT101-U/FR101-U 소개와 FT101-U·FR101-U 제품사양 표에서 확인했다. VDM 카드 연동은 근거 문서 U09(사용자 확인)를 따랐다.",
   "packageStatus": "VERIFIED",

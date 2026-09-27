@@ -54,6 +54,17 @@ function validate(product,file,ids){
     }
   }
   for(const entry of product.lineup||[])if('rackUnits' in entry&&(typeof entry.rackUnits!=='number'||entry.rackUnits<=0))fail(`lineup[].rackUnits는 양수여야 함(${entry.model})`);
+  if('videoModes' in product){
+    const vm=product.videoModes;
+    if(!vm||!Array.isArray(vm.modes)||!vm.modes.length)fail('videoModes.modes는 비어 있지 않은 배열이어야 함');
+    else{
+      if(vm.source&&!codes.has(vm.source))fail(`videoModes.source(${vm.source})가 sources에 없음`);
+      for(const mode of vm.modes){
+        if(typeof mode.name!=='string'||!mode.name||typeof mode.summary!=='string'||!mode.summary)fail('videoModes.modes 항목은 name·summary를 갖춰야 함');
+        if('layouts' in mode&&(!Array.isArray(mode.layouts)||!mode.layouts.length))fail(`videoModes.modes[].layouts는 비어 있지 않은 배열이어야 함(${mode.name})`);
+      }
+    }
+  }
   return errors;
 }
 

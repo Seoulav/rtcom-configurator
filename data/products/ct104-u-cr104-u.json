@@ -14,6 +14,8 @@
   ],
   "english": "HDBaseT transmitter/receiver pair extending 4K HDMI and RS-232 up to 100m over CAT5e/CAT6; pairs with VDM CIS4-U/COS4-U cards.",
   "korean": "4K HDMI 신호와 RS-232 신호를 CAT5e/CAT6 케이블 한 가닥으로 최대 100m 전송하는 HDBaseT 송·수신기다.",
+  "subtitle": "VDM Series Extender · 4K HDMI 송·수신기",
+  "lead": "4K HDMI와 RS-232 신호를 **CAT5e/CAT6 케이블 한 가닥으로 최대 100m** 전송합니다. VDM CIS4-U/COS4-U 카드와 짝을 이룹니다.",
   "catalogPages": "23",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 24쪽의 CT104-U/CR104-U 소개와 CT104-U·CR104-U 제품사양 표에서 확인했다. VDM 카드 연동은 근거 문서 U09(사용자 확인)를 따랐다.",
   "packageStatus": "VERIFIED",

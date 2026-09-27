@@ -14,6 +14,8 @@
   ],
   "english": "Fiber optic HDMI 2.0 transmitter/receiver pair for 4K60 4:4:4 up to 2km single-mode or 300m multi-mode, with audio and RS-232+.",
   "korean": "True 4K60Hz 4:4:4 HDMI v2.0 신호를 싱글모드 광케이블로 최대 2km, 멀티모드로 최대 300m 전송하는 광 송·수신기다.",
+  "subtitle": "XDM Series Extender · 광 송·수신기",
+  "lead": "True 4K60Hz 4:4:4 HDMI v2.0 신호를 **광케이블로 싱글모드 최대 2km, 멀티모드 최대 300m** 전송합니다. 오디오·RS-232+ 기능을 지원합니다.",
   "catalogPages": "12",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03, 48쪽판) 12쪽의 XDM-FT101·XDM-FR101 소개와 제품사양 표에서 확인했고, 새 카탈로그(46쪽판) 12쪽과 줄 단위로 재대조했다(차이 없음).",
   "packageStatus": "VERIFIED",
@@ -282,6 +284,15 @@
       "verification": "VERIFIED"
     }
   ],
+  "portMap": {
+    "image": "Rear",
+    "items": [
+      {"n": 1, "label": "HDMI IN", "desc": "HDMI 소스 연결(XDM-FT101)", "x1": 325, "x2": 415},
+      {"n": 2, "label": "AUDIO · RS-232", "desc": "오디오 삽입 + RS-232, 같은 5핀 Phoenix 단자", "x1": 490, "x2": 660},
+      {"n": 3, "label": "FIBER OUT", "desc": "광 출력(1 LC)", "x1": 685, "x2": 790},
+      {"n": 4, "label": "DC IN", "desc": "전원 입력", "x1": 165, "x2": 240}
+    ]
+  },
   "related": [
     {
       "relation": "PART_OF_SERIES",

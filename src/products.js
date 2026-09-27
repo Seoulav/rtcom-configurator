@@ -53,18 +53,31 @@
       if(item.lead)return md(item.lead);
       return esc(firstSentence(item.overview));
     }
+    // 해상도 칸은 "4K"+"60Hz 4:4:4"처럼 짧게 쓴다(명세 6-B 4장). 원문은 사양 표에 그대로 남는다.
+    // 크로마(4:4:4 등)가 해상도 행 자체에 없으면 overview·korean·english에서도 찾는다(같은 제품이 이미 밝힌 사실이라 새로 만드는 값이 아님).
+    function shortResolution(item){
+      const spec=(item.specifications||[]).find(s=>/해상도/.test(s.name));
+      if(!spec)return null;
+      const haystack=[spec.value,spec.condition,item.overview,item.korean,item.english].filter(Boolean).join(' ');
+      const hz=(haystack.match(/(\d+)\s*Hz/i)||[])[1];
+      const chroma=(haystack.match(/4:4:4|4:2:2|4:2:0/)||[])[0];
+      const is8k=/7680|8k/i.test(haystack);
+      const is4k=/4096|3840|4k/i.test(haystack);
+      const value=is8k?'8K':is4k?'4K':spec.value.split(',')[0].split('(')[0].trim();
+      const unit=[hz&&`${hz}Hz`,chroma].filter(Boolean).join(' ');
+      return {label:'해상도',value,unit};
+    }
     function quickFacts(item){
       if(!['distribution','integrated','cable'].includes(item.group))return [];
       const specs=item.specifications||[];
       const bandwidth=specs.find(spec=>/대역폭/.test(spec.name));
-      const resolution=specs.find(spec=>/해상도/.test(spec.name));
       const hdmiPorts=direction=>{
         const rows=(item.io||[]).filter(port=>port.direction===direction&&/^HDMI/i.test(port.connector||'')&&port.quantity);
         if(!rows.length)return null;
         const total=rows.reduce((sum,port)=>sum+(parseInt(port.quantity,10)||0),0);
         return total?{label:directionLabel[direction],value:String(total),unit:shortConnector(rows[0].connector)}:null;
       };
-      const facts=[bandwidth&&{label:'대역폭',value:bandwidth.value,unit:bandwidth.unit},resolution&&{label:'해상도',value:resolution.value.split(',')[0].split('(')[0].trim(),unit:''},hdmiPorts('IN'),hdmiPorts('OUT')].filter(Boolean);
+      const facts=[bandwidth&&{label:'대역폭',value:bandwidth.value,unit:bandwidth.unit},shortResolution(item),hdmiPorts('IN'),hdmiPorts('OUT')].filter(Boolean);
       return facts.length>=2?facts.slice(0,4):[];
     }
     // 시리즈(XDM·VDM·SPX) 한눈에 보기 수치는 specifications·lineup에서 그대로 계산한다(새 값을 만들지 않음).
@@ -117,30 +130,89 @@
     const diagramWrap=(body,width,height,legendItems)=>`<div class="rt-pg-svg-wrap"><svg viewBox="0 0 ${width} ${height}" role="img" aria-label="연결 다이어그램" preserveAspectRatio="xMidYMid meet">${body}</svg></div>
       <p class="rt-pg-svg-hint">좌우로 밀어서 볼 수 있습니다.</p>
       <ul class="rt-pg-legend">${legendItems.map(([color,label])=>`<li><i style="background:${color}"></i>${svgEsc(label)}</li>`).join('')}</ul>`;
-    function splitterDiagram(item){
+    // 분배기·일체형(매트릭스) "02 신호 흐름"(명세 6-B 3장, 승인 시안 hd-210u-glass-style.html의 flow SVG를 일반화).
+    // 입력 칩(개별 번호) → 선택/매트릭스 노드 → 대역폭·해상도 띠 → 출력 화면 격자. 오디오 입력이 있으면 점선으로 표시한다.
+    // 입력 수·출력 수·오디오는 io 데이터에서 뽑는다(새 사실을 만들지 않음). 분배기(1입력)는 노드 없이 바로 띠로 잇고,
+    // 일체형 매트릭스(QMS, item.group==='integrated')는 노드를 "매트릭스"로 표시한다.
+    function ioFlowDiagram(item){
       const io=item.io||[];
-      const primary=direction=>{
-        const rows=io.filter(port=>port.direction===direction&&/^HDMI|^Female HDMI|^HDMI 19-Pin/i.test(port.connector||'')&&parseInt(port.quantity,10));
-        if(!rows.length)return null;
-        return {label:(rows[0].connector.match(/^[A-Za-z]+/)||['HDMI'])[0],total:rows.reduce((sum,port)=>sum+(parseInt(port.quantity,10)||0),0)};
-      };
-      const ins=primary('IN'),outs=primary('OUT');
-      if(!ins||!outs)return null;
-      const cap=n=>Math.min(n,4);
-      const inN=cap(ins.total),outN=cap(outs.total);
-      const rowH=64,height=Math.max(inN,outN)*rowH+80,width=780;
-      const midY=height/2,boxW=190,boxH=Math.min(height-40,Math.max(inN,outN)*30+40),boxX=width/2-boxW/2,boxY=midY-boxH/2;
-      let bodyMarkup=deviceBox(boxX,boxY,boxW,boxH,item.model,`${ins.total} ${ins.label} IN · ${outs.total} ${outs.label} OUT`);
-      for(let i=0;i<inN;i++){
-        const y=midY-(inN-1)*rowH/2+i*rowH;
-        const isLast=i===inN-1&&ins.total>inN;
-        bodyMarkup+=monitorIcon(70,y,inN===1?'소스 기기':`소스 ${i+1}${isLast?` 외 ${ins.total-inN}대`:''}`)+arrow(95,y,boxX-6,y,COLOR_IN);
+      const videoIn=io.find(port=>port.direction==='IN'&&/^HDMI|^Female HDMI|^HDMI 19-Pin/i.test(port.connector||'')&&parseInt(port.quantity,10));
+      const videoOut=io.find(port=>port.direction==='OUT'&&/^HDMI|^Female HDMI|^HDMI 19-Pin/i.test(port.connector||'')&&parseInt(port.quantity,10));
+      if(!videoIn||!videoOut)return null;
+      const inTotal=parseInt(videoIn.quantity,10),outTotal=parseInt(videoOut.quantity,10);
+      const inN=Math.min(inTotal,8),outN=Math.min(outTotal,12);
+      // 오디오 입력은 io(Audio 그룹)에 있으면 그것을, 없으면 overview의 "오디오 병합/삽입" 문구를 근거로 인정한다(HD-210U·HD-13U 등 이미 개요에 있는 사실).
+      const audioIn=io.find(port=>port.direction==='IN'&&port.group==='Audio')||(/오디오\s*(병합|삽입)/.test(item.overview||'')?{signal:'Analog Audio'}:null);
+      // 입력·출력이 모두 여럿이면 매트릭스 전환(각 출력이 독립), 출력이 1개면 여러 입력 중 하나를 고르는 선택기다.
+      const isMatrix=inN>1&&outN>1;
+      const A=COLOR_IN,V='#5E5CE6',P=COLOR_OUT,PI='#8944AB',M='#8A8A8E';
+      const sigName=(videoIn.connector.match(/^[A-Za-z]+/)||['HDMI'])[0];
+
+      const chipW=104,chipH=34,chipVGap=12,leftX=10,topPad=20;
+      const chipYs=[];for(let i=0;i<inN;i++)chipYs.push(topPad+i*(chipH+chipVGap));
+      const chipsBottom=chipYs[chipYs.length-1]+chipH;
+      const audioY=audioIn?chipsBottom+18:null,audioH=30;
+      const leftBottom=audioIn?audioY+audioH:chipsBottom;
+      const midY=(chipYs[0]+chipsBottom)/2;
+
+      let bodyMarkup=`<defs><linearGradient id="rt-pg-flowband-${esc(item.id)}" x1="0" x2="1"><stop offset="0" stop-color="#0A84FF"/><stop offset=".55" stop-color="${V}"/><stop offset="1" stop-color="${P}"/></linearGradient></defs>`;
+      chipYs.forEach((y,i)=>{
+        const label=inN===1?`${sigName} IN`:`${sigName} IN ${i+1}`;
+        bodyMarkup+=`<rect x="${leftX}" y="${y}" width="${chipW}" height="${chipH}" rx="17" fill="rgba(0,122,255,.12)"/><text x="${leftX+chipW/2}" y="${y+chipH/2+5}" text-anchor="middle" font-size="13" font-weight="700" fill="${A==='#007AFF'?'#0057D8':A}">${svgEsc(label)}</text>`;
+      });
+      if(audioIn)bodyMarkup+=`<rect x="${leftX}" y="${audioY}" width="${chipW}" height="${audioH}" rx="15" fill="rgba(118,118,128,.10)"/><text x="${leftX+chipW/2}" y="${audioY+audioH/2+4}" text-anchor="middle" font-size="11.5" font-weight="600" fill="${M}">AUDIO IN</text>`;
+
+      const nodeX=leftX+chipW+70;
+      let nodeRight;
+      if(inN>1||isMatrix){
+        chipYs.forEach(y=>{
+          const cy=y+chipH/2;
+          bodyMarkup+=`<path d="M${leftX+chipW} ${cy}C${leftX+chipW+32} ${cy} ${leftX+chipW+32} ${midY} ${nodeX-22} ${midY}" fill="none" stroke="${A}" stroke-width="3"/>`;
+        });
+        if(audioIn)bodyMarkup+=`<path d="M${leftX+chipW} ${audioY+audioH/2}C${leftX+chipW+42} ${audioY+audioH/2} ${leftX+chipW+52} ${midY+42} ${nodeX} ${midY+42}" fill="none" stroke="${M}" stroke-width="1.8" stroke-dasharray="4 3"/>`;
+        if(isMatrix){
+          const boxW=68,boxH=Math.max(52,chipYs.length*(chipH+chipVGap)-chipVGap);
+          bodyMarkup+=`<rect x="${nodeX-boxW/2}" y="${midY-boxH/2}" width="${boxW}" height="${boxH}" rx="14" fill="#fff" stroke="${A}" stroke-width="3"/><text x="${nodeX}" y="${midY+5}" text-anchor="middle" font-size="12" font-weight="700" fill="${A}">매트릭스</text>`;
+          nodeRight=nodeX+boxW/2;
+        }else{
+          bodyMarkup+=`<circle cx="${nodeX}" cy="${midY}" r="21" fill="#fff" stroke="${A}" stroke-width="3"/><path d="M${nodeX-10} ${midY}h20M${nodeX+4} ${midY-7}l7 7-7 7" fill="none" stroke="${A}" stroke-width="2.6" stroke-linecap="round"/><text x="${nodeX}" y="${midY+41}" text-anchor="middle" font-size="11" font-weight="600" fill="${M}">${inN}개 중 1개 선택</text>`;
+          nodeRight=nodeX+21;
+        }
+      }else{
+        nodeRight=leftX+chipW;
       }
+
+      const bandX1=nodeRight+22,bandWidth=280,bandX2=bandX1+bandWidth,bandY=midY;
+      bodyMarkup+=`<rect x="${bandX1}" y="${bandY-7}" width="${bandWidth}" height="14" rx="7" fill="url(#rt-pg-flowband-${esc(item.id)})"/><path d="M${bandX2} ${bandY-9}l14 9-14 9" fill="${P}"/>`;
+      const bwSpec=(item.specifications||[]).find(spec=>/대역폭/.test(spec.name));
+      const res=shortResolution(item);
+      const topLabel=[bwSpec&&`${bwSpec.value}${bwSpec.unit||''}`,res&&[res.value,res.unit].filter(Boolean).join(' ')].filter(Boolean).join(' · ');
+      if(topLabel)bodyMarkup+=`<text x="${(bandX1+bandX2)/2}" y="${bandY-24}" text-anchor="middle" font-size="14" font-weight="800" fill="#1C1C1E">${svgEsc(topLabel)}</text>`;
+      const hdcp=(item.specifications||[]).find(spec=>/HDCP/.test(spec.name));
+      const protoBits=[videoIn.protocol,hdcp&&`HDCP ${hdcp.value.replace(/지원|support/i,'').trim()}`,audioIn&&'오디오 병합'].filter(Boolean);
+      if(protoBits.length)bodyMarkup+=`<text x="${(bandX1+bandX2)/2}" y="${bandY+28}" text-anchor="middle" font-size="11" font-weight="600" fill="${M}">${svgEsc(protoBits.join(' · '))}</text>`;
+
+      const cols=Math.min(outN,5),rows=Math.ceil(outN/cols);
+      const cellW=32,cellH=23,cellGap=8,panelPad=14;
+      const gridW=cols*cellW+(cols-1)*cellGap,gridH=rows*(cellH+13)+(rows-1)*cellGap;
+      const panelX=bandX2+20,panelW=gridW+panelPad*2,panelH=gridH+panelPad*2+10;
+      const panelY=Math.max(10,bandY-panelH/2);
+      bodyMarkup+=`<rect x="${panelX}" y="${panelY}" width="${panelW}" height="${panelH}" rx="16" fill="rgba(137,68,171,.09)"/>`;
       for(let i=0;i<outN;i++){
-        const y=midY-(outN-1)*rowH/2+i*rowH,isLast=i===outN-1&&outs.total>outN;
-        bodyMarkup+=arrow(boxX+boxW+6,y,width-70-24,y,COLOR_OUT)+monitorIcon(width-70,y,`${i+1}. 디스플레이${isLast?` 외 ${outs.total-outN}대`:''}`);
+        const c=i%cols,r=Math.floor(i/cols);
+        const x=panelX+panelPad+c*(cellW+cellGap),y=panelY+panelPad+r*(cellH+13+cellGap)+8;
+        bodyMarkup+=`<rect x="${x}" y="${y}" width="${cellW}" height="${cellH}" rx="4" fill="#fff" stroke="${P}" stroke-width="1.8"/><path d="M${x+cellW/2} ${y+cellH}v5M${x+cellW/2-7} ${y+cellH+6}h14" stroke="${P}" stroke-width="1.6"/><text x="${x+cellW/2}" y="${y+cellH/2+3.5}" text-anchor="middle" font-size="9" font-weight="700" fill="${PI}">${i+1}</text>`;
       }
-      return diagramWrap(bodyMarkup,width,height,[[COLOR_IN,`${ins.label} IN`],[COLOR_OUT,`${outs.label} OUT`]]);
+      const outCaption=outTotal>outN?`OUT 1–${outN} 외 ${outTotal-outN}개`:`OUT 1–${outN}`;
+      const sameSignal=isMatrix?'독립 출력':'같은 영상';
+      const captionText=`${outCaption} · ${sameSignal}`;
+      bodyMarkup+=`<text x="${panelX+panelW/2}" y="${panelY+panelH+16}" text-anchor="middle" font-size="11.5" font-weight="700" fill="${PI}">${svgEsc(captionText)}</text>`;
+
+      // 캡션 글자가 출력 격자보다 넓을 수 있어(예: 매트릭스 전환 문구) SVG 너비에 여유를 둔다.
+      const captionHalfWidth=captionText.length*3.6+20;
+      const width=Math.max(panelX+panelW+20,panelX+panelW/2+captionHalfWidth+20);
+      const height=Math.max(leftBottom+20,panelY+panelH+38,midY+70);
+      return diagramWrap(bodyMarkup,width,height,[]);
     }
     function cableDiagram(item){
       const specs=item.specifications||[];
@@ -212,7 +284,7 @@
     }
     function connectionDiagram(item){
       if(item.group==='cable')return cableDiagram(item);
-      if(item.group==='distribution'||item.group==='integrated')return splitterDiagram(item);
+      if(item.group==='distribution'||item.group==='integrated')return ioFlowDiagram(item);
       if(item.group==='extender')return extenderDiagram(item);
       return null;
     }
@@ -270,6 +342,31 @@
       </div></details>`;
     }
 
+    // ---- 화면 구성 모드(QMS 전용, 명세 6-B 7장). videoModes가 있을 때만 "05 주요 기능" 아래 전체 폭 카드로 보여준다 ----
+    const VMODE_ICON={
+      MATRIX:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 3l18 18M21 3L3 21"/></svg>',
+      QUAD:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg>',
+      WALL:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2" stroke-dasharray="3 2.4"/><circle cx="12" cy="12" r="3.2"/></svg>',
+      DUAL:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="8" rx="1.5"/><rect x="3" y="13" width="18" height="8" rx="1.5"/></svg>'
+    };
+    const VMODE_NAME_KO={MATRIX:'매트릭스',QUAD:'쿼드 뷰',WALL:'비디오 월',DUAL:'듀얼'};
+    function videoModesSection(item){
+      const vm=item.videoModes;
+      if(!vm||!vm.modes?.length)return '';
+      const modes=vm.modes;
+      const tileIcons=['MATRIX','DUAL','QUAD','WALL'].filter(name=>modes.some(mode=>mode.name===name));
+      return `<section class="rt-pg-card" style="margin-top:18px"><h2><span class="rt-pg-idx">06</span>화면 구성 모드</h2>
+        <div class="rt-pg-vmode">
+          <div class="rt-pg-vmode-tile"><b>Video Mode</b><div class="rt-pg-vmode-icons">${tileIcons.map(name=>`<div>${VMODE_ICON[name]}<span>${name}</span></div>`).join('')}</div><small>다양한 화면구성</small></div>
+          <div class="rt-pg-vmode-cards">${modes.map(mode=>`<div class="rt-pg-vmode-card">
+            <div class="rt-pg-vmode-card-head">${VMODE_ICON[mode.name]||''}<div><b>${esc(VMODE_NAME_KO[mode.name]||mode.name)}</b><small>${esc(mode.name)}</small></div></div>
+            <p>${esc(mode.summary)}${mode.detail?` ${esc(mode.detail)}`:''}</p>
+            ${mode.layouts?.length?`<span class="rt-pg-vmode-count">레이아웃 ${mode.layouts.length}종</span><div class="rt-pg-vmode-chips">${mode.layouts.map(layout=>`<span>${esc(layout)}</span>`).join('')}</div>`:''}
+          </div>`).join('')}</div>
+        </div>
+      </section>`;
+    }
+
     // ---- 단일 제품 템플릿(분배기·일체형·전송기·케이블) — 명세 2-2·2-4 ----
     function singleDetailView(item,byId){
       const images=(item.images||[]).filter(img=>img.role!=='Diagram');
@@ -298,7 +395,8 @@
           ${portSection?`<section class="rt-pg-card rt-pg-col-mobile-3"><h2><span class="rt-pg-idx">03</span>단자 지도 <span class="rt-pg-note">— ${item.portMap?'실제 제품 사진 기준':'입출력 표 기준'}</span></h2>${portSection}</section>`:''}
           ${recordSection(item,diagram,photo)}
         </div>
-      </div>`;
+      </div>
+      ${videoModesSection(item)}`;
     }
 
     // ---- 시리즈 템플릿(XDM·VDM·SPX) — 명세 2-3 ----
