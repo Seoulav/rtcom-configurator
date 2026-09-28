@@ -358,6 +358,11 @@
       "summary": "XDM-CTR100의 PSE(POE 전원 공급) 모델 · XDM-CTR100, XDM-CT/CR103과 사용"
     },
     {
+      "model": "XDM-PSU",
+      "kind": "전원 장치",
+      "summary": "CIS100·COS100에 연결한 XDM-CTR100용 16채널 모듈형 전원 장치 · XDM-POH(CIS용)·XDM-PHX(COS용) 모듈"
+    },
+    {
       "model": "XDM-CT103",
       "kind": "전송기",
       "summary": "HDBaseT 3.0 HDMI 1 Gang 벽부형 송신기 · XDM-CIS100 호환 · 100m"
@@ -398,6 +403,11 @@
       "relation": "PART_OF_SERIES",
       "target": "xdm-ft101-fr101",
       "note": "XDM 전용 광 송·수신기 · XDM-FIS100/FOS100 호환"
+    },
+    {
+      "relation": "PART_OF_SERIES",
+      "target": "xdm-psu",
+      "note": "CIS100·COS100에 연결한 XDM-CTR100에 전원을 공급하는 16채널 모듈형 전원 장치(XDM-POH·XDM-PHX 모듈)"
     }
   ],
   "sources": [

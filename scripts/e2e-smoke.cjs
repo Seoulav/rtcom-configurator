@@ -93,9 +93,12 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     // 라인업 사진은 지연 로딩(loading=lazy)이라 화면에 보이도록 스크롤한 뒤 로딩이 끝나기를 기다린다.
     await page.locator('.rt-ext-lineup').scrollIntoViewIfNeeded();
     await page.waitForFunction(()=>[...document.querySelectorAll('.rt-ext-lineup-card img')].every(image=>image.complete&&image.naturalWidth>0),null,{timeout:10000}).catch(()=>{});
-    check('전송기 단계에 XDM 연동 전송기 라인업 6종이 사진과 함께 표시됨',await page.locator('.rt-ext-lineup-card img').count()===6&&await page.$$eval('.rt-ext-lineup-card img',images=>images.every(image=>image.naturalWidth>0)));
+    check('전송기 단계에 XDM 연동 전송기 라인업 7종(0.72부터 XDM-PSU 포함)이 사진과 함께 표시됨',await page.locator('.rt-ext-lineup-card img').count()===7&&await page.$$eval('.rt-ext-lineup-card img',images=>images.every(image=>image.naturalWidth>0)));
     await page.locator('button[data-owner="in-1"][data-link-device="XDM-CTR100 PSE + XDM-CTR100"]').click();
     check('HDMI 카드에 CTR100 PSE + CTR100 한 쌍을 연결할 수 있고 CTR100 전원 경고 수에는 포함되지 않음',await page.locator('button[data-owner="in-1"][data-link-device="XDM-CTR100 PSE + XDM-CTR100"][aria-pressed="true"]').count()===1&&/XDM-CTR100 4대/.test(await page.locator('.rt-power-notice strong').innerText()));
+    // 0.72 XDM-PSU(사용자 결정 2026-09-28): CIS100·COS100에 연결한 CTR100은 개별 어댑터 대신 XDM-PSU로 전원을 받고, 안내에 PSU·POH·PHX 수량이 나온다.
+    const psuNotice=await page.locator('.rt-power-notice').innerText();
+    check('04 전송기 전원 안내가 "XDM-PSU로 전원 공급(개별 어댑터 불필요)"와 XDM-POH·XDM-PHX 수량을 보여 줌',/XDM-PSU로 전원 공급/.test(psuNotice)&&/XDM-POH \d+개/.test(psuNotice)&&/XDM-PHX \d+개/.test(psuNotice)&&!/전원 직접 연결/.test(psuNotice),psuNotice.slice(0,160));
     // 04 좌우 분할(0.38): 세그먼트를 눌러 오른쪽 미리보기를 in-2(XDM-CIS100)로 잡아 두고, 다른 세그먼트로 바꿨을 때 바뀌는지 본다.
     await page.click('.rt-cg-seg-link button[data-link-preview="in-2"]');
     check('04 세그먼트로 IN 2를 고르면 오른쪽 흐름이 XDM-CIS100을 보여줌',(await page.locator('.rt-link-flow-card strong').innerText())==='XDM-CIS100');
@@ -285,9 +288,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     // 0.33 — 제품정보 글래스 디자인(rt-pg-*)으로 목록·상세 마크업이 바뀌었다.
     await page.click('a[data-view-tab="products"]');
     await page.waitForSelector('.rt-pg-gridcard');
-    check('제품정보 탭을 누르면 구성기를 숨기고 제품 29종 목록(0.64부터 SPX-TX/RX 포함)을 표시',await page.locator('.rt-configurator-view').isHidden()&&await page.locator('.rt-pg-gridcard').count()===29);
+    check('제품정보 탭을 누르면 구성기를 숨기고 제품 30종 목록(0.64 SPX-TX/RX, 0.72 XDM-PSU 포함)을 표시',await page.locator('.rt-configurator-view').isHidden()&&await page.locator('.rt-pg-gridcard').count()===30);
     await page.click('[data-product-filter="extender"]');
-    check('전송기 분류는 13종(0.64부터 SPX-TX/RX 포함)',await page.locator('.rt-pg-gridcard').count()===13);
+    check('전송기 분류는 14종(0.64 SPX-TX/RX, 0.72 XDM-PSU 포함)',await page.locator('.rt-pg-gridcard').count()===14);
     await page.click('[data-product-filter="all"]');
     await page.fill('[data-product-search]','QMS');
     check('검색어 QMS로 일체형 매트릭스 2종이 남음',await page.locator('.rt-pg-gridcard').count()===2);
@@ -309,7 +312,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('CT104-U/CR104-U 단자 지도가 송신기·수신기 사진 두 장으로 나옴',extenderMaps.length===2&&extenderMaps[0].includes('송신기 CT104-U')&&extenderMaps[1].includes('수신기 CR104-U'),JSON.stringify(extenderMaps));
     await page.goBack();
     await page.waitForSelector('.rt-pg-gridcard');
-    check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-pg-gridcard').count()===29);
+    check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-pg-gridcard').count()===30);
     // 0.43 벽부형 단자 지도: 송신기·수신기 두 장, 세로 괄호(side left/right) 번호표 11개(0.46에서 HDMI IN 1·2를 한 번호로 묶음), 사진에 보이지 않는 옆면 단자 안내(note).
     await page.goto(`${home}#products/ft103-u-h-fr103-u`,{waitUntil:'networkidle'});
     await page.waitForSelector('#rt-pg-title');
@@ -422,7 +425,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     // 0.70 구성기 개선(사용자 요청 2026-09-28): ① "섀시" 대신 "프레임 선택" ② 블랭크·빈 슬롯 IN/OUT 번호표 강조 ③ 카드별 수량 순서대로 장착 ④ 02 프레임 선택 아래 "함께 보면 좋은 제품" ⑤ 모든 프레임 빈 슬롯을 XDM-12처럼 어두운 공패널로.
     await page.evaluate(()=>localStorage.clear());
     await page.goto(home,{waitUntil:'networkidle'});
-    for(const [fam,related] of [['SPX',2],['VDM',6],['XDM',5]]){
+    for(const [fam,related] of [['SPX',2],['VDM',6],['XDM',6]]){ // 0.72 XDM은 XDM-PSU를 더해 6개
       await page.click(`button[data-family="${fam}"]`);await acceptConfirm();
       if(await page.locator('[data-action="next"]').isEnabled())await page.click('[data-action="next"]');
       await page.waitForSelector('.rt-rel-card');
