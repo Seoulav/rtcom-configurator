@@ -14,7 +14,7 @@ const productData=fs.readdirSync('data/products').filter(name=>name.endsWith('.j
 const productAssets=fs.readdirSync('output/design/assets/products').map(name=>`output/design/assets/products/${name}`);
 // 제조사 문서 PDF(사용자 결정 2026-09-28): 폴더 전체가 아니라 data/products/*.json의 documents[].file에 등록된 PDF만 공개한다.
 // 폴더에 있어도 등록되지 않은 PDF와 docs/RTcom_catalogue_2026_46p.pdf(전체 카탈로그 원본)는 배포하지 않는다.
-// 0.96: 제품 상세 카탈로그 버튼은 제품별 발췌본(<id>-catalog.pdf)을 쓰므로, 제품 목록의 "전체 카탈로그" 버튼용 46쪽 공용 파일은 따로 넣는다.
+// 0.97: 제품 상세 카탈로그 버튼은 제품별 발췌본(<id>-catalog.pdf)을 쓰므로, 제품 목록의 "전체 카탈로그" 버튼용 46쪽 공용 파일은 따로 넣는다.
 const productDocs=[...new Set(['rtcom-catalog-2026.pdf',...productData.flatMap(file=>(JSON.parse(fs.readFileSync(file,'utf8')).documents||[]).map(doc=>doc.file).filter(Boolean))])].map(name=>`output/design/assets/docs/${name}`);
 for(const file of ['index.html','src/catalog.js','src/card-specs.js','src/core.js','src/app.js','src/products.js','src/styles.css','fonts/PretendardVariable.woff2','fonts/OFL.txt','output/design/assets/xdm.jpg','output/design/assets/spx.jpg','output/design/assets/vdm.jpg',...cardAssets,...frameAssets,...extenderAssets,...productData,...productAssets,...productDocs,'docs/evidence/RTCOM_MATRIX_EVIDENCE_AND_GAPS.md']){
  const target=path.join(output,file);fs.mkdirSync(path.dirname(target),{recursive:true});fs.copyFileSync(file,target);

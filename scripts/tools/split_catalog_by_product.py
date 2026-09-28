@@ -1,4 +1,4 @@
-"""제품별 카탈로그 PDF 만들기 (0.96.0).
+"""제품별 카탈로그 PDF 만들기 (0.97.0).
 
 사용자 결정(2026-09-28, 질문 응답 "제품별로 잘라 공개"): 공개 중인 전체 카탈로그 46쪽판
 output/design/assets/docs/rtcom-catalog-2026.pdf에서 제품마다 data/products/<id>.json의
