@@ -324,7 +324,7 @@
     {
       "model": "XDM-CIS100",
       "kind": "입력 카드",
-      "summary": "HDBaseT 3.0(RJ45) 입력 4포트 · CAT6a/CAT7 100m · 4K60Hz 4:4:4 · RS-232+ 제어·패스스루(XDM-CTR100)"
+      "summary": "HDBaseT 3.0(RJ45) 입력 4포트 · CAT6A S/FTP 100m · 4K60Hz 4:4:4 · RS-232+ 제어·패스스루(XDM-CTR100)"
     },
     {
       "model": "XDM-HOS100",
@@ -339,7 +339,7 @@
     {
       "model": "XDM-COS100",
       "kind": "출력 카드",
-      "summary": "HDBaseT 3.0(RJ45) 출력 4포트 · 오디오 추출·POE · CAT6a/CAT7 100m · RS-232+ 제어·패스스루(XDM-CTR100)"
+      "summary": "HDBaseT 3.0(RJ45) 출력 4포트 · 오디오 추출·POE · CAT6A S/FTP 100m · RS-232+ 제어·패스스루(XDM-CTR100)"
     },
     {
       "model": "XDM-FOS100",
@@ -443,7 +443,20 @@
       "name": "서울영상테크 SI사업본부 제공 실물 사진",
       "page": "",
       "scope": "사용자 업로드 고해상도 제품 사진(2026-09-28, 흰 배경 촬영본)"
+    },
+    {
+      "code": "U2",
+      "name": "서울영상테크 SI사업본부 확인",
+      "page": "",
+      "scope": "사용자 확인(2026-09-28) — XDM-CIS100·COS100 카드 케이블 표기를 CAT6A S/FTP(차폐)로 정정, UTP(비차폐)는 사용하지 않음"
     }
   ],
-  "issues": []
+  "issues": [
+    {
+      "code": "I1",
+      "status": "INFO",
+      "title": "HDBaseT 3.0 권장 케이블을 차폐형(S/FTP)으로 정정",
+      "detail": "XDM-CIS100·XDM-COS100 카드 소개 문구의 \"CAT6a/CAT7\" 표기가 UTP(비차폐)로 오인될 수 있어, XDM-CTR100·XDM-CT103/CR103과 동등 사양 기준으로 \"CAT6A S/FTP\"로 정정했다(사용자 요청 2026-09-28 \"UTP는 절대 안돼\")."
+    }
+  ]
 }

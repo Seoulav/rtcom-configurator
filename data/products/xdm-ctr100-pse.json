@@ -37,13 +37,13 @@
       "role": "Rear",
       "file": "xdm-ctr100-pse-rear.webp",
       "alt": "RTCOM XDM-CTR100 PSE 앞면(위)·뒷면(아래) 합성 사진",
-      "note": "Rear · 위 앞면(XDM-CTR100 PSE 제품 안내서 1쪽 사진) · 아래 뒷면(RT컴 제공 고해상도 XDM-CTR100 뒷면 사진, 2026-09-28) 합성. CTR100과 PSE는 앞면·단자가 같음(사용자 확인 2026-09-28)",
+      "note": "Rear · XDM-CTR100 사용자 매뉴얼 1쪽 앞면·뒷면 사진 합성(2026-09-28). CTR100과 PSE는 앞면·단자가 같음(사용자 확인 2026-09-28)",
       "provider": "RTCOM",
       "model": "XDM-CTR100 PSE",
-      "source": "S1",
+      "source": "M1",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "1000×621"
+      "resolution": "1400×836"
     },
     {
       "role": "Front",
@@ -201,7 +201,7 @@
     {
       "group": "Physical",
       "name": "크기(W×D×H)",
-      "value": "127.4×88×30.1",
+      "value": "107.4[127.4]×88×30.1",
       "unit": "mm",
       "condition": "",
       "source": "S1",
@@ -308,64 +308,64 @@
         "n": 4,
         "label": "HDBaseT",
         "desc": "RJ45 · CAT 케이블로 XDM-CTR100이나 XDM-CT103/CR103과 연결, 신호와 전원을 함께 공급",
-        "x1": 118,
-        "x2": 252,
+        "x1": 130,
+        "x2": 320,
         "side": "bottom",
-        "y": 580
+        "y": 700
       },
       {
         "n": 1,
         "label": "HDMI IN",
         "desc": "TX 모드에서 HDMI 소스 입력",
-        "x1": 287,
-        "x2": 412,
+        "x1": 365,
+        "x2": 565,
         "side": "bottom",
-        "y": 580
+        "y": 700
       },
       {
         "n": 2,
         "label": "HDMI OUT",
         "desc": "RX 모드에서 디스플레이 출력",
-        "x1": 472,
-        "x2": 597,
+        "x1": 625,
+        "x2": 825,
         "side": "bottom",
-        "y": 580
+        "y": 700
       },
       {
         "n": 3,
         "label": "AUDIO · RS-232",
         "desc": "5핀(L·R·접지·Tx·Rx) · 아날로그 스테레오 오디오 출력과 RS-232+ 제어",
-        "x1": 632,
-        "x2": 785,
+        "x1": 880,
+        "x2": 1010,
         "side": "bottom",
-        "y": 580
+        "y": 700
       },
       {
         "n": 7,
         "label": "DC IN",
         "desc": "DC 12V 1A · PSE에는 반드시 연결(상대 기기에 전원 공급)",
-        "x1": 793,
-        "x2": 888,
+        "x1": 1105,
+        "x2": 1255,
         "side": "bottom",
-        "y": 580
+        "y": 700
       },
       {
         "n": 5,
         "label": "TX/RX DIP 스위치",
         "desc": "1번 ON = TX · 2번 ON = RX · 3번 ON = Long Reach(1080p 150m) · 스위치를 내리면 ON. 설정 방법은 '06 딥 스위치 설정' 참고",
-        "x1": 245,
-        "x2": 348,
+        "x1": 400,
+        "x2": 545,
         "side": "top",
-        "y": 20
+        "y": 140
       },
       {
         "n": 6,
         "label": "상태 LED",
         "desc": "Rx Signal(RX 모드) · Tx Signal(TX 모드) · Tx/Rx·Link(정상 연결)",
-        "x1": 100,
-        "x2": 220,
+        "x1": 180,
+        "x2": 335,
         "side": "top",
-        "y": 20
+        "y": 80
       }
     ]
   },
