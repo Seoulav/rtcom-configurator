@@ -236,7 +236,7 @@
       "name": "크기(W×D×H)",
       "value": "127.4×88×30.1",
       "unit": "mm",
-      "condition": "5.02×3.46×1.19in",
+      "condition": "",
       "source": "S1",
       "verification": "VERIFIED"
     },
@@ -245,7 +245,7 @@
       "name": "무게",
       "value": "0.34",
       "unit": "kg",
-      "condition": "0.71lbs",
+      "condition": "",
       "source": "S1",
       "verification": "VERIFIED"
     },

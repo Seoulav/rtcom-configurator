@@ -158,7 +158,7 @@
       "name": "크기(W×D×H)",
       "value": "439×170×44",
       "unit": "mm",
-      "condition": "17.3in×6.7in×1.75in",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -167,7 +167,7 @@
       "name": "무게",
       "value": "1.81",
       "unit": "kg",
-      "condition": "4.0lbs · 프레임 단독",
+      "condition": "프레임 단독",
       "source": "J",
       "verification": "VERIFIED"
     }

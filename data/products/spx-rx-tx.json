@@ -217,7 +217,7 @@
       "name": "무게",
       "value": "0.18",
       "unit": "kg",
-      "condition": "SPX-TX·SPX-RX 각각(0.4lbs)",
+      "condition": "SPX-TX·SPX-RX 각각",
       "source": "M1",
       "verification": "VERIFIED"
     },
