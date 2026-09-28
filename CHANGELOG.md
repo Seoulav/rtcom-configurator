@@ -4,6 +4,10 @@
 
 ## Unreleased
 
+## 0.78.0
+
+- **HD-104U 전면·후면 사진 고해상도 교체**(사용자 제공 사진): 기존 저해상도 이미지(약 690×170px)를 사용자가 제공한 고해상도 전면·후면 사진(긴 변 약 2000px)으로 바꾸고, 정면·후면 합성 사진(`hd-104u-front-rear.webp`)도 다시 만들었습니다. 단자 지도(HDMI IN·OUT 1~4·DC 5V)와 EDID 로터리 스위치 좌표를 새 사진에서 다시 측정해 반영했습니다. `docs/RTCOM_HIRES_IMAGE_REQUEST.md` 1순위 목록에서 HD-104U를 완료 처리했습니다. QA: `docs/qa/HD104U_HIRES_IMAGE_QA_2026-09-28.md`.
+
 ## 0.77.0
 
 - **HD-13U 정면·후면 제품 사진 고해상도 교체**(사용자 제공 고해상도 사진 2장, 2026-09-28 "HD-13U 고해상도 사진이야 업데이트해줘"): `hd-13u-front.webp`(718×187 → 1045×218)·`hd-13u-rear.webp`(716×178 → 1147×244)를 사용자가 보낸 고해상도 버전으로 바꾸고, 두 사진을 위아래로 합성하는 `hd-13u-front-rear.webp`도 새 크기(1147×590)로 다시 만들었습니다. 같은 각도·구도의 사진이라 `portMap`(7개 번호: HDMI IN·HDMI OUT 1–3·AUDIO IN·AUDIO OUT·MODE·SET·DC 5V)과 `edidSwitch`(MODE 로터리 강조 링) 좌표를 새 사진 픽셀 기준으로 다시 측정해 반영했습니다(내용·순서는 그대로, 좌표만 갱신). QA: `docs/qa/HD13U_PHOTO_HIRES_QA_2026-09-28.md`.
