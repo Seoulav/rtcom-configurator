@@ -36,30 +36,6 @@
     },
     {
       "role": "Other",
-      "file": "hd-d102u-rack-drawing-art.webp",
-      "alt": "HD-D102U Rack마운트 도면(윗면·정면·옆면, 폭 483 · 깊이 282 · 높이 177 · 고정 구멍 줄 간격 147mm, 최대 12개 장착가능)",
-      "note": "Other · 사용자 제공 도면(HD-D102U RACK) 1쪽 배치를 한 장의 그림으로 다시 그림(scripts/tools/draw_hd_d102u_rack.cjs)",
-      "provider": "RTCOM",
-      "model": "HD-D102U Rack마운트",
-      "source": "D1",
-      "officialSource": true,
-      "verificationStatus": "FOUND",
-      "resolution": "2000×1308"
-    },
-    {
-      "role": "Other",
-      "file": "hd-d102u-rack-dims-art.webp",
-      "alt": "HD-D102U Rack마운트 정면 치수(폭 483 · 높이 177 · 고정 구멍 줄 간격 147mm)",
-      "note": "Other · 사용자 제공 도면 치수 표기",
-      "provider": "RTCOM",
-      "model": "HD-D102U Rack마운트",
-      "source": "D1",
-      "officialSource": true,
-      "verificationStatus": "FOUND",
-      "resolution": "2000×770"
-    },
-    {
-      "role": "Other",
       "file": "hd-d102u-rack-top-art.webp",
       "alt": "HD-D102U Rack마운트 윗면 그림(칸마다 통풍 슬릿)",
       "note": "Other · 사용자 제공 도면 윗면(폭 483 · 깊이 282mm)",
@@ -171,33 +147,32 @@
   ],
   "portMap": [
     {
-      "title": "정면 · 치수",
-      "basis": "사용자 제공 도면 기준 그림",
-      "image": "Other",
-      "file": "hd-d102u-rack-dims-art.webp",
+      "title": "정면",
+      "basis": "그래픽 이미지",
+      "image": "Front",
       "items": [
         {
           "n": 1,
           "label": "HD-D102U 장착 칸 1~12",
           "desc": "HD-D102U를 세워 꽂는 칸 12개(최대 12대)",
-          "x1": 277,
-          "x2": 1867
+          "x1": 144,
+          "x2": 1872
         },
         {
           "n": 2,
           "label": "랙 귀",
           "desc": "좌우 긴 구멍 2개씩으로 19인치 랙에 고정(폭 483mm · 높이 177mm)",
-          "x1": 147,
-          "x2": 238
+          "x1": 2,
+          "x2": 101
         },
         {
           "n": 3,
           "label": "칸별 고정 구멍",
           "desc": "칸마다 위아래 1개씩, 줄 간격 147mm",
           "side": "right",
-          "y1": 72,
-          "y2": 632,
-          "x": 1983
+          "y1": 62,
+          "y2": 671,
+          "x": 1998
         }
       ]
     },
@@ -247,11 +222,6 @@
       ]
     }
   ],
-  "drawing": {
-    "file": "hd-d102u-rack-drawing-art.webp",
-    "basis": "사용자 제공 도면 기준 그림",
-    "note": "그림을 누르면 원본 크기로 열립니다. 단위는 mm입니다."
-  },
   "sources": [
     {
       "code": "D1",
