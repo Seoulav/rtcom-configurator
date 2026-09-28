@@ -218,7 +218,7 @@
       "name": "지원 사양",
       "value": "HDMI 2.0b, HDR(Static·Dynamic: HDR+·Dolby Vision 등), Dolby Atmos Audio",
       "unit": "",
-      "condition": "OBUX-1C Tx·Rx 공통",
+      "condition": "",
       "source": "M1",
       "verification": "VERIFIED"
     },

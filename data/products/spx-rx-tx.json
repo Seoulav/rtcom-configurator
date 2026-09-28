@@ -138,7 +138,7 @@
       "name": "최대 해상도",
       "value": "3840x2160p 60Hz 4:4:4(8-bit)",
       "unit": "",
-      "condition": "SPX-TX·SPX-RX 공통",
+      "condition": "",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -147,7 +147,7 @@
       "name": "비디오 대역폭",
       "value": "18",
       "unit": "Gbps",
-      "condition": "SPX-TX·SPX-RX 공통",
+      "condition": "",
       "source": "C2",
       "verification": "VERIFIED"
     },
@@ -156,7 +156,7 @@
       "name": "지원 사양",
       "value": "HDMI 2.0, HDR(Static)",
       "unit": "",
-      "condition": "SPX-TX·SPX-RX 공통",
+      "condition": "",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -165,7 +165,7 @@
       "name": "HDCP",
       "value": "HDCP v2.2",
       "unit": "",
-      "condition": "SPX-TX·SPX-RX 공통",
+      "condition": "",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -201,7 +201,7 @@
       "name": "전원",
       "value": "DC +12V 1A 이상",
       "unit": "",
-      "condition": "SPX-TX·SPX-RX 공통 · PoC로 한쪽만 연결 가능",
+      "condition": "PoC로 한쪽만 연결 가능",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -210,7 +210,7 @@
       "name": "크기(W×D×H)",
       "value": "88.3×60.8×24.4",
       "unit": "mm",
-      "condition": "SPX-TX·SPX-RX 공통",
+      "condition": "",
       "source": "M1",
       "verification": "VERIFIED"
     },

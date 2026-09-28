@@ -203,7 +203,7 @@
       "name": "최대 해상도",
       "value": "4096x2160@60Hz, 3840x2160@60Hz",
       "unit": "",
-      "condition": "4:4:4 · XDM-FT101·XDM-FR101 공통",
+      "condition": "4:4:4",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -212,7 +212,7 @@
       "name": "최대 전송거리",
       "value": "2",
       "unit": "km",
-      "condition": "Singlemode · XDM-FT101·XDM-FR101 공통",
+      "condition": "Singlemode",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -221,7 +221,7 @@
       "name": "최대 전송거리",
       "value": "300",
       "unit": "m",
-      "condition": "Multimode · XDM-FT101·XDM-FR101 공통",
+      "condition": "Multimode",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -230,7 +230,7 @@
       "name": "HDCP",
       "value": "HDCP 2.2 support",
       "unit": "",
-      "condition": "XDM-FT101·XDM-FR101 공통",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -239,7 +239,7 @@
       "name": "EDID",
       "value": "Supports EDID",
       "unit": "",
-      "condition": "XDM-FT101·XDM-FR101 공통",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },

@@ -145,7 +145,7 @@
       "name": "데이터 전송 속도",
       "value": "3.4 Gbps/ch, Total 10.2 Gbps Max",
       "unit": "",
-      "condition": "CT103-U-H·CR103-U 공통",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -154,7 +154,7 @@
       "name": "지원 해상도",
       "value": "최대 Ultra HD 4K 4096x2160@24/25/30Hz",
       "unit": "",
-      "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0 · CT103-U-H·CR103-U 공통",
+      "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -163,7 +163,7 @@
       "name": "최대 전송거리",
       "value": "100",
       "unit": "m",
-      "condition": "1920x1200@60Hz·1080p·Ultra HD 4K, BELDEN CI 6522 기준 · CT103-U-H·CR103-U 공통",
+      "condition": "1920x1200@60Hz·1080p·Ultra HD 4K, BELDEN CI 6522 기준",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -181,7 +181,7 @@
       "name": "HDCP",
       "value": "HDCP 1.X",
       "unit": "",
-      "condition": "CT103-U-H·CR103-U 공통",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -190,7 +190,7 @@
       "name": "전원",
       "value": "DC +12V 2A",
       "unit": "",
-      "condition": "CT103-U-H·CR103-U 공통 · CR103-U 소비전력 최대 15W",
+      "condition": "CR103-U 소비전력 최대 15W",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -199,7 +199,7 @@
       "name": "크기(W×D×H)",
       "value": "91.44×107.95×57.15",
       "unit": "mm",
-      "condition": "CT103-U-H·CR103-U 공통",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -208,7 +208,7 @@
       "name": "무게",
       "value": "0.23",
       "unit": "kg",
-      "condition": "CT103-U-H·CR103-U 공통",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     }
