@@ -1054,3 +1054,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-card-choice-ext-qty .rt-card-qty-stepper button{width:30px;height:30px;font-size:16px}
 #rtcom-design .rt-card-choice-ext-qty .rt-card-qty-stepper output{min-width:30px;font-size:15px}
 #rtcom-design .rt-card-choice-ext-qty[data-off]{opacity:.45}
+
+/* 0.127 파란 "다음" 버튼(아래 바·미리보기)의 → 화살표: 예전에는 강조색(파랑)이라 파란 버튼 배경에 묻혀 보이지 않았다. 버튼 글자색(흰색)을 그대로 쓴다. */
+#rtcom-design .rt-button.rt-primary .rt-arrow{color:currentColor;font-size:20px;font-weight:700;line-height:1}
+#rtcom-design .rt-cg-preview .rt-cg-preview-next{display:inline-flex;gap:18px;justify-content:center}
