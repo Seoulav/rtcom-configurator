@@ -260,7 +260,7 @@
           const x=mvPanelX+panelPad+c*(cellW+cellGap),y=mvPanelY+panelPad+r*(cellH+13+cellGap)+8;
           bodyMarkup+=`<rect x="${x}" y="${y}" width="${cellW}" height="${cellH}" rx="4" fill="#F3EEFF" stroke="${P}" stroke-width="1.8"/><path d="M${x+cellW/2} ${y+2}V${y+cellH-2}M${x+2} ${y+cellH/2}H${x+cellW-2}" stroke="${P}" stroke-width="1" opacity=".55"/><path d="M${x+cellW/2} ${y+cellH}v5M${x+cellW/2-7} ${y+cellH+6}h14" stroke="${P}" stroke-width="1.6"/><text x="${x+cellW/2}" y="${y+cellH/2+3.5}" text-anchor="middle" font-size="9" font-weight="700" fill="${PI}">${n}</text>`;
         });
-        const mvCaption=`${multiview.join('·')}번 각 4분할 · 합쳐서 최대 8입력`;
+        const mvCaption=`${multiview.join('·')}번 각 4분할 또는 8분할`;
         bodyMarkup+=`<text x="${mvPanelX+mvPanelW/2}" y="${mvPanelY+mvPanelH+16}" text-anchor="middle" font-size="11.5" font-weight="700" fill="${PI}">${svgEsc(mvCaption)}</text>`;
       }
 
@@ -275,7 +275,7 @@
       }
 
       // 캡션 글자가 출력 격자보다 넓을 수 있어(예: 매트릭스 전환 문구) SVG 너비에 여유를 둔다.
-      const captionHalfWidth=Math.max(captionText.length,multiview.length?`${multiview.join('·')}번 각 4분할 · 합쳐서 최대 8입력`.length:0)*3.6+20;
+      const captionHalfWidth=Math.max(captionText.length,multiview.length?`${multiview.join('·')}번 각 4분할 또는 8분할`.length:0)*3.6+20;
       // AUDIO OUT 칩과 "추출" 표시도 너비에 넣는다(출력이 1개인 HDS-21U는 출력 패널이 좁아 "추출"이 잘렸다, 사용자 지적 2026-09-27).
       const width=Math.max(panelX+panelW+20,panelX+panelW/2+captionHalfWidth+20,audioOutRight+16);
       const height=Math.max(leftBottom+20,panelY+panelH+38,midY+70,audioOutBottom+16);
