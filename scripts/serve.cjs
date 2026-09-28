@@ -2,7 +2,7 @@ const http=require('node:http');
 const fs=require('node:fs');
 const path=require('node:path');
 const root=path.resolve(__dirname,'..');
-const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.jpg':'image/jpeg','.png':'image/png','.md':'text/plain; charset=utf-8','.json':'application/json; charset=utf-8','.pdf':'application/pdf'};
+const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.jpg':'image/jpeg','.png':'image/png','.md':'text/plain; charset=utf-8','.json':'application/json; charset=utf-8','.pdf':'application/pdf'};
 // 0.6 포털 주소는 배포본(package-site.cjs)과 같게 구성기 첫 화면으로 보낸다.
 const legacyRoutes=new Set(['/products','/products/','/tools/matrix-configurator','/tools/matrix-configurator/']);
 const server=http.createServer((req,res)=>{
