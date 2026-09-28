@@ -262,6 +262,22 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('02 프레임 선택 미리보기 캡션 아래 "다음" 버튼으로 03 카드 슬롯으로 이동함',previewNext?.enabled&&previewNext.below&&previewNext.text.startsWith('다음')&&(await page.locator('.rt-main .rt-eyebrow').first().textContent()).includes('03 / 카드 슬롯'),JSON.stringify(previewNext));
     await page.waitForFunction(()=>document.querySelector('.rt-rack-photo-image')?.naturalWidth>0,null,{timeout:5000}).catch(()=>{});
     check('XDM-216은 후면 그림 위에 입력 54·출력 54 슬롯으로 표시됨(캡션 "후면 그림")',await page.locator('.rt-rack-photo .rt-rack-zone-input .rt-rack-slot').count()===54&&await page.locator('.rt-rack-photo .rt-rack-zone-output .rt-rack-slot').count()===54&&(await page.locator('.rt-rack-photo figcaption').textContent()).startsWith('후면 그림'));
+    // 0.117 카드 팝업 연동 전송기(사용자 요청 "특정 컨버터를 선택할 수 있게끔"): 카드 아래 칩으로 전송기를 고르고 장착하면 그 전송기가 슬롯에 연결된다.
+    const links=()=>page.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.links);
+    await page.locator('button[data-slot="in-1"]').click();
+    const cisChips=await page.$$eval('.rt-card-modal [data-ext-card="XDM-CIS100"]',chips=>chips.map(chip=>({dev:chip.dataset.extDevice,on:chip.getAttribute('aria-pressed'),def:!!chip.querySelector('em')})));
+    await page.locator('.rt-card-modal [data-ext-card="XDM-CIS100"][data-ext-device="XDM-CT103"]').click();
+    await page.locator('.rt-card-modal .rt-card-choice[data-card="XDM-CIS100"]').click();
+    let linkState=await links();
+    check('카드 팝업에서 XDM-CIS100 아래 연동 전송기(CTR100 TX 기본·CT103·연결 안 함) 중 CT103을 고르고 장착하면 CT103 4채널로 연결됨',cisChips.length===3&&cisChips[0].dev==='XDM-CTR100 · TX'&&cisChips[0].on==='true'&&cisChips[0].def&&cisChips[2].dev===''&&linkState['in-1']?.device==='XDM-CT103'&&linkState['in-1'].count===4,JSON.stringify({cisChips,link:linkState['in-1']}));
+    await page.locator('button[data-slot="out-1"]').click();
+    await page.locator('.rt-card-modal [data-ext-card="XDM-HOS100"][data-ext-device="XDM-CTR100 PSE + XDM-CTR100"]').click();
+    await page.locator('.rt-card-modal .rt-card-choice[data-card="XDM-HOS100"]').click();
+    await page.locator('button[data-slot="in-1"]').click();
+    await page.locator('.rt-card-modal [data-ext-card="XDM-CIS100"][data-ext-device="XDM-CTR100 · TX"]').click();
+    await page.locator('.rt-card-modal .rt-card-choice[data-card="XDM-CIS100"]').click();
+    linkState=await links();
+    check('HDMI 카드(HOS100)는 CTR100 PSE 한 쌍을 골라 장착할 수 있고, 장착된 카드의 전송기를 팝업에서 바꾸면 바로 반영됨',linkState['out-1']?.device==='XDM-CTR100 PSE + XDM-CTR100'&&linkState['in-1']?.device==='XDM-CTR100 · TX'&&await page.locator('.rt-card-modal').count()===0,JSON.stringify({out1:linkState['out-1'],in1:linkState['in-1']}));
     const [spxArt,spxCount,spxToggles]=await rearArtOk('SPX');
     check('SPX 프레임 5종 후면 미리보기가 모두 평면 그림(긴 변 2000px)으로 표시되고, 5종 모두 정면·후면을 함께 보여 줌',spxCount===5&&spxArt===5&&spxToggles.length===0,`${spxArt}/${spxCount} ${JSON.stringify(spxToggles)}`);
     await page.evaluate(()=>localStorage.clear());
