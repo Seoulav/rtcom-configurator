@@ -73,7 +73,11 @@
       "title": "알티컴 종합 카탈로그 2026 (국문)",
       "language": "ko",
       "note": "카탈로그 46쪽판 29쪽 발췌 · 제품별 공개본(2026-09-28 사용자 결정 \"제품별로 잘라 공개\")",
-      "file": "hd-d102u-catalog.pdf"
+      "file": "hd-d102u-catalog.pdf",
+      "preview": "image",
+      "previewImages": [
+        "hd-d102u-catalog-p1.webp"
+      ]
     },
     {
       "type": "Diagram",
@@ -202,7 +206,13 @@
       "verification": "VERIFIED"
     }
   ],
-  "related": [],
+  "related": [
+    {
+      "relation": "WORKS_WITH",
+      "target": "hd-d102u-rack",
+      "note": "HD-D102U 최대 12대를 19인치 랙에 장착하는 전용 프레임"
+    }
+  ],
   "portMap": {
     "image": "Perspective",
     "items": [

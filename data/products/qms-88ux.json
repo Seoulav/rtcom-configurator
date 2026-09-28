@@ -86,7 +86,11 @@
       "title": "알티컴 종합 카탈로그 2026 (국문)",
       "language": "ko",
       "note": "카탈로그 46쪽판 28쪽 발췌 · 제품별 공개본(2026-09-28 사용자 결정 \"제품별로 잘라 공개\")",
-      "file": "qms-88ux-catalog.pdf"
+      "file": "qms-88ux-catalog.pdf",
+      "preview": "image",
+      "previewImages": [
+        "qms-88ux-catalog-p1.webp"
+      ]
     },
     {
       "type": "Diagram",
@@ -101,7 +105,8 @@
       "title": "QMS-88UX 사용자 매뉴얼 KV.04",
       "language": "ko",
       "note": "사용자 제공 매뉴얼 공개본(2026-09-28, 사용자 결정 \"1번\" — 매뉴얼 전부 공개)",
-      "file": "qms-88ux-manual.pdf"
+      "file": "qms-88ux-manual.pdf",
+      "preview": "pdfjs"
     }
   ],
   "features": [

@@ -55,6 +55,15 @@ function validate(product,file,ids){
     if(!shared&&(!/^[a-z0-9]+(?:[-.][a-z0-9]+)*\.pdf$/.test(doc.file||'')||!String(doc.file).startsWith(`${product.id}-`)))fail(`documents.file 형식(제품 id로 시작, 소문자·숫자·하이픈·점, .pdf): ${doc.file}`);
     if('page' in doc&&(!Number.isInteger(doc.page)||doc.page<1||(shared&&doc.page>shared.pages)))fail(`documents.page는 1${shared?`~${shared.pages}`:' 이상'} 정수여야 함: ${doc.file} ${doc.page}`);
     if(/배포 제외|비공개/.test(doc.note||''))fail(`공개하는 문서의 note에 "배포 제외·비공개"가 남아 있음: ${doc.file}`);
+    // 0.113 팝업 미리보기: "image"는 미리 그린 쪽 그림(previewImages, render_doc_previews.py), "pdfjs"는 PDF.js로 원본 PDF를 그린다.
+    if('preview' in doc){
+      if(!['image','pdfjs'].includes(doc.preview))fail(`documents.preview는 image·pdfjs만 가능: ${doc.file} ${doc.preview}`);
+      if(doc.preview==='image'){
+        if(!Array.isArray(doc.previewImages)||!doc.previewImages.length)fail(`preview "image"에는 previewImages가 필요: ${doc.file}`);
+        else for(const name of doc.previewImages)if(!fs.existsSync(path.join(IMAGE_DIR,String(name))))fail(`미리보기 그림 없음: ${name}`);
+      }
+      if(doc.page)fail(`preview는 쪽 지정(page) 없는 제품별 문서에만 쓸 수 있음: ${doc.file}`);
+    }else if('previewImages' in doc)fail(`previewImages는 preview "image"와 함께 써야 함: ${doc.file}`);
     const full=path.join(DOC_DIR,String(doc.file||''));
     if(!fs.existsSync(full)){fail(`문서 파일 없음: ${doc.file}`);continue}
     const size=fs.statSync(full).size,head=Buffer.alloc(5),fd=fs.openSync(full,'r');fs.readSync(fd,head,0,5,0);fs.closeSync(fd);
@@ -237,13 +246,22 @@ function build(){
   // 분배기(Splitter)를 먼저, 셀렉터(Switcher)를 나중에 보여준다(사용자 요청 2026-09-27 "분배기, 셀렉터 순으로 나오게해줘").
   const DIST_TYPES=['Splitter','Switcher'];
   const distType=product=>{const i=DIST_TYPES.findIndex(type=>(product.categories||[]).includes(type));return i<0?DIST_TYPES.length:i};
+  const byId=Object.fromEntries(products.map(([,product])=>[product.id,product]));
   const list=products.map(([,product])=>product).sort((a,b)=>{
     const groupDiff=order(a)-order(b);
     if(groupDiff)return groupDiff;
+    // 매트릭스 시리즈는 XDM을 맨 앞에, 구성기 표기(XDM · SPX · VDM)와 같은 순서로 보인다(사용자 요청 2026-09-28 "제품정보 XDM이 처음으로 나오게해").
+    if(a.group==='series'&&b.group==='series'){
+      const SERIES_ORDER=['xdm','spx','vdm'],rank=product=>{const i=SERIES_ORDER.indexOf(product.id);return i<0?SERIES_ORDER.length:i};
+      const seriesDiff=rank(a)-rank(b);
+      if(seriesDiff)return seriesDiff;
+    }
     if(a.group==='distribution'&&b.group==='distribution'){
       const typeDiff=distType(a)-distType(b);
       if(typeDiff)return typeDiff;
-      const qa=hdmiOutQty(a),qb=hdmiOutQty(b);
+      // 랙 마운트 프레임(0.121 HD-D102U Rack마운트)은 단자가 없으므로 함께 쓰는 제품의 출력 개수로 정렬해 그 제품 바로 뒤에 보인다.
+      const mountOf=product=>(product.categories||[]).includes('Rack Mount')?byId[((product.related||[]).find(link=>link.relation==='WORKS_WITH')||{}).target]:null;
+      const qa=hdmiOutQty(mountOf(a)||a),qb=hdmiOutQty(mountOf(b)||b);
       if(qa!==null&&qb!==null&&qa!==qb)return qa-qb;
     }
     return a.productName.localeCompare(b.productName,'en');

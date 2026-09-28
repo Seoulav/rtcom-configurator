@@ -1,0 +1,240 @@
+{
+  "id": "hd-d102u-rack",
+  "group": "distribution",
+  "manufacturer": "RTCOM",
+  "productName": "HD-D102U Rack마운트",
+  "model": "HD-D102U Rack마운트",
+  "series": "1x2 HDMI 18Gbps Splitter",
+  "seriesNote": "HD-D102U(1x2 HDMI 분배기)를 19인치 랙에 최대 12대까지 세워 꽂는 전용 랙 마운트 프레임이다.",
+  "itemType": "PRODUCT",
+  "categories": [
+    "영상",
+    "Video",
+    "Splitter",
+    "Rack Mount"
+  ],
+  "english": "19-inch Rack Mount Frame for HD-D102U — holds up to 12 HD-D102U 1x2 HDMI splitters in one rack space.",
+  "korean": "HD-D102U 1x2 HDMI 분배기를 최대 12대까지 장착하는 19인치 랙 마운트 프레임이다.",
+  "subtitle": "HD-D102U 전용 · 19인치 랙 마운트 프레임 · 최대 12대",
+  "lead": "HD-D102U 1x2 HDMI 분배기를 **19인치 랙에 최대 12대까지** 정리해 장착하는 전용 랙 마운트 프레임입니다.",
+  "catalogPages": "",
+  "verificationSummary": "사용자 제공 HD-D102U RACK 도면(정면·윗면·옆면, 2026-09-28)의 치수와 장착 수량으로 정리했다. 모델명(HD-D102U Rack마운트)은 사용자 결정(2026-09-28)이다.",
+  "packageStatus": "VERIFIED",
+  "overview": "HD-D102U Rack마운트는 HD-D102U 1x2 HDMI 분배기 전용 19인치 랙 마운트 프레임이다. 정면 12칸에 HD-D102U를 세워 꽂아 최대 12대까지 장착한다.\n\n좌우 랙 귀의 긴 구멍 2개씩으로 19인치 랙에 고정하고, 칸마다 위아래 고정 구멍(줄 간격 147mm)으로 HD-D102U를 고정한다. 윗면 앞쪽에는 칸마다 통풍 슬릿이 있다.\n\n크기는 폭 483mm · 깊이 282mm · 높이 177mm다.",
+  "images": [
+    {
+      "role": "Front",
+      "file": "hd-d102u-rack-front-art.webp",
+      "alt": "HD-D102U Rack마운트 정면 그림(HD-D102U 장착 칸 1~12)",
+      "note": "Front · 사용자 제공 도면(HD-D102U RACK) 정면을 평면 그림으로 다시 그림(scripts/tools/draw_hd_d102u_rack.cjs)",
+      "provider": "RTCOM",
+      "model": "HD-D102U Rack마운트",
+      "source": "D1",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "2000×733"
+    },
+    {
+      "role": "Other",
+      "file": "hd-d102u-rack-top-art.webp",
+      "alt": "HD-D102U Rack마운트 윗면 그림(칸마다 통풍 슬릿)",
+      "note": "Other · 사용자 제공 도면 윗면(폭 483 · 깊이 282mm)",
+      "provider": "RTCOM",
+      "model": "HD-D102U Rack마운트",
+      "source": "D1",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "2000×1168"
+    },
+    {
+      "role": "Other",
+      "file": "hd-d102u-rack-side-art.webp",
+      "alt": "HD-D102U Rack마운트 옆면 그림(보강판·바닥 받침)",
+      "note": "Other · 사용자 제공 도면 옆면(깊이 282 · 높이 177mm)",
+      "provider": "RTCOM",
+      "model": "HD-D102U Rack마운트",
+      "source": "D1",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "2000×1255"
+    }
+  ],
+  "imageStatuses": [
+    {
+      "role": "Main",
+      "status": "MISSING"
+    },
+    {
+      "role": "Front",
+      "status": "FOUND"
+    },
+    {
+      "role": "Rear",
+      "status": "MISSING"
+    },
+    {
+      "role": "Perspective",
+      "status": "MISSING"
+    },
+    {
+      "role": "Other",
+      "status": "FOUND"
+    }
+  ],
+  "documents": [
+    {
+      "type": "Drawing",
+      "status": "FOUND",
+      "title": "HD-D102U RACK 도면",
+      "language": "ko",
+      "note": "사용자 제공, 배포 제외"
+    }
+  ],
+  "features": [
+    {
+      "text": "HD-D102U 최대 12대 장착 지원",
+      "source": "D1"
+    },
+    {
+      "text": "19인치 랙 장착 지원(좌우 랙 귀)",
+      "source": "D1"
+    },
+    {
+      "text": "칸마다 위아래 고정 구멍으로 HD-D102U 고정",
+      "source": "D1"
+    },
+    {
+      "text": "윗면 칸별 통풍 슬릿",
+      "source": "D1"
+    }
+  ],
+  "specifications": [
+    {
+      "group": "General",
+      "name": "장착 수량",
+      "value": "최대 12",
+      "unit": "대",
+      "condition": "HD-D102U",
+      "source": "D1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "크기(W×D×H)",
+      "value": "483×282×177",
+      "unit": "mm",
+      "condition": "19인치 랙",
+      "source": "D1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "고정 구멍 줄 간격",
+      "value": "147",
+      "unit": "mm",
+      "condition": "칸마다 위아래 1개씩",
+      "source": "D1",
+      "verification": "VERIFIED"
+    }
+  ],
+  "io": [],
+  "related": [
+    {
+      "relation": "WORKS_WITH",
+      "target": "hd-d102u",
+      "note": "HD-D102U를 최대 12대까지 장착하는 전용 랙 마운트 프레임"
+    }
+  ],
+  "portMap": [
+    {
+      "title": "정면",
+      "basis": "그래픽 이미지",
+      "image": "Front",
+      "items": [
+        {
+          "n": 1,
+          "label": "HD-D102U 장착 칸 1~12",
+          "desc": "HD-D102U를 세워 꽂는 칸 12개(최대 12대)",
+          "x1": 144,
+          "x2": 1872
+        },
+        {
+          "n": 2,
+          "label": "랙 귀",
+          "desc": "좌우 긴 구멍 2개씩으로 19인치 랙에 고정(폭 483mm · 높이 177mm)",
+          "x1": 2,
+          "x2": 101
+        },
+        {
+          "n": 3,
+          "label": "칸별 고정 구멍",
+          "desc": "칸마다 위아래 1개씩, 줄 간격 147mm",
+          "side": "right",
+          "y1": 62,
+          "y2": 671,
+          "x": 1998
+        }
+      ]
+    },
+    {
+      "title": "윗면",
+      "image": "Other",
+      "file": "hd-d102u-rack-top-art.webp",
+      "items": [
+        {
+          "n": 1,
+          "label": "바닥판",
+          "desc": "긴 구멍 13줄이 있는 바닥판(깊이 282mm)",
+          "x1": 248,
+          "x2": 1752
+        },
+        {
+          "n": 2,
+          "label": "칸별 통풍 슬릿",
+          "desc": "장착 칸마다 윗면 통풍 슬릿",
+          "side": "bottom",
+          "x1": 131,
+          "x2": 1885
+        }
+      ]
+    },
+    {
+      "title": "옆면",
+      "image": "Other",
+      "file": "hd-d102u-rack-side-art.webp",
+      "displayWidth": 520,
+      "items": [
+        {
+          "n": 1,
+          "label": "앞판",
+          "desc": "HD-D102U 장착 칸이 있는 앞판(높이 177mm)",
+          "x1": 3,
+          "x2": 582
+        },
+        {
+          "n": 2,
+          "label": "바닥판",
+          "desc": "비스듬한 보강판으로 앞판과 이어진 바닥판(깊이 282mm)",
+          "side": "bottom",
+          "x1": 3,
+          "x2": 1997
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "code": "D1",
+      "name": "HD-D102U RACK 도면",
+      "page": "1",
+      "scope": "제조사 자료 — 사용자 제공 PDF(2026-09-28, 배포 제외)"
+    },
+    {
+      "code": "U",
+      "name": "서울영상테크 SI사업본부 확인",
+      "page": "",
+      "scope": "사용자 결정(2026-09-28) — 모델명 HD-D102U Rack마운트, HD-D102U 연관 제품으로 등록"
+    }
+  ],
+  "issues": []
+}
