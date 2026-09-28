@@ -4,6 +4,8 @@
 
 ## Unreleased
 
+- **0.88.0 배포 기록**: `docs/qa/DEPLOYMENT_0.88_2026-09-28.md`(PR #82 → main, 배포 run 60, 공개 파일 242/242 일치·매뉴얼 PDF 17개, 비공개 파일 14개 404)
+
 ## 0.88.0
 
 - **제품 상세 매뉴얼 PDF 버튼 공개**(사용자 결정 2026-09-28 "1번" — input_doc 매뉴얼 전부 공개): 로컬 `input_doc/RTCOM/manual/`의 매뉴얼 17개를 `output/design/assets/docs/<id>-manual.pdf`로 복사하고 16개 제품의 `documents[]`에 등록했습니다. 제품 상세 도구 모음에 "매뉴얼 PDF" 버튼(새 탭 보기·⤓ 내려받기)이 나타납니다. XDM-CT103/CR103은 CT103·CR103 매뉴얼 두 버튼, XDM-CTR100 PSE는 CTR100 매뉴얼 Ver.1.4를 씁니다. 공개하지 않은 자료: HEXA-01·HS-88M-U(사이트 제품 아님), SPX 프로토콜(제어 커맨드), CTR100 Ver.1.3(이전 판). 앞서 정한 "매뉴얼 로컬 보관" 결정을 대체합니다. 근거: `docs/implementation/PRODUCT_DOCUMENT_DOWNLOADS.md`.
