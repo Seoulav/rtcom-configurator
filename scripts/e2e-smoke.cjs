@@ -201,16 +201,14 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.locator('.rt-card-modal [data-action="fill-qty"]').click();
     const saved=()=>page.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.placements);
     let moveState=await saved();
-    check('카드 팝업에서 XDM-HI100 수량 3을 넣고 순서대로 장착하면 선택한 슬롯부터 입력 슬롯 3칸이 채워짐',qtyShown==='3'&&moveState['in-1']==='XDM-HI100'&&moveState['in-2']==='XDM-HI100'&&moveState['in-3']==='XDM-HI100'&&!moveState['in-4'],JSON.stringify(moveState));
+    check('카드 팝업에서 XDM-HI100 수량 3을 넣고 장착하면 선택한 슬롯부터 입력 슬롯 3칸이 채워짐',qtyShown==='3'&&moveState['in-1']==='XDM-HI100'&&moveState['in-2']==='XDM-HI100'&&moveState['in-3']==='XDM-HI100'&&!moveState['in-4'],JSON.stringify(moveState));
     // 0.55: XDM 세로 슬롯 카드 글자가 바로 읽히도록 90도(기존 -90도에서 180도) 회전, 작업 단계 표기는 한글.
     const xdmFace=await page.evaluate(()=>{const img=document.querySelector('button[data-slot="in-1"] img.rt-faceplate');const m=new DOMMatrix(getComputedStyle(img).transform);return {b:Math.round(m.b),eyebrow:document.querySelector('.rt-main .rt-eyebrow')?.textContent||'',bank:document.querySelector('.rt-rack-bank-title strong, .rt-frame-count')?.textContent||''}});
     check('XDM 세로 슬롯 카드는 90도로 돌아가 글자가 바로 보이고, 단계 제목·입출력 표기가 한글',xdmFace.b===1&&xdmFace.eyebrow.includes('03 / 카드 슬롯')&&!/INPUT|OUTPUT/.test(xdmFace.bank),JSON.stringify(xdmFace));
-    await page.locator('button[data-slot="in-1"]').click();
-    const moveOptions=await page.$$eval('.rt-card-move option',options=>options.map(option=>option.value));
-    await page.selectOption('.rt-card-move select','in-5');
-    await page.click('.rt-card-move [data-action="move-card"]');
+    // 0.106(사용자 요청 "다른 출력 슬롯으로 이동 탭은 없애도 될거 같아 내가 직접 드래그 이동이 가능하니까"): 팝업의 이동 드롭다운을 없애고 드래그로만 슬롯을 옮긴다.
+    await page.dragAndDrop('button[data-slot="in-1"]','button[data-slot="in-5"]');
     moveState=await saved();
-    check('팝업의 "다른 슬롯으로 이동"은 같은 방향 슬롯만 보여 주고 카드를 옮김',moveOptions.length&&moveOptions.every(id=>id.startsWith('in-'))&&!moveState['in-1']&&moveState['in-5']==='XDM-HI100',JSON.stringify({moveOptions:moveOptions.length,moveState}));
+    check('장착한 카드를 끌어 같은 방향의 다른 슬롯에 놓으면 옮겨짐(팝업 "다른 슬롯으로 이동" 없이 드래그만으로)',!moveState['in-1']&&moveState['in-5']==='XDM-HI100',JSON.stringify(moveState));
     await page.dragAndDrop('button[data-slot="in-2"]','button[data-slot="in-7"]');
     await page.dragAndDrop('button[data-slot="in-3"]','button[data-slot="out-1"]');
     moveState=await saved();
@@ -413,14 +411,28 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     // 2026-09-28 OBUX-1C Tx 고해상도 실물 사진: 송신기 단자 지도가 앞면·뒷면 합성 사진 한 장에 번호 6개(Mode·S/P 포함), 수신기도 합성 사진에 번호 5개(S/P 포함).
     const obuxPm=await page.evaluate(()=>{const s=[...document.querySelectorAll('section')].find(s=>/Port Map/.test(s.querySelector('h2')?.textContent||''));return {tx:!!s?.innerHTML.includes('obux-1c-tx-front-rear.webp'),rx:!!s?.innerHTML.includes('obux-1c-rx-front-rear.webp'),ports:[...(s?.querySelectorAll('.rt-pg-ports')||[])].map(x=>x.children.length)}});
     // 2026-09-28 제조사 문서 PDF: documents[].file 수만큼 "제품 목록" 옆에 버튼(새 탭 보기 + 내려받기)이 나오고 링크가 PDF로 열림. 등록 파일이 없는 제품은 버튼 없음.
+    // 0.105 샘플(HD-13U 카탈로그만): 새 탭 링크 대신 팝업(button[data-doc-preview])이고, 클릭하면 dialog.rt-doc-zoom이 그 파일을 iframe으로 연다.
     for(const id of ['hd-13u','hd-104u']){
       const expected=(JSON.parse(fs.readFileSync(`data/products/${id}.json`,'utf8')).documents||[]).filter(doc=>doc.file).length;
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
       await page.waitForSelector('.rt-pg-toolbar');
-      const docs=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-toolbar .rt-pg-doc')].map(el=>({open:el.querySelector('.rt-pg-doc-open')?.getAttribute('target')==='_blank'&&el.querySelector('.rt-pg-doc-open')?.relList.contains('noopener'),save:el.querySelector('.rt-pg-doc-save')?.hasAttribute('download'),href:el.querySelector('.rt-pg-doc-open')?.href})));
+      const docs=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-toolbar .rt-pg-doc')].map(el=>{
+        const open=el.querySelector('.rt-pg-doc-open');
+        const popup=open?.tagName==='BUTTON'?open.getAttribute('data-doc-preview'):null;
+        return {open:popup?true:open?.getAttribute('target')==='_blank'&&open?.relList.contains('noopener'),save:el.querySelector('.rt-pg-doc-save')?.hasAttribute('download'),href:popup?new URL(popup,document.baseURI).href:open?.href};
+      }));
       const pdfOk=[];for(const doc of docs){const res=await page.request.get(doc.href);pdfOk.push(res.status()===200&&String(res.headers()['content-type']).includes('pdf'))}
-      check(`${id} 제조사 문서 버튼 ${expected}개(새 탭 보기·내려받기, PDF 응답)`,docs.length===expected&&docs.every(doc=>doc.open&&doc.save)&&pdfOk.every(Boolean),JSON.stringify({expected,docs,pdfOk}));
+      check(`${id} 제조사 문서 버튼 ${expected}개(새 탭 보기 또는 팝업·내려받기, PDF 응답)`,docs.length===expected&&docs.every(doc=>doc.open&&doc.save)&&pdfOk.every(Boolean),JSON.stringify({expected,docs,pdfOk}));
     }
+    // 0.105 HD-13U 카탈로그 팝업: 버튼을 누르면 dialog가 열리고 iframe src가 카탈로그 PDF, 닫기 버튼으로 닫힌다.
+    await page.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
+    await page.waitForSelector('.rt-pg-toolbar');
+    await page.click('button.rt-pg-doc-open[data-doc-preview]');
+    await page.waitForSelector('dialog.rt-doc-zoom[open]');
+    const docPopup=await page.evaluate(()=>({src:document.querySelector('dialog.rt-doc-zoom iframe')?.getAttribute('src'),title:document.querySelector('dialog.rt-doc-zoom .rt-flow-zoom-head b')?.textContent}));
+    await page.click('dialog.rt-doc-zoom [data-zoom-close]');
+    const closed=await page.evaluate(()=>!document.querySelector('dialog.rt-doc-zoom[open]'));
+    check('HD-13U 카탈로그 팝업이 hd-13u-catalog.pdf를 iframe으로 열고 닫기로 닫힘',!!docPopup.src?.includes('hd-13u-catalog.pdf')&&!!docPopup.title&&closed,JSON.stringify({docPopup,closed}));
     check('OBUX-1C 송신기 단자 지도가 고해상도 앞뒤 합성 사진에 번호 6개, 수신기 5개(S/P 포함)로 나옴',obuxPm.tx&&obuxPm.rx&&obuxPm.ports.join()==='6,5',JSON.stringify(obuxPm));
     // 0.98 XDM-PSU 03 Signal Flow: 제조사 연결도처럼 프레임(CIS100·COS100) · PSU(POH·PHX) · CTR100 Tx/Rx를 장비 그림으로 그리고 케이블 위 점선이 흐른다. 움직임 줄이기 설정에서는 멈춘다.
     await page.goto(`${home}#products/xdm-psu`,{waitUntil:'networkidle'});
@@ -445,7 +457,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     // 0.95 전체 카탈로그 공유(사용자 결정 2026-09-28 "전체 카탈로그 공개해도 돼"): 제품 상세 카탈로그 버튼은 공용 파일을 제품 쪽(#page=N)에서 열고, 내려받기는 파일 전체. 제품 목록에는 "전체 카탈로그" 버튼 하나.
     await page.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-toolbar [data-doc="Catalog"]');
-    const cat=await page.$eval('.rt-pg-toolbar [data-doc="Catalog"]',el=>({open:el.querySelector('.rt-pg-doc-open').getAttribute('href'),save:el.querySelector('.rt-pg-doc-save').getAttribute('href'),text:el.textContent.trim()}));
+    const cat=await page.$eval('.rt-pg-toolbar [data-doc="Catalog"]',el=>{const open=el.querySelector('.rt-pg-doc-open');return {open:open.getAttribute('href')||open.getAttribute('data-doc-preview'),save:el.querySelector('.rt-pg-doc-save').getAttribute('href'),text:el.textContent.trim()}});
     await page.goto(`${home}#products`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-grid');
     const listCat=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-toolbar .rt-pg-doc')].map(el=>({text:el.textContent.trim(),href:el.querySelector('.rt-pg-doc-open').getAttribute('href')})));
