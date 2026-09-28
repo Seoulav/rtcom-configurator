@@ -133,7 +133,7 @@
       "name": "데이터 전송 속도",
       "value": "3.4 Gbps/ch, Total 10.2 Gbps Max",
       "unit": "",
-      "condition": "FT101-U·FR101-U 공통",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -142,7 +142,7 @@
       "name": "지원 해상도",
       "value": "최대 Ultra HD 4K 4096x2160@24/25/30Hz",
       "unit": "",
-      "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0 · FT101-U·FR101-U 공통",
+      "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -151,7 +151,7 @@
       "name": "최대 전송거리",
       "value": "2",
       "unit": "km",
-      "condition": "Single Mode Fiber · 1920x1200@60Hz 또는 1080p, Ultra HD 4K · FT101-U·FR101-U 공통",
+      "condition": "Single Mode Fiber · 1920x1200@60Hz 또는 1080p, Ultra HD 4K",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -160,7 +160,7 @@
       "name": "최대 전송거리",
       "value": "500",
       "unit": "m",
-      "condition": "Multi Mode Fiber · 1920x1200@60Hz 또는 1080p, Ultra HD 4K · FT101-U·FR101-U 공통",
+      "condition": "Multi Mode Fiber · 1920x1200@60Hz 또는 1080p, Ultra HD 4K",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -187,7 +187,7 @@
       "name": "HDCP",
       "value": "HDCP 1.X",
       "unit": "",
-      "condition": "FT101-U·FR101-U 공통",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -196,7 +196,7 @@
       "name": "전원",
       "value": "DC +12V 2A",
       "unit": "",
-      "condition": "FT101-U·FR101-U 공통",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },

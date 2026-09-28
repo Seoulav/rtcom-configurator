@@ -159,7 +159,7 @@
       "name": "데이터 전송 속도",
       "value": "3.4 Gbps/ch, Total 10.2 Gbps Max",
       "unit": "",
-      "condition": "FT103-U-H·FR103-U 공통",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -168,7 +168,7 @@
       "name": "지원 해상도",
       "value": "최대 Ultra 4K 4096x2160p 24/25/30Hz 4:4:4",
       "unit": "",
-      "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0 · FT103-U-H·FR103-U 공통",
+      "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -177,7 +177,7 @@
       "name": "최대 전송거리",
       "value": "2",
       "unit": "km",
-      "condition": "Single Mode Fiber · 4K 30Hz · FT103-U-H·FR103-U 공통",
+      "condition": "Single Mode Fiber · 4K 30Hz",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -186,7 +186,7 @@
       "name": "최대 전송거리",
       "value": "500",
       "unit": "m",
-      "condition": "Multi Mode Fiber · 4K 30Hz · FT103-U-H·FR103-U 공통",
+      "condition": "Multi Mode Fiber · 4K 30Hz",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -195,7 +195,7 @@
       "name": "광 커넥터",
       "value": "2LC Optical Connector",
       "unit": "",
-      "condition": "FT103-U-H·FR103-U 공통 · 옆면 FIBER OUT/IN",
+      "condition": "옆면 FIBER OUT/IN",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -213,7 +213,7 @@
       "name": "규격",
       "value": "DVI 1.0, HDMI 1.4",
       "unit": "",
-      "condition": "FT103-U-H·FR103-U 공통",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -222,7 +222,7 @@
       "name": "HDCP",
       "value": "HDCP 1.X",
       "unit": "",
-      "condition": "FT103-U-H·FR103-U 공통",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -231,7 +231,7 @@
       "name": "전원",
       "value": "DC +12V 2A",
       "unit": "",
-      "condition": "FT103-U-H·FR103-U 공통 · DC +12V 1A 이상",
+      "condition": "DC +12V 1A 이상",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -240,7 +240,7 @@
       "name": "크기(W×D×H)",
       "value": "91.44×107.95×57.15",
       "unit": "mm",
-      "condition": "FT103-U-H·FR103-U 공통",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -249,7 +249,7 @@
       "name": "무게",
       "value": "0.37",
       "unit": "kg",
-      "condition": "FT103-U-H·FR103-U 공통",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     }
