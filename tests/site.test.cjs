@@ -105,7 +105,8 @@ test('static package ships only configurator files and redirects legacy portal U
   // 2026-09-28: 제조사 문서 PDF는 제품 데이터 documents[].file에 등록된 것만 output/design/assets/docs/에서 공개한다.
   // 0.95: 전체 카탈로그는 공용 파일 output/design/assets/docs/rtcom-catalog-2026.pdf로만 공개하고(사용자 결정 "전체 카탈로그 공개해도 돼"), docs/ 원본 경로는 배포하지 않는다.
   assert.ok(files.includes('output/design/assets/docs/rtcom-catalog-2026.pdf'),'shared full catalogue is published under the docs folder');
-  const registeredDocs=new Set(fs.readdirSync('data/products').filter(name=>name.endsWith('.json')&&name!=='index.json').flatMap(name=>(JSON.parse(read(`data/products/${name}`)).documents||[]).map(doc=>doc.file).filter(Boolean)).map(name=>`output/design/assets/docs/${name}`));
+  // 0.96: 제품 상세는 제품별 발췌본을 쓰고, 46쪽 공용 파일은 제품 목록의 전체 카탈로그 버튼용으로만 남는다.
+  const registeredDocs=new Set(['output/design/assets/docs/rtcom-catalog-2026.pdf',...fs.readdirSync('data/products').filter(name=>name.endsWith('.json')&&name!=='index.json').flatMap(name=>(JSON.parse(read(`data/products/${name}`)).documents||[]).map(doc=>doc.file).filter(Boolean)).map(name=>`output/design/assets/docs/${name}`)]);
   for(const file of files.filter(file=>file.endsWith('.pdf')))assert.ok(registeredDocs.has(file),`unregistered PDF must not be published: ${file}`);
   for(const file of registeredDocs)assert.ok(files.includes(file),`dist is missing registered document ${file}`);
   assert.equal(files.includes('docs/RTcom_catalogue_2026_46p.pdf'),false,'full catalogue PDF must not be published');
@@ -277,4 +278,17 @@ test('0.93: 04 제품 사양 조건 칸에 "모델A·모델B 공통" 표기가 �
   const products=read('src/products.js');
   assert.match(products,/if\(item\.id==='xdm-psu'\)return psuDiagram\(item\);/);
   assert.match(products,/'XDM-PSU · POH'/);assert.match(products,/'XDM-PSU · PHX'/);
+});
+
+test('0.96: 제품 상세 카탈로그는 제품별 발췌 PDF를 쓰고, 전체 카탈로그는 목록 버튼용으로 계속 공개한다',()=>{
+  // 사용자 결정 2026-09-28 "제품별로 잘라 공개": scripts/tools/split_catalog_by_product.py가 46쪽판에서 해당 쪽만 뽑는다.
+  for(const file of fs.readdirSync('data/products').filter(name=>name.endsWith('.json')&&name!=='index.json')){
+    const item=JSON.parse(read(`data/products/${file}`));
+    for(const doc of (item.documents||[]).filter(doc=>doc.type==='Catalog'&&doc.file)){
+      assert.equal(doc.file,`${item.id}-catalog.pdf`,`${item.id} 카탈로그 버튼은 제품별 파일을 쓴다`);
+      assert.equal('page' in doc,false,`${item.id} 제품별 파일에는 쪽 번호(page)를 두지 않는다`);
+      assert.ok(fs.existsSync(`output/design/assets/docs/${doc.file}`),`${doc.file} must exist`);
+    }
+  }
+  assert.match(read('scripts/package-site.cjs'),/'rtcom-catalog-2026\.pdf',\.\.\.productData/,'전체 카탈로그 공용 파일은 목록 버튼용으로 배포 목록에 남긴다');
 });
