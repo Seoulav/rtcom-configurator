@@ -31,7 +31,7 @@
       "source": "C",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "950×167"
+      "resolution": "1404×191"
     },
     {
       "role": "Rear",
@@ -43,19 +43,19 @@
       "source": "C",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "950×167"
+      "resolution": "1409×193"
     },
     {
       "role": "Other",
       "file": "hds-42mu-front-rear.webp",
       "alt": "RTCOM HDS-42MU 전면(위)·후면(아래) 합성 사진",
-      "note": "Other · 위 Front·아래 Rear 카탈로그 제품 이미지를 이어붙인 단자 지도 전용 합성 사진(선택 버튼 없이 두 면을 함께 표시, 사용자 요청 2026-09-27)",
+      "note": "Other · 위 Front·아래 Rear 카탈로그 제품 이미지를 이어붙인 단자 지도 전용 합성 사진(선택 버튼 없이 두 면을 함께 표시, 사용자 요청 2026-09-27, 2026-09-28 고화질 사진으로 교체)",
       "provider": "RTCOM",
       "model": "HDS-42MU",
       "source": "C",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "950×414"
+      "resolution": "1409×474"
     },
     {
       "role": "Diagram",
@@ -281,82 +281,82 @@
         "n": 1,
         "label": "IN 1–4",
         "desc": "HDMI 소스 4대 연결",
-        "x1": 125,
-        "x2": 436,
+        "x1": 140,
+        "x2": 650,
         "side": "top",
-        "y": 247
+        "y": 281
       },
       {
         "n": 2,
         "label": "OUT 1–2",
         "desc": "선택한 입력을 매트릭스 전환해 출력",
-        "x1": 464,
-        "x2": 606,
+        "x1": 690,
+        "x2": 930,
         "side": "top",
-        "y": 247
+        "y": 281
       },
       {
         "n": 3,
         "label": "AUDIO IN",
         "desc": "3.5mm 아날로그 오디오 병합(MUX 선택 시)",
-        "x1": 635,
-        "x2": 653,
+        "x1": 970,
+        "x2": 1002,
         "side": "top",
-        "y": 247
+        "y": 281
       },
       {
         "n": 4,
         "label": "AUDIO OUT",
         "desc": "3.5mm 아날로그 오디오 추출(DEMUX 선택 시)",
-        "x1": 675,
-        "x2": 692,
+        "x1": 1030,
+        "x2": 1063,
         "side": "top",
-        "y": 247
+        "y": 281
       },
       {
         "n": 5,
         "label": "RS-232",
         "desc": "터미널 블록, 외부 제어",
-        "x1": 706,
-        "x2": 753,
+        "x1": 1085,
+        "x2": 1162,
         "side": "top",
-        "y": 247
+        "y": 281
       },
       {
         "n": 6,
         "label": "EDID",
         "desc": "전면 파란색 EDID 로터리 스위치, 06 EDID 설정 참고",
-        "x1": 315,
-        "x2": 349,
+        "x1": 440,
+        "x2": 508,
         "side": "top",
-        "y": 0
+        "y": 58
       },
       {
         "n": 7,
         "label": "MODE",
         "desc": "전면 빨간색 딥 스위치 3개(1번 오디오 병합·추출, 2번 Priority, 3번 출력 1·2번 분배). 설정 방법은 '07 딥 스위치 설정' 참고",
-        "x1": 365,
-        "x2": 396,
+        "x1": 520,
+        "x2": 583,
         "side": "top",
-        "y": 0
+        "y": 58
       },
       {
         "n": 8,
         "label": "DC 5V",
         "desc": "전원 어댑터 5V 2A",
-        "x1": 74,
-        "x2": 100,
+        "x1": 45,
+        "x2": 115,
         "side": "top",
-        "y": 247
+        "y": 281
       }
     ]
   },
   "edidSwitch": {
     "image": "Front",
-    "x1": 315,
-    "y1": 71,
-    "x2": 349,
-    "y2": 104,
+    "x1": 441,
+    "y1": 56,
+    "x2": 507,
+    "y2": 119,
     "label": "EDID 로터리 스위치",
     "desc": "전면 파란색 EDID 로터리 스위치로 디스플레이 EDID를 선택한다. HD-13U와 달리 별도 SET 버튼이 없어, 로터리를 돌린 뒤 전원 케이블을 1회 탈착해야 적용된다.",
     "default": "0 = Throughpass(외부 EDID 저장: OUTPUT에 연결된 디스플레이의 EDID를 저장해 사용)",
