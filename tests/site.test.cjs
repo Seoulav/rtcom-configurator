@@ -324,8 +324,8 @@ test('0.121: HD-D102U Rack마운트는 HD-D102U와 서로 관련 제품으로 �
   assert.ok(base.related.some(link=>link.relation==='WORKS_WITH'&&link.target==='hd-d102u-rack'));
   for(const image of rack.images)assert.ok(fs.existsSync(`output/design/assets/products/${image.file}`),`${image.file} must exist`);
   assert.ok(rack.documents.every(doc=>!doc.file),'사용자 제공 도면 PDF는 공개 폴더에 올리지 않는다');
-  assert.equal(rack.drawing.file,'hd-d102u-rack-drawing-art.webp','0.122: 사용자 제공 도면을 다시 그린 한 장짜리 그림을 도면 카드로 보여준다');
-  assert.match(read('src/products.js'),/function drawingSection\(item\)/);
+  assert.equal('drawing' in rack,false,'0.123: 실도면(치수 도면)은 넣지 않고 그래픽 이미지만 보여준다(사용자 요청 "실도면은하지말고 그래픽이미지만")');
+  assert.ok(rack.images.every(image=>!/drawing|dims/.test(image.file)),'치수선이 있는 도면 그림은 쓰지 않는다');
   const order=JSON.parse(read('data/products/index.json')).products.map(product=>product.id);
   assert.equal(order.indexOf('hd-d102u-rack'),order.indexOf('hd-d102u')+1,'목록에서 HD-D102U 바로 뒤에 보인다');
 });

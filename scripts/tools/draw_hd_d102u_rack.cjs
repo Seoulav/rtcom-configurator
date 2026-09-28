@@ -9,11 +9,6 @@ const {C,f,rect,text,screw,render}=P;
 const PALETTE={body:'#1d1f23',panel:'#18191d',bay:'#101114',edge:'#3d424b',line:'#555c68'};
 const hole=(cx,cy,r)=>`<circle cx="${f(cx)}" cy="${f(cy)}" r="${f(r)}" fill="#fff" stroke="${C.edge}" stroke-width="${f(r*0.35)}"/>`;
 const slot=(cx,cy,w,h)=>rect(cx-w/2,cy-h/2,w,h,'#fff',C.edge,Math.min(w,h)*0.18,Math.min(w,h)/2);
-const dim=(x1,y1,x2,y2,label,vertical)=>{
-  const tick=vertical?`M${f(x1-2)} ${f(y1)}h4M${f(x2-2)} ${f(y2)}h4`:`M${f(x1)} ${f(y1-2)}v4M${f(x2)} ${f(y2-2)}v4`;
-  const tx=vertical?`<text x="${f(x1-3)}" y="${f((y1+y2)/2)}" font-size="9" fill="#4a6fa5" text-anchor="middle" transform="rotate(-90 ${f(x1-3)} ${f((y1+y2)/2)})">${label}</text>`:`<text x="${f((x1+x2)/2)}" y="${f(y1+11)}" font-size="9" fill="#4a6fa5" text-anchor="middle">${label}</text>`;
-  return `<path d="M${f(x1)} ${f(y1)}L${f(x2)} ${f(y2)}${tick}" stroke="#4a6fa5" stroke-width="0.4" fill="none"/>`+tx;
-};
 const PITCH=35.6,FIRST=47.6; // 칸 간격·첫 칸 중심(mm, 도면 실측)
 const bayX=i=>FIRST+i*PITCH;
 
@@ -53,31 +48,12 @@ function side(){
   for(const [x,y] of [[11,14],[70,14],[11,163],[70,163],[92,163],[171,163]])s+=screw(x,y,3.2);
   return s;
 }
-// 설명용 치수선을 넣은 치수 그림(정면 + 폭·높이·고정 구멍 줄 간격).
-function frontDims(){
-  return `<g transform="translate(38 4)">${front()}</g>`+dim(38,188,521,188,'483 mm')+dim(30,4,30,181,'177 mm',true)+dim(16,19,16,166,'147 mm',true);
-}
-// 도면 한 장(0.122, 사용자 요청 "해당 페이지에 제품정보에 내가 준 파일을 그래픽화해서 같이 넣어줘"):
-// 사용자 제공 도면 1쪽 배치 그대로 윗면(왼쪽 위) · 정면(왼쪽 아래) · 옆면(오른쪽 아래) · 제목(오른쪽 위)과 치수선 483 · 282 · 177 · 147을 한 그림에 모은다.
-function sheet(){
-  const g=(x,y,body)=>`<g transform="translate(${x} ${y})">${body}</g>`;
-  const label=(x,y,t)=>text(x,y,t,11,'#6b7280','font-weight="700"');
-  let s=label(60,32,'윗면')+g(60,40,top())+dim(45,40,45,322,'282 mm',true)+dim(60,335,543,335,'483 mm');
-  s+=label(60,372,'정면')+g(60,380,front())+dim(45,380,45,557,'177 mm',true)+dim(30,395,30,542,'147 mm',true);
-  s+=label(590,372,'옆면')+g(590,380,side())+dim(590,570,872,570,'282 mm')+dim(890,380,890,557,'177 mm',true);
-  s+=text(872,86,'HD-D102U RACK',30,'#111827','text-anchor="end" font-weight="800" letter-spacing="0.5"');
-  s+=text(872,122,'최대 12개 장착가능',20,'#374151','text-anchor="end" font-weight="700"');
-  s+=text(872,150,'W 483 × D 282 × H 177 mm',13,'#4a6fa5','text-anchor="end" font-weight="700"');
-  return s;
-}
 if(require.main===module){
   process.chdir(path.resolve(__dirname,'../..'));
   const out=name=>`../products/${name}`;
   render([
     {name:out('hd-d102u-rack-front-art'),size:[483,177],body:front,palette:PALETTE},
     {name:out('hd-d102u-rack-top-art'),size:[483,282],body:top,palette:PALETTE},
-    {name:out('hd-d102u-rack-side-art'),size:[282,177],body:side,palette:PALETTE},
-    {name:out('hd-d102u-rack-dims-art'),size:[525,202],body:frontDims,palette:PALETTE},
-    {name:out('hd-d102u-rack-drawing-art'),size:[905,592],body:sheet,palette:PALETTE}
+    {name:out('hd-d102u-rack-side-art'),size:[282,177],body:side,palette:PALETTE}
   ]);
 }
