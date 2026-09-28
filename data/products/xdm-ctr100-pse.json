@@ -302,7 +302,7 @@
   ],
   "portMap": {
     "image": "Rear",
-    "title": "전면, 뒷면",
+    "title": "전면 / 뒷면",
     "items": [
       {
         "n": 4,
