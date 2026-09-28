@@ -21,8 +21,8 @@
     let changedSlot=null;
     // XDM 연동 전송기 정보(RTCom 종합 카탈로그 p.10~12). 키는 저장 파일·BOM에 쓰이는 전송기 이름과 같다.
     const extenderInfo={
-      'XDM-CTR100 · TX':{model:'XDM-CTR100',role:'HDBaseT 3.0 송·수신기 · DIP 스위치 TX 설정',image:'output/design/assets/extenders/xdm-ctr100.webp',specs:['4K60 4:4:4 · 최대 100m (CAT6a/CAT7)','HDMI 입력·출력 각 1 · RS-232+ · 오디오 출력','전원: CTR100에 직접 연결 (매트릭스 카드 구성에서는 PSE 사용 불가)'],pair:'XDM-CIS100',page:10,recommended:true},
-      'XDM-CTR100 · RX':{model:'XDM-CTR100',role:'HDBaseT 3.0 송·수신기 · DIP 스위치 RX 설정',image:'output/design/assets/extenders/xdm-ctr100.webp',specs:['4K60 4:4:4 · 최대 100m (CAT6a/CAT7)','HDMI 입력·출력 각 1 · RS-232+ · 오디오 출력','전원: CTR100에 직접 연결 (매트릭스 카드 구성에서는 PSE 사용 불가)'],pair:'XDM-COS100',page:10,recommended:true},
+      'XDM-CTR100 · TX':{model:'XDM-CTR100',role:'HDBaseT 3.0 송·수신기 · DIP 스위치 TX 설정',image:'output/design/assets/extenders/xdm-ctr100.webp',specs:['4K60 4:4:4 · 최대 100m (CAT6a/CAT7)','HDMI 입력·출력 각 1 · RS-232+ · 오디오 출력','전원: XDM-PSU로 공급 · CTR100 개별 전원 불필요 (매트릭스 카드 구성에서는 PSE 사용 불가)'],pair:'XDM-CIS100',page:10,recommended:true},
+      'XDM-CTR100 · RX':{model:'XDM-CTR100',role:'HDBaseT 3.0 송·수신기 · DIP 스위치 RX 설정',image:'output/design/assets/extenders/xdm-ctr100.webp',specs:['4K60 4:4:4 · 최대 100m (CAT6a/CAT7)','HDMI 입력·출력 각 1 · RS-232+ · 오디오 출력','전원: XDM-PSU로 공급 · CTR100 개별 전원 불필요 (매트릭스 카드 구성에서는 PSE 사용 불가)'],pair:'XDM-COS100',page:10,recommended:true},
       'XDM-CT103':{model:'XDM-CT103',role:'HDBaseT 3.0 1 Gang 벽부형 송신기',image:'output/design/assets/extenders/xdm-ct103.webp',specs:['4K60 4:4:4 · 최대 100m (CAT6a/CAT7)','HDMI 1 · 오디오 입력 1','XDM 슬롯 POE로 별도 전원 없이 사용'],pair:'XDM-CIS100',page:11},
       'XDM-CR103':{model:'XDM-CR103',role:'HDBaseT 3.0 1 Gang 벽부형 수신기',image:'output/design/assets/extenders/xdm-cr103.webp',specs:['4K60 4:4:4 · 최대 100m (CAT6a/CAT7)','HDMI 1 · 오디오 1','XDM 슬롯 POE로 별도 전원 없이 사용'],pair:'XDM-COS100',page:11},
       'XDM-FT101':{model:'XDM-FT101',role:'4K 광 송신기',image:'output/design/assets/extenders/xdm-ft101.webp',specs:['4K60 4:4:4 · HDMI 2.0','싱글모드 2km · 멀티모드 300m (LC 1)','오디오 삽입 · RS-232+'],pair:'XDM-FIS100',page:12,recommended:true},
@@ -42,8 +42,9 @@
       {model:'FR101-U',role:'HDMI 광 수신기',image:'output/design/assets/extenders/vdm-fr101-u.webp',pair:'FOS4-U',note:'싱글모드 2km · 멀티모드 500m · DC 12V'}
     ];
     const extenderLineup=[
-      {model:'XDM-CTR100',role:'HDBaseT 3.0 송·수신기 (DIP 스위치 TX/RX)',image:'output/design/assets/extenders/xdm-ctr100.webp',pair:'XDM-CIS100 · XDM-COS100',note:'DIP 스위치로 TX/RX를 설정합니다. TX는 CIS100, RX는 COS100과 연동하며 이때는 CTR100에 전원을 직접 연결합니다. PSE와 한 쌍이면 전원 불필요',page:10},
+      {model:'XDM-CTR100',role:'HDBaseT 3.0 송·수신기 (DIP 스위치 TX/RX)',image:'output/design/assets/extenders/xdm-ctr100.webp',pair:'XDM-CIS100 · XDM-COS100',note:'DIP 스위치로 TX/RX를 설정합니다. TX는 CIS100, RX는 COS100과 연동하며 이때는 XDM-PSU로 전원을 공급해 CTR100에 전원 어댑터가 필요 없습니다. PSE와 한 쌍이어도 전원 불필요',page:10},
       {model:'XDM-CTR100 PSE',role:'POE 전원 공급형 송·수신기 (DIP 스위치 TX/RX)',image:'output/design/assets/extenders/xdm-ctr100-pse.webp',pair:'XDM-CTR100 (HDMI 카드 연장 · 1:1 연장)',note:'CTR100과 한 쌍으로 쓰면 PSE 쪽에만 전원을 연결하고 CTR100은 전원이 필요 없습니다. HDMI 입력·출력 카드 연장에 사용하며, HDBaseT 카드(CIS100·COS100) 구성에는 사용할 수 없습니다.',page:10},
+      {model:'XDM-PSU',role:'16채널 모듈형 전원 장치 (19인치 2U)',image:'output/design/assets/products/xdm-psu-front.webp',pair:'XDM-CIS100 · XDM-COS100 + XDM-CTR100',note:'CIS100·COS100에 연결한 CTR100에 전원을 공급합니다. CIS용 XDM-POH(Tx 1대당 1개)와 COS용 XDM-PHX(COS100 1장당 1개) 모듈을 16칸에 꽂습니다.',source:'제조사 도면·구성도'},
       {model:'XDM-CT103',role:'1 Gang 벽부형 송신기',image:'output/design/assets/extenders/xdm-ct103.webp',pair:'XDM-CIS100',note:'XDM 슬롯 POE로 전원 공급',page:11},
       {model:'XDM-CR103',role:'1 Gang 벽부형 수신기',image:'output/design/assets/extenders/xdm-cr103.webp',pair:'XDM-COS100',note:'XDM 슬롯 POE로 전원 공급',page:11},
       {model:'XDM-FT101',role:'4K 광 송신기',image:'output/design/assets/extenders/xdm-ft101.webp',pair:'XDM-FIS100',note:'싱글모드 2km · 멀티모드 300m',page:12},
@@ -234,7 +235,9 @@
     }
     function powerNotice(){
       const count=Object.values(state.links).filter(link=>link.device?.startsWith('XDM-CTR100 · ')).reduce((sum,link)=>sum+link.count,0);
-      return count?`<div class="rt-power-notice"><span>필수 전원 연결</span><div><strong>XDM-CTR100 ${count}대에 전원 직접 연결</strong><p>매트릭스 카드(CIS100·COS100)에 연결하는 CTR100은 전원을 직접 연결해야 하며, 이 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다. 전원 공급 장비를 BOM에 자동 추가했습니다(제공 구성도 기준 16포트당 1대). 현행 모델명과 포트 용량은 제조사 확인이 필요합니다.</p></div></div>`:'';
+      // 0.72 XDM-PSU(사용자 결정 2026-09-28): CIS100·COS100에 연결한 CTR100은 XDM-PSU가 전원을 공급한다(POH는 Tx 1대당, PHX는 COS100 1장당).
+      const power=count?RtCore.bom(state).filter(row=>row.category==='전원 장비'):[],qty=model=>power.find(row=>row.model.startsWith(model))?.quantity||0;
+      return count?`<div class="rt-power-notice"><span>전원 공급</span><div><strong>XDM-CTR100 ${count}대 · XDM-PSU로 전원 공급(개별 어댑터 불필요)</strong><p>XDM-PSU ${qty('XDM-PSU')}대 · XDM-POH ${qty('XDM-POH')}개(CIS100 → POH → CTR100 Tx, Tx 1대당 1개) · XDM-PHX ${qty('XDM-PHX')}개(PSU → 2핀 전원선 → COS100 → CAT → CTR100 Rx, COS100 1장당 1개)를 BOM에 자동 추가했습니다. 매트릭스 카드 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다.</p></div></div>`:'';
     }
     // 04 전송기(2-2, Analog Way 구조 — 시안 configurator-aw-style.html?step=4): 왼쪽 목록(카드별 묶음 제목+선택 행) | 오른쪽 고정 미리보기(세그먼트로 고른 슬롯의 연결 흐름).
     // 01/02와 같은 rt-cg-split/rt-cg-list/rt-cg-row/rt-cg-preview/rt-cg-dot/rt-cg-seg 틀을 그대로 쓰고, 이 화면에만 있는 모양(묶음 제목+채널 선택, 흐름 그림, 접이식 라인업)만 새로 더한다.
@@ -258,7 +261,7 @@
         const rows=opts.length?`${opts.map(option=>row(slot,option,link)).join('')}${none(slot,link)}`:'<div class="rt-notice">이 카드와 전송 장비의 직접 호환 관계는 아직 확인되지 않았습니다.</div>';
         return `<div class="rt-cg-link-group" data-owner-group="${slot.id}"><div class="rt-cg-link-group-head"><button type="button" class="rt-cg-link-group-title" data-link-preview="${slot.id}" aria-pressed="${slot.id===linkPreviewSlot}"><strong>${shortLabel(slot)} · ${esc(c[0])} · ${dirWord(slot)} ${c[2]}채널</strong></button><label class="rt-link-count">연결 채널${countSelect(slot)}</label></div><div class="rt-cg-link-group-rows" role="list">${rows}</div></div>`;
       };
-      const lineupCard=item=>`<article class="rt-ext-lineup-card"><span class="rt-ext-option-image"><img src="${item.image}" alt="${esc(item.model)} 제품 사진" loading="lazy"></span><strong>${esc(item.model)}</strong><small>${esc(item.role)}</small><span class="rt-ext-pair">연동 · ${esc(item.pair)}</span><p>${esc(item.note)}</p><em>${item.page?`카탈로그 p.${item.page}`:'알티컴 홈페이지'}</em></article>`;
+      const lineupCard=item=>`<article class="rt-ext-lineup-card"><span class="rt-ext-option-image"><img src="${item.image}" alt="${esc(item.model)} 제품 사진" loading="lazy"></span><strong>${esc(item.model)}</strong><small>${esc(item.role)}</small><span class="rt-ext-pair">연동 · ${esc(item.pair)}</span><p>${esc(item.note)}</p><em>${item.page?`카탈로그 p.${item.page}`:item.source||'알티컴 홈페이지'}</em></article>`;
       const lineupSection=(family,title,text,items)=>`<section class="rt-ext-lineup" aria-labelledby="rt-ext-lineup-title"><div class="rt-ext-lineup-head"><div><span class="rt-eyebrow">${family} 전송기 라인업</span><h3 id="rt-ext-lineup-title">${title}</h3></div><p>${text}</p></div><div class="rt-ext-lineup-grid">${items.map(lineupCard).join('')}</div></section>`;
       const lineup=state.family==='XDM'?lineupSection('XDM','XDM 연동 전송기','HDBaseT 카드(CIS100·COS100)와 광 카드(FIS100·FOS100)에 연결하는 전송기입니다. 근거: RTCom 종합 카탈로그 p.10~12',extenderLineup):state.family==='VDM'?lineupSection('VDM','VDM 연동 전송기','HDBaseT 카드(CIS4-U·COS4-U)와 광 카드(FIS4-U·FOS4-U)에 연결하는 전송기입니다. 근거: 사용자 확인, 알티컴 홈페이지 VDM EXTENDER',vdmExtenderLineup):'';
       // 전송기 라인업(2-2 "판 아래 접이식 영역"): 처음부터 펼쳐 둔다 — e2e가 스크롤해서 사진 로딩을 확인하므로 클릭 없이 보여야 한다.
