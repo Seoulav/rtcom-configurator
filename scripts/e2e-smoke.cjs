@@ -249,14 +249,24 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.click('button[data-family="VDM"]');
     await page.click('[data-action="next"]');
     const vdmModels=await page.locator('button[data-model]').evaluateAll(nodes=>nodes.map(node=>node.dataset.model));
-    let vdmFrontCount=0,vdm288Placeholder=false;
+    let vdmFrontCount=0,vdm288Placeholder=false,vdmArt=0;
     for(const model of vdmModels){
       await page.click(`button[data-model="${model}"]`);
       const src=await page.$eval('.rt-cg-preview img',image=>image.getAttribute('src')).catch(()=>null);
       if(model==='VDM-288X')vdm288Placeholder=await page.locator('.rt-cg-preview-placeholder').isVisible();
-      if(src&&src.includes('/frames/vdm-')&&src.endsWith('-front.webp'))vdmFrontCount++;
+      if(src&&src.includes('/frames/vdm-')&&/-front(-art)?\.webp$/.test(src))vdmFrontCount++;
+      // 0.109 VDM 평면 그림: 실물 사진이 없는 전면 7종·후면 8종은 -art.webp 그림(긴 변 2000px)을 쓴다.
+      for(const side of ['front','rear']){
+        if(!await page.locator(`[data-cg-side="${side}"]`).count())continue;
+        await page.click(`[data-cg-side="${side}"]`);
+        await page.waitForFunction(()=>{const image=document.querySelector('.rt-cg-preview img');return !image||image.complete},null,{timeout:5000}).catch(()=>{});
+        const art=await page.$eval('.rt-cg-preview img',image=>({src:image.getAttribute('src'),w:image.naturalWidth,h:image.naturalHeight,alt:image.alt})).catch(()=>null);
+        if(art&&art.src.endsWith(`-${side}-art.webp`)&&Math.max(art.w,art.h)===2000&&art.alt.endsWith('그림'))vdmArt++;
+      }
+      if(await page.locator('[data-cg-side="front"]').count())await page.click('[data-cg-side="front"]');
     }
-    check('VDM 프레임 10종 중 9종(288X 제외)은 매뉴얼 전면 사진 또는 전면 도면을 미리보기에 표시함',vdmFrontCount===9);
+    check('VDM 프레임 10종 중 9종(288X 제외)은 전면 사진 또는 전면 그림을 미리보기에 표시함',vdmFrontCount===9);
+    check('VDM 실물 사진이 없는 전면 7종·후면 8종은 평면 그림(긴 변 2000px, 대체 문구 "그림")으로 표시함',vdmArt===15);
     check('VDM-288X는 전면 사진이 없어 미리보기에 "사진 준비 중"이 표시됨',vdm288Placeholder);
     await page.click('button[data-model="VDM-16X"]');await acceptConfirm();
     await page.click('[data-action="next"]');
@@ -281,7 +291,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.click('[data-action="next"]');
     await page.locator('button[data-slot="out-64"]').click();
     await page.locator('.rt-card-modal .rt-card-choice[data-card="COS4-U"]').click();
-    check('VDM-256X는 매뉴얼 후면 도면(랙 2대) 위에 입력 64·출력 64 슬롯이고 64번 슬롯에 카드를 장착할 수 있음',await page.locator('.rt-rack-photo .rt-rack-zone').count()===4&&await page.locator('.rt-rack-slot').count()===128&&await page.locator('button[data-slot="out-64"].rt-rack-slot-filled').count()===1&&await page.$eval('.rt-rack-photo-image',image=>image.naturalWidth>0));
+    check('VDM-256X는 후면 그림(랙 2대) 위에 입력 64·출력 64 슬롯이고 64번 슬롯에 카드를 장착할 수 있음',await page.locator('.rt-rack-photo .rt-rack-zone').count()===4&&await page.locator('.rt-rack-slot').count()===128&&await page.locator('button[data-slot="out-64"].rt-rack-slot-filled').count()===1&&await page.$eval('.rt-rack-photo-image',image=>image.naturalWidth>0));
     // 0.19 알티컴 공개 제품정보: 같은 화면 안에서 #products 주소 조각으로만 전환한다.
     // 0.33 — 제품정보 글래스 디자인(rt-pg-*)으로 목록·상세 마크업이 바뀌었다.
     await page.click('a[data-view-tab="products"]');
