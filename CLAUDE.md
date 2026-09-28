@@ -44,7 +44,7 @@
 - 슬롯 표가 있는 프레임(XDM·SPX·VDM)의 예전 논리 슬롯(in-a·in-b·out-a·out-b)은 불러올 때 실제 슬롯 1·2로 변환합니다(0.10부터 SPX·VDM 포함).
 - `placements` 예약값 `"BLANK"`(0.37부터). 이전 버전은 이 값을 읽지 못함(신버전은 구파일 호환).
 
-0.7부터 제품 라이브러리(31개 제품·5개 카테고리)와 카탈로그 PDF 배포는 AV portal과 중복되어 제거했습니다. 근거와 영향 범위는 `docs/audit/SITE_SCOPE_REVIEW.md`에 있습니다. 0.19부터 브로셔 수준 제품정보(29종)는 `data/products/`(`rtcom.products.v1`)로 다시 게시합니다. 카탈로그 PDF는 여전히 배포하지 않습니다(§9). 단, 2026-09-28 사용자 결정으로 사용자가 `output/design/assets/docs/`에 직접 올리고 `documents[].file`에 등록한 제품별 카탈로그·매뉴얼 PDF만 제품 상세 버튼으로 공개합니다(`docs/implementation/PRODUCT_DOCUMENT_DOWNLOADS.md`). 전체 카탈로그 원본과 `.source-materials/`는 배포하지 않고, 비공개 원본을 공개 폴더로 옮기는 일은 사용자가 직접 합니다.
+0.7부터 제품 라이브러리(31개 제품·5개 카테고리)와 카탈로그 PDF 배포는 AV portal과 중복되어 제거했습니다. 근거와 영향 범위는 `docs/audit/SITE_SCOPE_REVIEW.md`에 있습니다. 0.19부터 브로셔 수준 제품정보(29종)는 `data/products/`(`rtcom.products.v1`)로 다시 게시합니다. 카탈로그 PDF는 여전히 배포하지 않습니다(§9). 단, 2026-09-28 사용자 결정으로 사용자가 `output/design/assets/docs/`에 직접 올리고 `documents[].file`에 등록한 제품별 카탈로그·매뉴얼 PDF만 제품 상세 버튼으로 공개합니다(`docs/implementation/PRODUCT_DOCUMENT_DOWNLOADS.md`). 전체 카탈로그 원본과 `.source-materials/`는 배포하지 않습니다. **카탈로그·매뉴얼 PDF는 사용자가 직접 올립니다(사용자 지시 2026-09-28 "메뉴얼/카다로그는 내가 직접 올릴거야 명심해줘").** AI 세션은 PDF를 만들거나(쪽 발췌 포함) 복사·커밋하지 않고, 사용자가 올린 파일을 `documents[].file`에 등록·검증만 합니다.
 
 ## 버전과 기록
 
