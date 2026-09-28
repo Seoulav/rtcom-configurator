@@ -60,8 +60,8 @@
     // 열 수는 매뉴얼 후면 도면의 한 줄 보드 수다: 80X·128X는 11열(남는 칸은 제어 보드·빈칸), 180X는 15열, 256X는 랙 2대 × 11열.
     const vdmRacks={'VDM-8X':['h',1],'VDM-16X':['vs',4],'VDM-32X':['vs',4],'VDM-48X':['vs',4],'VDM-64X':['vs',4],'VDM-80X':['vt',11],'VDM-128X':['vt',11],'VDM-180X':['vt',15],'VDM-256X':['vt',11]};
     const frameFronts={'XDM-12':'output/design/assets/frames/xdm-12-front.webp','XDM-20':'output/design/assets/frames/xdm-20-front.webp','XDM-36':'output/design/assets/frames/xdm-36-front.webp','XDM-72':'output/design/assets/frames/xdm-72-front.webp','XDM-144':'output/design/assets/frames/xdm-144-front.webp','XDM-216':'output/design/assets/frames/xdm-216-front.webp','VDM-16X':'output/design/assets/frames/vdm-16x-front.webp','SPX-M810':'output/design/assets/frames/spx-m810-front.webp','SPX-M1620':'output/design/assets/frames/spx-m1620-front.webp','SPX-M3236':'output/design/assets/frames/spx-m3236-front.webp','SPX-M2472':'output/design/assets/frames/spx-m2472-front.webp','SPX-M24120':'output/design/assets/frames/spx-m24120-front.webp','VDM-48X':'output/design/assets/frames/vdm-48x-front.webp',
-      // 실물 전면 사진이 없는 VDM은 매뉴얼 전면 선 도면(KV07 PDF pp.12–20)을 쓴다.
-      'VDM-8X':'output/design/assets/frames/vdm-8x-front.webp','VDM-32X':'output/design/assets/frames/vdm-32x-front.webp','VDM-64X':'output/design/assets/frames/vdm-64x-front.webp','VDM-80X':'output/design/assets/frames/vdm-80x-front.webp','VDM-128X':'output/design/assets/frames/vdm-128x-front.webp','VDM-180X':'output/design/assets/frames/vdm-180x-front.webp','VDM-256X':'output/design/assets/frames/vdm-256x-front.webp'};
+      // 실물 전면 사진이 없는 VDM은 매뉴얼 전면 선 도면(KV07 PDF pp.12–20) 배치를 따라 그린 평면 그림을 쓴다(scripts/tools/draw_vdm_frames.cjs).
+      'VDM-8X':'output/design/assets/frames/vdm-8x-front-art.webp','VDM-32X':'output/design/assets/frames/vdm-32x-front-art.webp','VDM-64X':'output/design/assets/frames/vdm-64x-front-art.webp','VDM-80X':'output/design/assets/frames/vdm-80x-front-art.webp','VDM-128X':'output/design/assets/frames/vdm-128x-front-art.webp','VDM-180X':'output/design/assets/frames/vdm-180x-front-art.webp','VDM-256X':'output/design/assets/frames/vdm-256x-front-art.webp'};
     const frontDrawings=new Set(['VDM-8X','VDM-32X','VDM-64X','VDM-80X','VDM-128X','VDM-180X','VDM-256X']);
     // 국문 매뉴얼(KV08) 후면 사진과 사진 속 입력·출력 카드 영역(사진 픽셀 좌표: 왼쪽, 위, 오른쪽, 아래). 카드 고정 나사 간격으로 측정했다.
     // 업체의 빈 프레임 후면 사진을 받으면 src와 좌표만 바꾼다. XDM-216은 후면 사진이 없어 그림으로 표시한다.
@@ -73,16 +73,17 @@
       'XDM-72':{src:'output/design/assets/frames/xdm-72-rear.webp',page:10,size:[400,644],input:[5,46,372,242],output:[5,284,372,484]},
       'XDM-144':{src:'output/design/assets/frames/xdm-144-rear.webp',page:11,size:[366,1035],input:[8,44,336,392],output:[8,494,336,845]},
       'VDM-16X':{src:'output/design/assets/frames/vdm-16x-rear.webp',page:7,manual:VDM_MANUAL,size:[449,278],input:[2,24,165,276],output:[280,24,443,276]},
-      // VDM 국문 매뉴얼 KV07 2.2 Router Frame Specifications의 후면 선 도면(PDF 쪽). 좌표는 보드 경계선으로 측정했다.
+      // VDM 국문 매뉴얼 KV07 2.2 Router Frame Specifications의 후면 선 도면(PDF 쪽)을 따라 그린 평면 그림(scripts/tools/draw_vdm_frames.cjs).
+      // 좌표는 도면 보드 경계선으로 잰 값을 그림 배율대로 늘린 값이며, 스크립트를 실행하면 출력된다.
       // 입력·출력 영역이 여러 곳이면 배열로 두고 슬롯을 순서대로 똑같이 나눈다(256X: 왼쪽 랙 1–32, 오른쪽 랙 33–64).
-      'VDM-8X':{src:'output/design/assets/frames/vdm-8x-rear.webp',page:12,manual:VDM_MANUAL,kind:'도면',size:[637,195],input:[3,8,318,118],output:[329,8,634,118]},
-      'VDM-32X':{src:'output/design/assets/frames/vdm-32x-rear.webp',page:14,manual:VDM_MANUAL,kind:'도면',size:[458,473],input:[8,10,165,459],output:[286,10,448,459]},
-      'VDM-48X':{src:'output/design/assets/frames/vdm-48x-rear.webp',page:15,manual:VDM_MANUAL,kind:'도면',size:[448,677],input:[8,8,165,663],output:[282,8,442,663]},
-      'VDM-64X':{src:'output/design/assets/frames/vdm-64x-rear.webp',page:16,manual:VDM_MANUAL,kind:'도면',size:[451,819],input:[8,8,165,802],output:[280,8,440,802]},
-      'VDM-80X':{src:'output/design/assets/frames/vdm-80x-rear.webp',page:17,manual:VDM_MANUAL,kind:'도면',size:[239,631],input:[6,20,234,259],output:[6,330,234,570]},
-      'VDM-128X':{src:'output/design/assets/frames/vdm-128x-rear.webp',page:18,manual:VDM_MANUAL,kind:'도면',size:[477,1176],input:[3,12,453,489],output:[3,582,453,1061]},
-      'VDM-180X':{src:'output/design/assets/frames/vdm-180x-rear.webp',page:19,manual:VDM_MANUAL,kind:'도면',size:[170,636],input:[3,17,158,270],output:[3,336,158,591]},
-      'VDM-256X':{src:'output/design/assets/frames/vdm-256x-rear.webp',page:20,manual:VDM_MANUAL,kind:'도면',size:[472,777],input:[[6,12,228,325],[235,12,456,325]],output:[[6,388,228,700],[235,388,456,700]]},
+      'VDM-8X':{src:'output/design/assets/frames/vdm-8x-rear-art.webp',page:12,manual:VDM_MANUAL,kind:'그림',size:[2000,612],input:[9,25,998,370],output:[1033,25,1991,370]},
+      'VDM-32X':{src:'output/design/assets/frames/vdm-32x-rear-art.webp',page:14,manual:VDM_MANUAL,kind:'그림',size:[1937,2000],input:[34,42,698,1941],output:[1209,42,1894,1941]},
+      'VDM-48X':{src:'output/design/assets/frames/vdm-48x-rear-art.webp',page:15,manual:VDM_MANUAL,kind:'그림',size:[1323,2000],input:[24,24,487,1959],output:[833,24,1306,1959]},
+      'VDM-64X':{src:'output/design/assets/frames/vdm-64x-rear-art.webp',page:16,manual:VDM_MANUAL,kind:'그림',size:[1101,2000],input:[20,20,403,1958],output:[684,20,1074,1958]},
+      'VDM-80X':{src:'output/design/assets/frames/vdm-80x-rear-art.webp',page:17,manual:VDM_MANUAL,kind:'그림',size:[758,2000],input:[19,63,742,821],output:[19,1046,742,1807]},
+      'VDM-128X':{src:'output/design/assets/frames/vdm-128x-rear-art.webp',page:18,manual:VDM_MANUAL,kind:'그림',size:[811,2000],input:[5,20,770,832],output:[5,990,770,1804]},
+      'VDM-180X':{src:'output/design/assets/frames/vdm-180x-rear-art.webp',page:19,manual:VDM_MANUAL,kind:'그림',size:[535,2000],input:[9,53,497,849],output:[9,1057,497,1858]},
+      'VDM-256X':{src:'output/design/assets/frames/vdm-256x-rear-art.webp',page:20,manual:VDM_MANUAL,kind:'그림',size:[1215,2000],input:[[15,31,587,837],[605,31,1174,837]],output:[[15,999,587,1802],[605,999,1174,1802]]},
       // SPX 국문 사용자 매뉴얼(250805) 후면 사진. M810·M1620·M3236은 가로 카드(입력 위·출력 아래), M2472·M24120은 세로 카드(입력 왼쪽·출력 오른쪽).
       'SPX-M810':{src:'output/design/assets/frames/spx-m810-rear.webp',page:7,manual:SPX_MANUAL,size:[1706,385],input:[210,60,1500,155],output:[210,155,1500,250]},
       'SPX-M1620':{src:'output/design/assets/frames/spx-m1620-rear.webp',page:8,manual:SPX_MANUAL,size:[662,418],input:[67,116,594,224],output:[67,224,594,332]},
@@ -166,7 +167,7 @@
       const img=side==='rear'?rearInfo.src:front;
       const plan=slotPlanFor(previewModel);
       const seg=`<span class="rt-cg-seg" role="group" aria-label="사진 방향"><button type="button" class="${side==='front'?'rt-cg-seg-on':''}" data-cg-side="front">정면</button><button type="button" class="${side==='rear'?'rt-cg-seg-on':''}" data-cg-side="rear">후면</button></span>`;
-      const preview=`<div class="rt-cg-preview">${seg}${img?`<img src="${img}" alt="${esc(previewModel)} ${side==='rear'?'후면':'전면'} ${frontDrawings.has(previewModel)&&side==='front'?'도면':'사진'}">`:'<div class="rt-cg-preview-placeholder">사진 준비 중</div>'}<div class="rt-cg-preview-cap"><strong>${esc(previewModel)}</strong><span>${plan?`입력 ${plan[0]} / 출력 ${plan[1]} 슬롯`:'슬롯 구성 제조사 확인 필요'}</span></div></div>`;
+      const preview=`<div class="rt-cg-preview">${seg}${img?`<img src="${img}" alt="${esc(previewModel)} ${side==='rear'?'후면':'전면'} ${(side==='front'?frontDrawings.has(previewModel):rearInfo?.kind==='그림')?'그림':'사진'}">`:'<div class="rt-cg-preview-placeholder">사진 준비 중</div>'}<div class="rt-cg-preview-cap"><strong>${esc(previewModel)}</strong><span>${plan?`입력 ${plan[0]} / 출력 ${plan[1]} 슬롯`:'슬롯 구성 제조사 확인 필요'}</span></div></div>`;
       return heading('02 / 프레임 선택','구성의 중심이 될 프레임을 선택하세요.',`${state.family} 제품군 · 메인프레임 ${f.models.length}종`)+`<div class="rt-cg-split"><div class="rt-cg-list" role="list">${f.models.map(row).join('')}</div>${preview}</div>${relatedSection(state.family)}${xdmFeature}`;
     }
     function cardChoiceModal(){
@@ -254,7 +255,7 @@
       const photo=rearPhotos[model];
       const zoneRect=(dir,[x0,y0,x1,y1],items)=>{const [w,h]=photo.size,own=state.family==='SPX'&&layout==='vs',cols=own?items.length:columns,rows=Math.ceil(items.length/cols);return `<section class="rt-rack-zone rt-rack-zone-${dir}" aria-label="${dir==='input'?'입력':'출력'} 카드 슬롯" style="left:${(x0/w*100).toFixed(3)}%;top:${(y0/h*100).toFixed(3)}%;width:${((x1-x0)/w*100).toFixed(3)}%;height:${((y1-y0)/h*100).toFixed(3)}%;--rt-rack-zone-rows:${rows}${own?`;--rt-rack-columns:${cols}`:''}"><div class="rt-rack-grid">${items.map(slotButton).join('')}</div></section>`};
       const zone=(dir,items)=>{const rects=Array.isArray(photo[dir][0])?photo[dir]:[photo[dir]],size=Math.ceil(items.length/rects.length);return rects.map((rect,index)=>zoneRect(dir,rect,items.slice(index*size,(index+1)*size))).join('')};
-      const photoRack=photo?`<figure class="rt-rack-photo rt-rack-${layout} rt-rack-family-${state.family}" style="--rt-rack-columns:${columns};--rt-slot-ratio:${slotRatios[state.family]||9.7};--rt-photo-ratio:${(photo.size[0]/photo.size[1]).toFixed(4)}"><img class="rt-rack-photo-image" src="${photo.src}" alt="${esc(model)} 후면 사진"><div class="rt-rack-photo-zones">${zone('input',inputSlots)}${zone('output',outputSlots)}</div><figcaption>후면 ${photo.kind||'사진'} · ${photo.manual||'XDM 국문 매뉴얼'} p.${photo.page} · 선택한 카드만 표시</figcaption></figure>`:'';
+      const photoRack=photo?`<figure class="rt-rack-photo rt-rack-${layout} rt-rack-family-${state.family}" style="--rt-rack-columns:${columns};--rt-slot-ratio:${slotRatios[state.family]||9.7};--rt-photo-ratio:${(photo.size[0]/photo.size[1]).toFixed(4)}"><img class="rt-rack-photo-image" src="${photo.src}" alt="${esc(model)} 후면 ${photo.kind==='그림'?'그림':'사진'}"><div class="rt-rack-photo-zones">${zone('input',inputSlots)}${zone('output',outputSlots)}</div><figcaption>후면 ${photo.kind||'사진'} · ${photo.manual||'XDM 국문 매뉴얼'} p.${photo.page} · 선택한 카드만 표시</figcaption></figure>`:'';
       const layoutText=!plan?'슬롯 구성 검토용 논리 도식':state.family==='SPX'?`${layout==='vs'?'왼쪽':'상단'} 입력 ${plan[0]}슬롯(카드당 8포트) / ${layout==='vs'?'오른쪽':'하단'} 출력 ${plan[1]}슬롯(카드당 10~12포트)`:`${layout==='vt'?'상단':'왼쪽'} 입력 ${plan[0]}슬롯 / ${layout==='vt'?'하단':'오른쪽'} 출력 ${plan[1]}슬롯 · 카드당 4채널`;
       const completion=RtCore.completionFor(state);
       // 완성 배너(제목 위)·범례·채우기 줄(2-3, 사용자 결정 2026-09-27).
