@@ -122,6 +122,8 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-rack-vs .rt-faceplate,#rtcom-design .rt-rack-vt .rt-faceplate{inset:auto;top:50%;left:50%;width:100cqh;height:100cqw;transform:translate(-50%,-50%) rotate(-90deg)}
 /* 0.55: XDM 세로 슬롯은 카드 글자(HI100 등)가 바로 읽히도록 180도 돌린다(-90도 → 90도, 사용자 요청 "xdm슬롯카드 글자가 제대로 보이게 180도 돌려줘"). 실제 XDM-72 후면 사진의 장착 카드와 같은 방향이다. */
 #rtcom-design .rt-rack-family-XDM.rt-rack-vs .rt-faceplate,#rtcom-design .rt-rack-family-XDM.rt-rack-vt .rt-faceplate{transform:translate(-50%,-50%) rotate(90deg)}
+/* 0.72: VDM 세로 슬롯(16X~64X)도 같은 문제였다 — "4K IN" 태그가 뒤집혀 보임(사용자 실제 랙 사진과 비교해 확인, 2026-09-28). XDM과 같은 방식으로 180도 돌린다. */
+#rtcom-design .rt-rack-family-VDM.rt-rack-vs .rt-faceplate,#rtcom-design .rt-rack-family-VDM.rt-rack-vt .rt-faceplate{transform:translate(-50%,-50%) rotate(90deg)}
 #rtcom-design .rt-rack-slot-no{position:absolute;z-index:1;top:3px;left:3px;padding:1px 4px;border-radius:3px;background:#0d1117c4;color:#d6deea;font-size:9px;font-weight:800;line-height:1.3;white-space:nowrap}
 #rtcom-design .rt-rack-vs .rt-rack-slot-no,#rtcom-design .rt-rack-vt .rt-rack-slot-no{top:auto;bottom:3px;left:50%;padding:4px 1px;writing-mode:vertical-rl;transform:translateX(-50%) rotate(180deg)}
 #rtcom-design .rt-rack-slot-add{position:absolute;inset:0;display:grid;place-items:center;color:#7fa6f5;font-size:20px;font-weight:300}
@@ -458,6 +460,13 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-title .rt-pg-sub{font-size:11px;color:var(--pg-muted);letter-spacing:.02em;text-transform:uppercase;margin:3px 0 0}
 #rtcom-design .rt-pg-toolbar{display:flex;gap:9px;flex-wrap:wrap}
 #rtcom-design .rt-pg-btn{font:600 13px/1 var(--pg-sans);border:1px solid transparent;background:var(--pg-field-fill);color:var(--pg-accent);padding:9px 16px;border-radius:var(--pg-r-pill);white-space:nowrap;text-decoration:none;display:inline-block}
+/* 제조사 문서 PDF 버튼(2026-09-28): 왼쪽 이름 = 새 탭에서 보기, 오른쪽 화살표 = 내려받기 */
+#rtcom-design .rt-pg-doc{display:inline-flex;align-items:stretch;background:var(--pg-field-fill);border-radius:var(--pg-r-pill);overflow:hidden}
+#rtcom-design .rt-pg-doc a{font:600 13px/1 var(--pg-sans);color:var(--pg-accent);text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap}
+#rtcom-design .rt-pg-doc-open{padding:9px 11px 9px 16px}
+#rtcom-design .rt-pg-doc-save{padding:9px 13px 9px 10px;border-left:1px solid var(--pg-line-2)}
+#rtcom-design .rt-pg-doc a:hover{background:var(--pg-seg-track)}
+#rtcom-design .rt-pg-doc a:focus-visible{outline:2px solid var(--pg-accent);outline-offset:-2px}
 #rtcom-design .rt-pg-btn.rt-pg-primary{background:var(--pg-accent);color:#fff;box-shadow:0 6px 16px -6px var(--pg-accent)}
 #rtcom-design .rt-pg-cols{display:grid;grid-template-columns:360px 1fr;gap:22px;align-items:start}
 #rtcom-design .rt-pg-col{display:flex;flex-direction:column;gap:18px;min-width:0}
