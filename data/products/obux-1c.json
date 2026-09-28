@@ -343,7 +343,7 @@
     {
       "image": "Other",
       "file": "obux-1c-tx-front-rear.webp",
-      "title": "송신기 OBUX-1C Tx · 위 앞면, 아래 뒷면",
+      "title": "송신기 OBUX-1C Tx · 전면, 뒷면",
       "items": [
         {
           "n": 1,
@@ -404,7 +404,7 @@
     {
       "image": "Other",
       "file": "obux-1c-rx-front-rear.webp",
-      "title": "수신기 OBUX-1C Rx · 위 앞면, 아래 뒷면",
+      "title": "수신기 OBUX-1C Rx · 전면, 뒷면",
       "items": [
         {
           "n": 1,
