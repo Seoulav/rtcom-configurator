@@ -59,7 +59,12 @@
       "title": "알티컴 종합 카탈로그 2026 (국문)",
       "language": "ko",
       "note": "카탈로그 46쪽판 44~45쪽 발췌 · 제품별 공개본(2026-09-28 사용자 결정 \"제품별로 잘라 공개\")",
-      "file": "umc-catalog.pdf"
+      "file": "umc-catalog.pdf",
+      "preview": "image",
+      "previewImages": [
+        "umc-catalog-p1.webp",
+        "umc-catalog-p2.webp"
+      ]
     }
   ],
   "features": [

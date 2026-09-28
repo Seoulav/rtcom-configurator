@@ -980,6 +980,8 @@
       if(!dlg){
         dlg=document.createElement('dialog');dlg.className='rt-flow-zoom';dlg.setAttribute('aria-label','Signal Flow 크게 보기');
         dlg.addEventListener('click',event=>{if(event.target===dlg)dlg.close()});
+        // 닫으면 관찰을 멈추고 PDF 문서를 풀어 메모리를 돌려준다.
+        dlg.addEventListener('close',()=>{const state=dlg.rtDoc;if(!state)return;state.observer?.disconnect();state.slots?.forEach(freeDocPage);state.pdf?.destroy();dlg.rtDoc=null});
         body.appendChild(dlg);
       }
       const title=body.querySelector('#rt-pg-title')?.textContent||'';
@@ -988,7 +990,7 @@
       if(typeof dlg.showModal==='function')dlg.showModal();else dlg.setAttribute('open','');
       dlg.querySelector('[data-zoom-step="1"]').focus();
     }
-    // 카탈로그 PDF 팝업 미리보기(HD-13U 샘플). 0.112: iframe은 PDF 보기 기능이 없는 브라우저(휴대폰 크롬, 카카오톡 인앱 등)에서
+    // 제조사 문서 팝업 미리보기(0.124부터 전 제품: 카탈로그는 미리 그린 쪽 그림, 매뉴얼은 PDF.js). 0.112: iframe은 PDF 보기 기능이 없는 브라우저(휴대폰 크롬, 카카오톡 인앱 등)에서
     // 파일 다운로드로 넘어가서(사용자 지적 "pdf파일 다운로드 뜨지 않게 카탈로그를 직접 보이게해줘"), 저장소에 넣은 PDF.js(src/vendor/pdfjs)로 쪽마다 canvas에 그린다.
     // 라이브러리는 팝업을 처음 열 때만 불러온다. 옛 브라우저가 products.js 전체를 못 읽는 일이 없도록 import()는 Function으로 감싼다.
     const PDFJS_DIR='src/vendor/pdfjs/';
@@ -1015,40 +1017,85 @@
       const zoom=DOC_ZOOMS[state.zoom],fitWidth=docFitWidth(dlg);
       // 이미지 방식(카탈로그): 미리 그린 그림의 표시 폭만 바꾼다. 쪽 그림은 200dpi라 300%까지 확대해도 흐려지지 않는다.
       if(state.kind==='image'){pagesEl.querySelectorAll('img').forEach(img=>{img.style.width=`${Math.floor(fitWidth*zoom)}px`});return}
-      const token=state.token=(state.token||0)+1;
-      const canvases=[];
-      for(let n=1;n<=state.pdf.numPages;n++){
-        const page=await state.pdf.getPage(n);
-        if(token!==state.token)return;
-        const base=page.getViewport({scale:1});
-        const cssScale=fitWidth/base.width*zoom;
-        // 화면 배율만큼 선명하게 그리되 canvas 한 변이 4096px을 넘지 않게 한다(휴대폰 메모리 보호).
-        const pixelScale=Math.min(window.devicePixelRatio||1,4096/(base.width*cssScale),4096/(base.height*cssScale));
-        const viewport=page.getViewport({scale:cssScale*pixelScale});
-        const canvas=document.createElement('canvas');
-        canvas.width=Math.floor(viewport.width);canvas.height=Math.floor(viewport.height);
-        canvas.style.width=`${Math.floor(base.width*cssScale)}px`;canvas.style.height=`${Math.floor(base.height*cssScale)}px`;
-        canvas.setAttribute('role','img');canvas.setAttribute('aria-label',`${state.title} ${n}쪽`);
-        await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
-        if(token!==state.token)return;
-        canvases.push(canvas);
-        // 여러 쪽 매뉴얼: 첫 쪽이 그려지는 대로 먼저 보여 주고 나머지는 뒤에 이어 붙인다(첫 화면이 늦게 뜨지 않게).
-        if(n===1)pagesEl.replaceChildren(canvas);else pagesEl.appendChild(canvas);
-        const status=dlg.querySelector('.rt-doc-status');
-        if(status&&n<state.pdf.numPages)status.textContent=`${n} / ${state.pdf.numPages}쪽 그리는 중…`;
+      // PDF.js(매뉴얼): 쪽마다 크기만 맞춘 빈 자리를 먼저 만들고, 화면에 보이는 쪽과 그 앞뒤 한 화면만 canvas로 그린다.
+      // 100쪽이 넘는 매뉴얼(VDM 103쪽)도 첫 화면이 바로 뜨고, 멀리 지나간 쪽의 canvas는 지워서 휴대폰 메모리를 아낀다(0.124).
+      const scroller=dlg.querySelector('.rt-doc-zoom-body');
+      const ratio=scroller.scrollHeight>scroller.clientHeight?scroller.scrollTop/scroller.scrollHeight:0;
+      state.gen=(state.gen||0)+1;
+      if(!state.slots){
+        state.slots=state.sizes.map((size,i)=>{const slot=document.createElement('div');slot.className='rt-doc-page';slot.dataset.docPage=String(i+1);slot.setAttribute('role','img');slot.setAttribute('aria-label',`${state.title} ${i+1}쪽`);return slot});
+        pagesEl.replaceChildren(...state.slots);
       }
-      dlg.querySelector('.rt-doc-status')?.remove();
+      state.slots.forEach((slot,i)=>{
+        const size=state.sizes[i],cssScale=fitWidth/size.width*zoom;
+        slot.style.width=`${Math.floor(size.width*cssScale)}px`;slot.style.height=`${Math.floor(size.height*cssScale)}px`;
+        freeDocPage(slot);
+      });
+      scroller.scrollTop=ratio*scroller.scrollHeight;
+      state.visible=new Set();
+      state.observer?.disconnect();
+      state.observer=new IntersectionObserver(entries=>{
+        for(const entry of entries){
+          const i=Number(entry.target.dataset.docPage)-1;
+          if(entry.isIntersecting)state.visible.add(i);else{state.visible.delete(i);freeDocPage(entry.target)}
+        }
+        pumpDocPages(dlg,state);
+      },{root:scroller,rootMargin:'100% 0px'});
+      state.slots.forEach(slot=>state.observer.observe(slot));
+    }
+    // 그려 둔 canvas를 비운다. width를 0으로 줄여야 Safari가 canvas 메모리를 바로 돌려준다.
+    function freeDocPage(slot){
+      const canvas=slot.querySelector('canvas');
+      if(canvas){canvas.width=0;canvas.height=0}
+      slot.replaceChildren();delete slot.dataset.docDrawn;
+    }
+    // 그려야 할 쪽을 화면 가운데에 가까운 순서로 한 쪽씩 그린다(동시에 여러 쪽을 그리지 않아 첫 화면이 먼저 뜬다).
+    async function pumpDocPages(dlg,state){
+      if(state.busy)return;
+      state.busy=true;
+      try{
+        const scroller=dlg.querySelector('.rt-doc-zoom-body');
+        for(;;){
+          if(dlg.rtDoc!==state||!dlg.open)break;
+          const gen=state.gen,box=scroller.getBoundingClientRect(),mid=box.top+box.height/2;
+          let next=-1,best=Infinity;
+          for(const i of state.visible){
+            const slot=state.slots[i];
+            if(slot.dataset.docDrawn===String(gen))continue;
+            const r=slot.getBoundingClientRect(),d=Math.abs(r.top+r.height/2-mid);
+            if(d<best){best=d;next=i}
+          }
+          if(next<0)break;
+          const slot=state.slots[next],page=await state.pdf.getPage(next+1);
+          const cssWidth=parseFloat(slot.style.width),cssHeight=parseFloat(slot.style.height);
+          const base=page.getViewport({scale:1}),cssScale=cssWidth/base.width;
+          // 화면 배율만큼 선명하게 그리되 canvas 한 변이 4096px을 넘지 않게 한다(휴대폰 메모리 보호).
+          const pixelScale=Math.min(window.devicePixelRatio||1,4096/cssWidth,4096/cssHeight);
+          const viewport=page.getViewport({scale:cssScale*pixelScale});
+          const canvas=document.createElement('canvas');
+          canvas.width=Math.floor(viewport.width);canvas.height=Math.floor(viewport.height);
+          await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
+          if(dlg.rtDoc!==state||gen!==state.gen||!state.visible.has(next)){canvas.width=0;canvas.height=0;continue}
+          slot.replaceChildren(canvas);slot.dataset.docDrawn=String(gen);
+          dlg.querySelector('.rt-doc-status')?.remove();
+        }
+      }catch(error){
+        // 창을 닫아 문서를 푼 뒤 끝난 그리기는 조용히 버린다. 열려 있는데 실패하면 원본 링크로 안내한다.
+        if(dlg.rtDoc===state&&dlg.open){const status=dlg.querySelector('.rt-doc-status');if(status)status.innerHTML=`미리보기를 불러오지 못했습니다. <a href="${state.href}" target="_blank" rel="noopener">PDF 원본 열기</a>`}
+      }finally{state.busy=false}
     }
     async function openDocPreview(href,title,kind='pdfjs',images=[]){
       let dlg=body.querySelector('dialog.rt-doc-zoom');
       if(!dlg){
         dlg=document.createElement('dialog');dlg.className='rt-doc-zoom';dlg.setAttribute('aria-label','문서 미리보기');
         dlg.addEventListener('click',event=>{if(event.target===dlg)dlg.close()});
+        // 닫으면 관찰을 멈추고 PDF 문서를 풀어 메모리를 돌려준다.
+        dlg.addEventListener('close',()=>{const state=dlg.rtDoc;if(!state)return;state.observer?.disconnect();state.slots?.forEach(freeDocPage);state.pdf?.destroy();dlg.rtDoc=null});
         body.appendChild(dlg);
       }
       const file=href.split('/').pop();
       dlg.innerHTML=`<div class="rt-flow-zoom-head"><b>${esc(title)}</b><div class="rt-flow-zoom-tools"><button type="button" data-doc-zoom-step="-1" aria-label="축소" disabled>−</button><span data-doc-zoom-level aria-live="polite">100%</span><button type="button" data-doc-zoom-step="1" aria-label="확대" disabled>+</button><a class="rt-doc-zoom-link" href="${href}" target="_blank" rel="noopener" title="PDF 원본을 새 탭에서 열기">원본</a><a class="rt-doc-zoom-link" href="${href}" download="${esc(file)}" title="PDF 내려받기" aria-label="PDF 내려받기">${DOWNLOAD_ICON}</a><button type="button" class="rt-flow-zoom-close" data-zoom-close aria-label="닫기">×</button></div></div><div class="rt-doc-zoom-body" data-doc-kind="${kind==='image'?'image':'pdfjs'}"><p class="rt-doc-status" role="status">${kind==='image'?'카탈로그':'문서'}를 불러오는 중입니다…</p><div class="rt-doc-pages"></div></div>`;
-      const state=dlg.rtDoc={title,kind:kind==='image'?'image':'pdfjs',zoom:0,ready:false};
+      const state=dlg.rtDoc={title,href,kind:kind==='image'?'image':'pdfjs',zoom:0,ready:false};
       if(typeof dlg.showModal==='function')dlg.showModal();else dlg.setAttribute('open','');
       dlg.querySelector('[data-zoom-close]').focus();
       const status=dlg.querySelector('.rt-doc-status');
@@ -1067,8 +1114,11 @@
         const lib=await loadPdfjs();
         const pdf=await lib.getDocument({url:href,isEvalSupported:false}).promise;
         if(dlg.rtDoc!==state)return;
-        state.pdf=pdf;state.ready=true;
-        await renderDocPages(dlg);
+        // 쪽 크기만 먼저 모두 읽는다(그리기보다 훨씬 빠름). 가로·세로가 섞인 문서도 자리 크기가 맞는다.
+        const sizes=await Promise.all(Array.from({length:pdf.numPages},(_,i)=>pdf.getPage(i+1).then(page=>{const v=page.getViewport({scale:1});return {width:v.width,height:v.height}})));
+        if(dlg.rtDoc!==state){pdf.destroy();return}
+        state.pdf=pdf;state.sizes=sizes;state.ready=true;
+        renderDocPages(dlg);
       }catch(error){
         if(dlg.rtDoc===state)fail();
       }
