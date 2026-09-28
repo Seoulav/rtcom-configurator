@@ -1,0 +1,280 @@
+{
+  "id": "xdm-psu",
+  "group": "extender",
+  "manufacturer": "RTCOM",
+  "productName": "XDM-PSU",
+  "model": "XDM-PSU",
+  "series": "XDM Series Extender",
+  "seriesNote": "XDM 매트릭스 HDBaseT 카드(CIS100·COS100)에 연결한 XDM-CTR100에 전원을 공급하는 16채널 모듈형 전원 장치다.",
+  "itemType": "PRODUCT",
+  "categories": [
+    "영상",
+    "Video",
+    "Extender",
+    "Power"
+  ],
+  "english": "16 Channel Modular Power Supply System for XDM Extenders — powers XDM-CTR100 units connected to XDM-CIS100/COS100 cards through plug-in POH (CIS) and PHX (COS) modules.",
+  "korean": "XDM-CIS100·COS100 카드에 연결한 XDM-CTR100에 전원을 공급하는 19인치 2U 16채널 모듈형 전원 장치다. CIS용 POH 모듈과 COS용 PHX 모듈을 필요한 만큼 꽂아 쓴다.",
+  "subtitle": "XDM Series · 16채널 모듈형 전원 장치 · 19인치 2U",
+  "lead": "XDM 매트릭스 HDBaseT 카드(CIS100·COS100)에 연결한 XDM-CTR100에 **전원을 한곳에서 공급**하는 16채널 모듈형 전원 장치입니다. 이때 CTR100에는 전원 어댑터를 따로 연결하지 않습니다.",
+  "catalogPages": "",
+  "verificationSummary": "사용자 제공 XDM-POE ASSY 도면(2024.07.23)의 정면·후면·크기와 사용자 제공 구성도·모듈 사진(MAX2 표기)으로 정리했다. 모델명(XDM-PSU·XDM-POH·XDM-PHX)과 모듈 수량 기준은 사용자 결정(2026-09-28)이다.",
+  "packageStatus": "VERIFIED",
+  "overview": "XDM-PSU는 XDM 전송기용 16채널 모듈형 전원 공급 장치다. 후면 16칸에 두 종류 모듈을 필요한 만큼 섞어 꽂는다.\n\nXDM-POH(CIS용) 모듈은 RJ45 단자 2개(CIS Card·Extender)로 XDM-CIS100 포트와 XDM-CTR100(Tx) 사이의 CAT 케이블에 전원을 실어 보낸다. XDM-POH 1개가 XDM-CTR100(Tx) 1대를 맡는다.\n\nXDM-PHX(COS용) 모듈은 2핀(+/−) 전원 단자로 XDM-COS100 카드에 전원을 넣고, COS100이 CAT 케이블로 XDM-CTR100(Rx)에 전원을 함께 보낸다. XDM-PHX 1개가 XDM-COS100 카드 1장을 맡는다.\n\nXDM-PSU로 전원을 공급하면 XDM-CTR100에 전원 어댑터를 따로 연결하지 않는다. 정면에는 채널 LED 16개가 있고, 전원은 AC 100~240V 50/60Hz다.",
+  "images": [
+    {
+      "role": "Front",
+      "file": "xdm-psu-front.webp",
+      "alt": "RTCOM XDM-PSU 정면 도면(채널 LED 1~16)",
+      "note": "Front · XDM-POE ASSY 도면 FRONT",
+      "provider": "RTCOM",
+      "model": "XDM-PSU",
+      "source": "D1",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "979×185"
+    },
+    {
+      "role": "Rear",
+      "file": "xdm-psu-rear.webp",
+      "alt": "RTCOM XDM-PSU 후면 도면(XDM-POH 8·XDM-PHX 8 모듈 예, AC 전원)",
+      "note": "Rear · XDM-POE ASSY 도면 REAR(모듈 구성 예)",
+      "provider": "RTCOM",
+      "model": "XDM-PSU",
+      "source": "D1",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "993×208"
+    },
+    {
+      "role": "Other",
+      "file": "xdm-psu-modules.webp",
+      "alt": "전원 모듈 사진: 왼쪽 CIS용(RJ45 CIS Card·Extender), 오른쪽 COS용(2핀 +/−)",
+      "note": "Other · 사용자 제공 모듈 사진(실크 MAX2-POH·MAX2-PHX)",
+      "provider": "RTCOM",
+      "model": "XDM-PSU",
+      "source": "D2",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "516×793"
+    },
+    {
+      "role": "Diagram",
+      "file": "xdm-psu-diagram.webp",
+      "alt": "XDM-CIS100·COS100, 전원 장치, XDM-CTR100 Tx·Rx 연결 구성도",
+      "note": "Diagram · 사용자 제공 구성도(MAX2 표기)",
+      "provider": "RTCOM",
+      "model": "XDM-PSU",
+      "source": "D2",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "535×676"
+    }
+  ],
+  "imageStatuses": [
+    {
+      "role": "Main",
+      "status": "MISSING"
+    },
+    {
+      "role": "Front",
+      "status": "FOUND"
+    },
+    {
+      "role": "Rear",
+      "status": "FOUND"
+    },
+    {
+      "role": "Perspective",
+      "status": "MISSING"
+    },
+    {
+      "role": "Other",
+      "status": "FOUND"
+    }
+  ],
+  "documents": [
+    {
+      "type": "Drawing",
+      "status": "FOUND",
+      "title": "XDM-POE ASSY 도면",
+      "language": "ko",
+      "note": "ALT-XDM POE-000_V10 · 사용자 제공, 배포 제외"
+    }
+  ],
+  "features": [
+    {
+      "text": "16채널 모듈형 전원 공급 지원(후면 16칸에 POH·PHX 모듈 선택 장착)",
+      "source": "D1"
+    },
+    {
+      "text": "XDM-POH 모듈: XDM-CIS100 ↔ XDM-CTR100(Tx) CAT 케이블에 전원 공급(CTR100 Tx 1대당 1개)",
+      "source": "U"
+    },
+    {
+      "text": "XDM-PHX 모듈: 2핀 전원선으로 XDM-COS100 카드에 급전, CTR100(Rx)은 CAT로 전원 수신(COS100 1장당 1개)",
+      "source": "U"
+    },
+    {
+      "text": "XDM-CTR100 개별 전원 어댑터 불필요",
+      "source": "U"
+    },
+    {
+      "text": "정면 채널 LED 16개 표시 지원",
+      "source": "D1"
+    }
+  ],
+  "specifications": [
+    {
+      "group": "General",
+      "name": "채널",
+      "value": "16",
+      "unit": "",
+      "condition": "모듈 16칸(POH·PHX 선택)",
+      "source": "D1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "General",
+      "name": "XDM-POH",
+      "value": "CIS용 모듈 · RJ45 2(CIS Card·Extender)",
+      "unit": "",
+      "condition": "XDM-CTR100(Tx) 1대당 1개",
+      "source": "U",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "General",
+      "name": "XDM-PHX",
+      "value": "COS용 모듈 · 2핀 전원 단자(+/−)",
+      "unit": "",
+      "condition": "XDM-COS100 카드 1장당 1개",
+      "source": "U",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "name": "전원",
+      "value": "AC 100~240V 50/60Hz",
+      "unit": "",
+      "condition": "",
+      "source": "D1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "크기(W×D×H)",
+      "value": "482.6×250×88.1",
+      "unit": "mm",
+      "condition": "19인치 랙 2U(본체 폭 430)",
+      "source": "D1",
+      "verification": "VERIFIED"
+    }
+  ],
+  "io": [
+    {
+      "group": "Transmission",
+      "connector": "RJ45",
+      "signal": "HDBaseT(CIS Card)",
+      "direction": "IN",
+      "quantity": "POH 모듈당 1",
+      "protocol": "",
+      "condition": "XDM-CIS100 포트와 연결",
+      "source": "D1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "connector": "RJ45",
+      "signal": "HDBaseT + 전원(Extender)",
+      "direction": "OUT",
+      "quantity": "POH 모듈당 1",
+      "protocol": "",
+      "condition": "XDM-CTR100(Tx)과 연결",
+      "source": "D1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "connector": "2핀 단자(+/−)",
+      "signal": "DC 전원(COS Card)",
+      "direction": "OUT",
+      "quantity": "PHX 모듈당 1",
+      "protocol": "",
+      "condition": "XDM-COS100 카드와 2핀 전원선으로 연결",
+      "source": "D1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "connector": "AC 인렛",
+      "signal": "AC 100~240V",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "",
+      "source": "D1",
+      "verification": "VERIFIED"
+    }
+  ],
+  "related": [
+    {
+      "relation": "PART_OF_SERIES",
+      "target": "xdm",
+      "note": "XDM 매트릭스 HDBaseT 카드(CIS100·COS100)용 전원 장치"
+    },
+    {
+      "relation": "WORKS_WITH",
+      "target": "xdm-ctr100",
+      "note": "CIS100·COS100에 연결한 XDM-CTR100에 전원 공급(개별 어댑터 불필요)"
+    }
+  ],
+  "portMap": {
+    "image": "Rear",
+    "items": [
+      {
+        "n": 1,
+        "label": "XDM-POH × 8",
+        "desc": "CIS용 모듈(예시 8칸) · 위 RJ45 'CIS Card'는 XDM-CIS100 포트, 아래 'Extender'는 XDM-CTR100(Tx)과 연결",
+        "x1": 33,
+        "x2": 440
+      },
+      {
+        "n": 2,
+        "label": "XDM-PHX × 8",
+        "desc": "COS용 모듈(예시 8칸) · 2핀(+/−) 전원선으로 XDM-COS100 카드에 급전",
+        "x1": 448,
+        "x2": 865
+      },
+      {
+        "n": 3,
+        "label": "AC IN",
+        "desc": "AC 100~240V 50/60Hz 전원",
+        "x1": 893,
+        "x2": 977
+      }
+    ],
+    "note": "모듈 구성은 도면 예시(POH 8 · PHX 8)입니다. 구성에 맞춰 16칸에 필요한 모듈을 꽂습니다."
+  },
+  "sources": [
+    {
+      "code": "D1",
+      "name": "XDM-POE ASSY 도면(ALT-XDM POE-000_V10, 2024.07.23)",
+      "page": "1",
+      "scope": "제조사 공식 출처 — 사용자 제공 PDF(.source-materials/XDM-POE2U_030_ASSY.pdf, 배포 제외)"
+    },
+    {
+      "code": "D2",
+      "name": "XDM POE 구성도·모듈 사진(MAX2 표기)",
+      "page": "",
+      "scope": "제조사 자료 — 사용자 제공 이미지(2026-09-28)"
+    },
+    {
+      "code": "U",
+      "name": "서울영상테크 SI사업본부 확인",
+      "page": "",
+      "scope": "사용자 결정(2026-09-28) — 모델명 XDM-PSU/XDM-POH/XDM-PHX, POH는 CTR100(Tx) 1대당 1개, PHX는 COS100 카드 1장당 1개, PSU 사용 시 CTR100 개별 전원 불필요"
+    }
+  ],
+  "issues": []
+}

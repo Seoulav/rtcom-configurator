@@ -252,9 +252,20 @@
     const spxRx=Object.values(state.links).filter(link=>link.device==='SPX-RX').reduce((sum,link)=>sum+link.count,0);
     if (spxRx) add('SPX_RX_POC','VALID',`SPX-RX ${spxRx}대는 메인프레임이 CAT 케이블로 전원을 공급(POC)하므로 별도 전원 연결이 필요 없습니다.`,'SPX 국문 사용자 매뉴얼(250805) p.7 · SPX 카탈로그 p.3');
     const ctrCount=Object.values(state.links).filter(link=>link.device?.startsWith('XDM-CTR100 · ')).reduce((sum,link)=>sum+link.count,0);
-    if (ctrCount) add('CTR_POWER_REQUIRED','WARNING',`XDM-CTR100 ${ctrCount}대는 전원을 직접 연결해야 합니다. 매트릭스 카드(CIS100·COS100)에 연결하는 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다. 전원 공급 장비의 현행 모델명과 포트 용량을 확인하세요.`,'사용자 확인(2026-09-26) · 사용자 제공 XDM POE 구성도 · G08');
+    // 0.72 XDM-PSU(사용자 결정 2026-09-28): CIS100·COS100에 연결한 CTR100은 XDM-PSU로 전원을 받아 개별 어댑터가 필요 없다. 코드 이름은 저장 파일 호환을 위해 그대로 둔다.
+    if (ctrCount) {const power=ctrPower(state);add('CTR_POWER_REQUIRED','VALID',`XDM-CTR100 ${ctrCount}대는 XDM-PSU로 전원을 공급하므로 CTR100에 전원 어댑터를 따로 연결하지 않습니다. XDM-PSU ${power.psu}대(XDM-POH ${power.poh}개 · XDM-PHX ${power.phx}개)를 BOM에 추가했습니다. 매트릭스 카드(CIS100·COS100)에 연결하는 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다.`,'사용자 결정(2026-09-28) · XDM-POE ASSY 도면 · 사용자 제공 XDM POE 구성도');}
     const status=issues.some(issue=>issue.level==='ERROR')?'ERROR':issues.some(issue=>issue.level==='UNVERIFIED')?'UNVERIFIED':issues.some(issue=>issue.level==='WARNING')?'WARNING':'VALID';
     return {status,exportStatus:'UNVERIFIED_DRAFT',canFinalize:status==='VALID',summary:requirementSummary(state),issues};
+  }
+  // 0.72 XDM-PSU 수량(사용자 결정 2026-09-28): XDM-POH = CIS100에 연결한 CTR100(Tx) 대수, XDM-PHX = CTR100(Rx)을 연결한 COS100 카드 장수, XDM-PSU = 모듈 16칸당 1대.
+  function ctrPower(state) {
+    let poh=0,phx=0;
+    for (const [slot,link] of Object.entries(state.links||{})) {
+      if (!link?.count) continue;
+      if (link.device==='XDM-CTR100 · TX'&&state.placements?.[slot]==='XDM-CIS100') poh+=link.count;
+      if (link.device==='XDM-CTR100 · RX'&&state.placements?.[slot]==='XDM-COS100') phx+=1;
+    }
+    return {poh,phx,psu:Math.ceil((poh+phx)/16)};
   }
   function bom(input) {
     const state=checkState(input), rows=[];
@@ -272,7 +283,7 @@
         if (device.startsWith('XDM-CTR100 · ')) ctrQuantity+=port.quantity;
       }
     }
-    if (ctrQuantity) add('전원 장비','XDM-CTR100 전원 공급 장비 (제공 구성도 기준 16포트당 1대, 현행 모델명 확인 필요)',Math.ceil(ctrQuantity/16));
+    if (ctrQuantity) {const power=ctrPower(state);if(power.psu)add('전원 장비','XDM-PSU',power.psu);if(power.poh)add('전원 장비','XDM-POH (CIS용 전원 모듈)',power.poh);if(power.phx)add('전원 장비','XDM-PHX (COS용 전원 모듈)',power.phx)}
     return rows;
   }
   function document(input) {

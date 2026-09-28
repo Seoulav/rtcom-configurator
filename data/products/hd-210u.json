@@ -23,38 +23,38 @@
     {
       "role": "Front",
       "file": "hd-210u-front.webp",
-      "alt": "RTCOM HD-210U 전면",
-      "note": "Front · 카탈로그 제품 이미지",
+      "alt": "RTCOM HD-210U 전면(흰 배경 실물 사진)",
+      "note": "Front · 사용자 제공 실물 사진(2026-09-28)",
       "provider": "RTCOM",
       "model": "HD-210U",
-      "source": "C",
+      "source": "P1",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "1012×154"
+      "resolution": "1400×165"
     },
     {
       "role": "Rear",
       "file": "hd-210u-rear.webp",
-      "alt": "RTCOM HD-210U 후면",
-      "note": "Rear · 카탈로그 제품 이미지",
+      "alt": "RTCOM HD-210U 후면(흰 배경 실물 사진)",
+      "note": "Rear · 사용자 제공 실물 사진(2026-09-28)",
       "provider": "RTCOM",
       "model": "HD-210U",
-      "source": "C",
+      "source": "P1",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "1007×156"
+      "resolution": "1400×168"
     },
     {
       "role": "Other",
       "file": "hd-210u-front-rear.webp",
       "alt": "RTCOM HD-210U 앞면(위)과 뒷면(아래)",
-      "note": "Other · 정면·후면 사진을 위아래로 합성(단자 지도용)",
+      "note": "Other · 사용자 제공 실물 사진(2026-09-28)을 위아래로 합성(단자 지도용)",
       "provider": "RTCOM",
       "model": "HD-210U",
-      "source": "C",
+      "source": "P1",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "1012×390"
+      "resolution": "1400×373"
     },
     {
       "role": "Diagram",
@@ -241,43 +241,43 @@
         "n": 1,
         "label": "HDMI IN 1·2",
         "desc": "소스 2대 연결, 하나를 골라 전체 출력",
-        "x1": 40,
-        "x2": 152,
+        "x1": 50,
+        "x2": 235,
         "side": "top",
-        "y": 234
+        "y": 205
       },
       {
         "n": 3,
         "label": "AUDIO IN",
         "desc": "3.5mm 아날로그 오디오 병합",
-        "x1": 170,
-        "x2": 192,
+        "x1": 255,
+        "x2": 285,
         "side": "top",
-        "y": 234
+        "y": 205
       },
       {
         "n": 2,
         "label": "HDMI OUT 1–10",
         "desc": "10개 모두 같은 영상",
-        "x1": 220,
-        "x2": 880,
+        "x1": 300,
+        "x2": 1195,
         "side": "top",
-        "y": 234
+        "y": 205
       },
       {
         "n": 6,
         "label": "DC 12V",
         "desc": "전원 어댑터 12V 2A",
-        "x1": 912,
-        "x2": 940,
+        "x1": 1235,
+        "x2": 1275,
         "side": "top",
-        "y": 234
+        "y": 205
       },
       {
         "label": "EDID",
         "desc": "전면 파란색 EDID 로터리 스위치, '06 EDID 설정' 참고",
-        "x1": 772,
-        "x2": 803,
+        "x1": 1058,
+        "x2": 1109,
         "side": "top",
         "y": 0,
         "n": 4
@@ -285,8 +285,8 @@
       {
         "label": "MODE",
         "desc": "전면 빨간색 딥 스위치 3개(1번 오디오 병합, 2번 DDC). 설정 방법은 '07 딥 스위치 설정' 참고",
-        "x1": 889,
-        "x2": 918,
+        "x1": 1220,
+        "x2": 1267,
         "side": "top",
         "y": 0,
         "n": 5
@@ -295,10 +295,10 @@
   },
   "edidSwitch": {
     "image": "Front",
-    "x1": 772,
-    "y1": 51,
-    "x2": 803,
-    "y2": 79,
+    "x1": 1060,
+    "y1": 60,
+    "x2": 1107,
+    "y2": 107,
     "label": "EDID 로터리 스위치",
     "desc": "전면 파란색 로터리 스위치로 EDID를 고른다. 오른쪽 빨간 MODE 딥 스위치는 '07 딥 스위치 설정' 참고.",
     "default": "0 = FLASH에 저장된 외부 EDID · EDID 오류 시 1920x1080p 60 2CH",
@@ -449,6 +449,12 @@
       "name": "서울영상테크 SI사업본부 확인",
       "page": "",
       "scope": "사용자 확인(2026-09-27) — 3~10분배기(HD-13U·HD-104U·HD-108U·HD-210U) 다단 증폭 최대 3단 지원"
+    },
+    {
+      "code": "P1",
+      "name": "서울영상테크 SI사업본부 제공 실물 사진",
+      "page": "",
+      "scope": "사용자 업로드 고해상도 제품 사진(2026-09-28, 흰 배경 촬영본)"
     }
   ],
   "issues": []
