@@ -49,7 +49,7 @@ test('every XDM card and documented rear photo has an image asset',()=>{
   for(const card of [...catalog.VDM.input,...catalog.VDM.output])assert.ok(fs.existsSync(`output/design/assets/cards/${card[0]}.webp`),`missing VDM faceplate for ${card[0]}`);
   assert.ok(fs.existsSync('output/design/assets/cards/VDM-BLANK.webp'),'missing VDM blank cover');
   for(const model of ['8x','16x','32x','48x','64x','80x','128x','180x','256x'])assert.ok(fs.existsSync(`output/design/assets/frames/vdm-${model}-front.webp`)&&fs.existsSync(`output/design/assets/frames/vdm-${model}-rear.webp`),`missing VDM ${model} front/rear image`);
-  // 0.109: 실물 사진이 없는 VDM 전면 7종·후면 8종은 scripts/tools/draw_vdm_frames.cjs 평면 그림(-art)을 쓰고, 실물 사진(16X 전면·후면, 48X 전면)은 그대로 둔다.
+  // 0.111: 실물 사진이 없는 VDM 전면 7종·후면 8종은 scripts/tools/draw_vdm_frames.cjs 평면 그림(-art)을 쓰고, 실물 사진(16X 전면·후면, 48X 전면)은 그대로 둔다.
   const vdmArt=[...read('src/app.js').matchAll(/frames\/(vdm-\d+x-(?:front|rear))-art\.webp/g)].map(match=>match[1]).sort();
   assert.deepEqual(vdmArt,[...['8x','32x','64x','80x','128x','180x','256x'].map(m=>`vdm-${m}-front`),...['8x','32x','48x','64x','80x','128x','180x','256x'].map(m=>`vdm-${m}-rear`)].sort());
   for(const photo of ['vdm-16x-front','vdm-16x-rear','vdm-48x-front'])assert.ok(read('src/app.js').includes(`frames/${photo}.webp'`),`${photo} keeps the real photo`);

@@ -255,7 +255,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       const src=await page.$eval('.rt-cg-preview img',image=>image.getAttribute('src')).catch(()=>null);
       if(model==='VDM-288X')vdm288Placeholder=await page.locator('.rt-cg-preview-placeholder').isVisible();
       if(src&&src.includes('/frames/vdm-')&&/-front(-art)?\.webp$/.test(src))vdmFrontCount++;
-      // 0.109 VDM 평면 그림: 실물 사진이 없는 전면 7종·후면 8종은 -art.webp 그림(긴 변 2000px)을 쓴다.
+      // 0.111 VDM 평면 그림: 실물 사진이 없는 전면 7종·후면 8종은 -art.webp 그림(긴 변 2000px)을 쓴다.
       for(const side of ['front','rear']){
         if(!await page.locator(`[data-cg-side="${side}"]`).count())continue;
         await page.click(`[data-cg-side="${side}"]`);
