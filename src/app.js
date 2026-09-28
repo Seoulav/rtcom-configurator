@@ -84,7 +84,7 @@
       'VDM-180X':{src:'output/design/assets/frames/vdm-180x-rear.webp',page:19,manual:VDM_MANUAL,kind:'도면',size:[170,636],input:[3,17,158,270],output:[3,336,158,591]},
       'VDM-256X':{src:'output/design/assets/frames/vdm-256x-rear.webp',page:20,manual:VDM_MANUAL,kind:'도면',size:[472,777],input:[[6,12,228,325],[235,12,456,325]],output:[[6,388,228,700],[235,388,456,700]]},
       // SPX 국문 사용자 매뉴얼(250805) 후면 사진. M810·M1620·M3236은 가로 카드(입력 위·출력 아래), M2472·M24120은 세로 카드(입력 왼쪽·출력 오른쪽).
-      'SPX-M810':{src:'output/design/assets/frames/spx-m810-rear.webp',page:7,manual:SPX_MANUAL,size:[715,169],input:[85,29,637,71],output:[85,71,637,113]},
+      'SPX-M810':{src:'output/design/assets/frames/spx-m810-rear.webp',page:7,manual:SPX_MANUAL,size:[1706,385],input:[210,60,1500,155],output:[210,155,1500,250]},
       'SPX-M1620':{src:'output/design/assets/frames/spx-m1620-rear.webp',page:8,manual:SPX_MANUAL,size:[662,418],input:[67,116,594,224],output:[67,224,594,332]},
       'SPX-M3236':{src:'output/design/assets/frames/spx-m3236-rear.webp',page:6,manual:SPX_MANUAL,size:[1135,772],input:[124,16,932,236],output:[124,511,932,677]},
       'SPX-M2472':{src:'output/design/assets/frames/spx-m2472-rear.webp',page:9,manual:SPX_MANUAL,size:[384,383],input:[3,40,63,323],output:[162,40,280,323]},
