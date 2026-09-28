@@ -422,7 +422,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       check(`${id} 제조사 문서 버튼 ${expected}개(새 탭 보기·내려받기, PDF 응답)`,docs.length===expected&&docs.every(doc=>doc.open&&doc.save)&&pdfOk.every(Boolean),JSON.stringify({expected,docs,pdfOk}));
     }
     check('OBUX-1C 송신기 단자 지도가 고해상도 앞뒤 합성 사진에 번호 6개, 수신기 5개(S/P 포함)로 나옴',obuxPm.tx&&obuxPm.rx&&obuxPm.ports.join()==='6,5',JSON.stringify(obuxPm));
-    // 0.97 XDM-PSU 03 Signal Flow: 제조사 연결도처럼 프레임(CIS100·COS100) · PSU(POH·PHX) · CTR100 Tx/Rx를 장비 그림으로 그리고 케이블 위 점선이 흐른다. 움직임 줄이기 설정에서는 멈춘다.
+    // 0.98 XDM-PSU 03 Signal Flow: 제조사 연결도처럼 프레임(CIS100·COS100) · PSU(POH·PHX) · CTR100 Tx/Rx를 장비 그림으로 그리고 케이블 위 점선이 흐른다. 움직임 줄이기 설정에서는 멈춘다.
     await page.goto(`${home}#products/xdm-psu`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-psu-anim');
     const psuFlow=await page.evaluate(()=>{const svg=document.querySelector('.rt-psu-anim').closest('svg'),t=svg.textContent;return {flows:svg.querySelectorAll('.rt-psu-flow').length,rev:svg.querySelectorAll('.rt-psu-flow.rt-psu-rev').length,anim:getComputedStyle(svg.querySelector('.rt-psu-flow')).animationName,labels:['XDM-CIS100','XDM-COS100','XDM-PSU · POH','XDM-PSU · PHX','Tx · 송신기','Rx · 수신기','2핀 전원선'].every(s=>t.includes(s))}});
@@ -438,7 +438,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.waitForSelector('.rt-pg-grid');
     const listCat=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-toolbar .rt-pg-doc')].map(el=>({text:el.textContent.trim(),href:el.querySelector('.rt-pg-doc-open').getAttribute('href')})));
     const catRes=await page.request.get(new URL(cat.save,home).href);
-    check('HD-13U 카탈로그 버튼이 전체 카탈로그 34쪽으로 열리고 내려받기는 전체 파일(PDF), 제품 목록에 전체 카탈로그 버튼 1개',cat.open==='output/design/assets/docs/rtcom-catalog-2026.pdf#page=34'&&cat.save==='output/design/assets/docs/rtcom-catalog-2026.pdf'&&/34쪽/.test(cat.text)&&catRes.status()===200&&String(catRes.headers()['content-type']).includes('pdf')&&listCat.length===1&&/전체 카탈로그/.test(listCat[0].text)&&listCat[0].href==='output/design/assets/docs/rtcom-catalog-2026.pdf',JSON.stringify({cat,listCat,status:catRes.status()}));
+    // 0.97 제품별 카탈로그(사용자 결정 2026-09-28 "제품별로 잘라 공개"): 제품 상세 버튼은 해당 쪽만 담은 hd-13u-catalog.pdf를 열고 받는다. 제품 목록의 전체 카탈로그 버튼은 46쪽 공용 파일 그대로다.
+    const listRes=await page.request.get(new URL(listCat[0]?.href||'',home).href);
+    check('HD-13U 카탈로그 버튼이 제품별 카탈로그(hd-13u-catalog.pdf)를 열고 받으며, 제품 목록 전체 카탈로그 버튼 1개는 46쪽 공용 파일(PDF)',cat.open==='output/design/assets/docs/hd-13u-catalog.pdf'&&cat.save==='output/design/assets/docs/hd-13u-catalog.pdf'&&!/쪽/.test(cat.text)&&catRes.status()===200&&String(catRes.headers()['content-type']).includes('pdf')&&listCat.length===1&&/전체 카탈로그/.test(listCat[0].text)&&listCat[0].href==='output/design/assets/docs/rtcom-catalog-2026.pdf'&&listRes.status()===200,JSON.stringify({cat,listCat,status:catRes.status(),list:listRes.status()}));
     // 0.64 XDM-FT101/FR101 EDID·오디오 로터리(매뉴얼 Ver.1.3): 0(기본값)·3·8번 대표 설정 그림.
     await page.goto(`${home}#products/xdm-ft101-fr101`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-edid');

@@ -293,7 +293,7 @@
     // extenderDiagram이 그리지 못한다. 제품 데이터(overview·io)에 적힌 연결만 그린다: POH는 CIS100 ↔ CTR100(Tx) CAT 사이에 끼워
     // CTR100에 전원을 싣고, PHX는 2핀 전원선으로 COS100에 전원을 넣어 COS100이 CAT로 CTR100(Rx)에 전원을 함께 보낸다.
     const COLOR_POWER='#FF9500';
-    // 0.97: 제조사 연결도(MAX2-POE-PSU 구성도)처럼 매트릭스 프레임(위) · XDM-PSU(가운데) · XDM-CTR100 Tx/Rx(아래)를 장비 모양 그림으로 그리고,
+    // 0.98: 제조사 연결도(MAX2-POE-PSU 구성도)처럼 매트릭스 프레임(위) · XDM-PSU(가운데) · XDM-CTR100 Tx/Rx(아래)를 장비 모양 그림으로 그리고,
     // 케이블을 따라 신호(초록)·전원(주황)이 흐르는 애니메이션을 넣는다(사용자 요청 2026-09-28 "딥스위치를 이미지화 했던 것처럼 … 애니메이션 이미지화해서 실제 연결처럼").
     // 움직임을 줄이는 설정(prefers-reduced-motion)에서는 흐름 점선이 멈춘 채로 보인다.
     function psuDiagram(item){
