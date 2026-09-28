@@ -17,7 +17,7 @@ const FORBIDDEN=/단가|원가|매입|마진|거래처|공급가|견적가|판�
 const DOC_DIR='output/design/assets/docs';
 const DOC_TYPES=['Catalog','Manual','ProductSheet'];
 const DOC_MAX_BYTES=15*1024*1024;
-// 여러 제품이 함께 쓰는 공용 문서(0.94, 사용자 결정 2026-09-28 "전체 카탈로그 공개해도 돼"): 전체 카탈로그 46쪽판 한 파일을 Catalog 문서로만 쓰고, page로 제품 쪽을 연다.
+// 여러 제품이 함께 쓰는 공용 문서(0.95, 사용자 결정 2026-09-28 "전체 카탈로그 공개해도 돼"): 전체 카탈로그 46쪽판 한 파일을 Catalog 문서로만 쓰고, page로 제품 쪽을 연다.
 const SHARED_DOCS={'rtcom-catalog-2026.pdf':{type:'Catalog',pages:46}};
 const REQUIRED=['id','group','manufacturer','productName','model','itemType','categories','english','korean','verificationSummary','packageStatus','overview','images','documents','features','specifications','io','sources','issues'];
 
