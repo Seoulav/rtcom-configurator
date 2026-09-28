@@ -29,6 +29,10 @@
 - HD-13U 제품 안내서, XDM-CTR100 PSE 제품 안내서
 - `XDM-POE2U_030_ASSY.pdf`는 내부 조립 도면으로 보여 후보에서 뺐습니다.
 
+## 사용자 확인 대기
+
+- PDF.js 팝업(0.112, HD-13U 카탈로그 샘플)을 나머지 제품 카탈로그 29종·매뉴얼 PDF 버튼에도 넓힐지. 넓히려면 `src/products.js` `docButtons()`의 `popup` 조건(`item.id==='hd-13u'&&doc.type==='Catalog'`)만 바꾸면 됩니다. 매뉴얼은 여러 쪽이라 첫 쪽부터 차례로 그리는 시간이 늘어나는지 함께 확인합니다.
+
 ## 참고
 
 - 여러 세션이 같은 작업 브랜치(`claude/relaxed-euler-mq1di9`)에 동시에 올리는 일이 잦습니다.

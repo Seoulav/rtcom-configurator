@@ -296,3 +296,14 @@ test('0.97: 제품 상세 카탈로그는 제품별 발췌 PDF를 쓰고, 전체
   }
   assert.match(read('scripts/package-site.cjs'),/'rtcom-catalog-2026\.pdf',\.\.\.productData/,'전체 카탈로그 공용 파일은 목록 버튼용으로 배포 목록에 남긴다');
 });
+
+test('0.112: HD-13U 카탈로그 팝업은 iframe 대신 저장소에 넣은 PDF.js로 그리고, 라이브러리·라이선스를 함께 배포한다',()=>{
+  for(const file of ['src/vendor/pdfjs/pdf.min.mjs','src/vendor/pdfjs/pdf.worker.min.mjs','src/vendor/pdfjs/LICENSE'])assert.ok(fs.existsSync(file),`${file} must exist`);
+  assert.match(read('src/vendor/pdfjs/LICENSE'),/Apache License/);
+  const pkg=read('scripts/package-site.cjs');
+  for(const file of ['pdf.min.mjs','pdf.worker.min.mjs','LICENSE'])assert.ok(pkg.includes(`'src/vendor/pdfjs/${file}'`),`package-site must publish ${file}`);
+  const products=read('src/products.js');
+  assert.match(products,/new Function\('u','return import\(u\)'\)/,'옛 브라우저가 products.js 전체를 못 읽지 않도록 import()를 감싼다');
+  assert.doesNotMatch(products,/<iframe src="\$\{href\}"/,'PDF 팝업은 iframe을 쓰지 않는다');
+  assert.match(read('scripts/serve.cjs'),/'\.mjs':'text\/javascript/,'로컬 서버가 .mjs를 자바스크립트로 보낸다');
+});
