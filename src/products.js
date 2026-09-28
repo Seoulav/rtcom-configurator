@@ -943,6 +943,8 @@
       // 0.99 XDM-PSU Signal Flow 확대 창: 그림을 복사해 전체 화면 창에 넣고 100%(화면 폭 맞춤)~300%로 키운다. 창 안에서 스크롤·손가락으로 옮겨 본다.
       const flowZoom=event.target.closest('[data-flow-zoom]')||(event.target.closest('.rt-pg-svg-wrap')?.querySelector('.rt-psu-anim')&&event.target.closest('.rt-pg-svg-wrap'));
       if(flowZoom){openFlowZoom(flowZoom.closest('section'));return}
+      const docWide=event.target.closest('[data-doc-wide]');
+      if(docWide){const dlg=docWide.closest('dialog');const width=docWide.getAttribute('aria-pressed')==='true'?0:docMaxWidth();saveDocWidth(width);applyDocWidth(dlg,width);return}
       const docZoom=event.target.closest('[data-doc-zoom-step]');
       if(docZoom){const dlg=docZoom.closest('dialog');if(dlg?.rtDoc?.ready){dlg.rtDoc.zoom=Math.max(0,Math.min(DOC_ZOOMS.length-1,dlg.rtDoc.zoom+Number(docZoom.dataset.docZoomStep)));renderDocPages(dlg)}return}
       const zoomStep=event.target.closest('[data-zoom-step]');
@@ -980,8 +982,6 @@
       if(!dlg){
         dlg=document.createElement('dialog');dlg.className='rt-flow-zoom';dlg.setAttribute('aria-label','Signal Flow 크게 보기');
         dlg.addEventListener('click',event=>{if(event.target===dlg)dlg.close()});
-        // 닫으면 관찰을 멈추고 PDF 문서를 풀어 메모리를 돌려준다.
-        dlg.addEventListener('close',()=>{const state=dlg.rtDoc;if(!state)return;state.observer?.disconnect();state.slots?.forEach(freeDocPage);state.pdf?.destroy();dlg.rtDoc=null});
         body.appendChild(dlg);
       }
       const title=body.querySelector('#rt-pg-title')?.textContent||'';
@@ -1015,6 +1015,7 @@
       if(!state?.ready||!pagesEl)return;
       updateDocZoomTools(dlg);
       const zoom=DOC_ZOOMS[state.zoom],fitWidth=docFitWidth(dlg);
+      state.fitWidth=fitWidth;
       // 이미지 방식(카탈로그): 미리 그린 그림의 표시 폭만 바꾼다. 쪽 그림은 200dpi라 300%까지 확대해도 흐려지지 않는다.
       if(state.kind==='image'){pagesEl.querySelectorAll('img').forEach(img=>{img.style.width=`${Math.floor(fitWidth*zoom)}px`});return}
       // PDF.js(매뉴얼): 쪽마다 크기만 맞춘 빈 자리를 먼저 만들고, 화면에 보이는 쪽과 그 앞뒤 한 화면만 canvas로 그린다.
@@ -1084,6 +1085,52 @@
         if(dlg.rtDoc===state&&dlg.open){const status=dlg.querySelector('.rt-doc-status');if(status)status.innerHTML=`미리보기를 불러오지 못했습니다. <a href="${state.href}" target="_blank" rel="noopener">PDF 원본 열기</a>`}
       }finally{state.busy=false}
     }
+    // 0.126 PC에서 팝업 폭 조절(사용자 요청 2026-09-28 "메뉴얼 웹뷰어시 팝업창의 가로폭이 너무 좁아", "마우스로 창 크기 가변가능할까?"):
+    // 창은 화면 가운데에 있으므로 좌우 가장자리 어느 쪽을 끌어도 양쪽이 같이 넓어진다(폭 = 가운데에서 마우스까지 거리 × 2).
+    // 고른 폭은 이 브라우저에만 기억하고(저장이 막혀 있어도 기본 폭으로 동작), 폭이 바뀌면 쪽을 새 폭에 맞춰 다시 그린다. 휴대폰 폭에서는 쓰지 않는다.
+    const DOC_WIDTH_KEY='rtcom.docPopupWidth',DOC_MIN_WIDTH=480;
+    const DOC_WIDE_ICON='<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M1.5 8h13M1.5 8l3-3M1.5 8l3 3M14.5 8l-3-3M14.5 8l-3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const docMaxWidth=()=>window.innerWidth-16;
+    const readDocWidth=()=>{try{const w=Number(localStorage.getItem(DOC_WIDTH_KEY));return w>=DOC_MIN_WIDTH?w:0}catch(error){return 0}};
+    const saveDocWidth=w=>{try{if(w)localStorage.setItem(DOC_WIDTH_KEY,String(Math.round(w)));else localStorage.removeItem(DOC_WIDTH_KEY)}catch(error){}};
+    function applyDocWidth(dlg,width){
+      const custom=width>0&&window.innerWidth>560;
+      dlg.style.width=custom?`${Math.min(width,docMaxWidth())}px`:'';
+      dlg.querySelector('[data-doc-wide]')?.setAttribute('aria-pressed',String(custom&&width>=docMaxWidth()));
+    }
+    function bindDocResize(dlg){
+      let drag=null;
+      dlg.addEventListener('pointerdown',event=>{
+        const handle=event.target.closest('[data-doc-resize]');
+        if(!handle||event.button!==0)return;
+        event.preventDefault();
+        const box=dlg.getBoundingClientRect();
+        drag={center:box.left+box.width/2,id:event.pointerId};
+        handle.setPointerCapture(event.pointerId);dlg.classList.add('rt-doc-resizing');
+      });
+      dlg.addEventListener('pointermove',event=>{
+        if(!drag||event.pointerId!==drag.id)return;
+        const width=Math.max(DOC_MIN_WIDTH,Math.min(docMaxWidth(),Math.abs(event.clientX-drag.center)*2));
+        dlg.style.width=`${Math.round(width)}px`;
+      });
+      const end=event=>{
+        if(!drag||event.pointerId!==drag.id)return;
+        drag=null;dlg.classList.remove('rt-doc-resizing');
+        const width=dlg.getBoundingClientRect().width;
+        saveDocWidth(width);applyDocWidth(dlg,width);
+      };
+      dlg.addEventListener('pointerup',end);dlg.addEventListener('pointercancel',end);
+      dlg.addEventListener('dblclick',event=>{if(event.target.closest('[data-doc-resize]')){saveDocWidth(0);applyDocWidth(dlg,0)}});
+      // 창 크기가 바뀌면(끌기·넓게 버튼·브라우저 창 조절·휴대폰 회전) 쪽을 새 폭에 맞춘다. PDF.js는 크기 변화가 멈춘 뒤 한 번만 다시 그린다.
+      if(typeof ResizeObserver!=='function')return;
+      let timer=0;
+      new ResizeObserver(()=>{
+        const state=dlg.rtDoc;
+        if(!state?.ready||!dlg.open||Math.abs(docFitWidth(dlg)-state.fitWidth)<4)return;
+        clearTimeout(timer);
+        if(state.kind==='image')renderDocPages(dlg);else timer=setTimeout(()=>{if(dlg.rtDoc===state)renderDocPages(dlg)},200);
+      }).observe(dlg);
+    }
     async function openDocPreview(href,title,kind='pdfjs',images=[]){
       let dlg=body.querySelector('dialog.rt-doc-zoom');
       if(!dlg){
@@ -1091,10 +1138,12 @@
         dlg.addEventListener('click',event=>{if(event.target===dlg)dlg.close()});
         // 닫으면 관찰을 멈추고 PDF 문서를 풀어 메모리를 돌려준다.
         dlg.addEventListener('close',()=>{const state=dlg.rtDoc;if(!state)return;state.observer?.disconnect();state.slots?.forEach(freeDocPage);state.pdf?.destroy();dlg.rtDoc=null});
+        bindDocResize(dlg);
         body.appendChild(dlg);
       }
       const file=href.split('/').pop();
-      dlg.innerHTML=`<div class="rt-flow-zoom-head"><b>${esc(title)}</b><div class="rt-flow-zoom-tools"><button type="button" data-doc-zoom-step="-1" aria-label="축소" disabled>−</button><span data-doc-zoom-level aria-live="polite">100%</span><button type="button" data-doc-zoom-step="1" aria-label="확대" disabled>+</button><a class="rt-doc-zoom-link" href="${href}" target="_blank" rel="noopener" title="PDF 원본을 새 탭에서 열기">원본</a><a class="rt-doc-zoom-link" href="${href}" download="${esc(file)}" title="PDF 내려받기" aria-label="PDF 내려받기">${DOWNLOAD_ICON}</a><button type="button" class="rt-flow-zoom-close" data-zoom-close aria-label="닫기">×</button></div></div><div class="rt-doc-zoom-body" data-doc-kind="${kind==='image'?'image':'pdfjs'}"><p class="rt-doc-status" role="status">${kind==='image'?'카탈로그':'문서'}를 불러오는 중입니다…</p><div class="rt-doc-pages"></div></div>`;
+      dlg.innerHTML=`<div class="rt-flow-zoom-head"><b>${esc(title)}</b><div class="rt-flow-zoom-tools"><button type="button" data-doc-zoom-step="-1" aria-label="축소" disabled>−</button><span data-doc-zoom-level aria-live="polite">100%</span><button type="button" data-doc-zoom-step="1" aria-label="확대" disabled>+</button><a class="rt-doc-zoom-link" href="${href}" target="_blank" rel="noopener" title="PDF 원본을 새 탭에서 열기">원본</a><a class="rt-doc-zoom-link" href="${href}" download="${esc(file)}" title="PDF 내려받기" aria-label="PDF 내려받기">${DOWNLOAD_ICON}</a><button type="button" class="rt-doc-wide" data-doc-wide aria-pressed="false" title="창을 화면 폭에 맞게 넓히기(다시 누르면 기본 폭)" aria-label="창 넓게">${DOC_WIDE_ICON}</button><button type="button" class="rt-flow-zoom-close" data-zoom-close aria-label="닫기">×</button></div></div><div class="rt-doc-zoom-body" data-doc-kind="${kind==='image'?'image':'pdfjs'}"><p class="rt-doc-status" role="status">${kind==='image'?'카탈로그':'문서'}를 불러오는 중입니다…</p><div class="rt-doc-pages"></div></div><div class="rt-doc-resize" data-doc-resize="left" title="끌어서 창 폭 조절 · 두 번 누르면 기본 폭" aria-hidden="true"></div><div class="rt-doc-resize" data-doc-resize="right" title="끌어서 창 폭 조절 · 두 번 누르면 기본 폭" aria-hidden="true"></div>`;
+      applyDocWidth(dlg,readDocWidth());
       const state=dlg.rtDoc={title,href,kind:kind==='image'?'image':'pdfjs',zoom:0,ready:false};
       if(typeof dlg.showModal==='function')dlg.showModal();else dlg.setAttribute('open','');
       dlg.querySelector('[data-zoom-close]').focus();

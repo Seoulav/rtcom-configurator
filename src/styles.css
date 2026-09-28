@@ -466,7 +466,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-doc a:hover,#rtcom-design .rt-pg-doc button:hover{background:var(--pg-seg-track)}
 #rtcom-design .rt-pg-doc a:focus-visible,#rtcom-design .rt-pg-doc button:focus-visible{outline:2px solid var(--pg-accent);outline-offset:-2px}
 /* 카탈로그 팝업 미리보기(0.105 샘플, HD-13U 전용, 사용자 요청 "1장짜리라서 파일다운받아서 다시 열기 불편해") */
-#rtcom-design .rt-doc-zoom{width:min(720px,calc(100vw - 16px));height:calc(100vh - 24px);max-width:none;max-height:none;padding:0;border:0;border-radius:20px;background:#fff;color:var(--pg-ink,#1f2532);box-shadow:0 30px 80px #0f172a59;overflow:hidden}
+#rtcom-design .rt-doc-zoom{width:min(1040px,calc(100vw - 16px));height:calc(100vh - 24px);max-width:calc(100vw - 16px);max-height:none;padding:0;border:0;border-radius:20px;background:#fff;color:var(--pg-ink,#1f2532);box-shadow:0 30px 80px #0f172a59;overflow:hidden}
 #rtcom-design .rt-doc-zoom[open]{display:flex;flex-direction:column}
 #rtcom-design .rt-doc-zoom::backdrop{background:#0f172aa6;backdrop-filter:blur(3px)}
 #rtcom-design .rt-doc-zoom-body{flex:1;overflow:auto;padding:12px;background:#eef1f6;-webkit-overflow-scrolling:touch}
@@ -480,6 +480,18 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-doc-zoom .rt-flow-zoom-tools{flex-shrink:0}
 @media(max-width:560px){#rtcom-design .rt-doc-zoom .rt-flow-zoom-head{flex-wrap:wrap;row-gap:8px;padding:10px 12px}#rtcom-design .rt-doc-zoom .rt-flow-zoom-head b{flex:1 1 100%}#rtcom-design .rt-doc-zoom .rt-flow-zoom-tools{margin-left:auto}}
 #rtcom-design .rt-doc-zoom-link{white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;height:38px;min-width:38px;padding:0 12px;border-radius:19px;background:#f0f4fa;color:#415069;font-size:13px;font-weight:700;text-decoration:none}
+/* 0.126 PC 창 폭 조절: 좌우 가장자리를 끌면 폭이 바뀐다. 가장자리에 마우스를 올리면 세로 막대가 보인다. */
+/* 끌기 막대는 창 좌우의 8px 테두리 안에만 있어 문서 스크롤바를 가리지 않는다. */
+#rtcom-design .rt-doc-zoom{padding:0 8px}
+#rtcom-design .rt-doc-resize{position:absolute;top:0;bottom:0;width:8px;cursor:ew-resize;touch-action:none;z-index:2}
+#rtcom-design .rt-doc-resize[data-doc-resize="left"]{left:0}
+#rtcom-design .rt-doc-resize[data-doc-resize="right"]{right:0}
+#rtcom-design .rt-doc-resize::after{content:"";position:absolute;top:50%;left:2px;width:4px;height:56px;margin-top:-28px;border-radius:2px;background:#9aa6b8;opacity:.35;transition:opacity .15s}
+#rtcom-design .rt-doc-resize:hover::after,#rtcom-design .rt-doc-resizing .rt-doc-resize::after{opacity:.9}
+#rtcom-design .rt-doc-resizing,#rtcom-design .rt-doc-resizing *{cursor:ew-resize!important;user-select:none}
+#rtcom-design .rt-doc-zoom .rt-doc-wide{display:inline-flex;align-items:center;justify-content:center;font-size:0}
+#rtcom-design .rt-doc-zoom .rt-doc-wide[aria-pressed="true"]{background:#007AFF;color:#fff}
+@media(max-width:560px),(pointer:coarse){#rtcom-design .rt-doc-zoom{padding:0}#rtcom-design .rt-doc-resize,#rtcom-design .rt-doc-zoom .rt-doc-wide{display:none}}
 @media print{#rtcom-design .rt-doc-zoom{display:none}}
 #rtcom-design .rt-pg-btn.rt-pg-primary{background:var(--pg-accent);color:#fff;box-shadow:0 6px 16px -6px var(--pg-accent)}
 #rtcom-design .rt-pg-cols{display:grid;grid-template-columns:360px 1fr;gap:22px;align-items:start}
@@ -1043,6 +1055,6 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-card-choice-ext-qty .rt-card-qty-stepper output{min-width:30px;font-size:15px}
 #rtcom-design .rt-card-choice-ext-qty[data-off]{opacity:.45}
 
-/* 0.126 파란 "다음" 버튼(아래 바·미리보기)의 → 화살표: 예전에는 강조색(파랑)이라 파란 버튼 배경에 묻혀 보이지 않았다. 버튼 글자색(흰색)을 그대로 쓴다. */
+/* 0.127 파란 "다음" 버튼(아래 바·미리보기)의 → 화살표: 예전에는 강조색(파랑)이라 파란 버튼 배경에 묻혀 보이지 않았다. 버튼 글자색(흰색)을 그대로 쓴다. */
 #rtcom-design .rt-button.rt-primary .rt-arrow{color:currentColor;font-size:20px;font-weight:700;line-height:1}
 #rtcom-design .rt-cg-preview .rt-cg-preview-next{display:inline-flex;gap:18px;justify-content:center}
