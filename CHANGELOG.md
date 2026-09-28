@@ -2,6 +2,8 @@
 
 - **0.95.0 배포 기록**: `docs/qa/DEPLOYMENT_0.95_2026-09-28.md`(PR #93 → main 병합, 배포 run 71, 공개 파일 243/243 일치, 비공개 파일 7개 404)
 
+- **0.93.0 배포 기록**: `docs/qa/DEPLOYMENT_0.93_2026-09-28.md`(PR #92 → main, 배포 run 70, 공개 파일 242/243 일치, `.nojekyll` 제외)
+
 - **0.92.0 배포 기록**: `docs/qa/DEPLOYMENT_0.92_2026-09-28.md`(PR #90 → main, 배포 run 68, 공개 파일 일치)
 
 - **0.91.0 배포 기록**: `docs/qa/DEPLOYMENT_0.91_2026-09-28.md`(PR #87 → main, 배포 run 66, 공개 파일 일치)
