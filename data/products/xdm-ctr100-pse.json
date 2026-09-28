@@ -118,19 +118,11 @@
       "source": "M1"
     },
     {
-      "text": "PoE 전원 공급 지원(CAT 케이블로 XDM-CTR100에 신호·전원 동시 공급, CTR100은 PD 모드로 전원 케이블 불필요)",
-      "source": "C"
-    },
-    {
-      "text": "XDM-CTR100·벽부형 XDM-CT103/CR103과 짝으로 사용(CIS100·COS100 카드 직결 불가)",
-      "source": "U"
-    },
-    {
-      "text": "TX/RX 겸용 지원(Long Reach 1080p 최대 150m)",
+      "text": "PoE 전원 공급(PSE) 지원 — CAT 케이블로 XDM-CTR100·벽부형 XDM-CT103/CR103에 신호·전원 동시 공급(CTR100은 PD 모드로 전원 케이블 불필요, CIS100·COS100 카드 직결은 불가), TX·RX 방향 모두 연결 가능",
       "source": "M1"
     },
     {
-      "text": "PSE[TX]↔CTR100[RX]·CR103, PSE[RX]↔CTR100[TX]·CT103 연결(CAT6A·CAT7, BELDEN 10GXE02 S/FTP)",
+      "text": "TX/RX 겸용 지원(Long Reach 1080p 최대 150m)",
       "source": "M1"
     },
     {
@@ -165,34 +157,7 @@
       "name": "최대 전송거리",
       "value": "100",
       "unit": "m",
-      "condition": "4K60Hz 4:4:4, BELDEN 10GXE02(S/FTP, CAT6A) 케이블 기준",
-      "source": "C",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "Transmission",
-      "name": "최대 전송거리",
-      "value": "80",
-      "unit": "m",
-      "condition": "4K60Hz 4:4:4, CI6522(SF/UTP, CAT6) 케이블 사용 시 · 케이블별 상이",
-      "source": "U",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "Transmission",
-      "name": "최대 전송거리",
-      "value": "150",
-      "unit": "m",
-      "condition": "Long Reach 모드(딥 스위치 3번 ON), 1920x1080p",
-      "source": "M1",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "Transmission",
-      "name": "권장 케이블",
-      "value": "CAT6a, CAT7",
-      "unit": "",
-      "condition": "",
+      "condition": "4K60Hz 4:4:4 기준(케이블별 상이, 최대 80~100m) · Long Reach 모드(딥 스위치 3번 ON) 시 1920x1080p 최대 150m",
       "source": "C",
       "verification": "VERIFIED"
     },

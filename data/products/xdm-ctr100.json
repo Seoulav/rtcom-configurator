@@ -145,34 +145,7 @@
       "name": "최대 전송거리",
       "value": "100",
       "unit": "m",
-      "condition": "4K60Hz 4:4:4, BELDEN 10GXE02(S/FTP, CAT6A) 케이블 기준",
-      "source": "C",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "Transmission",
-      "name": "최대 전송거리",
-      "value": "80",
-      "unit": "m",
-      "condition": "4K60Hz 4:4:4, CI6522(SF/UTP, CAT6) 케이블 사용 시 · 케이블별 상이",
-      "source": "U",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "Transmission",
-      "name": "최대 전송거리",
-      "value": "150",
-      "unit": "m",
-      "condition": "Long Reach 모드(딥 스위치 3번 ON), 1920x1080p",
-      "source": "M1",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "Transmission",
-      "name": "권장 케이블",
-      "value": "CAT6a, CAT7",
-      "unit": "",
-      "condition": "",
+      "condition": "4K60Hz 4:4:4 기준(케이블별 상이, 최대 80~100m) · Long Reach 모드(딥 스위치 3번 ON) 시 1920x1080p 최대 150m",
       "source": "C",
       "verification": "VERIFIED"
     },
