@@ -105,16 +105,16 @@
     {
       "group": "Video",
       "name": "입력 신호",
-      "value": "HDMI 2 Ports(INPUT 버튼으로 선택), 3.5mm Stereo Audio",
+      "value": "HDMI 2 Ports, 3.5mm Stereo Audio 1 Port",
       "unit": "",
-      "condition": "CT103-U-H · HDMI1·HDMI2, 앞면 INPUT 버튼으로 선택",
+      "condition": "CT103-U-H · 앞면 INPUT 버튼으로 선택",
       "source": "J",
       "verification": "VERIFIED"
     },
     {
       "group": "Video",
       "name": "출력 신호",
-      "value": "HDBaseT 0,1,2,3+/-",
+      "value": "HDBaseT 1 Port",
       "unit": "",
       "condition": "CT103-U-H",
       "source": "C",
@@ -123,7 +123,7 @@
     {
       "group": "Video",
       "name": "입력 신호",
-      "value": "HDBaseT 0,1,2,3+/-",
+      "value": "HDBaseT 1 Port",
       "unit": "",
       "condition": "CR103-U",
       "source": "C",
@@ -132,7 +132,7 @@
     {
       "group": "Video",
       "name": "출력 신호",
-      "value": "DVI / HDMI (TMDS), 3.5mm stereo audio",
+      "value": "HDMI 1 Port, 3.5mm Stereo Audio 1 Port",
       "unit": "",
       "condition": "CR103-U",
       "source": "M1",
@@ -152,16 +152,7 @@
       "name": "지원 해상도",
       "value": "최대 Ultra HD 4K 4096x2160@24/25/30Hz",
       "unit": "",
-      "condition": "CT103-U-H",
-      "source": "J",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "Video",
-      "name": "지원 해상도",
-      "value": "최대 Ultra HD 4K 4096x2160@24/25/30Hz",
-      "unit": "",
-      "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0 · CR103-U",
+      "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0 · CT103-U-H·CR103-U 공통",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -170,16 +161,7 @@
       "name": "최대 전송거리",
       "value": "100",
       "unit": "m",
-      "condition": "1920x1200@60Hz 또는 1080p, Ultra HD 4K · BELDEN CI 6522 · 330ft · CT103-U-H",
-      "source": "C",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "Transmission",
-      "name": "최대 전송거리",
-      "value": "100",
-      "unit": "m",
-      "condition": "1920x1200@60Hz 또는 1080p, Ultra HD 4K · BELDEN CI 6522 · 330ft · CR103-U",
+      "condition": "1920x1200@60Hz·1080p·Ultra HD 4K, BELDEN CI 6522 기준 · CT103-U-H·CR103-U 공통",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -188,16 +170,7 @@
       "name": "규격",
       "value": "DVI 1.0, HDMI 1.4, HDBaseT",
       "unit": "",
-      "condition": "CT103-U-H",
-      "source": "C",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "General",
-      "name": "규격",
-      "value": "DVI 1.0, HDMI 1.4b, HDBaseT",
-      "unit": "",
-      "condition": "CR103-U",
+      "condition": "CR103-U는 HDMI 1.4b",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -215,7 +188,7 @@
       "name": "전원",
       "value": "DC +12V 2A",
       "unit": "",
-      "condition": "CT103-U-H·CR103-U 공통 · CR103-U 최대 15W",
+      "condition": "CT103-U-H·CR103-U 공통 · CR103-U 소비전력 최대 15W",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -224,7 +197,7 @@
       "name": "크기(W×D×H)",
       "value": "91.44×107.95×57.15",
       "unit": "mm",
-      "condition": "CT103-U-H, CR103-U",
+      "condition": "CT103-U-H·CR103-U 공통",
       "source": "C",
       "verification": "VERIFIED"
     },

@@ -444,6 +444,24 @@
       "cardImage": "xdm-ft101-fr101-main.webp"
     },
     {
+      "id": "xdm-psu",
+      "group": "extender",
+      "productName": "XDM-PSU",
+      "model": "XDM-PSU",
+      "itemType": "PRODUCT",
+      "categories": [
+        "영상",
+        "Video",
+        "Extender",
+        "Power"
+      ],
+      "english": "16 Channel Modular Power Supply System for XDM Extenders — powers XDM-CTR100 units connected to XDM-CIS100/COS100 cards through plug-in POH (CIS) and PHX (COS) modules.",
+      "korean": "XDM-CIS100·COS100 카드에 연결한 XDM-CTR100에 전원을 공급하는 19인치 2U 16채널 모듈형 전원 장치다. CIS용 POH 모듈과 COS용 PHX 모듈을 필요한 만큼 꽂아 쓴다.",
+      "catalogPages": null,
+      "packageStatus": "VERIFIED",
+      "cardImage": "xdm-psu-front.webp"
+    },
+    {
       "id": "ahoc",
       "group": "cable",
       "productName": "AHOC",

@@ -337,14 +337,14 @@
         height=460;
         const cableSeg=(y)=>`<path d="M${leftBoxX+boxW} ${y}L${cardX} ${y}" stroke="${cableColor}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/><text x="${(leftBoxX+boxW+cardX)/2}" y="${y-14}" text-anchor="middle" font-size="10" font-weight="700" fill="${cableColor}">${svgEsc(cableName)}</text>`;
         const cableSeg2=(x1,x2,y)=>`<path d="M${x1+boxW} ${y}L${x2} ${y}" stroke="${cableColor}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/><text x="${(x1+boxW+x2)/2}" y="${y-14}" text-anchor="middle" font-size="10" font-weight="700" fill="${cableColor}">${svgEsc(cableName)} · 신호+전원 동시 공급</text>`;
-        bodyMarkup=`<text x="${width/2}" y="32" text-anchor="middle" font-size="11" font-weight="700" fill="#687386">조합 1 · XDM-CIS100·COS100 카드에 직결(전원 직접 연결, PSE 사용 불가)</text>`;
+        bodyMarkup=`<text x="${width/2}" y="32" text-anchor="middle" font-size="11" font-weight="700" fill="#687386">조합 1 · XDM-CIS100·COS100 카드에 직결(XDM-PSU로 전원 공급, PSE 사용 불가)</text>`;
         bodyMarkup+=monitorIcon(iconX,row1Y,'소스 기기')+arrow(iconX+24,row1Y,leftBoxX-6,row1Y,COLOR_IN);
-        bodyMarkup+=deviceBox(leftBoxX,row1Y-boxH/2,boxW,boxH,'XDM-CTR100','TX · 전원 직접 연결');
+        bodyMarkup+=deviceBox(leftBoxX,row1Y-boxH/2,boxW,boxH,'XDM-CTR100','TX · XDM-PSU 급전');
         bodyMarkup+=cableSeg(row1Y);
         bodyMarkup+=deviceBox(cardX,row1Y-boxH/2,boxW,boxH,'XDM-CIS100','입력 카드(HDBaseT)');
         bodyMarkup+=deviceBox(leftBoxX,row2Y-boxH/2,boxW,boxH,'XDM-COS100','출력 카드(HDBaseT)');
         bodyMarkup+=cableSeg(row2Y);
-        bodyMarkup+=deviceBox(cardX,row2Y-boxH/2,boxW,boxH,'XDM-CTR100','RX · 전원 직접 연결');
+        bodyMarkup+=deviceBox(cardX,row2Y-boxH/2,boxW,boxH,'XDM-CTR100','RX · XDM-PSU 급전');
         bodyMarkup+=arrow(cardX+boxW+6,row2Y,dstX-24,row2Y,COLOR_OUT)+monitorIcon(dstX,row2Y,'디스플레이');
         bodyMarkup+=`<text x="${width/2}" y="${combo2Y-56}" text-anchor="middle" font-size="11" font-weight="700" fill="#687386">조합 2 · HDBaseT 카드 없이 연장할 때(XDM HDMI 카드 연장·단독 1:1)</text>`;
         bodyMarkup+=monitorIcon(iconX,combo2Y,'소스 기기')+arrow(iconX+24,combo2Y,leftBoxX-6,combo2Y,COLOR_IN);
@@ -352,7 +352,7 @@
         bodyMarkup+=cableSeg2(leftBoxX,cardX,combo2Y);
         bodyMarkup+=deviceBox(cardX,combo2Y-boxH/2,boxW,boxH,'XDM-CTR100','전원 케이블 불필요(PD)');
         bodyMarkup+=arrow(cardX+boxW+6,combo2Y,dstX-24,combo2Y,COLOR_OUT)+monitorIcon(dstX,combo2Y,'디스플레이');
-        bodyMarkup+=`<text x="${width/2}" y="${combo2Y+boxH/2+22}" text-anchor="middle" font-size="10" fill="#687386">TX/RX는 각 기기 DIP 스위치로 선택 · CIS100·COS100 카드에 직결할 때는 이 조합 대신 CTR100에 전원을 직접 연결</text>`;
+        bodyMarkup+=`<text x="${width/2}" y="${combo2Y+boxH/2+22}" text-anchor="middle" font-size="10" fill="#687386">TX/RX는 각 기기 DIP 스위치로 선택 · CIS100·COS100 카드에 직결할 때는 이 조합 대신 XDM-PSU로 전원 공급</text>`;
         captions=[[COLOR_IN,'입력'],[cableColor,cableName],[COLOR_OUT,'출력']];
       } else {
         width=980;height=220;

@@ -24,37 +24,37 @@
       "role": "Front",
       "file": "hds-21u-front.webp",
       "alt": "RTCOM HDS-21U 전면",
-      "note": "Front · 카탈로그 제품 이미지",
+      "note": "Front · 사용자 제공 고해상도 실물 사진(2026-09-28)",
       "provider": "RTCOM",
       "model": "HDS-21U",
       "source": "C",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "783×170"
+      "resolution": "1392×289"
     },
     {
       "role": "Rear",
       "file": "hds-21u-rear.webp",
       "alt": "RTCOM HDS-21U 후면",
-      "note": "Rear · 카탈로그 제품 이미지",
+      "note": "Rear · 사용자 제공 고해상도 실물 사진(2026-09-28)",
       "provider": "RTCOM",
       "model": "HDS-21U",
       "source": "C",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "783×171"
+      "resolution": "1402×308"
     },
     {
       "role": "Other",
       "file": "hds-21u-front-rear.webp",
       "alt": "RTCOM HDS-21U 전면(위)·후면(아래) 합성 사진",
-      "note": "Other · 위 Front·아래 Rear 카탈로그 제품 이미지를 이어붙인 단자 지도 전용 합성 사진(선택 버튼 없이 두 면을 함께 표시, 사용자 요청 2026-09-27)",
+      "note": "Other · 사용자 제공 고해상도 실물 사진(2026-09-28) 위아래 합성",
       "provider": "RTCOM",
       "model": "HDS-21U",
       "source": "C",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "783×421"
+      "resolution": "1402×677"
     },
     {
       "role": "Diagram",
@@ -272,82 +272,82 @@
         "n": 1,
         "label": "IN 1·2",
         "desc": "HDMI 소스 2대 연결, Priority·오토셀렉팅으로 선택",
-        "x1": 156,
-        "x2": 312,
+        "x1": 228,
+        "x2": 536,
         "side": "top",
-        "y": 250
+        "y": 399
       },
       {
         "n": 2,
         "label": "OUT",
         "desc": "선택한 입력을 출력",
-        "x1": 345,
-        "x2": 406,
+        "x1": 597,
+        "x2": 721,
         "side": "top",
-        "y": 250
+        "y": 399
       },
       {
         "n": 3,
         "label": "AUDIO IN",
         "desc": "3.5mm 아날로그 오디오 병합(MUX 선택 시)",
-        "x1": 439,
-        "x2": 456,
+        "x1": 775,
+        "x2": 825,
         "side": "top",
-        "y": 250
+        "y": 399
       },
       {
         "n": 4,
         "label": "AUDIO OUT",
         "desc": "3.5mm 아날로그 오디오 추출(DEMUX 선택 시)",
-        "x1": 477,
-        "x2": 497,
+        "x1": 857,
+        "x2": 907,
         "side": "top",
-        "y": 250
+        "y": 399
       },
       {
         "n": 5,
         "label": "RS-232",
         "desc": "터미널 블록, 외부 제어",
-        "x1": 518,
-        "x2": 565,
+        "x1": 936,
+        "x2": 1036,
         "side": "top",
-        "y": 250
+        "y": 399
       },
       {
         "n": 6,
         "label": "EDID",
         "desc": "전면 파란색 EDID 로터리 스위치, 06 EDID 설정 참고",
-        "x1": 627,
-        "x2": 664,
+        "x1": 1150,
+        "x2": 1233,
         "side": "top",
-        "y": 0
+        "y": 25
       },
       {
         "n": 7,
         "label": "MODE",
         "desc": "전면 빨간색 딥 스위치 3개(1번 오디오 병합·추출, 2번 Priority, 3번 기능 없음). 설정 방법은 '07 딥 스위치 설정' 참고",
-        "x1": 578,
-        "x2": 613,
+        "x1": 1053,
+        "x2": 1133,
         "side": "top",
-        "y": 0
+        "y": 25
       },
       {
         "n": 8,
         "label": "DC 5V",
         "desc": "전원 어댑터 5V 2A",
-        "x1": 100,
-        "x2": 127,
+        "x1": 107,
+        "x2": 180,
         "side": "top",
-        "y": 250
+        "y": 399
       }
     ]
   },
   "edidSwitch": {
     "image": "Front",
-    "x1": 627,
-    "y1": 57,
-    "x2": 664,
-    "y2": 95,
+    "x1": 1145,
+    "y1": 97,
+    "x2": 1228,
+    "y2": 180,
     "label": "EDID 로터리 스위치",
     "desc": "전면 파란색 EDID 로터리 스위치로 디스플레이 EDID를 선택한다. HD-13U와 달리 별도 SET 버튼이 없어, 로터리를 돌린 뒤 전원 케이블을 1회 탈착해야 적용된다.",
     "default": "0 = Throughpass(외부 EDID 저장: OUTPUT에 연결된 디스플레이의 EDID를 저장해 사용)",
