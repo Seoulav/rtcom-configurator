@@ -136,9 +136,15 @@
    "original": "RTcom_Manual_QMS-88UX_KV.04.pdf",
    "model": "QMS-88UX",
    "version": "KV04",
-   "status": "same",
-   "reflected": [],
-   "note": "사이트 근거 KV.03보다 새 판. 6쪽 사양·20~23쪽 멀티뷰 대조 일치",
+   "status": "reflected",
+   "reflected": [
+    {
+     "where": "data/products/qms-88ux.json",
+     "what": "06 화면 구성 모드 8분할(16:9 비율) 추가(충돌 결정 G)",
+     "release": "0.85.0"
+    }
+   ],
+   "note": "사이트 근거 KV.03보다 새 판. 6쪽 사양 일치, 22~23쪽 Output Option 5·6 반영",
    "date": "2026-09-28"
   },
   {
@@ -164,6 +170,11 @@
      "where": "src/card-specs.js",
      "what": "CIS4-U(22쪽)·COS4-U(34쪽)·QOS4S-U(43쪽) 카드 사양 보완",
      "release": "PR #68"
+    },
+    {
+     "where": "src/card-specs.js",
+     "what": "HIS4-U·CIS4-U·FIS4-U·COS4-U·FOS4-U 매뉴얼 해상도 행, SOS4 오디오 포트(충돌 결정 D·F)",
+     "release": "0.85.0"
     }
    ],
    "note": "구성기 VDM 도면·슬롯 근거판(251219)과 같은 판. 카드 사양 보완에 사용",
