@@ -107,6 +107,14 @@
       "title": "제조사 연결 다이어그램",
       "language": "en/ko",
       "note": "카탈로그 46쪽판 35쪽"
+    },
+    {
+      "type": "Manual",
+      "status": "FOUND",
+      "title": "HD-104U 사용자 매뉴얼 Ver.1.1",
+      "language": "ko",
+      "note": "사용자 제공 매뉴얼 공개본(2026-09-28, 사용자 결정 \"1번\" — 매뉴얼 전부 공개)",
+      "file": "hd-104u-manual.pdf"
     }
   ],
   "features": [
@@ -163,10 +171,10 @@
     {
       "group": "Power",
       "name": "전원공급",
-      "value": "DC 5V 2A",
+      "value": "DC 5V 1A",
       "unit": "",
       "condition": "",
-      "source": "C",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
@@ -238,7 +246,7 @@
       {
         "n": 4,
         "label": "DC 5V",
-        "desc": "전원 어댑터 5V 2A",
+        "desc": "전원 어댑터 5V 1A",
         "x1": 1103,
         "x2": 1198,
         "side": "top",

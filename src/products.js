@@ -422,7 +422,10 @@
       const withFront=!map.title&&front&&map.image!=='Front'&&front.file!==photo.file;
       const tall=withFront&&heightMm(item)>=88;
       const sideLabel=map.image==='Rear'?'후면':map.image==='Perspective'?'사선':'포트 연결면';
-      const seg=map.title?`<span class="rt-pg-seg"><span class="rt-pg-on">${esc(map.title)}</span></span>`:tall?`<span class="rt-pg-seg" role="group" aria-label="사진 면 선택"><button type="button" data-pm-side="front" aria-pressed="false">정면</button><button type="button" class="rt-pg-on" data-pm-side="rear" aria-pressed="true">${sideLabel}</button></span>`:'';
+      // 0.82(사용자 요청 2026-09-28 "색깔을 줘서 구분할 수 있게", "모든 제품을 그렇게 해줘"): 송신기·수신기 라벨을 입력·출력과 같은 색(파랑·주황)으로 구분한다.
+      // startsWith가 아니라 includes인 이유: xdm-ft101-fr101처럼 "위 앞면(송신기), 아래 뒷면"같이 문장 중간에 나오는 제목도 있다(둘 다 포함된 제목은 없음, 0.82 QA 확인).
+      const txRxClass=map.title?.includes('송신기')?' rt-pg-on-tx':map.title?.includes('수신기')?' rt-pg-on-rx':'';
+      const seg=map.title?`<span class="rt-pg-seg"><span class="rt-pg-on${txRxClass}">${esc(map.title)}</span></span>`:tall?`<span class="rt-pg-seg" role="group" aria-label="사진 면 선택"><button type="button" data-pm-side="front" aria-pressed="false">정면</button><button type="button" class="rt-pg-on" data-pm-side="rear" aria-pressed="true">${sideLabel}</button></span>`:'';
       const frontFigure=withFront?`<figure class="rt-pg-face"${tall?' data-pm-face="front" hidden':''}>${tall?'':'<figcaption class="rt-pg-face-cap">정면</figcaption>'}<img src="${image(front.file)}" alt="${esc(front.alt||`${item.productName} 정면`)}" loading="lazy"></figure>`:'';
       const sideCap=withFront&&!tall?`<p class="rt-pg-face-cap">${sideLabel} · 포트 연결</p>`:'';
       const ports=`<div class="rt-pg-ports">${[...map.items].sort((a,b)=>a.n-b.n).map(it=>`<div class="rt-pg-port"><b><span class="rt-pg-n">${it.n}</span>${esc(it.label)}</b>${esc(it.desc)}</div>`).join('')}</div>`;
@@ -436,9 +439,21 @@
     }
 
     // ---- 목록 화면 ----
-    function headerBlock({icon,title,subtitle,back,diagram,cta,print=true}){
+    // 제조사 문서 PDF(사용자 결정 2026-09-28, docs/implementation/PRODUCT_DOCUMENT_DOWNLOADS.md): documents[].file이 있는 문서만 "제품 목록" 옆에 버튼을 만든다.
+    // 이름 부분은 새 탭에서 보기(브라우저 PDF 뷰어), 화살표 부분은 바로 내려받기. 파일이 없는 종류는 버튼을 숨긴다(케이블은 카탈로그만).
+    const DOC_LABEL={Catalog:'카탈로그',Manual:'매뉴얼',ProductSheet:'제품 안내서'};
+    const docFile=file=>`output/design/assets/docs/${encodeURIComponent(file)}`;
+    const DOWNLOAD_ICON='<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M8 2v8m0 0L4.8 6.8M8 10l3.2-3.2M3 13h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    function docButtons(item){
+      const order=Object.keys(DOC_LABEL);
+      return (item.documents||[]).filter(doc=>doc.file&&DOC_LABEL[doc.type]).sort((a,b)=>order.indexOf(a.type)-order.indexOf(b.type)).map(doc=>{
+        const label=doc.label||DOC_LABEL[doc.type],title=esc(doc.title||label),href=docFile(doc.file);
+        return `<span class="rt-pg-doc" data-doc="${esc(doc.type)}"><a class="rt-pg-doc-open" href="${href}" target="_blank" rel="noopener" title="${title} · 새 탭에서 보기">${esc(label)} PDF</a><a class="rt-pg-doc-save" href="${href}" download="${esc(doc.file)}" title="${title} · 내려받기" aria-label="${esc(label)} 내려받기">${DOWNLOAD_ICON}</a></span>`;
+      }).join('');
+    }
+    function headerBlock({icon,title,subtitle,back,diagram,cta,docs='',print=true}){
       return `<header class="rt-pg-top"><div class="rt-pg-brandmark"><div class="rt-pg-swatch">${icon}</div><div class="rt-pg-title"><h1 id="rt-pg-title">${title}</h1><p class="rt-pg-sub">${subtitle}</p></div></div>
-      <div class="rt-pg-toolbar">${back?`<a class="rt-pg-btn" href="#products">← 제품 목록</a>`:''}${diagram?`<button type="button" class="rt-pg-btn" data-open-diagram>제조사 원본 다이어그램</button>`:''}${print?`<button type="button" class="rt-pg-btn" data-print>인쇄 / PDF</button>`:''}${cta||''}</div></header>`;
+      <div class="rt-pg-toolbar">${back?`<a class="rt-pg-btn" href="#products">← 제품 목록</a>`:''}${docs}${diagram?`<button type="button" class="rt-pg-btn" data-open-diagram>제조사 원본 다이어그램</button>`:''}${print?`<button type="button" class="rt-pg-btn" data-print>인쇄 / PDF</button>`:''}${cta||''}</div></header>`;
     }
     function listView(){
       const items=index.products.filter(matches);
@@ -461,7 +476,7 @@
       const count=io.length+(photo?1:0);
       return `<details class="rt-pg-record"${item.packageStatus==='REVIEW REQUIRED'?' open':''}><summary>제조사 자료 (${count}건)${reviewBadge(item)}</summary><div class="rt-pg-record-body">
         ${photo?`<div id="rt-pg-diagram-photo"><h4>제조사 원본 다이어그램</h4><div class="rt-pg-diagram-photo"><img src="${image(photo.file)}" alt="${esc(photo.alt||`${item.productName} 연결 다이어그램`)}" loading="lazy"></div>${photo.note?`<p class="rt-pg-diagram-caption">${esc((photo.note||'').replace(/^[A-Za-z]+ · /,''))}</p>`:''}</div>`:''}
-        ${io.length?`<div><h4>입출력 단자</h4>${table(['분류','방향','단자','수량','신호','조건'],io)}</div>`:''}
+        ${io.length?`<div><h4>입출력 단자</h4>${table(['분류','방향','단자','수량','신호','조건'],io).replace('class="rt-pg-tablewrap"','class="rt-pg-tablewrap rt-pg-io-table"')}</div>`:''}
       </div></details>`;
     }
 
@@ -506,7 +521,9 @@
       '3CH-MODE1':[[1,0,0,65,100],[2,65,0,35,50],[3,65,50,35,50]],
       'USER MODE 3':[[3,0,0,30,100],[1,30,0,40,50],[2,30,50,40,50],[4,70,0,30,100]],
       // 0.66: QMS-88UX 출력 9·10번 Output Option 2·3(매뉴얼 22~23쪽) — Q1·Q2를 합쳐 비율을 유지하지 않고 그대로 8분할.
-      '8분할(비율무시)':[[1,0,0,25,50],[2,25,0,25,50],[3,50,0,25,50],[4,75,0,25,50],[5,0,50,25,50],[6,25,50,25,50],[7,50,50,25,50],[8,75,50,25,50]]
+      '8분할(비율무시)':[[1,0,0,25,50],[2,25,0,25,50],[3,50,0,25,50],[4,75,0,25,50],[5,0,50,25,50],[6,25,50,25,50],[7,50,50,25,50],[8,75,50,25,50]],
+      // 0.85: Output Option 5(매뉴얼 KV.04 23쪽) — 16:9 칸 8개를 4×2로 두고 위아래를 비움(Option 6은 2×4 세로 배치, 같은 16:9 비율).
+      '8분할(16:9 비율)':[[1,0,25,25,25],[2,25,25,25,25],[3,50,25,25,25],[4,75,25,25,25],[5,0,50,25,25],[6,25,50,25,25],[7,50,50,25,25],[8,75,50,25,25]]
     };
     function layoutShapeSvg(name){
       const cells=LAYOUT_SHAPES[String(name||'').trim().toUpperCase()];
@@ -693,7 +710,7 @@
       belowCards+=dipSwitchSection(item);
       // 휴대폰(1000px 이하)에서는 .rt-pg-col이 사라지고 rt-pg-col-mobile-N 순서로만 쌓이므로, sideCard도 순서 클래스가 있어야 05 다음(01~05, 06, 07 기록)으로 나온다(없으면 order:0이라 맨 앞으로 감).
       if(sideCard)sideCard=sideCard.replace('class="rt-pg-card', 'class="rt-pg-card rt-pg-col-mobile-6');
-      return `${headerBlock({icon:GROUP_ICON[item.group],title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,diagram:!!photo})}
+      return `${headerBlock({icon:GROUP_ICON[item.group],title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,docs:docButtons(item),diagram:!!photo})}
       <div class="rt-pg-cols">
         <div class="rt-pg-col">
           <section class="rt-pg-card rt-pg-col-mobile-1"><h2><span class="rt-pg-idx">01</span>한눈에 보기</h2>
@@ -735,7 +752,7 @@
       const SIG_NAME={HDMI:'HDMI',DP:'DisplayPort',SDI:'SDI',CAT:family==='SPX'?'CATx':'HDBaseT·CATx',FIBER:'광'};
       const legendKeys=[...new Set([...inCards,...outCards].map(card=>card[3]))];
       const arch=seriesSignalSvg(item.name||family,inCards,outCards,SIG_COLOR);
-      return `${headerBlock({icon:GROUP_ICON.series,title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,cta:`<a class="rt-pg-btn rt-pg-primary" href="#matrix-configurator" data-configure-family="${esc(family)}">${esc(family)} 구성기에서 구성하기 →</a>`})}
+      return `${headerBlock({icon:GROUP_ICON.series,title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,docs:docButtons(item),cta:`<a class="rt-pg-btn rt-pg-primary" href="#matrix-configurator" data-configure-family="${esc(family)}">${esc(family)} 구성기에서 구성하기 →</a>`})}
       <div class="rt-pg-cols">
         <div class="rt-pg-col">
           <section class="rt-pg-card rt-pg-col-mobile-1"><h2><span class="rt-pg-idx">01</span>한눈에 보기</h2><p class="rt-pg-lead">${leadFor(item)}</p>${factsList(facts)}</section>

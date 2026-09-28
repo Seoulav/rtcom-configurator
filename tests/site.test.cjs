@@ -101,7 +101,11 @@ test('static package ships only configurator files and redirects legacy portal U
   const files=[];
   const walk=dir=>{for(const entry of fs.readdirSync(dir,{withFileTypes:true})){const full=path.join(dir,entry.name);entry.isDirectory()?walk(full):files.push(path.relative('dist',full).split(path.sep).join('/'))}};
   walk('dist');
-  assert.equal(files.some(file=>file.endsWith('.pdf')),false,'catalog PDF must not be published');
+  // 2026-09-28: 제조사 문서 PDF는 제품 데이터 documents[].file에 등록된 것만 output/design/assets/docs/에서 공개한다. 전체 카탈로그 원본은 여전히 배포하지 않는다.
+  const registeredDocs=new Set(fs.readdirSync('data/products').filter(name=>name.endsWith('.json')&&name!=='index.json').flatMap(name=>(JSON.parse(read(`data/products/${name}`)).documents||[]).map(doc=>doc.file).filter(Boolean)).map(name=>`output/design/assets/docs/${name}`));
+  for(const file of files.filter(file=>file.endsWith('.pdf')))assert.ok(registeredDocs.has(file),`unregistered PDF must not be published: ${file}`);
+  for(const file of registeredDocs)assert.ok(files.includes(file),`dist is missing registered document ${file}`);
+  assert.equal(files.includes('docs/RTcom_catalogue_2026_46p.pdf'),false,'full catalogue PDF must not be published');
   assert.equal(files.some(file=>file.startsWith('output/design/assets/library/')),false);
   for(const file of ['index.html','.nojekyll',...runtimeScripts,'src/styles.css','fonts/PretendardVariable.woff2','fonts/OFL.txt'])assert.ok(files.includes(file),`dist is missing ${file}`);
   const html=read('dist/index.html');
@@ -159,11 +163,100 @@ test('every matrix card has a detail entry in card-specs.js sourced from the cat
   for(const id of ids){
     const entry=specs[id];
     if(entry.page)assert.ok(entry.specs.length>0,`${id} has a catalog page but no specs`);
-    else assert.ok(entry.missing,`${id} without a catalog page must say which material is missing`);
+    else if(entry.source)assert.ok(entry.specs.length>0&&!entry.missing,`${id} sourced from a manual must list specs and drop missing`);
+    else assert.ok(entry.missing,`${id} without a catalog page or manual source must say which material is missing`);
     assert.doesNotMatch(JSON.stringify(entry),/up to/i,`${id} must use "최대" instead of "up to" (0.39 표기 규칙)`);
   }
   const app=read('src/app.js');
   assert.match(app,/data-card-info="\$\{c\[0\]\}"/,'03 카드 슬롯 must render input/output card info buttons');
   assert.match(app,/class="rt-summary-card" data-card-info=/,'내 구성 card rows must open card details');
   assert.match(app,/class="rt-card-choice-info" data-card-info="\$\{c\[0\]\}"/,'카드 선택창 must offer a 상세 보기 button per card (0.79)');
+});
+
+test('product document PDFs (2026-09-28) are validated before publishing',()=>{
+  const {validate}=require('../scripts/build-product-index.cjs');
+  const product=JSON.parse(read('data/products/hd-13u.json'));
+  const ids=new Set(fs.readdirSync('data/products').filter(name=>name.endsWith('.json')&&name!=='index.json').map(name=>name.replace(/\.json$/,'')));
+  const withDoc=doc=>({...product,documents:[...product.documents.filter(item=>item.type!==doc.type),doc]});
+  const errorsFor=doc=>validate(withDoc(doc),'data/products/hd-13u.json',ids).join('\n');
+  assert.match(errorsFor({type:'Manual',title:'x',file:'hd-13u-missing.pdf',note:''}),/문서 파일 없음/);
+  assert.match(errorsFor({type:'Manual',title:'x',file:'HD-13U Manual.pdf',note:''}),/documents\.file 형식/);
+  assert.match(errorsFor({type:'Manual',title:'x',file:'hd-104u-manual.pdf',note:''}),/documents\.file 형식/);
+  assert.match(errorsFor({type:'Diagram',title:'x',file:'hd-13u-diagram.pdf',note:''}),/documents\.file은 Catalog/);
+  assert.match(errorsFor({type:'Manual',title:'x',file:'hd-13u-manual.pdf',note:'사용자 제공, 배포 제외'}),/배포 제외·비공개/);
+  const twoManuals={...product,documents:[...product.documents.filter(item=>item.type!=='Manual'),{type:'Manual',title:'a',file:'hd-13u-manual-a.pdf',note:''},{type:'Manual',title:'b',file:'hd-13u-manual-b.pdf',note:''}]};
+  assert.match(validate(twoManuals,'data/products/hd-13u.json',ids).join('\n'),/label 필요/);
+  const src=fs.readFileSync('src/products.js','utf8');
+  assert.match(src,/target="_blank" rel="noopener"/,'document buttons open in a new tab without window.opener');
+  assert.match(src,/download="\$\{esc\(doc\.file\)\}"/,'document buttons offer a direct download');
+});
+
+test('local input_doc workflow (2026-09-28) keeps user material out of Git and reports new files',()=>{
+  const {spawnSync}=require('node:child_process');
+  const os=require('node:os');
+  const ignore=read('.gitignore');
+  assert.match(ignore,/^input_doc\/\*$/m,'input_doc contents must be git-ignored');
+  assert.match(ignore,/^!input_doc\/README\.md$/m,'input_doc/README.md must stay tracked');
+  assert.ok(fs.existsSync('input_doc/README.md'));
+  const settings=JSON.parse(read('.claude/settings.json'));
+  const hook=settings.hooks.SessionStart[0].hooks[0];
+  assert.equal(hook.type,'command');
+  assert.match(hook.command,/scripts\/input-doc-status\.cjs/);
+  for(const rule of ['Bash(git push --force *)','Bash(git reset --hard *)','Bash(git clean *)','Bash(git push origin main)'])assert.ok(settings.permissions.deny.includes(rule),`settings must deny ${rule} (CLAUDE.md Git 정책)`);
+  assert.ok(fs.existsSync('.claude/skills/input-doc/SKILL.md'));
+  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'input-doc-'));
+  try{
+    const run=()=>spawnSync(process.execPath,['scripts/input-doc-status.cjs'],{env:{...process.env,INPUT_DOC_DIR:dir},encoding:'utf8'});
+    let out=run();
+    assert.equal(out.status,0);assert.equal(out.stdout,'','no new files → no hook output');
+    fs.writeFileSync(path.join(dir,'README.md'),'x');fs.mkdirSync(path.join(dir,'RTCOM'));fs.writeFileSync(path.join(dir,'RTCOM','done.pdf'),'x');
+    assert.equal(run().stdout,'','README and already-sorted files are not new');
+    fs.writeFileSync(path.join(dir,'HD-13U 매뉴얼.pdf'),'%PDF-1.4');
+    out=run();assert.equal(out.status,0);
+    const json=JSON.parse(out.stdout);
+    assert.equal(json.hookSpecificOutput.hookEventName,'SessionStart');
+    assert.match(json.hookSpecificOutput.additionalContext,/HD-13U 매뉴얼\.pdf/);
+    assert.doesNotMatch(json.hookSpecificOutput.additionalContext,/done\.pdf/);
+    const python=['python3','python'].find(cmd=>spawnSync(cmd,['--version']).status===0);
+    if(python){
+      const py=(...args)=>spawnSync(python,['scripts/input_doc.py',...args],{env:{...process.env,INPUT_DOC_DIR:dir},encoding:'utf8'});
+      const scan=JSON.parse(py('scan').stdout);
+      assert.equal(scan.files.length,1);
+      assert.deepEqual(scan.files[0].guess.models,['HD-13U']);
+      assert.equal(scan.files[0].guess.kind,'Manual');
+      const moved=py('file','HD-13U 매뉴얼.pdf','--maker','RTCOM','--kind','Manual','--model','HD-13U','--version','Ver1.2');
+      assert.equal(moved.status,0,moved.stderr);
+      assert.ok(fs.existsSync(path.join(dir,'RTCOM','manual','RTcom_Manual_HD-13U_Ver1.2.pdf')));
+      assert.match(fs.readFileSync(path.join(dir,'INDEX.md'),'utf8'),/HD-13U 매뉴얼\.pdf \| RTCOM\/manual\/RTcom_Manual_HD-13U_Ver1\.2\.pdf/);
+      fs.writeFileSync(path.join(dir,'copy.pdf'),'%PDF-1.4');
+      assert.equal(py('file','copy.pdf','--maker','RTCOM','--kind','Manual','--model','HD-13U').status,0);
+      assert.ok(fs.existsSync(path.join(dir,'_duplicates','copy.pdf')),'same content goes to _duplicates, not a second archive copy');
+      assert.notEqual(py('file',path.resolve('README.md'),'--maker','X','--kind','Other','--model','Y').status,0,'files outside input_doc are refused');
+      assert.equal(run().stdout,'','after filing, nothing is new');
+      // 반영 장부와 STATUS.md(사용자 요청 2026-09-28 "깃에 자료로서 올라간 내용들은 input_doc에서 알 수 있도록 표시")
+      const ledger=JSON.parse(fs.readFileSync(path.join(dir,'.ledger.json'),'utf8'));
+      assert.equal(ledger.entries.length,1,'filed material is added to the ledger once (duplicates are not)');
+      assert.equal(ledger.entries[0].status,'pending');
+      assert.match(fs.readFileSync(path.join(dir,'STATUS.md'),'utf8'),/⏳ 검토 전 \| RTCOM\/manual\/RTcom_Manual_HD-13U_Ver1\.2\.pdf/);
+      const marked=py('mark','RTCOM/manual/RTcom_Manual_HD-13U_Ver1.2.pdf','--status','reflected','--where','data/products/hd-13u.json','--what','EDID 코드표','--release','0.99.0');
+      assert.equal(marked.status,0,marked.stderr);
+      assert.match(fs.readFileSync(path.join(dir,'STATUS.md'),'utf8'),/✅ 사이트에 반영 \| RTCOM\/manual\/RTcom_Manual_HD-13U_Ver1\.2\.pdf \| data\/products\/hd-13u\.json — EDID 코드표 \| 0\.99\.0/);
+      assert.notEqual(py('mark','RTCOM/manual/RTcom_Manual_HD-13U_Ver1.2.pdf','--status','done').status,0,'unknown status is refused');
+    }
+  }finally{fs.rmSync(dir,{recursive:true,force:true})}
+});
+
+test('input_doc reflection ledger (2026-09-28) is tracked, well-formed and never published',()=>{
+  const ledger=JSON.parse(read('docs/evidence/input-doc-ledger.json'));
+  assert.equal(ledger.schema,'rtcom.input-doc-ledger.v1');
+  const statuses=Object.keys(ledger.statuses);
+  const seen=new Set();
+  for(const entry of ledger.entries){
+    assert.match(entry.sha256,/^[0-9a-f]{16}$/,`${entry.file} needs a sha256 prefix`);
+    assert.ok(!seen.has(entry.sha256),`${entry.file} is listed twice`);seen.add(entry.sha256);
+    assert.ok(statuses.includes(entry.status),`${entry.file} has unknown status ${entry.status}`);
+    assert.match(entry.file,/^[A-Z0-9_]+\/[a-z]+\/[^/]+$/,`${entry.file} must be a path inside input_doc/<제조사>/<종류>/`);
+    if(entry.status==='reflected'||entry.status==='published')assert.ok(entry.reflected.length>0,`${entry.file} is ${entry.status} but says nowhere it was used`);
+  }
+  assert.ok(!fs.existsSync('dist/docs/evidence/input-doc-ledger.json'),'the ledger must not be shipped to Pages');
 });

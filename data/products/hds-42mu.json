@@ -111,7 +111,8 @@
       "status": "FOUND",
       "title": "HDS-42MU 사용자 매뉴얼 Ver.1.0",
       "language": "ko",
-      "note": "4·6–9쪽 · 사용자 제공, 배포 제외"
+      "note": "사용자 제공 매뉴얼 공개본(2026-09-28, 사용자 결정 \"1번\" — 매뉴얼 전부 공개)",
+      "file": "hds-42mu-manual.pdf"
     }
   ],
   "features": [

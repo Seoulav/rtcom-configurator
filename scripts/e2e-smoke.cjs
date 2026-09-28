@@ -18,7 +18,7 @@ catch{
 }
 const BASE='/rtcom-configurator/';
 const dist=path.resolve('dist');
-const types={'.html':'text/html; charset=utf-8','.js':'text/javascript','.css':'text/css','.jpg':'image/jpeg','.png':'image/png','.md':'text/markdown','.json':'application/json','.webp':'image/webp'};
+const types={'.html':'text/html; charset=utf-8','.js':'text/javascript','.css':'text/css','.jpg':'image/jpeg','.png':'image/png','.md':'text/markdown','.json':'application/json','.webp':'image/webp','.pdf':'application/pdf'};
 const server=http.createServer((req,res)=>{
   const url=decodeURIComponent(new URL(req.url,'http://x').pathname);
   if(!url.startsWith(BASE)){res.writeHead(404).end();return}
@@ -335,8 +335,20 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     for(const [id,pins,front] of [['hd-13u',7,['MODE','SET']],['hd-104u',4,['EDID']],['hd-108u',4,['EDID']],['hd-210u',6,['EDID','MODE']],['xdm-ft101-fr101',6,['MODE','S/P']]]){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
       await page.waitForSelector('.rt-pg-panel svg');
-      const dm=await page.evaluate(()=>({faces:document.querySelectorAll('.rt-pg-face').length,toggle:document.querySelectorAll('[data-pm-side]').length,pins:[...document.querySelectorAll('.rt-pg-port b')].map(b=>b.textContent.trim().replace(/^\d+/,''))}));
+      // 첫 번째 단자 지도(송신기·단일 제품)의 번호만 센다. 2026-09-28부터 XDM-FT101/FR101은 수신기 뒷면 지도가 따로 이어진다.
+      const dm=await page.evaluate(()=>({faces:document.querySelectorAll('.rt-pg-face').length,toggle:document.querySelectorAll('[data-pm-side]').length,pins:[...(document.querySelector('.rt-pg-ports')?.querySelectorAll('.rt-pg-port b')||[])].map(b=>b.textContent.trim().replace(/^\d+/,''))}));
       check(`${id} 단자 지도가 앞면·뒷면 합성 사진 한 장에 ${pins}개 번호(정면 ${front.join('·')} 포함, 전원 마지막)로 나옴`,dm.faces===0&&dm.toggle===0&&dm.pins.length===pins&&front.every(label=>dm.pins.includes(label))&&/^DC/.test(dm.pins[pins-1]),JSON.stringify(dm));
+    }
+    // 2026-09-28 RT컴 제공 고해상도 실물 사진: XDM-FR101 수신기 뒷면 단자 지도(번호 4개, 전원 마지막)와 XDM-CTR100·XDM-CT103 합성 사진.
+    await page.goto(`${home}#products/xdm-ft101-fr101`,{waitUntil:'networkidle'});
+    await page.waitForSelector('.rt-pg-ports');
+    const frMap=await page.evaluate(()=>{const groups=[...document.querySelectorAll('.rt-pg-ports')];const rx=groups[1];return {maps:groups.length,pins:rx?[...rx.querySelectorAll('.rt-pg-port b')].map(b=>b.textContent.trim().replace(/^\d+/,'')):[],img:document.querySelector('.rt-pg-panel')?.closest('section')?.innerHTML.includes('xdm-fr101-rear.webp')}});
+    check('XDM-FR101 수신기 뒷면 단자 지도가 번호 4개(HDMI OUT → 오디오 → 광 → DC IN)로 나옴',frMap.maps===2&&frMap.pins.join('|')==='HDMI OUT|AUDIO · RS-232|FIBER IN|DC IN'&&frMap.img,JSON.stringify(frMap));
+    for(const [id,file] of [['xdm-ctr100','xdm-ctr100-rear.webp'],['xdm-ct103-cr103','xdm-ct103-front-rear.webp']]){
+      await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
+      await page.waitForSelector('.rt-pg-ports');
+      const ok=await page.evaluate(f=>{const s=[...document.querySelectorAll('section')].find(s=>/Port Map/.test(s.querySelector('h2')?.textContent||''));return !!s&&s.innerHTML.includes(f)&&[...s.querySelectorAll('img,image')].every(i=>i.tagName!=='IMG'||i.naturalWidth>0)},file);
+      check(`${id} 단자 지도가 RT컴 고해상도 사진 합성본(${file})으로 나옴`,ok);
     }
     // 0.55: 2U 미만(MR-4S)은 정면·후면 버튼 없이 정면 사진과 포트 연결면을 함께 보여준다(0.68부터 FT101은 합성 사진이라 MR-4S로 확인).
     await page.goto(`${home}#products/mr-4s`,{waitUntil:'networkidle'});
@@ -400,6 +412,15 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('OBUX-1C 딥 스위치 설정이 1번 오디오와 2·3·4번 EDID 조합 5칸으로 나옴',obux.rows===2&&obux.combos===5&&obux.fix,JSON.stringify(obux));
     // 2026-09-28 OBUX-1C Tx 고해상도 실물 사진: 송신기 단자 지도가 앞면·뒷면 합성 사진 한 장에 번호 6개(Mode·S/P 포함), 수신기도 합성 사진에 번호 5개(S/P 포함).
     const obuxPm=await page.evaluate(()=>{const s=[...document.querySelectorAll('section')].find(s=>/Port Map/.test(s.querySelector('h2')?.textContent||''));return {tx:!!s?.innerHTML.includes('obux-1c-tx-front-rear.webp'),rx:!!s?.innerHTML.includes('obux-1c-rx-front-rear.webp'),ports:[...(s?.querySelectorAll('.rt-pg-ports')||[])].map(x=>x.children.length)}});
+    // 2026-09-28 제조사 문서 PDF: documents[].file 수만큼 "제품 목록" 옆에 버튼(새 탭 보기 + 내려받기)이 나오고 링크가 PDF로 열림. 등록 파일이 없는 제품은 버튼 없음.
+    for(const id of ['hd-13u','hd-104u']){
+      const expected=(JSON.parse(fs.readFileSync(`data/products/${id}.json`,'utf8')).documents||[]).filter(doc=>doc.file).length;
+      await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
+      await page.waitForSelector('.rt-pg-toolbar');
+      const docs=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-toolbar .rt-pg-doc')].map(el=>({open:el.querySelector('.rt-pg-doc-open')?.getAttribute('target')==='_blank'&&el.querySelector('.rt-pg-doc-open')?.relList.contains('noopener'),save:el.querySelector('.rt-pg-doc-save')?.hasAttribute('download'),href:el.querySelector('.rt-pg-doc-open')?.href})));
+      const pdfOk=[];for(const doc of docs){const res=await page.request.get(doc.href);pdfOk.push(res.status()===200&&String(res.headers()['content-type']).includes('pdf'))}
+      check(`${id} 제조사 문서 버튼 ${expected}개(새 탭 보기·내려받기, PDF 응답)`,docs.length===expected&&docs.every(doc=>doc.open&&doc.save)&&pdfOk.every(Boolean),JSON.stringify({expected,docs,pdfOk}));
+    }
     check('OBUX-1C 송신기 단자 지도가 고해상도 앞뒤 합성 사진에 번호 6개, 수신기 5개(S/P 포함)로 나옴',obuxPm.tx&&obuxPm.rx&&obuxPm.ports.join()==='6,5',JSON.stringify(obuxPm));
     // 0.64 XDM-FT101/FR101 EDID·오디오 로터리(매뉴얼 Ver.1.3): 0(기본값)·3·8번 대표 설정 그림.
     await page.goto(`${home}#products/xdm-ft101-fr101`,{waitUntil:'networkidle'});
@@ -481,12 +502,18 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.waitForSelector('[data-layout-chip]');
     const beforeLayout=await page.evaluate(()=>document.querySelector('[data-layout-name]').textContent);
     await page.locator('[data-layout-chip]',{hasText:'3-SIDE RIGHT'}).click();
-    const afterLayout=await page.evaluate(()=>({name:document.querySelector('[data-layout-name]').textContent,on:document.querySelector('.rt-pg-layout-chip.on')?.textContent,rects:document.querySelectorAll('[data-layout-preview] svg rect').length}));
+    const afterLayout=await page.evaluate(()=>({name:document.querySelector('[data-layout-name]').textContent,on:document.querySelector('.rt-pg-layout-chip.on')?.textContent,rects:document.querySelector('[data-layout-preview]').querySelectorAll('svg rect').length}));
     check('QMS-88UX 06 화면 구성 모드에서 레이아웃 버튼을 누르면 미리보기 도해가 바뀜',beforeLayout==='QUAD'&&afterLayout.name==='3-SIDE RIGHT'&&afterLayout.on==='3-SIDE RIGHT'&&afterLayout.rects===4,JSON.stringify({beforeLayout,afterLayout}));
     // 0.66 — QMS-88UX 출력 9번에 매뉴얼 22~23쪽 Output Option 2·3(비율 유지 없이 그대로 8분할)을 레이아웃 목록 13번째로 추가(사용자 요청 2026-09-27 "출력9에 비율무시8분할도 추가해줘").
     await page.locator('[data-layout-chip]',{hasText:'8분할(비율무시)'}).click();
-    const split8=await page.evaluate(()=>({name:document.querySelector('[data-layout-name]').textContent,rects:document.querySelectorAll('[data-layout-preview] svg rect').length}));
+    const split8=await page.evaluate(()=>({name:document.querySelector('[data-layout-name]').textContent,rects:document.querySelector('[data-layout-preview]').querySelectorAll('svg rect').length}));
     check('QMS-88UX 06 화면 구성 모드에 "8분할(비율무시)" 레이아웃이 있고 8칸 도해로 미리보기됨',split8.name==='8분할(비율무시)'&&split8.rects===8,JSON.stringify(split8));
+    // 0.90 — QMS-88UX DUAL 카드가 "듀얼 모드" 한 마디뿐이었다(사용자 질문 2026-09-28 "QMS-88Ux도 듀얼 출력되지 않아??"). 매뉴얼 KV.04 20~21쪽 근거로 2분할(PBP)·PIP 레이아웃 3종을 넣고, 카드 안에서만 미리보기가 바뀌는지 확인.
+    const dualCard=page.locator('.rt-pg-vmode-card',{hasText:'DUAL'});
+    await dualCard.locator('[data-layout-chip]',{hasText:'Vertical PBP'}).click();
+    const dual=await dualCard.evaluate(card=>({chips:[...card.querySelectorAll('[data-layout-chip]')].map(b=>b.textContent),name:card.querySelector('[data-layout-name]')?.textContent,rects:card.querySelectorAll('[data-layout-preview] svg rect').length,text:card.querySelector('p')?.textContent||''}));
+    const quadName=await page.locator('.rt-pg-vmode-card',{hasText:'QUAD'}).first().evaluate(card=>card.querySelector('[data-layout-name]')?.textContent);
+    check('QMS-88UX 06 DUAL 카드에 PBP·PIP 레이아웃 3종이 있고 Vertical PBP를 누르면 2칸 도해로 바뀌며 QUAD 카드 미리보기는 그대로임',dual.chips.join('|')==='Horizontal PBP|Vertical PBP|Quad PBP, PIP'&&dual.name==='Vertical PBP'&&dual.rects===2&&/출력 9·10번/.test(dual.text)&&quadName==='8분할(비율무시)',JSON.stringify({dual,quadName}));
     // 0.62 — videoModes(QMS) 카드 4개+레이아웃 칩 12개까지 있어 05 옆 좁은 칸에 넣으면 글자가 카드 밖으로 넘쳤다(사용자 확인 2026-09-27 "06화면모드 짤린다"). 전체 폭 아래로 되돌려 카드 안에서 텍스트가 넘치지 않는지 확인.
     for(const id of ['qms-88ux','qms-44ux']){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
@@ -616,6 +643,38 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await mobile.waitForSelector('.rt-pg-idx');
     const idxOrder=await mobile.evaluate(()=>[...document.querySelectorAll('.rt-pg-idx')].map(el=>({text:el.textContent,top:el.getBoundingClientRect().top})).sort((a,b)=>a.top-b.top).map(x=>x.text));
     check('휴대폰에서 HD-210U 제품 상세는 01부터 순서대로 보임(06이 맨 위로 올라가지 않음, 0.61부터 07 딥 스위치 설정 포함)',idxOrder.join(',')==='01,02,03,04,05,06,07',JSON.stringify(idxOrder));
+    // 2026-09-28 "제조사 정보를 항상 열면은 표가 약간 찌그러지는 게 있는데" — 입출력 단자 표의 방향("입력"·"출력"·"입출력")·수량(숫자) 칸이
+    // 신호·조건의 긴 문장에 밀려 좁은 화면에서 한 글자씩 줄바꿈되던 문제(전수 조사로 발견). 30개 제품 전체를 여러 폭에서 확인해 재발을 막는다.
+    {
+      const allIds=JSON.parse(fs.readFileSync('data/products/index.json','utf8')).products.map(p=>p.id);
+      const wrappedFixedCells=[];
+      for(const w of [320,375,480,600,834,1024]){
+        const p=await browser.newPage({viewport:{width:w,height:900}});
+        for(const id of allIds){
+          await p.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
+          const hasIo=await p.evaluate(()=>!![...document.querySelectorAll('h4')].find(x=>x.textContent.trim()==='입출력 단자'));
+          if(!hasIo)continue;
+          await p.evaluate(()=>{const details=[...document.querySelectorAll('h4')].find(x=>x.textContent.trim()==='입출력 단자').closest('details');if(details)details.open=true});
+          const wrapped=await p.evaluate(()=>{
+            const h4=[...document.querySelectorAll('h4')].find(x=>x.textContent.trim()==='입출력 단자');
+            const table=h4.nextElementSibling.querySelector('table');
+            const fixedLabels=new Set(['입력','출력','입출력']);
+            const cells=[...table.querySelectorAll('thead th'),...table.querySelectorAll('tbody td')];
+            return cells.filter(cell=>{
+              const text=cell.textContent.trim();
+              if(!(fixedLabels.has(text)||/^\d+$/.test(text)||['분류','방향','단자','수량'].includes(text)))return false;
+              const textNode=[...cell.childNodes].find(n=>n.nodeType===3&&n.textContent.trim());
+              if(!textNode)return false;
+              const range=document.createRange();range.selectNodeContents(textNode);
+              return range.getClientRects().length>1;
+            }).map(cell=>cell.textContent.trim());
+          });
+          if(wrapped.length)wrappedFixedCells.push({w,id,wrapped});
+        }
+        await p.close();
+      }
+      check('입출력 단자 표에서 방향("입력"·"출력"·"입출력")·수량(숫자) 칸이 30개 제품·6개 화면 폭(320~1024px)에서 두 줄로 쪼개지지 않음',wrappedFixedCells.length===0,JSON.stringify(wrappedFixedCells));
+    }
     await phone.close();
   }finally{
     await browser.close();

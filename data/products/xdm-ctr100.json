@@ -19,43 +19,43 @@
   "catalogPages": "10",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03, 48쪽판) 10쪽의 XDM-CTR100·XDM-CTR100 PSE 소개와 제품사양 표에서 확인했고, 새 카탈로그(46쪽판) 10쪽과 줄 단위로 재대조했다(차이 없음). 0.47에서 XDM-CTR100 PSE를 별도 제품(xdm-ctr100-pse)으로 나눴다(사용자 요청).",
   "packageStatus": "VERIFIED",
-  "overview": "XDM-CTR100은 HDBaseT 3.0 기술이 적용되어 압축하지 않은 True 4K 4096x2160@60Hz(4:4:4), 3840x2160@60Hz(4:4:4) 해상도의 HDMI 신호를 케이블에 따라 최대 100m까지 전송하는 HDMI 송·수신기다. 하나의 기기에서 설정으로 송신기 또는 수신기 역할을 바꿀 수 있으며, 송신기로 쓰면 XDM-CIS100, 수신기로 쓰면 XDM-COS100과 호환된다. RS-232+ 기능으로 XDM 매트릭스의 커맨드를 통해 XDM-CTR100의 RS-232에 연결된 외부기기를 제어할 수 있다.\n\nXDM-CTR100 PSE(별도 제품)와 함께 쓰면 XDM-CTR100은 PD(Powered Devices) 모드로 동작해 전원 케이블 없이 사용할 수 있다. XDM-CIS100·COS100 카드에 직접 연결할 때는 XDM-PSU(16채널 모듈형 전원 장치)로 전원을 공급해 CTR100에 전원 어댑터를 따로 연결하지 않는다. 케이블별 최대 사용 거리는 제조사 문의 사항으로 적혀 있다.",
+  "overview": "XDM-CTR100은 HDBaseT 3.0 기술이 적용되어 압축하지 않은 True 4K 3840x2160@60Hz(4:4:4) 해상도의 HDMI 신호를 케이블에 따라 최대 100m까지 전송하는 HDMI 송·수신기다. 하나의 기기에서 설정으로 송신기 또는 수신기 역할을 바꿀 수 있으며, 송신기로 쓰면 XDM-CIS100, 수신기로 쓰면 XDM-COS100과 호환된다. RS-232+ 기능으로 XDM 매트릭스의 커맨드를 통해 XDM-CTR100의 RS-232에 연결된 외부기기를 제어할 수 있다.\n\nXDM-CTR100 PSE(별도 제품)와 함께 쓰면 XDM-CTR100은 PD(Powered Devices) 모드로 동작해 전원 케이블 없이 사용할 수 있다. XDM-CIS100·COS100 카드에 직접 연결할 때는 XDM-PSU(16채널 모듈형 전원 장치)로 전원을 공급해 CTR100에 전원 어댑터를 따로 연결하지 않는다. 케이블별 최대 사용 거리는 제조사 문의 사항으로 적혀 있다.",
   "images": [
     {
       "role": "Main",
       "file": "xdm-ctr100-main.webp",
       "alt": "RTCOM XDM-CTR100 상판",
-      "note": "Main · XDM-CTR100 제품 사진",
+      "note": "Main · RT컴 제공 고해상도 실물 사진(2026-09-28), 윗면",
       "provider": "RTCOM",
       "model": "XDM-CTR100",
       "source": "R",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "210×129"
+      "resolution": "800×507"
     },
     {
       "role": "Rear",
       "file": "xdm-ctr100-rear.webp",
-      "alt": "RTCOM XDM-CTR100 양쪽 단자면(DIP 스위치면, HDBaseT·HDMI IN/OUT·Phoenix 단자면)",
-      "note": "Rear · 카탈로그 10쪽 XDM-CTR100 단자면 사진",
+      "alt": "RTCOM XDM-CTR100 앞면(위)·뒷면(아래) 합성 사진",
+      "note": "Rear · 위 앞면(XDM-CTR100 PSE 제품 안내서 1쪽 사진) · 아래 뒷면(RT컴 제공 고해상도 XDM-CTR100 뒷면 사진, 2026-09-28) 합성. CTR100과 PSE는 앞면·단자가 같음(사용자 확인 2026-09-28)",
       "provider": "RTCOM",
       "model": "XDM-CTR100",
       "source": "C",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "563×350"
+      "resolution": "1000×621"
     },
     {
       "role": "Front",
       "file": "xdm-ctr100-front.webp",
       "alt": "RTCOM XDM-CTR100 정면(흰 배경 실물 사진)",
-      "note": "Front · 사용자 제공 실물 사진(2026-09-28)",
+      "note": "Front · RT컴 제공 고해상도 실물 사진(2026-09-28), 윗면",
       "provider": "RTCOM",
       "model": "XDM-CTR100",
       "source": "P1",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "800×509"
+      "resolution": "1400×888"
     }
   ],
   "imageStatuses": [
@@ -96,13 +96,14 @@
       "status": "FOUND",
       "title": "XDM-CTR100 사용자 매뉴얼 Ver.1.4",
       "language": "ko",
-      "note": "4–9쪽 · 사용자 제공, 배포 제외"
+      "note": "사용자 제공 매뉴얼 공개본(2026-09-28, 사용자 결정 \"1번\" — 매뉴얼 전부 공개)",
+      "file": "xdm-ctr100-manual.pdf"
     }
   ],
   "features": [
     {
-      "text": "HDBaseT 3.0 무압축 True 4K(4096x2160·3840x2160@60Hz 4:4:4) 최대 100m 전송 지원",
-      "source": "C"
+      "text": "HDBaseT 3.0 무압축 True 4K(3840x2160@60Hz 4:4:4) 최대 100m 전송 지원",
+      "source": "M1"
     },
     {
       "text": "TX/RX 겸용 지원(TX는 XDM-CIS100, RX는 XDM-COS100 카드와 짝, Long Reach 1080p 최대 150m)",
@@ -133,10 +134,10 @@
     {
       "group": "Video",
       "name": "최대 해상도",
-      "value": "4096x2160@60Hz, 3840x2160@60Hz",
+      "value": "3840x2160@60Hz",
       "unit": "",
       "condition": "4:4:4",
-      "source": "C",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
@@ -330,64 +331,64 @@
         "n": 4,
         "label": "HDBaseT",
         "desc": "RJ45 · CAT 케이블로 XDM 카드 또는 상대 CTR100과 연결",
-        "x1": 104,
-        "x2": 168,
+        "x1": 118,
+        "x2": 252,
         "side": "bottom",
-        "y": 310
+        "y": 580
       },
       {
         "n": 1,
         "label": "HDMI IN",
         "desc": "TX 모드에서 HDMI 소스 입력",
-        "x1": 181,
-        "x2": 239,
+        "x1": 287,
+        "x2": 412,
         "side": "bottom",
-        "y": 310
+        "y": 580
       },
       {
         "n": 2,
         "label": "HDMI OUT",
         "desc": "RX 모드에서 디스플레이 출력",
-        "x1": 265,
-        "x2": 325,
+        "x1": 472,
+        "x2": 597,
         "side": "bottom",
-        "y": 310
+        "y": 580
       },
       {
         "n": 3,
         "label": "AUDIO · RS-232",
         "desc": "5핀(L·R·접지·Tx·Rx) · 아날로그 스테레오 오디오 출력과 RS-232+ 제어",
-        "x1": 340,
-        "x2": 404,
+        "x1": 632,
+        "x2": 785,
         "side": "bottom",
-        "y": 310
+        "y": 580
       },
       {
         "n": 7,
         "label": "DC IN",
         "desc": "DC 12V 1A 이상 · XDM-CTR100 PSE와 연결되거나 XDM-PSU로 급전하면 연결하지 않음",
-        "x1": 410,
-        "x2": 451,
+        "x1": 793,
+        "x2": 888,
         "side": "bottom",
-        "y": 310
+        "y": 580
       },
       {
         "n": 5,
         "label": "TX/RX DIP 스위치",
         "desc": "1번 ON = TX · 2번 ON = RX · 3번 ON = Long Reach(1080p 150m) · 스위치를 내리면 ON. 설정 방법은 '06 딥 스위치 설정' 참고",
-        "x1": 181,
-        "x2": 229,
+        "x1": 245,
+        "x2": 348,
         "side": "top",
-        "y": 42
+        "y": 20
       },
       {
         "n": 6,
         "label": "상태 LED",
         "desc": "Rx Signal(RX 모드) · Tx Signal(TX 모드) · Tx/Rx·Link(정상 연결)",
-        "x1": 112,
-        "x2": 166,
+        "x1": 100,
+        "x2": 220,
         "side": "top",
-        "y": 42
+        "y": 20
       }
     ],
     "title": "위 앞면, 아래 뒷면"

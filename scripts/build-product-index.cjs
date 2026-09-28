@@ -13,6 +13,10 @@ const GROUPS=['series','integrated','distribution','extender','cable'];
 const EXCLUDED=['HS-88MX','HS-88M-U','HD-D104U','HD-D108U'];
 // 공개 저장소에 들어가면 안 되는 내부 정보 단어(2026-09-26 §9 결정).
 const FORBIDDEN=/단가|원가|매입|마진|거래처|공급가|견적가|판매가|소비자가|재고|내부\s*메모|\bprice\b|\bcost\b|\bmargin\b/i;
+// 제조사 문서 PDF 공개 폴더와 허용 종류·크기(2026-09-28). 휴대폰에서도 열리도록 파일 하나 15MB 이하.
+const DOC_DIR='output/design/assets/docs';
+const DOC_TYPES=['Catalog','Manual','ProductSheet'];
+const DOC_MAX_BYTES=15*1024*1024;
 const REQUIRED=['id','group','manufacturer','productName','model','itemType','categories','english','korean','verificationSummary','packageStatus','overview','images','documents','features','specifications','io','sources','issues'];
 
 function validate(product,file,ids){
@@ -35,6 +39,23 @@ function validate(product,file,ids){
   if(forbidden)fail(`내부 정보로 보이는 단어: ${forbidden[0]}`);
   for(const image of product.images||[])if(!fs.existsSync(path.join(IMAGE_DIR,image.file||'')))fail(`이미지 없음: ${image.file}`);
   for(const link of product.related||[])if(!ids.has(link.target))fail(`related 대상 없음: ${link.target}`);
+  // 제조사 문서 PDF(사용자 결정 2026-09-28): file이 있으면 공개 배포되므로 형식·존재·크기·표기를 확인한다.
+  const published=(product.documents||[]).filter(doc=>'file' in doc);
+  const files=new Set();
+  for(const doc of published){
+    if(!DOC_TYPES.includes(doc.type))fail(`documents.file은 ${DOC_TYPES.join('·')}만 가능: ${doc.type}`);
+    if(files.has(doc.file))fail(`documents.file 중복: ${doc.file}`);
+    files.add(doc.file);
+    // 송신기·수신기 매뉴얼처럼 같은 종류가 둘 이상이면 버튼 이름을 구분할 label(예: "CT103 매뉴얼")이 있어야 한다.
+    if(published.filter(other=>other.type===doc.type).length>1&&!String(doc.label||'').trim())fail(`같은 종류(${doc.type}) 문서가 둘 이상이면 label 필요: ${doc.file}`);
+    if(!/^[a-z0-9]+(?:[-.][a-z0-9]+)*\.pdf$/.test(doc.file||'')||!String(doc.file).startsWith(`${product.id}-`))fail(`documents.file 형식(제품 id로 시작, 소문자·숫자·하이픈·점, .pdf): ${doc.file}`);
+    if(/배포 제외|비공개/.test(doc.note||''))fail(`공개하는 문서의 note에 "배포 제외·비공개"가 남아 있음: ${doc.file}`);
+    const full=path.join(DOC_DIR,String(doc.file||''));
+    if(!fs.existsSync(full)){fail(`문서 파일 없음: ${doc.file}`);continue}
+    const size=fs.statSync(full).size,head=Buffer.alloc(5),fd=fs.openSync(full,'r');fs.readSync(fd,head,0,5,0);fs.closeSync(fd);
+    if(head.toString()!=='%PDF-')fail(`PDF 파일이 아님: ${doc.file}`);
+    if(size>DOC_MAX_BYTES)fail(`문서 파일이 ${DOC_MAX_BYTES/1024/1024}MB를 넘음: ${doc.file}`);
+  }
   const codes=new Set((product.sources||[]).map(source=>source.code));
   for(const row of [...(product.specifications||[]),...(product.io||[]),...(product.features||[])])if(row.source&&!codes.has(row.source))fail(`출처 코드 ${row.source}가 sources에 없음`);
   // 0.36 — 같은 제품의 다른 모델명(예: HD-104U의 새 실크 표기 HD-14U). 검색·옛 주소 이동에 쓴다.

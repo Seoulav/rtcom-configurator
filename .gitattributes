@@ -1,0 +1,17 @@
+# 로컬 클론(특히 Windows)에서도 줄바꿈을 LF로 유지한다(2026-09-28).
+# CRLF로 받으면 data/products/index.json 비교(build-product-index --check)와 git diff --check가 실패한다.
+* text=auto eol=lf
+
+# 바이너리 자료
+*.webp binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.pdf binary
+*.zip binary
+*.woff2 binary
+
+# 처음부터 CRLF로 저장된 옛 자료는 그대로 둔다(바꾸면 내용 없이 전체 줄이 변경으로 잡힘).
+output/design/interaction-check.js -text
+output/design/rtcom-configurator-draft.html -text
+rtcom-source.sha256 -text
