@@ -822,7 +822,7 @@
           ${sideCard}
         </div>
         <div class="rt-pg-col">
-          ${portSection?`<section class="rt-pg-card rt-pg-col-mobile-2"><h2><span class="rt-pg-idx">02</span>Port Map <span class="rt-pg-note">— ${item.portMap?(item.portMap.basis||'실제 제품 사진 기준'):'입출력 표 기준'}</span></h2>${portSection}</section>`:''}
+          ${portSection?`<section class="rt-pg-card rt-pg-col-mobile-2"><h2><span class="rt-pg-idx">02</span>Port Map <span class="rt-pg-note">— ${item.portMap?([].concat(item.portMap)[0].basis||'실제 제품 사진 기준'):'입출력 표 기준'}</span></h2>${portSection}</section>`:''}
           ${diagram?`<section class="rt-pg-card rt-pg-col-mobile-3"><h2><span class="rt-pg-idx">03</span>Signal Flow</h2>${diagram}</section>`:''}
           ${recordSection(item,diagram,photo)}
         </div>

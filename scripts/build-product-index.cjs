@@ -237,13 +237,16 @@ function build(){
   // 분배기(Splitter)를 먼저, 셀렉터(Switcher)를 나중에 보여준다(사용자 요청 2026-09-27 "분배기, 셀렉터 순으로 나오게해줘").
   const DIST_TYPES=['Splitter','Switcher'];
   const distType=product=>{const i=DIST_TYPES.findIndex(type=>(product.categories||[]).includes(type));return i<0?DIST_TYPES.length:i};
+  const byId=Object.fromEntries(products.map(([,product])=>[product.id,product]));
   const list=products.map(([,product])=>product).sort((a,b)=>{
     const groupDiff=order(a)-order(b);
     if(groupDiff)return groupDiff;
     if(a.group==='distribution'&&b.group==='distribution'){
       const typeDiff=distType(a)-distType(b);
       if(typeDiff)return typeDiff;
-      const qa=hdmiOutQty(a),qb=hdmiOutQty(b);
+      // 랙 마운트 프레임(0.121 HD-D102U Rack마운트)은 단자가 없으므로 함께 쓰는 제품의 출력 개수로 정렬해 그 제품 바로 뒤에 보인다.
+      const mountOf=product=>(product.categories||[]).includes('Rack Mount')?byId[((product.related||[]).find(link=>link.relation==='WORKS_WITH')||{}).target]:null;
+      const qa=hdmiOutQty(mountOf(a)||a),qb=hdmiOutQty(mountOf(b)||b);
       if(qa!==null&&qb!==null&&qa!==qb)return qa-qb;
     }
     return a.productName.localeCompare(b.productName,'en');

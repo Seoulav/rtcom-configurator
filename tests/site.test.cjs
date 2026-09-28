@@ -146,7 +146,7 @@ test('public product data (0.19) is valid, brochure-level only and listed in ind
   assert.equal(read('data/products/index.json'),text,'run node scripts/build-product-index.cjs');
   assert.equal(index.schema,'rtcom.products.v1');
   const count=group=>index.products.filter(product=>product.group===group).length;
-  assert.deepEqual({series:count('series'),integrated:count('integrated'),distribution:count('distribution'),extender:count('extender'),cable:count('cable')},{series:3,integrated:2,distribution:7,extender:14,cable:4});
+  assert.deepEqual({series:count('series'),integrated:count('integrated'),distribution:count('distribution'),extender:count('extender'),cable:count('cable')},{series:3,integrated:2,distribution:8,extender:14,cable:4});
   for(const model of EXCLUDED)assert.equal(index.products.some(product=>product.model===model),false,`${model} is excluded like AV Portal`);
   for(const model of ['HD-104U','HD-108U','QMS-44UX','MR-4S'])assert.ok(index.products.some(product=>product.model===model),`missing ${model}`);
   for(const product of index.products)assert.ok(product.cardImage,`${product.id} needs a card image`);
@@ -315,4 +315,15 @@ test('0.112: HD-13U 카탈로그 팝업은 iframe 대신 저장소에 넣은 PDF
   assert.match(products,/new Function\('u','return import\(u\)'\)/,'옛 브라우저가 products.js 전체를 못 읽지 않도록 import()를 감싼다');
   assert.doesNotMatch(products,/<iframe src="\$\{href\}"/,'PDF 팝업은 iframe을 쓰지 않는다');
   assert.match(read('scripts/serve.cjs'),/'\.mjs':'text\/javascript/,'로컬 서버가 .mjs를 자바스크립트로 보낸다');
+});
+
+test('0.121: HD-D102U Rack마운트는 HD-D102U와 서로 관련 제품으로 이어지고, 도면 그림만 공개하며 사용자 도면 PDF는 배포하지 않는다',()=>{
+  const rack=JSON.parse(read('data/products/hd-d102u-rack.json')),base=JSON.parse(read('data/products/hd-d102u.json'));
+  assert.equal(rack.model,'HD-D102U Rack마운트');
+  assert.ok(rack.related.some(link=>link.relation==='WORKS_WITH'&&link.target==='hd-d102u'));
+  assert.ok(base.related.some(link=>link.relation==='WORKS_WITH'&&link.target==='hd-d102u-rack'));
+  for(const image of rack.images)assert.ok(fs.existsSync(`output/design/assets/products/${image.file}`),`${image.file} must exist`);
+  assert.ok(rack.documents.every(doc=>!doc.file),'사용자 제공 도면 PDF는 공개 폴더에 올리지 않는다');
+  const order=JSON.parse(read('data/products/index.json')).products.map(product=>product.id);
+  assert.equal(order.indexOf('hd-d102u-rack'),order.indexOf('hd-d102u')+1,'목록에서 HD-D102U 바로 뒤에 보인다');
 });

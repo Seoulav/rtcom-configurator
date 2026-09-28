@@ -115,6 +115,24 @@
       "cardImage": "hd-d102u-perspective.webp"
     },
     {
+      "id": "hd-d102u-rack",
+      "group": "distribution",
+      "productName": "HD-D102U Rack마운트",
+      "model": "HD-D102U Rack마운트",
+      "itemType": "PRODUCT",
+      "categories": [
+        "영상",
+        "Video",
+        "Splitter",
+        "Rack Mount"
+      ],
+      "english": "19-inch Rack Mount Frame for HD-D102U — holds up to 12 HD-D102U 1x2 HDMI splitters in one rack space.",
+      "korean": "HD-D102U 1x2 HDMI 분배기를 최대 12대까지 장착하는 19인치 랙 마운트 프레임이다.",
+      "catalogPages": null,
+      "packageStatus": "VERIFIED",
+      "cardImage": "hd-d102u-rack-front-art.webp"
+    },
+    {
       "id": "hd-13u",
       "group": "distribution",
       "productName": "HD-13U",

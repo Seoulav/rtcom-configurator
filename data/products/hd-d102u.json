@@ -202,7 +202,13 @@
       "verification": "VERIFIED"
     }
   ],
-  "related": [],
+  "related": [
+    {
+      "relation": "WORKS_WITH",
+      "target": "hd-d102u-rack",
+      "note": "HD-D102U 최대 12대를 19인치 랙에 장착하는 전용 프레임"
+    }
+  ],
   "portMap": {
     "image": "Perspective",
     "items": [
