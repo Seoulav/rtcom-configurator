@@ -57,6 +57,19 @@ function side(){
 function frontDims(){
   return `<g transform="translate(38 4)">${front()}</g>`+dim(38,188,521,188,'483 mm')+dim(30,4,30,181,'177 mm',true)+dim(16,19,16,166,'147 mm',true);
 }
+// 도면 한 장(0.122, 사용자 요청 "해당 페이지에 제품정보에 내가 준 파일을 그래픽화해서 같이 넣어줘"):
+// 사용자 제공 도면 1쪽 배치 그대로 윗면(왼쪽 위) · 정면(왼쪽 아래) · 옆면(오른쪽 아래) · 제목(오른쪽 위)과 치수선 483 · 282 · 177 · 147을 한 그림에 모은다.
+function sheet(){
+  const g=(x,y,body)=>`<g transform="translate(${x} ${y})">${body}</g>`;
+  const label=(x,y,t)=>text(x,y,t,11,'#6b7280','font-weight="700"');
+  let s=label(60,32,'윗면')+g(60,40,top())+dim(45,40,45,322,'282 mm',true)+dim(60,335,543,335,'483 mm');
+  s+=label(60,372,'정면')+g(60,380,front())+dim(45,380,45,557,'177 mm',true)+dim(30,395,30,542,'147 mm',true);
+  s+=label(590,372,'옆면')+g(590,380,side())+dim(590,570,872,570,'282 mm')+dim(890,380,890,557,'177 mm',true);
+  s+=text(872,86,'HD-D102U RACK',30,'#111827','text-anchor="end" font-weight="800" letter-spacing="0.5"');
+  s+=text(872,122,'최대 12개 장착가능',20,'#374151','text-anchor="end" font-weight="700"');
+  s+=text(872,150,'W 483 × D 282 × H 177 mm',13,'#4a6fa5','text-anchor="end" font-weight="700"');
+  return s;
+}
 if(require.main===module){
   process.chdir(path.resolve(__dirname,'../..'));
   const out=name=>`../products/${name}`;
@@ -64,6 +77,7 @@ if(require.main===module){
     {name:out('hd-d102u-rack-front-art'),size:[483,177],body:front,palette:PALETTE},
     {name:out('hd-d102u-rack-top-art'),size:[483,282],body:top,palette:PALETTE},
     {name:out('hd-d102u-rack-side-art'),size:[282,177],body:side,palette:PALETTE},
-    {name:out('hd-d102u-rack-dims-art'),size:[525,202],body:frontDims,palette:PALETTE}
+    {name:out('hd-d102u-rack-dims-art'),size:[525,202],body:frontDims,palette:PALETTE},
+    {name:out('hd-d102u-rack-drawing-art'),size:[905,592],body:sheet,palette:PALETTE}
   ]);
 }
