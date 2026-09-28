@@ -29,6 +29,8 @@
 1. 사용자가 `input_doc/` 맨 위에 파일을 넣습니다.
 2. 세션이 시작되면 hook이 새 파일 목록을 Claude 문맥과 화면 알림에 넣습니다. 사용자 지시에 따라 Claude는 첫 요청을 처리하기 전에 먼저 정리합니다.
 3. `python scripts/input_doc.py scan`으로 추정 결과를 봅니다. 추정 근거는 파일 이름, PDF 제목, 앞 3쪽 글자, 제품 데이터 모델명입니다. 이어서 PDF 쪽과 사진을 직접 확인합니다.
+   - PDF 글자는 pypdf로 읽고, pypdf가 없으면 `pdftotext`(Windows Git Bash에 들어 있는 xpdf판)로 읽습니다. 알티컴 국문 매뉴얼은 한글 글꼴에 글자 정보가 없어 한글이 비어 나올 수 있으므로 표·그림은 쪽 그림으로 확인합니다(2026-09-28 첫 실사용에서 확인).
+   - Windows 콘솔(cp949)에서 출력이 깨지지 않도록 스크립트가 출력을 UTF-8로 고정합니다. 파일 이름의 `_`를 공백으로 바꿔 모델명을 찾습니다(이전에는 `-`로 바꿔 `RTcom_Manual_HD-104U`에서 모델을 못 찾았음).
 4. `python scripts/input_doc.py file … --maker --kind --model [--version] [--suffix]`로 옮깁니다.
    - 새 위치: `input_doc/<제조사>/<manual|catalog|sheet|drawing|photo|other>/<제조사>_<종류>_<모델>[_<판>][_<구분>].<확장자>`
    - RTCOM은 기존 `.source-materials/` 규칙을 따라 파일 이름 앞머리를 `RTcom_`으로 씁니다.
