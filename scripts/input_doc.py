@@ -9,6 +9,10 @@
   python scripts/input_doc.py file "<파일>" --maker RTCOM --kind Manual --model HD-13U [--version Ver1.2] [--note "..."]
       파일을 input_doc/RTCOM/manual/RTcom_Manual_HD-13U_Ver1.2.pdf 로 옮기고 INDEX.md에 한 줄 남긴다.
       같은 이름이 있으면 덮어쓰지 않고 _2, _3을 붙인다. --dry-run이면 옮기지 않고 새 경로만 출력한다.
+      옮긴 자료는 반영 장부(docs/evidence/input-doc-ledger.json)에 "검토 전"으로 올린다.
+  python scripts/input_doc.py mark "<파일>" --status reflected --where src/card-specs.js --what "HOS4-U 사양 등록" --release "PR #68"
+      자료의 반영 상태를 장부에 적는다(published·reflected·same·archived·pending). --where·--what은 반영한 곳을 한 줄 더한다.
+  장부를 바꾸면 input_doc/STATUS.md(파일별 반영 표시)를 scripts/input-doc-status.cjs로 다시 만든다.
 
 추정 결과는 참고용이다. Claude는 PDF 쪽 그림·사진을 직접 보고 최종 판단한다.
 PDF 읽기에는 pypdf를 쓰고, 없으면 pdftotext(Git for Windows·poppler·xpdf)를 쓴다. 둘 다 없으면 파일 이름만으로 추정한다.
@@ -28,7 +32,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 INPUT = Path(os.environ.get("INPUT_DOC_DIR") or ROOT / "input_doc").resolve()
-IGNORED = {"README.md", "INDEX.md", ".gitkeep", ".DS_Store", "Thumbs.db", "desktop.ini"}
+# 반영 장부는 Git에 올라간다. 테스트처럼 다른 input_doc 폴더를 쓸 때는 그 폴더 안의 장부를 써서 저장소 장부를 건드리지 않는다.
+LEDGER = Path(os.environ.get("INPUT_DOC_LEDGER") or (ROOT / "docs" / "evidence" / "input-doc-ledger.json" if INPUT == (ROOT / "input_doc").resolve() else INPUT / ".ledger.json")).resolve()
+STATUSES = ("published", "reflected", "same", "archived", "pending")
+IGNORED = {"README.md", "INDEX.md", "STATUS.md", ".gitkeep", ".DS_Store", "Thumbs.db", "desktop.ini"}
 # 종류별 하위 폴더. 파일 이름의 두 번째 칸에도 이 종류 이름을 그대로 쓴다(기존 .source-materials 규칙과 같음).
 KINDS = {
     "Manual": "manual",
@@ -163,7 +170,7 @@ def scan() -> int:
         print(json.dumps({"inputDoc": str(INPUT), "files": [], "note": "input_doc 폴더 없음"}, ensure_ascii=False, indent=1))
         return 0
     models = known_models()
-    files = [p for p in sorted(INPUT.iterdir()) if p.is_file() and p.name not in IGNORED and not p.name.startswith("~$")]
+    files = [p for p in sorted(INPUT.iterdir()) if p.is_file() and p.name not in IGNORED and not p.name.startswith(("~$", "."))]
     done = archived()
     results = []
     for p in files:
@@ -197,6 +204,60 @@ def target_for(src: Path, maker: str, kind: str, model: str, version: str, suffi
         candidate = folder / f"{base}_{n}{ext}"
         n += 1
     return candidate
+
+
+def load_ledger() -> dict:
+    try:
+        return json.loads(LEDGER.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {"schema": "rtcom.input-doc-ledger.v1", "entries": []}
+
+
+def save_ledger(ledger: dict) -> None:
+    LEDGER.parent.mkdir(parents=True, exist_ok=True)
+    with LEDGER.open("w", encoding="utf-8", newline="\n") as handle:
+        handle.write(json.dumps(ledger, ensure_ascii=False, indent=1) + "\n")
+    refresh_status()
+
+
+def refresh_status() -> None:
+    """input_doc/STATUS.md를 다시 만든다. node가 없으면 다음 세션 시작 때 만들어진다."""
+    node = shutil.which("node")
+    if node:
+        env = {**os.environ, "INPUT_DOC_DIR": str(INPUT), "INPUT_DOC_LEDGER": str(LEDGER)}
+        subprocess.run([node, str(ROOT / "scripts" / "input-doc-status.cjs"), "--status"], env=env, capture_output=True, check=False)
+
+
+def ledger_entry(ledger: dict, digest: str, rel: str) -> dict:
+    for entry in ledger.setdefault("entries", []):
+        if entry.get("sha256") == digest or entry.get("file") == rel:
+            return entry
+    entry = {"sha256": digest, "file": rel, "status": "pending", "reflected": [], "note": "", "date": dt.date.today().isoformat()}
+    ledger["entries"].append(entry)
+    return entry
+
+
+def mark(args: argparse.Namespace) -> int:
+    src = Path(args.path)
+    if not src.is_absolute():
+        src = INPUT / src
+    if not src.is_file():
+        print(f"파일 없음: {args.path}", file=sys.stderr)
+        return 1
+    if args.status not in STATUSES:
+        print(f"--status는 {', '.join(STATUSES)} 중 하나", file=sys.stderr)
+        return 1
+    rel = src.resolve().relative_to(INPUT).as_posix()
+    ledger = load_ledger()
+    entry = ledger_entry(ledger, sha16(src), rel)
+    entry.update({"file": rel, "status": args.status, "date": dt.date.today().isoformat()})
+    if args.where or args.what:
+        entry.setdefault("reflected", []).append({"where": args.where or "", "what": args.what or "", "release": args.release or ""})
+    if args.note is not None:
+        entry["note"] = args.note
+    save_ledger(ledger)
+    print(f"{rel}: {args.status}")
+    return 0
 
 
 def file_one(args: argparse.Namespace) -> int:
@@ -238,6 +299,13 @@ def file_one(args: argparse.Namespace) -> int:
     row = [dt.date.today().isoformat(), original, rel, args.maker.upper(), args.kind, args.model, args.version or "", digest, (args.note or "").replace("|", "/")]
     with index.open("a", encoding="utf-8") as handle:
         handle.write("| " + " | ".join(row) + " |\n")
+    if not duplicate:
+        ledger = load_ledger()
+        entry = ledger_entry(ledger, digest, rel)
+        entry.update({"file": rel, "original": original, "model": args.model, "version": args.version or ""})
+        if args.note and not entry.get("note"):
+            entry["note"] = args.note
+        save_ledger(ledger)
     print(f"{rel}  (중복: {duplicate})" if duplicate else rel)
     return 0
 
@@ -259,8 +327,15 @@ def main() -> int:
     one.add_argument("--suffix", help="사진 면 등 추가 구분(예: Tx-Front)")
     one.add_argument("--note", help="INDEX.md 메모")
     one.add_argument("--dry-run", action="store_true")
+    status = sub.add_parser("mark", help="자료의 반영 상태를 장부에 적음")
+    status.add_argument("path")
+    status.add_argument("--status", required=True, help="|".join(STATUSES))
+    status.add_argument("--where", help="반영한 곳(예: src/card-specs.js)")
+    status.add_argument("--what", help="반영 내용 한 줄")
+    status.add_argument("--release", help="버전·PR(예: 0.84.0, PR #71)")
+    status.add_argument("--note", help="메모(주면 덮어씀)")
     args = parser.parse_args()
-    return scan() if args.command == "scan" else file_one(args)
+    return {"scan": scan, "file": lambda: file_one(args), "mark": lambda: mark(args)}[args.command]()
 
 
 if __name__ == "__main__":

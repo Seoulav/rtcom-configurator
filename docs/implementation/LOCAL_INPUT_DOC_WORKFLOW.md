@@ -15,8 +15,10 @@
 | `.gitignore` | `input_doc/*`(README 제외)와 `.claude/settings.local.json`을 제외합니다 |
 | `.claude/settings.json` | 아래 3가지를 설정합니다 |
 | `.claude/skills/input-doc/SKILL.md` | 로컬 Claude가 따르는 분류·반영 절차입니다 |
-| `scripts/input-doc-status.cjs` | 새 자료 알림입니다. hook용 JSON을 내거나 `--list`로 목록을 보여 줍니다. 파일을 건드리지 않고 항상 exit 0으로 끝납니다 |
-| `scripts/input_doc.py` | `scan`은 자료를 읽어 추정만 합니다. `file`은 규칙 이름으로 옮기고 `INDEX.md`에 기록합니다. 중복 처리와 input_doc 밖 파일 거부도 여기서 합니다 |
+| `scripts/input-doc-status.cjs` | 새 자료 알림입니다. hook용 JSON을 내거나 `--list`로 목록을 보여 줍니다. 실행할 때마다 `input_doc/STATUS.md`(파일별 반영 표시)를 다시 만들며, 자료 파일은 옮기거나 지우지 않고 항상 exit 0으로 끝납니다. `--status`는 STATUS.md만 만들고 요약을 출력합니다 |
+| `scripts/input_doc.py` | `scan`은 자료를 읽어 추정만 합니다. `file`은 규칙 이름으로 옮기고 `INDEX.md`와 반영 장부에 기록합니다. `mark`는 반영 상태를 장부에 적습니다. 중복 처리와 input_doc 밖 파일 거부도 여기서 합니다 |
+| `docs/evidence/input-doc-ledger.json` | **반영 장부**(2026-09-28 사용자 요청 "깃에 자료로서 올라간 내용들은 input_doc에서 알 수 있도록 표시"). 자료별 sha256 앞 16자리·보관 위치·상태·반영한 곳·버전을 적습니다. 자료 내용은 넣지 않으며 Git에 올라가지만 Pages에는 배포하지 않습니다. 다른 PC에서 clone해도 같은 파일(내용 해시가 같으면 이름이 달라도)에 같은 표시가 붙습니다 |
+| `input_doc/STATUS.md` | 장부로 자동 생성하는 로컬 표입니다. 📄 PDF 공개 · ✅ 사이트에 반영 · ⏳ 검토 전 · ☑️ 같은 판 · 🗄️ 보관만 순으로 정렬합니다 |
 | `input_doc/README.md` | 사용자용 안내입니다. Git에 올라가는 유일한 파일입니다 |
 
 `.claude/settings.json`에 넣은 설정은 다음 3가지입니다.

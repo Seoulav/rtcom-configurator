@@ -4,6 +4,8 @@
 
 ## Unreleased
 
+- **input_doc 반영 표시**(사용자 요청 "깃에 자료로서 올라간 내용들은 input_doc에서 알수 있도록 표시가 되면 좋겠다"): Git에 올라가는 반영 장부 `docs/evidence/input-doc-ledger.json`(자료별 해시·상태·반영한 곳·버전, 자료 내용 없음)을 추가하고, `scripts/input-doc-status.cjs`가 세션을 시작할 때마다 `input_doc/STATUS.md`에 파일별 상태(📄 PDF 공개 · ✅ 사이트에 반영 · ⏳ 검토 전 · ☑️ 같은 판 · 🗄️ 보관만)를 만듭니다. `scripts/input_doc.py file`은 장부에 "검토 전"으로 올리고, 새 `mark` 명령으로 반영 결과를 적습니다. 첫 장부는 2026-09-28 정리분 21건(반영 2 · 같은 판 15 · 보관만 4)입니다. 근거: `docs/implementation/LOCAL_INPUT_DOC_WORKFLOW.md`.
+
 - **0.82.0 배포 기록**: `docs/qa/DEPLOYMENT_0.82_2026-09-28.md`(PR #67 → main 병합·배포 run 50, 공개 파일 224/224 일치, 비공개 파일 16개 404, 브랜치 배포 없음)
 
 - **input_doc 첫 정리와 VDM 카드 사양 보완**(사용자 요청 "폴더 안에 자료 들어가 있으니까 점검해서 작업 진행해봐"): `input_doc/`의 매뉴얼 20권과 사양서 캡처 1장을 `input_doc/RTCOM/manual|sheet/`로 규칙 이름을 붙여 옮기고 `INDEX.md`에 기록했습니다. 구성기 카드 정보에서 "상세 사양 준비 중"이던 VDM HOS4-U에 VDM 국문 매뉴얼 KV07 30쪽 사양(포트·커넥터·규격·해상도·오디오·HDCP·무게)을 넣고, CIS4-U·COS4-U·QOS4S-U에 KV07 값(지원 케이블, 최대 전송거리 100m, HDCP, 무게)을 더했습니다. 카드 정보 출처 줄은 카탈로그 쪽과 매뉴얼 쪽을 함께 보여 줍니다. `scripts/input_doc.py`는 Windows에서 출력 인코딩 오류·모델명 인식 실패를 고치고 pypdf가 없을 때 `pdftotext`로 읽습니다. HOS4S-UW 해상도(카탈로그와 매뉴얼 불일치)는 사용자 확인 전까지 바꾸지 않았습니다. 근거: `docs/qa/INPUT_DOC_INTAKE_2026-09-28.md`.

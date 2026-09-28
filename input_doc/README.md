@@ -13,6 +13,8 @@
    - 예: `KakaoTalk_2026.jpg` → `RTCOM/photo/RTcom_Photo_OBUX-1C_Tx-Rear.jpg`
 3. 필요한 곳에 반영합니다: 제품 사진 교체, 매뉴얼 근거 사양 정정 등.
 4. 모든 이동은 `INDEX.md`에 기록합니다. 내용이 같은 파일은 `_duplicates/`로 옮기며, 파일을 지우지 않습니다.
+5. **어떤 자료가 Git·사이트에 반영됐는지는 `STATUS.md`에서 봅니다.** 📄 PDF 공개 · ✅ 사이트에 반영(사양 값 등) · ⏳ 검토 전 · ☑️ 같은 판(이미 반영, 변경 없음) · 🗄️ 보관만. Claude Code 세션을 시작할 때마다 자동으로 새로 만들어집니다(기준 장부: `docs/evidence/input-doc-ledger.json`).
+   - 원본 파일 자체는 Git에 올라가지 않습니다. "사이트에 반영"은 자료에서 읽은 값(사양·EDID 등)을 저장소에 옮겨 적었다는 뜻입니다.
 
 **공개 사이트에 PDF를 올리는 일(제품 상세 "카탈로그 PDF·매뉴얼 PDF" 버튼)은 되돌릴 수 없어서, 올릴 목록을 먼저 보여 주고 확인을 받은 뒤에만 합니다.**
 
@@ -23,6 +25,7 @@ input_doc/
   README.md          ← 이 파일(Git에 올라감)
   (새 자료를 여기에 넣기)
   INDEX.md           ← 분류 기록(로컬)
+  STATUS.md          ← 파일별 반영 표시(로컬, 자동 생성)
   RTCOM/
     manual/  catalog/  sheet/  drawing/  photo/  other/
   _duplicates/       ← 이미 있는 파일과 내용이 같은 자료

@@ -70,6 +70,7 @@ node scripts/e2e-smoke.cjs
 git diff --check
 ```
 
+- **반영 장부 갱신(사용자 요청 2026-09-28)**: 자료마다 반영 결과를 `python scripts/input_doc.py mark "<파일>" --status <상태> [--where <파일> --what "<내용>" --release "<버전·PR>"]`로 적습니다. 상태: `reflected`(값을 저장소에 반영), `published`(PDF 공개), `same`(이미 반영된 판, 변경 없음), `archived`(보관만), `pending`(검토 전, `file`이 자동으로 넣음). 장부 `docs/evidence/input-doc-ledger.json`은 커밋에 포함하고, `input_doc/STATUS.md`는 자동으로 다시 만들어집니다. PR 번호는 PR을 만든 뒤 `--release`로 한 번 더 적습니다.
 - 바꾼 화면은 1280px·390px 스크린샷을 `docs/qa/`에 남기고, QA 문서와 `CHANGELOG.md` Unreleased 한 줄을 씁니다.
 - `CLAUDE.md` Git 정책대로 작업 브랜치에서 커밋·푸시하고 PR(초안)을 만듭니다. 병합·배포는 사용자 승인("배포") 뒤에만 합니다.
 - 보고에는 다음을 적습니다: 원래 이름 → 새 이름·위치 표, 반영한 내용, 반영하지 않은 자료와 이유, 사용자 결정이 필요한 항목, 다음 단계에 알맞은 모델(분류·옮겨 적기 Sonnet, 판단·리뷰 Opus).
