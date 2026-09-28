@@ -927,7 +927,8 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-card-choice-qty{display:flex;justify-content:flex-end;align-items:center;gap:10px;margin:0 12px 12px;padding-top:10px;border-top:1px dashed #e0e7f1;color:#56627a;font-size:12px;font-weight:750}
 #rtcom-design .rt-card-choice-qty .rt-card-qty-stepper button{width:30px;height:30px;font-size:16px}
 #rtcom-design .rt-card-choice-qty .rt-card-qty-stepper output{min-width:30px;font-size:15px}
-#rtcom-design .rt-card-modal-foot [data-action="fill-qty"]{margin-right:auto}
+/* 0.115(사용자 요청 2026-09-28 "하단에 장착을 우측으로 배치하고 델리트키는 왼쪽에 배치해줘"): 슬롯 비우기(Del)는 왼쪽, 장착·닫기는 오른쪽. */
+#rtcom-design .rt-card-modal-foot [data-action="remove"]{margin-right:auto}
 #rtcom-design [data-action="fill-qty"]:disabled{opacity:.45;cursor:default}
 /* 0.70 02 프레임 선택 아래 "함께 보면 좋은 제품" — 사진 카드 한 줄(넘치면 가로 스크롤) */
 #rtcom-design .rt-rel{margin-top:22px}
