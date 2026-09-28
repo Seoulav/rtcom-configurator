@@ -4,6 +4,10 @@
 
 ## Unreleased
 
+## 0.88.0
+
+- **제품 상세 매뉴얼 PDF 버튼 공개**(사용자 결정 2026-09-28 "1번" — input_doc 매뉴얼 전부 공개): 로컬 `input_doc/RTCOM/manual/`의 매뉴얼 17개를 `output/design/assets/docs/<id>-manual.pdf`로 복사하고 16개 제품의 `documents[]`에 등록했습니다. 제품 상세 도구 모음에 "매뉴얼 PDF" 버튼(새 탭 보기·⤓ 내려받기)이 나타납니다. XDM-CT103/CR103은 CT103·CR103 매뉴얼 두 버튼, XDM-CTR100 PSE는 CTR100 매뉴얼 Ver.1.4를 씁니다. 공개하지 않은 자료: HEXA-01·HS-88M-U(사이트 제품 아님), SPX 프로토콜(제어 커맨드), CTR100 Ver.1.3(이전 판). 앞서 정한 "매뉴얼 로컬 보관" 결정을 대체합니다. 근거: `docs/implementation/PRODUCT_DOCUMENT_DOWNLOADS.md`.
+
 ## 0.87.0
 
 - **XDM 전송기 RT컴 고해상도 사진 반영**(사용자 제공 "RT컴에서 받은 사진 자료", 8장): XDM-CTR100·XDM-FT101·XDM-FR101·XDM-CT103의 윗면·뒷면·정면 사진을 2~5배 해상도로 바꾸고(목록 카드 포함), XDM-CTR100·XDM-FT101 단자 지도의 뒷면과 XDM-CT103 앞면을 RT컴 사진으로 다시 합성해 번호를 다시 쟀습니다. XDM-FR101에는 없던 수신기 뒷면 단자 지도(번호 4개)를 추가했습니다. 구성기 04 전송기 썸네일(CTR100·FT101·FR101·CT103)과 FT101 뒷면 카탈로그 사진(515px)도 같은 사진으로 바꿨습니다. XDM-CTR100 PSE 사진은 기존보다 작아 쓰지 않았습니다. 근거: `docs/qa/XDM_RTCOM_PHOTO_QA_2026-09-28.md`.

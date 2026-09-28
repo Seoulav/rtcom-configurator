@@ -71,6 +71,14 @@
       "title": "알티컴 종합 카탈로그 2026 (국문)",
       "language": "ko",
       "note": "17~27쪽"
+    },
+    {
+      "type": "Manual",
+      "status": "FOUND",
+      "title": "VDM 시리즈 국문 사용자 매뉴얼 KV07",
+      "language": "ko",
+      "note": "사용자 제공 매뉴얼 공개본(2026-09-28, 사용자 결정 \"1번\" — 매뉴얼 전부 공개)",
+      "file": "vdm-manual.pdf"
     }
   ],
   "features": [

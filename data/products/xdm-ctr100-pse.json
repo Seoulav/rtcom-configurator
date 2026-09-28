@@ -108,7 +108,8 @@
       "status": "FOUND",
       "title": "XDM-CTR100 사용자 매뉴얼 Ver.1.4",
       "language": "ko",
-      "note": "4쪽 \"XDM-CTR100-PSE 동일 사양\" · 사용자 제공, 배포 제외"
+      "note": "사용자 제공 매뉴얼 공개본(2026-09-28, 사용자 결정 \"1번\" — 매뉴얼 전부 공개)",
+      "file": "xdm-ctr100-pse-manual.pdf"
     }
   ],
   "features": [
