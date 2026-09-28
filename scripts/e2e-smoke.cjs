@@ -422,6 +422,15 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       check(`${id} 제조사 문서 버튼 ${expected}개(새 탭 보기·내려받기, PDF 응답)`,docs.length===expected&&docs.every(doc=>doc.open&&doc.save)&&pdfOk.every(Boolean),JSON.stringify({expected,docs,pdfOk}));
     }
     check('OBUX-1C 송신기 단자 지도가 고해상도 앞뒤 합성 사진에 번호 6개, 수신기 5개(S/P 포함)로 나옴',obuxPm.tx&&obuxPm.rx&&obuxPm.ports.join()==='6,5',JSON.stringify(obuxPm));
+    // 0.95 전체 카탈로그 공유(사용자 결정 2026-09-28 "전체 카탈로그 공개해도 돼"): 제품 상세 카탈로그 버튼은 공용 파일을 제품 쪽(#page=N)에서 열고, 내려받기는 파일 전체. 제품 목록에는 "전체 카탈로그" 버튼 하나.
+    await page.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
+    await page.waitForSelector('.rt-pg-toolbar [data-doc="Catalog"]');
+    const cat=await page.$eval('.rt-pg-toolbar [data-doc="Catalog"]',el=>({open:el.querySelector('.rt-pg-doc-open').getAttribute('href'),save:el.querySelector('.rt-pg-doc-save').getAttribute('href'),text:el.textContent.trim()}));
+    await page.goto(`${home}#products`,{waitUntil:'networkidle'});
+    await page.waitForSelector('.rt-pg-grid');
+    const listCat=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-toolbar .rt-pg-doc')].map(el=>({text:el.textContent.trim(),href:el.querySelector('.rt-pg-doc-open').getAttribute('href')})));
+    const catRes=await page.request.get(new URL(cat.save,home).href);
+    check('HD-13U 카탈로그 버튼이 전체 카탈로그 34쪽으로 열리고 내려받기는 전체 파일(PDF), 제품 목록에 전체 카탈로그 버튼 1개',cat.open==='output/design/assets/docs/rtcom-catalog-2026.pdf#page=34'&&cat.save==='output/design/assets/docs/rtcom-catalog-2026.pdf'&&/34쪽/.test(cat.text)&&catRes.status()===200&&String(catRes.headers()['content-type']).includes('pdf')&&listCat.length===1&&/전체 카탈로그/.test(listCat[0].text)&&listCat[0].href==='output/design/assets/docs/rtcom-catalog-2026.pdf',JSON.stringify({cat,listCat,status:catRes.status()}));
     // 0.64 XDM-FT101/FR101 EDID·오디오 로터리(매뉴얼 Ver.1.3): 0(기본값)·3·8번 대표 설정 그림.
     await page.goto(`${home}#products/xdm-ft101-fr101`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-edid');

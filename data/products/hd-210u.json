@@ -96,7 +96,9 @@
       "status": "FOUND",
       "title": "알티컴 종합 카탈로그 2026 (국문)",
       "language": "ko",
-      "note": "39쪽"
+      "note": "카탈로그 46쪽판 37쪽 · 전체 카탈로그 공개본(2026-09-28 사용자 결정 \"전체 카탈로그 공개해도 돼\")",
+      "file": "rtcom-catalog-2026.pdf",
+      "page": 37
     },
     {
       "type": "Diagram",
@@ -243,7 +245,7 @@
   "related": [],
   "portMap": {
     "image": "Other",
-    "title": "위 앞면, 아래 뒷면",
+    "title": "전면, 뒷면",
     "items": [
       {
         "n": 1,
