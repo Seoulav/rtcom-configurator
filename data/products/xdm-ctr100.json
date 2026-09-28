@@ -213,7 +213,7 @@
       "name": "무게",
       "value": "0.28",
       "unit": "kg",
-      "condition": "0.62lbs",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },

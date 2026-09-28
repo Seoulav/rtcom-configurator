@@ -94,7 +94,7 @@
       "source": "C"
     },
     {
-      "text": "Pull up 저항력: 19.46lbs / 86.59 Newtons / 8.83Kg",
+      "text": "Pull up 저항력: 86.59 Newtons / 8.83Kg",
       "source": "C"
     }
   ],
@@ -176,7 +176,7 @@
       "name": "Pull up 저항력",
       "value": "8.83",
       "unit": "kg",
-      "condition": "19.46lbs / 86.59 Newtons",
+      "condition": "86.59 Newtons",
       "source": "C",
       "verification": "VERIFIED"
     }

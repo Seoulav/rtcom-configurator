@@ -183,7 +183,7 @@
       "name": "크기(W×D×H)",
       "value": "355×85.6×30",
       "unit": "mm",
-      "condition": "14×3.4×1.2in",
+      "condition": "",
       "source": "M-HD210",
       "verification": "VERIFIED"
     },

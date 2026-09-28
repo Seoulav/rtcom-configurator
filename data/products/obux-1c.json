@@ -160,24 +160,6 @@
       "verification": "VERIFIED"
     },
     {
-      "group": "General",
-      "name": "입력단자",
-      "value": "HDMI(female), SC connector(female), Analog Stereo Audio Input",
-      "unit": "",
-      "condition": "",
-      "source": "C",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "General",
-      "name": "출력단자",
-      "value": "HDMI(female), SC connector(female), Analog Stereo Audio Output",
-      "unit": "",
-      "condition": "",
-      "source": "J",
-      "verification": "VERIFIED"
-    },
-    {
       "group": "Power",
       "name": "전원",
       "value": "DC 12V 1.0A",
@@ -191,7 +173,7 @@
       "name": "크기(W×D×H)",
       "value": "120×73.8×30",
       "unit": "mm",
-      "condition": "4.72in×2.91in×1.18in",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -200,7 +182,7 @@
       "name": "무게",
       "value": "0.28",
       "unit": "kg",
-      "condition": "0.61lbs",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     }
