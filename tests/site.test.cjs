@@ -355,3 +355,11 @@ test('0.125: 제품정보 목록은 XDM이 맨 앞이고, 매트릭스 시리즈
   const ids=JSON.parse(read('data/products/index.json')).products.map(product=>product.id);
   assert.deepEqual(ids.slice(0,3),['xdm','spx','vdm']);
 });
+
+test('0.126: 01 제품군 미리보기에 프레임 선택 버튼이 있고 파란 버튼의 → 화살표가 버튼 글자색으로 보인다',()=>{
+  // 사용자 요청 2026-09-28 "이것도 버튼 위로 배치하고 오른쪽 화살표도 보이게"
+  const app=read('src/app.js'),css=read('src/styles.css');
+  assert.match(app,/const familyNext=`<button type="button" class="rt-button rt-primary rt-cg-preview-next" data-action="preview-next">/);
+  assert.match(app,/rt-cg-chips">\$\{pf\.tags\.map\(t=>`<em>\$\{esc\(t\)\}<\/em>`\)\.join\(''\)\}<\/div>\$\{familyNext\}/,'버튼은 태그 줄 바로 아래에 둔다');
+  assert.match(css,/\.rt-button\.rt-primary \.rt-arrow\{color:currentColor/,'화살표는 버튼 글자색을 쓴다(강조색 파랑은 파란 버튼에 묻힘)');
+});

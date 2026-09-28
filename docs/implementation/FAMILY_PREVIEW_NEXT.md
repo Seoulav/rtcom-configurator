@@ -1,0 +1,22 @@
+# 01 제품군 "프레임 선택" 버튼과 → 화살표 (0.126.0)
+
+## 요청 (2026-09-28)
+
+- "이것도 버튼 위로 배치하고 오른쪽 화살표도 보이게" (빨간 표시가 있는 화면 캡처 첨부)
+- 캡처 해석: 01 제품군 화면에서 오른쪽 미리보기 아래쪽이 비어 있고, "프레임 선택" 버튼은 맨 아래 바에 멀리 떨어져 있습니다. 02 프레임 선택에서 0.114에 미리보기 안으로 "다음" 버튼을 옮긴 것과 같은 요청("이것도")으로 보고, 캡처에서 원으로 표시한 버튼의 → 화살표가 안 보이는 점도 함께 고쳤습니다.
+
+## 구현
+
+- `src/app.js` `familyView()`: 미리보기 태그 줄(`.rt-cg-chips`) 바로 아래에 `button.rt-primary.rt-cg-preview-next[data-action="preview-next"]`("프레임 선택 →")를 추가했습니다. 02와 같은 동작 이름 `preview-next`를 쓰므로 클릭 처리기는 바꾸지 않았습니다. 아래 바의 `data-action="next"` 버튼은 그대로라서 기존 자동 점검(`page.click('[data-action="next"]')`)에 영향이 없습니다.
+- `src/styles.css`(파일 끝): 원인은 `.rt-arrow{color:var(--rt-accent)}`였습니다. 강조색(파랑 #3978ee)이 파란 그라데이션 버튼 배경과 같아 화살표가 보이지 않았습니다. `.rt-button.rt-primary .rt-arrow{color:currentColor;font-size:20px;font-weight:700}`로 버튼 글자색(흰색)을 쓰게 했습니다. 미리보기 안 버튼은 글자·화살표를 가운데 정렬합니다.
+- 휴대폰(820px 이하)은 미리보기가 목록 위로 올라오므로 버튼도 위쪽(사진·태그 아래)에 보입니다.
+
+## 검증
+
+- `node --test tests/*.test.cjs` 50/50, `build-product-index --check`, `package-site`, `e2e-smoke` 170/170, `git diff --check`.
+- e2e: 01 미리보기 버튼이 태그 줄 아래에 있고, 두 버튼의 → 색이 `rgb(255, 255, 255)`이며, 미리보기 버튼이 02 프레임 선택으로 이동하는지 확인합니다.
+- 화면 캡처: `docs/qa/family-preview-next-screens/`(데스크톱 1100px, 휴대폰 390px).
+
+## 되돌리는 방법
+
+- 이 변경을 `git revert` 합니다. 데이터·저장 형식(`rtcom.configuration.v1`, JSON schema 3, `catalogVersion`)은 바뀌지 않았습니다.

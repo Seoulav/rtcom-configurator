@@ -55,6 +55,13 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.goto(home,{waitUntil:'networkidle'});
     check('첫 화면에 구성기가 표시됨',await page.locator('#matrix-configurator h1').isVisible());
     await page.click('button[data-family="XDM"]');
+    // 0.126 01 제품군 미리보기의 "프레임 선택" 버튼(사용자 요청 2026-09-28 "이것도 버튼 위로 배치하고 오른쪽 화살표도 보이게"): 태그 줄 아래에 있고,
+    // → 화살표가 버튼 글자색(흰색)으로 보이며(예전에는 강조색 파랑이라 파란 버튼에 묻힘), 아래 바 버튼의 화살표도 같다. 누르면 02 프레임 선택으로 넘어간다.
+    const familyNext=await page.evaluate(()=>{const button=document.querySelector('.rt-cg-preview [data-action="preview-next"]'),chips=document.querySelector('.rt-cg-preview .rt-cg-chips'),foot=document.querySelector('.rt-footer [data-action="next"] .rt-arrow');if(!button||!chips||!foot)return null;const arrow=button.querySelector('.rt-arrow'),color=el=>getComputedStyle(el).color;return {below:button.getBoundingClientRect().top>=chips.getBoundingClientRect().bottom-1,text:button.textContent.trim(),panelArrow:color(arrow),footArrow:color(foot),buttonInk:color(button),footArrowText:foot.textContent}});
+    await page.click('.rt-cg-preview [data-action="preview-next"]');
+    await page.waitForSelector('button[data-model]');
+    check('01 제품군 미리보기 태그 줄 아래 "프레임 선택" 버튼이 02로 이동하고, 두 버튼의 → 화살표가 흰색으로 보임',!!familyNext&&familyNext.below&&familyNext.text.startsWith('프레임 선택')&&familyNext.panelArrow==='rgb(255, 255, 255)'&&familyNext.footArrow==='rgb(255, 255, 255)'&&familyNext.footArrow===familyNext.buttonInk&&familyNext.footArrowText==='→'&&(await page.locator('.rt-main .rt-eyebrow').first().textContent()).includes('02 / 프레임 선택'),JSON.stringify(familyNext));
+    await page.click('[data-action="back"]');
     await page.click('[data-action="next"]');
     check('프레임 선택 화면에 XDM 프레임 6종 표시(XDM-288 제외)',await page.locator('button[data-model]').count()===6);
     await page.click('button[data-model="XDM-144"]');await acceptConfirm();
