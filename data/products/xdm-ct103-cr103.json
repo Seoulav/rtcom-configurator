@@ -213,10 +213,10 @@
     {
       "group": "Transmission",
       "name": "권장 케이블",
-      "value": "CAT6a, CAT7",
+      "value": "CAT6A S/FTP 이상(UTP 사용 불가)",
       "unit": "",
       "condition": "",
-      "source": "C",
+      "source": "U2",
       "verification": "VERIFIED"
     },
     {
@@ -404,7 +404,7 @@
     {
       "image": "Other",
       "file": "xdm-ct103-front-rear.webp",
-      "title": "송신기 XDM-CT103 · 왼쪽 앞면, 오른쪽 뒷면",
+      "title": "송신기 XDM-CT103 · 왼쪽 앞면 / 오른쪽 뒷면",
       "displayWidth": 520,
       "items": [
         {
@@ -465,7 +465,7 @@
     {
       "image": "Other",
       "file": "xdm-cr103-manual.webp",
-      "title": "수신기 XDM-CR103 · 왼쪽 앞면, 오른쪽 뒷면",
+      "title": "수신기 XDM-CR103 · 왼쪽 앞면 / 오른쪽 뒷면",
       "displayWidth": 520,
       "items": [
         {
@@ -551,6 +551,12 @@
       "name": "서울영상테크 SI사업본부 확인",
       "page": "",
       "scope": "사용자 확인(2026-09-27) — XDM-CTR100 PSE와 연결하면 XDM-CT103에 전원을 연결하지 않아도 됨, XDM-CR103도 동일"
+    },
+    {
+      "code": "U2",
+      "name": "서울영상테크 SI사업본부 확인",
+      "page": "",
+      "scope": "사용자 확인(2026-09-28) — HDBaseT 3.0 4K60 100m 전송 안정성을 위해 권장 케이블을 CAT6A S/FTP(차폐) 이상으로 정정, UTP(비차폐)는 사용하지 않음. XDM-CTR100·XDM-CTR100 PSE와 동등 사양"
     },
     {
       "code": "M2",
