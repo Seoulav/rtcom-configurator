@@ -175,21 +175,26 @@
       if(!slot)return '';
       const installed=state.placements[slot.id];
       const tips=slot.dir==='output'&&state.family==='XDM'?'<div class="rt-output-tips"><div class="rt-pro-tip rt-quad-tip"><span>4분할</span><div><strong>XDM-HOS100 · 쿼드 뷰(4분할)</strong><p>일반 HDMI 4채널 출력 또는 정사분할 화면 구성에 활용할 수 있습니다.</p></div></div><div class="rt-pro-tip"><span>활용 TIP</span><div><strong>XDM-WOS100 · 4레이어</strong><p>4개 레이어를 조합해 월 프로세서처럼 화면을 연출할 수 있습니다.</p></div></div></div>':'';
+      const dirWord=slot.dir==='input'?'입력':'출력';
+      // 0.94 수량 UI가 사라지는 버그 수정(사용자 지적 "입력카드 다시 조정하려고 누르면 수량이 안보이고 장착됨이 보임", "출력카드는 수량선택이 안되는 버그"):
+      // 같은 방향 슬롯이 이미 다 채워지면 fillTargets가 채울 수 있는 칸(qtyMax)을 1로 돌려주는데, 그 값 하나로 "카드별 수량" UI 노출 여부까지 정했다.
+      // 그래서 프레임을 다 채운 뒤 슬롯을 다시 열면(=늘 qtyMax 1) 입력·출력 가리지 않고 수량 UI가 통째로 사라졌다. 노출 여부는 이 슬롯 방향의 전체 슬롯 수(sameDirTotal)로 판단하고,
+      // qtyMax는 그대로 두어(다른 슬롯에 이미 있는 카드를 덮어쓰지 않음) 실제 채울 수 있는 칸 수를 제한하는 데만 쓴다.
+      const others=currentSlots().filter(item=>item.dir===slot.dir&&item.id!==slot.id);
+      const sameDirTotal=others.length+1;
+      const qtyMax=RtCore.fillTargets(state,slot.id,999).length;
       const choiceButton=c=>`<button type="button" class="rt-card-choice" data-card="${c[0]}" aria-pressed="${installed===c[0]}"><span class="rt-card-choice-plate"><img src="${cardAsset(c[0])}" alt="${c[0]} 카드 후면 판넬"></span><span class="rt-card-choice-copy"><strong>${c[0]}${cardBadge(c[0])}</strong><small>${esc(c[1])} · ${c[2]}채널</small><span>${esc(cardTip(c[0]))}</span></span><span class="rt-card-choice-state" aria-hidden="true">${installed===c[0]?'장착됨':'선택'}</span></button>`;
       // 0.70 카드별 수량: 카드 버튼 아래에 −/+ 수량 칸을 둔다(버튼 안에 버튼을 넣지 않도록 형제로 둔다). 합계는 채울 수 있는 칸 수(qtyMax)를 넘지 않는다.
-      const cardQty=c=>{const n=modalQtys[c[0]]||0,full=qtySum()>=qtyMax;return qtyMax>1?`<div class="rt-card-choice-qty"><span>${esc(c[0])} 수량</span><div class="rt-card-qty-stepper"><button type="button" data-card-qty-step="-1" data-qty-card="${c[0]}" aria-label="${c[0]} 수량 줄이기" ${n<=0?'disabled':''}>−</button><output data-qty-out="${c[0]}" aria-live="polite">${n}</output><button type="button" data-card-qty-step="1" data-qty-card="${c[0]}" aria-label="${c[0]} 수량 늘리기" ${full?'disabled':''}>+</button></div></div>`:''};
+      const cardQty=c=>{const n=modalQtys[c[0]]||0,full=qtySum()>=qtyMax;return sameDirTotal>1?`<div class="rt-card-choice-qty"><span>${esc(c[0])} 수량</span><div class="rt-card-qty-stepper"><button type="button" data-card-qty-step="-1" data-qty-card="${c[0]}" aria-label="${c[0]} 수량 줄이기" ${n<=0?'disabled':''}>−</button><output data-qty-out="${c[0]}" aria-live="polite">${n}</output><button type="button" data-card-qty-step="1" data-qty-card="${c[0]}" aria-label="${c[0]} 수량 늘리기" ${full?'disabled':''}>+</button></div></div>`:''};
       // 0.79 상세 보기(사용자 요청 2026-09-28 "카드 선택창에도 상세보기 추가해"): 장착 버튼과 형제로 두어 누르면 카드 사양 창(openCardInfo)이 선택창 위에 뜬다.
       const choice=c=>`<div class="rt-card-choice-item">${choiceButton(c)}<div class="rt-card-choice-foot"><button type="button" class="rt-card-choice-info" data-card-info="${c[0]}" aria-label="${c[0]} 카드 상세 보기">상세 보기</button>${cardQty(c)}</div></div>`;
       const list=families[state.family][slot.dir];
       // 2-4: 팝업 맨 위에 블랭크 커버(커넥터 없음 · 0포트)를 두고, 그 아래 구분 제목 뒤에 실제 카드 목록이 온다.
       const blankChoice=`<button type="button" class="rt-card-choice rt-card-choice-blank" data-card="BLANK" aria-pressed="${installed==='BLANK'}"><span class="rt-card-choice-copy"><strong>블랭크 커버</strong><small>커넥터 없음 · 빈 슬롯 마감</small><span>카드를 더 넣지 않을 슬롯을 막아 구성을 완성합니다.</span></span><span class="rt-card-choice-state rt-card-choice-zero" aria-hidden="true">0포트</span></button>`;
       // 0.55 수량: 선택한 슬롯부터 같은 방향 빈 슬롯까지 몇 칸을 한 번에 채울지 고른다(최대 = 채울 수 있는 칸 수).
-      const qtyMax=RtCore.fillTargets(state,slot.id,999).length;
-      const dirWord=slot.dir==='input'?'입력':'출력';
-      const qtyBar=qtyMax>1?`<div class="rt-card-qty" data-qty-max="${qtyMax}"><span class="rt-card-qty-label">카드별 수량</span><small>카드마다 수량을 넣고 ‘순서대로 장착’을 누르면 ${esc(slot.label)}부터 빈 ${dirWord} 슬롯에 목록 순서대로 들어갑니다 · 최대 ${qtyMax}칸</small></div>`:'';
-      const fillQtyButton=qtyMax>1?`<button type="button" class="rt-button rt-primary" data-action="fill-qty" ${qtySum()?'':'disabled'}><span data-qty-total>순서대로 장착 · ${qtySum()}장</span></button>`:'';
+      const qtyBar=sameDirTotal>1?`<div class="rt-card-qty" data-qty-max="${qtyMax}"><span class="rt-card-qty-label">카드별 수량</span><small>카드마다 수량을 넣고 ‘순서대로 장착’을 누르면 ${esc(slot.label)}부터 빈 ${dirWord} 슬롯에 목록 순서대로 들어갑니다 · 최대 ${qtyMax}칸</small></div>`:'';
+      const fillQtyButton=sameDirTotal>1?`<button type="button" class="rt-button rt-primary" data-action="fill-qty" ${qtySum()?'':'disabled'}><span data-qty-total>순서대로 장착 · ${qtySum()}장</span></button>`:'';
       // 0.55 이동: 장착한 카드(블랭크 포함)는 같은 방향 슬롯으로만 옮긴다. 옮길 곳에 카드가 있으면 서로 맞바꾼다.
-      const others=currentSlots().filter(item=>item.dir===slot.dir&&item.id!==slot.id);
       const moveBar=installed&&others.length?`<div class="rt-card-move"><label for="rt-card-move-target">다른 ${dirWord} 슬롯으로 이동</label><div><select id="rt-card-move-target" data-move-target>${others.map(item=>{const v=state.placements[item.id];return `<option value="${item.id}">${esc(item.label)} · ${v==='BLANK'?'블랭크 (서로 바꿈)':v?`${esc(v)} (서로 바꿈)`:'비어 있음'}</option>`}).join('')}</select><button type="button" class="rt-button" data-action="move-card">이동</button></div></div>`:'';
       const sep=`<p class="rt-card-choice-sep">${slot.dir==='input'?'입력':'출력'} 카드 ${list.length}종 · ${list[0]?.[2]||4}채널</p>`;
       return `<dialog class="rt-card-modal" aria-labelledby="rt-card-modal-title"><div class="rt-card-modal-head"><div><span class="rt-eyebrow">${slot.dir==='input'?'입력':'출력'} 카드 · ${esc(state.model)}</span><h3 id="rt-card-modal-title">${esc(slot.label)} 카드 선택</h3></div><button type="button" class="rt-card-modal-close" data-modal-close aria-label="카드 선택 닫기">×</button></div>${tips}${qtyBar}${moveBar}<div class="rt-card-choice-list">${blankChoice}${sep}${list.map(choice).join('')}</div><div class="rt-card-modal-foot">${fillQtyButton}<button type="button" class="rt-button rt-quiet" data-action="remove" ${installed?'':'disabled'} title="키보드 Delete 키로도 비울 수 있습니다">슬롯 비우기 <kbd class="rt-kbd">Del</kbd></button><button type="button" class="rt-button" data-modal-close>닫기</button></div></dialog>`;
