@@ -335,8 +335,20 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     for(const [id,pins,front] of [['hd-13u',7,['MODE','SET']],['hd-104u',4,['EDID']],['hd-108u',4,['EDID']],['hd-210u',6,['EDID','MODE']],['xdm-ft101-fr101',6,['MODE','S/P']]]){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
       await page.waitForSelector('.rt-pg-panel svg');
-      const dm=await page.evaluate(()=>({faces:document.querySelectorAll('.rt-pg-face').length,toggle:document.querySelectorAll('[data-pm-side]').length,pins:[...document.querySelectorAll('.rt-pg-port b')].map(b=>b.textContent.trim().replace(/^\d+/,''))}));
+      // 첫 번째 단자 지도(송신기·단일 제품)의 번호만 센다. 2026-09-28부터 XDM-FT101/FR101은 수신기 뒷면 지도가 따로 이어진다.
+      const dm=await page.evaluate(()=>({faces:document.querySelectorAll('.rt-pg-face').length,toggle:document.querySelectorAll('[data-pm-side]').length,pins:[...(document.querySelector('.rt-pg-ports')?.querySelectorAll('.rt-pg-port b')||[])].map(b=>b.textContent.trim().replace(/^\d+/,''))}));
       check(`${id} 단자 지도가 앞면·뒷면 합성 사진 한 장에 ${pins}개 번호(정면 ${front.join('·')} 포함, 전원 마지막)로 나옴`,dm.faces===0&&dm.toggle===0&&dm.pins.length===pins&&front.every(label=>dm.pins.includes(label))&&/^DC/.test(dm.pins[pins-1]),JSON.stringify(dm));
+    }
+    // 2026-09-28 RT컴 제공 고해상도 실물 사진: XDM-FR101 수신기 뒷면 단자 지도(번호 4개, 전원 마지막)와 XDM-CTR100·XDM-CT103 합성 사진.
+    await page.goto(`${home}#products/xdm-ft101-fr101`,{waitUntil:'networkidle'});
+    await page.waitForSelector('.rt-pg-ports');
+    const frMap=await page.evaluate(()=>{const groups=[...document.querySelectorAll('.rt-pg-ports')];const rx=groups[1];return {maps:groups.length,pins:rx?[...rx.querySelectorAll('.rt-pg-port b')].map(b=>b.textContent.trim().replace(/^\d+/,'')):[],img:document.querySelector('.rt-pg-panel')?.closest('section')?.innerHTML.includes('xdm-fr101-rear.webp')}});
+    check('XDM-FR101 수신기 뒷면 단자 지도가 번호 4개(HDMI OUT → 오디오 → 광 → DC IN)로 나옴',frMap.maps===2&&frMap.pins.join('|')==='HDMI OUT|AUDIO · RS-232|FIBER IN|DC IN'&&frMap.img,JSON.stringify(frMap));
+    for(const [id,file] of [['xdm-ctr100','xdm-ctr100-rear.webp'],['xdm-ct103-cr103','xdm-ct103-front-rear.webp']]){
+      await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
+      await page.waitForSelector('.rt-pg-ports');
+      const ok=await page.evaluate(f=>{const s=[...document.querySelectorAll('section')].find(s=>/Port Map/.test(s.querySelector('h2')?.textContent||''));return !!s&&s.innerHTML.includes(f)&&[...s.querySelectorAll('img,image')].every(i=>i.tagName!=='IMG'||i.naturalWidth>0)},file);
+      check(`${id} 단자 지도가 RT컴 고해상도 사진 합성본(${file})으로 나옴`,ok);
     }
     // 0.55: 2U 미만(MR-4S)은 정면·후면 버튼 없이 정면 사진과 포트 연결면을 함께 보여준다(0.68부터 FT101은 합성 사진이라 MR-4S로 확인).
     await page.goto(`${home}#products/mr-4s`,{waitUntil:'networkidle'});

@@ -49,13 +49,25 @@
       "role": "Front",
       "file": "xdm-ct103-front.webp",
       "alt": "RTCOM XDM-CT103 벽부형 송신기 정면(흰 배경 실물 사진)",
-      "note": "Front · 사용자 제공 실물 사진(2026-09-28)",
+      "note": "Front · RT컴 제공 고해상도 실물 사진(2026-09-28), 앞면",
       "provider": "RTCOM",
       "model": "XDM-CT103",
       "source": "P1",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "342×747"
+      "resolution": "823×1817"
+    },
+    {
+      "role": "Other",
+      "file": "xdm-ct103-front-rear.webp",
+      "alt": "RTCOM XDM-CT103 앞면(왼쪽)·뒷면(오른쪽) 합성 사진",
+      "note": "Other · 왼쪽 앞면(RT컴 제공 고해상도 실물 사진(2026-09-28)) · 오른쪽 뒷면(매뉴얼 Ver.1.4 5쪽 사진) 합성(송신기 단자 지도용)",
+      "provider": "RTCOM",
+      "model": "XDM-CT103",
+      "source": "P1",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "832×900"
     }
   ],
   "imageStatuses": [
@@ -385,7 +397,8 @@
   ],
   "portMap": [
     {
-      "image": "Main",
+      "image": "Other",
+      "file": "xdm-ct103-front-rear.webp",
       "title": "송신기 XDM-CT103 · 왼쪽 앞면, 오른쪽 뒷면",
       "displayWidth": 520,
       "items": [
@@ -393,59 +406,60 @@
           "n": 1,
           "label": "HDMI IN",
           "desc": "소스 연결(HDMI 2.0, 4K 60Hz 4:4:4)",
-          "x1": 132,
-          "x2": 162,
+          "x1": 250,
+          "x2": 306,
           "side": "top",
-          "y": 166
+          "y": 318
         },
         {
           "n": 2,
           "label": "AUDIO IN",
           "desc": "3핀(L·접지·R) · 딥 스위치 1번 ON이면 HDMI에 병합",
           "side": "left",
-          "x": 40,
-          "y1": 220,
-          "y2": 276
+          "x": 80,
+          "y1": 410,
+          "y2": 512
         },
         {
           "n": 4,
           "label": "Signal · Link LED",
           "desc": "정상으로 연결되면 켜짐",
           "side": "left",
-          "x": 40,
-          "y1": 168,
-          "y2": 212
+          "x": 80,
+          "y1": 320,
+          "y2": 396
         },
         {
           "n": 3,
           "label": "HDBaseT OUT",
           "desc": "RJ45 · XDM-CIS100, XDM-CTR100(RX 모드), XDM-CR103과 CAT6a U/FTP로 연결",
           "side": "right",
-          "y1": 100,
-          "y2": 298
+          "y1": 172,
+          "y2": 550
         },
         {
           "n": 6,
           "label": "DC IN",
           "desc": "DC 12V 1A 이상 · XDM-CIS100이나 XDM-CTR100 PSE와 쓰면 연결하지 않음",
-          "x1": 315,
-          "x2": 352,
+          "x1": 555,
+          "x2": 637,
           "side": "bottom",
-          "y": 348
+          "y": 645
         },
         {
           "n": 5,
           "label": "Mode 딥 스위치",
           "desc": "1번 오디오 병합 · 2번 Long Reach(1080p 150m)",
           "side": "left",
-          "x": 40,
-          "y1": 288,
-          "y2": 322
+          "x": 80,
+          "y1": 530,
+          "y2": 600
         }
       ]
     },
     {
       "image": "Other",
+      "file": "xdm-cr103-manual.webp",
       "title": "수신기 XDM-CR103 · 왼쪽 앞면, 오른쪽 뒷면",
       "displayWidth": 520,
       "items": [
