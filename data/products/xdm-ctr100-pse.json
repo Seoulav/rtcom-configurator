@@ -233,15 +233,6 @@
       "condition": "PSE에 전원을 연결하고, PSE와 연결된 XDM-CTR100·XDM-CT103·XDM-CR103에는 연결하지 않음",
       "source": "S1",
       "verification": "VERIFIED"
-    },
-    {
-      "group": "General",
-      "name": "인증",
-      "value": "KC 인증",
-      "unit": "",
-      "condition": "",
-      "source": "S1",
-      "verification": "VERIFIED"
     }
   ],
   "io": [

@@ -56,12 +56,12 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('첫 화면에 구성기가 표시됨',await page.locator('#matrix-configurator h1').isVisible());
     await page.click('button[data-family="XDM"]');
     await page.click('[data-action="next"]');
-    check('섀시 선택 화면에 XDM 프레임 6종 표시(XDM-288 제외)',await page.locator('button[data-model]').count()===6);
+    check('프레임 선택 화면에 XDM 프레임 6종 표시(XDM-288 제외)',await page.locator('button[data-model]').count()===6);
     await page.click('button[data-model="XDM-144"]');await acceptConfirm();
     await page.click('[data-action="next"]');
     await page.waitForLoadState('networkidle');
-    // 사용자 결정 2026-09-27: 빈 슬롯은 흰 빈칸이다. 블랭크 커버 그림은 사용자가 팝업에서 고른 슬롯에만 붙는다(자동으로 씌우지 않는다).
-    check('빈 슬롯 72개는 흰 빈칸으로 표시되고 블랭크 커버는 하나도 자동으로 씌워지지 않음',await page.locator('.rt-rack-slot-empty').count()===72&&await page.locator('.rt-rack-slot-blank').count()===0);
+    // 사용자 결정 2026-09-27: 빈 슬롯은 빈 슬롯이다. 블랭크 커버 그림은 사용자가 팝업에서 고른 슬롯에만 붙는다(자동으로 씌우지 않는다).
+    check('빈 슬롯 72개는 빈 슬롯으로 표시되고 블랭크 커버는 하나도 자동으로 씌워지지 않음',await page.locator('.rt-rack-slot-empty').count()===72&&await page.locator('.rt-rack-slot-blank').count()===0);
     check('빈칸이 있으면 03 단계 다음 버튼은 "빈칸 N개 남음"으로 표시됨',(await page.locator('[data-action="next"] span').first().textContent())==='빈칸 72개 남음 · 그래도 다음');
     await page.locator('button[data-slot="in-1"]').click();
     check('빈 슬롯을 누르면 카드 선택 팝업이 열리고 파란 테두리로 선택 중 표시됨',await page.locator('.rt-card-modal[open]').isVisible()&&await page.locator('button[data-slot="in-1"].rt-rack-slot-selecting').count()===1);
@@ -129,7 +129,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.click('button[data-model="SPX-M3236"]');await acceptConfirm();
     await page.click('[data-action="next"]');
     await page.waitForLoadState('networkidle');
-    check('SPX-M3236은 입력 4·출력 3 슬롯이 모두 흰 빈칸으로 표시됨(블랭크 자동 없음)',await page.locator('.rt-rack-hs .rt-rack-slot-empty').count()===7&&await page.locator('.rt-rack-hs .rt-rack-slot-blank').count()===0);
+    check('SPX-M3236은 입력 4·출력 3 슬롯이 모두 빈 슬롯으로 표시됨(블랭크 자동 없음)',await page.locator('.rt-rack-hs .rt-rack-slot-empty').count()===7&&await page.locator('.rt-rack-hs .rt-rack-slot-blank').count()===0);
     // 사진이 다 받아지기 전에 위치를 재면 높이가 0이라 가끔 실패했다(0.64 확인, 재실행 3회 모두 통과). 사진 로드를 최대 5초 기다린 뒤 잰다.
     await page.waitForFunction(()=>document.querySelector('.rt-rack-photo-image')?.naturalWidth>0,null,{timeout:5000}).catch(()=>{});
     check('사진 슬롯 영역은 사진 높이 기준으로 배치됨(출력 영역 아래 끝 = 사진 677/772 지점)',await page.evaluate(()=>{const image=document.querySelector('.rt-rack-photo-image').getBoundingClientRect(),zone=document.querySelector('.rt-rack-zone-output').getBoundingClientRect();return Math.abs((zone.bottom-image.top)/image.height-677/772)<0.005}));
@@ -192,13 +192,13 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.click('button[data-model="XDM-36"]');await acceptConfirm();
     await page.click('[data-action="next"]');
     await page.locator('button[data-slot="in-1"]').click();
-    await page.locator('.rt-card-qty [data-qty-step="1"]').click();
-    await page.locator('.rt-card-qty [data-qty-step="1"]').click();
-    const qtyShown=await page.locator('.rt-card-qty output').textContent();
-    await page.locator('.rt-card-modal .rt-card-choice[data-card="XDM-HI100"]').click();
+    // 0.70 카드별 수량(사용자 요청 "카드마다 수량 기입해서 순차적으로"): HI100 수량 3을 넣고 "순서대로 장착"을 누르면 선택한 슬롯부터 3칸이 채워진다.
+    for(let i=0;i<3;i++)await page.locator('.rt-card-modal [data-card-qty-step="1"][data-qty-card="XDM-HI100"]').click();
+    const qtyShown=await page.locator('.rt-card-modal [data-qty-out="XDM-HI100"]').textContent();
+    await page.locator('.rt-card-modal [data-action="fill-qty"]').click();
     const saved=()=>page.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.placements);
     let moveState=await saved();
-    check('카드 팝업에서 수량 3을 고르면 선택한 슬롯부터 입력 슬롯 3칸이 채워짐',qtyShown==='3'&&moveState['in-1']==='XDM-HI100'&&moveState['in-2']==='XDM-HI100'&&moveState['in-3']==='XDM-HI100'&&!moveState['in-4'],JSON.stringify(moveState));
+    check('카드 팝업에서 XDM-HI100 수량 3을 넣고 순서대로 장착하면 선택한 슬롯부터 입력 슬롯 3칸이 채워짐',qtyShown==='3'&&moveState['in-1']==='XDM-HI100'&&moveState['in-2']==='XDM-HI100'&&moveState['in-3']==='XDM-HI100'&&!moveState['in-4'],JSON.stringify(moveState));
     // 0.55: XDM 세로 슬롯 카드 글자가 바로 읽히도록 90도(기존 -90도에서 180도) 회전, 작업 단계 표기는 한글.
     const xdmFace=await page.evaluate(()=>{const img=document.querySelector('button[data-slot="in-1"] img.rt-faceplate');const m=new DOMMatrix(getComputedStyle(img).transform);return {b:Math.round(m.b),eyebrow:document.querySelector('.rt-main .rt-eyebrow')?.textContent||'',bank:document.querySelector('.rt-rack-bank-title strong, .rt-frame-count')?.textContent||''}});
     check('XDM 세로 슬롯 카드는 90도로 돌아가 글자가 바로 보이고, 단계 제목·입출력 표기가 한글',xdmFace.b===1&&xdmFace.eyebrow.includes('03 / 카드 슬롯')&&!/INPUT|OUTPUT/.test(xdmFace.bank),JSON.stringify(xdmFace));
@@ -227,8 +227,8 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.goto(home,{waitUntil:'networkidle'});
     await page.click('button[data-family="SPX"]');
     await page.click('[data-action="next"]');
-    // 02 섀시(2-2, Analog Way 구조): 목록 행에는 사진이 없고, 고른 모델의 전면 사진이 오른쪽 고정 미리보기에 표시된다.
-    check('SPX 섀시 5종 목록에 모두 사진 없이 이름·사양 행으로 표시됨',await page.locator('button[data-model]').count()===5&&await page.locator('button[data-model] img').count()===0);
+    // 02 프레임(2-2, Analog Way 구조): 목록 행에는 사진이 없고, 고른 모델의 전면 사진이 오른쪽 고정 미리보기에 표시된다.
+    check('SPX 프레임 5종 목록에 모두 사진 없이 이름·사양 행으로 표시됨',await page.locator('button[data-model]').count()===5&&await page.locator('button[data-model] img').count()===0);
     const spxModels=await page.locator('button[data-model]').evaluateAll(nodes=>nodes.map(node=>node.dataset.model));
     let spxPreviewOk=true;
     for(const model of spxModels){
@@ -236,7 +236,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       const src=await page.locator('.rt-cg-preview img').getAttribute('src');
       if(!src||!src.includes(`/frames/spx-${model.slice(4).toLowerCase()}-front.webp`))spxPreviewOk=false;
     }
-    check('섀시 목록에서 모델을 고를 때마다 오른쪽 미리보기가 그 모델의 전면 사진으로 바뀜(SPX 5종)',spxPreviewOk);
+    check('프레임 목록에서 모델을 고를 때마다 오른쪽 미리보기가 그 모델의 전면 사진으로 바뀜(SPX 5종)',spxPreviewOk);
     await page.click('button[data-model="SPX-M2472"]');await acceptConfirm();
     await page.click('[data-action="next"]');
     await page.waitForLoadState('networkidle');
@@ -255,14 +255,14 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       if(model==='VDM-288X')vdm288Placeholder=await page.locator('.rt-cg-preview-placeholder').isVisible();
       if(src&&src.includes('/frames/vdm-')&&src.endsWith('-front.webp'))vdmFrontCount++;
     }
-    check('VDM 섀시 10종 중 9종(288X 제외)은 매뉴얼 전면 사진 또는 전면 도면을 미리보기에 표시함',vdmFrontCount===9);
+    check('VDM 프레임 10종 중 9종(288X 제외)은 매뉴얼 전면 사진 또는 전면 도면을 미리보기에 표시함',vdmFrontCount===9);
     check('VDM-288X는 전면 사진이 없어 미리보기에 "사진 준비 중"이 표시됨',vdm288Placeholder);
     await page.click('button[data-model="VDM-16X"]');await acceptConfirm();
     await page.click('[data-action="next"]');
     await page.waitForLoadState('networkidle');
     // 슬롯 판과 후면 사진이 다 그려지기 전에 세면 가끔 실패했다(2026-09-27 한 번 재현). 슬롯 8칸과 사진 로딩을 기다린 뒤 검사한다.
     await page.waitForFunction(()=>{const image=document.querySelector('.rt-rack-photo-image');return document.querySelectorAll('.rt-rack-photo .rt-rack-slot').length>=8&&image&&image.complete&&image.naturalWidth>0},null,{timeout:10000}).catch(()=>{});
-    check('VDM-16X는 매뉴얼 후면 사진 위에 입력 4·출력 4 슬롯이 모두 흰 빈칸으로 표시됨(블랭크 자동 없음)',await page.locator('.rt-rack-photo .rt-rack-slot-empty').count()===8&&await page.locator('.rt-rack-photo .rt-rack-slot-blank').count()===0&&await page.$eval('.rt-rack-photo-image',image=>image.naturalWidth>0));
+    check('VDM-16X는 매뉴얼 후면 사진 위에 입력 4·출력 4 슬롯이 모두 빈 슬롯으로 표시됨(블랭크 자동 없음)',await page.locator('.rt-rack-photo .rt-rack-slot-empty').count()===8&&await page.locator('.rt-rack-photo .rt-rack-slot-blank').count()===0&&await page.$eval('.rt-rack-photo-image',image=>image.naturalWidth>0));
     await page.locator('button[data-slot="in-1"]').click();
     await page.locator('.rt-card-modal .rt-card-choice[data-card="HIS4-U"]').click();
     check('VDM 보드를 장착하면 실물 판넬 사진이 표시됨',await page.$eval('button[data-slot="in-1"] img.rt-faceplate',image=>image.naturalWidth>0&&image.getAttribute('src').endsWith('HIS4-U.webp')));
@@ -400,13 +400,13 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.waitForSelector('.rt-pg-edid');
     const ftRot=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-edid .rt-pg-rotary-row .rt-pg-rotary svg')].map(svg=>(svg.getAttribute('aria-label').match(/(\w)번$/)||[])[1]).join(','));
     check('XDM-FT101/FR101 EDID 설정에 로터리 전체 8칸(Source 0~3, Analog 8~B)이 나옴',ftRot==='0,1,2,3,8,9,A,B',ftRot);
-    // 0.65 OBHD-2C EDID 로터리(매뉴얼 KV01 EDID Library 14종, 사용자 요청 "그려줘"): 0~D 전체 14칸, C번이 기본값, 06 EDID 설정, 정면 사진 로드.
+    // 0.65 OBHD-2C EDID 로터리 → 0.70 매뉴얼 Ver.2.1 6쪽 번호표로 정정: 0 EXTERNAL~F RESERVED 16칸, D번(1080p 2CH, Default EDID 1920x1080@60Hz) 기본값.
     await page.goto(`${home}#products/obhd-2c`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-edid');
     await page.$eval('.rt-pg-edid img',img=>img.scrollIntoView());
     await page.waitForFunction(()=>document.querySelector('.rt-pg-edid img')?.naturalWidth>0);
-    const obhd=await page.evaluate(()=>({codes:[...document.querySelectorAll('.rt-pg-edid .rt-pg-rotary-row .rt-pg-rotary svg')].map(svg=>(svg.getAttribute('aria-label').match(/(\w)번$/)||[])[1]).join(''),def:document.querySelector('.rt-pg-edid .rt-pg-rotary.is-default figcaption em')?.textContent,idx:document.querySelector('.rt-pg-edid')?.closest('section')?.querySelector('.rt-pg-idx')?.textContent,rows:document.querySelectorAll('.rt-pg-edid .rt-pg-tablewrap tbody tr').length}));
-    check('OBHD-2C 06 EDID 설정에 MODE 로터리 0~D 14칸과 C번 기본값, 코드표 14행이 나옴',obhd.codes==='0123456789ABCD'&&obhd.def==='C번 · 기본값'&&obhd.idx==='06'&&obhd.rows===14,JSON.stringify(obhd));
+    const obhd=await page.evaluate(()=>({codes:[...document.querySelectorAll('.rt-pg-edid .rt-pg-rotary-row .rt-pg-rotary svg')].map(svg=>(svg.getAttribute('aria-label').match(/(\w)번$/)||[])[1]).join(''),def:document.querySelector('.rt-pg-edid .rt-pg-rotary.is-default figcaption em')?.textContent,idx:document.querySelector('.rt-pg-edid')?.closest('section')?.querySelector('.rt-pg-idx')?.textContent,rows:document.querySelectorAll('.rt-pg-edid .rt-pg-tablewrap tbody tr').length,pending:document.body.textContent.includes('제조사 확인 전')}));
+    check('OBHD-2C 06 EDID 설정에 MODE 로터리 0~F 16칸(매뉴얼 Ver.2.1: 0 EXTERNAL)과 D번 기본값, 코드표 16행이 나오고 "제조사 확인 전" 문구가 없음',obhd.codes==='0123456789ABCDEF'&&obhd.def==='D번 · 기본값'&&obhd.idx==='06'&&obhd.rows===16&&!obhd.pending,JSON.stringify(obhd));
     // 0.65 XDM-CTR100·CTR100 PSE 06 딥 스위치 설정(매뉴얼 Ver.1.4 5쪽, 사용자 요청 "ctr100, pse 모두 딥스위치 그려줘"): 1·2번 TX/RX 조합이 3번 전송 거리보다 먼저, 아래쪽이 ON, 검은 몸체.
     for(const id of ['xdm-ctr100','xdm-ctr100-pse']){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
@@ -414,6 +414,40 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       const ctr=await page.evaluate(()=>({heads:[...document.querySelectorAll('.rt-pg-dip .rt-pg-dip-head b')].map(b=>b.textContent).join('|'),combos:document.querySelectorAll('.rt-pg-dip-combos figure').length,idx:document.querySelector('.rt-pg-dip .rt-pg-idx')?.textContent,down:document.querySelector('.rt-pg-dip h2')?.textContent.includes('아래쪽이 ON'),tx:document.querySelector('.rt-pg-dip')?.textContent.includes('TX 모드')&&document.querySelector('.rt-pg-dip')?.textContent.includes('RX 모드')}));
       check(`${id} 06 딥 스위치 설정이 1·2번 TX/RX 모드 2칸 → 3번 전송 거리 순서, 아래쪽 ON으로 나옴`,ctr.heads==='1·2번|3번'&&ctr.combos===2&&ctr.idx==='06'&&ctr.down&&ctr.tx,JSON.stringify(ctr));
     }
+    // 0.70 OBHD-2C 단자 지도: 매뉴얼 Ver.2.1 Tx·Rx 앞면·뒷면 합성 사진 두 장(portMap.file), Tx 6개(3 EDID S/W·4 MODE·5 S/P 포함, 전원 마지막)·Rx 4개.
+    await page.goto(`${home}#products/obhd-2c`,{waitUntil:'networkidle'});
+    await page.waitForSelector('.rt-pg-panel svg');
+    const obhdPm=await page.evaluate(()=>({maps:document.querySelectorAll('.rt-pg-panel').length,pins:[...document.querySelectorAll('.rt-pg-port b')].map(b=>b.textContent.trim().replace(/^\d+/,''))}));
+    check('OBHD-2C 단자 지도가 Tx(EDID S/W·MODE·S/P 포함 6개)·Rx(4개) 합성 사진 두 장으로 나옴',obhdPm.maps===2&&obhdPm.pins.length===10&&obhdPm.pins[2]==='EDID S/W'&&obhdPm.pins[3]==='MODE'&&obhdPm.pins[5]==='DC 5V'&&obhdPm.pins[9]==='DC 5V',JSON.stringify(obhdPm));
+    // 0.70 구성기 개선(사용자 요청 2026-09-28): ① "섀시" 대신 "프레임 선택" ② 블랭크·빈 슬롯 IN/OUT 번호표 강조 ③ 카드별 수량 순서대로 장착 ④ 02 프레임 선택 아래 "함께 보면 좋은 제품" ⑤ 모든 프레임 빈 슬롯을 XDM-12처럼 어두운 공패널로.
+    await page.evaluate(()=>localStorage.clear());
+    await page.goto(home,{waitUntil:'networkidle'});
+    for(const [fam,related] of [['SPX',2],['VDM',6],['XDM',5]]){
+      await page.click(`button[data-family="${fam}"]`);await acceptConfirm();
+      if(await page.locator('[data-action="next"]').isEnabled())await page.click('[data-action="next"]');
+      await page.waitForSelector('.rt-rel-card');
+      const rel=await page.evaluate(()=>({eyebrow:document.querySelector('.rt-main .rt-eyebrow')?.textContent,cards:[...document.querySelectorAll('.rt-rel-card')].map(a=>a.getAttribute('href')),noChassis:!document.body.innerText.includes('섀시')}));
+      check(`${fam} 02 프레임 선택 아래 "함께 보면 좋은 제품" ${related}개(시리즈 상세 포함)가 제품정보로 연결되고, 화면에 "섀시" 표기가 없음`,rel.eyebrow==='02 / 프레임 선택'&&rel.cards.length===related&&rel.cards[0]===`#products/${fam.toLowerCase()}`&&rel.noChassis,JSON.stringify(rel));
+      await page.click('[data-jump="0"]');
+    }
+    await page.click('[data-action="next"]');
+    await page.click('button[data-model="XDM-36"]');await acceptConfirm();
+    await page.click('[data-action="next"]');
+    await page.locator('button[data-slot="in-2"]').click();
+    await page.locator('.rt-card-modal [data-card-qty-step="1"][data-qty-card="XDM-HI100"]').click();
+    await page.locator('.rt-card-modal [data-card-qty-step="1"][data-qty-card="XDM-HI100"]').click();
+    await page.locator('.rt-card-modal [data-card-qty-step="1"][data-qty-card="XDM-DPI100"]').click();
+    const fillLabel=await page.locator('.rt-card-modal [data-action="fill-qty"]').textContent();
+    await page.locator('.rt-card-modal [data-action="fill-qty"]').click();
+    const seq=await page.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.placements);
+    check('카드별 수량(HI100 2 + DPI100 1)을 넣고 순서대로 장착하면 IN 2부터 HI100·HI100·DPI100 순으로 들어감',fillLabel.includes('3장')&&seq['in-2']==='XDM-HI100'&&seq['in-3']==='XDM-HI100'&&seq['in-4']==='XDM-DPI100'&&!seq['in-1']&&!seq['in-5'],JSON.stringify({fillLabel,seq}));
+    await page.locator('button[data-slot="out-1"]').click();
+    await page.locator('.rt-card-modal .rt-card-choice[data-card="BLANK"]').click();
+    const look=await page.evaluate(()=>{const empty=document.querySelector('.rt-rack-slot-empty'),blankNo=document.querySelector('.rt-rack-slot-blank .rt-rack-slot-no'),inNo=document.querySelector('.rt-rack-slot-empty .rt-rack-slot-no-input');const bg=getComputedStyle(empty).backgroundImage,st=getComputedStyle(blankNo);return {darkEmpty:bg.includes('gradient')&&getComputedStyle(empty).backgroundColor!=='rgb(255, 255, 255)',blankColor:st.backgroundColor,blankFont:parseFloat(st.fontSize),inColor:inNo&&getComputedStyle(inNo).backgroundColor}});
+    check('XDM-36 빈 슬롯은 XDM-12처럼 어두운 공패널이고, 블랭크 OUT 번호표는 11px 이상 주황·빈 IN 번호표는 파랑으로 강조됨',look.darkEmpty&&look.blankFont>=11&&look.blankColor==='rgb(232, 89, 12)'&&look.inColor==='rgb(0, 122, 255)',JSON.stringify(look));
+    // 뒤쪽 검사(시리즈 상세 → 구성기 이동)가 확인 창 없이 이어지도록 이 검사에서 만든 XDM-36 구성을 비운다.
+    await page.evaluate(()=>localStorage.clear());
+    await page.goto(home,{waitUntil:'networkidle'});
     // 0.64 SPX는 HDBaseT가 아닌 CATx 전송(사용자 확인 2026-09-27): SPX 시리즈 상세 신호 범례와 SPX-TX/RX 어디에도 HDBaseT가 나오지 않는다.
     for(const id of ['spx','spx-rx-tx']){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
@@ -474,7 +508,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('제품 상세 주소(#products/vdm)로 바로 들어갈 수 있음',(await page.locator('#rt-pg-title').textContent()).includes('VDM'));
     await page.click('[data-configure-family="VDM"]');
     await page.waitForSelector('button[data-model]');
-    check('시리즈 상세의 "구성기에서 구성하기"는 VDM 섀시 선택 단계로 이동',await page.locator('.rt-products-view').isHidden()&&await page.locator('[data-model="VDM-256X"]').count()===1);
+    check('시리즈 상세의 "구성기에서 구성하기"는 VDM 프레임 선택 단계로 이동',await page.locator('.rt-products-view').isHidden()&&await page.locator('[data-model="VDM-256X"]').count()===1);
     await page.click('a[data-view-tab="products"]');
     await page.waitForSelector('.rt-pg-gridcard');
     let productDialog=false;const onProductDialog=()=>{productDialog=true};page.on('dialog',onProductDialog);

@@ -95,14 +95,14 @@
     if (!plain(input) || !own(catalog,input.family)) fail('지원하지 않는 제품군입니다.');
     let notice='';
     // XDM-288은 46쪽판 카탈로그 LINE-UP·사양에서 빠져 0.29부터 구성기에서 제외했다(사용자 결정 2026-09-27).
-    // 예전에 저장한 XDM-288 구성은 복원 실패 대신 섀시 미선택 상태로 안전하게 되돌린다.
+    // 예전에 저장한 XDM-288 구성은 복원 실패 대신 프레임 미선택 상태로 안전하게 되돌린다.
     if (input.family==='XDM' && input.model==='XDM-288') {
       input={...input,model:null,placements:{},links:{},portAssignments:{},step:0,maxStep:0,slot:'in-a'};
-      notice='XDM-288은 구성기에서 제외되었습니다. 섀시를 다시 선택하세요.';
+      notice='XDM-288은 구성기에서 제외되었습니다. 프레임을 다시 선택하세요.';
     }
     const result=initial(), family=catalog[input.family];
     result.family=input.family;
-    if (input.model!==null && !family.models.includes(input.model)) fail('제품군과 섀시 모델이 일치하지 않습니다.');
+    if (input.model!==null && !family.models.includes(input.model)) fail('제품군과 프레임 모델이 일치하지 않습니다.');
     result.model=input.model;
     if (!plain(input.placements) || !plain(input.links)) fail('카드 또는 전송기 데이터 형식이 잘못되었습니다.');
     const documented=Boolean(slotPlan(result.family,result.model));
@@ -115,7 +115,7 @@
       const target=legacySlots[id]||id;
       // BLANK(블랭크 커버)는 예약값으로 모든 제품군·모든 방향 슬롯에 허용한다(사용자 결정 2026-09-27). catalog.js에는 추가하지 않는다.
       if (!allowedSlots.has(target) || (value!=='BLANK' && !family[slotDirections[target]].some(item=>item[0]===value))) fail('지원하지 않는 슬롯 또는 카드입니다.');
-      if (!result.model) fail('섀시 없이 카드를 배치할 수 없습니다.');
+      if (!result.model) fail('프레임 없이 카드를 배치할 수 없습니다.');
       result.placements[target]=value;
     }
     for (const [id,link] of Object.entries(input.links)) {
@@ -215,7 +215,7 @@
     const state=checkState(input);
     const issues=[];
     const add=(code,level,message,evidence='')=>issues.push({code,level,message,evidence});
-    if (!state.model) add('CHASSIS_REQUIRED','ERROR','섀시를 선택해 주세요.');
+    if (!state.model) add('CHASSIS_REQUIRED','ERROR','프레임을 선택해 주세요.');
     for (const direction of ['input','output']) if (!Object.entries(state.placements).some(([id])=>slotDirections[id]===direction)) add('MISSING_'+direction.toUpperCase(),'WARNING',`${direction==='input'?'입력':'출력'} 카드가 선택되지 않았습니다.`);
     // 블랭크 커버 완성도(사용자 결정 2026-09-27): 빈 슬롯이 하나라도 있으면 경고한다. 막지는 않는다.
     if (state.model) {

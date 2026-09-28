@@ -2,7 +2,7 @@
     let history=[],historyIndex=-1;
     const status=root.querySelector('#save-status');
     function announce(message){status.textContent=message}
-    function confirmReset(){return !Object.keys(state.placements).length || window.confirm('제품군 또는 섀시를 변경하면 카드와 전송기 선택이 초기화됩니다. 변경할까요? 실행 취소로 복원할 수 있습니다.')}
+    function confirmReset(){return !Object.keys(state.placements).length || window.confirm('제품군 또는 프레임을 변경하면 카드와 전송기 선택이 초기화됩니다. 변경할까요? 실행 취소로 복원할 수 있습니다.')}
     function snapshot(){return JSON.stringify(state)}
     function recordHistory(){
       const value=snapshot();
@@ -38,7 +38,7 @@
         const c=slotCard(s.id),l=state.links[s.id];
         return `<tr><td>${s.label}</td><td>${esc(c[0])}</td><td>${c[2]}</td><td>${l?.device?esc(l.device):'미지정'}</td><td>${l?.device?l.count:0}</td><td>${l?.device?esc(l.distance)+' m':'—'}</td></tr>`;
       }).join('');
-      document.getElementById('print-report').innerHTML=`<h1>RTCOM Matrix Configuration</h1><p><strong>미검증 검토용 초안 · 설치 및 구매 승인 자료가 아닙니다.</strong></p><p>${esc(state.family)} / ${esc(state.model||'섀시 미선택')} · ${new Date().toLocaleString('ko-KR')}</p><h2>장비 목록</h2>${table()}<h2>개념 배치 및 전송기 연결</h2><p>입력·출력 각 2칸은 실제 슬롯 수 또는 물리 위치를 의미하지 않습니다.</p><table><thead><tr><th>개념 위치</th><th>카드</th><th>포트 수</th><th>전송기 / 역할</th><th>수량</th><th>거리</th></tr></thead><tbody>${rows}</tbody></table>${validationView()}<p>카탈로그 버전: ${RtCore.catalogVersion} · 케이블·전원·기본 포함품은 별도 확인이 필요합니다.</p>`;
+      document.getElementById('print-report').innerHTML=`<h1>RTCOM Matrix Configuration</h1><p><strong>미검증 검토용 초안 · 설치 및 구매 승인 자료가 아닙니다.</strong></p><p>${esc(state.family)} / ${esc(state.model||'프레임 미선택')} · ${new Date().toLocaleString('ko-KR')}</p><h2>장비 목록</h2>${table()}<h2>개념 배치 및 전송기 연결</h2><p>입력·출력 각 2칸은 실제 슬롯 수 또는 물리 위치를 의미하지 않습니다.</p><table><thead><tr><th>개념 위치</th><th>카드</th><th>포트 수</th><th>전송기 / 역할</th><th>수량</th><th>거리</th></tr></thead><tbody>${rows}</tbody></table>${validationView()}<p>카탈로그 버전: ${RtCore.catalogVersion} · 케이블·전원·기본 포함품은 별도 확인이 필요합니다.</p>`;
     }
     window.addEventListener('beforeprint',report);
     root.addEventListener('click',event=>{

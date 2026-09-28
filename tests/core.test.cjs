@@ -86,7 +86,7 @@ test('XDM-288 saved configs restore safely as an unselected XDM chassis with a n
   assert.equal(restored.step,0);
   assert.equal(restored.maxStep,0);
   assert.equal(restored.slot,'in-a');
-  assert.equal(restored.notice,'XDM-288은 구성기에서 제외되었습니다. 섀시를 다시 선택하세요.');
+  assert.equal(restored.notice,'XDM-288은 구성기에서 제외되었습니다. 프레임을 다시 선택하세요.');
 });
 
 test('a normal restore never carries a notice',()=>{

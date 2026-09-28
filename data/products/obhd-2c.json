@@ -48,14 +48,38 @@
     {
       "role": "Front",
       "file": "obhd-2c-tx-front.webp",
-      "alt": "RTCOM OBHD-2C 송신기(TX) 전면(VIDEO·AUDIO·PWR·EDID LED, EDID S/W 버튼, MODE 로터리, S/P 단자)",
-      "note": "Front · 카탈로그 41쪽 TX 전면 사진을 잘라 2배로 키움",
+      "alt": "RTCOM OBHD-2C 송신기(Tx) 전면(VIDEO·AUDIO·PWR·EDID LED, EDID S/W 버튼, MODE 로터리, S/P 단자)",
+      "note": "Front · 매뉴얼 Ver.2.1 6쪽 Tx 전면 사진",
       "provider": "RTCOM",
       "model": "OBHD-2C",
-      "source": "C",
+      "source": "M2",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "970×220"
+      "resolution": "829×229"
+    },
+    {
+      "provider": "RTCOM",
+      "model": "OBHD-2C",
+      "source": "M2",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "role": "Other",
+      "file": "obhd-2c-tx-front-rear.webp",
+      "alt": "RTCOM OBHD-2C 송신기(Tx) 앞면(위)과 뒷면(아래)",
+      "note": "Other · 매뉴얼 Ver.2.1 6쪽 Tx 전면·후면 사진을 위아래로 합성(단자 지도용)",
+      "resolution": "829×500"
+    },
+    {
+      "provider": "RTCOM",
+      "model": "OBHD-2C",
+      "source": "M2",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "role": "Other",
+      "file": "obhd-2c-rx-front-rear.webp",
+      "alt": "RTCOM OBHD-2C 수신기(Rx) 앞면(위)과 뒷면(아래)",
+      "note": "Other · 매뉴얼 Ver.2.1 7쪽 Rx 전면·후면 사진을 위아래로 합성(단자 지도용)",
+      "resolution": "794×465"
     }
   ],
   "imageStatuses": [
@@ -109,6 +133,10 @@
     {
       "text": "Plug & Play로 쉽게 설치",
       "source": "C"
+    },
+    {
+      "text": "EDID 마인더 기능 지원(외부 EDID 저장, 내장 EDID 선택)",
+      "source": "M2"
     }
   ],
   "specifications": [
@@ -250,66 +278,112 @@
     }
   ],
   "related": [],
-  "portMap": {
-    "image": "Other",
-    "title": "뒷면 · 위 송신기, 아래 수신기",
-    "items": [
-      {
-        "n": 3,
-        "label": "DC 5V · 송신기",
-        "desc": "전원 어댑터 5V 2A",
-        "x1": 682,
-        "x2": 705,
-        "side": "top",
-        "y": 70
-      },
-      {
-        "n": 1,
-        "label": "HDMI IN · 송신기",
-        "desc": "소스 연결",
-        "x1": 786,
-        "x2": 847,
-        "side": "top",
-        "y": 70
-      },
-      {
-        "n": 2,
-        "label": "OPTICAL 1·2 · 송신기",
-        "desc": "LC 광 단자 2개 · 광케이블 2가닥으로 수신기와 연결",
-        "x1": 1009,
-        "x2": 1056,
-        "side": "top",
-        "y": 70
-      },
-      {
-        "n": 6,
-        "label": "DC 5V · 수신기",
-        "desc": "전원 어댑터 5V 2A",
-        "x1": 686,
-        "x2": 707,
-        "side": "bottom",
-        "y": 299
-      },
-      {
-        "n": 4,
-        "label": "HDMI OUT · 수신기",
-        "desc": "디스플레이 연결",
-        "x1": 788,
-        "x2": 848,
-        "side": "bottom",
-        "y": 299
-      },
-      {
-        "n": 5,
-        "label": "OPTICAL 1·2 · 수신기",
-        "desc": "LC 광 단자 2개 · 송신기와 연결",
-        "x1": 1012,
-        "x2": 1059,
-        "side": "bottom",
-        "y": 299
-      }
-    ]
-  },
+  "portMap": [
+    {
+      "image": "Other",
+      "file": "obhd-2c-tx-front-rear.webp",
+      "title": "송신기 OBHD-2C Tx",
+      "items": [
+        {
+          "n": 1,
+          "label": "HDMI IN",
+          "desc": "소스 연결",
+          "x1": 255,
+          "x2": 350,
+          "side": "top",
+          "y": 289
+        },
+        {
+          "n": 2,
+          "label": "OPTICAL 1·2",
+          "desc": "FIBER OUT · LC 광 단자 2개, 광케이블 2가닥으로 수신기 OPTICAL 1·2와 번호를 맞춰 연결",
+          "x1": 600,
+          "x2": 680,
+          "side": "top",
+          "y": 289
+        },
+        {
+          "n": 3,
+          "label": "EDID S/W",
+          "desc": "MODE 로터리를 0번(EXTERNAL)에 두고 누르면 연결한 디스플레이 EDID를 저장. '06 EDID 설정' 참고",
+          "x1": 230,
+          "x2": 258,
+          "side": "top",
+          "y": 80
+        },
+        {
+          "n": 4,
+          "label": "MODE",
+          "desc": "전면 파란색 MODE 로터리 스위치로 EDID를 고름. '06 EDID 설정' 참고",
+          "x1": 553,
+          "x2": 617,
+          "side": "top",
+          "y": 40
+        },
+        {
+          "n": 5,
+          "label": "S/P",
+          "desc": "Mini USB 펌웨어 업데이트 포트",
+          "x1": 652,
+          "x2": 700,
+          "side": "top",
+          "y": 90
+        },
+        {
+          "n": 6,
+          "label": "DC 5V",
+          "desc": "전원 어댑터 DC +5V 2A",
+          "x1": 90,
+          "x2": 150,
+          "side": "top",
+          "y": 289
+        }
+      ]
+    },
+    {
+      "image": "Other",
+      "file": "obhd-2c-rx-front-rear.webp",
+      "title": "수신기 OBHD-2C Rx",
+      "items": [
+        {
+          "n": 1,
+          "label": "HDMI OUT",
+          "desc": "디스플레이 연결",
+          "x1": 245,
+          "x2": 332,
+          "side": "top",
+          "y": 266
+        },
+        {
+          "n": 2,
+          "label": "OPTICAL 1·2",
+          "desc": "FIBER IN · LC 광 단자 2개, 송신기와 번호를 맞춰 연결",
+          "x1": 590,
+          "x2": 660,
+          "side": "top",
+          "y": 266
+        },
+        {
+          "n": 3,
+          "label": "S/P",
+          "desc": "Mini USB 펌웨어 업데이트 포트",
+          "x1": 635,
+          "x2": 685,
+          "side": "top",
+          "y": 110
+        },
+        {
+          "n": 4,
+          "label": "DC 5V",
+          "desc": "전원 어댑터 DC +5V 2A",
+          "x1": 85,
+          "x2": 135,
+          "side": "top",
+          "y": 266
+        }
+      ]
+    }
+  ],
   "sources": [
     {
       "code": "C",
@@ -328,101 +402,118 @@
       "name": "OBHD-2C 사용자 매뉴얼 KV01",
       "page": "3-8",
       "scope": "제조사 공식 출처 — 사용자 제공 PDF(.source-materials/RTcom_Manual_OBHD-2C_KV01.pdf, 배포 제외)"
+    },
+    {
+      "code": "M2",
+      "name": "OBHD-2C 사용자 매뉴얼 Ver.2.1",
+      "page": "4-10",
+      "scope": "제조사 공식 출처 — 사용자 제공 PDF(.source-materials/RTcom_Manual_OBHD-2C_Ver2.1.pdf, 배포 제외)"
     }
   ],
   "issues": [],
   "edidSwitch": {
     "image": "Front",
-    "x1": 652,
+    "x1": 553,
     "y1": 44,
-    "x2": 742,
-    "y2": 132,
+    "x2": 617,
+    "y2": 112,
     "label": "MODE 로터리 스위치",
-    "desc": "송신기(TX) 전면 파란 MODE 로터리 스위치로 EDID Library의 해상도를 고른다. EDID S/W 버튼을 누르면 연결한 디스플레이의 EDID를 송신기에 저장할 수 있다(EDID Emulation). 로터리 번호는 매뉴얼 EDID Library 표 순서대로 적었으며 제조사 확인 전이다.",
-    "default": "C = HD1080p(2CH) · 1920x1080@60Hz(초기값)",
+    "desc": "송신기(Tx) 전면 파란 MODE 로터리 스위치로 EDID를 고른다. 1~E번은 내장 EDID Library, 0번(EXTERNAL)은 EDID S/W 버튼으로 저장한 디스플레이 EDID를 쓴다(EDID Emulation). Default EDID는 1920x1080@60Hz다.",
+    "default": "D = 1080p(2CH Audio) · 1920x1080@60Hz(Default EDID)",
     "steps": [
       {
         "title": "EDID 저장(Emulation)",
         "items": [
           "송신기와 디스플레이 기기를 HDMI 케이블로 연결한다.",
-          "EDID S/W 버튼을 누르면 디스플레이의 EDID 정보가 복사되어 송신기 EEPROM에 저장된다. 이후 송신기가 디스플레이 역할을 한다."
+          "MODE 로터리 스위치를 0번(EXTERNAL)에 맞추고 EDID S/W 버튼을 누르면 디스플레이 EDID가 송신기 EEPROM에 저장된다. 이후 송신기가 디스플레이 역할을 한다."
         ]
       }
     ],
     "table": [
       {
         "code": "0",
+        "function": "EXTERNAL · EDID S/W로 저장한 디스플레이 EDID",
+        "caption": "EXTERNAL",
+        "highlight": true
+      },
+      {
+        "code": "1",
         "function": "800x600@60Hz",
         "caption": "800×600@60"
       },
       {
-        "code": "1",
+        "code": "2",
         "function": "1024x768@60Hz",
         "caption": "1024×768@60"
       },
       {
-        "code": "2",
+        "code": "3",
         "function": "1280x768@60Hz",
         "caption": "1280×768@60"
       },
       {
-        "code": "3",
+        "code": "4",
         "function": "1280x1024@60Hz",
         "caption": "1280×1024@60"
       },
       {
-        "code": "4",
+        "code": "5",
         "function": "1360x768@60Hz",
         "caption": "1360×768@60"
       },
       {
-        "code": "5",
+        "code": "6",
         "function": "1366x768@60Hz",
         "caption": "1366×768@60"
       },
       {
-        "code": "6",
+        "code": "7",
         "function": "1400x1050@60Hz",
         "caption": "1400×1050@60"
       },
       {
-        "code": "7",
+        "code": "8",
         "function": "1600x900@60Hz",
         "caption": "1600×900@60"
       },
       {
-        "code": "8",
+        "code": "9",
         "function": "1600x1200@60Hz",
         "caption": "1600×1200@60"
       },
       {
-        "code": "9",
+        "code": "A",
         "function": "1680x1050@60Hz",
         "caption": "1680×1050@60"
       },
       {
-        "code": "A",
+        "code": "B",
         "function": "1920x1200@60Hz",
         "caption": "1920×1200@60"
       },
       {
-        "code": "B",
-        "function": "HD1080i@60Hz",
-        "caption": "1080i@60"
+        "code": "C",
+        "function": "1080i@60Hz(2CH Audio)",
+        "caption": "1080i 2CH"
       },
       {
-        "code": "C",
-        "function": "HD1080p(2CH) · 1920x1080@60Hz",
+        "code": "D",
+        "function": "1080p(2CH Audio) · 1920x1080@60Hz",
         "caption": "1080p 2CH",
         "highlight": true
       },
       {
-        "code": "D",
-        "function": "HD1080p(Multi) · 1920x1080@60Hz 멀티채널 오디오",
+        "code": "E",
+        "function": "1080p(Multi CH Audio) · 1920x1080@60Hz",
         "caption": "1080p Multi"
+      },
+      {
+        "code": "F",
+        "function": "RESERVED(미사용)",
+        "caption": "RESERVED"
       }
     ],
-    "source": "M1",
+    "source": "M2",
     "examples": "all",
     "rotaryName": "MODE 로터리"
   }
