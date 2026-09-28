@@ -422,6 +422,14 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       check(`${id} 제조사 문서 버튼 ${expected}개(새 탭 보기·내려받기, PDF 응답)`,docs.length===expected&&docs.every(doc=>doc.open&&doc.save)&&pdfOk.every(Boolean),JSON.stringify({expected,docs,pdfOk}));
     }
     check('OBUX-1C 송신기 단자 지도가 고해상도 앞뒤 합성 사진에 번호 6개, 수신기 5개(S/P 포함)로 나옴',obuxPm.tx&&obuxPm.rx&&obuxPm.ports.join()==='6,5',JSON.stringify(obuxPm));
+    // 0.97 XDM-PSU 03 Signal Flow: 제조사 연결도처럼 프레임(CIS100·COS100) · PSU(POH·PHX) · CTR100 Tx/Rx를 장비 그림으로 그리고 케이블 위 점선이 흐른다. 움직임 줄이기 설정에서는 멈춘다.
+    await page.goto(`${home}#products/xdm-psu`,{waitUntil:'networkidle'});
+    await page.waitForSelector('.rt-psu-anim');
+    const psuFlow=await page.evaluate(()=>{const svg=document.querySelector('.rt-psu-anim').closest('svg'),t=svg.textContent;return {flows:svg.querySelectorAll('.rt-psu-flow').length,rev:svg.querySelectorAll('.rt-psu-flow.rt-psu-rev').length,anim:getComputedStyle(svg.querySelector('.rt-psu-flow')).animationName,labels:['XDM-CIS100','XDM-COS100','XDM-PSU · POH','XDM-PSU · PHX','Tx · 송신기','Rx · 수신기','2핀 전원선'].every(s=>t.includes(s))}});
+    await page.emulateMedia({reducedMotion:'reduce'});
+    const psuStill=await page.$eval('.rt-psu-flow',el=>getComputedStyle(el).animationName);
+    await page.emulateMedia({reducedMotion:'no-preference'});
+    check('XDM-PSU Signal Flow가 장비 그림(프레임·PSU·CTR100 Tx/Rx)과 흐르는 케이블 8가닥(Tx 전원은 역방향)으로 나오고, 움직임 줄이기에서는 멈춤',psuFlow.flows===8&&psuFlow.rev===1&&psuFlow.anim==='rt-psu-dash'&&psuFlow.labels&&psuStill==='none',JSON.stringify({psuFlow,psuStill}));
     // 0.95 전체 카탈로그 공유(사용자 결정 2026-09-28 "전체 카탈로그 공개해도 돼"): 제품 상세 카탈로그 버튼은 공용 파일을 제품 쪽(#page=N)에서 열고, 내려받기는 파일 전체. 제품 목록에는 "전체 카탈로그" 버튼 하나.
     await page.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-toolbar [data-doc="Catalog"]');
