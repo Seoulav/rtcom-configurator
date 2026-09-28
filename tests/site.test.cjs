@@ -233,6 +233,30 @@ test('local input_doc workflow (2026-09-28) keeps user material out of Git and r
       assert.ok(fs.existsSync(path.join(dir,'_duplicates','copy.pdf')),'same content goes to _duplicates, not a second archive copy');
       assert.notEqual(py('file',path.resolve('README.md'),'--maker','X','--kind','Other','--model','Y').status,0,'files outside input_doc are refused');
       assert.equal(run().stdout,'','after filing, nothing is new');
+      // 반영 장부와 STATUS.md(사용자 요청 2026-09-28 "깃에 자료로서 올라간 내용들은 input_doc에서 알 수 있도록 표시")
+      const ledger=JSON.parse(fs.readFileSync(path.join(dir,'.ledger.json'),'utf8'));
+      assert.equal(ledger.entries.length,1,'filed material is added to the ledger once (duplicates are not)');
+      assert.equal(ledger.entries[0].status,'pending');
+      assert.match(fs.readFileSync(path.join(dir,'STATUS.md'),'utf8'),/⏳ 검토 전 \| RTCOM\/manual\/RTcom_Manual_HD-13U_Ver1\.2\.pdf/);
+      const marked=py('mark','RTCOM/manual/RTcom_Manual_HD-13U_Ver1.2.pdf','--status','reflected','--where','data/products/hd-13u.json','--what','EDID 코드표','--release','0.99.0');
+      assert.equal(marked.status,0,marked.stderr);
+      assert.match(fs.readFileSync(path.join(dir,'STATUS.md'),'utf8'),/✅ 사이트에 반영 \| RTCOM\/manual\/RTcom_Manual_HD-13U_Ver1\.2\.pdf \| data\/products\/hd-13u\.json — EDID 코드표 \| 0\.99\.0/);
+      assert.notEqual(py('mark','RTCOM/manual/RTcom_Manual_HD-13U_Ver1.2.pdf','--status','done').status,0,'unknown status is refused');
     }
   }finally{fs.rmSync(dir,{recursive:true,force:true})}
+});
+
+test('input_doc reflection ledger (2026-09-28) is tracked, well-formed and never published',()=>{
+  const ledger=JSON.parse(read('docs/evidence/input-doc-ledger.json'));
+  assert.equal(ledger.schema,'rtcom.input-doc-ledger.v1');
+  const statuses=Object.keys(ledger.statuses);
+  const seen=new Set();
+  for(const entry of ledger.entries){
+    assert.match(entry.sha256,/^[0-9a-f]{16}$/,`${entry.file} needs a sha256 prefix`);
+    assert.ok(!seen.has(entry.sha256),`${entry.file} is listed twice`);seen.add(entry.sha256);
+    assert.ok(statuses.includes(entry.status),`${entry.file} has unknown status ${entry.status}`);
+    assert.match(entry.file,/^[A-Z0-9_]+\/[a-z]+\/[^/]+$/,`${entry.file} must be a path inside input_doc/<제조사>/<종류>/`);
+    if(entry.status==='reflected'||entry.status==='published')assert.ok(entry.reflected.length>0,`${entry.file} is ${entry.status} but says nowhere it was used`);
+  }
+  assert.ok(!fs.existsSync('dist/docs/evidence/input-doc-ledger.json'),'the ledger must not be shipped to Pages');
 });

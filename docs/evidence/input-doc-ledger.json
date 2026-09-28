@@ -1,0 +1,256 @@
+{
+ "schema": "rtcom.input-doc-ledger.v1",
+ "about": "input_doc(로컬 전용) 자료가 저장소·사이트에 어떻게 반영됐는지 적는 장부. 파일 이름·해시·반영 위치만 적고 자료 내용은 넣지 않는다. scripts/input-doc-status.cjs가 이 장부로 input_doc/STATUS.md를 만든다.",
+ "statuses": {
+  "published": "PDF 공개(사이트 버튼)",
+  "reflected": "사이트에 값 반영",
+  "same": "이미 반영된 판(변경 없음)",
+  "archived": "보관만(반영 안 함)",
+  "pending": "검토 전"
+ },
+ "entries": [
+  {
+   "sha256": "1aa44449a9637d36",
+   "file": "RTCOM/manual/RTcom_Manual_HD-104U_Ver1.1.pdf",
+   "original": "RTcom_Manual_HD-104U KV Ver.1.1.pdf",
+   "model": "HD-104U",
+   "version": "Ver1.1",
+   "status": "same",
+   "reflected": [],
+   "note": "사이트 근거판과 같은 판(0.36~0.78 반영)",
+   "date": "2026-09-28"
+  },
+  {
+   "sha256": "0dc4500ac4d7e6cd",
+   "file": "RTCOM/manual/RTcom_Manual_HD-108U_Ver1.1.pdf",
+   "original": "RTcom_Manual_HD-108U KV Ver.1.1.pdf",
+   "model": "HD-108U",
+   "version": "Ver1.1",
+   "status": "same",
+   "reflected": [],
+   "note": "사이트 근거판과 같은 판",
+   "date": "2026-09-28"
+  },
+  {
+   "sha256": "4697182422224b1f",
+   "file": "RTCOM/manual/RTcom_Manual_HD-13U_Ver1.2.pdf",
+   "original": "RTcom_Manual_HD-13U KV Ver.1.2.pdf",
+   "model": "HD-13U",
+   "version": "Ver1.2",
+   "status": "same",
+   "reflected": [],
+   "note": "사이트 근거판과 같은 판",
+   "date": "2026-09-28"
+  },
+  {
+   "sha256": "f8c19d98c80b5d57",
+   "file": "RTCOM/manual/RTcom_Manual_HD-210U_Ver1.2.pdf",
+   "original": "RTcom_Manual_HD-210U KV Ver.1.2.pdf",
+   "model": "HD-210U",
+   "version": "Ver1.2",
+   "status": "same",
+   "reflected": [],
+   "note": "사이트 근거판과 같은 판(0.61 딥 스위치)",
+   "date": "2026-09-28"
+  },
+  {
+   "sha256": "4f830a216039bf97",
+   "file": "RTCOM/manual/RTcom_Manual_HDS-21U_Ver1.0.pdf",
+   "original": "RTCom_Manual_HDS-21U Ver.1.0.pdf",
+   "model": "HDS-21U",
+   "version": "Ver1.0",
+   "status": "same",
+   "reflected": [],
+   "note": "사이트 근거판과 같은 판",
+   "date": "2026-09-28"
+  },
+  {
+   "sha256": "3827d69c9f87544c",
+   "file": "RTCOM/manual/RTcom_Manual_HDS-42MU_Ver1.0.pdf",
+   "original": "RTCom_Manual_HDS-42MU Ver.1.0.pdf",
+   "model": "HDS-42MU",
+   "version": "Ver1.0",
+   "status": "same",
+   "reflected": [],
+   "note": "사이트 근거판과 같은 판",
+   "date": "2026-09-28"
+  },
+  {
+   "sha256": "ed652643f2825cc6",
+   "file": "RTCOM/manual/RTcom_Manual_HEXA-01_Rev02.pdf",
+   "original": "RTcom_Manual_HEXA-01_Rev.02.pdf",
+   "model": "HEXA-01",
+   "version": "Rev02",
+   "status": "archived",
+   "reflected": [],
+   "note": "HDMI 오디오 추출기. 사이트 30종에 없는 제품 — 보관만",
+   "date": "2026-09-28"
+  },
+  {
+   "sha256": "713892462af1b1a3",
+   "file": "RTCOM/manual/RTcom_Manual_HS-88M-U_KV03.pdf",
+   "original": "RTCom_Manual_HS-88M-U_KV03.pdf",
+   "model": "HS-88M-U",
+   "version": "KV03",
+   "status": "archived",
+   "reflected": [],
+   "note": "AV Portal과 같은 제외 모델 — 보관만",
+   "date": "2026-09-28"
+  },
+  {
+   "sha256": "74b6bf946d9ba20b",
+   "file": "RTCOM/manual/RTcom_Manual_OBHD-2C_Ver2.1.pdf",
+   "original": "RTcom_Manual_OBHD-2C Ver.2.1.pdf",
+   "model": "OBHD-2C",
+   "version": "Ver2.1",
+   "status": "same",
+   "reflected": [],
+   "note": "사이트 근거판과 같은 판(0.70~0.71)",
+   "date": "2026-09-28"
+  },
+  {
+   "sha256": "f23aa03caa513ff5",
+   "file": "RTCOM/manual/RTcom_Manual_OBUX-1C_Ver2.2.pdf",
+   "original": "RTcom_Manual_OBUX-1C KV Ver.2.2.pdf",
+   "model": "OBUX-1C",
+   "version": "Ver2.2",
+   "status": "same",
+   "reflected": [],
+   "note": "사이트 근거판과 같은 판(0.64)",
+   "date": "2026-09-28"
+  },
+  {
+   "sha256": "231e846772872b4a",
+   "file": "RTCOM/manual/RTcom_Manual_QMS-44UX_KV04.pdf",
+   "original": "RTcom_Manual_QMS-44UX_KV.04.pdf",
+   "model": "QMS-44UX",
+   "version": "KV04",
+   "status": "same",
+   "reflected": [],
+   "note": "사이트 근거판(M-Q44)과 같은 판",
+   "date": "2026-09-28"
+  },
+  {
+   "sha256": "3f9554513b7567fd",
+   "file": "RTCOM/manual/RTcom_Manual_QMS-88UX_KV04.pdf",
+   "original": "RTcom_Manual_QMS-88UX_KV.04.pdf",
+   "model": "QMS-88UX",
+   "version": "KV04",
+   "status": "same",
+   "reflected": [],
+   "note": "사이트 근거 KV.03보다 새 판. 6쪽 사양·20~23쪽 멀티뷰 대조 일치",
+   "date": "2026-09-28"
+  },
+  {
+   "sha256": "768d6eb97e99f2a4",
+   "file": "RTCOM/manual/RTcom_Manual_SPX_Protocol.pdf",
+   "original": "RTcom_Manual_SPX-M810_프로토콜.pdf",
+   "model": "SPX",
+   "version": "",
+   "status": "archived",
+   "reflected": [],
+   "note": "표지 SPX-M24 series, 5·6장 제어 커맨드(RS-232/LAN). 커맨드는 사이트 비공개 범위 — 보관만",
+   "date": "2026-09-28"
+  },
+  {
+   "sha256": "f0fb7f98077c3a3f",
+   "file": "RTCOM/manual/RTcom_Manual_VDM_KV07.pdf",
+   "original": "RTCom_Manual_VDM_KV07_251219.pdf",
+   "model": "VDM",
+   "version": "KV07",
+   "status": "reflected",
+   "reflected": [
+    {
+     "where": "src/card-specs.js",
+     "what": "CIS4-U(22쪽)·COS4-U(34쪽)·QOS4S-U(43쪽) 카드 사양 보완",
+     "release": "PR #68"
+    }
+   ],
+   "note": "구성기 VDM 도면·슬롯 근거판(251219)과 같은 판. 카드 사양 보완에 사용",
+   "date": "2026-09-28"
+  },
+  {
+   "sha256": "5082ce94238af6f5",
+   "file": "RTCOM/manual/RTcom_Manual_XDM_KV08.pdf",
+   "original": "RTcom_Manual_XDM KV08_250902 .pdf",
+   "model": "XDM",
+   "version": "KV08",
+   "status": "same",
+   "reflected": [],
+   "note": "구성기 XDM 후면 사진 근거판과 같은 판(250902)",
+   "date": "2026-09-28"
+  },
+  {
+   "sha256": "e983da9f51018e46",
+   "file": "RTCOM/manual/RTcom_Manual_XDM-CR103_Ver1.1.pdf",
+   "original": "RTcom_Manual_XDM-CR103 KV Ver.1.1.pdf",
+   "model": "XDM-CR103",
+   "version": "Ver1.1",
+   "status": "same",
+   "reflected": [],
+   "note": "사이트 근거판과 같은 판(0.45)",
+   "date": "2026-09-28"
+  },
+  {
+   "sha256": "44a3aba08cd16fed",
+   "file": "RTCOM/manual/RTcom_Manual_XDM-CT103_Ver1.4.pdf",
+   "original": "RTcom_Manual_XDM-CT103 KV Ver.1.4.pdf",
+   "model": "XDM-CT103",
+   "version": "Ver1.4",
+   "status": "same",
+   "reflected": [],
+   "note": "사이트 근거판과 같은 판(0.45)",
+   "date": "2026-09-28"
+  },
+  {
+   "sha256": "71a4c50291ffd108",
+   "file": "RTCOM/manual/RTcom_Manual_XDM-CTR100_Ver1.4.pdf",
+   "original": "RTcom_Manual_XDM-CTR100 KV Ver.1.4.pdf",
+   "model": "XDM-CTR100",
+   "version": "Ver1.4",
+   "status": "same",
+   "reflected": [],
+   "note": "사이트 근거판과 같은 판(0.46·0.66)",
+   "date": "2026-09-28"
+  },
+  {
+   "sha256": "e1797dfdb6d94774",
+   "file": "RTCOM/manual/RTcom_Manual_XDM-CTR100_Ver1.3.pdf",
+   "original": "RTcom_Manual_XDM-CTR100 Ver.1.3.pdf",
+   "model": "XDM-CTR100",
+   "version": "Ver1.3",
+   "status": "archived",
+   "reflected": [],
+   "note": "Ver1.4보다 이전 판 — 보관만",
+   "date": "2026-09-28"
+  },
+  {
+   "sha256": "0c86ae58dd5622e8",
+   "file": "RTCOM/manual/RTcom_Manual_XDM-FT101-FR101_Ver1.3.pdf",
+   "original": "RTcom_Manual_XDM-FT101_FR101 KV Ver.1.3.pdf",
+   "model": "XDM-FT101-FR101",
+   "version": "Ver1.3",
+   "status": "same",
+   "reflected": [],
+   "note": "사이트 근거판과 같은 판(0.64)",
+   "date": "2026-09-28"
+  },
+  {
+   "sha256": "20004a6e279e67b8",
+   "file": "RTCOM/sheet/RTcom_ProductSheet_VDM-HOS4-U_KV07-p30.png",
+   "original": "사양서_VDM-HOS카드.png",
+   "model": "VDM-HOS4-U",
+   "version": "KV07-p30",
+   "status": "reflected",
+   "reflected": [
+    {
+     "where": "src/card-specs.js",
+     "what": "HOS4-U 카드 사양 등록(KV07 30쪽)",
+     "release": "PR #68"
+    }
+   ],
+   "note": "VDM 매뉴얼 KV07 30쪽 HOS4-U 사양표 캡처",
+   "date": "2026-09-28"
+  }
+ ]
+}
