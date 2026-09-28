@@ -201,7 +201,7 @@
     {
       "group": "Physical",
       "name": "크기(W×D×H)",
-      "value": "127.4×88×30.1",
+      "value": "107.4[127.4]×88×30.1",
       "unit": "mm",
       "condition": "",
       "source": "S1",
