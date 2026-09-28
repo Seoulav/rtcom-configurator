@@ -5,6 +5,8 @@
 **이 폴더의 PDF는 사용자가 제공한 파일입니다.** 사용자가 GitHub로 직접 올리거나, 로컬 `input_doc/`에 넣은 파일을 사용자가 공개를 승인한 뒤 Claude가 이 폴더로 복사합니다(2026-09-28 사용자 결정 "1번": input_doc 매뉴얼 17개 공개). AI 세션은 PDF를 새로 만들지 않습니다(카탈로그 쪽 발췌 포함).
 
 **공개 중(2026-09-28, 0.88.0):** 매뉴얼 17개 — `hd-13u`·`hd-104u`·`hd-108u`·`hd-210u`·`hds-21u`·`hds-42mu`·`obhd-2c`·`obux-1c`·`qms-44ux`·`qms-88ux`·`xdm-ctr100`·`xdm-ctr100-pse`·`xdm-ft101-fr101`·`xdm`·`vdm`의 `-manual.pdf`, `xdm-ct103-cr103-manual-ct103.pdf`·`-manual-cr103.pdf`. 카탈로그 발췌본은 아직 없습니다.
+
+**전체 카탈로그(2026-09-28, 0.93.0):** `rtcom-catalog-2026.pdf`(46쪽판, 사용자 결정 "전체 카탈로그 공개해도 돼"). 29개 제품의 카탈로그 버튼이 이 파일을 함께 쓰고 `page`로 제품 쪽을 엽니다. 새 판이 나오면 같은 이름으로 덮어쓰고, 쪽 번호가 바뀌면 각 제품의 `page`·`catalogPages`도 고칩니다. 제품별 발췌본을 올리면 그 제품만 발췌본으로 바꿉니다.
 구조 설명은 `docs/implementation/PRODUCT_DOCUMENT_DOWNLOADS.md`에 있습니다.
 
 ## 올리는 방법 (GitHub 웹)

@@ -35,7 +35,8 @@ test('runtime code has no in-app navigation that would break relative asset path
 test('product library sources and the catalog PDF are no longer part of the site',()=>{
   for(const file of ['src/library.js','src/product-catalog.js','src/product-search.js','src/search-synonyms.js','src/catalog-validator.js','src/portal.js','output/design/assets/library'])assert.equal(fs.existsSync(file),false,`${file} should be removed`);
   const runtime=[read('index.html'),read('src/styles.css'),...runtimeScripts.map(read)].join('\n');
-  assert.doesNotMatch(runtime,/RtProductCatalog|RtProductSearch|rtcom-catalog-2026|assets\/library/);
+  // 0.93: 전체 카탈로그(rtcom-catalog-2026.pdf)는 사용자 결정으로 제품정보 문서 버튼에서 다시 공개하므로 금지 목록에서 뺐다(카탈로그 공개 검사는 package-site 테스트에 있음).
+  assert.doesNotMatch(runtime,/RtProductCatalog|RtProductSearch|assets\/library/);
 });
 
 test('every XDM card and documented rear photo has an image asset',()=>{
@@ -101,7 +102,9 @@ test('static package ships only configurator files and redirects legacy portal U
   const files=[];
   const walk=dir=>{for(const entry of fs.readdirSync(dir,{withFileTypes:true})){const full=path.join(dir,entry.name);entry.isDirectory()?walk(full):files.push(path.relative('dist',full).split(path.sep).join('/'))}};
   walk('dist');
-  // 2026-09-28: 제조사 문서 PDF는 제품 데이터 documents[].file에 등록된 것만 output/design/assets/docs/에서 공개한다. 전체 카탈로그 원본은 여전히 배포하지 않는다.
+  // 2026-09-28: 제조사 문서 PDF는 제품 데이터 documents[].file에 등록된 것만 output/design/assets/docs/에서 공개한다.
+  // 0.93: 전체 카탈로그는 공용 파일 output/design/assets/docs/rtcom-catalog-2026.pdf로만 공개하고(사용자 결정 "전체 카탈로그 공개해도 돼"), docs/ 원본 경로는 배포하지 않는다.
+  assert.ok(files.includes('output/design/assets/docs/rtcom-catalog-2026.pdf'),'shared full catalogue is published under the docs folder');
   const registeredDocs=new Set(fs.readdirSync('data/products').filter(name=>name.endsWith('.json')&&name!=='index.json').flatMap(name=>(JSON.parse(read(`data/products/${name}`)).documents||[]).map(doc=>doc.file).filter(Boolean)).map(name=>`output/design/assets/docs/${name}`));
   for(const file of files.filter(file=>file.endsWith('.pdf')))assert.ok(registeredDocs.has(file),`unregistered PDF must not be published: ${file}`);
   for(const file of registeredDocs)assert.ok(files.includes(file),`dist is missing registered document ${file}`);
@@ -186,6 +189,10 @@ test('product document PDFs (2026-09-28) are validated before publishing',()=>{
   assert.match(errorsFor({type:'Manual',title:'x',file:'hd-13u-manual.pdf',note:'사용자 제공, 배포 제외'}),/배포 제외·비공개/);
   const twoManuals={...product,documents:[...product.documents.filter(item=>item.type!=='Manual'),{type:'Manual',title:'a',file:'hd-13u-manual-a.pdf',note:''},{type:'Manual',title:'b',file:'hd-13u-manual-b.pdf',note:''}]};
   assert.match(validate(twoManuals,'data/products/hd-13u.json',ids).join('\n'),/label 필요/);
+  // 0.93 공용 전체 카탈로그: Catalog에만 쓰고, page는 1~46 정수.
+  assert.equal(errorsFor({type:'Catalog',title:'x',file:'rtcom-catalog-2026.pdf',page:34,note:''}),'');
+  assert.match(errorsFor({type:'Manual',title:'x',file:'rtcom-catalog-2026.pdf',note:''}),/공용 문서/);
+  assert.match(errorsFor({type:'Catalog',title:'x',file:'rtcom-catalog-2026.pdf',page:47,note:''}),/documents\.page/);
   const src=fs.readFileSync('src/products.js','utf8');
   assert.match(src,/target="_blank" rel="noopener"/,'document buttons open in a new tab without window.opener');
   assert.match(src,/download="\$\{esc\(doc\.file\)\}"/,'document buttons offer a direct download');
