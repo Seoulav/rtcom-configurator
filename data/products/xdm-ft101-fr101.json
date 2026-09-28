@@ -25,37 +25,37 @@
       "role": "Main",
       "file": "xdm-ft101-fr101-main.webp",
       "alt": "RTCOM XDM-FT101 광 송신기(TX) 상판",
-      "note": "Main · TX XDM-FT101 제품 사진",
+      "note": "Main · TX XDM-FT101 RT컴 제공 고해상도 실물 사진(2026-09-28), 윗면",
       "provider": "RTCOM",
       "model": "XDM-FT101",
       "source": "R",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "194×150"
+      "resolution": "800×628"
     },
     {
       "role": "Other",
       "file": "xdm-ft101-fr101-perspective.webp",
       "alt": "RTCOM XDM-FR101 광 수신기(RX) 상판",
-      "note": "Other · RX XDM-FR101 제품 사진",
+      "note": "Other · RX XDM-FR101 RT컴 제공 고해상도 실물 사진(2026-09-28), 윗면",
       "provider": "RTCOM",
       "model": "XDM-FR101",
       "source": "R",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "191×142"
+      "resolution": "800×650"
     },
     {
       "role": "Rear",
       "file": "xdm-ft101-fr101-rear.webp",
       "alt": "RTCOM XDM-FT101 송신기(TX) 단자면(DC IN·HDMI IN·오디오/RS-232·광 단자)",
-      "note": "Rear · 카탈로그 12쪽 XDM-FT101 단자면 사진",
+      "note": "Rear · XDM-FT101 RT컴 제공 고해상도 실물 사진(2026-09-28), 뒷면",
       "provider": "RTCOM",
       "model": "XDM-FT101",
       "source": "C",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "515×191"
+      "resolution": "1600×487"
     },
     {
       "role": "Front",
@@ -73,61 +73,61 @@
       "role": "Other",
       "file": "xdm-ft101-fr101-front-rear.webp",
       "alt": "RTCOM XDM-FT101 송신기 앞면(위, 매뉴얼 사진)과 뒷면(아래)",
-      "note": "Other · 매뉴얼 6쪽 전면 사진과 후면 사진을 위아래로 합성(단자 지도용)",
+      "note": "Other · 위 앞면(매뉴얼 6쪽 사진) · 아래 뒷면(RT컴 제공 고해상도 실물 사진(2026-09-28)) 합성(송신기 단자 지도용)",
       "provider": "RTCOM",
       "model": "XDM-FT101",
       "source": "M1",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "691×703"
+      "resolution": "920×916"
     },
     {
       "role": "Perspective",
       "file": "xdm-fr101-front.webp",
       "alt": "RTCOM XDM-FR101 수신기 정면(흰 배경 실물 사진)",
-      "note": "Perspective · 사용자 제공 실물 사진(2026-09-28)",
+      "note": "Perspective · XDM-FR101 RT컴 제공 고해상도 실물 사진(2026-09-28), 윗면",
       "provider": "RTCOM",
       "model": "XDM-FR101",
       "source": "P1",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "861×700"
+      "resolution": "1400×1138"
     },
     {
       "role": "Perspective",
       "file": "xdm-fr101-rear.webp",
       "alt": "RTCOM XDM-FR101 수신기 단자면(DC IN·HDMI OUT·오디오/RS-232·광 단자)",
-      "note": "Perspective · 사용자 제공 실물 사진(2026-09-28)",
+      "note": "Perspective · XDM-FR101 RT컴 제공 고해상도 실물 사진(2026-09-28), 뒷면(수신기 단자 지도용)",
       "provider": "RTCOM",
       "model": "XDM-FR101",
       "source": "P1",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "826×248"
+      "resolution": "1600×477"
     },
     {
       "role": "Perspective",
       "file": "xdm-ft101-perspective-front.webp",
       "alt": "RTCOM XDM-FT101 송신기 정면(흰 배경 실물 사진, 고해상도)",
-      "note": "Perspective · 사용자 제공 실물 사진(2026-09-28) — 03 단자 지도는 기존 Front/Other 사진 좌표를 그대로 씀",
+      "note": "Perspective · XDM-FT101 RT컴 제공 고해상도 실물 사진(2026-09-28), 윗면",
       "provider": "RTCOM",
       "model": "XDM-FT101",
       "source": "P1",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "783×615"
+      "resolution": "1400×1098"
     },
     {
       "role": "Perspective",
       "file": "xdm-ft101-perspective-rear.webp",
       "alt": "RTCOM XDM-FT101 송신기 단자면(고해상도, 참고용)",
-      "note": "Perspective · 사용자 제공 실물 사진(2026-09-28)",
+      "note": "Perspective · XDM-FT101 RT컴 제공 고해상도 실물 사진(2026-09-28), 뒷면",
       "provider": "RTCOM",
       "model": "XDM-FT101",
       "source": "P1",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "765×236"
+      "resolution": "1600×487"
     }
   ],
   "imageStatuses": [
@@ -430,67 +430,112 @@
       "verification": "VERIFIED"
     }
   ],
-  "portMap": {
-    "image": "Other",
-    "file": "xdm-ft101-fr101-front-rear.webp",
-    "title": "위 앞면(송신기), 아래 뒷면",
-    "items": [
-      {
-        "n": 1,
-        "label": "HDMI IN",
-        "desc": "HDMI 소스 연결(XDM-FT101)",
-        "x1": 246,
-        "x2": 310,
-        "side": "top",
-        "y": 512
-      },
-      {
-        "n": 2,
-        "label": "AUDIO · RS-232",
-        "desc": "오디오 삽입 + RS-232, 같은 5핀 Phoenix 단자",
-        "x1": 334,
-        "x2": 414,
-        "side": "top",
-        "y": 512
-      },
-      {
-        "n": 3,
-        "label": "FIBER OUT",
-        "desc": "광 출력(1 LC)",
-        "x1": 428,
-        "x2": 488,
-        "side": "top",
-        "y": 512
-      },
-      {
-        "n": 6,
-        "label": "DC IN",
-        "desc": "전원 입력",
-        "x1": 170,
-        "x2": 220,
-        "side": "top",
-        "y": 512
-      },
-      {
-        "n": 4,
-        "label": "MODE",
-        "desc": "전면 파란색 MODE 로터리 스위치로 EDID와 오디오(Source·Analog)를 함께 고름. '06 EDID 설정' 참고",
-        "x1": 262,
-        "x2": 308,
-        "side": "top",
-        "y": 272
-      },
-      {
-        "n": 5,
-        "label": "S/P",
-        "desc": "Mini USB 서비스 포트(펌웨어 업데이트)",
-        "x1": 334,
-        "x2": 362,
-        "side": "top",
-        "y": 300
-      }
-    ]
-  },
+  "portMap": [
+    {
+      "image": "Other",
+      "file": "xdm-ft101-fr101-front-rear.webp",
+      "title": "송신기 XDM-FT101 · 위 앞면, 아래 뒷면",
+      "items": [
+        {
+          "n": 1,
+          "label": "HDMI IN",
+          "desc": "HDMI 소스 연결(XDM-FT101)",
+          "x1": 288,
+          "x2": 415,
+          "side": "top",
+          "y": 662
+        },
+        {
+          "n": 2,
+          "label": "AUDIO · RS-232",
+          "desc": "오디오 삽입 + RS-232, 같은 5핀 Phoenix 단자",
+          "x1": 462,
+          "x2": 620,
+          "side": "top",
+          "y": 662
+        },
+        {
+          "n": 3,
+          "label": "FIBER OUT",
+          "desc": "광 출력(1 LC)",
+          "x1": 650,
+          "x2": 742,
+          "side": "top",
+          "y": 662
+        },
+        {
+          "n": 6,
+          "label": "DC IN",
+          "desc": "전원 입력",
+          "x1": 140,
+          "x2": 245,
+          "side": "top",
+          "y": 662
+        },
+        {
+          "n": 4,
+          "label": "MODE",
+          "desc": "전면 파란색 MODE 로터리 스위치로 EDID와 오디오(Source·Analog)를 함께 고름. '06 EDID 설정' 참고",
+          "x1": 358,
+          "x2": 417,
+          "side": "top",
+          "y": 372
+        },
+        {
+          "n": 5,
+          "label": "S/P",
+          "desc": "Mini USB 서비스 포트(펌웨어 업데이트)",
+          "x1": 440,
+          "x2": 492,
+          "side": "top",
+          "y": 448
+        }
+      ]
+    },
+    {
+      "image": "Perspective",
+      "file": "xdm-fr101-rear.webp",
+      "title": "수신기 XDM-FR101 · 뒷면",
+      "items": [
+        {
+          "n": 1,
+          "label": "HDMI OUT",
+          "desc": "디스플레이 연결(XDM-FR101)",
+          "x1": 490,
+          "x2": 725,
+          "side": "top",
+          "y": 48
+        },
+        {
+          "n": 2,
+          "label": "AUDIO · RS-232",
+          "desc": "오디오 추출 + RS-232, 같은 5핀 Phoenix 단자",
+          "x1": 810,
+          "x2": 1090,
+          "side": "top",
+          "y": 48
+        },
+        {
+          "n": 3,
+          "label": "FIBER IN",
+          "desc": "광 입력(1 LC) · XDM-FT101 또는 XDM-FOS100과 연결",
+          "x1": 1145,
+          "x2": 1370,
+          "side": "top",
+          "y": 48
+        },
+        {
+          "n": 4,
+          "label": "DC IN",
+          "desc": "전원 입력(+12V·GND)",
+          "x1": 228,
+          "x2": 405,
+          "side": "top",
+          "y": 48
+        }
+      ]
+    }
+  ],
   "related": [
     {
       "relation": "PART_OF_SERIES",

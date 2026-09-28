@@ -25,37 +25,37 @@
       "role": "Main",
       "file": "xdm-ctr100-main.webp",
       "alt": "RTCOM XDM-CTR100 상판",
-      "note": "Main · XDM-CTR100 제품 사진",
+      "note": "Main · RT컴 제공 고해상도 실물 사진(2026-09-28), 윗면",
       "provider": "RTCOM",
       "model": "XDM-CTR100",
       "source": "R",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "210×129"
+      "resolution": "800×507"
     },
     {
       "role": "Rear",
       "file": "xdm-ctr100-rear.webp",
-      "alt": "RTCOM XDM-CTR100 양쪽 단자면(DIP 스위치면, HDBaseT·HDMI IN/OUT·Phoenix 단자면)",
-      "note": "Rear · 카탈로그 10쪽 XDM-CTR100 단자면 사진",
+      "alt": "RTCOM XDM-CTR100 앞면(위)·뒷면(아래) 합성 사진",
+      "note": "Rear · 위 앞면(카탈로그 10쪽 사진) · 아래 뒷면(RT컴 제공 고해상도 실물 사진(2026-09-28)) 합성",
       "provider": "RTCOM",
       "model": "XDM-CTR100",
       "source": "C",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "563×350"
+      "resolution": "1000×668"
     },
     {
       "role": "Front",
       "file": "xdm-ctr100-front.webp",
       "alt": "RTCOM XDM-CTR100 정면(흰 배경 실물 사진)",
-      "note": "Front · 사용자 제공 실물 사진(2026-09-28)",
+      "note": "Front · RT컴 제공 고해상도 실물 사진(2026-09-28), 윗면",
       "provider": "RTCOM",
       "model": "XDM-CTR100",
       "source": "P1",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "800×509"
+      "resolution": "1400×888"
     }
   ],
   "imageStatuses": [
@@ -331,64 +331,64 @@
         "n": 4,
         "label": "HDBaseT",
         "desc": "RJ45 · CAT 케이블로 XDM 카드 또는 상대 CTR100과 연결",
-        "x1": 104,
-        "x2": 168,
+        "x1": 118,
+        "x2": 252,
         "side": "bottom",
-        "y": 310
+        "y": 603
       },
       {
         "n": 1,
         "label": "HDMI IN",
         "desc": "TX 모드에서 HDMI 소스 입력",
-        "x1": 181,
-        "x2": 239,
+        "x1": 287,
+        "x2": 412,
         "side": "bottom",
-        "y": 310
+        "y": 603
       },
       {
         "n": 2,
         "label": "HDMI OUT",
         "desc": "RX 모드에서 디스플레이 출력",
-        "x1": 265,
-        "x2": 325,
+        "x1": 472,
+        "x2": 597,
         "side": "bottom",
-        "y": 310
+        "y": 603
       },
       {
         "n": 3,
         "label": "AUDIO · RS-232",
         "desc": "5핀(L·R·접지·Tx·Rx) · 아날로그 스테레오 오디오 출력과 RS-232+ 제어",
-        "x1": 340,
-        "x2": 404,
+        "x1": 632,
+        "x2": 785,
         "side": "bottom",
-        "y": 310
+        "y": 603
       },
       {
         "n": 7,
         "label": "DC IN",
         "desc": "DC 12V 1A 이상 · XDM-CTR100 PSE와 연결되거나 XDM-PSU로 급전하면 연결하지 않음",
-        "x1": 410,
-        "x2": 451,
+        "x1": 793,
+        "x2": 888,
         "side": "bottom",
-        "y": 310
+        "y": 603
       },
       {
         "n": 5,
         "label": "TX/RX DIP 스위치",
         "desc": "1번 ON = TX · 2번 ON = RX · 3번 ON = Long Reach(1080p 150m) · 스위치를 내리면 ON. 설정 방법은 '06 딥 스위치 설정' 참고",
-        "x1": 181,
-        "x2": 229,
+        "x1": 277,
+        "x2": 382,
         "side": "top",
-        "y": 42
+        "y": 26
       },
       {
         "n": 6,
         "label": "상태 LED",
         "desc": "Rx Signal(RX 모드) · Tx Signal(TX 모드) · Tx/Rx·Link(정상 연결)",
-        "x1": 112,
-        "x2": 166,
+        "x1": 125,
+        "x2": 244,
         "side": "top",
-        "y": 42
+        "y": 26
       }
     ],
     "title": "위 앞면, 아래 뒷면"
