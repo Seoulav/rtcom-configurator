@@ -430,6 +430,18 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     const psuStill=await page.$eval('.rt-psu-flow',el=>getComputedStyle(el).animationName);
     await page.emulateMedia({reducedMotion:'no-preference'});
     check('XDM-PSU Signal Flow가 장비 그림(프레임·PSU·CTR100 Tx/Rx)과 흐르는 케이블 8가닥(Tx 전원은 역방향)으로 나오고, 움직임 줄이기에서는 멈춤',psuFlow.flows===8&&psuFlow.rev===1&&psuFlow.anim==='rt-psu-dash'&&psuFlow.labels&&psuStill==='none',JSON.stringify({psuFlow,psuStill}));
+    // 0.99 COS100 1번 포트 피닉스 단자에 PHX 2핀 전원선이 꽂히고(사용자 확인 "COS PHNIX픽에 전원연결"), XDM-PSU만 "크게 보기" 확대 창이 있다.
+    const cosPin=await page.$$eval('.rt-psu-cos-pin',els=>els.length);
+    await page.click('[data-flow-zoom]');
+    await page.waitForSelector('dialog.rt-flow-zoom[open]');
+    await page.click('dialog.rt-flow-zoom [data-zoom-step="1"]');
+    const zoom=await page.$eval('dialog.rt-flow-zoom',d=>({level:d.querySelector('[data-zoom-level]').textContent,svg:!!d.querySelector('.rt-psu-anim'),wider:d.querySelector('.rt-flow-zoom-body').scrollWidth>d.querySelector('.rt-flow-zoom-body').clientWidth}));
+    await page.keyboard.press('Escape');
+    const zoomClosed=await page.$eval('dialog.rt-flow-zoom',d=>!d.open);
+    await page.goto(`${home}#products/xdm-ctr100`,{waitUntil:'networkidle'});
+    await page.waitForSelector('.rt-pg-toolbar');
+    const otherZoom=await page.$$eval('[data-flow-zoom]',els=>els.length);
+    check('XDM-PSU Signal Flow: COS100 피닉스에 전원선 연결, "크게 보기" 창이 150%로 커지고 Esc로 닫힘, 다른 제품에는 확대 버튼 없음',cosPin===1&&zoom.level==='150%'&&zoom.svg&&zoom.wider&&zoomClosed&&otherZoom===0,JSON.stringify({cosPin,zoom,zoomClosed,otherZoom}));
     // 0.95 전체 카탈로그 공유(사용자 결정 2026-09-28 "전체 카탈로그 공개해도 돼"): 제품 상세 카탈로그 버튼은 공용 파일을 제품 쪽(#page=N)에서 열고, 내려받기는 파일 전체. 제품 목록에는 "전체 카탈로그" 버튼 하나.
     await page.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-toolbar [data-doc="Catalog"]');
