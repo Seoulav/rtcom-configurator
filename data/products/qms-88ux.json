@@ -23,14 +23,14 @@
     {
       "role": "Front",
       "file": "qms-88ux-front.webp",
-      "alt": "RTCOM QMS-88UX 전면",
-      "note": "Front · 카탈로그 제품 이미지",
+      "alt": "RTCOM QMS-88UX 전면(흰 배경 실물 사진)",
+      "note": "Front · 사용자 제공 실물 사진(2026-09-28)",
       "provider": "RTCOM",
       "model": "QMS-88UX",
-      "source": "C",
+      "source": "P1",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "625×128"
+      "resolution": "1200×275"
     },
     {
       "role": "Rear",
@@ -378,6 +378,12 @@
       "name": "서울영상테크 SI사업본부 확인",
       "page": "",
       "scope": "사용자 확인(2026-09-27) — 카탈로그 사진으로 읽을 수 없는 단자 방향"
+    },
+    {
+      "code": "P1",
+      "name": "서울영상테크 SI사업본부 제공 실물 사진",
+      "page": "",
+      "scope": "사용자 업로드 고해상도 제품 사진(2026-09-28, 흰 배경 촬영본)"
     }
   ],
   "issues": [
