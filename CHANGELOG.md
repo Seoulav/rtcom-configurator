@@ -4,6 +4,8 @@
 
 ## Unreleased
 
+- **PR 병합 규칙 변경**(사용자 결정 2026-09-28 "병합도 앞으로 자동으로 해줘"·"추천방향대로 진행해줘"): `CLAUDE.md` 작업 순서 6번과 Git 명령 정책을 바꿔, 기본 검증이 통과하고 PR 설명에 결과를 적은 PR은 Claude가 `gh pr merge <번호> --squash` 한 줄로 병합합니다. 공개 Pages 배포는 계속 사용자 승인 뒤에만 합니다. 검증 실패·사용자 결정 대기·공개 PDF 커밋이 있으면 병합 전에 묻습니다.
+
 - **input_doc 반영 표시**(사용자 요청 "깃에 자료로서 올라간 내용들은 input_doc에서 알수 있도록 표시가 되면 좋겠다"): Git에 올라가는 반영 장부 `docs/evidence/input-doc-ledger.json`(자료별 해시·상태·반영한 곳·버전, 자료 내용 없음)을 추가하고, `scripts/input-doc-status.cjs`가 세션을 시작할 때마다 `input_doc/STATUS.md`에 파일별 상태(📄 PDF 공개 · ✅ 사이트에 반영 · ⏳ 검토 전 · ☑️ 같은 판 · 🗄️ 보관만)를 만듭니다. `scripts/input_doc.py file`은 장부에 "검토 전"으로 올리고, 새 `mark` 명령으로 반영 결과를 적습니다. 첫 장부는 2026-09-28 정리분 21건(반영 2 · 같은 판 15 · 보관만 4)입니다. 근거: `docs/implementation/LOCAL_INPUT_DOC_WORKFLOW.md`.
 
 - **0.82.0 배포 기록**: `docs/qa/DEPLOYMENT_0.82_2026-09-28.md`(PR #67 → main 병합·배포 run 50, 공개 파일 224/224 일치, 비공개 파일 16개 404, 브랜치 배포 없음)
