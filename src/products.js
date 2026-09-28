@@ -39,6 +39,10 @@
       extender:'<svg width="30" height="20" viewBox="0 0 30 20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="1" y="5" width="9" height="10" rx="2"/><rect x="20" y="5" width="9" height="10" rx="2"/><path d="M10 10H20"/></svg>',
       cable:'<svg width="30" height="14" viewBox="0 0 30 14" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="4" cy="7" r="2.4" fill="#fff"/><path d="M6.5 7H23.5"/><circle cx="26" cy="7" r="2.4" fill="#fff"/></svg>'
     };
+    // 제품별 아이콘(0.105): XDM-PSU는 전송기 그룹이지만 전원 장치라, 두 상자 아이콘 대신 랙 본체 위 번개(전원) 모양을 쓴다(사용자 요청 2026-09-28 "ㅁ-ㅁ 모양을 뭔가 POWER SUPPLY형상이 없어서").
+    const PRODUCT_ICON={
+      'xdm-psu':'<svg width="30" height="26" viewBox="0 0 30 26" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="26" height="14" rx="2.5"/><path d="M16.5 3L11 13.5h5.5L13.5 23" stroke-width="2.2"/><circle cx="6" cy="13" r="1.2" fill="#fff" stroke="none"/><circle cx="24" cy="13" r="1.2" fill="#fff" stroke="none"/></svg>'
+    };
     // 카드가 연동하는 전송기 표시(카드 라인업의 점선 알약). src/app.js의 extenderInfo·extenderLineup(pair 필드)과 대조해 확인했다(2026-09-27).
     const CARD_EXTENDER_LABEL={'XDM-CIS100':'CTR100 TX · CT103','XDM-COS100':'CTR100 RX · CR103','XDM-FIS100':'FT101','XDM-FOS100':'FR101','CIS4-U':'CT104-U','COS4-U':'CR104-U','FIS4-U':'FT101-U','FOS4-U':'FR101-U','SPX-COS12':'SPX-RX'};
     // 메인프레임 사진이 없는 모델(명세 2-3: "사진이 없는 VDM-288X는 사진 준비 중으로 둡니다"). 없는 파일을 요청하지 않도록 미리 안다.
@@ -297,7 +301,7 @@
     // 케이블을 따라 신호(초록)·전원(주황)이 흐르는 애니메이션을 넣는다(사용자 요청 2026-09-28 "딥스위치를 이미지화 했던 것처럼 … 애니메이션 이미지화해서 실제 연결처럼").
     // 움직임을 줄이는 설정(prefers-reduced-motion)에서는 흐름 점선이 멈춘 채로 보인다.
     function psuDiagram(item){
-      const width=1000,height=680,INK='#1f2532',SUB='#687386',BODY='#eceff4',EDGE='#8e97a6',HI='#007AFF',TAG='#1f3b8f';
+      const width=1000,height=710,INK='#1f2532',SUB='#687386',BODY='#eceff4',EDGE='#8e97a6',HI='#007AFF',TAG='#1f3b8f';
       const rj45=(x,y,on)=>`<g><rect x="${x}" y="${y}" width="16" height="13" rx="1.5" fill="${on?'#e3edff':'#fff'}" stroke="${on?HI:'#3a4150'}" stroke-width="${on?2:1.3}"/><rect x="${x+5}" y="${y+8}" width="6" height="3.5" fill="${on?HI:'#3a4150'}"/></g>`;
       const pin2=(x,y,on)=>`<g><rect x="${x}" y="${y}" width="14" height="10" rx="1.5" fill="${on?'#34C759':'#8fd6a0'}" stroke="${on?'#1c7a36':'#5da873'}" stroke-width="${on?1.8:1}"/><rect x="${x+2.5}" y="${y+3}" width="3.5" height="4" fill="#0f3d1c"/><rect x="${x+8}" y="${y+3}" width="3.5" height="4" fill="#0f3d1c"/></g>`;
       const phoenix5=(x,y,on)=>`<g${on?' class="rt-psu-cos-pin"':''}><rect x="${x}" y="${y}" width="16" height="8" rx="1.2" fill="${on?'#34C759':'#8fd6a0'}" stroke="${on?'#1c7a36':'#5da873'}" stroke-width="${on?1.6:1}"/>${[0,1,2,3,4].map(i=>`<rect x="${x+1.6+i*2.7}" y="${y+2.5}" width="1.8" height="3" fill="#0f3d1c"/>`).join('')}</g>`;
@@ -308,14 +312,16 @@
       const twoPin=d=>`<path d="${d}" fill="none" stroke="#e0463c" stroke-width="3" stroke-linejoin="round" transform="translate(-2.2 0)"/><path d="${d}" fill="none" stroke="#2c2c2e" stroke-width="3" stroke-linejoin="round" transform="translate(2.2 0)"/><path class="rt-psu-flow" d="${d}" fill="none" stroke="${COLOR_POWER}" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="4 10"/>`;
       let body='';
       // ---- 케이블(장비보다 먼저 그려 장비 몸체 아래로 들어가게 한다) ----
-      const cisPort=[336,62],cosPort=[501,52],cosPin=[501,67],pohCis=[322,322],pohExt=[322,352],phx=[552,336],txRj=[122,538],rxRj=[870,538];
+      // 0.101(사용자 요청 "XDM-PSU 전원과 PHX가 조금 거리가 멀었으면 해", "XDM COS카드 전원 연결을 조금 만 더 길게해줘"): PSU 후면 모듈 행과 그 아래 CTR100 Tx/Rx를 30px 아래로,
+      // AC 입력만 PHX보다 40px 오른쪽으로 옮겨 PHX↔COS100 2핀 전원선이 더 길어지고 PHX↔AC 입력 사이 간격이 생기게 한다.
+      const cisPort=[336,62],cosPort=[501,52],cosPin=[501,67],pohCis=[322,352],pohExt=[322,382],phx=[552,366],txRj=[122,568],rxRj=[870,568];
       // ① POH "CIS Card" ↔ CIS100: 신호만(Tx에서 온 영상이 CIS100으로 들어감)
       body+=cable(`M${pohCis[0]} ${pohCis[1]+6}H250V${cisPort[1]+6}H${cisPort[0]}`,[[COLOR_COPPER,1]]);
       // ② CTR100 Tx ↔ POH "Extender": 신호는 Tx → PSU, 전원은 PSU → Tx(역방향)
       body+=cable(`M${txRj[0]} ${txRj[1]+6}H80V${pohExt[1]+6}H${pohExt[0]}`,[[COLOR_COPPER,1],[COLOR_POWER,-1,9]]);
       // HDMI: 소스 → Tx HDMI IN, Rx HDMI OUT → 디스플레이
-      body+=cable('M84 624H171V574',[[COLOR_IN,1]]);
-      body+=cable('M755 574V624H916',[[COLOR_OUT,1]]);
+      body+=cable('M84 654H171V604',[[COLOR_IN,1]]);
+      body+=cable('M755 604V654H916',[[COLOR_OUT,1]]);
       // ---- 매트릭스 프레임(CIS100·COS100 카드 장착) ----
       body+=`<rect x="300" y="24" width="400" height="190" rx="6" fill="${BODY}" stroke="${EDGE}" stroke-width="2"/>`;
       for(let i=0;i<12;i++){
@@ -334,36 +340,36 @@
       body+=cable(`M${cosPort[0]+16} ${cosPort[1]+6}H930V${rxRj[1]+6}H${rxRj[0]+16}`,[[COLOR_COPPER,1],[COLOR_POWER,1,9]]);
       body+=`<text x="700" y="232" text-anchor="end" font-size="10" fill="${SUB}">XDM 매트릭스 프레임</text>`;
       // ---- XDM-PSU 후면(POH·PHX 모듈, AC 인렛) ----
-      body+=`<text x="300" y="292" font-size="15" font-weight="800" fill="${TAG}">XDM-PSU</text>`;
-      body+=`<rect x="300" y="302" width="400" height="80" rx="6" fill="${BODY}" stroke="${EDGE}" stroke-width="2"/>`;
+      body+=`<text x="300" y="322" font-size="15" font-weight="800" fill="${TAG}">XDM-PSU</text>`;
+      body+=`<rect x="300" y="332" width="440" height="80" rx="6" fill="${BODY}" stroke="${EDGE}" stroke-width="2"/>`;
       for(let i=0;i<6;i++){const x=322+i*34;body+=rj45(x,pohCis[1],i===0)+rj45(x,pohExt[1],i===0)}
       for(let j=0;j<4;j++)body+=pin2(phx[0]+j*28,phx[1],j===0);
-      body+=`<rect x="652" y="314" width="34" height="18" rx="3" fill="#fff" stroke="#3a4150" stroke-width="1.3"/><rect x="662" y="318" width="14" height="10" rx="2" fill="#e0463c"/><rect x="652" y="338" width="34" height="32" rx="4" fill="#fff" stroke="#3a4150" stroke-width="1.3"/><path d="M660 346h6v8h-6zM672 346h6v8h-6zM666 358h6v6h-6z" fill="#3a4150"/>`;
-      body+=`<text x="${322+85}" y="398" text-anchor="middle" font-size="10" font-weight="750" fill="${INK}">${svgEsc('XDM-PSU · POH')}</text><text x="${322+85}" y="411" text-anchor="middle" font-size="9.5" fill="${SUB}">위 CIS Card · 아래 Extender</text>`;
-      body+=`<text x="${phx[0]+49}" y="398" text-anchor="middle" font-size="10" font-weight="750" fill="${INK}">${svgEsc('XDM-PSU · PHX')}</text><text x="${phx[0]+49}" y="411" text-anchor="middle" font-size="9.5" fill="${SUB}">2핀(+/−) COS Card</text>`;
-      body+=`<text x="669" y="398" text-anchor="middle" font-size="9.5" fill="${SUB}">AC 입력</text>`;
+      body+=`<rect x="692" y="344" width="34" height="18" rx="3" fill="#fff" stroke="#3a4150" stroke-width="1.3"/><rect x="702" y="348" width="14" height="10" rx="2" fill="#e0463c"/><rect x="692" y="368" width="34" height="32" rx="4" fill="#fff" stroke="#3a4150" stroke-width="1.3"/><path d="M700 376h6v8h-6zM712 376h6v8h-6zM706 388h6v6h-6z" fill="#3a4150"/>`;
+      body+=`<text x="${322+85}" y="428" text-anchor="middle" font-size="10" font-weight="750" fill="${INK}">${svgEsc('XDM-PSU · POH')}</text><text x="${322+85}" y="441" text-anchor="middle" font-size="9.5" fill="${SUB}">위 CIS Card · 아래 Extender</text>`;
+      body+=`<text x="${phx[0]+49}" y="428" text-anchor="middle" font-size="10" font-weight="750" fill="${INK}">${svgEsc('XDM-PSU · PHX')}</text><text x="${phx[0]+49}" y="441" text-anchor="middle" font-size="9.5" fill="${SUB}">2핀(+/−) COS Card</text>`;
+      body+=`<text x="709" y="428" text-anchor="middle" font-size="9.5" fill="${SUB}">AC 입력</text>`;
       // ---- XDM-CTR100 Tx/Rx(뒷면: RJ45·HDMI·피닉스, 상태 LED) ----
       const ctr=(x,label,sub,rjX,hdmiX,ledX,noteX)=>{
-        let g=`<text x="${x+90}" y="494" text-anchor="middle" font-size="14" font-weight="800" fill="${TAG}">XDM-CTR100</text><text x="${x+90}" y="510" text-anchor="middle" font-size="11" font-weight="700" fill="${INK}">${svgEsc(label)}</text>`;
-        g+=`<rect x="${x}" y="520" width="180" height="54" rx="6" fill="${BODY}" stroke="${EDGE}" stroke-width="2"/>`;
-        g+=rj45(rjX,538,true)+hdmi(hdmiX,540,true)+hdmi(hdmiX+26,540,false);
-        g+=`<rect x="${x+106}" y="541" width="30" height="10" rx="1.5" fill="#8fd6a0" stroke="#5da873"/>`;
-        g+=`<circle class="rt-psu-led" cx="${ledX}" cy="531" r="3.4" fill="#34C759"/><circle class="rt-psu-led" cx="${ledX+10}" cy="531" r="3.4" fill="#34C759" style="animation-delay:.6s"/>`;
-        g+=`<text x="${noteX}" y="592" font-size="9.5" fill="${SUB}">${svgEsc(sub)}</text>`;
+        let g=`<text x="${x+90}" y="524" text-anchor="middle" font-size="14" font-weight="800" fill="${TAG}">XDM-CTR100</text><text x="${x+90}" y="540" text-anchor="middle" font-size="11" font-weight="700" fill="${INK}">${svgEsc(label)}</text>`;
+        g+=`<rect x="${x}" y="550" width="180" height="54" rx="6" fill="${BODY}" stroke="${EDGE}" stroke-width="2"/>`;
+        g+=rj45(rjX,568,true)+hdmi(hdmiX,570,true)+hdmi(hdmiX+26,570,false);
+        g+=`<rect x="${x+106}" y="571" width="30" height="10" rx="1.5" fill="#8fd6a0" stroke="#5da873"/>`;
+        g+=`<circle class="rt-psu-led" cx="${ledX}" cy="561" r="3.4" fill="#34C759"/><circle class="rt-psu-led" cx="${ledX+10}" cy="561" r="3.4" fill="#34C759" style="animation-delay:.6s"/>`;
+        g+=`<text x="${noteX}" y="622" font-size="9.5" fill="${SUB}">${svgEsc(sub)}</text>`;
         return g;
       };
       body+=ctr(110,'Tx · 송신기','전원 어댑터 불필요 · POH가 CAT로 전원 공급',txRj[0],160,270,182);
       body+=ctr(710,'Rx · 수신기','전원 어댑터 불필요 · COS100이 CAT로 전원 공급',rxRj[0],744,724,766);
-      body+=monitorIcon(60,618,'소스 기기')+monitorIcon(940,618,'디스플레이');
+      body+=monitorIcon(60,648,'소스 기기')+monitorIcon(940,648,'디스플레이');
       // ---- 케이블 이름표 ----
       body+=pill(250,196,'CAT · 신호',COLOR_COPPER);
-      body+=pill(80,448,'CAT · 신호+전원',COLOR_COPPER);
+      body+=pill(80,478,'CAT · 신호+전원',COLOR_COPPER);
       body+=pill(930,300,'CAT · 신호+전원',COLOR_COPPER);
       body+=pill(610,262,'2핀 전원선',COLOR_POWER);
-      body+=pill(128,640,'HDMI',COLOR_IN)+pill(848,640,'HDMI',COLOR_OUT);
+      body+=pill(128,670,'HDMI',COLOR_IN)+pill(848,670,'HDMI',COLOR_OUT);
       const ac=(item.specifications||[]).find(spec=>spec.name==='전원');
-      body+=`<text x="${width/2}" y="440" text-anchor="middle" font-size="10" fill="${SUB}">XDM-PSU 1대 = 모듈 16칸(POH·PHX를 섞어 장착) · POH 1개 = CTR100 Tx 1대 · PHX 1개 = COS100 1장${ac?` · 본체 전원 ${svgEsc(ac.value)}`:''}</text>`;
-      body+=`<text x="${width/2}" y="456" text-anchor="middle" font-size="10" fill="${SUB}">XDM-CIS100·COS100 카드 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다</text>`;
+      body+=`<text x="${width/2}" y="470" text-anchor="middle" font-size="10" fill="${SUB}">XDM-PSU 1대 = 모듈 16칸(POH·PHX를 섞어 장착) · POH 1개 = CTR100 Tx 1대 · PHX 1개 = COS100 1장${ac?` · 본체 전원 ${svgEsc(ac.value)}`:''}</text>`;
+      body+=`<text x="${width/2}" y="486" text-anchor="middle" font-size="10" fill="${SUB}">XDM-CIS100·COS100 카드 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다</text>`;
       // 0.99: XDM-PSU만 그림이 커서 "크게 보기"(전체 화면 확대 창)를 둔다(사용자 요청 2026-09-28 "xdm-psu만 03 Singal flow 확대해서 볼 수 있게해줘"). 그림을 눌러도 열린다.
       return `<div class="rt-flow-zoom-bar"><button type="button" class="rt-pg-btn" data-flow-zoom>⤢ 크게 보기</button></div>`+diagramWrap(`<g class="rt-psu-anim">${body}</g>`,width,height,[[COLOR_IN,'입력(HDMI)'],[COLOR_COPPER,'HDBaseT 신호(CATx)'],[COLOR_POWER,'전원'],[COLOR_OUT,'출력(HDMI)']]);
     }
@@ -803,7 +809,7 @@
       belowCards+=dipSwitchSection(item);
       // 휴대폰(1000px 이하)에서는 .rt-pg-col이 사라지고 rt-pg-col-mobile-N 순서로만 쌓이므로, sideCard도 순서 클래스가 있어야 05 다음(01~05, 06, 07 기록)으로 나온다(없으면 order:0이라 맨 앞으로 감).
       if(sideCard)sideCard=sideCard.replace('class="rt-pg-card', 'class="rt-pg-card rt-pg-col-mobile-6');
-      return `${headerBlock({icon:GROUP_ICON[item.group],title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,docs:docButtons(item),diagram:!!photo})}
+      return `${headerBlock({icon:PRODUCT_ICON[item.id]||GROUP_ICON[item.group],title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,docs:docButtons(item),diagram:!!photo})}
       <div class="rt-pg-cols">
         <div class="rt-pg-col">
           <section class="rt-pg-card rt-pg-col-mobile-1"><h2><span class="rt-pg-idx">01</span>한눈에 보기</h2>
@@ -816,7 +822,7 @@
           ${sideCard}
         </div>
         <div class="rt-pg-col">
-          ${portSection?`<section class="rt-pg-card rt-pg-col-mobile-2"><h2><span class="rt-pg-idx">02</span>Port Map <span class="rt-pg-note">— ${item.portMap?'실제 제품 사진 기준':'입출력 표 기준'}</span></h2>${portSection}</section>`:''}
+          ${portSection?`<section class="rt-pg-card rt-pg-col-mobile-2"><h2><span class="rt-pg-idx">02</span>Port Map <span class="rt-pg-note">— ${item.portMap?(item.portMap.basis||'실제 제품 사진 기준'):'입출력 표 기준'}</span></h2>${portSection}</section>`:''}
           ${diagram?`<section class="rt-pg-card rt-pg-col-mobile-3"><h2><span class="rt-pg-idx">03</span>Signal Flow</h2>${diagram}</section>`:''}
           ${recordSection(item,diagram,photo)}
         </div>
@@ -964,6 +970,9 @@
     function openFlowZoom(section){
       const svg=section?.querySelector('.rt-pg-svg-wrap svg');
       if(!svg)return;
+      // 0.101(사용자 지적 "확대시 범례가 안보인다 같이 확대되게해줘"): 범례(rt-pg-legend)는 svg 바깥의 형제 요소라 확대 창에 svg만 복사하면 통째로 빠졌다.
+      // 확대 배율과 무관하게 항상 읽을 수 있도록 확대 창 머리글 아래에 고정 줄로 넣는다(그림 캔버스 자체를 확대·축소해도 범례 글자 크기는 유지됨).
+      const legend=section?.querySelector('.rt-pg-legend');
       let dlg=body.querySelector('dialog.rt-flow-zoom');
       if(!dlg){
         dlg=document.createElement('dialog');dlg.className='rt-flow-zoom';dlg.setAttribute('aria-label','Signal Flow 크게 보기');
@@ -971,7 +980,7 @@
         body.appendChild(dlg);
       }
       const title=body.querySelector('#rt-pg-title')?.textContent||'';
-      dlg.innerHTML=`<div class="rt-flow-zoom-head"><b>${esc(title)} · 03 Signal Flow</b><div class="rt-flow-zoom-tools"><button type="button" data-zoom-step="-1" aria-label="축소">−</button><span data-zoom-level aria-live="polite">100%</span><button type="button" data-zoom-step="1" aria-label="확대">+</button><button type="button" class="rt-flow-zoom-close" data-zoom-close aria-label="닫기">×</button></div></div><div class="rt-flow-zoom-body"><div class="rt-flow-zoom-canvas">${svg.outerHTML}</div></div>`;
+      dlg.innerHTML=`<div class="rt-flow-zoom-head"><b>${esc(title)} · 03 Signal Flow</b><div class="rt-flow-zoom-tools"><button type="button" data-zoom-step="-1" aria-label="축소">−</button><span data-zoom-level aria-live="polite">100%</span><button type="button" data-zoom-step="1" aria-label="확대">+</button><button type="button" class="rt-flow-zoom-close" data-zoom-close aria-label="닫기">×</button></div></div>${legend?`<div class="rt-flow-zoom-legend">${legend.outerHTML}</div>`:''}<div class="rt-flow-zoom-body"><div class="rt-flow-zoom-canvas">${svg.outerHTML}</div></div>`;
       setFlowZoom(dlg,0);
       if(typeof dlg.showModal==='function')dlg.showModal();else dlg.setAttribute('open','');
       dlg.querySelector('[data-zoom-step="1"]').focus();

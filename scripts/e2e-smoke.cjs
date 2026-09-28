@@ -450,6 +450,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     const zoom=await page.$eval('dialog.rt-flow-zoom',d=>({level:d.querySelector('[data-zoom-level]').textContent,svg:!!d.querySelector('.rt-psu-anim'),wider:d.querySelector('.rt-flow-zoom-body').scrollWidth>d.querySelector('.rt-flow-zoom-body').clientWidth}));
     await page.keyboard.press('Escape');
     const zoomClosed=await page.$eval('dialog.rt-flow-zoom',d=>!d.open);
+    // 0.105 XDM-PSU: 머리 아이콘은 전원(번개) 모양, 02 Port Map은 Signal Flow와 같은 평면 그림(앞면·뒷면)에 번호 3개, 기준 문구는 "제조사 도면 기준 그림".
+    const psuPanel=await page.evaluate(()=>{const s=[...document.querySelectorAll('section')].find(x=>/Port Map/.test(x.querySelector('h2')?.textContent||''));return {icon:!!document.querySelector('.rt-pg-swatch svg path[d^="M16.5 3"]'),rear:!!s?.innerHTML.includes('xdm-psu-rear-art.webp'),front:!!s?.innerHTML.includes('xdm-psu-front-art.webp'),pins:s?.querySelector('.rt-pg-ports')?.children.length,basis:/제조사 도면 기준 그림/.test(s?.querySelector('h2')?.textContent||'')}});
+    check('XDM-PSU 머리 아이콘이 전원 모양이고 02 Port Map이 앞면·뒷면 평면 그림(번호 3개, "제조사 도면 기준 그림")으로 나옴',psuPanel.icon&&psuPanel.rear&&psuPanel.front&&psuPanel.pins===3&&psuPanel.basis,JSON.stringify(psuPanel));
     await page.goto(`${home}#products/xdm-ctr100`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-toolbar');
     const otherZoom=await page.$$eval('[data-flow-zoom]',els=>els.length);
