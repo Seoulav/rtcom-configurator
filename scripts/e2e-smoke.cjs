@@ -359,7 +359,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     // 0.33 — 제품정보 글래스 디자인(rt-pg-*)으로 목록·상세 마크업이 바뀌었다.
     await page.click('a[data-view-tab="products"]');
     await page.waitForSelector('.rt-pg-gridcard');
-    check('제품정보 탭을 누르면 구성기를 숨기고 제품 30종 목록(0.64 SPX-TX/RX, 0.72 XDM-PSU 포함)을 표시',await page.locator('.rt-configurator-view').isHidden()&&await page.locator('.rt-pg-gridcard').count()===30);
+    check('제품정보 탭을 누르면 구성기를 숨기고 제품 31종 목록(0.64 SPX-TX/RX, 0.72 XDM-PSU, 0.121 HD-D102U Rack마운트 포함)을 표시',await page.locator('.rt-configurator-view').isHidden()&&await page.locator('.rt-pg-gridcard').count()===31);
     await page.click('[data-product-filter="extender"]');
     check('전송기 분류는 14종(0.64 SPX-TX/RX, 0.72 XDM-PSU 포함)',await page.locator('.rt-pg-gridcard').count()===14);
     await page.click('[data-product-filter="all"]');
@@ -383,7 +383,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('CT104-U/CR104-U 단자 지도가 송신기·수신기 사진 두 장으로 나옴',extenderMaps.length===2&&extenderMaps[0].includes('송신기 CT104-U')&&extenderMaps[1].includes('수신기 CR104-U'),JSON.stringify(extenderMaps));
     await page.goBack();
     await page.waitForSelector('.rt-pg-gridcard');
-    check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-pg-gridcard').count()===30);
+    check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-pg-gridcard').count()===31);
     // 0.43 벽부형 단자 지도: 송신기·수신기 두 장, 세로 괄호(side left/right) 번호표 11개(0.46에서 HDMI IN 1·2를 한 번호로 묶음), 사진에 보이지 않는 옆면 단자 안내(note).
     await page.goto(`${home}#products/ft103-u-h-fr103-u`,{waitUntil:'networkidle'});
     await page.waitForSelector('#rt-pg-title');
@@ -767,7 +767,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     const idxOrder=await mobile.evaluate(()=>[...document.querySelectorAll('.rt-pg-idx')].map(el=>({text:el.textContent,top:el.getBoundingClientRect().top})).sort((a,b)=>a.top-b.top).map(x=>x.text));
     check('휴대폰에서 HD-210U 제품 상세는 01부터 순서대로 보임(06이 맨 위로 올라가지 않음, 0.61부터 07 딥 스위치 설정 포함)',idxOrder.join(',')==='01,02,03,04,05,06,07',JSON.stringify(idxOrder));
     // 2026-09-28 "제조사 정보를 항상 열면은 표가 약간 찌그러지는 게 있는데" — 입출력 단자 표의 방향("입력"·"출력"·"입출력")·수량(숫자) 칸이
-    // 신호·조건의 긴 문장에 밀려 좁은 화면에서 한 글자씩 줄바꿈되던 문제(전수 조사로 발견). 30개 제품 전체를 여러 폭에서 확인해 재발을 막는다.
+    // 신호·조건의 긴 문장에 밀려 좁은 화면에서 한 글자씩 줄바꿈되던 문제(전수 조사로 발견). 31개 제품 전체를 여러 폭에서 확인해 재발을 막는다.
     {
       const allIds=JSON.parse(fs.readFileSync('data/products/index.json','utf8')).products.map(p=>p.id);
       const wrappedFixedCells=[];
@@ -796,7 +796,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
         }
         await p.close();
       }
-      check('입출력 단자 표에서 방향("입력"·"출력"·"입출력")·수량(숫자) 칸이 30개 제품·6개 화면 폭(320~1024px)에서 두 줄로 쪼개지지 않음',wrappedFixedCells.length===0,JSON.stringify(wrappedFixedCells));
+      check('입출력 단자 표에서 방향("입력"·"출력"·"입출력")·수량(숫자) 칸이 31개 제품·6개 화면 폭(320~1024px)에서 두 줄로 쪼개지지 않음',wrappedFixedCells.length===0,JSON.stringify(wrappedFixedCells));
     }
     await phone.close();
   }finally{
