@@ -18,7 +18,7 @@ catch{
 }
 const BASE='/rtcom-configurator/';
 const dist=path.resolve('dist');
-const types={'.html':'text/html; charset=utf-8','.js':'text/javascript','.css':'text/css','.jpg':'image/jpeg','.png':'image/png','.md':'text/markdown','.json':'application/json','.webp':'image/webp','.pdf':'application/pdf'};
+const types={'.html':'text/html; charset=utf-8','.js':'text/javascript','.mjs':'text/javascript','.css':'text/css','.jpg':'image/jpeg','.png':'image/png','.md':'text/markdown','.json':'application/json','.webp':'image/webp','.pdf':'application/pdf'};
 const server=http.createServer((req,res)=>{
   const url=decodeURIComponent(new URL(req.url,'http://x').pathname);
   if(!url.startsWith(BASE)){res.writeHead(404).end();return}
@@ -421,7 +421,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     // 2026-09-28 OBUX-1C Tx 고해상도 실물 사진: 송신기 단자 지도가 앞면·뒷면 합성 사진 한 장에 번호 6개(Mode·S/P 포함), 수신기도 합성 사진에 번호 5개(S/P 포함).
     const obuxPm=await page.evaluate(()=>{const s=[...document.querySelectorAll('section')].find(s=>/Port Map/.test(s.querySelector('h2')?.textContent||''));return {tx:!!s?.innerHTML.includes('obux-1c-tx-front-rear.webp'),rx:!!s?.innerHTML.includes('obux-1c-rx-front-rear.webp'),ports:[...(s?.querySelectorAll('.rt-pg-ports')||[])].map(x=>x.children.length)}});
     // 2026-09-28 제조사 문서 PDF: documents[].file 수만큼 "제품 목록" 옆에 버튼(새 탭 보기 + 내려받기)이 나오고 링크가 PDF로 열림. 등록 파일이 없는 제품은 버튼 없음.
-    // 0.105 샘플(HD-13U 카탈로그만): 새 탭 링크 대신 팝업(button[data-doc-preview])이고, 클릭하면 dialog.rt-doc-zoom이 그 파일을 iframe으로 연다.
+    // 0.105 샘플(HD-13U 카탈로그만): 새 탭 링크 대신 팝업(button[data-doc-preview])이고, 클릭하면 dialog.rt-doc-zoom이 PDF.js로 그 파일을 그린다(0.112).
     for(const id of ['hd-13u','hd-104u']){
       const expected=(JSON.parse(fs.readFileSync(`data/products/${id}.json`,'utf8')).documents||[]).filter(doc=>doc.file).length;
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
@@ -434,15 +434,19 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       const pdfOk=[];for(const doc of docs){const res=await page.request.get(doc.href);pdfOk.push(res.status()===200&&String(res.headers()['content-type']).includes('pdf'))}
       check(`${id} 제조사 문서 버튼 ${expected}개(새 탭 보기 또는 팝업·내려받기, PDF 응답)`,docs.length===expected&&docs.every(doc=>doc.open&&doc.save)&&pdfOk.every(Boolean),JSON.stringify({expected,docs,pdfOk}));
     }
-    // 0.105 HD-13U 카탈로그 팝업: 버튼을 누르면 dialog가 열리고 iframe src가 카탈로그 PDF, 닫기 버튼으로 닫힌다.
+    // 0.112 HD-13U 카탈로그 팝업: iframe 대신 PDF.js로 쪽을 canvas에 그린다(PDF 보기 기능이 없는 브라우저에서도 다운로드로 넘어가지 않음).
+    // 버튼을 누르면 dialog가 열리고 canvas가 1쪽 이상 그려지며, + 버튼을 누르면 canvas 폭이 커지고, 원본·내려받기 링크가 있고, 닫기로 닫힌다.
     await page.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-toolbar');
     await page.click('button.rt-pg-doc-open[data-doc-preview]');
-    await page.waitForSelector('dialog.rt-doc-zoom[open]');
-    const docPopup=await page.evaluate(()=>({src:document.querySelector('dialog.rt-doc-zoom iframe')?.getAttribute('src'),title:document.querySelector('dialog.rt-doc-zoom .rt-flow-zoom-head b')?.textContent}));
+    await page.waitForSelector('dialog.rt-doc-zoom[open] .rt-doc-pages canvas',{timeout:15000});
+    const docPopup=await page.evaluate(()=>{const d=document.querySelector('dialog.rt-doc-zoom');const c=d.querySelector('.rt-doc-pages canvas');return {pages:d.querySelectorAll('.rt-doc-pages canvas').length,w:c.getBoundingClientRect().width,drawn:c.width>0&&c.height>0,iframe:!!d.querySelector('iframe'),links:[...d.querySelectorAll('.rt-doc-zoom-link')].map(a=>a.getAttribute('href')),title:d.querySelector('.rt-flow-zoom-head b')?.textContent}});
+    await page.click('dialog.rt-doc-zoom [data-doc-zoom-step="1"]');
+    await page.waitForFunction(w=>{const c=document.querySelector('dialog.rt-doc-zoom .rt-doc-pages canvas');return c&&c.getBoundingClientRect().width>w*1.3},docPopup.w,{timeout:15000});
+    const zoomLevel=await page.$eval('dialog.rt-doc-zoom [data-doc-zoom-level]',el=>el.textContent);
     await page.click('dialog.rt-doc-zoom [data-zoom-close]');
     const closed=await page.evaluate(()=>!document.querySelector('dialog.rt-doc-zoom[open]'));
-    check('HD-13U 카탈로그 팝업이 hd-13u-catalog.pdf를 iframe으로 열고 닫기로 닫힘',!!docPopup.src?.includes('hd-13u-catalog.pdf')&&!!docPopup.title&&closed,JSON.stringify({docPopup,closed}));
+    check('HD-13U 카탈로그 팝업이 PDF.js로 hd-13u-catalog.pdf를 canvas에 그리고(iframe 없음) 확대·원본·내려받기·닫기가 동작',docPopup.pages>=1&&docPopup.drawn&&!docPopup.iframe&&docPopup.links.length===2&&docPopup.links.every(h=>h.includes('hd-13u-catalog.pdf'))&&!!docPopup.title&&zoomLevel==='150%'&&closed,JSON.stringify({docPopup,zoomLevel,closed}));
     check('OBUX-1C 송신기 단자 지도가 고해상도 앞뒤 합성 사진에 번호 6개, 수신기 5개(S/P 포함)로 나옴',obuxPm.tx&&obuxPm.rx&&obuxPm.ports.join()==='6,5',JSON.stringify(obuxPm));
     // 0.98 XDM-PSU 03 Signal Flow: 제조사 연결도처럼 프레임(CIS100·COS100) · PSU(POH·PHX) · CTR100 Tx/Rx를 장비 그림으로 그리고 케이블 위 점선이 흐른다. 움직임 줄이기 설정에서는 멈춘다.
     await page.goto(`${home}#products/xdm-psu`,{waitUntil:'networkidle'});
