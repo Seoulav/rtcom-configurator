@@ -24,14 +24,14 @@
     {
       "role": "Main",
       "file": "xdm-main.webp",
-      "alt": "RTCOM XDM 시리즈 메인프레임 제품군",
-      "note": "Main · XDM-12/20/36/72/144 제품군 사진",
+      "alt": "RTCOM XDM-12 정면(흰 배경 실물 사진)",
+      "note": "Main · 사용자 제공 실물 사진(2026-09-28, XDM-12 모델 기준)",
       "provider": "RTCOM",
-      "model": "XDM Series",
-      "source": "R",
+      "model": "XDM-12",
+      "source": "P1",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "633×372"
+      "resolution": "1200×461"
     },
     {
       "role": "Front",
@@ -428,6 +428,12 @@
       "name": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
       "page": "4–5",
       "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
+    },
+    {
+      "code": "P1",
+      "name": "서울영상테크 SI사업본부 제공 실물 사진",
+      "page": "",
+      "scope": "사용자 업로드 고해상도 제품 사진(2026-09-28, 흰 배경 촬영본)"
     }
   ],
   "issues": []
