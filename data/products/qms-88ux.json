@@ -18,7 +18,7 @@
   "catalogPages": "28",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 30쪽의 소개·주요기능·제품사양·크기 및 무게·제품 이미지에서 확인했다.",
   "packageStatus": "VERIFIED",
-  "overview": "QMS-88UX는 HDMI Ver. 2.0을 지원하는 True-4K HDMI 8x8 고성능 매트릭스 스위처다. 최대 3840x2160p 60Hz 4:4:4 해상도를 지원하며 Seamless Switching, 8CH Multi-view, Video Wall, Dual 모드 등 다양한 용도로 사용할 수 있다. 서로 다른 임의의 HDMI 입력을 서로 다른 임의의 HDMI 출력 포트로 출력하거나 분배할 수 있다.\n\n전면 LCD 터치 패널, RS-232의 2가지 제어방식으로 동작한다. 출력 9번과 10번은 쿼드 뷰 모드로, 한 화면에 최대 8개의 분할 화면을 구성할 수 있다. HDCP v2.2를 지원한다.",
+  "overview": "QMS-88UX는 HDMI Ver. 2.0을 지원하는 True-4K HDMI 8x8 고성능 매트릭스 스위처다. 최대 3840x2160p 60Hz 4:4:4 해상도를 지원하며 Seamless Switching, 8CH Multi-view, Video Wall, Dual 모드 등 다양한 용도로 사용할 수 있다. 서로 다른 임의의 HDMI 입력을 서로 다른 임의의 HDMI 출력 포트로 출력하거나 분배할 수 있다.\n\n전면 LCD 터치 패널, RS-232, LAN(이더넷·웹 브라우저)의 3가지 제어방식으로 동작한다. 출력 9번과 10번은 쿼드 뷰 모드로, 한 화면에 최대 8개의 분할 화면을 구성할 수 있다. HDCP v2.2를 지원한다.",
   "images": [
     {
       "role": "Front",
@@ -133,8 +133,8 @@
       "source": "C"
     },
     {
-      "text": "전면 LCD 터치 패널, RS-232 제어방식 지원",
-      "source": "C"
+      "text": "전면 LCD 터치 패널, RS-232, LAN(이더넷·웹 브라우저) 제어방식 지원",
+      "source": "U2"
     }
   ],
   "specifications": [
@@ -168,10 +168,10 @@
     {
       "group": "General",
       "name": "연결 단자",
-      "value": "RS-232, Mini USB-serial, 3.5mm stereo, 3-pin phoenix, HDMI 19-Pin Female",
+      "value": "RS-232, LAN(RJ45), Mini USB-serial, 3.5mm stereo, 3-pin phoenix, HDMI 19-Pin Female",
       "unit": "",
       "condition": "",
-      "source": "J",
+      "source": "U2",
       "verification": "VERIFIED"
     },
     {
@@ -195,10 +195,10 @@
     {
       "group": "Control",
       "name": "제어",
-      "value": "전면 패널, RS-232",
+      "value": "전면 패널, RS-232, LAN(이더넷·웹 브라우저)",
       "unit": "",
       "condition": "",
-      "source": "C",
+      "source": "U2",
       "verification": "VERIFIED"
     },
     {
@@ -324,6 +324,14 @@
       },
       {
         "n": 5,
+        "label": "LAN",
+        "desc": "RJ45 · 이더넷 제어(Telnet)·웹 브라우저 제어",
+        "x1": 960,
+        "x2": 1010,
+        "side": "bottom"
+      },
+      {
+        "n": 6,
         "label": "RS-232",
         "desc": "D-sub 9핀 · 외부 제어",
         "x1": 1055,
@@ -331,7 +339,7 @@
         "side": "bottom"
       },
       {
-        "n": 6,
+        "n": 7,
         "label": "Mini USB",
         "desc": "USB 시리얼 · 연결 단자 표의 Mini USB-serial",
         "x1": 1145,
@@ -339,7 +347,7 @@
         "side": "bottom"
       },
       {
-        "n": 7,
+        "n": 8,
         "label": "AC 인렛",
         "desc": "전원 100-200 VAC",
         "x1": 1210,
@@ -384,6 +392,12 @@
       "name": "서울영상테크 SI사업본부 제공 실물 사진",
       "page": "",
       "scope": "사용자 업로드 고해상도 제품 사진(2026-09-28, 흰 배경 촬영본)"
+    },
+    {
+      "code": "U2",
+      "name": "서울영상테크 SI사업본부 확인",
+      "page": "",
+      "scope": "사용자 확인(2026-09-28) — 후면 LAN(RJ45) 단자로 이더넷 제어·웹 브라우저 제어가 가능함을 확인. 0.51.0에서 뺐던 LAN 표기를 이 확인 근거로 복원"
     }
   ],
   "issues": [
