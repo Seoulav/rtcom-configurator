@@ -77,18 +77,18 @@
       'XDM-144':{src:'output/design/assets/frames/xdm-144-rear-art.webp',page:11,kind:'그림',size:[707,2000],input:[15,85,649,757],output:[15,955,649,1633]},
       // XDM-216은 후면 사진이 없어 XDM-144 후면에 슬롯 줄(18칸)을 하나씩 더한 그림으로 표시한다(scripts/tools/draw_xdm_spx_rear_frames.cjs).
       'XDM-216':{src:'output/design/assets/frames/xdm-216-rear-art.webp',manual:'XDM-144 후면 기준',kind:'그림',size:[530,2000],input:[12,64,487,820],output:[12,968,487,1725]},
-      'VDM-16X':{src:'output/design/assets/frames/vdm-16x-rear-art.webp',page:7,manual:VDM_MANUAL,kind:'그림',size:[2000,1238],input:[9,107,735,1229],output:[1247,107,1973,1229]},
+      'VDM-16X':{src:'output/design/assets/frames/vdm-16x-rear-art.webp',page:7,manual:VDM_MANUAL,kind:'그림',size:[2000,1155],input:[9,107,735,1142],output:[1265,107,1991,1142]},
       // VDM 국문 매뉴얼 KV07 2.2 Router Frame Specifications의 후면 선 도면(PDF 쪽)을 따라 그린 평면 그림(scripts/tools/draw_vdm_frames.cjs).
-      // 좌표는 도면 보드 경계선으로 잰 값을 그림 배율대로 늘린 값이며, 스크립트를 실행하면 출력된다.
+      // 0.120부터 슬롯 칸 비율을 VDM 카드 사진 비율(5.7:1)과 똑같이 그렸다(칸 너비는 도면 배치, 높이 = 너비 × 5.7). 좌표는 스크립트를 실행하면 출력된다.
       // 입력·출력 영역이 여러 곳이면 배열로 두고 슬롯을 순서대로 똑같이 나눈다(256X: 왼쪽 랙 1–32, 오른쪽 랙 33–64).
       'VDM-8X':{src:'output/design/assets/frames/vdm-8x-rear-art.webp',page:12,manual:VDM_MANUAL,kind:'그림',size:[2000,612],input:[9,25,998,370],output:[1033,25,1991,370]},
-      'VDM-32X':{src:'output/design/assets/frames/vdm-32x-rear-art.webp',page:14,manual:VDM_MANUAL,kind:'그림',size:[1937,2000],input:[34,42,698,1941],output:[1209,42,1894,1941]},
-      'VDM-48X':{src:'output/design/assets/frames/vdm-48x-rear-art.webp',page:15,manual:VDM_MANUAL,kind:'그림',size:[1323,2000],input:[24,24,487,1959],output:[833,24,1306,1959]},
-      'VDM-64X':{src:'output/design/assets/frames/vdm-64x-rear-art.webp',page:16,manual:VDM_MANUAL,kind:'그림',size:[1101,2000],input:[20,20,403,1958],output:[684,20,1074,1958]},
-      'VDM-80X':{src:'output/design/assets/frames/vdm-80x-rear-art.webp',page:17,manual:VDM_MANUAL,kind:'그림',size:[758,2000],input:[19,63,742,821],output:[19,1046,742,1807]},
-      'VDM-128X':{src:'output/design/assets/frames/vdm-128x-rear-art.webp',page:18,manual:VDM_MANUAL,kind:'그림',size:[811,2000],input:[5,20,770,832],output:[5,990,770,1804]},
-      'VDM-180X':{src:'output/design/assets/frames/vdm-180x-rear-art.webp',page:19,manual:VDM_MANUAL,kind:'그림',size:[535,2000],input:[9,53,497,849],output:[9,1057,497,1858]},
-      'VDM-256X':{src:'output/design/assets/frames/vdm-256x-rear-art.webp',page:20,manual:VDM_MANUAL,kind:'그림',size:[1215,2000],input:[[15,31,587,837],[605,31,1174,837]],output:[[15,999,587,1802],[605,999,1174,1802]]},
+      'VDM-32X':{src:'output/design/assets/frames/vdm-32x-rear-art.webp',page:14,manual:VDM_MANUAL,kind:'그림',size:[1951,2000],input:[34,43,703,1949],output:[1248,43,1917,1949]},
+      'VDM-48X':{src:'output/design/assets/frames/vdm-48x-rear-art.webp',page:15,manual:VDM_MANUAL,kind:'그림',size:[1296,2000],input:[23,23,477,1965],output:[819,23,1273,1965]},
+      'VDM-64X':{src:'output/design/assets/frames/vdm-64x-rear-art.webp',page:16,manual:VDM_MANUAL,kind:'그림',size:[1105,2000],input:[20,20,360,1961],output:[745,20,1085,1961]},
+      'VDM-80X':{src:'output/design/assets/frames/vdm-80x-rear-art.webp',page:17,manual:VDM_MANUAL,kind:'그림',size:[765,2000],input:[19,64,749,821],output:[19,1048,749,1805]},
+      'VDM-128X':{src:'output/design/assets/frames/vdm-128x-rear-art.webp',page:18,manual:VDM_MANUAL,kind:'그림',size:[589,2000],input:[4,15,560,879],output:[4,994,560,1858]},
+      'VDM-180X':{src:'output/design/assets/frames/vdm-180x-rear-art.webp',page:19,manual:VDM_MANUAL,kind:'그림',size:[706,2000],input:[12,71,656,805],output:[12,1079,656,1813]},
+      'VDM-256X':{src:'output/design/assets/frames/vdm-256x-rear-art.webp',page:20,manual:VDM_MANUAL,kind:'그림',size:[1121,2000],input:[[14,28,541,848],[558,28,1083,848]],output:[[14,998,541,1817],[558,998,1083,1817]]},
       // SPX 국문 사용자 매뉴얼(250805) 후면 사진. M810·M1620·M3236은 가로 카드(입력 위·출력 아래), M2472·M24120은 세로 카드(입력 왼쪽·출력 오른쪽).
       'SPX-M810':{src:'output/design/assets/frames/spx-m810-rear-art.webp',page:7,manual:SPX_MANUAL,kind:'그림',size:[2000,451],input:[246,70,1758,182],output:[246,182,1758,293]},
       'SPX-M1620':{src:'output/design/assets/frames/spx-m1620-rear-art.webp',page:8,manual:SPX_MANUAL,kind:'그림',size:[2000,1263],input:[202,350,1795,677],output:[202,677,1795,1003]},
