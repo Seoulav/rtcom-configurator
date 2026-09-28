@@ -165,4 +165,5 @@ test('every matrix card has a detail entry in card-specs.js sourced from the cat
   const app=read('src/app.js');
   assert.match(app,/data-card-info="\$\{c\[0\]\}"/,'03 카드 슬롯 must render input/output card info buttons');
   assert.match(app,/class="rt-summary-card" data-card-info=/,'내 구성 card rows must open card details');
+  assert.match(app,/class="rt-card-choice-info" data-card-info="\$\{c\[0\]\}"/,'카드 선택창 must offer a 상세 보기 button per card (0.79)');
 });
