@@ -133,7 +133,7 @@
       "name": "데이터 전송 속도",
       "value": "3.4 Gbps/ch, Total 10.2 Gbps Max",
       "unit": "",
-      "condition": "CT104-U·CR104-U 공통",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -142,7 +142,7 @@
       "name": "지원 해상도",
       "value": "최대 Ultra HD 4K 4096x2160@24/25/30Hz",
       "unit": "",
-      "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0 · CT104-U·CR104-U 공통",
+      "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -151,7 +151,7 @@
       "name": "최대 전송거리",
       "value": "100",
       "unit": "m",
-      "condition": "1920x1200@60Hz 또는 1080p, 4Kx2K@30Hz · BELDEN CI 6522 · 330ft · CT104-U·CR104-U 공통",
+      "condition": "1920x1200@60Hz 또는 1080p, 4Kx2K@30Hz · BELDEN CI 6522 · 330ft",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -160,7 +160,7 @@
       "name": "규격",
       "value": "HDMI 1.4, HDBaseT",
       "unit": "",
-      "condition": "CT104-U·CR104-U 공통",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -169,7 +169,7 @@
       "name": "HDCP",
       "value": "HDCP 1.X",
       "unit": "",
-      "condition": "CT104-U·CR104-U 공통",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -178,7 +178,7 @@
       "name": "EDID",
       "value": "Pass-Through",
       "unit": "",
-      "condition": "CT104-U·CR104-U 공통",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -187,7 +187,7 @@
       "name": "전원",
       "value": "DC +12V 2A",
       "unit": "",
-      "condition": "CT104-U·CR104-U 공통",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -196,7 +196,7 @@
       "name": "크기(W×D×H)",
       "value": "112×72×26",
       "unit": "mm",
-      "condition": "CT104-U·CR104-U 공통",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },

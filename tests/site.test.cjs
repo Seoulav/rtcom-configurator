@@ -260,3 +260,14 @@ test('input_doc reflection ledger (2026-09-28) is tracked, well-formed and never
   }
   assert.ok(!fs.existsSync('dist/docs/evidence/input-doc-ledger.json'),'the ledger must not be shipped to Pages');
 });
+
+test('0.92: 04 제품 사양 조건 칸에 "모델A·모델B 공통" 표기가 없고 XDM-PSU는 전용 Signal Flow를 그린다',()=>{
+  for(const file of fs.readdirSync('data/products').filter(name=>name.endsWith('.json')&&name!=='index.json')){
+    const item=JSON.parse(read(`data/products/${file}`));
+    for(const spec of item.specifications||[])for(const part of String(spec.condition||'').split(' · '))
+      assert.doesNotMatch(part,/^\S+·\S+ 공통$/,`${file} ${spec.name}: 조건 칸의 "${part}" 표기는 지운다(사용자 요청 2026-09-28)`);
+  }
+  const products=read('src/products.js');
+  assert.match(products,/if\(item\.id==='xdm-psu'\)return psuDiagram\(item\);/);
+  assert.match(products,/'XDM-PSU · POH'/);assert.match(products,/'XDM-PSU · PHX'/);
+});
