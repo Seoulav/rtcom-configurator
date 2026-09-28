@@ -77,6 +77,12 @@ function validate(product,file,ids){
     else if((()=>{const n=(product.lead.match(/\*\*/g)||[]).length;return n>2||n%2!==0})())fail('lead의 **굵게**는 한 곳까지만, 정확히 여닫혀야 함');
   }
   if('subtitle' in product&&(typeof product.subtitle!=='string'||!product.subtitle))fail('subtitle은 비어 있지 않은 문자열이어야 함');
+  // 0.122 drawing: 사용자 제공 도면을 다시 그린 한 장짜리 도면 그림(HD-D102U Rack마운트). 제품 상세 아래쪽 전체 폭 "도면" 카드로 보인다.
+  if('drawing' in product){
+    const d=product.drawing;
+    if(!d||typeof d.file!=='string'||!(product.images||[]).some(image=>image.file===d.file))fail('drawing.file은 images에 있는 파일이어야 함');
+    for(const key of ['basis','note'])if(d&&key in d&&(typeof d[key]!=='string'||!d[key]))fail(`drawing.${key}는 비어 있지 않은 문자열이어야 함`);
+  }
   if('portMap' in product){
     // portMap은 사진 한 장(객체) 또는 여러 장(배열, 예: 전송기 송신기·수신기 사진)을 받는다(0.42).
     const maps=Array.isArray(product.portMap)?product.portMap:[product.portMap];

@@ -36,6 +36,18 @@
     },
     {
       "role": "Other",
+      "file": "hd-d102u-rack-drawing-art.webp",
+      "alt": "HD-D102U Rack마운트 도면(윗면·정면·옆면, 폭 483 · 깊이 282 · 높이 177 · 고정 구멍 줄 간격 147mm, 최대 12개 장착가능)",
+      "note": "Other · 사용자 제공 도면(HD-D102U RACK) 1쪽 배치를 한 장의 그림으로 다시 그림(scripts/tools/draw_hd_d102u_rack.cjs)",
+      "provider": "RTCOM",
+      "model": "HD-D102U Rack마운트",
+      "source": "D1",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "2000×1308"
+    },
+    {
+      "role": "Other",
       "file": "hd-d102u-rack-dims-art.webp",
       "alt": "HD-D102U Rack마운트 정면 치수(폭 483 · 높이 177 · 고정 구멍 줄 간격 147mm)",
       "note": "Other · 사용자 제공 도면 치수 표기",
@@ -235,6 +247,11 @@
       ]
     }
   ],
+  "drawing": {
+    "file": "hd-d102u-rack-drawing-art.webp",
+    "basis": "사용자 제공 도면 기준 그림",
+    "note": "그림을 누르면 원본 크기로 열립니다. 단위는 mm입니다."
+  },
   "sources": [
     {
       "code": "D1",

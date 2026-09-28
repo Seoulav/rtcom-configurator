@@ -1040,3 +1040,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-card-choice-ext-qty .rt-card-qty-stepper button{width:30px;height:30px;font-size:16px}
 #rtcom-design .rt-card-choice-ext-qty .rt-card-qty-stepper output{min-width:30px;font-size:15px}
 #rtcom-design .rt-card-choice-ext-qty[data-off]{opacity:.45}
+
+/* 0.122 도면 카드(HD-D102U Rack마운트): 한 장짜리 도면 그림을 카드 폭에 맞춰 보여준다. */
+.rt-pg-drawing-link{display:block;border-radius:14px;background:#fff;border:1px solid rgba(15,23,42,.08);padding:14px;cursor:zoom-in}
+.rt-pg-drawing-link img{display:block;width:100%;height:auto}
