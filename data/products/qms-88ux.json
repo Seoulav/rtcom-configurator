@@ -292,7 +292,9 @@
       },
       {
         "name": "DUAL",
-        "summary": "듀얼 모드"
+        "summary": "출력 9·10번 멀티뷰 설정에서 한 화면 2분할(PBP)·PIP 구성.",
+        "detail": "별도 듀얼 메뉴 없이 8CH 멀티뷰와 같은 Multiview 설정에서 2분할 레이아웃을 골라 입력 그룹(Q1·Q2)마다 구성(매뉴얼 KV.04 20~21쪽 Layout 5~7).",
+        "layouts": ["Horizontal PBP","Vertical PBP","Quad PBP, PIP"]
       }
     ]
   },

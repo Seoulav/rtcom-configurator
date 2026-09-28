@@ -4,6 +4,9 @@
 
 ## Unreleased
 
+## 0.90.0
+
+- **QMS-88UX 06 화면 구성 모드 DUAL 카드 보완**(사용자 질문 2026-09-28 "QMS-88Ux도 듀얼 출력되지 않아??"): "듀얼 모드" 한 마디뿐이던 DUAL 카드를 매뉴얼 KV.04 20~21쪽 근거로 채웠습니다. QMS-88UX는 QMS-44UX처럼 출력 쌍마다 여는 별도 듀얼 메뉴가 없고, 출력 9·10번 Multiview 설정("8CH 멀티뷰 및 듀얼 디스플레이 설정")에서 Layout 5 Horizontal PBP·6 Vertical PBP·7 Quad PBP, PIP로 한 화면 2분할을 구성합니다. 레이아웃 칩 3종과 미리보기를 넣었습니다. 근거: `docs/qa/QMS88UX_DUAL_QA_2026-09-28.md`.
 - **0.89.0 배포 기록**: `docs/qa/DEPLOYMENT_0.89_2026-09-28.md`(PR #81 → main 병합, 배포 run 62, 공개 파일 242/242 일치, 비공개 파일 12개 404)
 
 ## 0.89.0
