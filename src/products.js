@@ -479,10 +479,13 @@
     function docButtons(item){
       const order=Object.keys(DOC_LABEL);
       return (item.documents||[]).filter(doc=>doc.file&&DOC_LABEL[doc.type]).sort((a,b)=>order.indexOf(a.type)-order.indexOf(b.type)).map(doc=>{
-        const label=doc.label||DOC_LABEL[doc.type],title=esc(doc.title||label),href=docFile(doc.file);
-        return `<span class="rt-pg-doc" data-doc="${esc(doc.type)}"><a class="rt-pg-doc-open" href="${href}" target="_blank" rel="noopener" title="${title} · 새 탭에서 보기">${esc(label)} PDF</a><a class="rt-pg-doc-save" href="${href}" download="${esc(doc.file)}" title="${title} · 내려받기" aria-label="${esc(label)} 내려받기">${DOWNLOAD_ICON}</a></span>`;
+        // page가 있으면(전체 카탈로그 공용 파일, 0.95) 새 탭은 그 쪽에서 열고(#page=N, 아이폰 Safari는 1쪽부터 열릴 수 있음), 내려받기는 파일 전체를 받는다.
+        const label=doc.label||DOC_LABEL[doc.type],pageNote=doc.page?` ${doc.page}쪽`:'',title=esc(`${doc.title||label}${pageNote}`),href=docFile(doc.file);
+        return `<span class="rt-pg-doc" data-doc="${esc(doc.type)}"><a class="rt-pg-doc-open" href="${href}${doc.page?`#page=${doc.page}`:''}" target="_blank" rel="noopener" title="${title} · 새 탭에서 보기">${esc(label)} PDF${doc.page?` <small>${doc.page}쪽</small>`:''}</a><a class="rt-pg-doc-save" href="${href}" download="${esc(doc.file)}" title="${title} · 내려받기(전체 파일)" aria-label="${esc(label)} 내려받기">${DOWNLOAD_ICON}</a></span>`;
       }).join('');
     }
+    // 제품 목록 화면의 "전체 카탈로그" 버튼(0.95): 링크 하나로 카탈로그 전체를 공유한다.
+    const FULL_CATALOG={type:'Catalog',title:'알티컴 종합 카탈로그 2026 (국문 46쪽)',label:'전체 카탈로그',file:'rtcom-catalog-2026.pdf'};
     function headerBlock({icon,title,subtitle,back,diagram,cta,docs='',print=true}){
       return `<header class="rt-pg-top"><div class="rt-pg-brandmark"><div class="rt-pg-swatch">${icon}</div><div class="rt-pg-title"><h1 id="rt-pg-title">${title}</h1><p class="rt-pg-sub">${subtitle}</p></div></div>
       <div class="rt-pg-toolbar">${back?`<a class="rt-pg-btn" href="#products">← 제품 목록</a>`:''}${docs}${diagram?`<button type="button" class="rt-pg-btn" data-open-diagram>제조사 원본 다이어그램</button>`:''}${print?`<button type="button" class="rt-pg-btn" data-print>인쇄 / PDF</button>`:''}${cta||''}</div></header>`;
@@ -490,7 +493,7 @@
     function listView(){
       const items=index.products.filter(matches);
       const counts=Object.fromEntries(groups.map(([id])=>[id,id==='all'?index.products.length:index.products.filter(item=>item.group===id).length]));
-      return `${headerBlock({icon:GROUP_ICON.series,title:'알티컴 제품정보',subtitle:'RTCOM PRODUCTS · 매트릭스·분배기·전송기·케이블',back:false,print:false})}
+      return `${headerBlock({icon:GROUP_ICON.series,title:'알티컴 제품정보',subtitle:'RTCOM PRODUCTS · 매트릭스·분배기·전송기·케이블',back:false,print:false,docs:docButtons({documents:[FULL_CATALOG]})})}
       <section class="rt-pg-card"><div class="rt-pg-tools"><div class="rt-pg-seg" role="group" aria-label="제품 분류">${groups.map(([id,label])=>`<span data-product-filter="${id}" role="button" tabindex="0" aria-pressed="${filter===id}" class="${filter===id?'rt-pg-on':''}">${label} (${counts[id]})</span>`).join('')}</div><label class="rt-pg-search"><span class="rt-visually-hidden">제품 검색</span><input type="search" data-product-search placeholder="모델명·기능 검색 (예: HDMI, 광, 4K)" value="${esc(query)}"></label></div>
       <p class="rt-pg-count" role="status">${items.length}개 제품</p>
       ${items.length?`<ul class="rt-pg-grid">${items.map(item=>`<li><a class="rt-pg-gridcard" href="#products/${item.id}"><span class="rt-pg-photo">${item.cardImage?`<img src="${image(item.cardImage)}" alt="" loading="lazy">`:'<span aria-hidden="true">RTCOM</span>'}</span><span class="rt-pg-body"><span class="rt-pg-group">${esc(groupLabel[item.group])}</span><strong>${noBreak(item.productName)}</strong><span class="rt-pg-card-lead">${esc(item.lead?firstSentence(item.lead).replace(/\*\*/g,''):item.korean)}</span>${reviewBadge(item)}</span></a></li>`).join('')}</ul>`:'<p class="rt-pg-empty">조건에 맞는 제품이 없습니다. 검색어를 지우거나 다른 분류를 선택하세요.</p>'}</section>`;

@@ -17,6 +17,8 @@ const FORBIDDEN=/단가|원가|매입|마진|거래처|공급가|견적가|판�
 const DOC_DIR='output/design/assets/docs';
 const DOC_TYPES=['Catalog','Manual','ProductSheet'];
 const DOC_MAX_BYTES=15*1024*1024;
+// 여러 제품이 함께 쓰는 공용 문서(0.95, 사용자 결정 2026-09-28 "전체 카탈로그 공개해도 돼"): 전체 카탈로그 46쪽판 한 파일을 Catalog 문서로만 쓰고, page로 제품 쪽을 연다.
+const SHARED_DOCS={'rtcom-catalog-2026.pdf':{type:'Catalog',pages:46}};
 const REQUIRED=['id','group','manufacturer','productName','model','itemType','categories','english','korean','verificationSummary','packageStatus','overview','images','documents','features','specifications','io','sources','issues'];
 
 function validate(product,file,ids){
@@ -48,7 +50,10 @@ function validate(product,file,ids){
     files.add(doc.file);
     // 송신기·수신기 매뉴얼처럼 같은 종류가 둘 이상이면 버튼 이름을 구분할 label(예: "CT103 매뉴얼")이 있어야 한다.
     if(published.filter(other=>other.type===doc.type).length>1&&!String(doc.label||'').trim())fail(`같은 종류(${doc.type}) 문서가 둘 이상이면 label 필요: ${doc.file}`);
-    if(!/^[a-z0-9]+(?:[-.][a-z0-9]+)*\.pdf$/.test(doc.file||'')||!String(doc.file).startsWith(`${product.id}-`))fail(`documents.file 형식(제품 id로 시작, 소문자·숫자·하이픈·점, .pdf): ${doc.file}`);
+    const shared=SHARED_DOCS[doc.file];
+    if(shared&&shared.type!==doc.type)fail(`공용 문서 ${doc.file}는 ${shared.type}에만 쓸 수 있음: ${doc.type}`);
+    if(!shared&&(!/^[a-z0-9]+(?:[-.][a-z0-9]+)*\.pdf$/.test(doc.file||'')||!String(doc.file).startsWith(`${product.id}-`)))fail(`documents.file 형식(제품 id로 시작, 소문자·숫자·하이픈·점, .pdf): ${doc.file}`);
+    if('page' in doc&&(!Number.isInteger(doc.page)||doc.page<1||(shared&&doc.page>shared.pages)))fail(`documents.page는 1${shared?`~${shared.pages}`:' 이상'} 정수여야 함: ${doc.file} ${doc.page}`);
     if(/배포 제외|비공개/.test(doc.note||''))fail(`공개하는 문서의 note에 "배포 제외·비공개"가 남아 있음: ${doc.file}`);
     const full=path.join(DOC_DIR,String(doc.file||''));
     if(!fs.existsSync(full)){fail(`문서 파일 없음: ${doc.file}`);continue}
