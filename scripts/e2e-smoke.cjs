@@ -228,24 +228,32 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     const missing=await page.goto(home+'no-such-page/deep',{waitUntil:'networkidle'});
     check('사이트 안의 없는 주소는 404.html이 구성기 첫 화면으로 보냄',missing&&page.url()===home&&await page.locator('#matrix-configurator').count()===1);
     // 0.113 XDM·SPX 후면 평면 그림: 02 프레임 선택의 후면 미리보기가 모두 -rear-art.webp(긴 변 2000px, 대체 문구 "그림")이고, XDM-216도 후면 그림 위에 슬롯 108칸이 나온다.
+    // 0.116: 정면·후면을 함께 보여 주고(stack·row), 대형 프레임만 정면/후면 버튼(toggle)으로 한 장씩 본다. 아래 도우미는 두 방식 모두에서 한쪽 이미지를 읽는다.
+    const previewImage=async side=>{
+      if(!await page.locator(`.rt-cg-preview img[data-cg-img="${side}"]`).count()){if(!await page.locator(`[data-cg-side="${side}"]`).count())return null;await page.click(`[data-cg-side="${side}"]`)}
+      await page.waitForFunction(s=>{const image=document.querySelector(`.rt-cg-preview img[data-cg-img="${s}"]`);return image&&image.complete&&image.naturalWidth>0},side,{timeout:5000}).catch(()=>{});
+      const info=await page.$eval(`.rt-cg-preview img[data-cg-img="${side}"]`,image=>({src:image.getAttribute('src'),w:image.naturalWidth,h:image.naturalHeight,alt:image.alt})).catch(()=>null);
+      if(await page.locator('[data-cg-side="front"]').count())await page.click('[data-cg-side="front"]');
+      return info;
+    };
+    const previewLayout=()=>page.evaluate(()=>document.querySelector('.rt-cg-duo-row')?'row':document.querySelector('.rt-cg-duo-stack')?'stack':document.querySelector('.rt-cg-seg')?'toggle':'none');
     const rearArtOk=async family=>{
       await page.evaluate(()=>localStorage.clear());
       await page.goto(home,{waitUntil:'networkidle'});
       await page.click(`button[data-family="${family}"]`);
       await page.click('[data-action="next"]');
-      let ok=0;const models=await page.locator('button[data-model]').evaluateAll(nodes=>nodes.map(node=>node.dataset.model));
+      let ok=0;const toggles=[];const models=await page.locator('button[data-model]').evaluateAll(nodes=>nodes.map(node=>node.dataset.model));
       for(const model of models){
         await page.click(`button[data-model="${model}"]`);
-        await page.click('[data-cg-side="rear"]');
-        await page.waitForFunction(()=>{const image=document.querySelector('.rt-cg-preview img');return image&&image.complete&&image.naturalWidth>0},null,{timeout:5000}).catch(()=>{});
-        const art=await page.$eval('.rt-cg-preview img',image=>({src:image.getAttribute('src'),w:image.naturalWidth,h:image.naturalHeight,alt:image.alt})).catch(()=>null);
+        if(await previewLayout()==='toggle')toggles.push(model);
+        const art=await previewImage('rear');
         if(art&&art.src.endsWith(`/frames/${model.toLowerCase()}-rear-art.webp`)&&Math.max(art.w,art.h)===2000&&art.alt.endsWith('그림'))ok++;
-        await page.click('[data-cg-side="front"]');
       }
-      return [ok,models.length];
+      return [ok,models.length,toggles];
     };
-    const [xdmArt,xdmCount]=await rearArtOk('XDM');
+    const [xdmArt,xdmCount,xdmToggles]=await rearArtOk('XDM');
     check('XDM 프레임 6종(216 포함) 후면 미리보기가 모두 평면 그림(긴 변 2000px)으로 표시됨',xdmCount===6&&xdmArt===6,`${xdmArt}/${xdmCount}`);
+    check('XDM 02 미리보기는 정면·후면을 함께 보여 주고, 대형 XDM-144·216만 정면/후면 버튼으로 전환함',JSON.stringify(xdmToggles)==='["XDM-144","XDM-216"]',JSON.stringify(xdmToggles));
     await page.click('button[data-model="XDM-216"]');await acceptConfirm();
     // 0.114: 02 프레임 선택 미리보기 캡션 아래 "다음 · 카드 슬롯 구성" 버튼(사용자 요청 "프레임 선택후 다음 이동 버튼을 여기에 넣어줘")으로 03 카드 슬롯으로 넘어간다.
     const previewNext=await page.evaluate(()=>{const button=document.querySelector('.rt-cg-preview [data-action="preview-next"]'),cap=document.querySelector('.rt-cg-preview-cap');if(!button||!cap)return null;const b=button.getBoundingClientRect(),c=cap.getBoundingClientRect();return {enabled:!button.disabled,below:b.top>=c.bottom-1,text:button.textContent.trim()}});
@@ -254,8 +262,8 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('02 프레임 선택 미리보기 캡션 아래 "다음" 버튼으로 03 카드 슬롯으로 이동함',previewNext?.enabled&&previewNext.below&&previewNext.text.startsWith('다음')&&(await page.locator('.rt-main .rt-eyebrow').first().textContent()).includes('03 / 카드 슬롯'),JSON.stringify(previewNext));
     await page.waitForFunction(()=>document.querySelector('.rt-rack-photo-image')?.naturalWidth>0,null,{timeout:5000}).catch(()=>{});
     check('XDM-216은 후면 그림 위에 입력 54·출력 54 슬롯으로 표시됨(캡션 "후면 그림")',await page.locator('.rt-rack-photo .rt-rack-zone-input .rt-rack-slot').count()===54&&await page.locator('.rt-rack-photo .rt-rack-zone-output .rt-rack-slot').count()===54&&(await page.locator('.rt-rack-photo figcaption').textContent()).startsWith('후면 그림'));
-    const [spxArt,spxCount]=await rearArtOk('SPX');
-    check('SPX 프레임 5종 후면 미리보기가 모두 평면 그림(긴 변 2000px)으로 표시됨',spxCount===5&&spxArt===5,`${spxArt}/${spxCount}`);
+    const [spxArt,spxCount,spxToggles]=await rearArtOk('SPX');
+    check('SPX 프레임 5종 후면 미리보기가 모두 평면 그림(긴 변 2000px)으로 표시되고, 5종 모두 정면·후면을 함께 보여 줌',spxCount===5&&spxArt===5&&spxToggles.length===0,`${spxArt}/${spxCount} ${JSON.stringify(spxToggles)}`);
     await page.evaluate(()=>localStorage.clear());
     await page.goto(home,{waitUntil:'networkidle'});
     await page.click('button[data-family="SPX"]');
@@ -266,7 +274,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     let spxPreviewOk=true;
     for(const model of spxModels){
       await page.click(`button[data-model="${model}"]`);
-      const src=await page.locator('.rt-cg-preview img').getAttribute('src');
+      const src=await page.locator('.rt-cg-preview img[data-cg-img="front"]').getAttribute('src');
       if(!src||!src.includes(`/frames/spx-${model.slice(4).toLowerCase()}-front.webp`))spxPreviewOk=false;
     }
     check('프레임 목록에서 모델을 고를 때마다 오른쪽 미리보기가 그 모델의 전면 사진으로 바뀜(SPX 5종)',spxPreviewOk);
@@ -281,24 +289,22 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.click('button[data-family="VDM"]');
     await page.click('[data-action="next"]');
     const vdmModels=await page.locator('button[data-model]').evaluateAll(nodes=>nodes.map(node=>node.dataset.model));
-    let vdmFrontCount=0,vdm288Placeholder=false,vdmArt=0;
+    let vdmFrontCount=0,vdm288Placeholder=false,vdmArt=0;const vdmToggles=[];
     for(const model of vdmModels){
       await page.click(`button[data-model="${model}"]`);
       const src=await page.$eval('.rt-cg-preview img',image=>image.getAttribute('src')).catch(()=>null);
       if(model==='VDM-288X')vdm288Placeholder=await page.locator('.rt-cg-preview-placeholder').isVisible();
       if(src&&src.includes('/frames/vdm-')&&/-front(-art)?\.webp$/.test(src))vdmFrontCount++;
       // 0.111 VDM 평면 그림: 실물 사진이 없는 전면 7종·후면 8종은 -art.webp 그림(긴 변 2000px)을 쓴다.
+      if(await previewLayout()==='toggle')vdmToggles.push(model);
       for(const side of ['front','rear']){
-        if(!await page.locator(`[data-cg-side="${side}"]`).count())continue;
-        await page.click(`[data-cg-side="${side}"]`);
-        await page.waitForFunction(()=>{const image=document.querySelector('.rt-cg-preview img');return !image||image.complete},null,{timeout:5000}).catch(()=>{});
-        const art=await page.$eval('.rt-cg-preview img',image=>({src:image.getAttribute('src'),w:image.naturalWidth,h:image.naturalHeight,alt:image.alt})).catch(()=>null);
+        const art=await previewImage(side);
         if(art&&art.src.endsWith(`-${side}-art.webp`)&&Math.max(art.w,art.h)===2000&&art.alt.endsWith('그림'))vdmArt++;
       }
-      if(await page.locator('[data-cg-side="front"]').count())await page.click('[data-cg-side="front"]');
     }
     check('VDM 프레임 10종 중 9종(288X 제외)은 전면 사진 또는 전면 그림을 미리보기에 표시함',vdmFrontCount===9);
     check('VDM 실물 사진이 없는 전면 7종·후면 8종은 평면 그림(긴 변 2000px, 대체 문구 "그림")으로 표시함',vdmArt===15);
+    check('VDM 02 미리보기는 정면·후면을 함께 보여 주고, 대형 VDM-80X·128X·180X만 정면/후면 버튼으로 전환함',JSON.stringify(vdmToggles)==='["VDM-80X","VDM-128X","VDM-180X"]',JSON.stringify(vdmToggles));
     check('VDM-288X는 전면 사진이 없어 미리보기에 "사진 준비 중"이 표시됨',vdm288Placeholder);
     await page.click('button[data-model="VDM-16X"]');await acceptConfirm();
     await page.click('[data-action="next"]');

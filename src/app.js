@@ -166,13 +166,20 @@
       };
       const previewModel=state.model||f.models[0];
       const front=frameFronts[previewModel],rearInfo=rearPhotos[previewModel];
+      // 0.116(사용자 요청 2026-09-28 "프레임을 선택할 때 제품 정면과 후면이 동시에 나오게 해 주고 XDM 144처럼 굉장히 큰 제품 같은 경우는 그때만 정면 후면 형태로"):
+      // 정면·후면을 함께 보여 준다. 후면 이미지 세로/가로 비율로 배치를 고른다 — 1.1 이하는 위아래(stack), 2.0 이하는 좌우(row),
+      // 그보다 긴 대형 프레임(XDM-144·216, VDM-80X·128X·180X)만 예전처럼 정면/후면 버튼으로 한 장씩 본다(toggle).
+      const aspect=rearInfo?rearInfo.size[1]/rearInfo.size[0]:0;
+      const duo=front&&rearInfo?(aspect>2?'':aspect>1.1?'row':'stack'):'';
       const side=previewSide==='rear'&&rearInfo?'rear':'front';
       const img=side==='rear'?rearInfo.src:front;
+      const kindOf=which=>(which==='front'?frontDrawings.has(previewModel):rearInfo?.kind==='그림')?'그림':'사진';
       const plan=slotPlanFor(previewModel);
       // 0.114(사용자 요청 2026-09-28 "프레임 선택후 다음 이동 버튼을 여기에 넣어줘"): 미리보기 캡션 아래에도 다음 단계 버튼을 둔다. 아래 바의 다음 버튼과 같은 동작이며, 프레임을 고르기 전에는 누를 수 없다.
       const nextHere=`<button type="button" class="rt-button rt-primary rt-cg-preview-next" data-action="preview-next" ${state.model?'':'disabled'}>다음 · 카드 슬롯 구성 <span aria-hidden="true">→</span></button>`;
       const seg=`<span class="rt-cg-seg" role="group" aria-label="사진 방향"><button type="button" class="${side==='front'?'rt-cg-seg-on':''}" data-cg-side="front">정면</button><button type="button" class="${side==='rear'?'rt-cg-seg-on':''}" data-cg-side="rear">후면</button></span>`;
-      const preview=`<div class="rt-cg-preview">${seg}${img?`<img src="${img}" alt="${esc(previewModel)} ${side==='rear'?'후면':'전면'} ${(side==='front'?frontDrawings.has(previewModel):rearInfo?.kind==='그림')?'그림':'사진'}">`:'<div class="rt-cg-preview-placeholder">사진 준비 중</div>'}<div class="rt-cg-preview-cap"><strong>${esc(previewModel)}</strong><span>${plan?`입력 ${plan[0]} / 출력 ${plan[1]} 슬롯`:'슬롯 구성 제조사 확인 필요'}</span></div>${nextHere}</div>`;
+      const duoView=duo?`<div class="rt-cg-duo rt-cg-duo-${duo}"><figure><img src="${front}" data-cg-img="front" alt="${esc(previewModel)} 전면 ${kindOf('front')}"><figcaption>정면</figcaption></figure><figure><img src="${rearInfo.src}" data-cg-img="rear" alt="${esc(previewModel)} 후면 ${kindOf('rear')}"><figcaption>후면</figcaption></figure></div>`:'';
+      const preview=`<div class="rt-cg-preview">${duo?duoView:`${rearInfo?seg:''}${img?`<img src="${img}" data-cg-img="${side}" alt="${esc(previewModel)} ${side==='rear'?'후면':'전면'} ${kindOf(side)}">`:'<div class="rt-cg-preview-placeholder">사진 준비 중</div>'}`}<div class="rt-cg-preview-cap"><strong>${esc(previewModel)}</strong><span>${plan?`입력 ${plan[0]} / 출력 ${plan[1]} 슬롯`:'슬롯 구성 제조사 확인 필요'}</span></div>${nextHere}</div>`;
       return heading('02 / 프레임 선택','구성의 중심이 될 프레임을 선택하세요.',`${state.family} 제품군 · 메인프레임 ${f.models.length}종`)+`<div class="rt-cg-split"><div class="rt-cg-list" role="list">${f.models.map(row).join('')}</div>${preview}</div>${relatedSection(state.family)}${xdmFeature}`;
     }
     function cardChoiceModal(){
