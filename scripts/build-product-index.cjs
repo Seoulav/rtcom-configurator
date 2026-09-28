@@ -55,6 +55,15 @@ function validate(product,file,ids){
     if(!shared&&(!/^[a-z0-9]+(?:[-.][a-z0-9]+)*\.pdf$/.test(doc.file||'')||!String(doc.file).startsWith(`${product.id}-`)))fail(`documents.file 형식(제품 id로 시작, 소문자·숫자·하이픈·점, .pdf): ${doc.file}`);
     if('page' in doc&&(!Number.isInteger(doc.page)||doc.page<1||(shared&&doc.page>shared.pages)))fail(`documents.page는 1${shared?`~${shared.pages}`:' 이상'} 정수여야 함: ${doc.file} ${doc.page}`);
     if(/배포 제외|비공개/.test(doc.note||''))fail(`공개하는 문서의 note에 "배포 제외·비공개"가 남아 있음: ${doc.file}`);
+    // 0.113 팝업 미리보기: "image"는 미리 그린 쪽 그림(previewImages, render_doc_previews.py), "pdfjs"는 PDF.js로 원본 PDF를 그린다.
+    if('preview' in doc){
+      if(!['image','pdfjs'].includes(doc.preview))fail(`documents.preview는 image·pdfjs만 가능: ${doc.file} ${doc.preview}`);
+      if(doc.preview==='image'){
+        if(!Array.isArray(doc.previewImages)||!doc.previewImages.length)fail(`preview "image"에는 previewImages가 필요: ${doc.file}`);
+        else for(const name of doc.previewImages)if(!fs.existsSync(path.join(IMAGE_DIR,String(name))))fail(`미리보기 그림 없음: ${name}`);
+      }
+      if(doc.page)fail(`preview는 쪽 지정(page) 없는 제품별 문서에만 쓸 수 있음: ${doc.file}`);
+    }else if('previewImages' in doc)fail(`previewImages는 preview "image"와 함께 써야 함: ${doc.file}`);
     const full=path.join(DOC_DIR,String(doc.file||''));
     if(!fs.existsSync(full)){fail(`문서 파일 없음: ${doc.file}`);continue}
     const size=fs.statSync(full).size,head=Buffer.alloc(5),fd=fs.openSync(full,'r');fs.readSync(fd,head,0,5,0);fs.closeSync(fd);

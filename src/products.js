@@ -534,11 +534,12 @@
       return (item.documents||[]).filter(doc=>doc.file&&DOC_LABEL[doc.type]).sort((a,b)=>order.indexOf(a.type)-order.indexOf(b.type)).map(doc=>{
         // page가 있으면(전체 카탈로그 공용 파일, 0.95) 새 탭은 그 쪽에서 열고(#page=N, 아이폰 Safari는 1쪽부터 열릴 수 있음), 내려받기는 파일 전체를 받는다.
         const label=doc.label||DOC_LABEL[doc.type],pageNote=doc.page?` ${doc.page}쪽`:'',title=esc(`${doc.title||label}${pageNote}`),href=docFile(doc.file);
-        // 0.105 샘플(사용자 요청 2026-09-28 "카달로그는 팝업형태 보이면 어때? 1장짜리라서 파일다운받아서 다시 열기 불편해", HD-13U만 적용):
-        // 페이지 지정 없는 제품별 단일 쪽 카탈로그는 새 탭 대신 화면 안 팝업(다이얼로그)으로 미리 본다. 반응이 좋으면 전 제품으로 넓힌다.
-        const popup=item.id==='hd-13u'&&doc.type==='Catalog'&&!doc.page;
+        // 팝업 미리보기(0.105 샘플 → 0.113 데이터로 지정): documents[].preview가 "image"면 미리 그린 쪽 그림(previewImages),
+        // "pdfjs"면 PDF.js로 원본 PDF를 팝업 안에 그린다. 지정이 없으면 기존처럼 새 탭에서 연다(사용자 결정 2026-09-28 "13u 메뉴얼은 pdf.js으로 카탈로그는 이미지 방식").
+        const popup=doc.preview==='image'||doc.preview==='pdfjs';
+        const images=doc.preview==='image'?(doc.previewImages||[]).map(name=>image(name)).join('|'):'';
         const openEl=popup
-          ?`<button type="button" class="rt-pg-doc-open" data-doc-preview="${href}" data-doc-title="${title}" title="${title} · 미리보기">${esc(label)} PDF</button>`
+          ?`<button type="button" class="rt-pg-doc-open" data-doc-preview="${href}" data-doc-kind="${doc.preview}"${images?` data-doc-images="${images}"`:''} data-doc-title="${title}" title="${title} · 미리보기">${esc(label)} PDF</button>`
           :`<a class="rt-pg-doc-open" href="${href}${doc.page?`#page=${doc.page}`:''}" target="_blank" rel="noopener" title="${title} · 새 탭에서 보기">${esc(label)} PDF${doc.page?` <small>${doc.page}쪽</small>`:''}</a>`;
         return `<span class="rt-pg-doc" data-doc="${esc(doc.type)}">${openEl}<a class="rt-pg-doc-save" href="${href}" download="${esc(doc.file)}" title="${title} · 내려받기(전체 파일)" aria-label="${esc(label)} 내려받기">${DOWNLOAD_ICON}</a></span>`;
       }).join('');
@@ -938,12 +939,12 @@
       const diagramBtn=event.target.closest('[data-open-diagram]');
       if(diagramBtn){const record=body.querySelector('.rt-pg-record');if(record){record.open=true;record.querySelector('#rt-pg-diagram-photo')?.scrollIntoView({behavior:'smooth',block:'start'})}return}
       const docPreviewBtn=event.target.closest('[data-doc-preview]');
-      if(docPreviewBtn){openDocPreview(docPreviewBtn.dataset.docPreview,docPreviewBtn.dataset.docTitle);return}
+      if(docPreviewBtn){const d=docPreviewBtn.dataset;openDocPreview(d.docPreview,d.docTitle,d.docKind,d.docImages?d.docImages.split('|'):[]);return}
       // 0.99 XDM-PSU Signal Flow 확대 창: 그림을 복사해 전체 화면 창에 넣고 100%(화면 폭 맞춤)~300%로 키운다. 창 안에서 스크롤·손가락으로 옮겨 본다.
       const flowZoom=event.target.closest('[data-flow-zoom]')||(event.target.closest('.rt-pg-svg-wrap')?.querySelector('.rt-psu-anim')&&event.target.closest('.rt-pg-svg-wrap'));
       if(flowZoom){openFlowZoom(flowZoom.closest('section'));return}
       const docZoom=event.target.closest('[data-doc-zoom-step]');
-      if(docZoom){const dlg=docZoom.closest('dialog');if(dlg?.rtDoc?.pdf){dlg.rtDoc.zoom=Math.max(0,Math.min(DOC_ZOOMS.length-1,dlg.rtDoc.zoom+Number(docZoom.dataset.docZoomStep)));renderDocPages(dlg)}return}
+      if(docZoom){const dlg=docZoom.closest('dialog');if(dlg?.rtDoc?.ready){dlg.rtDoc.zoom=Math.max(0,Math.min(DOC_ZOOMS.length-1,dlg.rtDoc.zoom+Number(docZoom.dataset.docZoomStep)));renderDocPages(dlg)}return}
       const zoomStep=event.target.closest('[data-zoom-step]');
       if(zoomStep){const dlg=zoomStep.closest('dialog');setFlowZoom(dlg,Number(dlg.dataset.zoom)+Number(zoomStep.dataset.zoomStep));return}
       if(event.target.closest('[data-zoom-close]')){event.target.closest('dialog').close();return}
@@ -999,15 +1000,22 @@
       return pdfjsLib=lib;
     };
     const DOC_ZOOMS=[1,1.5,2,3];
+    // 화면 폭에 맞춘 쪽 너비(px). 확대 배율을 곱해 그린다.
+    const docFitWidth=dlg=>Math.max(240,dlg.querySelector('.rt-doc-zoom-body').clientWidth-24);
+    function updateDocZoomTools(dlg){
+      const state=dlg.rtDoc;
+      dlg.querySelector('[data-doc-zoom-level]').textContent=`${DOC_ZOOMS[state.zoom]*100}%`;
+      dlg.querySelector('[data-doc-zoom-step="-1"]').disabled=!state.ready||state.zoom===0;
+      dlg.querySelector('[data-doc-zoom-step="1"]').disabled=!state.ready||state.zoom===DOC_ZOOMS.length-1;
+    }
     async function renderDocPages(dlg){
       const state=dlg.rtDoc,pagesEl=dlg.querySelector('.rt-doc-pages');
-      if(!state?.pdf||!pagesEl)return;
+      if(!state?.ready||!pagesEl)return;
+      updateDocZoomTools(dlg);
+      const zoom=DOC_ZOOMS[state.zoom],fitWidth=docFitWidth(dlg);
+      // 이미지 방식(카탈로그): 미리 그린 그림의 표시 폭만 바꾼다. 쪽 그림은 200dpi라 300%까지 확대해도 흐려지지 않는다.
+      if(state.kind==='image'){pagesEl.querySelectorAll('img').forEach(img=>{img.style.width=`${Math.floor(fitWidth*zoom)}px`});return}
       const token=state.token=(state.token||0)+1;
-      const zoom=DOC_ZOOMS[state.zoom];
-      dlg.querySelector('[data-doc-zoom-level]').textContent=`${zoom*100}%`;
-      dlg.querySelector('[data-doc-zoom-step="-1"]').disabled=state.zoom===0;
-      dlg.querySelector('[data-doc-zoom-step="1"]').disabled=state.zoom===DOC_ZOOMS.length-1;
-      const fitWidth=Math.max(240,dlg.querySelector('.rt-doc-zoom-body').clientWidth-24);
       const canvases=[];
       for(let n=1;n<=state.pdf.numPages;n++){
         const page=await state.pdf.getPage(n);
@@ -1024,10 +1032,14 @@
         await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
         if(token!==state.token)return;
         canvases.push(canvas);
+        // 여러 쪽 매뉴얼: 첫 쪽이 그려지는 대로 먼저 보여 주고 나머지는 뒤에 이어 붙인다(첫 화면이 늦게 뜨지 않게).
+        if(n===1)pagesEl.replaceChildren(canvas);else pagesEl.appendChild(canvas);
+        const status=dlg.querySelector('.rt-doc-status');
+        if(status&&n<state.pdf.numPages)status.textContent=`${n} / ${state.pdf.numPages}쪽 그리는 중…`;
       }
-      pagesEl.replaceChildren(...canvases);
+      dlg.querySelector('.rt-doc-status')?.remove();
     }
-    async function openDocPreview(href,title){
+    async function openDocPreview(href,title,kind='pdfjs',images=[]){
       let dlg=body.querySelector('dialog.rt-doc-zoom');
       if(!dlg){
         dlg=document.createElement('dialog');dlg.className='rt-doc-zoom';dlg.setAttribute('aria-label','문서 미리보기');
@@ -1035,20 +1047,30 @@
         body.appendChild(dlg);
       }
       const file=href.split('/').pop();
-      dlg.innerHTML=`<div class="rt-flow-zoom-head"><b>${esc(title)}</b><div class="rt-flow-zoom-tools"><button type="button" data-doc-zoom-step="-1" aria-label="축소" disabled>−</button><span data-doc-zoom-level aria-live="polite">100%</span><button type="button" data-doc-zoom-step="1" aria-label="확대" disabled>+</button><a class="rt-doc-zoom-link" href="${href}" target="_blank" rel="noopener" title="PDF 원본을 새 탭에서 열기">원본</a><a class="rt-doc-zoom-link" href="${href}" download="${esc(file)}" title="PDF 내려받기" aria-label="PDF 내려받기">${DOWNLOAD_ICON}</a><button type="button" class="rt-flow-zoom-close" data-zoom-close aria-label="닫기">×</button></div></div><div class="rt-doc-zoom-body"><p class="rt-doc-status" role="status">카탈로그를 불러오는 중입니다…</p><div class="rt-doc-pages"></div></div>`;
-      dlg.rtDoc={title,zoom:0};
+      dlg.innerHTML=`<div class="rt-flow-zoom-head"><b>${esc(title)}</b><div class="rt-flow-zoom-tools"><button type="button" data-doc-zoom-step="-1" aria-label="축소" disabled>−</button><span data-doc-zoom-level aria-live="polite">100%</span><button type="button" data-doc-zoom-step="1" aria-label="확대" disabled>+</button><a class="rt-doc-zoom-link" href="${href}" target="_blank" rel="noopener" title="PDF 원본을 새 탭에서 열기">원본</a><a class="rt-doc-zoom-link" href="${href}" download="${esc(file)}" title="PDF 내려받기" aria-label="PDF 내려받기">${DOWNLOAD_ICON}</a><button type="button" class="rt-flow-zoom-close" data-zoom-close aria-label="닫기">×</button></div></div><div class="rt-doc-zoom-body" data-doc-kind="${kind==='image'?'image':'pdfjs'}"><p class="rt-doc-status" role="status">${kind==='image'?'카탈로그':'문서'}를 불러오는 중입니다…</p><div class="rt-doc-pages"></div></div>`;
+      const state=dlg.rtDoc={title,kind:kind==='image'?'image':'pdfjs',zoom:0,ready:false};
       if(typeof dlg.showModal==='function')dlg.showModal();else dlg.setAttribute('open','');
       dlg.querySelector('[data-zoom-close]').focus();
       const status=dlg.querySelector('.rt-doc-status');
+      const fail=()=>{status.innerHTML=`미리보기를 불러오지 못했습니다. <a href="${href}" target="_blank" rel="noopener">PDF 원본 열기</a>`};
+      if(state.kind==='image'){
+        // 이미지 방식: 라이브러리 없이 쪽 그림을 바로 보여 준다. 그림이 하나라도 안 뜨면 원본 PDF 링크로 안내한다.
+        const pagesEl=dlg.querySelector('.rt-doc-pages');
+        const imgs=images.map((src,i)=>{const img=document.createElement('img');img.src=src;img.alt=`${title} ${i+1}쪽`;img.decoding='async';return img});
+        if(!imgs.length){fail();return}
+        pagesEl.replaceChildren(...imgs);
+        state.ready=true;renderDocPages(dlg);
+        Promise.all(imgs.map(img=>img.decode?img.decode():Promise.resolve())).then(()=>{if(dlg.rtDoc===state)status.remove()},()=>{if(dlg.rtDoc===state)fail()});
+        return;
+      }
       try{
         const lib=await loadPdfjs();
         const pdf=await lib.getDocument({url:href,isEvalSupported:false}).promise;
-        if(dlg.rtDoc?.title!==title)return;
-        dlg.rtDoc.pdf=pdf;
+        if(dlg.rtDoc!==state)return;
+        state.pdf=pdf;state.ready=true;
         await renderDocPages(dlg);
-        status.remove();
       }catch(error){
-        status.innerHTML=`미리보기를 불러오지 못했습니다. <a href="${href}" target="_blank" rel="noopener">PDF 원본 열기</a>`;
+        if(dlg.rtDoc===state)fail();
       }
     }
     body.addEventListener('keydown',event=>{
