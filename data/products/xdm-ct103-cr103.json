@@ -19,7 +19,7 @@
   "catalogPages": "11",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03, 48쪽판) 11쪽의 XDM-CT103·XDM-CR103 소개와 제품사양 표에서 확인했고, 새 카탈로그(46쪽판) 11쪽과 줄 단위로 재대조했다(차이 없음). XDM-CR103은 사용자 매뉴얼 Ver.1.1(4–9쪽)로 단자·오디오 출력·연결 상대를 확인했다.",
   "packageStatus": "VERIFIED",
-  "overview": "XDM-CT103은 HDBaseT 3.0 기술이 적용되어 압축하지 않은 True 4K 4096x2160@60Hz(4:4:4), 3840x2160@60Hz(4:4:4) 해상도의 HDMI 신호를 케이블에 따라 최대 100m까지 전송하는 HDMI 1 Gang 벽부형 송신기이며 XDM-CIS100과 호환된다. XDM-CR103은 같은 신호를 최대 100m까지 받는 1 Gang 벽부형 수신기이며 XDM-COS100과 사용할 수 있다.\n\n벽부형 제품은 슬롯과 함께 쓰면 PoE 기능으로 별도 전원 케이블 없이 Cat 케이블을 통해 신호와 전원을 공급받는다. XDM-CTR100 PSE와도 사용할 수 있으며, 이때도 XDM-CT103/CR103에 별도 전원 케이블을 연결하지 않아도 된다. 케이블별 최대 사용 거리는 제조사 문의 사항으로 적혀 있다.",
+  "overview": "XDM-CT103은 HDBaseT 3.0 기술이 적용되어 압축하지 않은 True 4K 3840x2160@60Hz(4:4:4) 해상도의 HDMI 신호를 케이블에 따라 최대 100m까지 전송하는 HDMI 1 Gang 벽부형 송신기이며 XDM-CIS100과 호환된다. XDM-CR103은 같은 신호를 최대 100m까지 받는 1 Gang 벽부형 수신기이며 XDM-COS100과 사용할 수 있다.\n\n벽부형 제품은 슬롯과 함께 쓰면 PoE 기능으로 별도 전원 케이블 없이 Cat 케이블을 통해 신호와 전원을 공급받는다. XDM-CTR100 PSE와도 사용할 수 있으며, 이때도 XDM-CT103/CR103에 별도 전원 케이블을 연결하지 않아도 된다. 케이블별 최대 사용 거리는 제조사 문의 사항으로 적혀 있다.",
   "images": [
     {
       "role": "Main",
@@ -105,8 +105,8 @@
   ],
   "features": [
     {
-      "text": "HDBaseT 3.0 무압축 True 4K(4096x2160·3840x2160@60Hz 4:4:4) 최대 100m 전송 지원",
-      "source": "C"
+      "text": "HDBaseT 3.0 무압축 True 4K(3840x2160@60Hz 4:4:4) 최대 100m 전송 지원",
+      "source": "M1"
     },
     {
       "text": "1 Gang 벽부형 구조",
@@ -169,10 +169,10 @@
     {
       "group": "Video",
       "name": "최대 해상도",
-      "value": "4096x2160@60Hz, 3840x2160@60Hz",
+      "value": "3840x2160@60Hz",
       "unit": "",
       "condition": "4:4:4 · XDM-CT103·XDM-CR103 공통",
-      "source": "C",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {

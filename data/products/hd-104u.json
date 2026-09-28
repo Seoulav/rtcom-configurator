@@ -163,10 +163,10 @@
     {
       "group": "Power",
       "name": "전원공급",
-      "value": "DC 5V 2A",
+      "value": "DC 5V 1A",
       "unit": "",
       "condition": "",
-      "source": "C",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
@@ -238,7 +238,7 @@
       {
         "n": 4,
         "label": "DC 5V",
-        "desc": "전원 어댑터 5V 2A",
+        "desc": "전원 어댑터 5V 1A",
         "x1": 1103,
         "x2": 1198,
         "side": "top",
