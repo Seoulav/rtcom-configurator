@@ -198,6 +198,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     // 0.70 카드별 수량(사용자 요청 "카드마다 수량 기입해서 순차적으로"): HI100 수량 3을 넣고 "순서대로 장착"을 누르면 선택한 슬롯부터 3칸이 채워진다.
     for(let i=0;i<3;i++)await page.locator('.rt-card-modal [data-card-qty-step="1"][data-qty-card="XDM-HI100"]').click();
     const qtyShown=await page.locator('.rt-card-modal [data-qty-out="XDM-HI100"]').textContent();
+    // 0.115: 팝업 아래 줄은 슬롯 비우기(Del)가 왼쪽, 장착이 오른쪽(사용자 요청 "하단에 장착을 우측으로 배치하고 델리트키는 왼쪽에 배치해줘").
+    const footOrder=await page.evaluate(()=>{const foot=document.querySelector('.rt-card-modal-foot'),r=foot.querySelector('[data-action="remove"]').getBoundingClientRect(),f=foot.querySelector('[data-action="fill-qty"]').getBoundingClientRect(),box=foot.getBoundingClientRect();return {removeLeft:Math.round(r.left-box.left),fillRight:Math.round(box.right-f.right),order:r.right<=f.left}});
+    check('카드 팝업 아래 줄에서 슬롯 비우기(Del)는 왼쪽, 장착 버튼은 오른쪽에 있음',footOrder.order&&footOrder.removeLeft<40&&footOrder.fillRight<40,JSON.stringify(footOrder));
     await page.locator('.rt-card-modal [data-action="fill-qty"]').click();
     const saved=()=>page.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.placements);
     let moveState=await saved();
