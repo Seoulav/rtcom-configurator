@@ -912,3 +912,38 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-rel-card small{color:#56627a;font-size:11.5px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 @media(max-width:720px){#rtcom-design .rt-rel-row{grid-auto-columns:minmax(140px,44%)}}
 #rtcom-design .rt-card-modal-foot{flex-wrap:wrap}
+/* 카드 상세 정보(2026-09-28): 03 카드 슬롯 아래 입력·출력 카드 버튼, 내 구성 카드 행 버튼, 카드 사양 대화상자 */
+#rtcom-design .rt-config-summary li:has(>.rt-summary-card){display:block;padding:0;background:none}
+#rtcom-design .rt-summary-card{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px 10px;width:100%;padding:10px;border:1px solid transparent;border-radius:12px;background:#f5f8fc;color:inherit;font:inherit;text-align:left;cursor:pointer;transition:border-color .15s,background .15s}
+#rtcom-design .rt-summary-card:hover,#rtcom-design .rt-summary-card:focus-visible{border-color:#007AFF66;background:#eef5ff;outline:none}
+#rtcom-design .rt-summary-card img{grid-column:1/-1;display:block;width:100%;height:auto;border-radius:3px}
+#rtcom-design .rt-summary-card>span{min-width:0}
+#rtcom-design .rt-summary-card strong{display:block;font-size:12px}
+#rtcom-design .rt-summary-card small{display:block;overflow:hidden;color:var(--rt-muted);font-size:10px;text-overflow:ellipsis;white-space:nowrap}
+#rtcom-design .rt-summary-card b{color:#2f63c8;font-size:13px}
+#rtcom-design .rt-card-info-bar{display:grid;gap:10px;margin-top:14px;padding:14px 16px;border-radius:16px;background:#ffffffb3;border:1px solid #e3e9f3}
+#rtcom-design .rt-card-info-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}
+#rtcom-design .rt-card-info-head strong{font-size:13px}
+#rtcom-design .rt-card-info-head small{color:var(--rt-muted);font-size:11.5px}
+#rtcom-design .rt-card-info-group{display:grid;grid-template-columns:64px minmax(0,1fr);align-items:start;gap:8px}
+#rtcom-design .rt-card-info-group>span{padding-top:8px;color:#2f63c8;font-size:11.5px;font-weight:800}
+#rtcom-design .rt-card-info-group>div{display:flex;flex-wrap:wrap;gap:6px}
+#rtcom-design .rt-card-info-chip{display:grid;gap:1px;min-width:0;padding:7px 11px;border:1px solid #dbe3ef;border-radius:11px;background:#fff;color:inherit;font:inherit;text-align:left;cursor:pointer;transition:border-color .15s,background .15s}
+#rtcom-design .rt-card-info-chip:hover,#rtcom-design .rt-card-info-chip:focus-visible{border-color:#007AFF;background:#eef5ff;outline:none}
+#rtcom-design .rt-card-info-chip strong{font-size:12px;white-space:nowrap}
+#rtcom-design .rt-card-info-chip small{color:var(--rt-muted);font-size:10.5px}
+#rtcom-design .rt-card-info-modal{width:min(640px,calc(100vw - 24px));max-height:calc(100vh - 40px);padding:0;border:0;border-radius:24px;background:#fff;color:var(--rt-ink);box-shadow:0 30px 80px #0f172a59;overflow:auto}
+#rtcom-design .rt-card-info-modal::backdrop{background:#0f172aa6;backdrop-filter:blur(3px)}
+#rtcom-design .rt-card-info-sub{margin:4px 0 0;color:var(--rt-muted);font-size:13px}
+#rtcom-design .rt-card-info-body{display:grid;gap:12px;padding:18px 22px}
+#rtcom-design .rt-card-info-plate{padding:12px;border-radius:14px;background:#f2f5fa}
+#rtcom-design .rt-card-info-plate img{display:block;width:100%;height:auto;border-radius:4px}
+#rtcom-design .rt-card-info-tip{margin:0;font-size:13.5px;line-height:1.55}
+#rtcom-design .rt-card-info-table{width:100%;border-collapse:collapse;font-size:13px}
+#rtcom-design .rt-card-info-table th{width:112px;padding:8px 10px 8px 0;background:none;font-size:13px;color:#5b6679;font-weight:700;text-align:left;vertical-align:top;border-top:1px solid #edf1f7}
+#rtcom-design .rt-card-info-table td{padding:8px 0;background:none;text-align:left;font-size:13px;line-height:1.5;border-top:1px solid #edf1f7;word-break:keep-all;overflow-wrap:anywhere}
+#rtcom-design .rt-card-info-note{margin:0;padding:10px 12px;border-radius:12px;background:#f5f8fc;font-size:12.5px;line-height:1.55}
+#rtcom-design .rt-card-info-missing{margin:0;padding:10px 12px;border-radius:12px;background:#fff6e5;color:#8a5a00;font-size:12.5px;line-height:1.55}
+#rtcom-design .rt-card-info-src{margin:0;color:var(--rt-muted);font-size:11.5px}
+#rtcom-design .rt-card-info-modal .rt-card-modal-foot{justify-content:flex-end}
+@media(max-width:720px){#rtcom-design .rt-card-info-group{grid-template-columns:1fr}#rtcom-design .rt-card-info-group>span{padding-top:0}#rtcom-design .rt-card-info-body{padding:14px}#rtcom-design .rt-card-info-table th{width:88px}}

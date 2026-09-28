@@ -6,7 +6,7 @@ const vm=require('node:vm');
 const {execFileSync}=require('node:child_process');
 
 const read=file=>fs.readFileSync(file,'utf8');
-const runtimeScripts=['src/catalog.js','src/core.js','src/app.js','src/products.js'];
+const runtimeScripts=['src/catalog.js','src/card-specs.js','src/core.js','src/app.js','src/products.js'];
 const loadCatalog=()=>{const context={globalThis:{}};vm.runInNewContext(read('src/catalog.js'),context);return context.globalThis.RtCatalog};
 
 test('Pretendard Variable font and its OFL license are present and referenced by styles.css',()=>{
@@ -148,4 +148,21 @@ test('configurator catalog and persistence contracts remain unchanged',()=>{
   assert.match(read('src/app.js'),/const storageKey='rtcom\.configuration\.v1'/);
   assert.match(read('src/core.js'),/const catalogVersion = '2026-09-18-draft\.1'/);
   assert.match(read('src/core.js'),/const schemaVersion = 3/);
+});
+
+test('every matrix card has a detail entry in card-specs.js sourced from the catalog',()=>{
+  const catalog=loadCatalog();
+  const context={globalThis:{}};vm.runInNewContext(read('src/card-specs.js'),context);
+  const specs=context.globalThis.RtCardSpecs;
+  const ids=Object.values(catalog).flatMap(family=>[...family.input,...family.output].map(card=>card[0]));
+  assert.deepEqual(Object.keys(specs).sort(),[...ids].sort(),'card-specs.js must cover exactly the catalog cards');
+  for(const id of ids){
+    const entry=specs[id];
+    if(entry.page)assert.ok(entry.specs.length>0,`${id} has a catalog page but no specs`);
+    else assert.ok(entry.missing,`${id} without a catalog page must say which material is missing`);
+    assert.doesNotMatch(JSON.stringify(entry),/up to/i,`${id} must use "최대" instead of "up to" (0.39 표기 규칙)`);
+  }
+  const app=read('src/app.js');
+  assert.match(app,/data-card-info="\$\{c\[0\]\}"/,'03 카드 슬롯 must render input/output card info buttons');
+  assert.match(app,/class="rt-summary-card" data-card-info=/,'내 구성 card rows must open card details');
 });
