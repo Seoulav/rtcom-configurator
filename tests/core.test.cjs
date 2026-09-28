@@ -54,7 +54,9 @@ test('round-trip preserves TX/RX roles and combines purchasing quantities',()=>{
   assert.equal(doc.schemaVersion,3);
   assert.deepEqual(restored,state);
   assert.equal(core.bom(state).find(row=>row.model==='XDM-CTR100').quantity,5);
-  assert.equal(core.bom(state).find(row=>row.category==='전원 장비').quantity,1);
+  assert.equal(core.bom(state).find(row=>row.model==='XDM-PSU').quantity,1);
+  assert.equal(core.bom(state).find(row=>row.model.startsWith('XDM-POH')).quantity,2,'POH는 CIS100에 연결한 CTR100(Tx) 1대당 1개');
+  assert.equal(core.bom(state).find(row=>row.model.startsWith('XDM-PHX')).quantity,1,'PHX는 CTR100(Rx)을 연결한 COS100 1장당 1개');
   assert(core.validate(state).issues.some(issue=>issue.code==='CTR_POWER_REQUIRED'));
   assert.equal(doc.validation.canFinalize,false);
 });
@@ -123,7 +125,7 @@ test('rejects malformed, oversized, stale and future documents',()=>{
 test('does not trust validation or BOM supplied in a file',()=>{
   const doc=core.document(configured());doc.validation={canFinalize:true,status:'VERIFIED'};doc.bom=[];
   const restored=core.document(core.parse(JSON.stringify(doc)));
-  assert.equal(restored.validation.canFinalize,false);assert.equal(restored.bom.length,5);
+  assert.equal(restored.validation.canFinalize,false);assert.equal(restored.bom.length,7,'프레임·카드 2·CTR100 + 0.72 전원 장비 3줄(XDM-PSU·POH·PHX)');
 });
 
 test('empty and partly used slots produce no error',()=>{
@@ -169,14 +171,15 @@ test('HDBaseT and fiber cards default to their catalog paired extenders',()=>{
   assert.equal(bom['XDM-FR101'],4);
 });
 
-test('CTR100 linked to matrix cards needs its own power and cannot use CTR100 PSE',()=>{
+test('CTR100 linked to matrix cards is powered by XDM-PSU (no own adapter) and cannot use CTR100 PSE',()=>{
   const state=configured();
   const issue=core.validate(state).issues.find(item=>item.code==='CTR_POWER_REQUIRED');
   assert.ok(issue);
-  assert.match(issue.message,/전원을 직접 연결/);
+  assert.match(issue.message,/XDM-PSU로 전원을 공급/);
+  assert.match(issue.message,/전원 어댑터를 따로 연결하지 않습니다/);
   assert.match(issue.message,/CTR100 PSE를 사용할 수 없습니다/);
   const power=core.bom(state).find(row=>row.category==='전원 장비');
-  assert.match(power.model,/XDM-CTR100 전원 공급 장비/);
+  assert.equal(power.model,'XDM-PSU');
   assert.equal(core.bom(state).some(row=>row.model==='XDM-CTR100 PSE'),false);
 });
 

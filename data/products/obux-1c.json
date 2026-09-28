@@ -34,16 +34,76 @@
       "resolution": "1080×368"
     },
     {
-      "role": "Other",
-      "file": "obux-1c-perspective.webp",
-      "alt": "RTCOM OBUX-1C 수신기(RX) 상판과 양쪽 단자면",
-      "note": "Other · RX 카탈로그 42쪽 사진",
+      "role": "Front",
+      "file": "obux-1c-tx-front.webp",
+      "alt": "RTCOM OBUX-1C 송신기(Tx) 전면",
+      "note": "Front · Tx 사용자 제공 고해상도 실물 사진(2026-09-28)",
       "provider": "RTCOM",
-      "model": "OBUX-1C",
-      "source": "C",
+      "model": "OBUX-1C Tx",
+      "source": "P1",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "1080×352"
+      "resolution": "1013×343"
+    },
+    {
+      "role": "Rear",
+      "file": "obux-1c-tx-rear.webp",
+      "alt": "RTCOM OBUX-1C 송신기(Tx) 후면",
+      "note": "Rear · Tx 사용자 제공 고해상도 실물 사진(2026-09-28)",
+      "provider": "RTCOM",
+      "model": "OBUX-1C Tx",
+      "source": "P1",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "1015×344"
+    },
+    {
+      "role": "Other",
+      "file": "obux-1c-tx-front-rear.webp",
+      "alt": "RTCOM OBUX-1C 송신기(Tx) 전면(위)·후면(아래) 합성 사진",
+      "note": "Other · Tx 사용자 제공 고해상도 실물 사진(2026-09-28) 위아래 합성",
+      "provider": "RTCOM",
+      "model": "OBUX-1C Tx",
+      "source": "P1",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "1015×767"
+    },
+    {
+      "role": "Other",
+      "file": "obux-1c-perspective.webp",
+      "alt": "RTCOM OBUX-1C 수신기(RX) 후면 단자면(흰 배경 실물 사진)",
+      "note": "Other · 사용자 제공 실물 사진(2026-09-28, RX 후면)",
+      "provider": "RTCOM",
+      "model": "OBUX-1C Rx",
+      "source": "P1",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "1026×328"
+    },
+    {
+      "role": "Front",
+      "file": "obux-1c-rx-front.webp",
+      "alt": "RTCOM OBUX-1C 수신기(RX) 정면(흰 배경 실물 사진)",
+      "note": "Front · 사용자 제공 실물 사진(2026-09-28, RX 정면)",
+      "provider": "RTCOM",
+      "model": "OBUX-1C Rx",
+      "source": "P1",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "1034×320"
+    },
+    {
+      "role": "Other",
+      "file": "obux-1c-rx-front-rear.webp",
+      "alt": "RTCOM OBUX-1C 수신기(RX) 정면(위)·후면(아래) 합성 사진",
+      "note": "Other · 사용자 제공 실물 사진(2026-09-28, RX 정면·후면 위아래 합성)",
+      "provider": "RTCOM",
+      "model": "OBUX-1C Rx",
+      "source": "P1",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "1034×728"
     }
   ],
   "imageStatuses": [
@@ -53,11 +113,11 @@
     },
     {
       "role": "Front",
-      "status": "MISSING"
+      "status": "FOUND"
     },
     {
       "role": "Rear",
-      "status": "MISSING"
+      "status": "FOUND"
     },
     {
       "role": "Perspective",
@@ -280,86 +340,115 @@
   "related": [],
   "portMap": [
     {
-      "image": "Main",
-      "title": "송신기 OBUX-1C Tx",
+      "image": "Other",
+      "file": "obux-1c-tx-front-rear.webp",
+      "title": "송신기 OBUX-1C Tx · 위 앞면, 아래 뒷면",
       "items": [
         {
-          "n": 4,
-          "label": "+12V",
-          "desc": "전원 어댑터 12V 1A",
-          "x1": 679,
-          "x2": 709,
-          "side": "bottom",
-          "y": 347
+          "n": 1,
+          "label": "HDMI IN",
+          "desc": "소스 연결",
+          "x1": 568,
+          "x2": 684,
+          "side": "top",
+          "y": 465
         },
         {
           "n": 2,
           "label": "Audio IN",
           "desc": "3핀 터미널(L·접지·R) · 아날로그 오디오 병합",
-          "x1": 792,
-          "x2": 834,
-          "side": "bottom",
-          "y": 347
-        },
-        {
-          "n": 1,
-          "label": "HDMI IN",
-          "desc": "소스 연결",
-          "x1": 855,
-          "x2": 911,
-          "side": "bottom",
-          "y": 347
+          "x1": 430,
+          "x2": 523,
+          "side": "top",
+          "y": 465
         },
         {
           "n": 3,
           "label": "Fiber OUT",
           "desc": "SC 광 단자 · 멀티모드(OM3) 광케이블로 수신기와 연결",
-          "x1": 960,
-          "x2": 1011,
-          "side": "bottom",
-          "y": 347
+          "x1": 792,
+          "x2": 896,
+          "side": "top",
+          "y": 465
+        },
+        {
+          "n": 4,
+          "label": "Mode",
+          "desc": "전면 4핀 딥 스위치(1번 오디오, 2·3·4번 EDID). 설정 방법은 '06 딥 스위치 설정' 참고",
+          "x1": 680,
+          "x2": 765,
+          "side": "top",
+          "y": 43
+        },
+        {
+          "n": 5,
+          "label": "S/P",
+          "desc": "Mini USB · 펌웨어 업데이트",
+          "x1": 355,
+          "x2": 425,
+          "side": "top",
+          "y": 43
+        },
+        {
+          "n": 6,
+          "label": "+12V",
+          "desc": "전원 어댑터 12V 1A",
+          "x1": 178,
+          "x2": 248,
+          "side": "top",
+          "y": 465
         }
       ]
     },
     {
       "image": "Other",
-      "title": "수신기 OBUX-1C Rx",
+      "file": "obux-1c-rx-front-rear.webp",
+      "title": "수신기 OBUX-1C Rx · 위 앞면, 아래 뒷면",
       "items": [
         {
-          "n": 4,
-          "label": "+12V",
-          "desc": "전원 어댑터 12V 1A",
-          "x1": 676,
-          "x2": 709,
-          "side": "bottom",
-          "y": 309
+          "n": 1,
+          "label": "HDMI OUT",
+          "desc": "디스플레이 연결",
+          "x1": 580,
+          "x2": 705,
+          "side": "top",
+          "y": 428
         },
         {
           "n": 2,
           "label": "Audio OUT",
           "desc": "3핀 터미널(L·접지·R) · 아날로그 오디오 추출",
-          "x1": 794,
-          "x2": 836,
-          "side": "bottom",
-          "y": 309
-        },
-        {
-          "n": 1,
-          "label": "HDMI OUT",
-          "desc": "디스플레이 연결",
-          "x1": 858,
-          "x2": 913,
-          "side": "bottom",
-          "y": 309
+          "x1": 434,
+          "x2": 532,
+          "side": "top",
+          "y": 428
         },
         {
           "n": 3,
           "label": "Fiber IN",
           "desc": "SC 광 단자 · 송신기와 연결",
-          "x1": 964,
-          "x2": 1012,
-          "side": "bottom",
-          "y": 309
+          "x1": 814,
+          "x2": 928,
+          "side": "top",
+          "y": 428
+        },
+        {
+          "n": 4,
+          "label": "S/P",
+          "desc": "Mini USB · 펌웨어 업데이트",
+          "x1": 355,
+          "x2": 425,
+          "side": "top",
+          "y": 25
+        },
+        {
+          "n": 5,
+          "label": "+12V",
+          "desc": "전원 어댑터 12V 1A",
+          "x1": 170,
+          "x2": 250,
+          "side": "top",
+          "y": 428
         }
       ]
     }
@@ -388,6 +477,12 @@
       "name": "OBUX-1C 사용자 매뉴얼 Ver.2.2",
       "page": "4–10",
       "scope": "제조사 공식 출처(사용자 제공 2026-09-27, .source-materials/RTcom_Manual_OBUX-1C_Ver2.2.pdf)"
+    },
+    {
+      "code": "P1",
+      "name": "서울영상테크 SI사업본부 제공 실물 사진",
+      "page": "",
+      "scope": "사용자 업로드 고해상도 제품 사진(2026-09-28, 흰 배경 촬영본, OBUX-1C Tx·Rx 정면·후면)"
     }
   ],
   "issues": [],
