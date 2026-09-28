@@ -48,6 +48,9 @@ test('every XDM card and documented rear photo has an image asset',()=>{
   for(const id of ['SPX-HIS8','SPX-HOS10','SPX-HOS12','SPX-COS12','SPX-BLANK'])assert.ok(fs.existsSync(`output/design/assets/cards/${id}.webp`),`missing SPX card image ${id}`);
   for(const card of [...catalog.VDM.input,...catalog.VDM.output])assert.ok(fs.existsSync(`output/design/assets/cards/${card[0]}.webp`),`missing VDM faceplate for ${card[0]}`);
   assert.ok(fs.existsSync('output/design/assets/cards/VDM-BLANK.webp'),'missing VDM blank cover');
+  // 0.120: VDM 카드 판넬 사진은 모두 가로:세로 5.7:1(±3%)이어야 슬롯 칸에 늘어나지 않고 맞는다(HOS4S-UW 4.0, CIS4-U·COS4-U 5.2를 잘라 맞춤).
+  const webpSize=file=>{const b=fs.readFileSync(file);const chunk=b.toString('ascii',12,16);if(chunk==='VP8X')return [1+b.readUIntLE(24,3),1+b.readUIntLE(27,3)];if(chunk==='VP8 ')return [b.readUInt16LE(26)&0x3fff,b.readUInt16LE(28)&0x3fff];if(chunk==='VP8L'){const v=b.readUInt32LE(21);return [(v&0x3fff)+1,((v>>14)&0x3fff)+1]}throw new Error('unknown webp '+file)};
+  for(const id of [...catalog.VDM.input,...catalog.VDM.output].map(card=>card[0]).concat('VDM-BLANK')){const [w,h]=webpSize(`output/design/assets/cards/${id}.webp`);assert.ok(Math.abs(w/h/5.7-1)<0.03,`${id} faceplate ratio ${(w/h).toFixed(2)} should be 5.7:1`)}
   for(const model of ['8x','16x','32x','48x','64x','80x','128x','180x','256x'])assert.ok(fs.existsSync(`output/design/assets/frames/vdm-${model}-front.webp`)&&fs.existsSync(`output/design/assets/frames/vdm-${model}-rear.webp`),`missing VDM ${model} front/rear image`);
   // 0.111: 실물 사진이 없는 VDM 전면 7종·후면 8종은 scripts/tools/draw_vdm_frames.cjs 평면 그림(-art)을 쓰고, 실물 사진(16X 전면·후면, 48X 전면)은 그대로 둔다.
   const vdmArt=[...read('src/app.js').matchAll(/frames\/(vdm-\d+x-(?:front|rear))-art\.webp/g)].map(match=>match[1]).sort();
@@ -82,7 +85,8 @@ test('rear photo slot zones stay inside each photo and match the card faceplate 
   const faceplateRatio={XDM:9.7,VDM:5.7,SPX:13.8};
   // SPX-M1620 매뉴얼 후면 사진은 가로로 눌려 있다(사진 662×418, 실제 483×177mm). 사진 속 판넬 비율(약 9.8:1)로 확인한다.
   // VDM 후면 선 도면은 모델마다 보드 비율이 다르게 그려져 있어 도면 속 비율로 확인한다.
-  const photoRatio={'SPX-M1620':9.8,'VDM-128X':3.9,'VDM-180X':8.2};
+  // 0.120: VDM 그림은 슬롯 칸을 카드 사진 비율(5.7:1)과 똑같이 그려 도면 비율 예외(128X 3.9, 180X 8.2)를 없앴고, VDM은 ±3% 안에 들어야 한다.
+  const photoRatio={'SPX-M1620':9.8};
   for(const [model,photo] of Object.entries(rearPhotos)){
     const family=model.split('-')[0];
     assert.ok(catalog[family].models.includes(model));
@@ -95,7 +99,8 @@ test('rear photo slot zones stay inside each photo and match the card faceplate 
       assert.ok(x0>=0&&y0>=0&&x1<=width&&y1<=height&&x0<x1&&y0<y1,`${model} ${dir} zone must stay inside the photo`);
       const slotWidth=(x1-x0)/cols,slotHeight=(y1-y0)/rows,ratio=horizontal?slotWidth/slotHeight:slotHeight/slotWidth;
       const expected=photoRatio[model]||faceplateRatio[family];
-      assert.ok(ratio>expected*0.85&&ratio<expected*1.15,`${model} ${dir} slot ratio ${ratio.toFixed(2)} should match a ${expected}:1 faceplate`);
+      const tolerance=family==='VDM'?0.03:0.15;
+      assert.ok(ratio>expected*(1-tolerance)&&ratio<expected*(1+tolerance),`${model} ${dir} slot ratio ${ratio.toFixed(2)} should match a ${expected}:1 faceplate`);
       }
     });
   }

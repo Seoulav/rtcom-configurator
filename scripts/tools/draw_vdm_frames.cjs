@@ -97,6 +97,23 @@ const chassis=(w,h,t)=>rect(t*0.5,t*0.5,w-t,h-t,C.body,C.edge,t,t*2);
 
 // ---------- 후면 ----------
 // 슬롯 영역은 src/app.js rearPhotos(원래 매뉴얼 도면 픽셀)과 같다.
+// 0.120 VDM 카드 판넬 사진 비율(HIS4-U 929×162 등, 가로:세로 5.7:1). 모든 슬롯 칸을 이 비율로 그린다.
+const CARD_RATIO=5.7;
+const r2=n=>Math.round(n*100)/100;
+// 세로 카드(16X~64X): 왼쪽 입력 | 가운데 칸 | 오른쪽 출력(입력과 좌우 대칭). 칸 높이 = 칸 너비 × 5.7.
+function vsFrame(o){
+  const cw=(o.inX[1]-o.inX[0])/o.cols,zh=cw*CARD_RATIO*o.rows,y1=r2(o.top+zh),H=r2(y1+o.bottom),outX=[r2(o.W-o.inX[1]),r2(o.W-o.inX[0])];
+  return {size:[o.W,H],input:[o.inX[0],o.top,o.inX[1],y1],output:[outX[0],o.top,outX[1],y1],cols:o.cols,slots:o.cols*o.rows,draw(){
+    let s=o.top>=18?vents(10,4,o.W-20,o.top-7,Math.round(o.W/18),2):'';
+    return s+center(o.inX[1],o.top,outX[0],y1,o.blocks,o.audioRows)}};
+}
+// 가로로 쌓는 대형 프레임(80X 이상): 위 명판 · 입력 · 가운데 띠 · 출력 · 아래 전원. 칸 높이 = 칸 너비 × 5.7.
+function vtFrame(o){
+  const cw=(o.racks[0][1]-o.racks[0][0])/o.cols,zh=cw*CARD_RATIO*o.rows;
+  const g={in0:o.top,in1:r2(o.top+zh)};g.out0=r2(g.in1+o.mid);g.out1=r2(g.out0+zh);g.H=r2(g.out1+o.bottom);
+  const zones=(a,b)=>o.racks.length>1?o.racks.map(([x0,x1])=>[x0,a,x1,b]):[o.racks[0][0],a,o.racks[0][1],b];
+  return {size:[o.W,g.H],input:zones(g.in0,g.in1),output:zones(g.out0,g.out1),cols:o.cols,slots:o.slots,draw(){return o.draw(g)},extraIn:o.extraIn,extraOut:o.extraOut};
+}
 const REAR={
   'VDM-8X':{size:[637,195],input:[3,8,318,118],output:[329,8,634,118],cols:1,slots:2,horizontal:true,draw(){
     // 아래 왼쪽: DC 12V 입력 2개 + 통신 단자, 아래 오른쪽: 오디오 매트릭스 라우터(입력·출력 피닉스 줄).
@@ -105,42 +122,48 @@ const REAR={
     s+=controlH(84,124,228,58);
     s+=audioRouter(329,120,305,66,2,8);
     return s}},
-  // VDM-16X: 0.119(사용자 지적 2026-09-28 "VDM 16 프레임 후면을 보면은 제품 이미지가 들어갔는데 그게 아니라 그래픽 디자인이 들어가겠죠") 매뉴얼 1.5 Rear View 실물 사진(카드가 꽂힌 상태)을 빈 슬롯 그림으로 바꿨다.
-  // 가운데 칸은 사진과 같이 명판 · 오디오 매트릭스 라우터(IN 4줄 + OUT 4줄, 16×16) · 통신 단자 · 전원 IEC 2개.
-  'VDM-16X':{size:[449,278],input:[2,24,165,276],output:[280,24,443,276],cols:4,slots:4,draw(){return center(165,24,280,276,2,4)}},
-  'VDM-32X':{size:[458,473],input:[8,10,165,459],output:[286,10,448,459],cols:4,slots:8,draw(){return center(165,10,286,459,2,8)}},
-  'VDM-48X':{size:[448,677],input:[8,8,165,663],output:[282,8,442,663],cols:4,slots:12,draw(){return center(165,8,282,663,2,12)}},
-  'VDM-64X':{size:[451,819],input:[8,8,165,802],output:[280,8,440,802],cols:4,slots:16,draw(){return center(165,8,280,802,2,16)}},
-  'VDM-80X':{size:[239,631],input:[6,20,234,259],output:[6,330,234,570],cols:11,slots:20,draw(){
+  // 0.120(사용자 요청 2026-09-28 "VDM카드를 정교하게 맞춰줘"): 슬롯 한 칸의 세로:가로(가로 카드는 가로:세로)를 VDM 카드 판넬 사진 비율 CARD_RATIO(5.7:1)와 똑같이 맞춘다.
+  // 그전에는 매뉴얼 도면 좌표를 그대로 써서 칸 비율이 16X 6.2 · 64X 5.1 · 128X 3.9 · 180X 8.2 · 256X 5.2로 달라 카드 사진이 늘어나거나 눌렸다.
+  // 칸 너비(열 수·좌우 위치)는 도면 배치를 따르고, 높이는 칸 너비 × 5.7로 계산해 그림 전체 높이를 정한다(vsFrame·vtFrame).
+  'VDM-16X':vsFrame({W:449,inX:[2,165],cols:4,rows:1,top:24,bottom:3,blocks:2,audioRows:4}),
+  'VDM-32X':vsFrame({W:458,inX:[8,165],cols:4,rows:2,top:10,bottom:12,blocks:2,audioRows:8}),
+  'VDM-48X':vsFrame({W:448,inX:[8,165],cols:4,rows:3,top:8,bottom:12,blocks:2,audioRows:12}),
+  // 64X는 4단이라 칸 너비를 도면(39)보다 좁혀(35) 전체 높이를 도면과 비슷하게 유지하고, 그만큼 가운데 칸을 넓혔다.
+  'VDM-64X':vsFrame({W:451,inX:[8,147],cols:4,rows:4,top:8,bottom:16,blocks:2,audioRows:16}),
+  'VDM-80X':vtFrame({W:239,racks:[[6,234]],cols:11,rows:2,slots:20,top:20,mid:71,bottom:61,draw(g){
     let s=plate(50,5,140,12);
-    s+=band(6,261,234,328,2,[[0.2,0.5]],2);
-    s+=powerH(6,572,228,56,2);
-    return s},extraIn:null,extraOut:(i)=>i===21?'control':null},
-  'VDM-128X':{size:[477,1176],input:[3,12,453,489],output:[3,582,453,1061],cols:11,slots:32,draw(){
+    s+=band(6,g.in1+2,234,g.out0-2,2,[],2);
+    s+=powerH(6,g.out1+2,228,g.H-g.out1-5,2);
+    return s},extraOut:(i)=>i===21?'control':null}),
+  'VDM-128X':vtFrame({W:477,racks:[[3,453]],cols:11,rows:3,slots:32,top:12,mid:93,bottom:115,draw(g){
     let s=plate(120,0.5,236,11);
-    s+=band(3,491,453,580,4,[],4);
-    s+=rect(3,1063,450,110,C.panel,C.line,1.4,4)+text(228,1090,'100-240VAC 50/60Hz',11,C.sub,'text-anchor="middle" font-weight="700"');
-    s+=powerGroup(30,1100,150,56,3)+powerGroup(296,1100,150,56,3);
-    s+=rect(456,12,18,1049,C.panel,C.edge,1,3);
-    return s},extraIn:(i)=>i===32?'control':null},
-  'VDM-180X':{size:[170,636],input:[3,17,158,270],output:[3,336,158,591],cols:15,slots:45,draw(){
+    s+=band(3,g.in1+2,453,g.out0-2,4,[],4);
+    const py=g.out1+2;
+    s+=rect(3,py,450,110,C.panel,C.line,1.4,4)+text(228,py+27,'100-240VAC 50/60Hz',11,C.sub,'text-anchor="middle" font-weight="700"');
+    s+=powerGroup(30,py+37,150,56,3)+powerGroup(296,py+37,150,56,3);
+    s+=rect(456,12,18,g.out1-12,C.panel,C.edge,1,3);
+    return s},extraIn:(i)=>i===32?'control':null}),
+  'VDM-180X':vtFrame({W:170,racks:[[3,158]],cols:15,rows:3,slots:45,top:17,mid:66,bottom:45,draw(g){
     let s=plate(22,3,126,11);
-    s+=band(3,272,158,334,2,[],1);
-    s+=controlV(158.5,150,10.5,118);
-    s+=rect(158.5,336,10.5,255,C.panel,C.edge,0.6,1.5);
-    s+=rect(3,593,164,40,C.panel,C.line,0.8,2)+text(8,603,'100-240VAC 50/60Hz',6,C.sub,'font-weight="700"');
-    s+=powerGroup(56,606,58,24,3)+vents(6,607,46,22,3,3)+vents(118,607,46,22,3,3);
-    return s}},
-  'VDM-256X':{size:[472,777],input:[[6,12,228,325],[235,12,456,325]],output:[[6,388,228,700],[235,388,456,700]],cols:11,slots:32,draw(){
+    s+=band(3,g.in1+2,158,g.out0-2,2,[],1);
+    const zh=g.in1-g.in0;
+    s+=controlV(158.5,g.in0+zh*0.4,10.5,zh*0.58);
+    s+=rect(158.5,g.out0,10.5,g.out1-g.out0,C.panel,C.edge,0.6,1.5);
+    const py=g.out1+2;
+    s+=rect(3,py,164,40,C.panel,C.line,0.8,2)+text(8,py+10,'100-240VAC 50/60Hz',6,C.sub,'font-weight="700"');
+    s+=powerGroup(56,py+13,58,24,3)+vents(6,py+14,46,22,3,3)+vents(118,py+14,46,22,3,3);
+    return s}}),
+  'VDM-256X':vtFrame({W:472,racks:[[6,228],[235,456]],cols:11,rows:3,slots:32,top:12,mid:63,bottom:77,draw(g){
     let s='';
     for(const [x0,x1] of [[6,228],[235,456]]){
       s+=plate(x0+30,1,x1-x0-60,10);
-      s+=band(x0,327,x1,386,4,[],2);
-      s+=rect(x0,702,x1-x0,72,C.panel,C.line,1,3)+text((x0+x1)/2,716,'100-240VAC 50/60Hz',8,C.sub,'text-anchor="middle" font-weight="700"');
-      s+=powerGroup(x0+10,726,(x1-x0)/2-18,40,3)+powerGroup((x0+x1)/2+8,726,(x1-x0)/2-18,40,3);
+      s+=band(x0,g.in1+2,x1,g.out0-2,4,[],2);
+      const py=g.out1+2;
+      s+=rect(x0,py,x1-x0,72,C.panel,C.line,1,3)+text((x0+x1)/2,py+14,'100-240VAC 50/60Hz',8,C.sub,'text-anchor="middle" font-weight="700"');
+      s+=powerGroup(x0+10,py+24,(x1-x0)/2-18,40,3)+powerGroup((x0+x1)/2+8,py+24,(x1-x0)/2-18,40,3);
     }
-    s+=rect(229,4,5,770,C.edge)+rect(458,12,11,688,C.panel,C.edge,0.8,2);
-    return s},extraIn:(i,rack)=>i===32&&rack===1?'control':null}
+    s+=rect(229,4,5,g.H-8,C.edge)+rect(458,12,11,g.out1-12,C.panel,C.edge,0.8,2);
+    return s},extraIn:(i,rack)=>i===32&&rack===1?'control':null})
 };
 // 16X~64X 가운데 칸: 명판 · 오디오 매트릭스 라우터(블록 2개, 블록마다 입력 N/2… 피닉스 줄) · 통신 단자 · 전원(IEC 2개).
 function center(x0,y0,x1,y1,blocks,rows){
