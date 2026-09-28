@@ -39,6 +39,10 @@
       extender:'<svg width="30" height="20" viewBox="0 0 30 20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><rect x="1" y="5" width="9" height="10" rx="2"/><rect x="20" y="5" width="9" height="10" rx="2"/><path d="M10 10H20"/></svg>',
       cable:'<svg width="30" height="14" viewBox="0 0 30 14" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="4" cy="7" r="2.4" fill="#fff"/><path d="M6.5 7H23.5"/><circle cx="26" cy="7" r="2.4" fill="#fff"/></svg>'
     };
+    // 제품별 아이콘(0.105): XDM-PSU는 전송기 그룹이지만 전원 장치라, 두 상자 아이콘 대신 랙 본체 위 번개(전원) 모양을 쓴다(사용자 요청 2026-09-28 "ㅁ-ㅁ 모양을 뭔가 POWER SUPPLY형상이 없어서").
+    const PRODUCT_ICON={
+      'xdm-psu':'<svg width="30" height="26" viewBox="0 0 30 26" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="26" height="14" rx="2.5"/><path d="M16.5 3L11 13.5h5.5L13.5 23" stroke-width="2.2"/><circle cx="6" cy="13" r="1.2" fill="#fff" stroke="none"/><circle cx="24" cy="13" r="1.2" fill="#fff" stroke="none"/></svg>'
+    };
     // 카드가 연동하는 전송기 표시(카드 라인업의 점선 알약). src/app.js의 extenderInfo·extenderLineup(pair 필드)과 대조해 확인했다(2026-09-27).
     const CARD_EXTENDER_LABEL={'XDM-CIS100':'CTR100 TX · CT103','XDM-COS100':'CTR100 RX · CR103','XDM-FIS100':'FT101','XDM-FOS100':'FR101','CIS4-U':'CT104-U','COS4-U':'CR104-U','FIS4-U':'FT101-U','FOS4-U':'FR101-U','SPX-COS12':'SPX-RX'};
     // 메인프레임 사진이 없는 모델(명세 2-3: "사진이 없는 VDM-288X는 사진 준비 중으로 둡니다"). 없는 파일을 요청하지 않도록 미리 안다.
@@ -797,7 +801,7 @@
       belowCards+=dipSwitchSection(item);
       // 휴대폰(1000px 이하)에서는 .rt-pg-col이 사라지고 rt-pg-col-mobile-N 순서로만 쌓이므로, sideCard도 순서 클래스가 있어야 05 다음(01~05, 06, 07 기록)으로 나온다(없으면 order:0이라 맨 앞으로 감).
       if(sideCard)sideCard=sideCard.replace('class="rt-pg-card', 'class="rt-pg-card rt-pg-col-mobile-6');
-      return `${headerBlock({icon:GROUP_ICON[item.group],title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,docs:docButtons(item),diagram:!!photo})}
+      return `${headerBlock({icon:PRODUCT_ICON[item.id]||GROUP_ICON[item.group],title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,docs:docButtons(item),diagram:!!photo})}
       <div class="rt-pg-cols">
         <div class="rt-pg-col">
           <section class="rt-pg-card rt-pg-col-mobile-1"><h2><span class="rt-pg-idx">01</span>한눈에 보기</h2>
@@ -810,7 +814,7 @@
           ${sideCard}
         </div>
         <div class="rt-pg-col">
-          ${portSection?`<section class="rt-pg-card rt-pg-col-mobile-2"><h2><span class="rt-pg-idx">02</span>Port Map <span class="rt-pg-note">— ${item.portMap?'실제 제품 사진 기준':'입출력 표 기준'}</span></h2>${portSection}</section>`:''}
+          ${portSection?`<section class="rt-pg-card rt-pg-col-mobile-2"><h2><span class="rt-pg-idx">02</span>Port Map <span class="rt-pg-note">— ${item.portMap?(item.portMap.basis||'실제 제품 사진 기준'):'입출력 표 기준'}</span></h2>${portSection}</section>`:''}
           ${diagram?`<section class="rt-pg-card rt-pg-col-mobile-3"><h2><span class="rt-pg-idx">03</span>Signal Flow</h2>${diagram}</section>`:''}
           ${recordSection(item,diagram,photo)}
         </div>

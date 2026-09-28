@@ -24,6 +24,30 @@
   "images": [
     {
       "role": "Front",
+      "file": "xdm-psu-front-art.webp",
+      "alt": "XDM-PSU 앞면 그림(채널 LED 1~16)",
+      "note": "Front · 제조사 도면(XDM-POE ASSY FRONT) 배치를 03 Signal Flow와 같은 평면 그림으로 다시 그림(scripts/tools/draw_xdm_psu_panels.cjs)",
+      "provider": "RTCOM",
+      "model": "XDM-PSU",
+      "source": "D1",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "1400×300"
+    },
+    {
+      "role": "Rear",
+      "file": "xdm-psu-rear-art.webp",
+      "alt": "XDM-PSU 뒷면 그림(XDM-POH 8·XDM-PHX 8 모듈 예, AC 전원)",
+      "note": "Rear · 제조사 도면(XDM-POE ASSY REAR) 배치를 03 Signal Flow와 같은 평면 그림으로 다시 그림(scripts/tools/draw_xdm_psu_panels.cjs)",
+      "provider": "RTCOM",
+      "model": "XDM-PSU",
+      "source": "D1",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "1400×300"
+    },
+    {
+      "role": "Other",
       "file": "xdm-psu-front.webp",
       "alt": "RTCOM XDM-PSU 정면 도면(채널 LED 1~16)",
       "note": "Front · XDM-POE ASSY 도면 FRONT",
@@ -35,7 +59,7 @@
       "resolution": "979×185"
     },
     {
-      "role": "Rear",
+      "role": "Other",
       "file": "xdm-psu-rear.webp",
       "alt": "RTCOM XDM-PSU 후면 도면(XDM-POH 8·XDM-PHX 8 모듈 예, AC 전원)",
       "note": "Rear · XDM-POE ASSY 도면 REAR(모듈 구성 예)",
@@ -230,28 +254,29 @@
     }
   ],
   "portMap": {
+    "basis": "제조사 도면 기준 그림",
     "image": "Rear",
     "items": [
       {
         "n": 1,
         "label": "XDM-POH × 8",
         "desc": "CIS용 모듈(예시 8칸) · 위 RJ45 'CIS Card'는 XDM-CIS100 포트, 아래 'Extender'는 XDM-CTR100(Tx)과 연결",
-        "x1": 33,
-        "x2": 440
+        "x1": 43,
+        "x2": 597
       },
       {
         "n": 2,
         "label": "XDM-PHX × 8",
         "desc": "COS용 모듈(예시 8칸) · 2핀(+/−) 전원선으로 XDM-COS100 카드에 급전",
-        "x1": 448,
-        "x2": 865
+        "x1": 603,
+        "x2": 1157
       },
       {
         "n": 3,
         "label": "AC IN",
         "desc": "AC 100~240V 50/60Hz 전원",
-        "x1": 893,
-        "x2": 977
+        "x1": 1210,
+        "x2": 1330
       }
     ],
     "note": "모듈 구성은 도면 예시(POH 8 · PHX 8)입니다. 구성에 맞춰 16칸에 필요한 모듈을 꽂습니다."
