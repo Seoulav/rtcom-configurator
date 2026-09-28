@@ -19,7 +19,7 @@
   "catalogPages": "15–16",
   "verificationSummary": "SPX-TX/RX 사용자 매뉴얼 Ver.2.0(4~11쪽: 사양 표·전면 패널·딥 스위치·주요 특징·사용 방법)과 알티컴 종합 카탈로그(46쪽판) 15~16쪽에서 확인했다.",
   "packageStatus": "VERIFIED",
-  "overview": "SPX-TX/SPX-RX는 4K 60Hz HDMI 신호를 CAT5e/6 케이블로 장거리 전송하는 SPX 시리즈용 송·수신기다. SPX-RX는 True HDMI 2.0 4K 60Hz 4:4:4를 지원하는 SPX 시리즈 매트릭스와 호환된다.\n\nSPX-TX는 딥 스위치로 오디오 병합(3.5mm Stereo)·장거리 모드·내장 EDID를 설정하고, SPX-RX는 후면 3.5mm 단자로 오디오를 추출한다. PoC(Power over Cable) 기능으로 송·수신기 중 한쪽에만 전원 케이블을 연결해도 되고, SPX-COS12 카드에 연결한 SPX-RX는 매트릭스 전원이 켜져 있으면 별도 전원 없이 동작한다. CAT5e/6 기준 4K 60Hz 최대 50m(165ft), 1080p 최대 60m(198ft), Long Reach 모드에서 1080p 최대 100m까지 전송한다.",
+  "overview": "SPX-TX/SPX-RX는 4K 60Hz HDMI 신호를 CAT5e/6 케이블로 장거리 전송하는 SPX 시리즈용 송·수신기다. SPX-RX는 True HDMI 2.0 4K 60Hz 4:4:4를 지원하는 SPX 시리즈 매트릭스와 호환된다.\n\nSPX-TX는 딥 스위치로 오디오 병합(3.5mm Stereo)·장거리 모드·내장 EDID를 설정하고, SPX-RX는 후면 3.5mm 단자로 오디오를 추출한다. PoC(Power over Cable) 기능으로 송·수신기 중 한쪽에만 전원 케이블을 연결해도 되고, SPX-COS12 카드에 연결한 SPX-RX는 매트릭스 전원이 켜져 있으면 별도 전원 없이 동작한다. CAT5e/6 기준 4K 60Hz 최대 50m, 1080p 최대 60m, Long Reach 모드에서 1080p 최대 100m까지 전송한다.",
   "images": [
     {
       "role": "Main",
@@ -37,7 +37,7 @@
       "role": "Perspective",
       "file": "spx-rx-tx-tx.webp",
       "alt": "RTCOM SPX-TX 송신기 전면(위)과 단자면(아래)",
-      "note": "Perspective · 매뉴얼 6쪽 SPX-TX 사진 두 장을 위아래로 합성",
+      "note": "Perspective · 매뉴얼 6쪽 SPX-TX 사진 두 장을 위아래로 합성. 검은 배경을 흰색으로 바꿈(2026-09-28, 사용자 요청)",
       "provider": "RTCOM",
       "model": "SPX-TX",
       "source": "M1",
@@ -49,7 +49,7 @@
       "role": "Other",
       "file": "spx-rx-tx-rx.webp",
       "alt": "RTCOM SPX-RX 수신기 전면(위)과 단자면(아래)",
-      "note": "Other · 매뉴얼 7쪽 SPX-RX 사진 두 장을 위아래로 합성",
+      "note": "Other · 매뉴얼 7쪽 SPX-RX 사진 두 장을 위아래로 합성. 검은 배경을 흰색으로 바꿈(2026-09-28, 사용자 요청)",
       "provider": "RTCOM",
       "model": "SPX-RX",
       "source": "M1",
@@ -172,7 +172,7 @@
       "name": "최대 전송거리",
       "value": "50",
       "unit": "m",
-      "condition": "CAT5e/6 · 4K 60Hz(165ft)",
+      "condition": "CAT5e/6 · 4K 60Hz",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -181,7 +181,7 @@
       "name": "최대 전송거리",
       "value": "60",
       "unit": "m",
-      "condition": "CAT5e/6 · 1080p(198ft)",
+      "condition": "CAT5e/6 · 1080p",
       "source": "M1",
       "verification": "VERIFIED"
     },
