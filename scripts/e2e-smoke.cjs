@@ -398,9 +398,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.waitForSelector('.rt-pg-dip');
     const obux=await page.evaluate(()=>({rows:document.querySelectorAll('.rt-pg-dip .rt-pg-dip-row').length,combos:document.querySelectorAll('.rt-pg-dip-combos figure').length,fix:document.querySelector('.rt-pg-dip')?.textContent.includes('Through-pass EDID Fix')}));
     check('OBUX-1C 딥 스위치 설정이 1번 오디오와 2·3·4번 EDID 조합 5칸으로 나옴',obux.rows===2&&obux.combos===5&&obux.fix,JSON.stringify(obux));
-    // 2026-09-28 OBUX-1C Tx 고해상도 실물 사진: 송신기 단자 지도가 앞면·뒷면 합성 사진 한 장에 번호 6개(Mode·S/P 포함), 수신기는 기존 사진 4개.
-    const obuxPm=await page.evaluate(()=>{const s=[...document.querySelectorAll('section')].find(s=>/Port Map/.test(s.querySelector('h2')?.textContent||''));return {tx:!!s?.innerHTML.includes('obux-1c-tx-front-rear.webp'),ports:[...(s?.querySelectorAll('.rt-pg-ports')||[])].map(x=>x.children.length)}});
-    check('OBUX-1C 송신기 단자 지도가 고해상도 앞뒤 합성 사진에 번호 6개, 수신기 4개로 나옴',obuxPm.tx&&obuxPm.ports.join()==='6,4',JSON.stringify(obuxPm));
+    // 2026-09-28 OBUX-1C Tx 고해상도 실물 사진: 송신기 단자 지도가 앞면·뒷면 합성 사진 한 장에 번호 6개(Mode·S/P 포함), 수신기도 합성 사진에 번호 5개(S/P 포함).
+    const obuxPm=await page.evaluate(()=>{const s=[...document.querySelectorAll('section')].find(s=>/Port Map/.test(s.querySelector('h2')?.textContent||''));return {tx:!!s?.innerHTML.includes('obux-1c-tx-front-rear.webp'),rx:!!s?.innerHTML.includes('obux-1c-rx-front-rear.webp'),ports:[...(s?.querySelectorAll('.rt-pg-ports')||[])].map(x=>x.children.length)}});
+    check('OBUX-1C 송신기 단자 지도가 고해상도 앞뒤 합성 사진에 번호 6개, 수신기 5개(S/P 포함)로 나옴',obuxPm.tx&&obuxPm.rx&&obuxPm.ports.join()==='6,5',JSON.stringify(obuxPm));
     // 0.64 XDM-FT101/FR101 EDID·오디오 로터리(매뉴얼 Ver.1.3): 0(기본값)·3·8번 대표 설정 그림.
     await page.goto(`${home}#products/xdm-ft101-fr101`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-edid');
