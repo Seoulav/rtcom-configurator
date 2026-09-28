@@ -4,6 +4,10 @@
 
 ## Unreleased
 
+## 0.73.0
+
+- **HD-104U 전면·후면 사진 고해상도 교체**(사용자 제공 사진): 기존 저해상도 이미지(약 690×170px)를 사용자가 제공한 고해상도 전면·후면 사진(긴 변 약 2000px)으로 바꾸고, 정면·후면 합성 사진(`hd-104u-front-rear.webp`)도 다시 만들었습니다. 단자 지도(HDMI IN·OUT 1~4·DC 5V)와 EDID 로터리 스위치 좌표를 새 사진에서 다시 측정해 반영했습니다. `docs/RTCOM_HIRES_IMAGE_REQUEST.md` 1순위 목록에서 HD-104U를 완료 처리했습니다. QA: `docs/qa/HD104U_HIRES_IMAGE_QA_2026-09-28.md`.
+
 ## 0.72.0
 
 - **입력단자/출력단자 행 삭제 + 인치·lbs 병기 전 제품 정리**(사용자 요청: OBHD-2C 04 제품 사양 화면 캡처 뒤 "입력 출력단자 Female male이런거 전부 지워줘", 이어서 "모든 제품에 인치, lbs등등 있으면 다 지워"): OBHD-2C·OBUX-1C의 04 제품 사양에서 "입력단자"·"출력단자"(HDMI(female) 등 표기) 행을 삭제했습니다(03 단자 지도는 그대로 유지). 전 제품(16종)의 mm/kg 옆에 병기되던 인치·lbs 값을 지우고, 모델명·"공통"·"각각" 같은 구분 표시는 남겼습니다. Pull up 저항력(hoc-ux·lhoc·ahoc)은 lbs만 지우고 SI 단위인 Newtons는 남겼습니다. QA: `docs/qa/IMPERIAL_UNIT_CLEANUP_QA_2026-09-28.md`.
