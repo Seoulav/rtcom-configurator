@@ -27,12 +27,18 @@ npx playwright install chromium
 ## 2. 저장소 받기
 
 ```bash
+mkdir C:\work        # 추천 위치: 짧은 영문 경로, OneDrive 동기화 폴더(바탕화면·문서) 밖
+cd C:\work
 git clone https://github.com/Seoulav/rtcom-configurator.git
 cd rtcom-configurator
 git config core.quotepath false   # 한글 파일 이름을 그대로 보이게 함
 npm test
 ```
 
+- **PowerShell에서 `npm : 이 시스템에서 스크립트를 실행할 수 없으므로 … npm.ps1 파일을 로드할 수 없습니다`가 나오면** Windows 기본 보안 설정(실행 정책)이 npm 스크립트를 막은 것입니다. 다음 중 하나를 쓰세요(사용자 PC에서 확인 2026-09-28).
+  1. **추천:** `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned`을 한 번 실행하고(관리자 권한 불필요) PowerShell을 다시 엽니다. 되돌릴 때는 `-ExecutionPolicy Undefined`로 실행합니다.
+  2. 설정을 바꾸지 않으려면 `npm` 대신 `npm.cmd test`처럼 `npm.cmd`를 씁니다.
+  3. Git Bash에서 실행합니다(`cd /c/work/rtcom-configurator`). Claude Code도 Windows에서 Git Bash를 씁니다.
 - 줄바꿈은 `.gitattributes`가 LF로 맞춥니다. Windows에서도 따로 설정할 필요가 없습니다.
 - 공개 저장소라서 받기(clone)는 로그인 없이 됩니다. 올리기(push)와 PR은 GitHub 로그인이 필요합니다.
 
