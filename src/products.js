@@ -610,8 +610,13 @@
     function layoutShapeSvg(name){
       const cells=LAYOUT_SHAPES[String(name||'').trim().toUpperCase()];
       if(!cells)return '<div class="rt-pg-layout-missing">도해 준비 중</div>';
+      // 칸들을 다 모아도 캔버스(0~100) 가장자리를 채우지 못하면 매뉴얼처럼 나머지를 레터박스(검은 막대)로 보여준다.
+      // (QMS-88UX "8분할(16:9 비율)"처럼 비율을 유지하려고 위·아래를 비우는 레이아웃, 매뉴얼 KV.04 23쪽 Output Option 5·6 예시 근거)
+      const minX=Math.min(...cells.map(c=>c[1])),minY=Math.min(...cells.map(c=>c[2]));
+      const maxX=Math.max(...cells.map(c=>c[1]+c[3])),maxY=Math.max(...cells.map(c=>c[2]+c[4]));
+      const letterbox=minX>0.5||minY>0.5||maxX<99.5||maxY<99.5;
       const rects=cells.map(([n,x,y,w,h])=>`<g><rect x="${x}" y="${y}" width="${w}" height="${h}"/><text x="${x+w/2}" y="${y+h/2}">${n}</text></g>`).join('');
-      return `<svg viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label="${esc(name)} 화면 구성">${rects}</svg>`;
+      return `<svg viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label="${esc(name)} 화면 구성">${letterbox?'<rect class="rt-pg-layout-letterbox" x="0" y="0" width="100" height="100"/>':''}${rects}</svg>`;
     }
     function videoModesSection(item){
       const vm=item.videoModes;
