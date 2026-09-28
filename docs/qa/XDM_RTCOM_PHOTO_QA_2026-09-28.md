@@ -28,6 +28,11 @@
 - `xdm-fr101-front.webp` 1400×1138, `xdm-fr101-rear.webp` 1600×477
 - `xdm-ct103-front.webp` 823×1817
 
+### 다른 저해상도 사본 (같은 사진으로 교체, 사용자 요청 "저해상도 이미지 교체")
+- 구성기 04 전송기 썸네일(`output/design/assets/extenders/`): `xdm-ctr100.webp` 480→960px, `xdm-ft101.webp` 480→960px, `xdm-fr101.webp` 480→960px, `xdm-ct103.webp` 220→440px. 화면에는 36~132px로 작게 보이지만, 고해상도 화면(레티나)에서 흐리던 문제가 없어집니다. 구성기 04 화면 레이아웃은 그대로입니다(`docs/qa/xdm-rtcom-photo-screens/configurator-04-extenders-1280.png`).
+- `xdm-ft101-fr101-rear.webp`(카탈로그 12쪽 뒷면, 515×191) → RT컴 뒷면 사진 1600×487
+- 남은 저해상도 사본: `extenders/xdm-cr103.webp`(66×154)·`extenders/xdm-ctr100-pse.webp`는 이번 자료에 해당 사진이 없어 그대로입니다.
+
 ### 03 단자 지도
 - **XDM-CTR100:** `xdm-ctr100-rear.webp`(1000×668)를 새 합성본으로 바꾸고 번호 7개를 다시 쟀습니다.
   - 위: 앞면(상태 LED·TX/RX 딥 스위치)은 이번 자료에 없어 기존 카탈로그 10쪽 사진을 그대로 씁니다.

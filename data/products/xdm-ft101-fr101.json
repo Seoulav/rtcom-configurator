@@ -49,13 +49,13 @@
       "role": "Rear",
       "file": "xdm-ft101-fr101-rear.webp",
       "alt": "RTCOM XDM-FT101 송신기(TX) 단자면(DC IN·HDMI IN·오디오/RS-232·광 단자)",
-      "note": "Rear · 카탈로그 12쪽 XDM-FT101 단자면 사진",
+      "note": "Rear · XDM-FT101 RT컴 제공 고해상도 실물 사진(2026-09-28), 뒷면",
       "provider": "RTCOM",
       "model": "XDM-FT101",
       "source": "C",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "515×191"
+      "resolution": "1600×487"
     },
     {
       "role": "Front",
