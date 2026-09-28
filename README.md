@@ -18,7 +18,7 @@ GitHub Pages 공개 사이트는 [seoulav.github.io/rtcom-configurator](https://
 
 Node.js가 설치된 환경에서 `node scripts/serve.cjs` 후 http://127.0.0.1:4173 에 접속합니다. npm을 사용할 수 있으면 `npm start`도 가능합니다. 또는 `index.html`을 브라우저에서 직접 열 수 있습니다. 자동 저장의 안정성을 위해 로컬 서버 실행을 권장합니다. 외부 패키지 설치는 필요하지 않습니다.
 
-맥북과 데스크톱을 오가며 작업하는 절차는 [`DEVICE_WORKFLOW.md`](DEVICE_WORKFLOW.md)를 확인하세요.
+로컬 PC에서 clone해 Claude Code로 작업하는 방법과 자료 넣는 폴더(`input_doc/`) 사용법은 [`DEVICE_WORKFLOW.md`](DEVICE_WORKFLOW.md)를 확인하세요.
 
 ## 제공하는 기능
 
@@ -55,7 +55,7 @@ Node.js가 설치된 환경에서 `node scripts/serve.cjs` 후 http://127.0.0.1:
 
 - [`CHANGELOG.md`](CHANGELOG.md): 버전별 변경 기록
 - [`CLAUDE.md`](CLAUDE.md): AI 세션과 개발 작업 운영 규칙
-- [`DEVICE_WORKFLOW.md`](DEVICE_WORKFLOW.md): 맥북과 데스크톱을 오가며 작업하는 방법
+- [`DEVICE_WORKFLOW.md`](DEVICE_WORKFLOW.md): 로컬 PC 설치·clone·Claude Code 시작, `input_doc/` 자료 분류
 - [`docs/audit/`](docs/audit/): 감사·마이그레이션·완료 보고서
 - [`docs/implementation/`](docs/implementation/): 구현 기록
 - [`docs/qa/`](docs/qa/): 테스트와 QA 기록

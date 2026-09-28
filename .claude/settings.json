@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(node --test *)",
+      "Bash(node scripts/build-product-index.cjs *)",
+      "Bash(node scripts/package-site.cjs)",
+      "Bash(node scripts/e2e-smoke.cjs)",
+      "Bash(node scripts/input-doc-status.cjs *)",
+      "Bash(npm test)",
+      "Bash(npm run e2e)",
+      "Bash(python scripts/input_doc.py scan)",
+      "Bash(python3 scripts/input_doc.py scan)",
+      "Bash(py scripts/input_doc.py scan)",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git fetch *)"
+    ],
+    "deny": [
+      "Bash(git push --force *)",
+      "Bash(git push --force-with-lease *)",
+      "Bash(git push -f *)",
+      "Bash(git push origin main)",
+      "Bash(git push origin main *)",
+      "Bash(git reset --hard *)",
+      "Bash(git clean *)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/scripts/input-doc-status.cjs\"",
+            "timeout": 15,
+            "statusMessage": "input_doc 새 자료 확인"
+          }
+        ]
+      }
+    ]
+  }
+}
