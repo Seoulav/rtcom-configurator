@@ -4,10 +4,14 @@
 
 ## Unreleased
 
-## 0.88.0
+## 0.89.0
 
 - **XDM-CTR100·XDM-CTR100 PSE 단자 지도 고해상도 합성**(사용자 확인 "ctr100과 pse는 단자는 동일해, zip파일안에 다 있어"): 두 제품의 앞면·단자가 같으므로 둘 다 같은 합성 사진을 씁니다. 앞면(상태 LED·딥 스위치)은 더 선명한 XDM-CTR100 PSE 제품 안내서 1쪽 사진, 뒷면은 RT컴 XDM-CTR100(B) 사진입니다. 앞면 폭을 뒷면 몸체 폭에 맞추고 번호 7개를 다시 쟀습니다. 0.87.0에서 흐리던 CTR100 앞면 LED 글씨가 읽히고, PSE 뒷면도 제품 안내서 사진(418px)에서 고해상도로 바뀌었습니다.
 - **0.87.0 배포 기록**: `docs/qa/DEPLOYMENT_0.87_2026-09-28.md`(PR #80 → main 병합·배포 run 59, 공개 파일 225/225 일치, 비공개 파일 11개 404)
+
+## 0.88.0
+
+- **제품 상세 매뉴얼 PDF 버튼 공개**(사용자 결정 2026-09-28 "1번" — input_doc 매뉴얼 전부 공개): 로컬 `input_doc/RTCOM/manual/`의 매뉴얼 17개를 `output/design/assets/docs/<id>-manual.pdf`로 복사하고 16개 제품의 `documents[]`에 등록했습니다. 제품 상세 도구 모음에 "매뉴얼 PDF" 버튼(새 탭 보기·⤓ 내려받기)이 나타납니다. XDM-CT103/CR103은 CT103·CR103 매뉴얼 두 버튼, XDM-CTR100 PSE는 CTR100 매뉴얼 Ver.1.4를 씁니다. 공개하지 않은 자료: HEXA-01·HS-88M-U(사이트 제품 아님), SPX 프로토콜(제어 커맨드), CTR100 Ver.1.3(이전 판). 앞서 정한 "매뉴얼 로컬 보관" 결정을 대체합니다. 근거: `docs/implementation/PRODUCT_DOCUMENT_DOWNLOADS.md`.
 
 ## 0.87.0
 
