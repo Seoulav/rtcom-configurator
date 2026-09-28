@@ -625,6 +625,38 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await mobile.waitForSelector('.rt-pg-idx');
     const idxOrder=await mobile.evaluate(()=>[...document.querySelectorAll('.rt-pg-idx')].map(el=>({text:el.textContent,top:el.getBoundingClientRect().top})).sort((a,b)=>a.top-b.top).map(x=>x.text));
     check('휴대폰에서 HD-210U 제품 상세는 01부터 순서대로 보임(06이 맨 위로 올라가지 않음, 0.61부터 07 딥 스위치 설정 포함)',idxOrder.join(',')==='01,02,03,04,05,06,07',JSON.stringify(idxOrder));
+    // 2026-09-28 "제조사 정보를 항상 열면은 표가 약간 찌그러지는 게 있는데" — 입출력 단자 표의 방향("입력"·"출력"·"입출력")·수량(숫자) 칸이
+    // 신호·조건의 긴 문장에 밀려 좁은 화면에서 한 글자씩 줄바꿈되던 문제(전수 조사로 발견). 30개 제품 전체를 여러 폭에서 확인해 재발을 막는다.
+    {
+      const allIds=JSON.parse(fs.readFileSync('data/products/index.json','utf8')).products.map(p=>p.id);
+      const wrappedFixedCells=[];
+      for(const w of [320,375,480,600,834,1024]){
+        const p=await browser.newPage({viewport:{width:w,height:900}});
+        for(const id of allIds){
+          await p.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
+          const hasIo=await p.evaluate(()=>!![...document.querySelectorAll('h4')].find(x=>x.textContent.trim()==='입출력 단자'));
+          if(!hasIo)continue;
+          await p.evaluate(()=>{const details=[...document.querySelectorAll('h4')].find(x=>x.textContent.trim()==='입출력 단자').closest('details');if(details)details.open=true});
+          const wrapped=await p.evaluate(()=>{
+            const h4=[...document.querySelectorAll('h4')].find(x=>x.textContent.trim()==='입출력 단자');
+            const table=h4.nextElementSibling.querySelector('table');
+            const fixedLabels=new Set(['입력','출력','입출력']);
+            const cells=[...table.querySelectorAll('thead th'),...table.querySelectorAll('tbody td')];
+            return cells.filter(cell=>{
+              const text=cell.textContent.trim();
+              if(!(fixedLabels.has(text)||/^\d+$/.test(text)||['분류','방향','단자','수량'].includes(text)))return false;
+              const textNode=[...cell.childNodes].find(n=>n.nodeType===3&&n.textContent.trim());
+              if(!textNode)return false;
+              const range=document.createRange();range.selectNodeContents(textNode);
+              return range.getClientRects().length>1;
+            }).map(cell=>cell.textContent.trim());
+          });
+          if(wrapped.length)wrappedFixedCells.push({w,id,wrapped});
+        }
+        await p.close();
+      }
+      check('입출력 단자 표에서 방향("입력"·"출력"·"입출력")·수량(숫자) 칸이 30개 제품·6개 화면 폭(320~1024px)에서 두 줄로 쪼개지지 않음',wrappedFixedCells.length===0,JSON.stringify(wrappedFixedCells));
+    }
     await phone.close();
   }finally{
     await browser.close();

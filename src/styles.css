@@ -486,9 +486,12 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-tablewrap th,#rtcom-design .rt-pg-tablewrap td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--pg-line)}
 #rtcom-design .rt-pg-tablewrap tbody tr:last-child td{border-bottom:none}
 #rtcom-design .rt-pg-tablewrap th{font-size:10.5px;letter-spacing:.03em;text-transform:uppercase;color:var(--pg-muted);font-weight:700;background:var(--pg-field-fill)}
-#rtcom-design .rt-pg-tablewrap td:first-child{color:var(--pg-muted);font-weight:600;width:34%;white-space:nowrap}
+#rtcom-design .rt-pg-tablewrap th:first-child,#rtcom-design .rt-pg-tablewrap td:first-child{color:var(--pg-muted);font-weight:600;width:34%;white-space:nowrap}
 #rtcom-design .rt-pg-tablewrap td{color:var(--pg-ink-2)}
 #rtcom-design .rt-pg-tablewrap td .rt-pg-note-line{display:block;margin-top:3px;font-size:11px;color:var(--pg-muted);font-weight:500}
+/* 입출력 단자 표(2026-09-28): 방향("입력"·"출력"·"입출력")·수량(숫자)은 짧은 고정 값이라 좁은 화면에서 신호·조건의 긴 문장에 밀려 한 글자씩 줄바꿈되곤 했다(전수 조사로 발견). 두 칸은 줄바꿈하지 않고, 남는 폭은 신호·조건 칸이 나눠 쓴다. */
+#rtcom-design .rt-pg-io-table th:nth-child(1),#rtcom-design .rt-pg-io-table td:nth-child(1){width:auto}
+#rtcom-design .rt-pg-io-table th:nth-child(2),#rtcom-design .rt-pg-io-table td:nth-child(2),#rtcom-design .rt-pg-io-table th:nth-child(4),#rtcom-design .rt-pg-io-table td:nth-child(4){white-space:nowrap}
 #rtcom-design .rt-pg-hint{font-size:11.5px;color:var(--pg-muted);margin-top:9px;line-height:1.45}
 #rtcom-design .rt-pg-checks{list-style:none;margin:0;padding:0;display:grid;gap:9px;font-size:13px;color:var(--pg-ink-2);font-weight:600}
 #rtcom-design .rt-pg-checks li{display:flex;gap:10px;align-items:flex-start}
@@ -496,6 +499,9 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-seg{display:inline-flex;gap:2px;padding:2px;background:var(--pg-seg-track);border-radius:11px}
 #rtcom-design .rt-pg-seg span{border-radius:9px;font-weight:600;font-size:13px;padding:7px 14px;color:var(--pg-ink)}
 #rtcom-design .rt-pg-seg span.rt-pg-on{background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.14),0 1px 2px rgba(0,0,0,.10)}
+/* 0.82 송신기·수신기 라벨: 구성기 슬롯 번호표와 같은 입력 파랑(#007AFF)·출력 주황(#E8590C)으로 구분 */
+#rtcom-design .rt-pg-seg span.rt-pg-on-tx{background:#007AFF;color:#fff}
+#rtcom-design .rt-pg-seg span.rt-pg-on-rx{background:#E8590C;color:#fff}
 /* 0.55 2U 이상 정면·후면 버튼, 그보다 작은 제품의 정면 사진 + 포트 연결면 함께 보기 */
 #rtcom-design .rt-pg-seg button{border:0;background:transparent;border-radius:9px;font:inherit;font-weight:600;font-size:13px;padding:7px 14px;color:var(--pg-ink);cursor:pointer}
 #rtcom-design .rt-pg-seg button.rt-pg-on{background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.14),0 1px 2px rgba(0,0,0,.10)}

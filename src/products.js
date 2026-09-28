@@ -422,7 +422,10 @@
       const withFront=!map.title&&front&&map.image!=='Front'&&front.file!==photo.file;
       const tall=withFront&&heightMm(item)>=88;
       const sideLabel=map.image==='Rear'?'후면':map.image==='Perspective'?'사선':'포트 연결면';
-      const seg=map.title?`<span class="rt-pg-seg"><span class="rt-pg-on">${esc(map.title)}</span></span>`:tall?`<span class="rt-pg-seg" role="group" aria-label="사진 면 선택"><button type="button" data-pm-side="front" aria-pressed="false">정면</button><button type="button" class="rt-pg-on" data-pm-side="rear" aria-pressed="true">${sideLabel}</button></span>`:'';
+      // 0.82(사용자 요청 2026-09-28 "색깔을 줘서 구분할 수 있게", "모든 제품을 그렇게 해줘"): 송신기·수신기 라벨을 입력·출력과 같은 색(파랑·주황)으로 구분한다.
+      // startsWith가 아니라 includes인 이유: xdm-ft101-fr101처럼 "위 앞면(송신기), 아래 뒷면"같이 문장 중간에 나오는 제목도 있다(둘 다 포함된 제목은 없음, 0.82 QA 확인).
+      const txRxClass=map.title?.includes('송신기')?' rt-pg-on-tx':map.title?.includes('수신기')?' rt-pg-on-rx':'';
+      const seg=map.title?`<span class="rt-pg-seg"><span class="rt-pg-on${txRxClass}">${esc(map.title)}</span></span>`:tall?`<span class="rt-pg-seg" role="group" aria-label="사진 면 선택"><button type="button" data-pm-side="front" aria-pressed="false">정면</button><button type="button" class="rt-pg-on" data-pm-side="rear" aria-pressed="true">${sideLabel}</button></span>`:'';
       const frontFigure=withFront?`<figure class="rt-pg-face"${tall?' data-pm-face="front" hidden':''}>${tall?'':'<figcaption class="rt-pg-face-cap">정면</figcaption>'}<img src="${image(front.file)}" alt="${esc(front.alt||`${item.productName} 정면`)}" loading="lazy"></figure>`:'';
       const sideCap=withFront&&!tall?`<p class="rt-pg-face-cap">${sideLabel} · 포트 연결</p>`:'';
       const ports=`<div class="rt-pg-ports">${[...map.items].sort((a,b)=>a.n-b.n).map(it=>`<div class="rt-pg-port"><b><span class="rt-pg-n">${it.n}</span>${esc(it.label)}</b>${esc(it.desc)}</div>`).join('')}</div>`;
@@ -473,7 +476,7 @@
       const count=io.length+(photo?1:0);
       return `<details class="rt-pg-record"${item.packageStatus==='REVIEW REQUIRED'?' open':''}><summary>제조사 자료 (${count}건)${reviewBadge(item)}</summary><div class="rt-pg-record-body">
         ${photo?`<div id="rt-pg-diagram-photo"><h4>제조사 원본 다이어그램</h4><div class="rt-pg-diagram-photo"><img src="${image(photo.file)}" alt="${esc(photo.alt||`${item.productName} 연결 다이어그램`)}" loading="lazy"></div>${photo.note?`<p class="rt-pg-diagram-caption">${esc((photo.note||'').replace(/^[A-Za-z]+ · /,''))}</p>`:''}</div>`:''}
-        ${io.length?`<div><h4>입출력 단자</h4>${table(['분류','방향','단자','수량','신호','조건'],io)}</div>`:''}
+        ${io.length?`<div><h4>입출력 단자</h4>${table(['분류','방향','단자','수량','신호','조건'],io).replace('class="rt-pg-tablewrap"','class="rt-pg-tablewrap rt-pg-io-table"')}</div>`:''}
       </div></details>`;
     }
 
