@@ -1,4 +1,4 @@
-# 매트릭스 카드 상세 정보 (0.78.0)
+# 매트릭스 카드 상세 정보 (0.79.0)
 
 ## 요청
 
@@ -10,6 +10,7 @@
 - `src/app.js`
   - `cardInfoBar()`: 03 카드 슬롯의 범례 아래에 제품군의 입력·출력 카드를 버튼(`data-card-info`)으로 나열합니다.
   - `configurationSummary()`: "내 구성"의 카드 행을 `button.rt-summary-card`로 바꿨습니다.
+  - `cardChoiceModal()`: 카드 선택창의 카드마다 아래 줄 왼쪽에 "상세 보기"(`button.rt-card-choice-info`) 버튼을 두었습니다(사용자 요청 2026-09-28 "카드 선택창에도 상세보기 추가해"). 상세 창은 선택창 위에 겹쳐 뜨고, Esc·닫기를 누르면 상세 창만 닫혀 선택창과 초점이 그대로 남습니다.
   - `openCardInfo(id)`: `rtConfirm`과 같은 방식으로 대화상자를 직접 만들어 띄웁니다. 화면을 다시 그리지 않으므로 구성 상태·실행 취소 기록·LocalStorage에 영향이 없습니다. 표에는 구분·신호·채널(catalog.js)과 카탈로그 사양, 연동 전송기(`RtCore.choices`)를 함께 보여 줍니다.
 - `src/styles.css`: `.rt-card-info-*`, `.rt-summary-card` 스타일을 파일 끝에 추가했습니다(휴대폰 720px 이하 한 열 배치).
 
@@ -34,6 +35,7 @@
 
 - `node --test tests/*.test.cjs`: 40개 통과(카드 사양 검사 1개 추가).
 - `node scripts/build-product-index.cjs --check`, `node scripts/package-site.cjs`, `node scripts/e2e-smoke.cjs`(141/141), `git diff --check` 통과.
+- 카드 선택창 상세 보기: 데스크톱 XDM-12(XDM-COS100), 휴대폰 VDM-16X(HOS4-U)에서 상세 창 열기 → Esc로 상세 창만 닫힘 → 선택창에서 장착 정상 동작을 확인했습니다.
 - 데스크톱 1400px·휴대폰 390px에서 SPX-M810 구성으로 카드 정보 버튼·내 구성 카드 행 → 대화상자 열기·Esc 닫기를 확인했습니다(페이지 오류 없음).
 
 ## 되돌리는 방법
