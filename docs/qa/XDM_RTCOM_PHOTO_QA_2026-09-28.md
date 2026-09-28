@@ -69,3 +69,18 @@
 ## 되돌리기
 
 - 이 커밋을 `git revert`하면 사진과 단자 지도가 이전 상태로 돌아갑니다.
+
+## 0.89.0 추가 반영: CTR100·PSE 공통 합성 (사용자 확인 2026-09-28)
+
+- 사용자 확인: "ctr100과 pse는 단자는 동일해", "zip파일안에 다 있어". zip 안의 파일은 처음 목록 그대로 8장입니다. 따라서 PSE 뒷면은 CTR100(B) 사진으로 보면 됩니다.
+- 앞면 사진 비교
+  - CTR100 카탈로그 10쪽 앞면: 약 445px이고 LED 글씨를 읽을 수 없습니다.
+  - PSE 제품 안내서 1쪽 앞면: 약 400px이고 "Rx Signal·Tx Signal·Tx/Rx·Link"와 딥 스위치 번호가 읽힙니다.
+  - 그래서 PSE 안내서 사진을 두 제품 공통 앞면으로 씁니다.
+- 합성 사진 1000×621을 `xdm-ctr100-rear.webp`, `xdm-ctr100-pse-rear.webp` 두 파일에 같게 넣었습니다.
+  - 앞면: 폭을 뒷면 몸체 폭(약 865px)에 맞춰 901px로 줄이고 가운데 정렬했습니다.
+  - 뒷면: 1000px입니다.
+- 번호 좌표(두 제품 공통)
+  - 앞면: 6 상태 LED 100~220, 5 딥 스위치 245~348(top 20)
+  - 뒷면: 4 HDBaseT 118~252, 1 HDMI IN 287~412, 2 HDMI OUT 472~597, 3 AUDIO·RS-232 632~785, 7 DC IN 793~888(bottom 580)
+- 스크린샷: `docs/qa/xdm-rtcom-photo-screens/xdm-ctr100-portmap-*.png`, `xdm-ctr100-pse-portmap-*.png`
