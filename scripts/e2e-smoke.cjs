@@ -547,6 +547,34 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     const vdmEnd=await page.evaluate(()=>{const d=document.querySelector('dialog.rt-doc-zoom');return {first:!!d.querySelector('.rt-doc-page[data-doc-page="1"] canvas'),canvases:d.querySelectorAll('.rt-doc-page canvas').length}});
     await page.click('dialog.rt-doc-zoom [data-zoom-close]');
     check('VDM 매뉴얼 103쪽 팝업이 보이는 쪽만 그리고(첫 화면 canvas 10장 이하) 끝으로 내리면 103쪽이 그려지며 첫 쪽 canvas는 비워짐',vdmTop.pages===103&&vdmTop.canvases>=1&&vdmTop.canvases<=10&&!vdmEnd.first&&vdmEnd.canvases<=10,JSON.stringify({vdmTop,vdmEnd,vdmFirstMs}));
+    // 0.126 PC 문서 팝업 폭(사용자 요청 "팝업창의 가로폭이 너무 좁아", "마우스로 창 크기 가변가능할까?"): 기본 1040px,
+    // 가장자리를 끌면 폭과 쪽 너비가 함께 바뀌고 다시 열어도 기억하며, 넓게 버튼은 화면 폭, 가장자리 두 번 누르기는 기본 폭. 휴대폰 폭에서는 끌기 막대가 없다.
+    {
+      const docPc=await browser.newContext({viewport:{width:1600,height:900}});
+      const dp=await docPc.newPage();
+      await dp.goto(`${home}#products/vdm`,{waitUntil:'networkidle'});
+      const openMan=async()=>{await dp.click('[data-doc="Manual"] .rt-pg-doc-open');await dp.waitForFunction(()=>document.querySelector('dialog.rt-doc-zoom[open] .rt-doc-page[data-doc-page="1"] canvas'),null,{timeout:30000})};
+      const size=()=>dp.evaluate(()=>{const d=document.querySelector('dialog.rt-doc-zoom');return {dlg:Math.round(d.getBoundingClientRect().width),page:Math.round(d.querySelector('.rt-doc-page').getBoundingClientRect().width)}});
+      const pageAfter=w=>dp.waitForFunction(w=>{const d=document.querySelector('dialog.rt-doc-zoom');const c=d.querySelector('.rt-doc-page[data-doc-page="1"] canvas');return c&&Math.abs(d.getBoundingClientRect().width-w)<2&&Math.abs(c.getBoundingClientRect().width-(w-40))<4},w,{timeout:15000});
+      await openMan();
+      const def=await size();
+      const bb=await (await dp.$('[data-doc-resize="right"]')).boundingBox();
+      await dp.mouse.move(bb.x+4,bb.y+bb.height/2);await dp.mouse.down();await dp.mouse.move(bb.x+154,bb.y+bb.height/2,{steps:6});await dp.mouse.up();
+      const dragW=(await size()).dlg;await pageAfter(dragW);
+      await dp.keyboard.press('Escape');await openMan();
+      const reopened=await size();
+      await dp.click('dialog.rt-doc-zoom [data-doc-wide]');await pageAfter(1584);
+      await dp.dblclick('[data-doc-resize="left"]');await pageAfter(1040);
+      await dp.keyboard.press('Escape');
+      await docPc.close();
+      check('PC 매뉴얼 팝업이 기본 1040px이고 가장자리를 끌면 폭·쪽 너비가 함께 넓어지며 다시 열어도 기억, 넓게 버튼은 화면 폭, 두 번 누르면 기본 폭',def.dlg===1040&&def.page===1000&&dragW>=def.dlg+250&&reopened.dlg===dragW,JSON.stringify({def,dragW,reopened}));
+      await page.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
+      await page.click('[data-doc="Catalog"] button.rt-pg-doc-open');
+      await page.waitForSelector('dialog.rt-doc-zoom[open] .rt-doc-pages img');
+      const phone=await page.evaluate(()=>{const d=document.querySelector('dialog.rt-doc-zoom');return {handles:[...d.querySelectorAll('[data-doc-resize]')].map(h=>getComputedStyle(h).display),wide:getComputedStyle(d.querySelector('[data-doc-wide]')).display,dlg:Math.round(d.getBoundingClientRect().width),vw:innerWidth}});
+      await page.click('dialog.rt-doc-zoom [data-zoom-close]');
+      check('휴대폰 폭에서는 문서 팝업에 끌기 막대·넓게 버튼이 없고 창이 화면 폭(여백 16px)',phone.handles.every(d=>d==='none')&&phone.wide==='none'&&phone.dlg===phone.vw-16,JSON.stringify(phone));
+    }
     check('OBUX-1C 송신기 단자 지도가 고해상도 앞뒤 합성 사진에 번호 6개, 수신기 5개(S/P 포함)로 나옴',obuxPm.tx&&obuxPm.rx&&obuxPm.ports.join()==='6,5',JSON.stringify(obuxPm));
     // 0.98 XDM-PSU 03 Signal Flow: 제조사 연결도처럼 프레임(CIS100·COS100) · PSU(POH·PHX) · CTR100 Tx/Rx를 장비 그림으로 그리고 케이블 위 점선이 흐른다. 움직임 줄이기 설정에서는 멈춘다.
     await page.goto(`${home}#products/xdm-psu`,{waitUntil:'networkidle'});

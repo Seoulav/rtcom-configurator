@@ -338,6 +338,17 @@ test('0.124: 등록된 제품별 카탈로그는 모두 쪽 그림 팝업, 매�
   assert.match(products,/state\.pdf\?\.destroy\(\)/,'팝업을 닫으면 PDF 문서를 푼다');
 });
 
+test('0.126: PC 문서 팝업은 기본 폭이 넓고 좌우 가장자리를 끌어 폭을 바꾸며, 고른 폭은 저장이 막혀도 동작한다',()=>{
+  const products=read('src/products.js'),styles=read('src/styles.css');
+  assert.match(styles,/\.rt-doc-zoom\{width:min\(1040px,calc\(100vw - 16px\)\)/,'PC 기본 폭 1040px');
+  for(const side of ['left','right'])assert.ok(products.includes(`data-doc-resize="${side}"`),`${side} 끌기 막대`);
+  assert.match(products,/function bindDocResize\(/);
+  assert.match(products,/const readDocWidth=\(\)=>\{try\{/,'저장된 폭 읽기는 try로 감싼다');
+  assert.match(products,/const saveDocWidth=w=>\{try\{/,'폭 저장은 try로 감싼다');
+  assert.match(products,/new ResizeObserver\(/,'창 크기가 바뀌면 쪽을 다시 맞춘다');
+  assert.match(styles,/@media\(max-width:560px\),\(pointer:coarse\)\{[^}]*\{padding:0\}#rtcom-design \.rt-doc-resize/,'휴대폰에서는 끌기 막대를 숨긴다');
+});
+
 test('0.121: HD-D102U Rack마운트는 HD-D102U와 서로 관련 제품으로 이어지고, 도면 그림만 공개하며 사용자 도면 PDF는 배포하지 않는다',()=>{
   const rack=JSON.parse(read('data/products/hd-d102u-rack.json')),base=JSON.parse(read('data/products/hd-d102u.json'));
   assert.equal(rack.model,'HD-D102U Rack마운트');
