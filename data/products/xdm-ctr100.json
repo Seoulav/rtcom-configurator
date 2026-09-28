@@ -37,13 +37,13 @@
       "role": "Rear",
       "file": "xdm-ctr100-rear.webp",
       "alt": "RTCOM XDM-CTR100 앞면(위)·뒷면(아래) 합성 사진",
-      "note": "Rear · 위 앞면(카탈로그 10쪽 사진) · 아래 뒷면(RT컴 제공 고해상도 실물 사진(2026-09-28)) 합성",
+      "note": "Rear · 위 앞면(XDM-CTR100 PSE 제품 안내서 1쪽 사진) · 아래 뒷면(RT컴 제공 고해상도 XDM-CTR100 뒷면 사진, 2026-09-28) 합성. CTR100과 PSE는 앞면·단자가 같음(사용자 확인 2026-09-28)",
       "provider": "RTCOM",
       "model": "XDM-CTR100",
       "source": "C",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "1000×668"
+      "resolution": "1000×621"
     },
     {
       "role": "Front",
@@ -333,7 +333,7 @@
         "x1": 118,
         "x2": 252,
         "side": "bottom",
-        "y": 603
+        "y": 580
       },
       {
         "n": 1,
@@ -342,7 +342,7 @@
         "x1": 287,
         "x2": 412,
         "side": "bottom",
-        "y": 603
+        "y": 580
       },
       {
         "n": 2,
@@ -351,7 +351,7 @@
         "x1": 472,
         "x2": 597,
         "side": "bottom",
-        "y": 603
+        "y": 580
       },
       {
         "n": 3,
@@ -360,7 +360,7 @@
         "x1": 632,
         "x2": 785,
         "side": "bottom",
-        "y": 603
+        "y": 580
       },
       {
         "n": 7,
@@ -369,25 +369,25 @@
         "x1": 793,
         "x2": 888,
         "side": "bottom",
-        "y": 603
+        "y": 580
       },
       {
         "n": 5,
         "label": "TX/RX DIP 스위치",
         "desc": "1번 ON = TX · 2번 ON = RX · 3번 ON = Long Reach(1080p 150m) · 스위치를 내리면 ON. 설정 방법은 '06 딥 스위치 설정' 참고",
-        "x1": 277,
-        "x2": 382,
+        "x1": 245,
+        "x2": 348,
         "side": "top",
-        "y": 26
+        "y": 20
       },
       {
         "n": 6,
         "label": "상태 LED",
         "desc": "Rx Signal(RX 모드) · Tx Signal(TX 모드) · Tx/Rx·Link(정상 연결)",
-        "x1": 125,
-        "x2": 244,
+        "x1": 100,
+        "x2": 220,
         "side": "top",
-        "y": 26
+        "y": 20
       }
     ],
     "title": "위 앞면, 아래 뒷면"
