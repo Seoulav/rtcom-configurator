@@ -4,6 +4,8 @@
 
 ## Unreleased
 
+- **HD-13U 정면·후면 제품 사진 고해상도 교체**(사용자 제공 고해상도 사진 2장, 2026-09-28 "HD-13U 고해상도 사진이야 업데이트해줘"): `hd-13u-front.webp`(718×187 → 1045×218)·`hd-13u-rear.webp`(716×178 → 1147×244)를 사용자가 보낸 고해상도 버전으로 바꾸고, 두 사진을 위아래로 합성하는 `hd-13u-front-rear.webp`도 새 크기(1147×590)로 다시 만들었습니다. 같은 각도·구도의 사진이라 `portMap`(7개 번호: HDMI IN·HDMI OUT 1–3·AUDIO IN·AUDIO OUT·MODE·SET·DC 5V)과 `edidSwitch`(MODE 로터리 강조 링) 좌표를 새 사진 픽셀 기준으로 다시 측정해 반영했습니다(내용·순서는 그대로, 좌표만 갱신). QA: `docs/qa/HD13U_PHOTO_HIRES_QA_2026-09-28.md`.
+
 ## 0.72.0
 
 - **입력단자/출력단자 행 삭제 + 인치·lbs 병기 전 제품 정리**(사용자 요청: OBHD-2C 04 제품 사양 화면 캡처 뒤 "입력 출력단자 Female male이런거 전부 지워줘", 이어서 "모든 제품에 인치, lbs등등 있으면 다 지워"): OBHD-2C·OBUX-1C의 04 제품 사양에서 "입력단자"·"출력단자"(HDMI(female) 등 표기) 행을 삭제했습니다(03 단자 지도는 그대로 유지). 전 제품(16종)의 mm/kg 옆에 병기되던 인치·lbs 값을 지우고, 모델명·"공통"·"각각" 같은 구분 표시는 남겼습니다. Pull up 저항력(hoc-ux·lhoc·ahoc)은 lbs만 지우고 SI 단위인 Newtons는 남겼습니다. QA: `docs/qa/IMPERIAL_UNIT_CLEANUP_QA_2026-09-28.md`.
