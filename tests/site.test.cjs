@@ -189,3 +189,49 @@ test('product document PDFs (2026-09-28) are validated before publishing',()=>{
   assert.match(src,/target="_blank" rel="noopener"/,'document buttons open in a new tab without window.opener');
   assert.match(src,/download="\$\{esc\(doc\.file\)\}"/,'document buttons offer a direct download');
 });
+
+test('local input_doc workflow (2026-09-28) keeps user material out of Git and reports new files',()=>{
+  const {spawnSync}=require('node:child_process');
+  const os=require('node:os');
+  const ignore=read('.gitignore');
+  assert.match(ignore,/^input_doc\/\*$/m,'input_doc contents must be git-ignored');
+  assert.match(ignore,/^!input_doc\/README\.md$/m,'input_doc/README.md must stay tracked');
+  assert.ok(fs.existsSync('input_doc/README.md'));
+  const settings=JSON.parse(read('.claude/settings.json'));
+  const hook=settings.hooks.SessionStart[0].hooks[0];
+  assert.equal(hook.type,'command');
+  assert.match(hook.command,/scripts\/input-doc-status\.cjs/);
+  for(const rule of ['Bash(git push --force *)','Bash(git reset --hard *)','Bash(git clean *)','Bash(git push origin main)'])assert.ok(settings.permissions.deny.includes(rule),`settings must deny ${rule} (CLAUDE.md Git 정책)`);
+  assert.ok(fs.existsSync('.claude/skills/input-doc/SKILL.md'));
+  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'input-doc-'));
+  try{
+    const run=()=>spawnSync(process.execPath,['scripts/input-doc-status.cjs'],{env:{...process.env,INPUT_DOC_DIR:dir},encoding:'utf8'});
+    let out=run();
+    assert.equal(out.status,0);assert.equal(out.stdout,'','no new files → no hook output');
+    fs.writeFileSync(path.join(dir,'README.md'),'x');fs.mkdirSync(path.join(dir,'RTCOM'));fs.writeFileSync(path.join(dir,'RTCOM','done.pdf'),'x');
+    assert.equal(run().stdout,'','README and already-sorted files are not new');
+    fs.writeFileSync(path.join(dir,'HD-13U 매뉴얼.pdf'),'%PDF-1.4');
+    out=run();assert.equal(out.status,0);
+    const json=JSON.parse(out.stdout);
+    assert.equal(json.hookSpecificOutput.hookEventName,'SessionStart');
+    assert.match(json.hookSpecificOutput.additionalContext,/HD-13U 매뉴얼\.pdf/);
+    assert.doesNotMatch(json.hookSpecificOutput.additionalContext,/done\.pdf/);
+    const python=['python3','python'].find(cmd=>spawnSync(cmd,['--version']).status===0);
+    if(python){
+      const py=(...args)=>spawnSync(python,['scripts/input_doc.py',...args],{env:{...process.env,INPUT_DOC_DIR:dir},encoding:'utf8'});
+      const scan=JSON.parse(py('scan').stdout);
+      assert.equal(scan.files.length,1);
+      assert.deepEqual(scan.files[0].guess.models,['HD-13U']);
+      assert.equal(scan.files[0].guess.kind,'Manual');
+      const moved=py('file','HD-13U 매뉴얼.pdf','--maker','RTCOM','--kind','Manual','--model','HD-13U','--version','Ver1.2');
+      assert.equal(moved.status,0,moved.stderr);
+      assert.ok(fs.existsSync(path.join(dir,'RTCOM','manual','RTcom_Manual_HD-13U_Ver1.2.pdf')));
+      assert.match(fs.readFileSync(path.join(dir,'INDEX.md'),'utf8'),/HD-13U 매뉴얼\.pdf \| RTCOM\/manual\/RTcom_Manual_HD-13U_Ver1\.2\.pdf/);
+      fs.writeFileSync(path.join(dir,'copy.pdf'),'%PDF-1.4');
+      assert.equal(py('file','copy.pdf','--maker','RTCOM','--kind','Manual','--model','HD-13U').status,0);
+      assert.ok(fs.existsSync(path.join(dir,'_duplicates','copy.pdf')),'same content goes to _duplicates, not a second archive copy');
+      assert.notEqual(py('file',path.resolve('README.md'),'--maker','X','--kind','Other','--model','Y').status,0,'files outside input_doc are refused');
+      assert.equal(run().stdout,'','after filing, nothing is new');
+    }
+  }finally{fs.rmSync(dir,{recursive:true,force:true})}
+});
