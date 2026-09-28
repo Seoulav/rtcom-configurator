@@ -350,3 +350,8 @@ test('0.121: HD-D102U Rack마운트는 HD-D102U와 서로 관련 제품으로 �
   const order=JSON.parse(read('data/products/index.json')).products.map(product=>product.id);
   assert.equal(order.indexOf('hd-d102u-rack'),order.indexOf('hd-d102u')+1,'목록에서 HD-D102U 바로 뒤에 보인다');
 });
+
+test('0.125: 제품정보 목록은 XDM이 맨 앞이고, 매트릭스 시리즈는 XDM · SPX · VDM 순서다',()=>{
+  const ids=JSON.parse(read('data/products/index.json')).products.map(product=>product.id);
+  assert.deepEqual(ids.slice(0,3),['xdm','spx','vdm']);
+});

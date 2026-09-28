@@ -250,6 +250,12 @@ function build(){
   const list=products.map(([,product])=>product).sort((a,b)=>{
     const groupDiff=order(a)-order(b);
     if(groupDiff)return groupDiff;
+    // 매트릭스 시리즈는 XDM을 맨 앞에, 구성기 표기(XDM · SPX · VDM)와 같은 순서로 보인다(사용자 요청 2026-09-28 "제품정보 XDM이 처음으로 나오게해").
+    if(a.group==='series'&&b.group==='series'){
+      const SERIES_ORDER=['xdm','spx','vdm'],rank=product=>{const i=SERIES_ORDER.indexOf(product.id);return i<0?SERIES_ORDER.length:i};
+      const seriesDiff=rank(a)-rank(b);
+      if(seriesDiff)return seriesDiff;
+    }
     if(a.group==='distribution'&&b.group==='distribution'){
       const typeDiff=distType(a)-distType(b);
       if(typeDiff)return typeDiff;
