@@ -458,6 +458,13 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-title .rt-pg-sub{font-size:11px;color:var(--pg-muted);letter-spacing:.02em;text-transform:uppercase;margin:3px 0 0}
 #rtcom-design .rt-pg-toolbar{display:flex;gap:9px;flex-wrap:wrap}
 #rtcom-design .rt-pg-btn{font:600 13px/1 var(--pg-sans);border:1px solid transparent;background:var(--pg-field-fill);color:var(--pg-accent);padding:9px 16px;border-radius:var(--pg-r-pill);white-space:nowrap;text-decoration:none;display:inline-block}
+/* 제조사 문서 PDF 버튼(2026-09-28): 왼쪽 이름 = 새 탭에서 보기, 오른쪽 화살표 = 내려받기 */
+#rtcom-design .rt-pg-doc{display:inline-flex;align-items:stretch;background:var(--pg-field-fill);border-radius:var(--pg-r-pill);overflow:hidden}
+#rtcom-design .rt-pg-doc a{font:600 13px/1 var(--pg-sans);color:var(--pg-accent);text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap}
+#rtcom-design .rt-pg-doc-open{padding:9px 11px 9px 16px}
+#rtcom-design .rt-pg-doc-save{padding:9px 13px 9px 10px;border-left:1px solid var(--pg-line-2)}
+#rtcom-design .rt-pg-doc a:hover{background:var(--pg-seg-track)}
+#rtcom-design .rt-pg-doc a:focus-visible{outline:2px solid var(--pg-accent);outline-offset:-2px}
 #rtcom-design .rt-pg-btn.rt-pg-primary{background:var(--pg-accent);color:#fff;box-shadow:0 6px 16px -6px var(--pg-accent)}
 #rtcom-design .rt-pg-cols{display:grid;grid-template-columns:360px 1fr;gap:22px;align-items:start}
 #rtcom-design .rt-pg-col{display:flex;flex-direction:column;gap:18px;min-width:0}

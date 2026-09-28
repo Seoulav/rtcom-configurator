@@ -18,7 +18,7 @@ catch{
 }
 const BASE='/rtcom-configurator/';
 const dist=path.resolve('dist');
-const types={'.html':'text/html; charset=utf-8','.js':'text/javascript','.css':'text/css','.jpg':'image/jpeg','.png':'image/png','.md':'text/markdown','.json':'application/json','.webp':'image/webp'};
+const types={'.html':'text/html; charset=utf-8','.js':'text/javascript','.css':'text/css','.jpg':'image/jpeg','.png':'image/png','.md':'text/markdown','.json':'application/json','.webp':'image/webp','.pdf':'application/pdf'};
 const server=http.createServer((req,res)=>{
   const url=decodeURIComponent(new URL(req.url,'http://x').pathname);
   if(!url.startsWith(BASE)){res.writeHead(404).end();return}
@@ -400,6 +400,15 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('OBUX-1C 딥 스위치 설정이 1번 오디오와 2·3·4번 EDID 조합 5칸으로 나옴',obux.rows===2&&obux.combos===5&&obux.fix,JSON.stringify(obux));
     // 2026-09-28 OBUX-1C Tx 고해상도 실물 사진: 송신기 단자 지도가 앞면·뒷면 합성 사진 한 장에 번호 6개(Mode·S/P 포함), 수신기도 합성 사진에 번호 5개(S/P 포함).
     const obuxPm=await page.evaluate(()=>{const s=[...document.querySelectorAll('section')].find(s=>/Port Map/.test(s.querySelector('h2')?.textContent||''));return {tx:!!s?.innerHTML.includes('obux-1c-tx-front-rear.webp'),rx:!!s?.innerHTML.includes('obux-1c-rx-front-rear.webp'),ports:[...(s?.querySelectorAll('.rt-pg-ports')||[])].map(x=>x.children.length)}});
+    // 2026-09-28 제조사 문서 PDF: documents[].file 수만큼 "제품 목록" 옆에 버튼(새 탭 보기 + 내려받기)이 나오고 링크가 PDF로 열림. 등록 파일이 없는 제품은 버튼 없음.
+    for(const id of ['hd-13u','hd-104u']){
+      const expected=(JSON.parse(fs.readFileSync(`data/products/${id}.json`,'utf8')).documents||[]).filter(doc=>doc.file).length;
+      await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
+      await page.waitForSelector('.rt-pg-toolbar');
+      const docs=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-toolbar .rt-pg-doc')].map(el=>({open:el.querySelector('.rt-pg-doc-open')?.getAttribute('target')==='_blank'&&el.querySelector('.rt-pg-doc-open')?.relList.contains('noopener'),save:el.querySelector('.rt-pg-doc-save')?.hasAttribute('download'),href:el.querySelector('.rt-pg-doc-open')?.href})));
+      const pdfOk=[];for(const doc of docs){const res=await page.request.get(doc.href);pdfOk.push(res.status()===200&&String(res.headers()['content-type']).includes('pdf'))}
+      check(`${id} 제조사 문서 버튼 ${expected}개(새 탭 보기·내려받기, PDF 응답)`,docs.length===expected&&docs.every(doc=>doc.open&&doc.save)&&pdfOk.every(Boolean),JSON.stringify({expected,docs,pdfOk}));
+    }
     check('OBUX-1C 송신기 단자 지도가 고해상도 앞뒤 합성 사진에 번호 6개, 수신기 5개(S/P 포함)로 나옴',obuxPm.tx&&obuxPm.rx&&obuxPm.ports.join()==='6,5',JSON.stringify(obuxPm));
     // 0.64 XDM-FT101/FR101 EDID·오디오 로터리(매뉴얼 Ver.1.3): 0(기본값)·3·8번 대표 설정 그림.
     await page.goto(`${home}#products/xdm-ft101-fr101`,{waitUntil:'networkidle'});
