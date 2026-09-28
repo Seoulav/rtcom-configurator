@@ -101,7 +101,11 @@ test('static package ships only configurator files and redirects legacy portal U
   const files=[];
   const walk=dir=>{for(const entry of fs.readdirSync(dir,{withFileTypes:true})){const full=path.join(dir,entry.name);entry.isDirectory()?walk(full):files.push(path.relative('dist',full).split(path.sep).join('/'))}};
   walk('dist');
-  assert.equal(files.some(file=>file.endsWith('.pdf')),false,'catalog PDF must not be published');
+  // 2026-09-28: 제조사 문서 PDF는 제품 데이터 documents[].file에 등록된 것만 output/design/assets/docs/에서 공개한다. 전체 카탈로그 원본은 여전히 배포하지 않는다.
+  const registeredDocs=new Set(fs.readdirSync('data/products').filter(name=>name.endsWith('.json')&&name!=='index.json').flatMap(name=>(JSON.parse(read(`data/products/${name}`)).documents||[]).map(doc=>doc.file).filter(Boolean)).map(name=>`output/design/assets/docs/${name}`));
+  for(const file of files.filter(file=>file.endsWith('.pdf')))assert.ok(registeredDocs.has(file),`unregistered PDF must not be published: ${file}`);
+  for(const file of registeredDocs)assert.ok(files.includes(file),`dist is missing registered document ${file}`);
+  assert.equal(files.includes('docs/RTcom_catalogue_2026_46p.pdf'),false,'full catalogue PDF must not be published');
   assert.equal(files.some(file=>file.startsWith('output/design/assets/library/')),false);
   for(const file of ['index.html','.nojekyll',...runtimeScripts,'src/styles.css','fonts/PretendardVariable.woff2','fonts/OFL.txt'])assert.ok(files.includes(file),`dist is missing ${file}`);
   const html=read('dist/index.html');
@@ -166,4 +170,22 @@ test('every matrix card has a detail entry in card-specs.js sourced from the cat
   assert.match(app,/data-card-info="\$\{c\[0\]\}"/,'03 카드 슬롯 must render input/output card info buttons');
   assert.match(app,/class="rt-summary-card" data-card-info=/,'내 구성 card rows must open card details');
   assert.match(app,/class="rt-card-choice-info" data-card-info="\$\{c\[0\]\}"/,'카드 선택창 must offer a 상세 보기 button per card (0.79)');
+});
+
+test('product document PDFs (2026-09-28) are validated before publishing',()=>{
+  const {validate}=require('../scripts/build-product-index.cjs');
+  const product=JSON.parse(read('data/products/hd-13u.json'));
+  const ids=new Set(fs.readdirSync('data/products').filter(name=>name.endsWith('.json')&&name!=='index.json').map(name=>name.replace(/\.json$/,'')));
+  const withDoc=doc=>({...product,documents:[...product.documents.filter(item=>item.type!==doc.type),doc]});
+  const errorsFor=doc=>validate(withDoc(doc),'data/products/hd-13u.json',ids).join('\n');
+  assert.match(errorsFor({type:'Manual',title:'x',file:'hd-13u-missing.pdf',note:''}),/문서 파일 없음/);
+  assert.match(errorsFor({type:'Manual',title:'x',file:'HD-13U Manual.pdf',note:''}),/documents\.file 형식/);
+  assert.match(errorsFor({type:'Manual',title:'x',file:'hd-104u-manual.pdf',note:''}),/documents\.file 형식/);
+  assert.match(errorsFor({type:'Diagram',title:'x',file:'hd-13u-diagram.pdf',note:''}),/documents\.file은 Catalog/);
+  assert.match(errorsFor({type:'Manual',title:'x',file:'hd-13u-manual.pdf',note:'사용자 제공, 배포 제외'}),/배포 제외·비공개/);
+  const twoManuals={...product,documents:[...product.documents.filter(item=>item.type!=='Manual'),{type:'Manual',title:'a',file:'hd-13u-manual-a.pdf',note:''},{type:'Manual',title:'b',file:'hd-13u-manual-b.pdf',note:''}]};
+  assert.match(validate(twoManuals,'data/products/hd-13u.json',ids).join('\n'),/label 필요/);
+  const src=fs.readFileSync('src/products.js','utf8');
+  assert.match(src,/target="_blank" rel="noopener"/,'document buttons open in a new tab without window.opener');
+  assert.match(src,/download="\$\{esc\(doc\.file\)\}"/,'document buttons offer a direct download');
 });
