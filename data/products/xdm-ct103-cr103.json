@@ -98,7 +98,8 @@
       "status": "FOUND",
       "title": "알티컴 종합 카탈로그 2026 (국문)",
       "language": "ko",
-      "note": "11쪽"
+      "note": "카탈로그 46쪽판 11쪽 발췌 · 제품별 공개본(2026-09-28 사용자 결정 \"제품별로 잘라 공개\")",
+      "file": "xdm-ct103-cr103-catalog.pdf"
     },
     {
       "type": "Manual",
@@ -403,7 +404,7 @@
     {
       "image": "Other",
       "file": "xdm-ct103-front-rear.webp",
-      "title": "송신기 XDM-CT103 · 왼쪽 앞면, 오른쪽 뒷면",
+      "title": "송신기 XDM-CT103 · 왼쪽 앞면 / 오른쪽 뒷면",
       "displayWidth": 520,
       "items": [
         {
@@ -464,7 +465,7 @@
     {
       "image": "Other",
       "file": "xdm-cr103-manual.webp",
-      "title": "수신기 XDM-CR103 · 왼쪽 앞면, 오른쪽 뒷면",
+      "title": "수신기 XDM-CR103 · 왼쪽 앞면 / 오른쪽 뒷면",
       "displayWidth": 520,
       "items": [
         {

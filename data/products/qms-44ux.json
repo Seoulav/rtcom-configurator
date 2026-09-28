@@ -84,7 +84,8 @@
       "status": "FOUND",
       "title": "알티컴 종합 카탈로그 2026 (국문)",
       "language": "ko",
-      "note": "29쪽"
+      "note": "카탈로그 46쪽판 27쪽 발췌 · 제품별 공개본(2026-09-28 사용자 결정 \"제품별로 잘라 공개\")",
+      "file": "qms-44ux-catalog.pdf"
     },
     {
       "type": "Diagram",
@@ -287,7 +288,8 @@
       },
       {
         "name": "QUAD",
-        "summary": "입력 4개를 분할해 한 화면에 출력(모든 출력에 같은 분할 화면). 분할 화면 하나를 ZOOM-IN으로 전체 화면 전환",
+        "summary": "입력 4개를 4분할해 모든 출력에 표시",
+        "detail": "분할 화면 하나를 ZOOM-IN으로 확대 가능",
         "layouts": [
           "QUAD",
           "3-BOTTOM",

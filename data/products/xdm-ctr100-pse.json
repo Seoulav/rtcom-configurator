@@ -94,7 +94,8 @@
       "status": "FOUND",
       "title": "알티컴 종합 카탈로그 2026 (국문)",
       "language": "ko",
-      "note": "10쪽"
+      "note": "카탈로그 46쪽판 10쪽 발췌 · 제품별 공개본(2026-09-28 사용자 결정 \"제품별로 잘라 공개\")",
+      "file": "xdm-ctr100-pse-catalog.pdf"
     },
     {
       "type": "ProductSheet",
@@ -301,7 +302,7 @@
   ],
   "portMap": {
     "image": "Rear",
-    "title": "위 앞면, 아래 뒷면",
+    "title": "전면 / 뒷면",
     "items": [
       {
         "n": 4,

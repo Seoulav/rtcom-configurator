@@ -85,7 +85,8 @@
       "status": "FOUND",
       "title": "알티컴 종합 카탈로그 2026 (국문)",
       "language": "ko",
-      "note": "30쪽"
+      "note": "카탈로그 46쪽판 28쪽 발췌 · 제품별 공개본(2026-09-28 사용자 결정 \"제품별로 잘라 공개\")",
+      "file": "qms-88ux-catalog.pdf"
     },
     {
       "type": "Diagram",
@@ -287,13 +288,15 @@
       {
         "name": "QUAD",
         "summary": "출력 9·10번 전용, 한 화면 최대 8분할(8CH Multi-view)",
-        "detail": "입력 1~4(Q1)·5~8(Q2) 두 그룹을 12가지 레이아웃으로 조합해 그룹마다 4분할하고, 출력 옵션에서 두 그룹을 합쳐 가로세로 비율을 유지하지 않고 그대로 8분할로도, 16:9 비율을 유지한 8분할로도 보여준다(매뉴얼 KV.04 22~23쪽 Output Option 2·3, 5·6).",
+        "detail": "Q1(입력 1~4)·Q2(입력 5~8) 그룹별 4분할, 합쳐서 8분할(비율무시·16:9)도 가능",
+        "page": "22–23",
         "layouts": ["QUAD","3-BOTTOM","3-SIDE RIGHT","3-SIDE LEFT","Horizontal PBP","Vertical PBP","Quad PBP, PIP","Single Select a port","3CH-MODE2","USER MODE 1","USER MODE 2","Default Single","8분할(비율무시)","8분할(16:9 비율)"]
       },
       {
         "name": "DUAL",
-        "summary": "출력 9·10번 멀티뷰 설정에서 한 화면 2분할(PBP)·PIP 구성.",
-        "detail": "별도 듀얼 메뉴 없이 8CH 멀티뷰와 같은 Multiview 설정에서 2분할 레이아웃을 골라 입력 그룹(Q1·Q2)마다 구성(매뉴얼 KV.04 20~21쪽 Layout 5~7).",
+        "summary": "출력 9·10번 멀티뷰 설정에서 한 화면 2분할(PBP)·PIP 구성",
+        "detail": "멀티뷰 설정에서 그룹(Q1·Q2)별로 2분할 레이아웃 선택",
+        "page": "20–21",
         "layouts": ["Horizontal PBP","Vertical PBP","Quad PBP, PIP"]
       }
     ]

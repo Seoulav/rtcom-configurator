@@ -158,7 +158,8 @@
       "status": "FOUND",
       "title": "알티컴 종합 카탈로그 2026 (국문)",
       "language": "ko",
-      "note": "12쪽"
+      "note": "카탈로그 46쪽판 12쪽 발췌 · 제품별 공개본(2026-09-28 사용자 결정 \"제품별로 잘라 공개\")",
+      "file": "xdm-ft101-fr101-catalog.pdf"
     },
     {
       "type": "Manual",
@@ -434,7 +435,7 @@
     {
       "image": "Other",
       "file": "xdm-ft101-fr101-front-rear.webp",
-      "title": "송신기 XDM-FT101 · 위 앞면, 아래 뒷면",
+      "title": "송신기 XDM-FT101 · 전면 / 뒷면",
       "items": [
         {
           "n": 1,

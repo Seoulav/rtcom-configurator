@@ -293,32 +293,79 @@
     // extenderDiagram이 그리지 못한다. 제품 데이터(overview·io)에 적힌 연결만 그린다: POH는 CIS100 ↔ CTR100(Tx) CAT 사이에 끼워
     // CTR100에 전원을 싣고, PHX는 2핀 전원선으로 COS100에 전원을 넣어 COS100이 CAT로 CTR100(Rx)에 전원을 함께 보낸다.
     const COLOR_POWER='#FF9500';
+    // 0.98: 제조사 연결도(MAX2-POE-PSU 구성도)처럼 매트릭스 프레임(위) · XDM-PSU(가운데) · XDM-CTR100 Tx/Rx(아래)를 장비 모양 그림으로 그리고,
+    // 케이블을 따라 신호(초록)·전원(주황)이 흐르는 애니메이션을 넣는다(사용자 요청 2026-09-28 "딥스위치를 이미지화 했던 것처럼 … 애니메이션 이미지화해서 실제 연결처럼").
+    // 움직임을 줄이는 설정(prefers-reduced-motion)에서는 흐름 점선이 멈춘 채로 보인다.
     function psuDiagram(item){
-      const width=980,height=430,boxW=160,boxH=70;
-      const cable=(x1,x2,y,label)=>`<path d="M${x1} ${y}L${x2} ${y}" stroke="${COLOR_COPPER}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/><text x="${(x1+x2)/2}" y="${y-12}" text-anchor="middle" font-size="10" font-weight="700" fill="${COLOR_COPPER}">${svgEsc(label)}</text>`;
-      const power=(x1,x2,y,label)=>arrow(x1,y,x2,y,COLOR_POWER).replace('stroke-width="2.5"','stroke-width="2.5" stroke-dasharray="3 4"')+`<text x="${(x1+x2)/2}" y="${y+16}" text-anchor="middle" font-size="10" font-weight="700" fill="${COLOR_POWER}">${svgEsc(label)}</text>`;
-      // 조합 1: 입력 경로(XDM-POH)
-      const r1=110,srcX=50,txX=120,pohX=430,cisX=760;
-      let body=`<text x="${width/2}" y="34" text-anchor="middle" font-size="11" font-weight="700" fill="#687386">입력 경로 · XDM-POH 모듈(XDM-CTR100 Tx 1대당 1개)</text>`;
-      body+=monitorIcon(srcX,r1,'소스 기기')+arrow(srcX+24,r1,txX-6,r1,COLOR_IN);
-      body+=deviceBox(txX,r1-boxH/2,boxW,boxH,'XDM-CTR100','TX · 전원 어댑터 불필요');
-      body+=cable(txX+boxW,pohX,r1-8,'CAT · 신호+전원');
-      body+=power(pohX-4,txX+boxW+6,r1+10,'전원 공급');
-      body+=deviceBox(pohX,r1-boxH/2,boxW+20,boxH,'XDM-PSU · POH','RJ45 Extender ↔ CIS Card');
-      body+=cable(pohX+boxW+20,cisX,r1,'CAT · 신호')+deviceBox(cisX,r1-boxH/2,boxW,boxH,'XDM-CIS100','입력 카드(HDBaseT)');
-      // 조합 2: 출력 경로(XDM-PHX)
-      const r2=290,phxX=40,cosX=300,rxX=560,dstX=920;
-      body+=`<text x="${width/2}" y="${r2-76}" text-anchor="middle" font-size="11" font-weight="700" fill="#687386">출력 경로 · XDM-PHX 모듈(XDM-COS100 카드 1장당 1개)</text>`;
-      body+=deviceBox(phxX,r2-boxH/2,boxW+10,boxH,'XDM-PSU · PHX','2핀 전원 단자(+/−)');
-      body+=power(phxX+boxW+10,cosX-6,r2,'2핀 전원선');
-      body+=deviceBox(cosX,r2-boxH/2,boxW,boxH,'XDM-COS100','출력 카드(HDBaseT)');
-      body+=cable(cosX+boxW,rxX,r2,'CAT · 신호+전원');
-      body+=deviceBox(rxX,r2-boxH/2,boxW,boxH,'XDM-CTR100','RX · 전원 어댑터 불필요');
-      body+=arrow(rxX+boxW+6,r2,dstX-24,r2,COLOR_OUT)+monitorIcon(dstX,r2,'디스플레이');
+      const width=1000,height=680,INK='#1f2532',SUB='#687386',BODY='#eceff4',EDGE='#8e97a6',HI='#007AFF',TAG='#1f3b8f';
+      const rj45=(x,y,on)=>`<g><rect x="${x}" y="${y}" width="16" height="13" rx="1.5" fill="${on?'#e3edff':'#fff'}" stroke="${on?HI:'#3a4150'}" stroke-width="${on?2:1.3}"/><rect x="${x+5}" y="${y+8}" width="6" height="3.5" fill="${on?HI:'#3a4150'}"/></g>`;
+      const pin2=(x,y,on)=>`<g><rect x="${x}" y="${y}" width="14" height="10" rx="1.5" fill="${on?'#34C759':'#8fd6a0'}" stroke="${on?'#1c7a36':'#5da873'}" stroke-width="${on?1.8:1}"/><rect x="${x+2.5}" y="${y+3}" width="3.5" height="4" fill="#0f3d1c"/><rect x="${x+8}" y="${y+3}" width="3.5" height="4" fill="#0f3d1c"/></g>`;
+      const phoenix5=(x,y,on)=>`<g${on?' class="rt-psu-cos-pin"':''}><rect x="${x}" y="${y}" width="16" height="8" rx="1.2" fill="${on?'#34C759':'#8fd6a0'}" stroke="${on?'#1c7a36':'#5da873'}" stroke-width="${on?1.6:1}"/>${[0,1,2,3,4].map(i=>`<rect x="${x+1.6+i*2.7}" y="${y+2.5}" width="1.8" height="3" fill="#0f3d1c"/>`).join('')}</g>`;
+      const hdmi=(x,y,on)=>`<path d="M${x} ${y}h22v6l-3 4h-16l-3-4z" fill="${on?'#fff':'#f4f6f9'}" stroke="${on?'#3a4150':'#9aa3b2'}" stroke-width="1.4"/>`;
+      const pill=(x,y,text,fill=TAG)=>{const w=Math.max(46,text.length*6.6+18);return `<g><rect x="${x-w/2}" y="${y-10}" width="${w}" height="20" rx="10" fill="${fill}"/><text x="${x}" y="${y+4}" text-anchor="middle" font-size="10.5" font-weight="750" fill="#fff">${svgEsc(text)}</text></g>`};
+      // 케이블 한 가닥: 회색 피복 위에 흐름 점선을 겹친다. flows=[[색, 방향(1 정방향·-1 역방향), 시작 어긋남]]
+      const cable=(d,flows,bodyColor='#aeb6c3')=>`<path d="${d}" fill="none" stroke="${bodyColor}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>${flows.map(([color,dir,offset=0])=>`<path class="rt-psu-flow${dir<0?' rt-psu-rev':''}" d="${d}" fill="none" stroke="${color}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 11" stroke-dashoffset="${offset}"/>`).join('')}`;
+      const twoPin=d=>`<path d="${d}" fill="none" stroke="#e0463c" stroke-width="3" stroke-linejoin="round" transform="translate(-2.2 0)"/><path d="${d}" fill="none" stroke="#2c2c2e" stroke-width="3" stroke-linejoin="round" transform="translate(2.2 0)"/><path class="rt-psu-flow" d="${d}" fill="none" stroke="${COLOR_POWER}" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="4 10"/>`;
+      let body='';
+      // ---- 케이블(장비보다 먼저 그려 장비 몸체 아래로 들어가게 한다) ----
+      const cisPort=[336,62],cosPort=[501,52],cosPin=[501,67],pohCis=[322,322],pohExt=[322,352],phx=[552,336],txRj=[122,538],rxRj=[870,538];
+      // ① POH "CIS Card" ↔ CIS100: 신호만(Tx에서 온 영상이 CIS100으로 들어감)
+      body+=cable(`M${pohCis[0]} ${pohCis[1]+6}H250V${cisPort[1]+6}H${cisPort[0]}`,[[COLOR_COPPER,1]]);
+      // ② CTR100 Tx ↔ POH "Extender": 신호는 Tx → PSU, 전원은 PSU → Tx(역방향)
+      body+=cable(`M${txRj[0]} ${txRj[1]+6}H80V${pohExt[1]+6}H${pohExt[0]}`,[[COLOR_COPPER,1],[COLOR_POWER,-1,9]]);
+      // HDMI: 소스 → Tx HDMI IN, Rx HDMI OUT → 디스플레이
+      body+=cable('M84 624H171V574',[[COLOR_IN,1]]);
+      body+=cable('M755 574V624H916',[[COLOR_OUT,1]]);
+      // ---- 매트릭스 프레임(CIS100·COS100 카드 장착) ----
+      body+=`<rect x="300" y="24" width="400" height="190" rx="6" fill="${BODY}" stroke="${EDGE}" stroke-width="2"/>`;
+      for(let i=0;i<12;i++){
+        const x=316+i*30,card=i===0?'CIS':i===6?'COS':'';
+        body+=`<rect x="${x}" y="40" width="26" height="136" rx="2" fill="${card?'#dfeaff':'#f7f8fa'}" stroke="${card?HI:'#b8bfcb'}" stroke-width="${card?2:1}"/><circle cx="${x+13}" cy="46" r="2.4" fill="#b8bfcb"/><circle cx="${x+13}" cy="170" r="2.4" fill="#b8bfcb"/>`;
+        if(card==='CIS')for(let p=0;p<4;p++)body+=rj45(x+5,56+p*26,p===0);
+        // 0.99 COS100: 포트마다 RJ45 아래에 피닉스 5핀(오디오 추출 및 PoE)이 있고, PHX 2핀 전원선은 이 피닉스 단자에 꽂는다(사용자 확인 2026-09-28 "COS PHNIX픽에 전원연결", 카탈로그 COS100 사진).
+        if(card==='COS')for(let p=0;p<4;p++)body+=rj45(x+5,52+p*30,p===0)+phoenix5(x+5,67+p*30,p===0);
+      }
+      for(let v=0;v<18;v++)body+=`<rect x="${318+v*20}" y="186" width="12" height="16" rx="3" fill="#cfd5de"/>`;
+      body+=pill(410,100,'XDM-CIS100 입력 카드');
+      body+=pill(606,130,'XDM-COS100 출력 카드');
+      // ③ PHX 2핀 → COS100 1번 포트 피닉스 단자(프레임 위로 그려 꽂히는 곳이 보이게 한다)
+      body+=twoPin(`M${phx[0]+7} ${phx[1]}V262H539V${cosPin[1]+4}H${cosPin[0]+17}`);
+      // ④ COS100 1번 RJ45 → CTR100 Rx: 신호와 전원이 함께 Rx로
+      body+=cable(`M${cosPort[0]+16} ${cosPort[1]+6}H930V${rxRj[1]+6}H${rxRj[0]+16}`,[[COLOR_COPPER,1],[COLOR_POWER,1,9]]);
+      body+=`<text x="700" y="232" text-anchor="end" font-size="10" fill="${SUB}">XDM 매트릭스 프레임</text>`;
+      // ---- XDM-PSU 후면(POH·PHX 모듈, AC 인렛) ----
+      body+=`<text x="300" y="292" font-size="15" font-weight="800" fill="${TAG}">XDM-PSU</text>`;
+      body+=`<rect x="300" y="302" width="400" height="80" rx="6" fill="${BODY}" stroke="${EDGE}" stroke-width="2"/>`;
+      for(let i=0;i<6;i++){const x=322+i*34;body+=rj45(x,pohCis[1],i===0)+rj45(x,pohExt[1],i===0)}
+      for(let j=0;j<4;j++)body+=pin2(phx[0]+j*28,phx[1],j===0);
+      body+=`<rect x="652" y="314" width="34" height="18" rx="3" fill="#fff" stroke="#3a4150" stroke-width="1.3"/><rect x="662" y="318" width="14" height="10" rx="2" fill="#e0463c"/><rect x="652" y="338" width="34" height="32" rx="4" fill="#fff" stroke="#3a4150" stroke-width="1.3"/><path d="M660 346h6v8h-6zM672 346h6v8h-6zM666 358h6v6h-6z" fill="#3a4150"/>`;
+      body+=`<text x="${322+85}" y="398" text-anchor="middle" font-size="10" font-weight="750" fill="${INK}">${svgEsc('XDM-PSU · POH')}</text><text x="${322+85}" y="411" text-anchor="middle" font-size="9.5" fill="${SUB}">위 CIS Card · 아래 Extender</text>`;
+      body+=`<text x="${phx[0]+49}" y="398" text-anchor="middle" font-size="10" font-weight="750" fill="${INK}">${svgEsc('XDM-PSU · PHX')}</text><text x="${phx[0]+49}" y="411" text-anchor="middle" font-size="9.5" fill="${SUB}">2핀(+/−) COS Card</text>`;
+      body+=`<text x="669" y="398" text-anchor="middle" font-size="9.5" fill="${SUB}">AC 입력</text>`;
+      // ---- XDM-CTR100 Tx/Rx(뒷면: RJ45·HDMI·피닉스, 상태 LED) ----
+      const ctr=(x,label,sub,rjX,hdmiX,ledX,noteX)=>{
+        let g=`<text x="${x+90}" y="494" text-anchor="middle" font-size="14" font-weight="800" fill="${TAG}">XDM-CTR100</text><text x="${x+90}" y="510" text-anchor="middle" font-size="11" font-weight="700" fill="${INK}">${svgEsc(label)}</text>`;
+        g+=`<rect x="${x}" y="520" width="180" height="54" rx="6" fill="${BODY}" stroke="${EDGE}" stroke-width="2"/>`;
+        g+=rj45(rjX,538,true)+hdmi(hdmiX,540,true)+hdmi(hdmiX+26,540,false);
+        g+=`<rect x="${x+106}" y="541" width="30" height="10" rx="1.5" fill="#8fd6a0" stroke="#5da873"/>`;
+        g+=`<circle class="rt-psu-led" cx="${ledX}" cy="531" r="3.4" fill="#34C759"/><circle class="rt-psu-led" cx="${ledX+10}" cy="531" r="3.4" fill="#34C759" style="animation-delay:.6s"/>`;
+        g+=`<text x="${noteX}" y="592" font-size="9.5" fill="${SUB}">${svgEsc(sub)}</text>`;
+        return g;
+      };
+      body+=ctr(110,'Tx · 송신기','전원 어댑터 불필요 · POH가 CAT로 전원 공급',txRj[0],160,270,182);
+      body+=ctr(710,'Rx · 수신기','전원 어댑터 불필요 · COS100이 CAT로 전원 공급',rxRj[0],744,724,766);
+      body+=monitorIcon(60,618,'소스 기기')+monitorIcon(940,618,'디스플레이');
+      // ---- 케이블 이름표 ----
+      body+=pill(250,196,'CAT · 신호',COLOR_COPPER);
+      body+=pill(80,448,'CAT · 신호+전원',COLOR_COPPER);
+      body+=pill(930,300,'CAT · 신호+전원',COLOR_COPPER);
+      body+=pill(610,262,'2핀 전원선',COLOR_POWER);
+      body+=pill(128,640,'HDMI',COLOR_IN)+pill(848,640,'HDMI',COLOR_OUT);
       const ac=(item.specifications||[]).find(spec=>spec.name==='전원');
-      body+=`<text x="${width/2}" y="${r2+boxH/2+44}" text-anchor="middle" font-size="10" fill="#687386">XDM-PSU 1대 = 모듈 16칸(POH·PHX를 섞어 장착)${ac?` · 본체 전원 ${svgEsc(ac.value)}`:''}</text>`;
-      body+=`<text x="${width/2}" y="${r2+boxH/2+62}" text-anchor="middle" font-size="10" fill="#687386">XDM-CIS100·COS100 카드 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다</text>`;
-      return diagramWrap(body,width,height,[[COLOR_IN,'입력'],[COLOR_COPPER,'HDBaseT(CATx)'],[COLOR_POWER,'전원'],[COLOR_OUT,'출력']]);
+      body+=`<text x="${width/2}" y="440" text-anchor="middle" font-size="10" fill="${SUB}">XDM-PSU 1대 = 모듈 16칸(POH·PHX를 섞어 장착) · POH 1개 = CTR100 Tx 1대 · PHX 1개 = COS100 1장${ac?` · 본체 전원 ${svgEsc(ac.value)}`:''}</text>`;
+      body+=`<text x="${width/2}" y="456" text-anchor="middle" font-size="10" fill="${SUB}">XDM-CIS100·COS100 카드 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다</text>`;
+      // 0.99: XDM-PSU만 그림이 커서 "크게 보기"(전체 화면 확대 창)를 둔다(사용자 요청 2026-09-28 "xdm-psu만 03 Singal flow 확대해서 볼 수 있게해줘"). 그림을 눌러도 열린다.
+      return `<div class="rt-flow-zoom-bar"><button type="button" class="rt-pg-btn" data-flow-zoom>⤢ 크게 보기</button></div>`+diagramWrap(`<g class="rt-psu-anim">${body}</g>`,width,height,[[COLOR_IN,'입력(HDMI)'],[COLOR_COPPER,'HDBaseT 신호(CATx)'],[COLOR_POWER,'전원'],[COLOR_OUT,'출력(HDMI)']]);
     }
     function extenderDiagram(item){
       const io=item.io||[];
@@ -479,10 +526,13 @@
     function docButtons(item){
       const order=Object.keys(DOC_LABEL);
       return (item.documents||[]).filter(doc=>doc.file&&DOC_LABEL[doc.type]).sort((a,b)=>order.indexOf(a.type)-order.indexOf(b.type)).map(doc=>{
-        const label=doc.label||DOC_LABEL[doc.type],title=esc(doc.title||label),href=docFile(doc.file);
-        return `<span class="rt-pg-doc" data-doc="${esc(doc.type)}"><a class="rt-pg-doc-open" href="${href}" target="_blank" rel="noopener" title="${title} · 새 탭에서 보기">${esc(label)} PDF</a><a class="rt-pg-doc-save" href="${href}" download="${esc(doc.file)}" title="${title} · 내려받기" aria-label="${esc(label)} 내려받기">${DOWNLOAD_ICON}</a></span>`;
+        // page가 있으면(전체 카탈로그 공용 파일, 0.95) 새 탭은 그 쪽에서 열고(#page=N, 아이폰 Safari는 1쪽부터 열릴 수 있음), 내려받기는 파일 전체를 받는다.
+        const label=doc.label||DOC_LABEL[doc.type],pageNote=doc.page?` ${doc.page}쪽`:'',title=esc(`${doc.title||label}${pageNote}`),href=docFile(doc.file);
+        return `<span class="rt-pg-doc" data-doc="${esc(doc.type)}"><a class="rt-pg-doc-open" href="${href}${doc.page?`#page=${doc.page}`:''}" target="_blank" rel="noopener" title="${title} · 새 탭에서 보기">${esc(label)} PDF${doc.page?` <small>${doc.page}쪽</small>`:''}</a><a class="rt-pg-doc-save" href="${href}" download="${esc(doc.file)}" title="${title} · 내려받기(전체 파일)" aria-label="${esc(label)} 내려받기">${DOWNLOAD_ICON}</a></span>`;
       }).join('');
     }
+    // 제품 목록 화면의 "전체 카탈로그" 버튼(0.95): 링크 하나로 카탈로그 전체를 공유한다.
+    const FULL_CATALOG={type:'Catalog',title:'알티컴 종합 카탈로그 2026 (국문 46쪽)',label:'전체 카탈로그',file:'rtcom-catalog-2026.pdf'};
     function headerBlock({icon,title,subtitle,back,diagram,cta,docs='',print=true}){
       return `<header class="rt-pg-top"><div class="rt-pg-brandmark"><div class="rt-pg-swatch">${icon}</div><div class="rt-pg-title"><h1 id="rt-pg-title">${title}</h1><p class="rt-pg-sub">${subtitle}</p></div></div>
       <div class="rt-pg-toolbar">${back?`<a class="rt-pg-btn" href="#products">← 제품 목록</a>`:''}${docs}${diagram?`<button type="button" class="rt-pg-btn" data-open-diagram>제조사 원본 다이어그램</button>`:''}${print?`<button type="button" class="rt-pg-btn" data-print>인쇄 / PDF</button>`:''}${cta||''}</div></header>`;
@@ -490,7 +540,7 @@
     function listView(){
       const items=index.products.filter(matches);
       const counts=Object.fromEntries(groups.map(([id])=>[id,id==='all'?index.products.length:index.products.filter(item=>item.group===id).length]));
-      return `${headerBlock({icon:GROUP_ICON.series,title:'알티컴 제품정보',subtitle:'RTCOM PRODUCTS · 매트릭스·분배기·전송기·케이블',back:false,print:false})}
+      return `${headerBlock({icon:GROUP_ICON.series,title:'알티컴 제품정보',subtitle:'RTCOM PRODUCTS · 매트릭스·분배기·전송기·케이블',back:false,print:false,docs:docButtons({documents:[FULL_CATALOG]})})}
       <section class="rt-pg-card"><div class="rt-pg-tools"><div class="rt-pg-seg" role="group" aria-label="제품 분류">${groups.map(([id,label])=>`<span data-product-filter="${id}" role="button" tabindex="0" aria-pressed="${filter===id}" class="${filter===id?'rt-pg-on':''}">${label} (${counts[id]})</span>`).join('')}</div><label class="rt-pg-search"><span class="rt-visually-hidden">제품 검색</span><input type="search" data-product-search placeholder="모델명·기능 검색 (예: HDMI, 광, 4K)" value="${esc(query)}"></label></div>
       <p class="rt-pg-count" role="status">${items.length}개 제품</p>
       ${items.length?`<ul class="rt-pg-grid">${items.map(item=>`<li><a class="rt-pg-gridcard" href="#products/${item.id}"><span class="rt-pg-photo">${item.cardImage?`<img src="${image(item.cardImage)}" alt="" loading="lazy">`:'<span aria-hidden="true">RTCOM</span>'}</span><span class="rt-pg-body"><span class="rt-pg-group">${esc(groupLabel[item.group])}</span><strong>${noBreak(item.productName)}</strong><span class="rt-pg-card-lead">${esc(item.lead?firstSentence(item.lead).replace(/\*\*/g,''):item.korean)}</span>${reviewBadge(item)}</span></a></li>`).join('')}</ul>`:'<p class="rt-pg-empty">조건에 맞는 제품이 없습니다. 검색어를 지우거나 다른 분류를 선택하세요.</p>'}</section>`;
@@ -560,8 +610,13 @@
     function layoutShapeSvg(name){
       const cells=LAYOUT_SHAPES[String(name||'').trim().toUpperCase()];
       if(!cells)return '<div class="rt-pg-layout-missing">도해 준비 중</div>';
+      // 칸들을 다 모아도 캔버스(0~100) 가장자리를 채우지 못하면 매뉴얼처럼 나머지를 레터박스(검은 막대)로 보여준다.
+      // (QMS-88UX "8분할(16:9 비율)"처럼 비율을 유지하려고 위·아래를 비우는 레이아웃, 매뉴얼 KV.04 23쪽 Output Option 5·6 예시 근거)
+      const minX=Math.min(...cells.map(c=>c[1])),minY=Math.min(...cells.map(c=>c[2]));
+      const maxX=Math.max(...cells.map(c=>c[1]+c[3])),maxY=Math.max(...cells.map(c=>c[2]+c[4]));
+      const letterbox=minX>0.5||minY>0.5||maxX<99.5||maxY<99.5;
       const rects=cells.map(([n,x,y,w,h])=>`<g><rect x="${x}" y="${y}" width="${w}" height="${h}"/><text x="${x+w/2}" y="${y+h/2}">${n}</text></g>`).join('');
-      return `<svg viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label="${esc(name)} 화면 구성">${rects}</svg>`;
+      return `<svg viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label="${esc(name)} 화면 구성">${letterbox?'<rect class="rt-pg-layout-letterbox" x="0" y="0" width="100" height="100"/>':''}${rects}</svg>`;
     }
     function videoModesSection(item){
       const vm=item.videoModes;
@@ -870,6 +925,12 @@
       if(sideBtn){const seg=sideBtn.closest('.rt-pg-seg'),scope=seg?.parentElement;if(scope){seg.querySelectorAll('[data-pm-side]').forEach(btn=>{const on=btn===sideBtn;btn.classList.toggle('rt-pg-on',on);btn.setAttribute('aria-pressed',String(on))});scope.querySelectorAll('[data-pm-face]').forEach(el=>{el.hidden=el.dataset.pmFace!==sideBtn.dataset.pmSide})}return}
       const diagramBtn=event.target.closest('[data-open-diagram]');
       if(diagramBtn){const record=body.querySelector('.rt-pg-record');if(record){record.open=true;record.querySelector('#rt-pg-diagram-photo')?.scrollIntoView({behavior:'smooth',block:'start'})}return}
+      // 0.99 XDM-PSU Signal Flow 확대 창: 그림을 복사해 전체 화면 창에 넣고 100%(화면 폭 맞춤)~300%로 키운다. 창 안에서 스크롤·손가락으로 옮겨 본다.
+      const flowZoom=event.target.closest('[data-flow-zoom]')||(event.target.closest('.rt-pg-svg-wrap')?.querySelector('.rt-psu-anim')&&event.target.closest('.rt-pg-svg-wrap'));
+      if(flowZoom){openFlowZoom(flowZoom.closest('section'));return}
+      const zoomStep=event.target.closest('[data-zoom-step]');
+      if(zoomStep){const dlg=zoomStep.closest('dialog');setFlowZoom(dlg,Number(dlg.dataset.zoom)+Number(zoomStep.dataset.zoomStep));return}
+      if(event.target.closest('[data-zoom-close]')){event.target.closest('dialog').close();return}
       const moreBtn=event.target.closest('[data-more-features]');
       if(moreBtn){const more=body.querySelector('[data-feature-more]');if(more){more.hidden=false;moreBtn.hidden=true}return}
       const layoutChip=event.target.closest('[data-layout-chip]');
@@ -883,6 +944,30 @@
         return;
       }
     });
+    const FLOW_ZOOMS=[1,1.5,2,3];
+    function setFlowZoom(dlg,index){
+      const i=Math.max(0,Math.min(FLOW_ZOOMS.length-1,index));
+      dlg.dataset.zoom=String(i);
+      dlg.querySelector('.rt-flow-zoom-canvas').style.width=`${FLOW_ZOOMS[i]*100}%`;
+      dlg.querySelector('[data-zoom-level]').textContent=`${FLOW_ZOOMS[i]*100}%`;
+      dlg.querySelector('[data-zoom-step="-1"]').disabled=i===0;
+      dlg.querySelector('[data-zoom-step="1"]').disabled=i===FLOW_ZOOMS.length-1;
+    }
+    function openFlowZoom(section){
+      const svg=section?.querySelector('.rt-pg-svg-wrap svg');
+      if(!svg)return;
+      let dlg=body.querySelector('dialog.rt-flow-zoom');
+      if(!dlg){
+        dlg=document.createElement('dialog');dlg.className='rt-flow-zoom';dlg.setAttribute('aria-label','Signal Flow 크게 보기');
+        dlg.addEventListener('click',event=>{if(event.target===dlg)dlg.close()});
+        body.appendChild(dlg);
+      }
+      const title=body.querySelector('#rt-pg-title')?.textContent||'';
+      dlg.innerHTML=`<div class="rt-flow-zoom-head"><b>${esc(title)} · 03 Signal Flow</b><div class="rt-flow-zoom-tools"><button type="button" data-zoom-step="-1" aria-label="축소">−</button><span data-zoom-level aria-live="polite">100%</span><button type="button" data-zoom-step="1" aria-label="확대">+</button><button type="button" class="rt-flow-zoom-close" data-zoom-close aria-label="닫기">×</button></div></div><div class="rt-flow-zoom-body"><div class="rt-flow-zoom-canvas">${svg.outerHTML}</div></div>`;
+      setFlowZoom(dlg,0);
+      if(typeof dlg.showModal==='function')dlg.showModal();else dlg.setAttribute('open','');
+      dlg.querySelector('[data-zoom-step="1"]').focus();
+    }
     body.addEventListener('keydown',event=>{
       const filterBtn=event.target.closest('[data-product-filter]');
       if(filterBtn&&(event.key==='Enter'||event.key===' ')){event.preventDefault();filterBtn.click()}
