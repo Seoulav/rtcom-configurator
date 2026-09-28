@@ -4,6 +4,8 @@
 
 ## Unreleased
 
+- **input_doc 첫 정리와 VDM 카드 사양 보완**(사용자 요청 "폴더 안에 자료 들어가 있으니까 점검해서 작업 진행해봐"): `input_doc/`의 매뉴얼 20권과 사양서 캡처 1장을 `input_doc/RTCOM/manual|sheet/`로 규칙 이름을 붙여 옮기고 `INDEX.md`에 기록했습니다. 구성기 카드 정보에서 "상세 사양 준비 중"이던 VDM HOS4-U에 VDM 국문 매뉴얼 KV07 30쪽 사양(포트·커넥터·규격·해상도·오디오·HDCP·무게)을 넣고, CIS4-U·COS4-U·QOS4S-U에 KV07 값(지원 케이블, 최대 전송거리 100m, HDCP, 무게)을 더했습니다. 카드 정보 출처 줄은 카탈로그 쪽과 매뉴얼 쪽을 함께 보여 줍니다. `scripts/input_doc.py`는 Windows에서 출력 인코딩 오류·모델명 인식 실패를 고치고 pypdf가 없을 때 `pdftotext`로 읽습니다. HOS4S-UW 해상도(카탈로그와 매뉴얼 불일치)는 사용자 확인 전까지 바꾸지 않았습니다. 근거: `docs/qa/INPUT_DOC_INTAKE_2026-09-28.md`.
+
 ## 0.81.0
 
 - **로컬 작업 환경과 input_doc 자료 자동 분류**(사용자 요청 "로컬 클론해서 작업할 수 있도록 환경을 만들자… root에 input_doc 폴더… 제조사 폴더를 만들어서 분류하고, 내용을 읽어서 제목을 바꾸고… 알아서 작업"): `DEVICE_WORKFLOW.md`를 현재 저장소(Seoulav)·Claude Code 기준 로컬 설치 안내로 다시 썼습니다. `.gitattributes`(Windows에서도 LF), `.claude/settings.json`(세션 시작 시 `input_doc` 새 자료 알림 hook, 검증 명령 허용, force push·`reset --hard`·`clean`·main 직접 push 거부), `.claude/skills/input-doc/SKILL.md`(분류·이름 변경·반영 절차), `scripts/input-doc-status.cjs`(새 자료 알림), `scripts/input_doc.py`(자료 읽기·추정, 규칙 이름으로 이동·`INDEX.md` 기록, 중복은 `_duplicates/`)를 추가했습니다. `input_doc/`는 README만 Git에 올라가며, 공개 PDF 커밋은 목록을 보여 주고 확인을 받은 뒤에만 합니다. 근거: `docs/implementation/LOCAL_INPUT_DOC_WORKFLOW.md`.

@@ -163,7 +163,8 @@ test('every matrix card has a detail entry in card-specs.js sourced from the cat
   for(const id of ids){
     const entry=specs[id];
     if(entry.page)assert.ok(entry.specs.length>0,`${id} has a catalog page but no specs`);
-    else assert.ok(entry.missing,`${id} without a catalog page must say which material is missing`);
+    else if(entry.source)assert.ok(entry.specs.length>0&&!entry.missing,`${id} sourced from a manual must list specs and drop missing`);
+    else assert.ok(entry.missing,`${id} without a catalog page or manual source must say which material is missing`);
     assert.doesNotMatch(JSON.stringify(entry),/up to/i,`${id} must use "최대" instead of "up to" (0.39 표기 규칙)`);
   }
   const app=read('src/app.js');
