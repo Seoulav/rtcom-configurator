@@ -88,6 +88,8 @@ function validate(product,file,ids){
     if(map&&'file' in map&&!(product.images||[]).some(image=>image.file===map.file&&image.role===map.image))fail(`portMap.file(${map.file})이 역할 ${map.image}인 images에 없음`);
     if('note' in (map||{})&&(typeof map.note!=='string'||!map.note))fail('portMap.note는 비어 있지 않은 문자열이어야 함');
     if('title' in (map||{})&&(typeof map.title!=='string'||!map.title))fail('portMap.title은 비어 있지 않은 문자열이어야 함');
+    // 0.105 portMap.basis: 02 Port Map 제목 옆 기준 문구(기본 "실제 제품 사진 기준"). 사진 대신 그림을 쓰는 제품(XDM-PSU)만 적는다.
+    if('basis' in (map||{})&&(typeof map.basis!=='string'||!map.basis))fail('portMap.basis는 비어 있지 않은 문자열이어야 함');
     if('displayWidth' in (map||{})&&(typeof map.displayWidth!=='number'||map.displayWidth<240||map.displayWidth>760))fail('portMap.displayWidth는 240~760 사이 숫자여야 함');
     if(maps.length>1&&!map?.title)fail('portMap이 여러 장이면 각 장에 title(예: "송신기 CT104-U")이 있어야 함');
     // 번호 규칙(사용자 요청 2026-09-27, 모든 제품 동일): HDMI 입력 → HDMI 출력 → 오디오 → 전송 → 제어 → 표시·조작 → 전원(마지막).
