@@ -4,6 +4,8 @@
 
 ## Unreleased
 
+## 0.81.0
+
 - **로컬 작업 환경과 input_doc 자료 자동 분류**(사용자 요청 "로컬 클론해서 작업할 수 있도록 환경을 만들자… root에 input_doc 폴더… 제조사 폴더를 만들어서 분류하고, 내용을 읽어서 제목을 바꾸고… 알아서 작업"): `DEVICE_WORKFLOW.md`를 현재 저장소(Seoulav)·Claude Code 기준 로컬 설치 안내로 다시 썼습니다. `.gitattributes`(Windows에서도 LF), `.claude/settings.json`(세션 시작 시 `input_doc` 새 자료 알림 hook, 검증 명령 허용, force push·`reset --hard`·`clean`·main 직접 push 거부), `.claude/skills/input-doc/SKILL.md`(분류·이름 변경·반영 절차), `scripts/input-doc-status.cjs`(새 자료 알림), `scripts/input_doc.py`(자료 읽기·추정, 규칙 이름으로 이동·`INDEX.md` 기록, 중복은 `_duplicates/`)를 추가했습니다. `input_doc/`는 README만 Git에 올라가며, 공개 PDF 커밋은 목록을 보여 주고 확인을 받은 뒤에만 합니다. 근거: `docs/implementation/LOCAL_INPUT_DOC_WORKFLOW.md`.
 
 ## 0.79.0
