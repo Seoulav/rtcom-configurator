@@ -52,6 +52,9 @@ test('every XDM card and documented rear photo has an image asset',()=>{
   // 0.111: 실물 사진이 없는 VDM 전면 7종·후면 8종은 scripts/tools/draw_vdm_frames.cjs 평면 그림(-art)을 쓰고, 실물 사진(16X 전면·후면, 48X 전면)은 그대로 둔다.
   const vdmArt=[...read('src/app.js').matchAll(/frames\/(vdm-\d+x-(?:front|rear))-art\.webp/g)].map(match=>match[1]).sort();
   assert.deepEqual(vdmArt,[...['8x','32x','64x','80x','128x','180x','256x'].map(m=>`vdm-${m}-front`),...['8x','32x','48x','64x','80x','128x','180x','256x'].map(m=>`vdm-${m}-rear`)].sort());
+  // 0.113: XDM·SPX 후면(구성기 03 카드 슬롯)도 scripts/tools/draw_xdm_spx_rear_frames.cjs 평면 그림을 쓴다(XDM-216 포함 11종).
+  const rearArt=[...read('src/app.js').matchAll(/frames\/((?:xdm|spx)-[a-z0-9]+)-rear-art\.webp/g)].map(match=>match[1]).sort();
+  assert.deepEqual(rearArt,['spx-m1620','spx-m24120','spx-m2472','spx-m3236','spx-m810','xdm-12','xdm-144','xdm-20','xdm-216','xdm-36','xdm-72']);
   for(const photo of ['vdm-16x-front','vdm-16x-rear','vdm-48x-front'])assert.ok(read('src/app.js').includes(`frames/${photo}.webp'`),`${photo} keeps the real photo`);
   for(const model of ['m810','m1620','m3236','m2472','m24120'])for(const side of ['front','rear'])assert.ok(fs.existsSync(`output/design/assets/frames/spx-${model}-${side}.webp`),`missing SPX ${model} ${side} photo`);
   for(const card of [...catalog.SPX.input,...catalog.SPX.output])assert.ok(fs.existsSync(`output/design/assets/cards/${card[0]}.webp`),`missing SPX faceplate for ${card[0]}`);
@@ -70,9 +73,9 @@ test('rear photo slot zones stay inside each photo and match the card faceplate 
   const literal=source.slice(source.indexOf('const rearPhotos=')+'const rearPhotos='.length,source.indexOf('};',source.indexOf('const rearPhotos='))+1);
   const rearPhotos=new Function('SPX_MANUAL','VDM_MANUAL',`return ${literal}`)('SPX 국문 사용자 매뉴얼(250805)','VDM 국문 매뉴얼 KV07');
   const catalog=loadCatalog();
-  assert.deepEqual(Object.keys(rearPhotos),['XDM-12','XDM-20','XDM-36','XDM-72','XDM-144','VDM-16X','VDM-8X','VDM-32X','VDM-48X','VDM-64X','VDM-80X','VDM-128X','VDM-180X','VDM-256X','SPX-M810','SPX-M1620','SPX-M3236','SPX-M2472','SPX-M24120']);
+  assert.deepEqual(Object.keys(rearPhotos),['XDM-12','XDM-20','XDM-36','XDM-72','XDM-144','XDM-216','VDM-16X','VDM-8X','VDM-32X','VDM-48X','VDM-64X','VDM-80X','VDM-128X','VDM-180X','VDM-256X','SPX-M810','SPX-M1620','SPX-M3236','SPX-M2472','SPX-M24120']);
   // [입력 슬롯, 출력 슬롯, 열 수(입력, 출력), 가로 판넬 여부]
-  const layout={'XDM-12':[3,3,[1,1],true],'XDM-20':[5,5,[5,5]],'XDM-36':[9,9,[9,9]],'XDM-72':[18,18,[18,18]],'XDM-144':[36,36,[18,18]],'VDM-16X':[4,4,[4,4]],
+  const layout={'XDM-12':[3,3,[1,1],true],'XDM-20':[5,5,[5,5]],'XDM-36':[9,9,[9,9]],'XDM-72':[18,18,[18,18]],'XDM-144':[36,36,[18,18]],'XDM-216':[54,54,[18,18]],'VDM-16X':[4,4,[4,4]],
     'VDM-8X':[2,2,[1,1],true],'VDM-32X':[8,8,[4,4]],'VDM-48X':[12,12,[4,4]],'VDM-64X':[16,16,[4,4]],'VDM-80X':[20,20,[11,11]],'VDM-128X':[32,32,[11,11]],'VDM-180X':[45,45,[15,15]],'VDM-256X':[64,64,[11,11]],
     'SPX-M810':[1,1,[1,1],true],'SPX-M1620':[2,2,[1,1],true],'SPX-M3236':[4,3,[1,1],true],'SPX-M2472':[3,6,[3,6]],'SPX-M24120':[3,10,[3,10]]};
   const faceplateRatio={XDM:9.7,VDM:5.7,SPX:13.8};

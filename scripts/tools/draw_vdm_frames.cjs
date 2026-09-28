@@ -8,6 +8,7 @@
 //   오디오 매트릭스 라우터(5핀 피닉스), 통신 단자(HDMI·LAN·REMOTE·FIRMWARE), 전원 포트(1.5 Rear View, VDM-16X 실물 사진)다.
 //   VDM-8X는 외부 DC 12V 전원(매뉴얼 2.2 VDM-8X 사양)이다.
 // 실행: NODE_PATH=$(npm root -g) node scripts/tools/draw_vdm_frames.cjs  → 임시 PNG를 만든 뒤 python(PIL)으로 webp 저장
+// 부품 함수와 render()는 XDM·SPX 후면 그림(scripts/tools/draw_xdm_spx_rear_frames.cjs)도 함께 쓴다.
 const fs=require('fs'),path=require('path'),os=require('os'),{execFileSync}=require('child_process');
 const {chromium}=require('playwright');
 const OUT='output/design/assets/frames';
@@ -233,28 +234,39 @@ function tower(W,H,o){
 }
 
 // ---------- 렌더링 ----------
+// items: {name, size:[W,H], body:()=>svg 문자열, palette?, input?, output?}. 긴 변 TARGET픽셀로 렌더링해 OUT/<name>.webp로 저장하고,
+// input·output(원래 좌표)이 있으면 같은 배율로 늘린 새 좌표를 돌려준다. palette는 그 그림에서만 C 색을 덮어쓴다(XDM·SPX 몸체 색).
 const TARGET=2000; // 긴 변 픽셀
-(async()=>{
+const BASE={...C};
+async function render(items){
   const browser=await chromium.launch({executablePath:fs.existsSync('/opt/pw-browsers/chromium')?'/opt/pw-browsers/chromium':undefined});
-  const tmp=fs.mkdtempSync(path.join(os.tmpdir(),'vdm-'));
-  const only=process.argv[2];
-  const jobs=[...Object.keys(FRONT).map(m=>[m,'front']),...Object.keys(REAR).map(m=>[m,'rear'])].filter(([m])=>!only||m===only);
+  const tmp=fs.mkdtempSync(path.join(os.tmpdir(),'frame-art-'));
   const coords={};
-  for(const [model,side] of jobs){
-    const d=side==='front'?FRONT[model]:REAR[model],[W,H]=d.size,k=TARGET/Math.max(W,H),pw=Math.round(W*k),ph=Math.round(H*k);
-    const body=side==='front'?d.draw(W,H):rear(model);
+  for(const item of items){
+    const [W,H]=item.size,k=TARGET/Math.max(W,H),pw=Math.round(W*k),ph=Math.round(H*k);
+    Object.assign(C,BASE,item.palette||{});
+    const body=item.body();
     const page=await browser.newPage({viewport:{width:pw,height:ph},deviceScaleFactor:1});
     await page.setContent(`<!doctype html><meta charset="utf-8"><style>html,body{margin:0;background:#fff}svg{display:block;font-family:Pretendard,"Apple SD Gothic Neo","Noto Sans KR",Arial,sans-serif}</style><svg xmlns="http://www.w3.org/2000/svg" width="${pw}" height="${ph}" viewBox="0 0 ${W} ${H}">${body}</svg>`);
-    const name=`${model.toLowerCase()}-${side}-art`,png=path.join(tmp,`${name}.png`);
+    const png=path.join(tmp,`${item.name}.png`);
     await page.screenshot({path:png,clip:{x:0,y:0,width:pw,height:ph}});
     await page.close();
-    execFileSync('python3',['-c',`from PIL import Image;Image.open(${JSON.stringify(png)}).convert('RGB').save(${JSON.stringify(path.join(OUT,name+'.webp'))},'WEBP',quality=90,method=6)`]);
-    console.log(`${OUT}/${name}.webp ${pw}x${ph}`);
-    if(side==='rear'){
+    execFileSync('python3',['-c',`from PIL import Image;Image.open(${JSON.stringify(png)}).convert('RGB').save(${JSON.stringify(path.join(OUT,item.name+'.webp'))},'WEBP',quality=90,method=6)`]);
+    console.log(`${OUT}/${item.name}.webp ${pw}x${ph}`);
+    if(item.input){
       const sc=r=>Array.isArray(r[0])?r.map(sc):r.map(v=>Math.round(v*k));
-      coords[model]={size:[pw,ph],input:sc(d.input),output:sc(d.output)};
+      coords[item.name]={size:[pw,ph],input:sc(item.input),output:sc(item.output)};
     }
   }
+  Object.assign(C,BASE);
   await browser.close();
   for(const [m,c] of Object.entries(coords))console.log(`${m} size:${JSON.stringify(c.size)},input:${JSON.stringify(c.input)},output:${JSON.stringify(c.output)}`);
-})();
+  return coords;
+}
+module.exports={C,f,rect,text,screw,bay,zone,filler,phoenixRow,audioRouter,rj45,hdmi,db9,usb,dcJack,controlH,controlV,iec,powerH,fan,vents,plate,chassis,handle,ear,render};
+if(require.main===module){
+  const only=process.argv[2];
+  const items=[...Object.keys(FRONT).map(m=>({name:`${m.toLowerCase()}-front-art`,size:FRONT[m].size,body:()=>FRONT[m].draw(...FRONT[m].size),model:m})),
+    ...Object.keys(REAR).map(m=>({name:`${m.toLowerCase()}-rear-art`,size:REAR[m].size,body:()=>rear(m),input:REAR[m].input,output:REAR[m].output,model:m}))].filter(item=>!only||item.model===only);
+  render(items);
+}
