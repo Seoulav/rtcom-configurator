@@ -10,6 +10,14 @@
 | Node.js 20 LTS 이상 | 테스트·검증·미리보기 서버 | `node -v` |
 | Python 3.10 이상 | `input_doc` 자료 읽기(PDF 글자 추출)·사진 가공 | `python --version` (Windows는 `py --version`도 가능) |
 | Claude Code | 로컬 AI 작업 | `claude --version` |
+| GitHub CLI (`gh`, https://cli.github.com) | Claude가 PR을 만들고 상태를 확인 | `gh auth status` |
+
+GitHub에는 한 번 로그인합니다. `Seoulav/rtcom-configurator`에 쓰기 권한이 있는 계정을 씁니다.
+
+```bash
+gh auth login        # GitHub.com → HTTPS → 브라우저 로그인
+gh auth status
+```
 
 Python 라이브러리는 한 번 설치합니다.
 
@@ -54,6 +62,9 @@ claude
   - 자주 쓰는 검증 명령은 묻지 않고 실행합니다.
   - 위험한 Git 명령(force push, `reset --hard`, `clean`, main 직접 push)은 막습니다.
 - 작업 규칙은 `CLAUDE.md`에 있습니다. Claude Code가 자동으로 읽습니다.
+- Claude 데스크톱 앱을 쓰면 Code 탭에서 새 세션을 만들 때 로컬 폴더 `C:\work\rtcom-configurator`를 지정합니다. 클라우드 세션(claude.ai/code)은 PC 폴더를 볼 수 없습니다.
+- 클라우드 세션도 같은 저장소에 작업을 올리므로, 로컬 세션은 자기 이름의 새 브랜치에서 작업합니다.
+- 첫 세션의 첫 메시지 예: "`DEVICE_WORKFLOW.md`와 `docs/qa/LOCAL_INPUT_DOC_QA_2026-09-28.md`의 '로컬 첫 실행 확인'을 진행해줘. 그다음 `input_doc` 정리해."
 
 ## 4. 자료 넣기 (input_doc)
 
