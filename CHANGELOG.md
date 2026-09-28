@@ -4,6 +4,11 @@
 
 ## Unreleased
 
+## 0.82.0
+
+- **제조사 자료 입출력 단자 표 "찌그러짐" 전수 조사·수정**(사용자 보고 "제조사 정보를 항상 열면은 표가 약간 찌그러지는 게 있는데 … 전수 조사에서 좀 깔끔하게 좀 정리해 줘", HDS-21U 화면 캡처): 방향("입력"·"출력"·"입출력")·수량(숫자) 칸이 신호·조건의 긴 문장에 밀려 좁은 화면에서 한 글자씩 줄바꿈되던 문제를 고쳤습니다. 첫 칸(분류)의 고정폭 34%를 입출력 단자 표에서만 없애 남는 폭을 나머지 칸이 쓰게 하고, 방향·수량 칸에 줄바꿈 없음을 지정했습니다. Playwright로 30개 제품 전체를 6개 화면 폭(320~1024px)에서 재서 확인했고, 재발을 막는 자동 검사를 e2e에 추가했습니다. 근거: `docs/qa/IO_TABLE_WRAP_FIX_QA_2026-09-28.md`.
+- **0.81.0 배포 기록**: `docs/qa/DEPLOYMENT_0.81_2026-09-28.md`(PR #66 → main 병합·배포 run 49, 공개 파일 224/224 일치, 비공개 파일 14개 404, 브랜치 배포 없음)
+
 ## 0.81.0
 
 - **로컬 작업 환경과 input_doc 자료 자동 분류**(사용자 요청 "로컬 클론해서 작업할 수 있도록 환경을 만들자… root에 input_doc 폴더… 제조사 폴더를 만들어서 분류하고, 내용을 읽어서 제목을 바꾸고… 알아서 작업"): `DEVICE_WORKFLOW.md`를 현재 저장소(Seoulav)·Claude Code 기준 로컬 설치 안내로 다시 썼습니다. `.gitattributes`(Windows에서도 LF), `.claude/settings.json`(세션 시작 시 `input_doc` 새 자료 알림 hook, 검증 명령 허용, force push·`reset --hard`·`clean`·main 직접 push 거부), `.claude/skills/input-doc/SKILL.md`(분류·이름 변경·반영 절차), `scripts/input-doc-status.cjs`(새 자료 알림), `scripts/input_doc.py`(자료 읽기·추정, 규칙 이름으로 이동·`INDEX.md` 기록, 중복은 `_duplicates/`)를 추가했습니다. `input_doc/`는 README만 Git에 올라가며, 공개 PDF 커밋은 목록을 보여 주고 확인을 받은 뒤에만 합니다. 근거: `docs/implementation/LOCAL_INPUT_DOC_WORKFLOW.md`.
