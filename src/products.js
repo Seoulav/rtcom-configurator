@@ -289,6 +289,37 @@
       if(label)bodyMarkup+=`<text x="${width/2}" y="${midY-38}" text-anchor="middle" font-size="11" font-weight="700" fill="#687386">${svgEsc(label)}</text>`;
       return diagramWrap(bodyMarkup,width,height,[[COLOR_IN,'입력'],[COLOR_OUT,'출력']]);
     }
+    // XDM-PSU "03 Signal Flow"(사용자 요청 2026-09-28 "xdm-psu제품에도 signal flow개념을 그려줘"). PSU에는 HDMI 입출력이 없어
+    // extenderDiagram이 그리지 못한다. 제품 데이터(overview·io)에 적힌 연결만 그린다: POH는 CIS100 ↔ CTR100(Tx) CAT 사이에 끼워
+    // CTR100에 전원을 싣고, PHX는 2핀 전원선으로 COS100에 전원을 넣어 COS100이 CAT로 CTR100(Rx)에 전원을 함께 보낸다.
+    const COLOR_POWER='#FF9500';
+    function psuDiagram(item){
+      const width=980,height=430,boxW=160,boxH=70;
+      const cable=(x1,x2,y,label)=>`<path d="M${x1} ${y}L${x2} ${y}" stroke="${COLOR_COPPER}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/><text x="${(x1+x2)/2}" y="${y-12}" text-anchor="middle" font-size="10" font-weight="700" fill="${COLOR_COPPER}">${svgEsc(label)}</text>`;
+      const power=(x1,x2,y,label)=>arrow(x1,y,x2,y,COLOR_POWER).replace('stroke-width="2.5"','stroke-width="2.5" stroke-dasharray="3 4"')+`<text x="${(x1+x2)/2}" y="${y+16}" text-anchor="middle" font-size="10" font-weight="700" fill="${COLOR_POWER}">${svgEsc(label)}</text>`;
+      // 조합 1: 입력 경로(XDM-POH)
+      const r1=110,srcX=50,txX=120,pohX=430,cisX=760;
+      let body=`<text x="${width/2}" y="34" text-anchor="middle" font-size="11" font-weight="700" fill="#687386">입력 경로 · XDM-POH 모듈(XDM-CTR100 Tx 1대당 1개)</text>`;
+      body+=monitorIcon(srcX,r1,'소스 기기')+arrow(srcX+24,r1,txX-6,r1,COLOR_IN);
+      body+=deviceBox(txX,r1-boxH/2,boxW,boxH,'XDM-CTR100','TX · 전원 어댑터 불필요');
+      body+=cable(txX+boxW,pohX,r1-8,'CAT · 신호+전원');
+      body+=power(pohX-4,txX+boxW+6,r1+10,'전원 공급');
+      body+=deviceBox(pohX,r1-boxH/2,boxW+20,boxH,'XDM-PSU · POH','RJ45 Extender ↔ CIS Card');
+      body+=cable(pohX+boxW+20,cisX,r1,'CAT · 신호')+deviceBox(cisX,r1-boxH/2,boxW,boxH,'XDM-CIS100','입력 카드(HDBaseT)');
+      // 조합 2: 출력 경로(XDM-PHX)
+      const r2=290,phxX=40,cosX=300,rxX=560,dstX=920;
+      body+=`<text x="${width/2}" y="${r2-76}" text-anchor="middle" font-size="11" font-weight="700" fill="#687386">출력 경로 · XDM-PHX 모듈(XDM-COS100 카드 1장당 1개)</text>`;
+      body+=deviceBox(phxX,r2-boxH/2,boxW+10,boxH,'XDM-PSU · PHX','2핀 전원 단자(+/−)');
+      body+=power(phxX+boxW+10,cosX-6,r2,'2핀 전원선');
+      body+=deviceBox(cosX,r2-boxH/2,boxW,boxH,'XDM-COS100','출력 카드(HDBaseT)');
+      body+=cable(cosX+boxW,rxX,r2,'CAT · 신호+전원');
+      body+=deviceBox(rxX,r2-boxH/2,boxW,boxH,'XDM-CTR100','RX · 전원 어댑터 불필요');
+      body+=arrow(rxX+boxW+6,r2,dstX-24,r2,COLOR_OUT)+monitorIcon(dstX,r2,'디스플레이');
+      const ac=(item.specifications||[]).find(spec=>spec.name==='전원');
+      body+=`<text x="${width/2}" y="${r2+boxH/2+44}" text-anchor="middle" font-size="10" fill="#687386">XDM-PSU 1대 = 모듈 16칸(POH·PHX를 섞어 장착)${ac?` · 본체 전원 ${svgEsc(ac.value)}`:''}</text>`;
+      body+=`<text x="${width/2}" y="${r2+boxH/2+62}" text-anchor="middle" font-size="10" fill="#687386">XDM-CIS100·COS100 카드 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다</text>`;
+      return diagramWrap(body,width,height,[[COLOR_IN,'입력'],[COLOR_COPPER,'HDBaseT(CATx)'],[COLOR_POWER,'전원'],[COLOR_OUT,'출력']]);
+    }
     function extenderDiagram(item){
       const io=item.io||[];
       if(!io.length)return null;
@@ -374,6 +405,7 @@
     function connectionDiagram(item){
       if(item.group==='cable')return cableDiagram(item);
       if(item.group==='distribution'||item.group==='integrated')return ioFlowDiagram(item);
+      if(item.id==='xdm-psu')return psuDiagram(item);
       if(item.group==='extender')return extenderDiagram(item);
       return null;
     }
