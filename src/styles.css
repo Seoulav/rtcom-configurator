@@ -1033,3 +1033,10 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-ext-chip small{max-width:230px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:11px;color:var(--rt-muted,#8a8a8e)}
 #rtcom-design .rt-ext-chip[aria-pressed="true"]{border-color:#007AFF;background:#eef5ff;box-shadow:0 0 0 2px rgba(0,122,255,.18)}
 #rtcom-design .rt-ext-chip:focus-visible{outline:2px solid #007AFF;outline-offset:2px}
+/* 0.118 카드 팝업 전송기 수량(카드 1장당). "연결 안 함"이면 흐리게. */
+#rtcom-design .rt-card-choice-ext-qty{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px 12px;margin-top:10px}
+#rtcom-design .rt-card-choice-ext-qty>span{font-size:12px;font-weight:800;color:var(--rt-ink)}
+#rtcom-design .rt-card-choice-ext-qty>span small{margin-left:6px;font-weight:600;color:var(--rt-muted,#8a8a8e)}
+#rtcom-design .rt-card-choice-ext-qty .rt-card-qty-stepper button{width:30px;height:30px;font-size:16px}
+#rtcom-design .rt-card-choice-ext-qty .rt-card-qty-stepper output{min-width:30px;font-size:15px}
+#rtcom-design .rt-card-choice-ext-qty[data-off]{opacity:.45}
