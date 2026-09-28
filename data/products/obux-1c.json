@@ -36,14 +36,26 @@
     {
       "role": "Other",
       "file": "obux-1c-perspective.webp",
-      "alt": "RTCOM OBUX-1C 수신기(RX) 상판과 양쪽 단자면",
-      "note": "Other · RX 카탈로그 42쪽 사진",
+      "alt": "RTCOM OBUX-1C 수신기(RX) 후면 단자면(흰 배경 실물 사진)",
+      "note": "Other · 사용자 제공 실물 사진(2026-09-28, RX 후면)",
       "provider": "RTCOM",
-      "model": "OBUX-1C",
-      "source": "C",
+      "model": "OBUX-1C Rx",
+      "source": "P1",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "1080×352"
+      "resolution": "1026×328"
+    },
+    {
+      "role": "Front",
+      "file": "obux-1c-rx-front.webp",
+      "alt": "RTCOM OBUX-1C 수신기(RX) 정면(흰 배경 실물 사진)",
+      "note": "Front · 사용자 제공 실물 사진(2026-09-28, RX 정면)",
+      "provider": "RTCOM",
+      "model": "OBUX-1C Rx",
+      "source": "P1",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "1034×320"
     }
   ],
   "imageStatuses": [
@@ -53,7 +65,7 @@
     },
     {
       "role": "Front",
-      "status": "MISSING"
+      "status": "FOUND"
     },
     {
       "role": "Rear",
@@ -329,37 +341,37 @@
           "n": 4,
           "label": "+12V",
           "desc": "전원 어댑터 12V 1A",
-          "x1": 676,
-          "x2": 709,
+          "x1": 150,
+          "x2": 220,
           "side": "bottom",
-          "y": 309
+          "y": 288
         },
         {
           "n": 2,
           "label": "Audio OUT",
           "desc": "3핀 터미널(L·접지·R) · 아날로그 오디오 추출",
-          "x1": 794,
-          "x2": 836,
+          "x1": 415,
+          "x2": 505,
           "side": "bottom",
-          "y": 309
+          "y": 288
         },
         {
           "n": 1,
           "label": "HDMI OUT",
           "desc": "디스플레이 연결",
-          "x1": 858,
-          "x2": 913,
+          "x1": 565,
+          "x2": 695,
           "side": "bottom",
-          "y": 309
+          "y": 288
         },
         {
           "n": 3,
           "label": "Fiber IN",
           "desc": "SC 광 단자 · 송신기와 연결",
-          "x1": 964,
-          "x2": 1012,
+          "x1": 815,
+          "x2": 905,
           "side": "bottom",
-          "y": 309
+          "y": 288
         }
       ]
     }
@@ -388,6 +400,12 @@
       "name": "OBUX-1C 사용자 매뉴얼 Ver.2.2",
       "page": "4–10",
       "scope": "제조사 공식 출처(사용자 제공 2026-09-27, .source-materials/RTcom_Manual_OBUX-1C_Ver2.2.pdf)"
+    },
+    {
+      "code": "P1",
+      "name": "서울영상테크 SI사업본부 제공 실물 사진",
+      "page": "",
+      "scope": "사용자 업로드 고해상도 제품 사진(2026-09-28, 흰 배경 촬영본, OBUX-1C Rx 정면·후면)"
     }
   ],
   "issues": [],
