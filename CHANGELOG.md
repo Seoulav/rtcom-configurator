@@ -4,6 +4,10 @@
 
 ## Unreleased
 
+## 0.82.0
+
+- **송신기·수신기 라벨 색상 구분**(사용자 요청 2026-09-28 "색깔을 줘서 구분할 수 있게", FT103-U-H·FR103-U 화면 캡처): 송신기·수신기 사진이 짝으로 나오는 9종(18곳: XDM-FT101/FR101 계열 4쌍, CT/CR·FT/FR 3쌍, OBUX-1C·OBHD-2C·SPX-TX/RX)의 "송신기 ○○" · "수신기 ○○" 라벨을, 구성기 슬롯 번호표와 같은 입력 파랑(#007AFF)·출력 주황(#E8590C) 배경으로 구분했습니다. 정면·후면 전환 버튼(같은 CSS 클래스를 쓰는 다른 화면)은 그대로 흰 배경입니다.
+
 ## 0.81.0
 
 - **로컬 작업 환경과 input_doc 자료 자동 분류**(사용자 요청 "로컬 클론해서 작업할 수 있도록 환경을 만들자… root에 input_doc 폴더… 제조사 폴더를 만들어서 분류하고, 내용을 읽어서 제목을 바꾸고… 알아서 작업"): `DEVICE_WORKFLOW.md`를 현재 저장소(Seoulav)·Claude Code 기준 로컬 설치 안내로 다시 썼습니다. `.gitattributes`(Windows에서도 LF), `.claude/settings.json`(세션 시작 시 `input_doc` 새 자료 알림 hook, 검증 명령 허용, force push·`reset --hard`·`clean`·main 직접 push 거부), `.claude/skills/input-doc/SKILL.md`(분류·이름 변경·반영 절차), `scripts/input-doc-status.cjs`(새 자료 알림), `scripts/input_doc.py`(자료 읽기·추정, 규칙 이름으로 이동·`INDEX.md` 기록, 중복은 `_duplicates/`)를 추가했습니다. `input_doc/`는 README만 Git에 올라가며, 공개 PDF 커밋은 목록을 보여 주고 확인을 받은 뒤에만 합니다. 근거: `docs/implementation/LOCAL_INPUT_DOC_WORKFLOW.md`.

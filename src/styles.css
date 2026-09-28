@@ -496,6 +496,9 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-seg{display:inline-flex;gap:2px;padding:2px;background:var(--pg-seg-track);border-radius:11px}
 #rtcom-design .rt-pg-seg span{border-radius:9px;font-weight:600;font-size:13px;padding:7px 14px;color:var(--pg-ink)}
 #rtcom-design .rt-pg-seg span.rt-pg-on{background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.14),0 1px 2px rgba(0,0,0,.10)}
+/* 0.82 송신기·수신기 라벨: 구성기 슬롯 번호표와 같은 입력 파랑(#007AFF)·출력 주황(#E8590C)으로 구분 */
+#rtcom-design .rt-pg-seg span.rt-pg-on-tx{background:#007AFF;color:#fff}
+#rtcom-design .rt-pg-seg span.rt-pg-on-rx{background:#E8590C;color:#fff}
 /* 0.55 2U 이상 정면·후면 버튼, 그보다 작은 제품의 정면 사진 + 포트 연결면 함께 보기 */
 #rtcom-design .rt-pg-seg button{border:0;background:transparent;border-radius:9px;font:inherit;font-weight:600;font-size:13px;padding:7px 14px;color:var(--pg-ink);cursor:pointer}
 #rtcom-design .rt-pg-seg button.rt-pg-on{background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.14),0 1px 2px rgba(0,0,0,.10)}
