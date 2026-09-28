@@ -100,7 +100,11 @@
       "title": "알티컴 종합 카탈로그 2026 (국문)",
       "language": "ko",
       "note": "카탈로그 46쪽판 35쪽 발췌 · 제품별 공개본(2026-09-28 사용자 결정 \"제품별로 잘라 공개\")",
-      "file": "hd-104u-catalog.pdf"
+      "file": "hd-104u-catalog.pdf",
+      "preview": "image",
+      "previewImages": [
+        "hd-104u-catalog-p1.webp"
+      ]
     },
     {
       "type": "Diagram",
@@ -115,7 +119,8 @@
       "title": "HD-104U 사용자 매뉴얼 Ver.1.1",
       "language": "ko",
       "note": "사용자 제공 매뉴얼 공개본(2026-09-28, 사용자 결정 \"1번\" — 매뉴얼 전부 공개)",
-      "file": "hd-104u-manual.pdf"
+      "file": "hd-104u-manual.pdf",
+      "preview": "pdfjs"
     }
   ],
   "features": [

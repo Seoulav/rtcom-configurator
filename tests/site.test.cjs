@@ -317,6 +317,27 @@ test('0.112: HD-13U 카탈로그 팝업은 iframe 대신 저장소에 넣은 PDF
   assert.match(read('scripts/serve.cjs'),/'\.mjs':'text\/javascript/,'로컬 서버가 .mjs를 자바스크립트로 보낸다');
 });
 
+test('0.124: 등록된 제품별 카탈로그는 모두 쪽 그림 팝업, 매뉴얼은 모두 PDF.js 팝업이고 긴 매뉴얼은 보이는 쪽만 그린다',()=>{
+  let catalogs=0,manuals=0;
+  for(const file of fs.readdirSync('data/products').filter(name=>name.endsWith('.json')&&name!=='index.json')){
+    for(const doc of JSON.parse(read(`data/products/${file}`)).documents||[]){
+      if(!doc.file||doc.page)continue;
+      if(doc.type==='Catalog'){
+        catalogs++;
+        assert.equal(doc.preview,'image',`${file} 카탈로그는 이미지 방식`);
+        const stem=doc.file.replace(/\.pdf$/,'');
+        assert.deepEqual(doc.previewImages,doc.previewImages.map((_,i)=>`${stem}-p${i+1}.webp`),`${file} 쪽 그림 이름`);
+        for(const name of doc.previewImages)assert.ok(fs.existsSync(`output/design/assets/products/${name}`),`${name} must exist`);
+      }else if(doc.type==='Manual'){manuals++;assert.equal(doc.preview,'pdfjs',`${file} 매뉴얼은 PDF.js 방식`)}
+    }
+  }
+  assert.ok(catalogs>=29&&manuals>=17,JSON.stringify({catalogs,manuals}));
+  const products=read('src/products.js');
+  assert.match(products,/new IntersectionObserver\(/,'매뉴얼은 화면에 보이는 쪽만 그린다');
+  assert.match(products,/function freeDocPage\(/,'멀리 지나간 쪽 canvas는 비운다');
+  assert.match(products,/state\.pdf\?\.destroy\(\)/,'팝업을 닫으면 PDF 문서를 푼다');
+});
+
 test('0.121: HD-D102U Rack마운트는 HD-D102U와 서로 관련 제품으로 이어지고, 도면 그림만 공개하며 사용자 도면 PDF는 배포하지 않는다',()=>{
   const rack=JSON.parse(read('data/products/hd-d102u-rack.json')),base=JSON.parse(read('data/products/hd-d102u.json'));
   assert.equal(rack.model,'HD-D102U Rack마운트');

@@ -135,7 +135,11 @@
       "title": "알티컴 종합 카탈로그 2026 (국문)",
       "language": "ko",
       "note": "카탈로그 46쪽판 40쪽 발췌 · 제품별 공개본(2026-09-28 사용자 결정 \"제품별로 잘라 공개\")",
-      "file": "obux-1c-catalog.pdf"
+      "file": "obux-1c-catalog.pdf",
+      "preview": "image",
+      "previewImages": [
+        "obux-1c-catalog-p1.webp"
+      ]
     },
     {
       "type": "Manual",
@@ -143,7 +147,8 @@
       "title": "OBUX-1C 사용자 매뉴얼 Ver.2.2",
       "language": "ko",
       "note": "사용자 제공 매뉴얼 공개본(2026-09-28, 사용자 결정 \"1번\" — 매뉴얼 전부 공개)",
-      "file": "obux-1c-manual.pdf"
+      "file": "obux-1c-manual.pdf",
+      "preview": "pdfjs"
     }
   ],
   "features": [

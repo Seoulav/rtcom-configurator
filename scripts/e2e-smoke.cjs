@@ -502,19 +502,50 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       const pdfOk=[];for(const doc of docs){const res=await page.request.get(doc.href);pdfOk.push(res.status()===200&&String(res.headers()['content-type']).includes('pdf'))}
       check(`${id} 제조사 문서 버튼 ${expected}개(새 탭 보기 또는 팝업·내려받기, PDF 응답)`,docs.length===expected&&docs.every(doc=>doc.open&&doc.save)&&pdfOk.every(Boolean),JSON.stringify({expected,docs,pdfOk}));
     }
-    // 0.112 HD-13U 카탈로그 팝업: iframe 대신 PDF.js로 쪽을 canvas에 그린다(PDF 보기 기능이 없는 브라우저에서도 다운로드로 넘어가지 않음).
-    // 버튼을 누르면 dialog가 열리고 canvas가 1쪽 이상 그려지며, + 버튼을 누르면 canvas 폭이 커지고, 원본·내려받기 링크가 있고, 닫기로 닫힌다.
+    // 0.113 HD-13U 문서 팝업(사용자 결정 2026-09-28 "13u 메뉴얼은 pdf.js으로 카탈로그는 이미지 방식"):
+    // 카탈로그는 미리 그린 쪽 그림(img, PDF.js를 불러오지 않음), 매뉴얼은 PDF.js로 쪽마다 canvas. 둘 다 iframe 없이 확대·원본·내려받기·닫기가 동작한다.
     await page.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-toolbar');
-    await page.click('button.rt-pg-doc-open[data-doc-preview]');
-    await page.waitForSelector('dialog.rt-doc-zoom[open] .rt-doc-pages canvas',{timeout:15000});
-    const docPopup=await page.evaluate(()=>{const d=document.querySelector('dialog.rt-doc-zoom');const c=d.querySelector('.rt-doc-pages canvas');return {pages:d.querySelectorAll('.rt-doc-pages canvas').length,w:c.getBoundingClientRect().width,drawn:c.width>0&&c.height>0,iframe:!!d.querySelector('iframe'),links:[...d.querySelectorAll('.rt-doc-zoom-link')].map(a=>a.getAttribute('href')),title:d.querySelector('.rt-flow-zoom-head b')?.textContent}});
+    const pdfjsRequests=[];const onReq=req=>{if(req.url().includes('/vendor/pdfjs/'))pdfjsRequests.push(req.url())};page.on('request',onReq);
+    await page.click('[data-doc="Catalog"] button.rt-pg-doc-open[data-doc-kind="image"]');
+    await page.waitForSelector('dialog.rt-doc-zoom[open] .rt-doc-pages img',{timeout:15000});
+    await page.waitForFunction(()=>{const i=document.querySelector('dialog.rt-doc-zoom .rt-doc-pages img');return i&&i.complete&&i.naturalWidth>0&&!document.querySelector('dialog.rt-doc-zoom .rt-doc-status')},null,{timeout:15000});
+    const catPopup=await page.evaluate(()=>{const d=document.querySelector('dialog.rt-doc-zoom');const i=d.querySelector('.rt-doc-pages img');return {imgs:d.querySelectorAll('.rt-doc-pages img').length,src:i.getAttribute('src'),natural:i.naturalWidth,w:i.getBoundingClientRect().width,canvas:!!d.querySelector('canvas'),iframe:!!d.querySelector('iframe'),links:[...d.querySelectorAll('.rt-doc-zoom-link')].map(a=>a.getAttribute('href'))}});
     await page.click('dialog.rt-doc-zoom [data-doc-zoom-step="1"]');
-    await page.waitForFunction(w=>{const c=document.querySelector('dialog.rt-doc-zoom .rt-doc-pages canvas');return c&&c.getBoundingClientRect().width>w*1.3},docPopup.w,{timeout:15000});
-    const zoomLevel=await page.$eval('dialog.rt-doc-zoom [data-doc-zoom-level]',el=>el.textContent);
+    const catZoomW=await page.$eval('dialog.rt-doc-zoom .rt-doc-pages img',i=>i.getBoundingClientRect().width);
     await page.click('dialog.rt-doc-zoom [data-zoom-close]');
-    const closed=await page.evaluate(()=>!document.querySelector('dialog.rt-doc-zoom[open]'));
-    check('HD-13U 카탈로그 팝업이 PDF.js로 hd-13u-catalog.pdf를 canvas에 그리고(iframe 없음) 확대·원본·내려받기·닫기가 동작',docPopup.pages>=1&&docPopup.drawn&&!docPopup.iframe&&docPopup.links.length===2&&docPopup.links.every(h=>h.includes('hd-13u-catalog.pdf'))&&!!docPopup.title&&zoomLevel==='150%'&&closed,JSON.stringify({docPopup,zoomLevel,closed}));
+    const catClosed=await page.evaluate(()=>!document.querySelector('dialog.rt-doc-zoom[open]'));
+    check('HD-13U 카탈로그 팝업이 이미지 방식(hd-13u-catalog-p1.webp)으로 바로 보이고 PDF.js를 불러오지 않으며 확대·원본·내려받기·닫기가 동작',catPopup.imgs===1&&catPopup.src.includes('hd-13u-catalog-p1.webp')&&catPopup.natural>=1600&&!catPopup.canvas&&!catPopup.iframe&&catPopup.links.every(h=>h.includes('hd-13u-catalog.pdf'))&&catZoomW>catPopup.w*1.3&&catClosed&&!pdfjsRequests.length,JSON.stringify({catPopup,catZoomW,catClosed,pdfjsRequests}));
+    await page.click('[data-doc="Manual"] button.rt-pg-doc-open[data-doc-kind="pdfjs"]');
+    // 0.124 매뉴얼은 쪽마다 자리(.rt-doc-page)를 만들고 보이는 쪽과 앞뒤만 canvas로 그린다.
+    await page.waitForFunction(()=>{const d=document.querySelector('dialog.rt-doc-zoom[open]');return d&&d.querySelectorAll('.rt-doc-page').length===11&&d.querySelector('.rt-doc-page[data-doc-page="1"] canvas')&&!d.querySelector('.rt-doc-status')},null,{timeout:30000});
+    const manPopup=await page.evaluate(()=>{const d=document.querySelector('dialog.rt-doc-zoom');const c=d.querySelector('.rt-doc-page[data-doc-page="1"] canvas');return {pages:d.querySelectorAll('.rt-doc-page').length,w:c.getBoundingClientRect().width,drawn:c.width>0,iframe:!!d.querySelector('iframe'),links:[...d.querySelectorAll('.rt-doc-zoom-link')].map(a=>a.getAttribute('href'))}});
+    await page.click('dialog.rt-doc-zoom [data-doc-zoom-step="1"]');
+    await page.waitForFunction(w=>{const c=document.querySelector('dialog.rt-doc-zoom .rt-doc-page canvas');return c&&c.getBoundingClientRect().width>w*1.3},manPopup.w,{timeout:15000});
+    await page.click('dialog.rt-doc-zoom [data-zoom-close]');
+    page.off('request',onReq);
+    check('HD-13U 매뉴얼 팝업이 PDF.js로 hd-13u-manual.pdf 11쪽 자리를 만들고 첫 쪽을 canvas에 그리며(iframe 없음) 확대·원본·내려받기가 동작',manPopup.pages===11&&manPopup.drawn&&!manPopup.iframe&&manPopup.links.every(h=>h.includes('hd-13u-manual.pdf'))&&pdfjsRequests.some(u=>u.endsWith('pdf.min.mjs')),JSON.stringify({manPopup,pdfjsRequests}));
+    // 0.124 전 제품 확장(사용자 결정 2026-09-28 "전체 제품으로 넓혀서 올리기"): 여러 쪽 카탈로그(XDM 6쪽)는 그림 6장,
+    // 103쪽 매뉴얼(VDM)은 보이는 쪽만 그려 canvas 수가 쪽 수보다 훨씬 적고, 끝으로 내리면 마지막 쪽이 그려지고 첫 쪽 canvas는 비워진다.
+    await page.goto(`${home}#products/xdm`,{waitUntil:'networkidle'});
+    await page.waitForSelector('.rt-pg-toolbar');
+    await page.click('[data-doc="Catalog"] button.rt-pg-doc-open[data-doc-kind="image"]');
+    await page.waitForFunction(()=>{const d=document.querySelector('dialog.rt-doc-zoom[open]');return d&&d.querySelectorAll('.rt-doc-pages img').length===6&&!d.querySelector('.rt-doc-status')},null,{timeout:15000});
+    const xdmCat=await page.$$eval('dialog.rt-doc-zoom .rt-doc-pages img',imgs=>imgs.map(i=>i.getAttribute('src').split('/').pop()));
+    await page.click('dialog.rt-doc-zoom [data-zoom-close]');
+    check('XDM 카탈로그 팝업이 6쪽 그림(xdm-catalog-p1~p6.webp)으로 나옴',xdmCat.join()===[1,2,3,4,5,6].map(n=>`xdm-catalog-p${n}.webp`).join(),JSON.stringify(xdmCat));
+    await page.goto(`${home}#products/vdm`,{waitUntil:'networkidle'});
+    await page.waitForSelector('.rt-pg-toolbar');
+    const vdmStart=Date.now();
+    await page.click('[data-doc="Manual"] button.rt-pg-doc-open[data-doc-kind="pdfjs"]');
+    await page.waitForFunction(()=>document.querySelector('dialog.rt-doc-zoom[open] .rt-doc-page[data-doc-page="1"] canvas'),null,{timeout:30000});
+    const vdmFirstMs=Date.now()-vdmStart;
+    const vdmTop=await page.evaluate(()=>{const d=document.querySelector('dialog.rt-doc-zoom');return {pages:d.querySelectorAll('.rt-doc-page').length,canvases:d.querySelectorAll('.rt-doc-page canvas').length}});
+    await page.evaluate(()=>{const b=document.querySelector('dialog.rt-doc-zoom .rt-doc-zoom-body');b.scrollTop=b.scrollHeight});
+    await page.waitForFunction(()=>document.querySelector('dialog.rt-doc-zoom .rt-doc-page[data-doc-page="103"] canvas'),null,{timeout:30000});
+    const vdmEnd=await page.evaluate(()=>{const d=document.querySelector('dialog.rt-doc-zoom');return {first:!!d.querySelector('.rt-doc-page[data-doc-page="1"] canvas'),canvases:d.querySelectorAll('.rt-doc-page canvas').length}});
+    await page.click('dialog.rt-doc-zoom [data-zoom-close]');
+    check('VDM 매뉴얼 103쪽 팝업이 보이는 쪽만 그리고(첫 화면 canvas 10장 이하) 끝으로 내리면 103쪽이 그려지며 첫 쪽 canvas는 비워짐',vdmTop.pages===103&&vdmTop.canvases>=1&&vdmTop.canvases<=10&&!vdmEnd.first&&vdmEnd.canvases<=10,JSON.stringify({vdmTop,vdmEnd,vdmFirstMs}));
     check('OBUX-1C 송신기 단자 지도가 고해상도 앞뒤 합성 사진에 번호 6개, 수신기 5개(S/P 포함)로 나옴',obuxPm.tx&&obuxPm.rx&&obuxPm.ports.join()==='6,5',JSON.stringify(obuxPm));
     // 0.98 XDM-PSU 03 Signal Flow: 제조사 연결도처럼 프레임(CIS100·COS100) · PSU(POH·PHX) · CTR100 Tx/Rx를 장비 그림으로 그리고 케이블 위 점선이 흐른다. 움직임 줄이기 설정에서는 멈춘다.
     await page.goto(`${home}#products/xdm-psu`,{waitUntil:'networkidle'});

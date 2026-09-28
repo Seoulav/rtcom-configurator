@@ -471,7 +471,9 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-doc-zoom::backdrop{background:#0f172aa6;backdrop-filter:blur(3px)}
 #rtcom-design .rt-doc-zoom-body{flex:1;overflow:auto;padding:12px;background:#eef1f6;-webkit-overflow-scrolling:touch}
 #rtcom-design .rt-doc-pages{display:flex;flex-direction:column;align-items:center;gap:12px;width:max-content;min-width:100%}
-#rtcom-design .rt-doc-pages canvas{display:block;background:#fff;box-shadow:0 2px 10px #0f172a26;border-radius:4px}
+#rtcom-design .rt-doc-page,#rtcom-design .rt-doc-pages img{display:block;flex-shrink:0;background:#fff;box-shadow:0 2px 10px #0f172a26;border-radius:4px;overflow:hidden}
+#rtcom-design .rt-doc-page canvas{display:block;width:100%;height:100%}
+#rtcom-design .rt-doc-pages img{height:auto;max-width:none}
 #rtcom-design .rt-doc-status{margin:24px auto;text-align:center;font-size:13px;color:#415069}
 #rtcom-design .rt-doc-status a{color:#007AFF;font-weight:700}
 #rtcom-design .rt-doc-zoom .rt-flow-zoom-head b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}

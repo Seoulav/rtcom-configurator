@@ -534,11 +534,12 @@
       return (item.documents||[]).filter(doc=>doc.file&&DOC_LABEL[doc.type]).sort((a,b)=>order.indexOf(a.type)-order.indexOf(b.type)).map(doc=>{
         // page가 있으면(전체 카탈로그 공용 파일, 0.95) 새 탭은 그 쪽에서 열고(#page=N, 아이폰 Safari는 1쪽부터 열릴 수 있음), 내려받기는 파일 전체를 받는다.
         const label=doc.label||DOC_LABEL[doc.type],pageNote=doc.page?` ${doc.page}쪽`:'',title=esc(`${doc.title||label}${pageNote}`),href=docFile(doc.file);
-        // 0.105 샘플(사용자 요청 2026-09-28 "카달로그는 팝업형태 보이면 어때? 1장짜리라서 파일다운받아서 다시 열기 불편해", HD-13U만 적용):
-        // 페이지 지정 없는 제품별 단일 쪽 카탈로그는 새 탭 대신 화면 안 팝업(다이얼로그)으로 미리 본다. 반응이 좋으면 전 제품으로 넓힌다.
-        const popup=item.id==='hd-13u'&&doc.type==='Catalog'&&!doc.page;
+        // 팝업 미리보기(0.105 샘플 → 0.113 데이터로 지정): documents[].preview가 "image"면 미리 그린 쪽 그림(previewImages),
+        // "pdfjs"면 PDF.js로 원본 PDF를 팝업 안에 그린다. 지정이 없으면 기존처럼 새 탭에서 연다(사용자 결정 2026-09-28 "13u 메뉴얼은 pdf.js으로 카탈로그는 이미지 방식").
+        const popup=doc.preview==='image'||doc.preview==='pdfjs';
+        const images=doc.preview==='image'?(doc.previewImages||[]).map(name=>image(name)).join('|'):'';
         const openEl=popup
-          ?`<button type="button" class="rt-pg-doc-open" data-doc-preview="${href}" data-doc-title="${title}" title="${title} · 미리보기">${esc(label)} PDF</button>`
+          ?`<button type="button" class="rt-pg-doc-open" data-doc-preview="${href}" data-doc-kind="${doc.preview}"${images?` data-doc-images="${images}"`:''} data-doc-title="${title}" title="${title} · 미리보기">${esc(label)} PDF</button>`
           :`<a class="rt-pg-doc-open" href="${href}${doc.page?`#page=${doc.page}`:''}" target="_blank" rel="noopener" title="${title} · 새 탭에서 보기">${esc(label)} PDF${doc.page?` <small>${doc.page}쪽</small>`:''}</a>`;
         return `<span class="rt-pg-doc" data-doc="${esc(doc.type)}">${openEl}<a class="rt-pg-doc-save" href="${href}" download="${esc(doc.file)}" title="${title} · 내려받기(전체 파일)" aria-label="${esc(label)} 내려받기">${DOWNLOAD_ICON}</a></span>`;
       }).join('');
@@ -938,12 +939,12 @@
       const diagramBtn=event.target.closest('[data-open-diagram]');
       if(diagramBtn){const record=body.querySelector('.rt-pg-record');if(record){record.open=true;record.querySelector('#rt-pg-diagram-photo')?.scrollIntoView({behavior:'smooth',block:'start'})}return}
       const docPreviewBtn=event.target.closest('[data-doc-preview]');
-      if(docPreviewBtn){openDocPreview(docPreviewBtn.dataset.docPreview,docPreviewBtn.dataset.docTitle);return}
+      if(docPreviewBtn){const d=docPreviewBtn.dataset;openDocPreview(d.docPreview,d.docTitle,d.docKind,d.docImages?d.docImages.split('|'):[]);return}
       // 0.99 XDM-PSU Signal Flow 확대 창: 그림을 복사해 전체 화면 창에 넣고 100%(화면 폭 맞춤)~300%로 키운다. 창 안에서 스크롤·손가락으로 옮겨 본다.
       const flowZoom=event.target.closest('[data-flow-zoom]')||(event.target.closest('.rt-pg-svg-wrap')?.querySelector('.rt-psu-anim')&&event.target.closest('.rt-pg-svg-wrap'));
       if(flowZoom){openFlowZoom(flowZoom.closest('section'));return}
       const docZoom=event.target.closest('[data-doc-zoom-step]');
-      if(docZoom){const dlg=docZoom.closest('dialog');if(dlg?.rtDoc?.pdf){dlg.rtDoc.zoom=Math.max(0,Math.min(DOC_ZOOMS.length-1,dlg.rtDoc.zoom+Number(docZoom.dataset.docZoomStep)));renderDocPages(dlg)}return}
+      if(docZoom){const dlg=docZoom.closest('dialog');if(dlg?.rtDoc?.ready){dlg.rtDoc.zoom=Math.max(0,Math.min(DOC_ZOOMS.length-1,dlg.rtDoc.zoom+Number(docZoom.dataset.docZoomStep)));renderDocPages(dlg)}return}
       const zoomStep=event.target.closest('[data-zoom-step]');
       if(zoomStep){const dlg=zoomStep.closest('dialog');setFlowZoom(dlg,Number(dlg.dataset.zoom)+Number(zoomStep.dataset.zoomStep));return}
       if(event.target.closest('[data-zoom-close]')){event.target.closest('dialog').close();return}
@@ -979,6 +980,8 @@
       if(!dlg){
         dlg=document.createElement('dialog');dlg.className='rt-flow-zoom';dlg.setAttribute('aria-label','Signal Flow 크게 보기');
         dlg.addEventListener('click',event=>{if(event.target===dlg)dlg.close()});
+        // 닫으면 관찰을 멈추고 PDF 문서를 풀어 메모리를 돌려준다.
+        dlg.addEventListener('close',()=>{const state=dlg.rtDoc;if(!state)return;state.observer?.disconnect();state.slots?.forEach(freeDocPage);state.pdf?.destroy();dlg.rtDoc=null});
         body.appendChild(dlg);
       }
       const title=body.querySelector('#rt-pg-title')?.textContent||'';
@@ -987,7 +990,7 @@
       if(typeof dlg.showModal==='function')dlg.showModal();else dlg.setAttribute('open','');
       dlg.querySelector('[data-zoom-step="1"]').focus();
     }
-    // 카탈로그 PDF 팝업 미리보기(HD-13U 샘플). 0.112: iframe은 PDF 보기 기능이 없는 브라우저(휴대폰 크롬, 카카오톡 인앱 등)에서
+    // 제조사 문서 팝업 미리보기(0.124부터 전 제품: 카탈로그는 미리 그린 쪽 그림, 매뉴얼은 PDF.js). 0.112: iframe은 PDF 보기 기능이 없는 브라우저(휴대폰 크롬, 카카오톡 인앱 등)에서
     // 파일 다운로드로 넘어가서(사용자 지적 "pdf파일 다운로드 뜨지 않게 카탈로그를 직접 보이게해줘"), 저장소에 넣은 PDF.js(src/vendor/pdfjs)로 쪽마다 canvas에 그린다.
     // 라이브러리는 팝업을 처음 열 때만 불러온다. 옛 브라우저가 products.js 전체를 못 읽는 일이 없도록 import()는 Function으로 감싼다.
     const PDFJS_DIR='src/vendor/pdfjs/';
@@ -999,56 +1002,125 @@
       return pdfjsLib=lib;
     };
     const DOC_ZOOMS=[1,1.5,2,3];
+    // 화면 폭에 맞춘 쪽 너비(px). 확대 배율을 곱해 그린다.
+    const docFitWidth=dlg=>Math.max(240,dlg.querySelector('.rt-doc-zoom-body').clientWidth-24);
+    function updateDocZoomTools(dlg){
+      const state=dlg.rtDoc;
+      dlg.querySelector('[data-doc-zoom-level]').textContent=`${DOC_ZOOMS[state.zoom]*100}%`;
+      dlg.querySelector('[data-doc-zoom-step="-1"]').disabled=!state.ready||state.zoom===0;
+      dlg.querySelector('[data-doc-zoom-step="1"]').disabled=!state.ready||state.zoom===DOC_ZOOMS.length-1;
+    }
     async function renderDocPages(dlg){
       const state=dlg.rtDoc,pagesEl=dlg.querySelector('.rt-doc-pages');
-      if(!state?.pdf||!pagesEl)return;
-      const token=state.token=(state.token||0)+1;
-      const zoom=DOC_ZOOMS[state.zoom];
-      dlg.querySelector('[data-doc-zoom-level]').textContent=`${zoom*100}%`;
-      dlg.querySelector('[data-doc-zoom-step="-1"]').disabled=state.zoom===0;
-      dlg.querySelector('[data-doc-zoom-step="1"]').disabled=state.zoom===DOC_ZOOMS.length-1;
-      const fitWidth=Math.max(240,dlg.querySelector('.rt-doc-zoom-body').clientWidth-24);
-      const canvases=[];
-      for(let n=1;n<=state.pdf.numPages;n++){
-        const page=await state.pdf.getPage(n);
-        if(token!==state.token)return;
-        const base=page.getViewport({scale:1});
-        const cssScale=fitWidth/base.width*zoom;
-        // 화면 배율만큼 선명하게 그리되 canvas 한 변이 4096px을 넘지 않게 한다(휴대폰 메모리 보호).
-        const pixelScale=Math.min(window.devicePixelRatio||1,4096/(base.width*cssScale),4096/(base.height*cssScale));
-        const viewport=page.getViewport({scale:cssScale*pixelScale});
-        const canvas=document.createElement('canvas');
-        canvas.width=Math.floor(viewport.width);canvas.height=Math.floor(viewport.height);
-        canvas.style.width=`${Math.floor(base.width*cssScale)}px`;canvas.style.height=`${Math.floor(base.height*cssScale)}px`;
-        canvas.setAttribute('role','img');canvas.setAttribute('aria-label',`${state.title} ${n}쪽`);
-        await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
-        if(token!==state.token)return;
-        canvases.push(canvas);
+      if(!state?.ready||!pagesEl)return;
+      updateDocZoomTools(dlg);
+      const zoom=DOC_ZOOMS[state.zoom],fitWidth=docFitWidth(dlg);
+      // 이미지 방식(카탈로그): 미리 그린 그림의 표시 폭만 바꾼다. 쪽 그림은 200dpi라 300%까지 확대해도 흐려지지 않는다.
+      if(state.kind==='image'){pagesEl.querySelectorAll('img').forEach(img=>{img.style.width=`${Math.floor(fitWidth*zoom)}px`});return}
+      // PDF.js(매뉴얼): 쪽마다 크기만 맞춘 빈 자리를 먼저 만들고, 화면에 보이는 쪽과 그 앞뒤 한 화면만 canvas로 그린다.
+      // 100쪽이 넘는 매뉴얼(VDM 103쪽)도 첫 화면이 바로 뜨고, 멀리 지나간 쪽의 canvas는 지워서 휴대폰 메모리를 아낀다(0.124).
+      const scroller=dlg.querySelector('.rt-doc-zoom-body');
+      const ratio=scroller.scrollHeight>scroller.clientHeight?scroller.scrollTop/scroller.scrollHeight:0;
+      state.gen=(state.gen||0)+1;
+      if(!state.slots){
+        state.slots=state.sizes.map((size,i)=>{const slot=document.createElement('div');slot.className='rt-doc-page';slot.dataset.docPage=String(i+1);slot.setAttribute('role','img');slot.setAttribute('aria-label',`${state.title} ${i+1}쪽`);return slot});
+        pagesEl.replaceChildren(...state.slots);
       }
-      pagesEl.replaceChildren(...canvases);
+      state.slots.forEach((slot,i)=>{
+        const size=state.sizes[i],cssScale=fitWidth/size.width*zoom;
+        slot.style.width=`${Math.floor(size.width*cssScale)}px`;slot.style.height=`${Math.floor(size.height*cssScale)}px`;
+        freeDocPage(slot);
+      });
+      scroller.scrollTop=ratio*scroller.scrollHeight;
+      state.visible=new Set();
+      state.observer?.disconnect();
+      state.observer=new IntersectionObserver(entries=>{
+        for(const entry of entries){
+          const i=Number(entry.target.dataset.docPage)-1;
+          if(entry.isIntersecting)state.visible.add(i);else{state.visible.delete(i);freeDocPage(entry.target)}
+        }
+        pumpDocPages(dlg,state);
+      },{root:scroller,rootMargin:'100% 0px'});
+      state.slots.forEach(slot=>state.observer.observe(slot));
     }
-    async function openDocPreview(href,title){
+    // 그려 둔 canvas를 비운다. width를 0으로 줄여야 Safari가 canvas 메모리를 바로 돌려준다.
+    function freeDocPage(slot){
+      const canvas=slot.querySelector('canvas');
+      if(canvas){canvas.width=0;canvas.height=0}
+      slot.replaceChildren();delete slot.dataset.docDrawn;
+    }
+    // 그려야 할 쪽을 화면 가운데에 가까운 순서로 한 쪽씩 그린다(동시에 여러 쪽을 그리지 않아 첫 화면이 먼저 뜬다).
+    async function pumpDocPages(dlg,state){
+      if(state.busy)return;
+      state.busy=true;
+      try{
+        const scroller=dlg.querySelector('.rt-doc-zoom-body');
+        for(;;){
+          if(dlg.rtDoc!==state||!dlg.open)break;
+          const gen=state.gen,box=scroller.getBoundingClientRect(),mid=box.top+box.height/2;
+          let next=-1,best=Infinity;
+          for(const i of state.visible){
+            const slot=state.slots[i];
+            if(slot.dataset.docDrawn===String(gen))continue;
+            const r=slot.getBoundingClientRect(),d=Math.abs(r.top+r.height/2-mid);
+            if(d<best){best=d;next=i}
+          }
+          if(next<0)break;
+          const slot=state.slots[next],page=await state.pdf.getPage(next+1);
+          const cssWidth=parseFloat(slot.style.width),cssHeight=parseFloat(slot.style.height);
+          const base=page.getViewport({scale:1}),cssScale=cssWidth/base.width;
+          // 화면 배율만큼 선명하게 그리되 canvas 한 변이 4096px을 넘지 않게 한다(휴대폰 메모리 보호).
+          const pixelScale=Math.min(window.devicePixelRatio||1,4096/cssWidth,4096/cssHeight);
+          const viewport=page.getViewport({scale:cssScale*pixelScale});
+          const canvas=document.createElement('canvas');
+          canvas.width=Math.floor(viewport.width);canvas.height=Math.floor(viewport.height);
+          await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
+          if(dlg.rtDoc!==state||gen!==state.gen||!state.visible.has(next)){canvas.width=0;canvas.height=0;continue}
+          slot.replaceChildren(canvas);slot.dataset.docDrawn=String(gen);
+          dlg.querySelector('.rt-doc-status')?.remove();
+        }
+      }catch(error){
+        // 창을 닫아 문서를 푼 뒤 끝난 그리기는 조용히 버린다. 열려 있는데 실패하면 원본 링크로 안내한다.
+        if(dlg.rtDoc===state&&dlg.open){const status=dlg.querySelector('.rt-doc-status');if(status)status.innerHTML=`미리보기를 불러오지 못했습니다. <a href="${state.href}" target="_blank" rel="noopener">PDF 원본 열기</a>`}
+      }finally{state.busy=false}
+    }
+    async function openDocPreview(href,title,kind='pdfjs',images=[]){
       let dlg=body.querySelector('dialog.rt-doc-zoom');
       if(!dlg){
         dlg=document.createElement('dialog');dlg.className='rt-doc-zoom';dlg.setAttribute('aria-label','문서 미리보기');
         dlg.addEventListener('click',event=>{if(event.target===dlg)dlg.close()});
+        // 닫으면 관찰을 멈추고 PDF 문서를 풀어 메모리를 돌려준다.
+        dlg.addEventListener('close',()=>{const state=dlg.rtDoc;if(!state)return;state.observer?.disconnect();state.slots?.forEach(freeDocPage);state.pdf?.destroy();dlg.rtDoc=null});
         body.appendChild(dlg);
       }
       const file=href.split('/').pop();
-      dlg.innerHTML=`<div class="rt-flow-zoom-head"><b>${esc(title)}</b><div class="rt-flow-zoom-tools"><button type="button" data-doc-zoom-step="-1" aria-label="축소" disabled>−</button><span data-doc-zoom-level aria-live="polite">100%</span><button type="button" data-doc-zoom-step="1" aria-label="확대" disabled>+</button><a class="rt-doc-zoom-link" href="${href}" target="_blank" rel="noopener" title="PDF 원본을 새 탭에서 열기">원본</a><a class="rt-doc-zoom-link" href="${href}" download="${esc(file)}" title="PDF 내려받기" aria-label="PDF 내려받기">${DOWNLOAD_ICON}</a><button type="button" class="rt-flow-zoom-close" data-zoom-close aria-label="닫기">×</button></div></div><div class="rt-doc-zoom-body"><p class="rt-doc-status" role="status">카탈로그를 불러오는 중입니다…</p><div class="rt-doc-pages"></div></div>`;
-      dlg.rtDoc={title,zoom:0};
+      dlg.innerHTML=`<div class="rt-flow-zoom-head"><b>${esc(title)}</b><div class="rt-flow-zoom-tools"><button type="button" data-doc-zoom-step="-1" aria-label="축소" disabled>−</button><span data-doc-zoom-level aria-live="polite">100%</span><button type="button" data-doc-zoom-step="1" aria-label="확대" disabled>+</button><a class="rt-doc-zoom-link" href="${href}" target="_blank" rel="noopener" title="PDF 원본을 새 탭에서 열기">원본</a><a class="rt-doc-zoom-link" href="${href}" download="${esc(file)}" title="PDF 내려받기" aria-label="PDF 내려받기">${DOWNLOAD_ICON}</a><button type="button" class="rt-flow-zoom-close" data-zoom-close aria-label="닫기">×</button></div></div><div class="rt-doc-zoom-body" data-doc-kind="${kind==='image'?'image':'pdfjs'}"><p class="rt-doc-status" role="status">${kind==='image'?'카탈로그':'문서'}를 불러오는 중입니다…</p><div class="rt-doc-pages"></div></div>`;
+      const state=dlg.rtDoc={title,href,kind:kind==='image'?'image':'pdfjs',zoom:0,ready:false};
       if(typeof dlg.showModal==='function')dlg.showModal();else dlg.setAttribute('open','');
       dlg.querySelector('[data-zoom-close]').focus();
       const status=dlg.querySelector('.rt-doc-status');
+      const fail=()=>{status.innerHTML=`미리보기를 불러오지 못했습니다. <a href="${href}" target="_blank" rel="noopener">PDF 원본 열기</a>`};
+      if(state.kind==='image'){
+        // 이미지 방식: 라이브러리 없이 쪽 그림을 바로 보여 준다. 그림이 하나라도 안 뜨면 원본 PDF 링크로 안내한다.
+        const pagesEl=dlg.querySelector('.rt-doc-pages');
+        const imgs=images.map((src,i)=>{const img=document.createElement('img');img.src=src;img.alt=`${title} ${i+1}쪽`;img.decoding='async';return img});
+        if(!imgs.length){fail();return}
+        pagesEl.replaceChildren(...imgs);
+        state.ready=true;renderDocPages(dlg);
+        Promise.all(imgs.map(img=>img.decode?img.decode():Promise.resolve())).then(()=>{if(dlg.rtDoc===state)status.remove()},()=>{if(dlg.rtDoc===state)fail()});
+        return;
+      }
       try{
         const lib=await loadPdfjs();
         const pdf=await lib.getDocument({url:href,isEvalSupported:false}).promise;
-        if(dlg.rtDoc?.title!==title)return;
-        dlg.rtDoc.pdf=pdf;
-        await renderDocPages(dlg);
-        status.remove();
+        if(dlg.rtDoc!==state)return;
+        // 쪽 크기만 먼저 모두 읽는다(그리기보다 훨씬 빠름). 가로·세로가 섞인 문서도 자리 크기가 맞는다.
+        const sizes=await Promise.all(Array.from({length:pdf.numPages},(_,i)=>pdf.getPage(i+1).then(page=>{const v=page.getViewport({scale:1});return {width:v.width,height:v.height}})));
+        if(dlg.rtDoc!==state){pdf.destroy();return}
+        state.pdf=pdf;state.sizes=sizes;state.ready=true;
+        renderDocPages(dlg);
       }catch(error){
-        status.innerHTML=`미리보기를 불러오지 못했습니다. <a href="${href}" target="_blank" rel="noopener">PDF 원본 열기</a>`;
+        if(dlg.rtDoc===state)fail();
       }
     }
     body.addEventListener('keydown',event=>{
