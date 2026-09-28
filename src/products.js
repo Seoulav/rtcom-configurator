@@ -534,7 +534,13 @@
       return (item.documents||[]).filter(doc=>doc.file&&DOC_LABEL[doc.type]).sort((a,b)=>order.indexOf(a.type)-order.indexOf(b.type)).map(doc=>{
         // page가 있으면(전체 카탈로그 공용 파일, 0.95) 새 탭은 그 쪽에서 열고(#page=N, 아이폰 Safari는 1쪽부터 열릴 수 있음), 내려받기는 파일 전체를 받는다.
         const label=doc.label||DOC_LABEL[doc.type],pageNote=doc.page?` ${doc.page}쪽`:'',title=esc(`${doc.title||label}${pageNote}`),href=docFile(doc.file);
-        return `<span class="rt-pg-doc" data-doc="${esc(doc.type)}"><a class="rt-pg-doc-open" href="${href}${doc.page?`#page=${doc.page}`:''}" target="_blank" rel="noopener" title="${title} · 새 탭에서 보기">${esc(label)} PDF${doc.page?` <small>${doc.page}쪽</small>`:''}</a><a class="rt-pg-doc-save" href="${href}" download="${esc(doc.file)}" title="${title} · 내려받기(전체 파일)" aria-label="${esc(label)} 내려받기">${DOWNLOAD_ICON}</a></span>`;
+        // 0.105 샘플(사용자 요청 2026-09-28 "카달로그는 팝업형태 보이면 어때? 1장짜리라서 파일다운받아서 다시 열기 불편해", HD-13U만 적용):
+        // 페이지 지정 없는 제품별 단일 쪽 카탈로그는 새 탭 대신 화면 안 팝업(다이얼로그)으로 미리 본다. 반응이 좋으면 전 제품으로 넓힌다.
+        const popup=item.id==='hd-13u'&&doc.type==='Catalog'&&!doc.page;
+        const openEl=popup
+          ?`<button type="button" class="rt-pg-doc-open" data-doc-preview="${href}" data-doc-title="${title}" title="${title} · 미리보기">${esc(label)} PDF</button>`
+          :`<a class="rt-pg-doc-open" href="${href}${doc.page?`#page=${doc.page}`:''}" target="_blank" rel="noopener" title="${title} · 새 탭에서 보기">${esc(label)} PDF${doc.page?` <small>${doc.page}쪽</small>`:''}</a>`;
+        return `<span class="rt-pg-doc" data-doc="${esc(doc.type)}">${openEl}<a class="rt-pg-doc-save" href="${href}" download="${esc(doc.file)}" title="${title} · 내려받기(전체 파일)" aria-label="${esc(label)} 내려받기">${DOWNLOAD_ICON}</a></span>`;
       }).join('');
     }
     // 제품 목록 화면의 "전체 카탈로그" 버튼(0.95): 링크 하나로 카탈로그 전체를 공유한다.
@@ -931,6 +937,8 @@
       if(sideBtn){const seg=sideBtn.closest('.rt-pg-seg'),scope=seg?.parentElement;if(scope){seg.querySelectorAll('[data-pm-side]').forEach(btn=>{const on=btn===sideBtn;btn.classList.toggle('rt-pg-on',on);btn.setAttribute('aria-pressed',String(on))});scope.querySelectorAll('[data-pm-face]').forEach(el=>{el.hidden=el.dataset.pmFace!==sideBtn.dataset.pmSide})}return}
       const diagramBtn=event.target.closest('[data-open-diagram]');
       if(diagramBtn){const record=body.querySelector('.rt-pg-record');if(record){record.open=true;record.querySelector('#rt-pg-diagram-photo')?.scrollIntoView({behavior:'smooth',block:'start'})}return}
+      const docPreviewBtn=event.target.closest('[data-doc-preview]');
+      if(docPreviewBtn){openDocPreview(docPreviewBtn.dataset.docPreview,docPreviewBtn.dataset.docTitle);return}
       // 0.99 XDM-PSU Signal Flow 확대 창: 그림을 복사해 전체 화면 창에 넣고 100%(화면 폭 맞춤)~300%로 키운다. 창 안에서 스크롤·손가락으로 옮겨 본다.
       const flowZoom=event.target.closest('[data-flow-zoom]')||(event.target.closest('.rt-pg-svg-wrap')?.querySelector('.rt-psu-anim')&&event.target.closest('.rt-pg-svg-wrap'));
       if(flowZoom){openFlowZoom(flowZoom.closest('section'));return}
@@ -976,6 +984,18 @@
       setFlowZoom(dlg,0);
       if(typeof dlg.showModal==='function')dlg.showModal();else dlg.setAttribute('open','');
       dlg.querySelector('[data-zoom-step="1"]').focus();
+    }
+    // 카탈로그 PDF 팝업 미리보기(0.105 샘플, HD-13U 전용): iframe으로 PDF를 화면 안 다이얼로그에 바로 보여준다.
+    function openDocPreview(href,title){
+      let dlg=body.querySelector('dialog.rt-doc-zoom');
+      if(!dlg){
+        dlg=document.createElement('dialog');dlg.className='rt-doc-zoom';dlg.setAttribute('aria-label','문서 미리보기');
+        dlg.addEventListener('click',event=>{if(event.target===dlg)dlg.close()});
+        body.appendChild(dlg);
+      }
+      dlg.innerHTML=`<div class="rt-flow-zoom-head"><b>${esc(title)}</b><div class="rt-flow-zoom-tools"><button type="button" class="rt-flow-zoom-close" data-zoom-close aria-label="닫기">×</button></div></div><div class="rt-doc-zoom-body"><iframe src="${href}" title="${esc(title)}"></iframe></div>`;
+      if(typeof dlg.showModal==='function')dlg.showModal();else dlg.setAttribute('open','');
+      dlg.querySelector('[data-zoom-close]').focus();
     }
     body.addEventListener('keydown',event=>{
       const filterBtn=event.target.closest('[data-product-filter]');
