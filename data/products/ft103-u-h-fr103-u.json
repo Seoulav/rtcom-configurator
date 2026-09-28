@@ -130,7 +130,7 @@
     {
       "group": "Video",
       "name": "출력 신호",
-      "value": "Fiber Optical Output (> -10dbm after 6,600ft (2km) transmission)",
+      "value": "Fiber Optical Output (> -10dbm after 2km transmission)",
       "unit": "",
       "condition": "FT103-U-H",
       "source": "C",
@@ -139,7 +139,7 @@
     {
       "group": "Video",
       "name": "입력 신호",
-      "value": "Fiber Optical Input (> -10dbm after 6,600ft (2km) transmission)",
+      "value": "Fiber Optical Input (> -10dbm after 2km transmission)",
       "unit": "",
       "condition": "FR103-U",
       "source": "J",
@@ -177,7 +177,7 @@
       "name": "최대 전송거리",
       "value": "2",
       "unit": "km",
-      "condition": "Single Mode Fiber · 4K 30Hz · 6,600ft",
+      "condition": "Single Mode Fiber · 4K 30Hz",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -186,7 +186,7 @@
       "name": "최대 전송거리",
       "value": "500",
       "unit": "m",
-      "condition": "Multi Mode Fiber · 4K 30Hz · 1,650ft",
+      "condition": "Multi Mode Fiber · 4K 30Hz",
       "source": "M1",
       "verification": "VERIFIED"
     },
