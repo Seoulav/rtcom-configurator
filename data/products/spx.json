@@ -256,7 +256,7 @@
       "name": "CATx 보드 전송 거리",
       "value": "50",
       "unit": "m",
-      "condition": "CAT 6 기준 4K 60Hz(165 ft)",
+      "condition": "CAT 6 기준 4K 60Hz",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -265,7 +265,7 @@
       "name": "CATx 보드 전송 거리",
       "value": "60",
       "unit": "m",
-      "condition": "CAT 6 기준 1080p(198 ft)",
+      "condition": "CAT 6 기준 1080p",
       "source": "C",
       "verification": "VERIFIED"
     }

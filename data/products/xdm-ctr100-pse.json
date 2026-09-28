@@ -23,15 +23,15 @@
   "images": [
     {
       "role": "Main",
-      "file": "xdm-ctr100-pse-main.webp",
-      "alt": "RTCOM XDM-CTR100 PSE 사선 사진",
-      "note": "Main · XDM-CTR100 PSE 제품 안내서 1쪽 사진",
+      "file": "xdm-ctr100-pse-front.webp",
+      "alt": "RTCOM XDM-CTR100 PSE 정면(흰 배경 실물 사진)",
+      "note": "Main · 사용자 제공 실물 사진 재업로드(2026-09-28, 같은 사진을 원본 PNG에서 다시 잘라냄) · 목록 썸네일용으로 변경(2026-09-28, 사용자 요청)",
       "provider": "RTCOM",
       "model": "XDM-CTR100 PSE",
-      "source": "S1",
+      "source": "P1",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "448×280"
+      "resolution": "646×396"
     },
     {
       "role": "Rear",
@@ -47,15 +47,15 @@
     },
     {
       "role": "Front",
-      "file": "xdm-ctr100-pse-front.webp",
-      "alt": "RTCOM XDM-CTR100 PSE 정면(흰 배경 실물 사진)",
-      "note": "Front · 사용자 제공 실물 사진 재업로드(2026-09-28, 같은 사진을 원본 PNG에서 다시 잘라냄)",
+      "file": "xdm-ctr100-pse-main.webp",
+      "alt": "RTCOM XDM-CTR100 PSE 사선 사진",
+      "note": "Front · XDM-CTR100 PSE 제품 안내서 1쪽 사진 · Main이던 사진을 이 자리로 옮김(2026-09-28)",
       "provider": "RTCOM",
       "model": "XDM-CTR100 PSE",
-      "source": "P1",
+      "source": "S1",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "646×396"
+      "resolution": "448×280"
     },
     {
       "role": "Perspective",
