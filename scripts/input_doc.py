@@ -11,7 +11,7 @@
       같은 이름이 있으면 덮어쓰지 않고 _2, _3을 붙인다. --dry-run이면 옮기지 않고 새 경로만 출력한다.
 
 추정 결과는 참고용이다. Claude는 PDF 쪽 그림·사진을 직접 보고 최종 판단한다.
-PDF 읽기에는 pypdf가 필요하다(pip install pypdf). 없으면 파일 이름만으로 추정한다.
+PDF 읽기에는 pypdf를 쓰고, 없으면 pdftotext(Git for Windows·poppler·xpdf)를 쓴다. 둘 다 없으면 파일 이름만으로 추정한다.
 """
 from __future__ import annotations
 
@@ -22,6 +22,7 @@ import json
 import os
 import re
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -64,11 +65,34 @@ def known_models() -> list[str]:
     return sorted(models, key=len, reverse=True)
 
 
+def pdftotext_text(path: Path, pages: int) -> tuple[str, dict, int]:
+    """pypdf가 없을 때 pdftotext로 앞쪽 글자를 읽는다(Windows Git Bash에는 xpdf판이 들어 있다)."""
+    exe = shutil.which("pdftotext")
+    if not exe:
+        return "", {"warning": "PDF 읽기 도구 없음: pip install pypdf 또는 pdftotext 설치"}, 0
+    try:
+        out = subprocess.run([exe, "-enc", "UTF-8", "-f", "1", "-l", str(pages), str(path), "-"],
+                             capture_output=True, timeout=60, check=False)
+        text = out.stdout.decode("utf-8", errors="replace")
+    except (OSError, subprocess.SubprocessError) as error:
+        return "", {"warning": f"pdftotext 실패: {error}"}, 0
+    count = 0
+    info = shutil.which("pdfinfo")
+    if info:
+        try:
+            meta_out = subprocess.run([info, str(path)], capture_output=True, timeout=30, check=False).stdout.decode("utf-8", errors="replace")
+            found = re.search(r"^Pages:\s+(\d+)", meta_out, re.M)
+            count = int(found.group(1)) if found else 0
+        except (OSError, subprocess.SubprocessError):
+            pass
+    return text, {"reader": "pdftotext"}, count
+
+
 def pdf_text(path: Path, pages: int = 3) -> tuple[str, dict, int]:
     try:
         from pypdf import PdfReader  # type: ignore
     except ImportError:
-        return "", {"warning": "pypdf 없음: pip install pypdf"}, 0
+        return pdftotext_text(path, pages)
     try:
         reader = PdfReader(str(path))
         meta = {k.lstrip("/"): str(v) for k, v in (reader.metadata or {}).items() if k in ("/Title", "/Author", "/Creator", "/ModDate")}
@@ -81,7 +105,7 @@ def pdf_text(path: Path, pages: int = 3) -> tuple[str, dict, int]:
 def guess(path: Path, models: list[str]) -> dict:
     ext = path.suffix.lower()
     text, meta, page_count = pdf_text(path) if ext == ".pdf" else ("", {}, 0)
-    haystack = f"{path.stem}\n{meta.get('Title', '')}\n{text}".upper().replace("_", "-")
+    haystack = f"{path.stem}\n{meta.get('Title', '')}\n{text}".upper().replace("_", " ")
     found = [m for m in models if re.search(rf"(?<![A-Z0-9-]){re.escape(m)}(?![A-Z0-9-])", haystack)]
     # 긴 이름에 포함된 짧은 이름(예: XDM-CT103 안의 CT103)은 뺀다.
     found = [m for m in found if not any(m != other and m in other for other in found)]
@@ -219,6 +243,10 @@ def file_one(args: argparse.Namespace) -> int:
 
 
 def main() -> int:
+    # Windows 콘솔 기본 인코딩(cp949)으로는 PDF 글자 일부를 출력할 수 없어 UTF-8로 고정한다.
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("scan", help="새 자료를 읽어 추정 결과를 JSON으로 출력")
