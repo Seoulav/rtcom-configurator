@@ -51,11 +51,12 @@ test('every XDM card and documented rear photo has an image asset',()=>{
   for(const model of ['8x','16x','32x','48x','64x','80x','128x','180x','256x'])assert.ok(fs.existsSync(`output/design/assets/frames/vdm-${model}-front.webp`)&&fs.existsSync(`output/design/assets/frames/vdm-${model}-rear.webp`),`missing VDM ${model} front/rear image`);
   // 0.111: 실물 사진이 없는 VDM 전면 7종·후면 8종은 scripts/tools/draw_vdm_frames.cjs 평면 그림(-art)을 쓰고, 실물 사진(16X 전면·후면, 48X 전면)은 그대로 둔다.
   const vdmArt=[...read('src/app.js').matchAll(/frames\/(vdm-\d+x-(?:front|rear))-art\.webp/g)].map(match=>match[1]).sort();
-  assert.deepEqual(vdmArt,[...['8x','32x','64x','80x','128x','180x','256x'].map(m=>`vdm-${m}-front`),...['8x','32x','48x','64x','80x','128x','180x','256x'].map(m=>`vdm-${m}-rear`)].sort());
+  assert.deepEqual(vdmArt,[...['8x','32x','64x','80x','128x','180x','256x'].map(m=>`vdm-${m}-front`),...['8x','16x','32x','48x','64x','80x','128x','180x','256x'].map(m=>`vdm-${m}-rear`)].sort());
   // 0.113: XDM·SPX 후면(구성기 03 카드 슬롯)도 scripts/tools/draw_xdm_spx_rear_frames.cjs 평면 그림을 쓴다(XDM-216 포함 11종).
   const rearArt=[...read('src/app.js').matchAll(/frames\/((?:xdm|spx)-[a-z0-9]+)-rear-art\.webp/g)].map(match=>match[1]).sort();
   assert.deepEqual(rearArt,['spx-m1620','spx-m24120','spx-m2472','spx-m3236','spx-m810','xdm-12','xdm-144','xdm-20','xdm-216','xdm-36','xdm-72']);
-  for(const photo of ['vdm-16x-front','vdm-16x-rear','vdm-48x-front'])assert.ok(read('src/app.js').includes(`frames/${photo}.webp'`),`${photo} keeps the real photo`);
+  // 0.119: VDM-16X 후면도 카드가 꽂힌 실물 사진 대신 빈 슬롯 그림(-rear-art)을 쓴다. 전면 실물 사진(16X·48X)은 그대로.
+  for(const photo of ['vdm-16x-front','vdm-48x-front'])assert.ok(read('src/app.js').includes(`frames/${photo}.webp'`),`${photo} keeps the real photo`);
   for(const model of ['m810','m1620','m3236','m2472','m24120'])for(const side of ['front','rear'])assert.ok(fs.existsSync(`output/design/assets/frames/spx-${model}-${side}.webp`),`missing SPX ${model} ${side} photo`);
   for(const card of [...catalog.SPX.input,...catalog.SPX.output])assert.ok(fs.existsSync(`output/design/assets/cards/${card[0]}.webp`),`missing SPX faceplate for ${card[0]}`);
   const extenders=[...new Set([...read('src/app.js').matchAll(/'(output\/design\/assets\/extenders\/[^']+)'/g)].map(match=>match[1]))];

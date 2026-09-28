@@ -105,6 +105,9 @@ const REAR={
     s+=controlH(84,124,228,58);
     s+=audioRouter(329,120,305,66,2,8);
     return s}},
+  // VDM-16X: 0.119(사용자 지적 2026-09-28 "VDM 16 프레임 후면을 보면은 제품 이미지가 들어갔는데 그게 아니라 그래픽 디자인이 들어가겠죠") 매뉴얼 1.5 Rear View 실물 사진(카드가 꽂힌 상태)을 빈 슬롯 그림으로 바꿨다.
+  // 가운데 칸은 사진과 같이 명판 · 오디오 매트릭스 라우터(IN 4줄 + OUT 4줄, 16×16) · 통신 단자 · 전원 IEC 2개.
+  'VDM-16X':{size:[449,278],input:[2,24,165,276],output:[280,24,443,276],cols:4,slots:4,draw(){return center(165,24,280,276,2,4)}},
   'VDM-32X':{size:[458,473],input:[8,10,165,459],output:[286,10,448,459],cols:4,slots:8,draw(){return center(165,10,286,459,2,8)}},
   'VDM-48X':{size:[448,677],input:[8,8,165,663],output:[282,8,442,663],cols:4,slots:12,draw(){return center(165,8,282,663,2,12)}},
   'VDM-64X':{size:[451,819],input:[8,8,165,802],output:[280,8,440,802],cols:4,slots:16,draw(){return center(165,8,280,802,2,16)}},
