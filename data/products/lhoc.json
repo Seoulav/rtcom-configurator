@@ -59,7 +59,11 @@
       "title": "알티컴 종합 카탈로그 2026 (국문)",
       "language": "ko",
       "note": "카탈로그 46쪽판 42쪽 발췌 · 제품별 공개본(2026-09-28 사용자 결정 \"제품별로 잘라 공개\")",
-      "file": "lhoc-catalog.pdf"
+      "file": "lhoc-catalog.pdf",
+      "preview": "image",
+      "previewImages": [
+        "lhoc-catalog-p1.webp"
+      ]
     }
   ],
   "features": [

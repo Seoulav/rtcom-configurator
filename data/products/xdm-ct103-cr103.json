@@ -99,7 +99,11 @@
       "title": "알티컴 종합 카탈로그 2026 (국문)",
       "language": "ko",
       "note": "카탈로그 46쪽판 11쪽 발췌 · 제품별 공개본(2026-09-28 사용자 결정 \"제품별로 잘라 공개\")",
-      "file": "xdm-ct103-cr103-catalog.pdf"
+      "file": "xdm-ct103-cr103-catalog.pdf",
+      "preview": "image",
+      "previewImages": [
+        "xdm-ct103-cr103-catalog-p1.webp"
+      ]
     },
     {
       "type": "Manual",
@@ -108,7 +112,8 @@
       "language": "ko",
       "note": "사용자 제공 매뉴얼 공개본(2026-09-28, 사용자 결정 \"1번\" — 매뉴얼 전부 공개)",
       "file": "xdm-ct103-cr103-manual-ct103.pdf",
-      "label": "CT103 매뉴얼"
+      "label": "CT103 매뉴얼",
+      "preview": "pdfjs"
     },
     {
       "type": "Manual",
@@ -117,7 +122,8 @@
       "language": "ko",
       "note": "사용자 제공 매뉴얼 공개본(2026-09-28, 사용자 결정 \"1번\" — 매뉴얼 전부 공개)",
       "file": "xdm-ct103-cr103-manual-cr103.pdf",
-      "label": "CR103 매뉴얼"
+      "label": "CR103 매뉴얼",
+      "preview": "pdfjs"
     }
   ],
   "features": [

@@ -75,7 +75,11 @@
       "title": "알티컴 종합 카탈로그 2026 (국문)",
       "language": "ko",
       "note": "카탈로그 46쪽판 24쪽 발췌 · 제품별 공개본(2026-09-28 사용자 결정 \"제품별로 잘라 공개\")",
-      "file": "ft101-u-fr101-u-catalog.pdf"
+      "file": "ft101-u-fr101-u-catalog.pdf",
+      "preview": "image",
+      "previewImages": [
+        "ft101-u-fr101-u-catalog-p1.webp"
+      ]
     }
   ],
   "features": [
