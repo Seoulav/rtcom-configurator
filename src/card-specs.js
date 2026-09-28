@@ -1,0 +1,31 @@
+/* 매트릭스 카드(슬롯 보드) 상세 사양. 근거: docs/RTcom_catalogue_2026_46p.pdf (알티컴 종합 카탈로그 2026 국문 46쪽판)
+   XDM 6~9쪽, SPX 16쪽, VDM 19~20쪽. 화면 표기 규칙(0.39)에 따라 "Up to"는 "최대"로 옮겼다. 카탈로그에 없는 카드는 specs를 비우고 missing에 요청 자료를 적는다.
+   구성기 03 카드 슬롯의 "카드 정보" 버튼·내 구성 카드 행이 이 값을 읽는다(docs/implementation/CARD_DETAIL_INFO.md). */
+globalThis.RtCardSpecs = {
+  'XDM-HIS100':{title:'HDMI Input Slot',page:6,specs:[['포트 구성','HDMI 4포트, 오디오 입·출력 4포트(병합 및 추출)'],['커넥터','HDMI 암(Female), 피닉스 5핀 암'],['최대 해상도','4K 60Hz (4096×2160@60Hz 4:4:4, 3840×2160@60Hz 4:4:4)'],['규격','HDMI v2.0']]},
+  'XDM-HI100':{title:'HDMI Input Slot (Non-Scaler)',page:6,specs:[['포트 구성','HDMI 4포트, 오디오 입·출력 4포트(병합 및 추출)'],['커넥터','HDMI 암(Female), 피닉스 5핀 암'],['최대 해상도','4K 60Hz (4096×2160@60Hz 4:4:4, 3840×2160@60Hz 4:4:4)'],['규격','HDMI v2.0']]},
+  'XDM-DPI100':{title:'DisplayPort Input Slot',page:6,specs:[['포트 구성','DisplayPort 4포트, 오디오 입·출력 4포트(병합 및 추출)'],['커넥터','DisplayPort 암(Female), 피닉스 5핀 암'],['최대 해상도','4K 60Hz (4096×2160@60Hz 4:4:4, 3840×2160@60Hz 4:4:4)'],['규격','DisplayPort v1.2']]},
+  'XDM-FIS100':{title:'Fiber Optical Input Slot',page:7,specs:[['포트 구성','광 4포트, 오디오 입·출력 4포트(병합 및 추출)'],['커넥터','1 LC 암(Female), 피닉스 5핀 암'],['최대 해상도','4K 60Hz (4096×2160@60Hz 4:4:4, 3840×2160@60Hz 4:4:4)'],['최대 전송거리','싱글모드 2km, 멀티모드 300m']]},
+  'XDM-SIS100':{title:'12G-SDI Input Slot',page:7,specs:[['포트 구성','12G-SDI 4포트, 오디오 입·출력 4포트(병합 및 추출)'],['커넥터','BNC 암(Female), 피닉스 5핀 암'],['최대 해상도','4K 60Hz (4096×2160@60Hz 4:2:2, 3840×2160@60Hz 4:2:2)'],['동작 규격','SMPTE 292M, SMPTE 259M, SMPTE 424M, ITU-R BT.601, ITU-R BT.1120']]},
+  'XDM-CIS100':{title:'HDBaseT Input Slot',page:7,specs:[['포트 구성','HDBaseT 4포트, 오디오 입·출력 4포트(병합 및 추출)'],['커넥터','RJ45 암(Female), 피닉스 5핀 암'],['최대 해상도','4K 60Hz (4096×2160@60Hz 4:4:4, 3840×2160@60Hz 4:4:4)'],['권장 케이블','CAT6a, CAT7'],['최대 전송거리','4K60Hz 4:4:4 100m (케이블별 상이, CAT6a BELDEN 10GXE02 S/FTP 기준)'],['규격','HDBaseT 3.0']]},
+  'XDM-HOS100':{title:'HDMI Output Slot',page:8,specs:[['포트 구성','HDMI 4포트, 오디오 출력 4포트(추출)'],['커넥터','HDMI 암(Female), 피닉스 3핀 암'],['최대 해상도','4K 60Hz (4096×2160@60Hz 4:4:4, 3840×2160@60Hz 4:4:4)'],['규격','HDMI v2.0'],['특징','비디오월 지원, 쿼드 뷰 슬롯으로 전환 가능']]},
+  'XDM-DPOS100':{title:'DisplayPort Output Slot',page:8,specs:[['포트 구성','DisplayPort 4포트, 오디오 출력 4포트(추출)'],['커넥터','DisplayPort 암(Female), 피닉스 3핀 암'],['최대 해상도','4K 60Hz (4096×2160@60Hz 4:4:4, 3840×2160@60Hz 4:4:4)'],['규격','DisplayPort v1.2']]},
+  'XDM-COS100':{title:'HDBaseT Output Slot',page:8,specs:[['포트 구성','HDBaseT 4포트, 오디오 출력 4포트(추출)'],['커넥터','RJ45 암(Female), 피닉스 5핀 암(오디오 추출 및 PoE)'],['최대 해상도','4K 60Hz (4096×2160@60Hz 4:4:4, 3840×2160@60Hz 4:4:4)'],['권장 케이블','CAT6a, CAT7'],['최대 전송거리','4K60Hz 4:4:4 100m (케이블별 상이, CAT6a BELDEN 10GXE02 S/FTP 기준)'],['규격','HDBaseT 3.0']]},
+  'XDM-FOS100':{title:'Fiber Optical Output Slot',page:9,specs:[['포트 구성','광 4포트, 오디오 출력 4포트(추출)'],['커넥터','1 LC 암(Female), 피닉스 3핀 암'],['최대 해상도','4K 60Hz (4096×2160@60Hz 4:4:4, 3840×2160@60Hz 4:4:4)'],['최대 전송거리','싱글모드 2km, 멀티모드 300m']]},
+  'XDM-SOS100':{title:'12G-SDI Output Slot',page:9,specs:[['포트 구성','12G-SDI 4포트, 오디오 출력 4포트(추출)'],['커넥터','BNC 암(Female), 피닉스 3핀 암'],['최대 해상도','4K 60Hz (4096×2160@60Hz 4:2:2, 3840×2160@60Hz 4:2:2)'],['동작 규격','SMPTE 292M, SMPTE 259M, SMPTE 424M, ITU-R BT.601, ITU-R BT.1120']]},
+  'XDM-WOS100':{title:'HDMI (Wall Overlay) Output Slot',page:9,specs:[['포트 구성','HDMI 4포트'],['커넥터','HDMI 암(Female)'],['최대 해상도','4K 60Hz (4096×2160@60Hz 4:4:4, 3840×2160@60Hz 4:4:4)'],['규격','HDMI v2.0'],['특징','비디오월 지원, 커맨드로 영상 중첩(오버레이) 기능 사용 가능']],note:'심리스·비디오월 기능을 지원하며 스위칭 모드 또는 비디오월 모드로 사용합니다. 중첩 기능 커맨드는 별도 커맨드 매뉴얼을 확인해야 합니다.'},
+  'SPX-HIS8':{title:'HDMI Input Board',page:16,specs:[['포트 구성','HDMI 입력 8포트, 스테레오 오디오 출력 8포트'],['규격','HDMI 2.0b'],['세부 사양','최대 3840×2160@60Hz, 오디오 추출']]},
+  'SPX-HOS10':{title:'HDMI Output Board',page:16,specs:[['포트 구성','HDMI 출력 10포트, 피닉스 3핀 오디오 2포트(1번·10번 출력)'],['규격','HDMI 2.0b'],['세부 사양','최대 3840×2160@60Hz'],['오디오','스테레오 오디오 추출']]},
+  'SPX-HOS12':{title:'HDMI Output Board',page:16,specs:[['포트 구성','HDMI 출력 12포트'],['규격','HDMI 2.0b'],['세부 사양','최대 3840×2160@60Hz']]},
+  'SPX-COS12':{title:'CAT Output Board',page:16,specs:[['포트 구성','CATx 출력 12포트'],['규격','CATx'],['세부 사양','최대 3840×2160@60Hz']],note:'SPX-RX와 짝을 이뤄 사용합니다(메인프레임에서 SPX-RX로 전원 공급, POC).'},
+  'HIS4-U':{title:'4K HDMI Input Board',page:19,specs:[['포트 구성','HDMI 입력 4포트, 스테레오 입·출력 4포트'],['규격','DVI 1.0, HDMI 1.4'],['세부 사양','최대 3840×2160@30Hz, 오디오 병합 및 추출']]},
+  'CIS4-U':{title:'4K CATx (HDBaseT) Input Board',page:19,specs:[['포트 구성','CATx 입력 4포트, 스테레오 입·출력 4포트'],['세부 사양','최대 3840×2160@30Hz, 오디오 병합 및 추출']]},
+  'FIS4-U':{title:'4K Fiber Optical (1 LC) Input Board',page:19,specs:[['포트 구성','광 입력 4포트, 스테레오 입·출력 4포트'],['최대 전송거리','멀티모드 500m, 싱글모드 2km'],['세부 사양','최대 3840×2160@30Hz, 오디오 병합 및 추출']]},
+  'SIS4-U':{title:'3G/HD-SDI Input Board',page:19,specs:[['포트 구성','3G/HD-SDI 입력 4포트, 스테레오 입·출력 4포트'],['동작 규격','SMPTE 292M, SMPTE 259M, SMPTE 424M, ITU-R BT.601, ITU-R BT.1120'],['세부 사양','최대 1920×1080p60Hz, 오디오 병합 및 추출']]},
+  'HOS4-U':{title:'HDMI Output Board (일반 스위칭)',page:null,specs:[],missing:'카탈로그 46쪽판 20쪽에는 HOS4S-UW(심리스)만 있고 HOS4-U(일반 스위칭) 사양표가 없습니다. 제조사 사양서 또는 매뉴얼이 필요합니다.'},
+  'HOS4S-UW':{title:'4K/Scaling & Seamless/Wall HDMI Output Board',page:20,specs:[['포트 구성','HDMI 출력 4포트'],['모드','DVI 1.0, HDMI 1.4'],['세부 사양','최대 3840×2160@30Hz, 비디오월, 심리스 & 스케일링 지원']]},
+  'QOS4S-U':{title:'HDMI Output Board for 4K Quad Viewer',page:20,specs:[['포트 구성','HDMI 출력 2포트'],['세부 사양','최대 1920×1200, 3840×2160@30Hz, 심리스 스위칭 지원']]},
+  'COS4-U':{title:'4K CATx (HDBaseT) Output Board',page:20,specs:[['포트 구성','CATx 출력 4포트, 스테레오 입·출력 4포트'],['세부 사양','최대 3840×2160@30Hz, 오디오 병합 및 추출']]},
+  'FOS4-U':{title:'4K Fiber Optical (1 LC) Output Board',page:20,specs:[['포트 구성','광 출력 4포트, 스테레오 입·출력 4포트'],['최대 전송거리','멀티모드 500m, 싱글모드 2km'],['세부 사양','최대 3840×2160@30Hz, 오디오 병합 및 추출']]},
+  'SOS4':{title:'3G/HD-SDI Output Board',page:20,specs:[['포트 구성','3G/HD-SDI 출력 4포트'],['동작 규격','SMPTE 292M, SMPTE 259M, SMPTE 424M, ITU-R BT.601, ITU-R BT.1120'],['세부 사양','최대 1920×1080p60Hz, 심리스 & 스케일링 지원']]}
+};
