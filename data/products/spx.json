@@ -24,14 +24,14 @@
     {
       "role": "Main",
       "file": "spx-main.webp",
-      "alt": "RTCOM SPX 시리즈 메인프레임과 SPX-RX 제품군",
-      "note": "Main · SPX-M810/M1620/M3236 등 제품군과 전송기 사진",
+      "alt": "RTCOM SPX-M3236 정면(흰 배경 실물 사진)",
+      "note": "Main · 사용자 제공 실물 사진(2026-09-28, SPX-M3236 모델 기준)",
       "provider": "RTCOM",
-      "model": "SPX Series",
-      "source": "R",
+      "model": "SPX-M3236",
+      "source": "P1",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "586×302"
+      "resolution": "1129×732"
     },
     {
       "role": "Front",
@@ -359,6 +359,12 @@
       "name": "서울영상테크 SI사업본부 검토 판단",
       "page": "",
       "scope": "사용자 위임(2026-09-27) — 카탈로그 내부 충돌·오기 정리"
+    },
+    {
+      "code": "P1",
+      "name": "서울영상테크 SI사업본부 제공 실물 사진",
+      "page": "",
+      "scope": "사용자 업로드 고해상도 제품 사진(2026-09-28, 흰 배경 촬영본)"
     }
   ],
   "issues": []
