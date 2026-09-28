@@ -135,7 +135,7 @@
     {
       "group": "Video",
       "name": "최대 해상도",
-      "value": "3840x2160@60Hz",
+      "value": "4K60Hz",
       "unit": "",
       "condition": "4:4:4",
       "source": "M1",
