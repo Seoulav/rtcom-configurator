@@ -93,14 +93,18 @@
       "status": "FOUND",
       "title": "XDM-CT103 사용자 매뉴얼 Ver.1.4",
       "language": "ko",
-      "note": "4–9쪽 · 사용자 제공, 배포 제외"
+      "note": "사용자 제공 매뉴얼 공개본(2026-09-28, 사용자 결정 \"1번\" — 매뉴얼 전부 공개)",
+      "file": "xdm-ct103-cr103-manual-ct103.pdf",
+      "label": "CT103 매뉴얼"
     },
     {
       "type": "Manual",
       "status": "FOUND",
       "title": "XDM-CR103 사용자 매뉴얼 Ver.1.1",
       "language": "ko",
-      "note": "4–9쪽 · 사용자 제공, 배포 제외"
+      "note": "사용자 제공 매뉴얼 공개본(2026-09-28, 사용자 결정 \"1번\" — 매뉴얼 전부 공개)",
+      "file": "xdm-ct103-cr103-manual-cr103.pdf",
+      "label": "CR103 매뉴얼"
     }
   ],
   "features": [

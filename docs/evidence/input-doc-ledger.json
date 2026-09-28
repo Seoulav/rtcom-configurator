@@ -15,12 +15,17 @@
    "original": "RTcom_Manual_HD-104U KV Ver.1.1.pdf",
    "model": "HD-104U",
    "version": "Ver1.1",
-   "status": "reflected",
+   "status": "published",
    "reflected": [
     {
      "where": "data/products/hd-104u.json",
      "what": "전원 DC 5V 1A(충돌 결정 A, 매뉴얼 기준)",
      "release": "0.86.0"
+    },
+    {
+     "where": "output/design/assets/docs/",
+     "what": "제품 상세 매뉴얼 PDF 버튼으로 공개",
+     "release": "0.87.0"
     }
    ],
    "note": "사이트 근거판과 같은 판(0.36~0.78 반영)",
@@ -32,8 +37,14 @@
    "original": "RTcom_Manual_HD-108U KV Ver.1.1.pdf",
    "model": "HD-108U",
    "version": "Ver1.1",
-   "status": "same",
-   "reflected": [],
+   "status": "published",
+   "reflected": [
+    {
+     "where": "output/design/assets/docs/",
+     "what": "제품 상세 매뉴얼 PDF 버튼으로 공개",
+     "release": "0.87.0"
+    }
+   ],
    "note": "사이트 근거판과 같은 판",
    "date": "2026-09-28"
   },
@@ -43,8 +54,14 @@
    "original": "RTcom_Manual_HD-13U KV Ver.1.2.pdf",
    "model": "HD-13U",
    "version": "Ver1.2",
-   "status": "same",
-   "reflected": [],
+   "status": "published",
+   "reflected": [
+    {
+     "where": "output/design/assets/docs/",
+     "what": "제품 상세 매뉴얼 PDF 버튼으로 공개",
+     "release": "0.87.0"
+    }
+   ],
    "note": "사이트 근거판과 같은 판",
    "date": "2026-09-28"
   },
@@ -54,8 +71,14 @@
    "original": "RTcom_Manual_HD-210U KV Ver.1.2.pdf",
    "model": "HD-210U",
    "version": "Ver1.2",
-   "status": "same",
-   "reflected": [],
+   "status": "published",
+   "reflected": [
+    {
+     "where": "output/design/assets/docs/",
+     "what": "제품 상세 매뉴얼 PDF 버튼으로 공개",
+     "release": "0.87.0"
+    }
+   ],
    "note": "사이트 근거판과 같은 판(0.61 딥 스위치)",
    "date": "2026-09-28"
   },
@@ -65,8 +88,14 @@
    "original": "RTCom_Manual_HDS-21U Ver.1.0.pdf",
    "model": "HDS-21U",
    "version": "Ver1.0",
-   "status": "same",
-   "reflected": [],
+   "status": "published",
+   "reflected": [
+    {
+     "where": "output/design/assets/docs/",
+     "what": "제품 상세 매뉴얼 PDF 버튼으로 공개",
+     "release": "0.87.0"
+    }
+   ],
    "note": "사이트 근거판과 같은 판",
    "date": "2026-09-28"
   },
@@ -76,8 +105,14 @@
    "original": "RTCom_Manual_HDS-42MU Ver.1.0.pdf",
    "model": "HDS-42MU",
    "version": "Ver1.0",
-   "status": "same",
-   "reflected": [],
+   "status": "published",
+   "reflected": [
+    {
+     "where": "output/design/assets/docs/",
+     "what": "제품 상세 매뉴얼 PDF 버튼으로 공개",
+     "release": "0.87.0"
+    }
+   ],
    "note": "사이트 근거판과 같은 판",
    "date": "2026-09-28"
   },
@@ -109,8 +144,14 @@
    "original": "RTcom_Manual_OBHD-2C Ver.2.1.pdf",
    "model": "OBHD-2C",
    "version": "Ver2.1",
-   "status": "same",
-   "reflected": [],
+   "status": "published",
+   "reflected": [
+    {
+     "where": "output/design/assets/docs/",
+     "what": "제품 상세 매뉴얼 PDF 버튼으로 공개",
+     "release": "0.87.0"
+    }
+   ],
    "note": "사이트 근거판과 같은 판(0.70~0.71)",
    "date": "2026-09-28"
   },
@@ -120,8 +161,14 @@
    "original": "RTcom_Manual_OBUX-1C KV Ver.2.2.pdf",
    "model": "OBUX-1C",
    "version": "Ver2.2",
-   "status": "same",
-   "reflected": [],
+   "status": "published",
+   "reflected": [
+    {
+     "where": "output/design/assets/docs/",
+     "what": "제품 상세 매뉴얼 PDF 버튼으로 공개",
+     "release": "0.87.0"
+    }
+   ],
    "note": "사이트 근거판과 같은 판(0.64)",
    "date": "2026-09-28"
   },
@@ -131,8 +178,14 @@
    "original": "RTcom_Manual_QMS-44UX_KV.04.pdf",
    "model": "QMS-44UX",
    "version": "KV04",
-   "status": "same",
-   "reflected": [],
+   "status": "published",
+   "reflected": [
+    {
+     "where": "output/design/assets/docs/",
+     "what": "제품 상세 매뉴얼 PDF 버튼으로 공개",
+     "release": "0.87.0"
+    }
+   ],
    "note": "사이트 근거판(M-Q44)과 같은 판",
    "date": "2026-09-28"
   },
@@ -142,12 +195,17 @@
    "original": "RTcom_Manual_QMS-88UX_KV.04.pdf",
    "model": "QMS-88UX",
    "version": "KV04",
-   "status": "reflected",
+   "status": "published",
    "reflected": [
     {
      "where": "data/products/qms-88ux.json",
      "what": "06 화면 구성 모드 8분할(16:9 비율) 추가(충돌 결정 G)",
      "release": "0.85.0"
+    },
+    {
+     "where": "output/design/assets/docs/",
+     "what": "제품 상세 매뉴얼 PDF 버튼으로 공개",
+     "release": "0.87.0"
     }
    ],
    "note": "사이트 근거 KV.03보다 새 판. 6쪽 사양 일치, 22~23쪽 Output Option 5·6 반영",
@@ -170,7 +228,7 @@
    "original": "RTCom_Manual_VDM_KV07_251219.pdf",
    "model": "VDM",
    "version": "KV07",
-   "status": "reflected",
+   "status": "published",
    "reflected": [
     {
      "where": "src/card-specs.js",
@@ -186,6 +244,11 @@
      "where": "src/card-specs.js, data/products/vdm.json",
      "what": "광 카드 10km·-U 카드 4096×2160·HOS4S-UW 1920×1080(충돌 결정 C·D·E)",
      "release": "0.86.0"
+    },
+    {
+     "where": "output/design/assets/docs/",
+     "what": "제품 상세 매뉴얼 PDF 버튼으로 공개",
+     "release": "0.87.0"
     }
    ],
    "note": "구성기 VDM 도면·슬롯 근거판(251219)과 같은 판. 카드 사양 보완에 사용",
@@ -197,8 +260,14 @@
    "original": "RTcom_Manual_XDM KV08_250902 .pdf",
    "model": "XDM",
    "version": "KV08",
-   "status": "same",
-   "reflected": [],
+   "status": "published",
+   "reflected": [
+    {
+     "where": "output/design/assets/docs/",
+     "what": "제품 상세 매뉴얼 PDF 버튼으로 공개",
+     "release": "0.87.0"
+    }
+   ],
    "note": "구성기 XDM 후면 사진 근거판과 같은 판(250902)",
    "date": "2026-09-28"
   },
@@ -208,12 +277,17 @@
    "original": "RTcom_Manual_XDM-CR103 KV Ver.1.1.pdf",
    "model": "XDM-CR103",
    "version": "Ver1.1",
-   "status": "reflected",
+   "status": "published",
    "reflected": [
     {
      "where": "data/products/xdm-ct103-cr103.json",
      "what": "최대 해상도 3840x2160@60Hz(충돌 결정 B)",
      "release": "0.86.0"
+    },
+    {
+     "where": "output/design/assets/docs/",
+     "what": "제품 상세 매뉴얼 PDF 버튼으로 공개",
+     "release": "0.87.0"
     }
    ],
    "note": "사이트 근거판과 같은 판(0.45)",
@@ -225,12 +299,17 @@
    "original": "RTcom_Manual_XDM-CT103 KV Ver.1.4.pdf",
    "model": "XDM-CT103",
    "version": "Ver1.4",
-   "status": "reflected",
+   "status": "published",
    "reflected": [
     {
      "where": "data/products/xdm-ct103-cr103.json",
      "what": "최대 해상도 3840x2160@60Hz(충돌 결정 B)",
      "release": "0.86.0"
+    },
+    {
+     "where": "output/design/assets/docs/",
+     "what": "제품 상세 매뉴얼 PDF 버튼으로 공개",
+     "release": "0.87.0"
     }
    ],
    "note": "사이트 근거판과 같은 판(0.45)",
@@ -242,12 +321,17 @@
    "original": "RTcom_Manual_XDM-CTR100 KV Ver.1.4.pdf",
    "model": "XDM-CTR100",
    "version": "Ver1.4",
-   "status": "reflected",
+   "status": "published",
    "reflected": [
     {
      "where": "data/products/xdm-ctr100.json, xdm-ctr100-pse.json",
      "what": "최대 해상도 3840x2160@60Hz(충돌 결정 B)",
      "release": "0.86.0"
+    },
+    {
+     "where": "output/design/assets/docs/",
+     "what": "제품 상세 매뉴얼 PDF 버튼으로 공개",
+     "release": "0.87.0"
     }
    ],
    "note": "사이트 근거판과 같은 판(0.46·0.66)",
@@ -270,8 +354,14 @@
    "original": "RTcom_Manual_XDM-FT101_FR101 KV Ver.1.3.pdf",
    "model": "XDM-FT101-FR101",
    "version": "Ver1.3",
-   "status": "same",
-   "reflected": [],
+   "status": "published",
+   "reflected": [
+    {
+     "where": "output/design/assets/docs/",
+     "what": "제품 상세 매뉴얼 PDF 버튼으로 공개",
+     "release": "0.87.0"
+    }
+   ],
    "note": "사이트 근거판과 같은 판(0.64)",
    "date": "2026-09-28"
   },

@@ -12,6 +12,10 @@
 
 - **0.82.0 배포 기록**: `docs/qa/DEPLOYMENT_0.82_2026-09-28.md`(PR #67 → main 병합·배포 run 50, 공개 파일 224/224 일치, 비공개 파일 16개 404, 브랜치 배포 없음)
 
+## 0.87.0
+
+- **제품 상세 매뉴얼 PDF 버튼 공개**(사용자 결정 2026-09-28 "1번" — input_doc 매뉴얼 전부 공개): 로컬 `input_doc/RTCOM/manual/`의 매뉴얼 17개를 `output/design/assets/docs/<id>-manual.pdf`로 복사하고 16개 제품의 `documents[]`에 등록했습니다. 제품 상세 도구 모음에 "매뉴얼 PDF" 버튼(새 탭 보기·⤓ 내려받기)이 나타납니다. XDM-CT103/CR103은 CT103·CR103 매뉴얼 두 버튼, XDM-CTR100 PSE는 CTR100 매뉴얼 Ver.1.4를 씁니다. 공개하지 않은 자료: HEXA-01·HS-88M-U(사이트 제품 아님), SPX 프로토콜(제어 커맨드), CTR100 Ver.1.3(이전 판). 앞서 정한 "매뉴얼 로컬 보관" 결정을 대체합니다. 근거: `docs/implementation/PRODUCT_DOCUMENT_DOWNLOADS.md`.
+
 ## 0.86.0
 
 - **카탈로그·매뉴얼 충돌을 매뉴얼 기준으로 통일**(사용자 결정 2026-09-28 "새로준 자료 기준으로 해줘"): HD-104U 전원 DC 5V 1A, XDM-CTR100·CTR100 PSE·CT103/CR103 최대 해상도 3840x2160@60Hz(4:4:4), VDM FIS4-U·FOS4-U 싱글모드 10km, VDM -U 카드 6종 최대 해상도 4096×2160(60Hz는 4:2:0), HOS4S-UW 1920×1080@60Hz로 바꿨습니다. 근거: `docs/audit/CATALOG_MANUAL_CONFLICTS_2026-09-28.md` "두 번째 결정".
