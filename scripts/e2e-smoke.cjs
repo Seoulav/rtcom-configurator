@@ -244,7 +244,11 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     const [xdmArt,xdmCount]=await rearArtOk('XDM');
     check('XDM 프레임 6종(216 포함) 후면 미리보기가 모두 평면 그림(긴 변 2000px)으로 표시됨',xdmCount===6&&xdmArt===6,`${xdmArt}/${xdmCount}`);
     await page.click('button[data-model="XDM-216"]');await acceptConfirm();
-    await page.click('[data-action="next"]');
+    // 0.114: 02 프레임 선택 미리보기 캡션 아래 "다음 · 카드 슬롯 구성" 버튼(사용자 요청 "프레임 선택후 다음 이동 버튼을 여기에 넣어줘")으로 03 카드 슬롯으로 넘어간다.
+    const previewNext=await page.evaluate(()=>{const button=document.querySelector('.rt-cg-preview [data-action="preview-next"]'),cap=document.querySelector('.rt-cg-preview-cap');if(!button||!cap)return null;const b=button.getBoundingClientRect(),c=cap.getBoundingClientRect();return {enabled:!button.disabled,below:b.top>=c.bottom-1,text:button.textContent.trim()}});
+    await page.click('.rt-cg-preview [data-action="preview-next"]');
+    await page.waitForSelector('.rt-rack-photo');
+    check('02 프레임 선택 미리보기 캡션 아래 "다음" 버튼으로 03 카드 슬롯으로 이동함',previewNext?.enabled&&previewNext.below&&previewNext.text.startsWith('다음')&&(await page.locator('.rt-main .rt-eyebrow').first().textContent()).includes('03 / 카드 슬롯'),JSON.stringify(previewNext));
     await page.waitForFunction(()=>document.querySelector('.rt-rack-photo-image')?.naturalWidth>0,null,{timeout:5000}).catch(()=>{});
     check('XDM-216은 후면 그림 위에 입력 54·출력 54 슬롯으로 표시됨(캡션 "후면 그림")',await page.locator('.rt-rack-photo .rt-rack-zone-input .rt-rack-slot').count()===54&&await page.locator('.rt-rack-photo .rt-rack-zone-output .rt-rack-slot').count()===54&&(await page.locator('.rt-rack-photo figcaption').textContent()).startsWith('후면 그림'));
     const [spxArt,spxCount]=await rearArtOk('SPX');
