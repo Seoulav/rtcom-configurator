@@ -84,7 +84,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('장착한 판넬 이미지가 정상 로드됨',await page.$$eval('.rt-rack-slot-filled img.rt-faceplate',images=>images.every(image=>image.naturalWidth>0)));
     check('구성 요약에 장착 카드가 표시됨',await page.locator('.rt-config-summary li').count()===2);
     check('구성 요약의 카드 판넬이 목록 폭에 맞춰 크게 표시됨',await page.$$eval('.rt-config-summary li',items=>items.every(item=>{const image=item.querySelector('img').getBoundingClientRect(),box=item.getBoundingClientRect();return image.width>=box.width*0.85})));
-    check('XDM-144 후면 사진 위에 슬롯이 표시되고 사진이 정상 로드됨',await page.locator('.rt-rack-photo .rt-rack-slot').count()===72&&await page.$eval('.rt-rack-photo-image',image=>image.naturalWidth>0));
+    check('XDM-144 후면 그림 위에 슬롯이 표시되고 그림이 정상 로드됨',await page.locator('.rt-rack-photo .rt-rack-slot').count()===72&&await page.$eval('.rt-rack-photo-image',image=>image.naturalWidth>0));
     await page.locator('button[data-slot="in-2"]').click();
     await page.locator('.rt-card-modal .rt-card-choice[data-card="XDM-CIS100"]').click();
     await page.click('[data-action="next"]');
@@ -224,6 +224,31 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('슬롯을 고르고 Delete 키를 누르면 카드가 빠짐(초점·팝업 모두)',!moveState['in-7']&&!moveState['in-5']&&moveState['in-3']==='XDM-HI100'&&modalGone,JSON.stringify({moveState,modalGone}));
     const missing=await page.goto(home+'no-such-page/deep',{waitUntil:'networkidle'});
     check('사이트 안의 없는 주소는 404.html이 구성기 첫 화면으로 보냄',missing&&page.url()===home&&await page.locator('#matrix-configurator').count()===1);
+    // 0.113 XDM·SPX 후면 평면 그림: 02 프레임 선택의 후면 미리보기가 모두 -rear-art.webp(긴 변 2000px, 대체 문구 "그림")이고, XDM-216도 후면 그림 위에 슬롯 108칸이 나온다.
+    const rearArtOk=async family=>{
+      await page.evaluate(()=>localStorage.clear());
+      await page.goto(home,{waitUntil:'networkidle'});
+      await page.click(`button[data-family="${family}"]`);
+      await page.click('[data-action="next"]');
+      let ok=0;const models=await page.locator('button[data-model]').evaluateAll(nodes=>nodes.map(node=>node.dataset.model));
+      for(const model of models){
+        await page.click(`button[data-model="${model}"]`);
+        await page.click('[data-cg-side="rear"]');
+        await page.waitForFunction(()=>{const image=document.querySelector('.rt-cg-preview img');return image&&image.complete&&image.naturalWidth>0},null,{timeout:5000}).catch(()=>{});
+        const art=await page.$eval('.rt-cg-preview img',image=>({src:image.getAttribute('src'),w:image.naturalWidth,h:image.naturalHeight,alt:image.alt})).catch(()=>null);
+        if(art&&art.src.endsWith(`/frames/${model.toLowerCase()}-rear-art.webp`)&&Math.max(art.w,art.h)===2000&&art.alt.endsWith('그림'))ok++;
+        await page.click('[data-cg-side="front"]');
+      }
+      return [ok,models.length];
+    };
+    const [xdmArt,xdmCount]=await rearArtOk('XDM');
+    check('XDM 프레임 6종(216 포함) 후면 미리보기가 모두 평면 그림(긴 변 2000px)으로 표시됨',xdmCount===6&&xdmArt===6,`${xdmArt}/${xdmCount}`);
+    await page.click('button[data-model="XDM-216"]');await acceptConfirm();
+    await page.click('[data-action="next"]');
+    await page.waitForFunction(()=>document.querySelector('.rt-rack-photo-image')?.naturalWidth>0,null,{timeout:5000}).catch(()=>{});
+    check('XDM-216은 후면 그림 위에 입력 54·출력 54 슬롯으로 표시됨(캡션 "후면 그림")',await page.locator('.rt-rack-photo .rt-rack-zone-input .rt-rack-slot').count()===54&&await page.locator('.rt-rack-photo .rt-rack-zone-output .rt-rack-slot').count()===54&&(await page.locator('.rt-rack-photo figcaption').textContent()).startsWith('후면 그림'));
+    const [spxArt,spxCount]=await rearArtOk('SPX');
+    check('SPX 프레임 5종 후면 미리보기가 모두 평면 그림(긴 변 2000px)으로 표시됨',spxCount===5&&spxArt===5,`${spxArt}/${spxCount}`);
     await page.evaluate(()=>localStorage.clear());
     await page.goto(home,{waitUntil:'networkidle'});
     await page.click('button[data-family="SPX"]');
@@ -243,7 +268,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.waitForLoadState('networkidle');
     // 사진이 다 받아지기 전에 naturalWidth를 읽으면 0이라 가끔 실패했다(0.58 확인, 재실행 3회 모두 통과). 사진 로드를 최대 5초 기다린 뒤 본다.
     await page.waitForFunction(()=>document.querySelector('.rt-rack-photo-image')?.naturalWidth>0,null,{timeout:5000}).catch(()=>{});
-    check('SPX-M2472는 매뉴얼 후면 사진 위 세로 슬롯(입력 3·출력 6)으로 표시됨',await page.locator('.rt-rack-photo.rt-rack-vs .rt-rack-zone-input .rt-rack-slot').count()===3&&await page.locator('.rt-rack-photo.rt-rack-vs .rt-rack-zone-output .rt-rack-slot').count()===6&&await page.$eval('.rt-rack-photo-image',image=>image.naturalWidth>0));
+    check('SPX-M2472는 후면 그림 위 세로 슬롯(입력 3·출력 6)으로 표시됨',await page.locator('.rt-rack-photo.rt-rack-vs .rt-rack-zone-input .rt-rack-slot').count()===3&&await page.locator('.rt-rack-photo.rt-rack-vs .rt-rack-zone-output .rt-rack-slot').count()===6&&await page.$eval('.rt-rack-photo-image',image=>image.naturalWidth>0));
     await page.evaluate(()=>localStorage.clear());
     await page.goto(home,{waitUntil:'networkidle'});
     await page.click('button[data-family="VDM"]');
