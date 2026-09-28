@@ -249,7 +249,7 @@
       "name": "무게",
       "value": "0.45",
       "unit": "kg",
-      "condition": "XDM-CT103 · 1lbs",
+      "condition": "XDM-CT103",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -258,7 +258,7 @@
       "name": "무게",
       "value": "0.26",
       "unit": "kg",
-      "condition": "XDM-CR103 · 0.57lbs",
+      "condition": "XDM-CR103",
       "source": "C",
       "verification": "VERIFIED"
     },

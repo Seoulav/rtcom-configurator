@@ -224,7 +224,7 @@
       "name": "크기(W×D×H)",
       "value": "91.44×107.95×57.15",
       "unit": "mm",
-      "condition": "CT103-U-H (3.6'×4.24'×2.24'), CR103-U (3.6'×4.25'×2.25')",
+      "condition": "CT103-U-H, CR103-U",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -233,7 +233,7 @@
       "name": "무게",
       "value": "0.23",
       "unit": "kg",
-      "condition": "CT103-U-H·CR103-U 공통 (0.5 lbs)",
+      "condition": "CT103-U-H·CR103-U 공통",
       "source": "C",
       "verification": "VERIFIED"
     }

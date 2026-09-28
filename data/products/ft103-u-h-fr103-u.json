@@ -240,7 +240,7 @@
       "name": "크기(W×D×H)",
       "value": "91.44×107.95×57.15",
       "unit": "mm",
-      "condition": "FT103-U-H·FR103-U 공통 (3.6'×4.24'×2.24')",
+      "condition": "FT103-U-H·FR103-U 공통",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -249,7 +249,7 @@
       "name": "무게",
       "value": "0.37",
       "unit": "kg",
-      "condition": "FT103-U-H·FR103-U 공통 (0.82 lbs)",
+      "condition": "FT103-U-H·FR103-U 공통",
       "source": "C",
       "verification": "VERIFIED"
     }

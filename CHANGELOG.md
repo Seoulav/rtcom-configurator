@@ -4,6 +4,10 @@
 
 ## Unreleased
 
+## 0.72.0
+
+- **입력단자/출력단자 행 삭제 + 인치·lbs 병기 전 제품 정리**(사용자 요청: OBHD-2C 04 제품 사양 화면 캡처 뒤 "입력 출력단자 Female male이런거 전부 지워줘", 이어서 "모든 제품에 인치, lbs등등 있으면 다 지워"): OBHD-2C·OBUX-1C의 04 제품 사양에서 "입력단자"·"출력단자"(HDMI(female) 등 표기) 행을 삭제했습니다(03 단자 지도는 그대로 유지). 전 제품(16종)의 mm/kg 옆에 병기되던 인치·lbs 값을 지우고, 모델명·"공통"·"각각" 같은 구분 표시는 남겼습니다. Pull up 저항력(hoc-ux·lhoc·ahoc)은 lbs만 지우고 SI 단위인 Newtons는 남겼습니다. QA: `docs/qa/IMPERIAL_UNIT_CLEANUP_QA_2026-09-28.md`.
+
 ## 0.71.0
 
 - **OBHD-2C 사양 매뉴얼 기준 정리**(사용자 결정 "OBHD-2C 매뉴얼대로 HDMI 1.3 버전"): 04 제품 사양의 크기를 128×89×25mm, 무게를 0.36kg(0.79lbs)으로 바꾸고 "규격 HDMI 1.3" 행을 추가했습니다(매뉴얼 Ver.2.1 4~5쪽). QA: `docs/qa/OBHD2C_EDID_ROTARY_QA_2026-09-27.md` §7.
