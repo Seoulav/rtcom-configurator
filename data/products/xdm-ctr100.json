@@ -44,6 +44,18 @@
       "officialSource": true,
       "verificationStatus": "FOUND",
       "resolution": "563×350"
+    },
+    {
+      "role": "Front",
+      "file": "xdm-ctr100-front.webp",
+      "alt": "RTCOM XDM-CTR100 정면(흰 배경 실물 사진)",
+      "note": "Front · 사용자 제공 실물 사진(2026-09-28)",
+      "provider": "RTCOM",
+      "model": "XDM-CTR100",
+      "source": "P1",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "800×509"
     }
   ],
   "imageStatuses": [
@@ -53,7 +65,7 @@
     },
     {
       "role": "Front",
-      "status": "MISSING"
+      "status": "FOUND"
     },
     {
       "role": "Rear",
@@ -411,6 +423,12 @@
       "name": "XDM-CTR100 사용자 매뉴얼 Ver.1.4",
       "page": "4–9",
       "scope": "제조사 공식 출처 — 사용자 제공 PDF(.source-materials/RTcom_Manual_XDM-CTR100_Ver1.4.pdf, 배포 제외). XDM-CTR100 PSE도 같은 사양(매뉴얼 4쪽)"
+    },
+    {
+      "code": "P1",
+      "name": "서울영상테크 SI사업본부 제공 실물 사진",
+      "page": "",
+      "scope": "사용자 업로드 고해상도 제품 사진(2026-09-28, 흰 배경 촬영본)"
     }
   ],
   "issues": [],
