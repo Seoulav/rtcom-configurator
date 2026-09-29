@@ -403,6 +403,13 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.waitForSelector('.rt-pg-gridcard');
     check('제품정보 목록의 첫 카드는 XDM(0.125, 사용자 요청 "XDM이 처음으로 나오게해")',(await page.locator('.rt-pg-gridcard').first().getAttribute('href'))==='#products/xdm');
     check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-pg-gridcard').count()===31);
+    // 0.154 제품정보 프레임 정면·후면 팝업: 위아래로 쌓일 때 두 그림의 가로폭이 같아야 한다(사용자 요청 2026-09-29).
+    await page.goto(`${home}#products/spx`,{waitUntil:'networkidle'});
+    await page.click('[data-pg-frame="SPX-M1620"]');
+    await page.waitForFunction(()=>[...document.querySelectorAll('.rt-frame-info-face img')].length===2&&[...document.querySelectorAll('.rt-frame-info-face img')].every(image=>image.complete&&image.naturalWidth>0),null,{timeout:10000}).catch(()=>{});
+    const faceWidths=await page.$$eval('.rt-frame-info-face img',images=>images.map(image=>Math.round(image.getBoundingClientRect().width)));
+    check('SPX-M1620 정면·후면 팝업의 두 그림 가로폭이 같음(0.154)',faceWidths.length===2&&Math.abs(faceWidths[0]-faceWidths[1])<=1,JSON.stringify(faceWidths));
+    await page.keyboard.press('Escape');
     // 0.121·0.123·0.130 HD-D102U Rack마운트: 02 Port Map은 XDM-PSU 그림 방식의 정면 그래픽 이미지 1장만 두고(윗면·옆면은 삭제, 사용자 요청 2026-09-29) 실도면(치수 도면) 카드는 없다. HD-D102U와 관련 제품 링크.
     await page.goto(`${home}#products/hd-d102u-rack`,{waitUntil:'networkidle'});
     await page.waitForSelector('#rt-pg-title');
