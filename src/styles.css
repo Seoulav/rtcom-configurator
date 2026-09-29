@@ -1061,3 +1061,11 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 
 /* 0.128 hidden 속성이 있는 버튼은 display:flex 규칙(.rt-button.rt-primary)에 밀리지 않고 숨긴다. */
 #rtcom-design .rt-button[hidden]{display:none!important}
+
+/* 0.132 프레임 미리보기 그림 높이를 랙 높이(U)에 맞춤(--rt-fh, src/app.js frameShowHeight). 정면·후면을 위아래로 겹쳐 보여 주는 작은 프레임(stack)은 0.9배. 휴대폰은 0.45배. */
+#rtcom-design .rt-cg-preview.rt-cg-scaled img{height:calc(var(--rt-fh)*1px);width:auto;max-width:100%;max-height:none;object-fit:contain}
+#rtcom-design .rt-cg-preview.rt-cg-scaled .rt-cg-duo-stack img{height:calc(var(--rt-fh)*.9px)}
+@media(max-width:820px){
+  /* 가장 작은 프레임(SPX-M810 2U)도 휴대폰에서 알아볼 수 있게 최소 높이 56px */
+  #rtcom-design .rt-cg-preview.rt-cg-scaled img,#rtcom-design .rt-cg-preview.rt-cg-scaled .rt-cg-duo-stack img{height:max(56px,calc(var(--rt-fh)*.45px))}
+}

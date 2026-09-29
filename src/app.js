@@ -141,6 +141,14 @@
     const maxPorts=dir=>Math.max(...families[state.family][dir].map(item=>item[2]));
     // 02 프레임(2-2, Analog Way 구조): 왼쪽 목록 | 오른쪽 고정 미리보기(정면|후면 세그먼트). 랙 U 값은 PRODUCT_GLASS_REDESIGN_SPEC.md 2-3과 같다.
     const chassisRackU={'XDM-12':'4U','XDM-20':'9U','XDM-36':'9U','XDM-72':'16U','XDM-144':'29U','XDM-216':'40U'};
+    // 0.132 02 프레임 선택 미리보기 크기(사용자 요청 2026-09-29 "VDM-8X는 다소 크다 이거보다는 작게해주고 나머지 VDM프레임 크기는 다소 작아서 너가 적정한 크기 판단해서 이미지 개선해줘", "SPX, XDM도 비슷한 컨셉으로 수정해줘"):
+    // 예전에는 그림 높이 상한(210·300·400px)만 있어 가장 작은 VDM-8X(3U)가 패널 폭을 꽉 채워 가장 크게 보이고, 큰 프레임(VDM-80X~180X, XDM-144·216)은 가늘고 작게 보였다.
+    // 이제 랙 높이(U, 제품 데이터 lineup의 rackUnits)에 따라 그림 높이를 로그 눈금으로 정한다: 2U → 90px … 40U → 500px. 큰 프레임일수록 크게 보이되 작은 프레임도 알아볼 수 있게 눌렀다.
+    // 휴대폰(820px 이하)은 CSS에서 0.45배로 줄인다. 아래에 없는 모델은 예전 상한을 그대로 쓴다.
+    const frameRackU={'XDM-12':4,'XDM-20':9,'XDM-36':9,'XDM-72':16,'XDM-144':29,'XDM-216':40,
+      'SPX-M810':2,'SPX-M1620':4,'SPX-M3236':7,'SPX-M2472':8,'SPX-M24120':8,
+      'VDM-8X':3,'VDM-16X':7,'VDM-32X':12,'VDM-48X':19,'VDM-64X':24,'VDM-80X':27,'VDM-128X':37,'VDM-180X':38,'VDM-256X':39,'VDM-288X':38};
+    const frameShowHeight=model=>frameRackU[model]?Math.round(90+410*Math.log(frameRackU[model]/2)/Math.log(20)):0;
     // 0.70 "함께 보면 좋은 제품"(사용자 요청 "MATRIX 선택 시 연관 제품 목록이 보이게", 쇼핑몰 상품 상세 아래 추천 줄 참고):
     // 제품정보 데이터(data/products/<제품군>.json의 related)를 한 번 읽어 와서, 02 프레임 선택 아래에 시리즈 상세와 연동 전송기를 사진 카드 한 줄로 보여 준다.
     // 데이터를 읽지 못하면 이 줄만 빠지고 구성기는 그대로 동작한다. 화면 상태일 뿐 저장·실행 취소 대상이 아니다.
@@ -190,7 +198,8 @@
       const nextHere=`<button type="button" class="rt-button rt-primary rt-cg-preview-next" data-action="preview-next" ${state.model?'':'disabled'}>다음 · 카드 슬롯 구성 <span aria-hidden="true">→</span></button>`;
       const seg=`<span class="rt-cg-seg" role="group" aria-label="사진 방향"><button type="button" class="${side==='front'?'rt-cg-seg-on':''}" data-cg-side="front">정면</button><button type="button" class="${side==='rear'?'rt-cg-seg-on':''}" data-cg-side="rear">후면</button></span>`;
       const duoView=duo?`<div class="rt-cg-duo rt-cg-duo-${duo}"><figure><img src="${front}" data-cg-img="front" alt="${esc(previewModel)} 전면 ${kindOf('front')}"><figcaption>정면</figcaption></figure><figure><img src="${rearInfo.src}" data-cg-img="rear" alt="${esc(previewModel)} 후면 ${kindOf('rear')}"><figcaption>후면</figcaption></figure></div>`:'';
-      const preview=`<div class="rt-cg-preview">${duo?duoView:`${rearInfo?seg:''}${img?`<img src="${img}" data-cg-img="${side}" alt="${esc(previewModel)} ${side==='rear'?'후면':'전면'} ${kindOf(side)}">`:'<div class="rt-cg-preview-placeholder">사진 준비 중</div>'}`}<div class="rt-cg-preview-cap"><strong>${esc(previewModel)}</strong><span>${plan?`입력 ${plan[0]} / 출력 ${plan[1]} 슬롯`:'슬롯 구성 제조사 확인 필요'}</span></div>${nextHere}</div>`;
+      const fh=frameShowHeight(previewModel);
+      const preview=`<div class="rt-cg-preview${fh?' rt-cg-scaled':''}"${fh?` style="--rt-fh:${fh}"`:''}>${duo?duoView:`${rearInfo?seg:''}${img?`<img src="${img}" data-cg-img="${side}" alt="${esc(previewModel)} ${side==='rear'?'후면':'전면'} ${kindOf(side)}">`:'<div class="rt-cg-preview-placeholder">사진 준비 중</div>'}`}<div class="rt-cg-preview-cap"><strong>${esc(previewModel)}</strong><span>${plan?`입력 ${plan[0]} / 출력 ${plan[1]} 슬롯`:'슬롯 구성 제조사 확인 필요'}</span></div>${nextHere}</div>`;
       return heading('02 / 프레임 선택','구성의 중심이 될 프레임을 선택하세요.',`${state.family} 제품군 · 메인프레임 ${f.models.length}종`)+`<div class="rt-cg-split"><div class="rt-cg-list" role="list">${f.models.map(row).join('')}</div>${preview}</div>${relatedSection(state.family)}${xdmFeature}`;
     }
     function cardChoiceModal(){

@@ -403,6 +403,26 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.waitForSelector('#rt-pg-title');
     const rack=await page.evaluate(()=>({maps:document.querySelectorAll('.rt-pg-panel svg[aria-label$="단자 지도"]').length,drawing:!!document.querySelector('.rt-pg-drawing'),link:[...document.querySelectorAll('.rt-pg-hint a')].some(a=>a.getAttribute('href')==='#products/hd-d102u')}));
     check('HD-D102U Rack마운트 상세에 정면 그래픽 이미지 1장(윗면·옆면 없음)과 HD-D102U 관련 제품 링크가 보이고 실도면 카드는 없음',rack.maps===1&&!rack.drawing&&rack.link,JSON.stringify(rack));
+    // 0.132 02 프레임 선택 미리보기 그림 크기는 랙 높이(U) 순서를 따른다(사용자 요청 2026-09-29 "VDM-8X는 다소 크다 … 나머지 VDM프레임 크기는 다소 작아서 … 적정한 크기 판단해서", "SPX, XDM도 비슷한 컨셉으로").
+    // 제품군 목록은 작은 프레임부터 큰 프레임 순서라서, 그림 높이가 목록 순서대로 줄어들지 않아야 한다(예전에는 가장 작은 VDM-8X·SPX-M810·XDM-12가 패널 폭을 채워 가장 크게 보였다).
+    await page.click('a[data-view-tab="configurator"]');
+    await page.click('.rt-step[data-jump="0"]');
+    await page.waitForSelector('button[data-family="VDM"]');
+    const frameHeights={};
+    for(const fam of ['VDM','SPX','XDM']){
+      await page.click(`button[data-family="${fam}"]`);await acceptConfirm();
+      await page.click('.rt-cg-preview [data-action="preview-next"]');
+      await page.waitForSelector('button[data-model]');
+      frameHeights[fam]=[];
+      for(const model of await page.locator('button[data-model]').evaluateAll(nodes=>nodes.map(node=>node.dataset.model))){
+        await page.click(`button[data-model="${model}"]`);await acceptConfirm();
+        const h=await page.evaluate(()=>{const heights=[...document.querySelectorAll('.rt-cg-preview img')].map(img=>img.getBoundingClientRect().height);return heights.length?Math.round(Math.max(...heights)):null});
+        if(h)frameHeights[fam].push([model,h]);
+      }
+      await page.click('[data-jump="0"]');
+    }
+    const heightsRise=Object.values(frameHeights).every(list=>list.length>=5&&list.every(([,h],i)=>i===0||h>=list[i-1][1]-3));
+    check('02 프레임 선택 미리보기 그림 높이가 작은 프레임에서 큰 프레임 순서로 커짐(VDM·SPX·XDM 랙 높이 순)',heightsRise&&frameHeights.VDM[0][1]<frameHeights.VDM.at(-1)[1]&&frameHeights.SPX[0][1]<frameHeights.SPX.at(-1)[1]&&frameHeights.XDM[0][1]<frameHeights.XDM.at(-1)[1],JSON.stringify(frameHeights));
     // 0.43 벽부형 단자 지도: 송신기·수신기 두 장, 세로 괄호(side left/right) 번호표 11개(0.46에서 HDMI IN 1·2를 한 번호로 묶음), 사진에 보이지 않는 옆면 단자 안내(note).
     await page.goto(`${home}#products/ft103-u-h-fr103-u`,{waitUntil:'networkidle'});
     await page.waitForSelector('#rt-pg-title');
