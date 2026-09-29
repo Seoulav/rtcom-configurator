@@ -1,4 +1,4 @@
-# SPX-R6 추가와 SPX 자료 4종 반영 (0.155.0)
+# SPX-R6 추가와 SPX 자료 4종 반영 (0.156.0)
 
 ## 1. 요청과 결정
 
@@ -46,7 +46,7 @@ SPX-R6 사양서와 다른 자료 사이:
 
 ## 5. 검증
 
-`node --test tests/*.test.cjs`(0.155 검사 추가), `node scripts/build-product-index.cjs --check`(제품 32개), `node scripts/package-site.cjs`, `node scripts/e2e-smoke.cjs`(SPX-R6 상세·문서 버튼 검사 추가), `git diff --check`. 화면: `docs/qa/spx-r6/`.
+`node --test tests/*.test.cjs`(0.156 검사 추가), `node scripts/build-product-index.cjs --check`(제품 32개), `node scripts/package-site.cjs`, `node scripts/e2e-smoke.cjs`(SPX-R6 상세·문서 버튼 검사 추가), `git diff --check`. 화면: `docs/qa/spx-r6/`.
 
 ## 6. 되돌리는 방법
 

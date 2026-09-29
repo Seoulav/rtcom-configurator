@@ -455,7 +455,7 @@
       const note=extras.length?`<p class="rt-pg-hint" style="text-align:center">그 외 신호(${[...new Set(extras)].map(esc).join(', ')})는 아래 자료 기록의 입출력 표를 확인하세요.</p>`:'';
       return diagramWrap(bodyMarkup,width,height,captions)+note;
     }
-    // SPX-R6 "03 Signal Flow"(0.155). 송·수신기 한 쌍이 아니라 모듈 6개를 품은 섀시라 extenderDiagram이 그리지 못한다.
+    // SPX-R6 "03 Signal Flow"(0.156). 송·수신기 한 쌍이 아니라 모듈 6개를 품은 섀시라 extenderDiagram이 그리지 못한다.
     // 사양서 연결도(1쪽)에 있는 연결만 그린다: 소스 6대 → 모듈 칸 HDMI IN → CAT OUT → SPX-RX 6대 → 디스플레이,
     // IR 리시버(리모컨) → IR IN, 제어 컨트롤러 → IR Ctrl, 외부 전원 어댑터 1개 → 본체(모듈 6개 공급).
     const COLOR_IR='#7669EF';
@@ -616,7 +616,7 @@
     };
     const VMODE_NAME_KO={MATRIX:'매트릭스',QUAD:'쿼드 뷰',WALL:'비디오 월',DUAL:'듀얼'};
     // 레이아웃 이름별 화면 분할 도해(칸 번호·x·y·너비·높이, 0~100 기준). QMS-88UX 매뉴얼(RTcom_Manual_QMS-88UX_KV.03.pdf) 20~21쪽 Layout List 도해를 그대로 옮겼다(사용자 요청 2026-09-27).
-    // QMS-44UX 전용 이름의 QUAD 도해는 아래 LAYOUT_SHAPES_BY_PRODUCT(0.146, 44UX 매뉴얼 21~22쪽 도해)가 우선한다. 매뉴얼에 도해가 없는 WALL·DUAL 레이아웃(2×2~FULL, PBP, PBP-FULL, PIP, USER MODE)은 이름 뜻에 맞춰 만든 도식이며 QMS-44UX만 쓴다. QMS-88UX는 WALL 도해가 없고 DUAL은 매뉴얼 Layout 5~7 도해를 쓴다(0.152 재검토).
+    // QMS-44UX 전용 이름의 QUAD 도해는 아래 LAYOUT_SHAPES_BY_PRODUCT(0.146, 44UX 매뉴얼 21~22쪽 도해)가 우선한다. 매뉴얼에 도해가 없는 WALL·DUAL 레이아웃(2×2~FULL, PBP, PBP-FULL, PIP, USER MODE)은 이름 뜻에 맞춰 만든 도식이며 QMS-44UX만 쓴다. QMS-88UX DUAL은 매뉴얼 Layout 5~7 도해를 쓴다(0.152 재검토). QMS-88UX WALL은 아래 WALL_SPECS(0.155, 매뉴얼 19쪽 월 설정)를 쓴다.
     const LAYOUT_SHAPES={
       'QUAD':[[1,0,0,50,50],[2,50,0,50,50],[3,0,50,50,50],[4,50,50,50,50]],
       '3-BOTTOM':[[1,0,0,100,50],[2,0,50,33.33,50],[3,33.33,50,33.34,50],[4,66.67,50,33.33,50]],
@@ -672,6 +672,15 @@
       },
       black:new Set(['3-BOTTOM','3-SIDE RIGHT','3-SIDE LEFT','3CH-MODE2','USER MODE 1','USER MODE 2','USER MODE 3'])
     }};
+    // 0.155(사용자 요청 2026-09-29 "QMS-44 비디오월 기능을 88에도 동일한 컨셉으로 만들어줘", "메뉴얼 읽어보고 작업해줘"): QMS-88UX 매뉴얼 KV.04 19쪽 6) Wall Mode.
+    // Wall 1·Wall 2를 각각 가로(H)×세로(V)와 시작(Start)·끝(End) 출력 포트로 정한다. 2×2 월은 2개까지, 월 1개면 최대 3×3 또는 2×5(매뉴얼 H×V 표기 그대로 가로 2 × 세로 5).
+    // 출력 9·10번(M1·M2)은 평소 멀티뷰 포트지만 Wall 모드로 설정하면 월에 넣을 수 있다. 값: [[가로, 세로, 시작 출력 번호], …].
+    const WALL_SPECS={'qms-88ux':{
+      '2×2':[[2,2,1]],
+      '2×2 + 2×2':[[2,2,1],[2,2,5]],
+      '3×3':[[3,3,1]],
+      '2×5':[[2,5,1]]
+    }};
     // 0.147(사용자 요청 2026-09-29 "44,88모두 분할 부분구성 예시를 그래픽작업해달라는거야"): 흰 칸 도식 대신 실제 화면처럼 그린다.
     // 한 화면 분할(MATRIX·QUAD·DUAL 등)은 모니터(검은 베젤·스탠드) 안에 입력마다 다른 색 화면을 칸대로 채우고,
     // 비디오 월(WALL)은 디스플레이 여러 대를 붙이고 영상 한 장(하늘·산 그림)이 베젤을 건너 이어지게 그린다. 칸 배치(LAYOUT_SHAPES)는 그대로라 매뉴얼 도해와 같다.
@@ -681,27 +690,36 @@
     function layoutShapeSvg(name,productId,modeName){
       const own=LAYOUT_SHAPES_BY_PRODUCT[productId];
       const key=String(name||'').trim().toUpperCase();
-      const cells=own?.shapes[key]||LAYOUT_SHAPES[key];
+      const cells=own?.shapes[key]||LAYOUT_SHAPES[key]||(modeName==='WALL'&&WALL_SPECS[productId]?.[key]?[[1,0,0,100,100]]:null);
       if(!cells)return '<div class="rt-pg-layout-missing">도해 준비 중</div>';
       const id=`lay${++layoutSvgSeq}`;
       const label=`aria-label="${esc(name)} 화면 구성"`;
       if(modeName==='WALL'){
-        // 디스플레이 한 대 = 16:9 칸(64×36) + 베젤 3, 대 사이 틈 2. 칸 수는 첫 칸의 폭·높이로 센다(2×2 → 2열 2행).
-        const cols=Math.max(1,Math.round(100/cells[0][3])),rows=Math.max(1,Math.round(100/cells[0][4]));
-        const DW=64,DH=36,BZ=3,GAP=2,PAD=4;
-        const W=PAD*2+cols*(DW+BZ*2)+(cols-1)*GAP,H=PAD*2+rows*(DH+BZ*2)+(rows-1)*GAP;
-        const at=(c,r)=>[PAD+c*(DW+BZ*2+GAP),PAD+r*(DH+BZ*2+GAP)];
-        let screens='',frames='',badges='';
-        cells.forEach(([n,x,y])=>{
-          const c=Math.round(x/(100/cols)),r=Math.round(y/(100/rows)),[fx,fy]=at(c,r);
-          frames+=`<rect x="${fx}" y="${fy}" width="${DW+BZ*2}" height="${DH+BZ*2}" rx="2.5" fill="#1f2532"/>`;
-          screens+=`<rect class="rt-pg-cell" x="${fx+BZ}" y="${fy+BZ}" width="${DW}" height="${DH}"/>`;
-          badges+=`<circle cx="${fx+BZ+7}" cy="${fy+BZ+7}" r="5.2" fill="#fff" fill-opacity=".92"/><text x="${fx+BZ+7}" y="${fy+BZ+7.2}" font-size="7" font-weight="800" fill="#1f2532" text-anchor="middle" dominant-baseline="central">${n}</text>`;
+        // 디스플레이 한 대 = 16:9 칸(64×36) + 베젤 3, 대 사이 틈 2. 월 하나는 [가로 대수, 세로 대수, 시작 출력 번호]다.
+        // QMS-44UX는 칸 배치(LAYOUT_SHAPES)의 첫 칸 폭·높이로 가로·세로 대수를 센다(2×2 → 2열 2행). QMS-88UX는 WALL_SPECS(월 2개까지)를 쓴다.
+        const walls=WALL_SPECS[productId]?.[key]||[[Math.max(1,Math.round(100/cells[0][3])),Math.max(1,Math.round(100/cells[0][4])),1]];
+        const DW=64,DH=36,BZ=3,GAP=2,PAD=4,WGAP=14;
+        const sizeOf=([cols,rows])=>[cols*(DW+BZ*2)+(cols-1)*GAP,rows*(DH+BZ*2)+(rows-1)*GAP];
+        const W=PAD*2+walls.reduce((sum,wall)=>sum+sizeOf(wall)[0],0)+(walls.length-1)*WGAP,H=PAD*2+Math.max(...walls.map(wall=>sizeOf(wall)[1]));
+        let body='',ox=PAD;
+        walls.forEach(([cols,rows,first],wi)=>{
+          const [ww,wh]=sizeOf([cols,rows]),oy=PAD+(H-PAD*2-wh)/2;
+          let screens='',frames='',badges='';
+          for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+            const fx=ox+c*(DW+BZ*2+GAP),fy=oy+r*(DH+BZ*2+GAP),n=first+r*cols+c;
+            frames+=`<rect x="${fx}" y="${fy}" width="${DW+BZ*2}" height="${DH+BZ*2}" rx="2.5" fill="#1f2532"/>`;
+            screens+=`<rect class="rt-pg-cell" x="${fx+BZ}" y="${fy+BZ}" width="${DW}" height="${DH}"/>`;
+            badges+=`<circle cx="${fx+BZ+7}" cy="${fy+BZ+7}" r="5.2" fill="#fff" fill-opacity=".92"/><text x="${fx+BZ+7}" y="${fy+BZ+7.2}" font-size="7" font-weight="800" fill="#1f2532" text-anchor="middle" dominant-baseline="central">${n}</text>`;
+          }
+          const x0=ox+BZ,y0=oy+BZ,x1=ox+ww-BZ,y1=oy+wh-BZ,iw=x1-x0,ih=y1-y0;
+          const hill=`M${x0} ${y0+ih*0.78}C${x0+iw*0.18} ${y0+ih*0.52},${x0+iw*0.32} ${y0+ih*0.6},${x0+iw*0.46} ${y0+ih*0.46}S${x0+iw*0.78} ${y0+ih*0.62},${x1} ${y0+ih*0.5}V${y1}H${x0}Z`;
+          const hill2=`M${x0} ${y0+ih*0.9}C${x0+iw*0.3} ${y0+ih*0.7},${x0+iw*0.55} ${y0+ih*0.86},${x0+iw*0.75} ${y0+ih*0.72}S${x1-iw*0.05} ${y0+ih*0.8},${x1} ${y0+ih*0.76}V${y1}H${x0}Z`;
+          // 월이 둘이면 두 번째 월은 다른 영상(노을)으로 칠해 서로 다른 소스임을 보인다.
+          const sky=wi?['#ff9a62','#ffe0b8']:['#5aa9ff','#cfe6ff'],land=wi?['#8a5a3c','#5c3a24']:['#34a853','#1e7a3c'];
+          body+=`<defs><linearGradient id="${id}s${wi}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky[0]}"/><stop offset="1" stop-color="${sky[1]}"/></linearGradient><clipPath id="${id}c${wi}">${screens.replace(/ class="rt-pg-cell"/g,'')}</clipPath></defs>${frames}${screens.replace(/<rect class="rt-pg-cell"/g,'<rect class="rt-pg-cell" fill="#0b0d12"')}<g clip-path="url(#${id}c${wi})"><rect x="${x0}" y="${y0}" width="${iw}" height="${ih}" fill="url(#${id}s${wi})"/><circle cx="${x0+iw*0.76}" cy="${y0+ih*0.26}" r="${Math.min(iw,ih)*0.09}" fill="#ffd66b"/><path d="${hill}" fill="${land[0]}"/><path d="${hill2}" fill="${land[1]}"/></g>${badges}`;
+          ox+=ww+WGAP;
         });
-        const x0=PAD+BZ,y0=PAD+BZ,x1=W-PAD-BZ,y1=H-PAD-BZ,iw=x1-x0,ih=y1-y0;
-        const hill=`M${x0} ${y0+ih*0.78}C${x0+iw*0.18} ${y0+ih*0.52},${x0+iw*0.32} ${y0+ih*0.6},${x0+iw*0.46} ${y0+ih*0.46}S${x0+iw*0.78} ${y0+ih*0.62},${x1} ${y0+ih*0.5}V${y1}H${x0}Z`;
-        const hill2=`M${x0} ${y0+ih*0.9}C${x0+iw*0.3} ${y0+ih*0.7},${x0+iw*0.55} ${y0+ih*0.86},${x0+iw*0.75} ${y0+ih*0.72}S${x1-iw*0.05} ${y0+ih*0.8},${x1} ${y0+ih*0.76}V${y1}H${x0}Z`;
-        return `<svg class="rt-pg-layout-wall" viewBox="0 0 ${W} ${H}" role="img" ${label}><defs><linearGradient id="${id}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5aa9ff"/><stop offset="1" stop-color="#cfe6ff"/></linearGradient><clipPath id="${id}c">${screens.replace(/ class="rt-pg-cell"/g,'')}</clipPath></defs>${frames}${screens.replace(/<rect class="rt-pg-cell"/g,'<rect class="rt-pg-cell" fill="#0b0d12"')}<g clip-path="url(#${id}c)"><rect x="${x0}" y="${y0}" width="${iw}" height="${ih}" fill="url(#${id}s)"/><circle cx="${x0+iw*0.76}" cy="${y0+ih*0.26}" r="${Math.min(iw,ih)*0.09}" fill="#ffd66b"/><path d="${hill}" fill="#34a853"/><path d="${hill2}" fill="#1e7a3c"/></g>${badges}</svg>`;
+        return `<svg class="rt-pg-layout-wall" viewBox="0 0 ${W} ${H}" role="img" ${label}>${body}</svg>`;
       }
       // 한 화면 분할: 모니터 200×134(베젤 6, 화면 188×106 ≈ 16:9, 스탠드). 칸 좌표 0~100을 화면 크기로 늘린다.
       const SX=6,SY=6,SW=188,SH=106,mx=v=>SX+v*SW/100,my=v=>SY+v*SH/100;
