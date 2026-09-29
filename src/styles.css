@@ -970,13 +970,32 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-card-modal-foot{flex-wrap:wrap}
 /* 카드 상세 정보(2026-09-28): 03 카드 슬롯 아래 입력·출력 카드 버튼, 내 구성 카드 행 버튼, 카드 사양 대화상자 */
 #rtcom-design .rt-config-summary li:has(>.rt-summary-card){display:block;padding:0;background:none}
-#rtcom-design .rt-summary-card{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px 10px;width:100%;padding:10px;border:1px solid transparent;border-radius:12px;background:#f5f8fc;color:inherit;font:inherit;text-align:left;cursor:pointer;transition:border-color .15s,background .15s}
+#rtcom-design .rt-summary-card{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;align-items:center;gap:8px;width:100%;padding:8px 10px;border:1px solid transparent;border-radius:10px;background:#f5f8fc;color:inherit;font:inherit;text-align:left;cursor:pointer;transition:border-color .15s,background .15s}
 #rtcom-design .rt-summary-card:hover,#rtcom-design .rt-summary-card:focus-visible{border-color:#007AFF66;background:#eef5ff;outline:none}
-#rtcom-design .rt-summary-card img{grid-column:1/-1;display:block;width:100%;height:auto;border-radius:3px}
-#rtcom-design .rt-summary-card>span{min-width:0}
-#rtcom-design .rt-summary-card strong{display:block;font-size:12px}
-#rtcom-design .rt-summary-card small{display:block;overflow:hidden;color:var(--rt-muted);font-size:10px;text-overflow:ellipsis;white-space:nowrap}
-#rtcom-design .rt-summary-card b{color:#2f63c8;font-size:13px}
+#rtcom-design .rt-config-summary li .rt-summary-card strong{display:block;font-size:12.5px;white-space:nowrap}
+#rtcom-design .rt-config-summary li .rt-summary-card small{display:block;min-width:0;overflow:hidden;color:var(--rt-muted);font-size:11px;text-align:right;text-overflow:ellipsis;white-space:nowrap}
+#rtcom-design .rt-config-summary li .rt-summary-card b{color:#1f2a3d;font-size:14px;font-weight:800;white-space:nowrap}
+#rtcom-design .rt-config-summary ul:has(.rt-summary-card){display:grid;gap:6px}
+/* 0.167 신호 배지(시안 A): 색은 이 배지 하나에만 쓴다. 카드 트레이·후면 슬롯·범례·내 구성이 같은 색 */
+/* 0.170 회사 범례 색(사용자 제공 2026-09-29 "우리 회사 범례 색상이야": 광 하늘색, SDI 검정, LAN 초록, DP/HDMI 빨강, A.AUDIO 보라 #7030A0, USB 파랑 #0000FF).
+   HDBaseT·CATx는 LAN 초록. 광은 0.168 OM3 아쿠아 대신 회사 범례 하늘색 */
+#rtcom-design [data-sig="dp"]{--rt-sig:#FF0000}
+/* HDMI는 회사 범례(DP와 같은 빨강) 대신 남색(사용자 요청 2026-09-29 "HDMI 색상을 남색으로 하면 어때?"), DP와 구별 */
+#rtcom-design [data-sig="hdmi"]{--rt-sig:#002060}
+#rtcom-design [data-sig="hdbt"],#rtcom-design [data-sig="catx"]{--rt-sig:#00B050}
+#rtcom-design [data-sig="fiber"]{--rt-sig:#00B0F0}
+#rtcom-design [data-sig="sdi"]{--rt-sig:#000000}
+#rtcom-design [data-sig="etc"]{--rt-sig:#667085}
+#rtcom-design .rt-sig-badge{display:inline-grid;place-items:center;flex:none;min-width:34px;height:18px;padding:0 5px;border-radius:5px;background:var(--rt-sig);color:#fff;font:800 9.5px/1 system-ui,sans-serif;font-style:normal;text-shadow:0 0 2px #0005;letter-spacing:.02em}
+#rtcom-design .rt-sig-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 14px;margin-top:6px;color:var(--rt-muted);font-size:11.5px}
+#rtcom-design .rt-sig-legend span{display:inline-flex;align-items:center;gap:5px}
+#rtcom-design .rt-card-info-chip strong:has(.rt-sig-badge){display:flex;align-items:center;gap:6px}
+/* 0.170 후면 장착 슬롯 태그(2안): 번호(IN/OUT 색)와 신호 배지를 한 태그로 붙여 늘 보여 준다. 0.17의 "장착 슬롯 번호표 숨김"은 이 태그에는 적용하지 않는다 */
+#rtcom-design .rt-rack-slot-filled .rt-rack-slot-no.rt-slot-tag{opacity:1;display:inline-flex;align-items:stretch;padding:0;overflow:hidden;border-radius:4px;color:#fff;font-size:11px;box-shadow:0 0 0 1px #ffffff4d,0 1px 3px #0008}
+#rtcom-design .rt-slot-tag .rt-slot-tag-n{display:flex;align-items:center;padding:2px 5px}
+#rtcom-design .rt-slot-tag .rt-slot-tag-s{min-width:0;height:auto;padding:2px 5px;border-radius:0;font-size:inherit;line-height:inherit}
+#rtcom-design .rt-rack-vs .rt-slot-tag .rt-slot-tag-n,#rtcom-design .rt-rack-vt .rt-slot-tag .rt-slot-tag-n,#rtcom-design .rt-rack-vs .rt-slot-tag .rt-slot-tag-s,#rtcom-design .rt-rack-vt .rt-slot-tag .rt-slot-tag-s{padding:5px 2px}
+#rtcom-design .rt-rack-vs .rt-rack-slot-filled .rt-rack-slot-no.rt-slot-tag,#rtcom-design .rt-rack-vt .rt-rack-slot-filled .rt-rack-slot-no.rt-slot-tag{padding:0}
 #rtcom-design .rt-card-info-bar{display:grid;gap:10px;margin-top:14px;padding:14px 16px;border-radius:16px;background:#ffffffb3;border:1px solid #e3e9f3}
 #rtcom-design .rt-card-info-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}
 #rtcom-design .rt-card-info-head strong{font-size:13px}
@@ -997,13 +1016,18 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-card-palette .rt-card-info-group>span{padding-top:0}
 #rtcom-design .rt-card-palette .rt-card-info-group>div{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
 @media(max-width:1100px){#rtcom-design .rt-card-palette .rt-card-info-group>div{grid-template-columns:repeat(3,minmax(0,1fr))}}
-#rtcom-design .rt-palette-tile{grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:7px 8px;padding:9px;border-color:transparent;border-radius:12px;background:#f5f8fc}
-#rtcom-design .rt-palette-tile:hover,#rtcom-design .rt-palette-tile:focus-visible{border-color:#007AFF66;background:#eef5ff}
+#rtcom-design .rt-palette-tile{grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:7px 8px;padding:9px;border:1px solid #e3e9f3;border-radius:12px;background:#fff}
+#rtcom-design .rt-palette-tile:hover,#rtcom-design .rt-palette-tile:focus-visible{border-color:#007AFF66;background:#f5f9ff}
+#rtcom-design .rt-palette-tile small{color:var(--rt-muted)}
+/* 입력·출력 줄 제목: 후면 슬롯 번호표와 같은 계열 색 글자 */
+#rtcom-design .rt-card-palette .rt-card-info-group>span{justify-self:start;font-size:11.5px}
+#rtcom-design .rt-card-palette .rt-card-info-group-input>span{color:#2f63c8}
+#rtcom-design .rt-card-palette .rt-card-info-group-output>span{color:#c2410c}
 #rtcom-design .rt-palette-tile img{grid-column:1/-1;display:block;width:100%;height:auto;border-radius:3px;pointer-events:none}
 #rtcom-design .rt-palette-tile>span{min-width:0}
-#rtcom-design .rt-palette-tile strong{display:block}
 #rtcom-design .rt-palette-tile small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#rtcom-design .rt-palette-tile b{color:#2f63c8;font-size:12px;white-space:nowrap}
+#rtcom-design .rt-palette-tile{position:relative}
+#rtcom-design .rt-palette-tile b{position:absolute;top:-10px;right:8px;box-shadow:0 1px 3px #0003;padding:2px 8px;border-radius:999px;background:#1f2a3d;color:#fff;font-size:12px;font-weight:800;white-space:nowrap}
 #rtcom-design.rt-palette-drag-input .rt-rack-slot[data-slot^="in-"],#rtcom-design.rt-palette-drag-output .rt-rack-slot[data-slot^="out-"]{outline:2px dashed rgba(57,120,238,.75);outline-offset:-2px}
 #rtcom-design.rt-palette-drag-input .rt-rack-slot[data-slot^="out-"],#rtcom-design.rt-palette-drag-output .rt-rack-slot[data-slot^="in-"]{opacity:.35}
 #rtcom-design.rt-palette-drag-input .rt-rack-slot.rt-rack-slot-drop,#rtcom-design.rt-palette-drag-output .rt-rack-slot.rt-rack-slot-drop{outline:3px solid #007AFF;outline-offset:-3px}
@@ -1193,3 +1217,5 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 
 /* 0.154 프레임 정면·후면 팝업(위아래 배치): 두 그림 가로폭을 같게 맞춤 */
 #rtcom-design .rt-frame-info-stack .rt-frame-info-face img{width:min(100%,560px);max-width:100%;max-height:none;height:auto}
+/* 0.166 사양 값이 여러 줄일 때(SPX-TX/RX "4K60 실효 전송거리") 줄마다 한 덩어리로 보이게 간격을 둔다 */
+#rtcom-design .rt-pg-spec-table td .rt-pg-spec-line{display:block}#rtcom-design .rt-pg-spec-table td .rt-pg-spec-line+.rt-pg-spec-line{margin-top:6px}

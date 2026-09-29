@@ -96,7 +96,8 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('카드 선택 후 팝업이 닫히고 슬롯에 실물 판넬 이미지 표시',placed===2&&await page.locator('.rt-card-modal').count()===0,`${placed}개`);
     check('장착한 판넬 이미지가 정상 로드됨',await page.$$eval('.rt-rack-slot-filled img.rt-faceplate',images=>images.every(image=>image.naturalWidth>0)));
     check('구성 요약에 장착 카드가 표시됨',await page.locator('.rt-config-summary li').count()===2);
-    check('구성 요약의 카드 판넬이 목록 폭에 맞춰 크게 표시됨',await page.$$eval('.rt-config-summary li',items=>items.every(item=>{const image=item.querySelector('img').getBoundingClientRect(),box=item.getBoundingClientRect();return image.width>=box.width*0.85})));
+    // 0.166(사용자 요청 "그냥 모델명(HDMI) X 수량만"): 0.17의 "판넬 사진 크게" 대신 사진 없이 모델명·수량 한 줄로 바뀌었다.
+    check('구성 요약 카드 행은 판넬 사진 없이 모델명과 수량(× N)만 한 줄로 표시됨',await page.$$eval('.rt-config-summary li',items=>items.every(item=>!item.querySelector('img')&&/× \d+$/.test(item.textContent.trim()))));
     check('XDM-144 후면 그림 위에 슬롯이 표시되고 그림이 정상 로드됨',await page.locator('.rt-rack-photo .rt-rack-slot').count()===72&&await page.$eval('.rt-rack-photo-image',image=>image.naturalWidth>0));
     await page.locator('button[data-slot="in-2"]').click();
     await page.locator('.rt-card-modal .rt-card-choice[data-card="XDM-CIS100"]').click();
@@ -153,9 +154,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.locator('.rt-card-modal .rt-card-choice[data-card="SPX-COS12"]').click();
     await page.mouse.move(2,2);
     await page.evaluate(()=>document.activeElement?.blur());
-    // 0.119: 장착 뒤 슬롯에 포커스가 돌아오면 번호표가 잠깐 보였다가(:focus-visible) blur 후 0.15초 전환으로 사라진다. 전환 도중에 읽으면 가끔 실패해(3회 중 2회 재현) 전환이 끝날 때까지 최대 2초 기다린다.
-    const slotLabelsHidden=await page.waitForFunction(()=>{const filled=[...document.querySelectorAll('.rt-rack-slot-filled .rt-rack-slot-no')],empty=[...document.querySelectorAll('.rt-rack-slot-empty .rt-rack-slot-no')];return filled.length>0&&filled.every(label=>getComputedStyle(label).opacity==='0')&&empty.length>0&&empty.every(label=>getComputedStyle(label).opacity!=='0')},null,{timeout:2000}).then(()=>true).catch(()=>false);
-    check('장착한 카드 판넬 위의 슬롯 번호표는 숨겨져 첫 포트를 가리지 않음(빈 슬롯 번호표는 표시)',slotLabelsHidden);
+    // 0.170(사용자 선택 2026-09-29 2안 "이걸로 가자", "XDM-HI100과 HIS100 구별점을 줘야할 거 같아"): 0.17의 "장착 슬롯 번호표 숨김" 대신 장착 슬롯은 번호와 모델을 한 태그(IN 1 | HI100)로 늘 보여 주고, 빈 슬롯 번호표도 그대로 보인다.
+    const slotTags=await page.evaluate(()=>{const filled=[...document.querySelectorAll('.rt-rack-slot-filled')],empty=[...document.querySelectorAll('.rt-rack-slot-empty .rt-rack-slot-no')];return {filled:filled.length,tagged:filled.filter(b=>{const t=b.querySelector('.rt-rack-slot-no.rt-slot-tag');return t&&getComputedStyle(t).opacity==='1'&&/^(IN|OUT) \d+/.test(t.querySelector('.rt-slot-tag-n')?.textContent||'')&&(t.querySelector('.rt-slot-tag-s')?.textContent||'').length>0}).length,empty:empty.length,emptyShown:empty.every(l=>getComputedStyle(l).opacity!=='0')}});
+    check('장착한 슬롯은 번호와 모델을 한 태그로 늘 보여 주고(빈 슬롯 번호표도 표시)',slotTags.filled>0&&slotTags.tagged===slotTags.filled&&slotTags.empty>0&&slotTags.emptyShown,JSON.stringify(slotTags));
     // "남은 칸 블랭크로 채우기": 카드를 넣은 슬롯(out-1)은 그대로 두고 나머지 6칸만 블랭크로 바꾼다. 완성 배너가 뜨고, 실행 취소로 한 번에 되돌아간다.
     check('빈칸이 있으면 채우기 줄이 보임',(await page.locator('.rt-slot-fillbar span').first().textContent()).includes('6개'));
     await page.click('[data-action="fill-blanks"]');
@@ -1095,6 +1096,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       // 0.163(사용자 요청 "하단에 이걸 배치해서 드래그하는 형태로"): 끌 수 있는 버튼은 내 구성 카드 행처럼 판넬 사진 타일이고, 장착한 카드에는 수량(× N)이 붙는다.
       const tiles=await p3.evaluate(()=>{const all=[...document.querySelectorAll('.rt-card-palette .rt-palette-tile')];return {count:all.length,withImg:all.filter(t=>t.querySelector('img')?.naturalWidth>0).length,hos:document.querySelector('.rt-palette-tile[data-palette-card="XDM-HOS100"] b')?.textContent||'',hi:document.querySelector('.rt-palette-tile[data-palette-card="XDM-HI100"] b')?.textContent||''}});
       check('끌어 놓기 버튼 12개가 모두 판넬 사진 타일이고, 장착한 XDM-HOS100에만 × 1 수량이 붙음',tiles.count===12&&tiles.withImg===12&&tiles.hos==='× 1'&&tiles.hi==='',JSON.stringify(tiles));
+      // 0.167(시안 A, 사용자 선택 "이거 좋다 한번 해보자"): 색은 신호 배지 하나에만 쓴다. 타일·후면 장착 슬롯·범례·내 구성에 같은 배지, 내 구성 행은 "배지 · 모델명 · 장착 위치 · × N".
+      const sig=await p3.evaluate(()=>{const bg=el=>el&&getComputedStyle(el).backgroundColor,tile=id=>document.querySelector(`.rt-palette-tile[data-palette-card="${id}"]`);const row=document.querySelector('.rt-config-summary .rt-summary-card[data-card-info="XDM-HOS100"]');return {hdmi:bg(tile('XDM-HIS100').querySelector('.rt-sig-badge')),sdi:bg(tile('XDM-SIS100').querySelector('.rt-sig-badge')),fiber:bg(tile('XDM-FIS100').querySelector('.rt-sig-badge')),tileBg:bg(tile('XDM-SIS100')),slot:document.querySelector('.rt-rack-slot[data-slot="out-1"] .rt-slot-tag')?.textContent.replace(/\s+/g,' ').trim()||'',slotBg:bg(document.querySelector('.rt-rack-slot[data-slot="out-1"] .rt-slot-tag-s')),legend:[...document.querySelectorAll('.rt-sig-legend .rt-sig-badge')].map(b=>b.textContent).join(','),rowText:row?.textContent.replace(/\s+/g,' ').trim(),rowImg:!!row?.querySelector('img')}});
+      check('신호 배지 색이 신호마다 다르고 타일 바탕은 흰색, 후면 장착 슬롯 태그(OUT 1 | HOS100, HDMI 색)·범례·내 구성 행("HDMI XDM-HOS100 OUT 1 × 1")에 같은 신호 색이 보임',new Set([sig.hdmi,sig.sdi,sig.fiber]).size===3&&sig.tileBg==='rgb(255, 255, 255)'&&/^OUT 1 ?HOS100$/.test(sig.slot)&&sig.slotBg===sig.hdmi&&sig.legend==='HDMI,DP,HDBT,FIBER,SDI'&&/^HDMI ?XDM-HOS100 ?OUT 1 ?× 1$/.test(sig.rowText)&&!sig.rowImg,JSON.stringify(sig));
       await p3.locator('button.rt-card-info-chip[data-palette-card="XDM-HIS100"]').click();
       const infoOpen=await p3.locator('dialog.rt-card-info-modal[open]').count();await p3.keyboard.press('Escape');
       check('끌 수 있는 카드 정보 버튼도 누르면 카드 상세 정보가 열림',infoOpen===1,String(infoOpen));
