@@ -307,7 +307,7 @@
       ...bom(state).map(row=>['UNVERIFIED_DRAFT',row.category,row.model,row.quantity,'미검증 검토용 · 케이블/전원/기본 포함품 미확정'])];
     return rows.map(row=>row.map(cell).join(',')).join('\r\n');
   }
-  // 0.171 AV 빌더(https://seoul-visual-tech.github.io/av-system-builder/) "가져오기 → 구성도 JSON"용 파일(사용자 결정 2026-09-29 "A로 전송기 포함해서 진행해줘").
+  // 0.172 AV 빌더(https://seoul-visual-tech.github.io/av-system-builder/) "가져오기 → 구성도 JSON"용 파일(사용자 결정 2026-09-29 "A로 전송기 포함해서 진행해줘").
   // AV 빌더 구성도 형식: {nodes:[{id,type:'equipment',position,data:장비}], edges:[{id,source,target,sourceHandle,targetHandle,type:'smoothstep',style,data:{lineTypeId}}]}.
   // 장비 = {id,category,name,model,manufacturer,series,inputs,outputs,bidirectional}, 포트 = {id,label,type,direction}. 선·포트 종류는 AV 빌더 기본값(video=HDMI·network=LAN·sdi=SDI).
   // 매트릭스 1대(카드 포트를 "HDMI #1-1 PC"처럼 슬롯·포트·신호명으로) + 04에서 연결한 채널마다 전송기 상자와 연결선. 장비 id는 모델별로 고정해 여러 번 불러와도 AV 빌더 장비 목록이 늘지 않게 한다.

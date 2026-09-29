@@ -336,7 +336,7 @@ test('moveCard moves within the same direction, swaps occupied slots and carries
   assert.equal(core.moveCard(configured(),'in-2','in-3'),null);
 });
 
-// 0.171 03 카드 슬롯 ② 신호 입력(사용자 결정 2026-09-29 "추천A대로 진행해줘"): 신호명은 portAssignments["슬롯:포트"].assignedDevice(schema 3에 원래 있던 칸)에 넣는다.
+// 0.172 03 카드 슬롯 ② 신호 입력(사용자 결정 2026-09-29 "추천A대로 진행해줘"): 신호명은 portAssignments["슬롯:포트"].assignedDevice(schema 3에 원래 있던 칸)에 넣는다.
 test('신호명은 구성 파일 저장·불러오기에 남고, 카드를 옮기면 함께 옮겨지며, 카드를 빼면 사라진다',()=>{
   const state=configured();
   state.portAssignments['in-1:1'].assignedDevice='PC';
@@ -353,7 +353,7 @@ test('신호명은 구성 파일 저장·불러오기에 남고, 카드를 옮�
   assert.throws(()=>core.parse(JSON.stringify(tooLong)));
 });
 
-// 0.171 AV 빌더(seoul-visual-tech.github.io/av-system-builder) "가져오기 → 구성도 JSON" 형식: nodes(type 'equipment', data 장비)·edges(출력 포트 id → 입력 포트 id).
+// 0.172 AV 빌더(seoul-visual-tech.github.io/av-system-builder) "가져오기 → 구성도 JSON" 형식: nodes(type 'equipment', data 장비)·edges(출력 포트 id → 입력 포트 id).
 test('AV 빌더용 구성도는 매트릭스 1대와 04에서 연결한 채널마다 전송기 상자·연결선을 만들고, 포트 이름에 신호명을 넣는다',()=>{
   const state={...core.initial(),model:'XDM-12',slot:'in-1',placements:{'in-1':'XDM-CIS100','in-2':'XDM-HIS100','out-1':'XDM-COS100','out-2':'BLANK'},links:{'in-1':{device:'XDM-CTR100 · TX',count:2,distance:'30'},'in-2':{device:'XDM-CTR100 PSE + XDM-CTR100',count:1,distance:'30'},'out-1':{device:'XDM-CTR100 · RX',count:1,distance:'30'}}};
   state.portAssignments=core.syncPorts(state);

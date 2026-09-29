@@ -37,7 +37,7 @@
     {
       "role": "Rear",
       "file": "spx-r6-rear-art.webp",
-      "alt": "SPX-R6 후면 그림(전원 입력 단자와 모듈 칸 1~6, 칸마다 HDMI IN·CAT OUT)",
+      "alt": "SPX-R6 후면 그림(전원 입력 단자와 모듈 칸 1~6, 칸마다 HDMI IN/OUT·CAT IN/OUT)",
       "note": "Rear · 사양서 연결도의 후면 배치를 평면 그림으로 다시 그림. 칸 번호(1~6)는 설명용 표시(scripts/tools/draw_spx_r6_panels.cjs)",
       "provider": "RTCOM",
       "model": "SPX-R6",
@@ -272,10 +272,10 @@
       "group": "Video",
       "connector": "HDMI Type A (19-pin Female)",
       "signal": "HDMI",
-      "direction": "IN",
+      "direction": "BIDIR",
       "quantity": "6",
       "protocol": "HDMI 2.0",
-      "condition": "모듈 칸마다 1개(HDMI IN) · 소스 기기 연결",
+      "condition": "모듈 칸마다 1개(HDMI IN/OUT) · TX 모듈은 소스 입력, RX 모듈은 디스플레이 출력",
       "source": "S1",
       "verification": "VERIFIED"
     },
@@ -283,10 +283,10 @@
       "group": "Transmission",
       "connector": "RJ-45",
       "signal": "CATx",
-      "direction": "OUT",
+      "direction": "BIDIR",
       "quantity": "6",
       "protocol": "",
-      "condition": "모듈 칸마다 1개(CAT OUT) · SPX-RX와 연결",
+      "condition": "모듈 칸마다 1개(CAT IN/OUT) · TX 모듈은 SPX-RX로 출력, RX 모듈은 SPX-TX에서 입력",
       "source": "S1",
       "verification": "VERIFIED"
     },
@@ -389,16 +389,16 @@
       "items": [
         {
           "n": 1,
-          "label": "HDMI IN",
-          "desc": "TX 모듈 칸마다 1개 · 소스 기기 연결(칸 1~6)",
+          "label": "HDMI IN/OUT",
+          "desc": "모듈 칸마다 1개 · TX 모듈은 소스 입력, RX 모듈은 디스플레이 출력",
           "x1": 175,
           "x2": 229,
           "side": "bottom"
         },
         {
           "n": 2,
-          "label": "CAT OUT",
-          "desc": "TX 모듈 칸마다 1개 · SPX-RX와 CAT5e 케이블로 연결",
+          "label": "CAT IN/OUT",
+          "desc": "모듈 칸마다 1개 · TX 모듈은 SPX-RX로 출력, RX 모듈은 SPX-TX에서 입력(CAT5e)",
           "x1": 334,
           "x2": 392,
           "side": "bottom"

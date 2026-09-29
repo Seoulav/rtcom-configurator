@@ -1220,7 +1220,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 /* 0.166 사양 값이 여러 줄일 때(SPX-TX/RX "4K60 실효 전송거리") 줄마다 한 덩어리로 보이게 간격을 둔다 */
 #rtcom-design .rt-pg-spec-table td .rt-pg-spec-line{display:block}#rtcom-design .rt-pg-spec-table td .rt-pg-spec-line+.rt-pg-spec-line{margin-top:6px}
 
-/* 0.171 03 카드 슬롯 ① 카드 장착 / ② 신호 입력 전환(사용자 결정 2026-09-29 "추천A대로 진행해줘"). 표 형식은 사용자 제공 엑셀 표(입력슬롯·슬롯내·신호명). */
+/* 0.172 03 카드 슬롯 ① 카드 장착 / ② 신호 입력 전환(사용자 결정 2026-09-29 "추천A대로 진행해줘"). 표 형식은 사용자 제공 엑셀 표(입력슬롯·슬롯내·신호명). */
 #rtcom-design .rt-cards-sub{display:inline-flex;gap:4px;margin:4px 0 14px;padding:4px;border:1px solid var(--rt-line);border-radius:12px;background:var(--rt-soft)}
 #rtcom-design .rt-cards-sub button{min-height:36px;padding:0 16px;border:0;border-radius:9px;background:transparent;color:var(--rt-muted);font:700 13px/1 inherit;cursor:pointer}
 #rtcom-design .rt-cards-sub button.on{background:#fff;color:var(--rt-ink);box-shadow:0 1px 4px #1f253222}
@@ -1247,7 +1247,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-signal-name input:focus{outline:none;border-color:var(--rt-accent);box-shadow:0 0 0 3px #3978ee33}
 #rtcom-design .rt-signal-name input:not(:placeholder-shown){border-color:#b9c7dd;background:#f7faff;font-weight:700}
 @media(max-width:560px){#rtcom-design .rt-signal-side{padding:10px}#rtcom-design .rt-signal-name input{font-size:16px}}
-/* 0.171 AV 빌더로 보내기(사용자 결정 2026-09-29 "A로 전송기 포함해서 진행해줘") */
+/* 0.172 AV 빌더로 보내기(사용자 결정 2026-09-29 "A로 전송기 포함해서 진행해줘") */
 #rtcom-design .rt-avb{display:flex;flex-wrap:wrap;gap:14px 24px;align-items:center;justify-content:space-between;margin-top:18px;padding:16px 18px;border:1px solid #c9d8f5;border-radius:16px;background:#f3f7ff}
 #rtcom-design .rt-avb strong{font-size:14px;color:var(--rt-ink)}
 #rtcom-design .rt-avb p{margin:4px 0 6px;font-size:12.5px;color:var(--rt-muted)}

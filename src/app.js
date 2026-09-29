@@ -20,7 +20,7 @@
     // 04 전송기 미리보기가 지금 보여주는 슬롯 id(2-2). previewSide와 같은 성격의 순수 화면 상태 — state에 없고 저장·실행 취소 대상이 아니다.
     // 가족·모델이 바뀌면 previewSide와 함께 null로 되돌리고, linksViewV4가 렌더링 때마다 현재 remote/hdmiExtend 목록에 없으면 첫 슬롯으로 다시 잡는다.
     let linkPreviewSlot=null;
-    // 0.171(사용자 결정 2026-09-29 "추천A대로 진행해줘"): 03 카드 슬롯 안의 두 화면(① 카드 장착 / ② 신호 입력) 중 지금 보이는 쪽. previewSide와 같은 순수 화면 상태라 저장·실행 취소 대상이 아니다.
+    // 0.172(사용자 결정 2026-09-29 "추천A대로 진행해줘"): 03 카드 슬롯 안의 두 화면(① 카드 장착 / ② 신호 입력) 중 지금 보이는 쪽. previewSide와 같은 순수 화면 상태라 저장·실행 취소 대상이 아니다.
     let signalView=false;
     let changedSlot=null;
     // XDM 연동 전송기 정보(RTCom 종합 카탈로그 p.10~12). 키는 저장 파일·BOM에 쓰이는 전송기 이름과 같다.
@@ -332,13 +332,13 @@
       const fillBar=completion.empty?`<div class="rt-slot-fillbar"><span>비어 있는 슬롯 <b>${completion.empty}개</b> — 카드를 더 넣지 않을 슬롯은 블랭크 커버로 막아 구성을 완성하세요.</span><button type="button" class="rt-button rt-primary" data-action="fill-blanks">남은 ${completion.empty}칸 블랭크로 채우기</button></div>`:'';
       return doneBanner+heading('03 / 카드 슬롯','후면의 빈 슬롯을 눌러 카드를 장착하세요.',`${esc(model)} · ${layoutText}`)+(Object.values(state.placements).some(value=>value!=='BLANK')?cardsSubTabs():'')+`<div class="rt-config-stage"><section class="rt-rack-canvas"><div class="rt-rack-toolbar"><div><span class="rt-eyebrow">후면</span><h3>${esc(model)}</h3></div><div class="rt-frame-count"><span><b>${inputCards}</b> / ${inputSlots.length} 입력</span><span><b>${outputCards}</b> / ${outputSlots.length} 출력</span></div></div><div class="rt-rack-scroll">${photoRack||`<div class="rt-rack rt-rack-${layout}" style="--rt-rack-columns:${columns};--rt-rack-rows:${Math.max(1,Math.ceil(inputSlots.length/columns))*2};--rt-bank-slots:${columns};--rt-slot-ratio:${slotRatios[state.family]||9.7}"><span class="rt-rack-ear" aria-hidden="true"></span><div class="rt-rack-body">${bank('input',inputSlots)}${bank('output',outputSlots)}<div class="rt-rack-psu" aria-hidden="true"><strong>RTCOM</strong><span>${esc(model)}</span><i></i><small>제어</small><i></i><small>전원</small></div></div><span class="rt-rack-ear" aria-hidden="true"></span></div>`}</div>${photo||layout!=='h'?'<p class="rt-rack-scroll-hint">좌우로 밀어서 후면 전체를 볼 수 있습니다.</p>':''}${count?'':'<p class="rt-stage-warning">이 프레임은 제조사 후면 도면과 카드 허용표를 확보하기 전까지 논리 도식으로 표시합니다. 물리 설치 위치로 사용하지 마세요.</p>'}${count&&!photo?`<p class="rt-rack-note">${state.family==='VDM'?'VDM 매뉴얼에는 이 프레임의 선 도면만 있어, 슬롯 수는 매뉴얼 기준으로 하고 배치는 도면을 단순화한 그림으로 표시합니다.':'이 프레임은 매뉴얼에 후면 사진이 없어 슬롯 배치를 그림으로 표시합니다.'}</p>`:''}${legend}${cardInfoBar()}${fillBar}</section>${configurationSummary()}</div>${cardChoiceModal()}`;
     }
-    // 0.171 03 카드 슬롯 ② 신호 입력(사용자 결정 2026-09-29 "추천A대로 진행해줘", 사용자 제공 표 형식: 입력슬롯·슬롯내·신호명 / 신호명·출력슬롯·슬롯내).
+    // 0.172 03 카드 슬롯 ② 신호 입력(사용자 결정 2026-09-29 "추천A대로 진행해줘", 사용자 제공 표 형식: 입력슬롯·슬롯내·신호명 / 신호명·출력슬롯·슬롯내).
     // 카드를 다 꽂은 뒤 포트마다 실제 신호명(PC·CAM1 …)을 적는다. 값은 portAssignments["슬롯:포트"].assignedDevice(JSON schema 3에 원래 있던 빈 칸)에 넣으므로
     // 저장 형식·LocalStorage 키는 그대로이고, 카드를 다른 슬롯으로 옮기면(RtCore.moveSlot) 신호명도 따라간다. 슬롯 이름은 "신호 #슬롯 번호"(예: HDMI #1, HDBT #1).
     const signalTag=(slot,c)=>`${signalAbbr[signalKind(c[1])]} #${slot.id.split('-')[1]}`;
     function signalCounts(){const values=Object.values(state.portAssignments||{});return {named:values.filter(v=>String(v.assignedDevice||'').trim()).length,total:values.length}}
     function cardsSubTabs(){return `<div class="rt-cards-sub" role="tablist" aria-label="03 카드 슬롯 화면">${[['slots','① 카드 장착'],['signals','② 신호 입력']].map(([id,label])=>{const on=(id==='signals')===signalView;return `<button type="button" role="tab" data-cards-sub="${id}" aria-selected="${on}"${on?' class="on"':''}>${label}</button>`}).join('')}</div>`}
-    // 0.171 AV 빌더 연동(사용자 결정 2026-09-29 "A로 전송기 포함해서 진행해줘"): AV 빌더 "가져오기 → 구성도 JSON"으로 여는 파일을 내려받는다(RtCore.avBuilder).
+    // 0.172 AV 빌더 연동(사용자 결정 2026-09-29 "A로 전송기 포함해서 진행해줘"): AV 빌더 "가져오기 → 구성도 JSON"으로 여는 파일을 내려받는다(RtCore.avBuilder).
     const AV_BUILDER_URL='https://seoul-visual-tech.github.io/av-system-builder/';
     function avBuilderPanel(){const hasCards=Object.values(state.placements).some(value=>value!=='BLANK');if(!hasCards)return '';return `<div class="rt-avb"><div><strong>AV 빌더로 보내기</strong><p>매트릭스와 04에서 연결한 전송기가 같은 구성으로 들어가고, 포트 이름은 "HDMI #1-1 PC"처럼 신호명과 함께 들어갑니다.</p><ol><li><b>AV 빌더용 파일 내려받기</b>를 눌러 파일을 받습니다.</li><li><a href="${AV_BUILDER_URL}" target="_blank" rel="noopener">AV 빌더</a>를 열고 오른쪽 위 <b>Share → 가져오기 → 구성도 JSON</b>에서 그 파일을 고릅니다.</li></ol></div><div class="rt-avb-actions"><button type="button" class="rt-button rt-primary" data-action="av-builder">AV 빌더용 파일 내려받기</button><a class="rt-button" href="${AV_BUILDER_URL}" target="_blank" rel="noopener">AV 빌더 열기 ↗</a></div></div>`}
     function signalsView(){
@@ -450,7 +450,7 @@
       root.querySelector('[data-action=back]').hidden=state.step===0;
       updateToolbar();syncNavHistory();
     }
-    // 0.171 03 아래 "다음" 글자: ① 카드 장착에서는 카드가 있으면 ② 신호 입력으로, ② 신호 입력에서는 04 전송기로 간다. 이동은 막지 않는다.
+    // 0.172 03 아래 "다음" 글자: ① 카드 장착에서는 카드가 있으면 ② 신호 입력으로, ② 신호 입력에서는 04 전송기로 간다. 이동은 막지 않는다.
     function cardsNextLabel(){
       if(signalView){const {named,total}=signalCounts();return named<total?`이름 없는 포트 ${total-named}개 · 그래도 다음`:'신호 입력 완료 · 전송기 연결'}
       const completion=RtCore.completionFor(state),hasCards=Object.values(state.placements).some(value=>value!=='BLANK');
@@ -620,7 +620,7 @@
       return true;
     }
     root.addEventListener('input',event=>{if(updateRequirementField(event.target)||updatePortField(event.target))persist()});
-    // 0.171 ② 신호 입력: 글자를 칠 때마다 저장하고 개수·다음 버튼 글자만 고친다(다시 그리지 않아 커서가 유지됨). 칸을 벗어나면(change) 실행 취소 기록을 남긴다.
+    // 0.172 ② 신호 입력: 글자를 칠 때마다 저장하고 개수·다음 버튼 글자만 고친다(다시 그리지 않아 커서가 유지됨). 칸을 벗어나면(change) 실행 취소 기록을 남긴다.
     function updateSignalMeta(){const {named,total}=signalCounts(),count=root.querySelector('[data-signal-count]');if(count)count.innerHTML=`신호명 입력 <b>${named}</b> / ${total} 포트`;const label=root.querySelector('[data-action=next] span');if(label&&state.step===2)label.textContent=cardsNextLabel()}
     root.addEventListener('input',event=>{const input=event.target;if(!input.matches?.('.rt-signal-input'))return;const port=state.portAssignments[input.dataset.signalPort];if(!port)return;port.assignedDevice=input.value.slice(0,40);persist();updateSignalMeta()});
     root.addEventListener('change',event=>{const input=event.target;if(!input.matches?.('.rt-signal-input'))return;const port=state.portAssignments[input.dataset.signalPort];if(!port)return;port.assignedDevice=input.value.trim().slice(0,40);input.value=port.assignedDevice;recordHistory();updateToolbar();persist();updateSignalMeta()});

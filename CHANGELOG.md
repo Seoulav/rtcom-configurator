@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.171.0 배포 기록**: `docs/qa/DEPLOYMENT_0.171_2026-09-29.md`(PR #242 → main 병합, Pages 배포 run 36569933648)
 - **0.170.0 배포 기록**: `docs/qa/DEPLOYMENT_0.170_2026-09-29.md`(PR #240 → main 병합, Pages 배포 run 36568312060)
 - **0.169.0 배포 기록**: `docs/qa/DEPLOYMENT_0.169_2026-09-29.md`(PR #238 → main 병합, Pages 배포 run 36565536755)
 - **0.168.0 배포 기록**: `docs/qa/DEPLOYMENT_0.168_2026-09-29.md`(PR #236 → main 병합, Pages 배포 run 36564567871)
@@ -27,7 +28,7 @@
 - **0.145.0 배포 기록**: `docs/qa/DEPLOYMENT_0.145_2026-09-29.md`(PR #194 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.144.0 배포 기록**: `docs/qa/DEPLOYMENT_0.144_2026-09-29.md`(PR #192 → main 병합, Pages 배포 run 162, 공개 파일 337/338 일치, `.nojekyll` 제외)
 
-## 0.171.0
+## 0.172.0
 
 사용자 결정 2026-09-29("슬롯을 구성하고 나서 실제 신호를 넣는 거는 어떄?", "추천A대로 진행해줘"):
 
@@ -40,7 +41,14 @@
   - 매트릭스 1대(포트 "HDMI #1-1 PC"), 04에서 연결한 채널마다 송신기·수신기 상자(HDMI 카드 PSE 한 쌍은 PSE + CTR100 두 상자), HDBaseT·광 연결선. 상자 이름은 "송신기"·"수신기"로 두고 신호명은 포트 이름(`HDMI In · PC`)에 넣습니다.
   - AV 빌더 v1.19.1 공개 파일로 실제 불러오기를 확인했습니다(장비 9대·연결 8개, "Diagram state loaded successfully!").
 - 다음 묶음 예정: 05 구성 검토 배정표, 06 출력 인쇄·CSV에 신호명 싣기. 한 번에 열기(B안)는 AV 빌더 저장소 작업이 필요합니다(OPEN_ITEMS).
-- 근거: `docs/implementation/SIGNAL_INPUT_0.171.md`, 화면 `docs/qa/signal-input-0.171/`, `docs/qa/av-builder-0.171/`
+- 근거: `docs/implementation/SIGNAL_INPUT_0.172.md`, 화면 `docs/qa/signal-input-0.172/`, `docs/qa/av-builder-0.172/`
+
+## 0.171.0
+
+사용자 확인 2026-09-29("입력카드가 출력카드 원하는대로 꽂는 거라서 HDMI IN/OUT 되게 해야해"):
+
+- **SPX-R6 모듈 칸 단자 입출력 표기**: 모듈 칸에 TX(입력)·RX(출력) 모듈을 원하는 대로 꽂으므로 후면 그림의 단자 글자를 `HDMI IN/OUT`·`CAT IN/OUT`으로 바꿨습니다. RX 모듈이면 CAT 단자도 입력이 되어 CAT 쪽도 같이 바꿨습니다.
+- 02 Port Map 후면 1·2번 이름·설명과 제조사 자료 입출력 단자 표 방향(입출력)을 맞췄습니다. 번호 좌표와 03 Signal Flow(TX 구성 예시)는 그대로입니다. 근거: `docs/implementation/SPX_R6_0.157.md` §9
 
 ## 0.170.0
 

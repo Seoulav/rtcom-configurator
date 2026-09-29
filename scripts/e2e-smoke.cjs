@@ -34,7 +34,7 @@ const server=http.createServer((req,res)=>{
 });
 const results=[];
 const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${ok?'PASS':'FAIL'} ${name}${detail?` — ${detail}`:''}`)};
-// 0.171 03 카드 슬롯은 ① 카드 장착 → ② 신호 입력 → 04 전송기 순서다(카드가 있을 때). 04로 가는 검사는 이 도우미로 두 화면을 차례로 넘긴다.
+// 0.172 03 카드 슬롯은 ① 카드 장착 → ② 신호 입력 → 04 전송기 순서다(카드가 있을 때). 04로 가는 검사는 이 도우미로 두 화면을 차례로 넘긴다.
 const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.locator('[data-signal-count]').count())await pg.click('[data-action="next"]');await pg.waitForLoadState('networkidle')};
 (async()=>{
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
@@ -1084,7 +1084,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
         check('터치 화면에서는 장착 슬롯의 × 가 늘 보이고(20px 이상) 빈 슬롯에는 없으며, 누르면 카드가 빠지고 팝업은 열리지 않음',media&&shown&&box&&box.width>=19.5&&emptyX===0&&gone===null&&opened===0,JSON.stringify({media,shown,w:box&&box.width,emptyX,gone,opened}));
         await touchCtx.close();
       }
-      // 0.171(사용자 결정 2026-09-29 "추천A대로 진행해줘"): 03 카드 슬롯에서 카드를 꽂고 "다음"을 누르면 같은 03 안의 ② 신호 입력으로 가고,
+      // 0.172(사용자 결정 2026-09-29 "추천A대로 진행해줘"): 03 카드 슬롯에서 카드를 꽂고 "다음"을 누르면 같은 03 안의 ② 신호 입력으로 가고,
       // 포트마다 신호명을 적으면(Enter로 다음 칸) 자동 저장되며, 실행 취소로 되돌릴 수 있고, 한 번 더 "다음"을 누르면 04 전송기로 간다.
       {
         const s=await browser.newPage({viewport:{width:1300,height:1000}});const errs=[];s.on('pageerror',e=>errs.push(e.message));

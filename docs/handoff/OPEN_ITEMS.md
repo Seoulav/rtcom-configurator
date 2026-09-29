@@ -46,7 +46,7 @@
 
 ## AV 빌더 한 번에 열기(B안) — 저장소 접근 대기
 
-- [ ] rtcom 구성기에서 "AV 빌더에서 열기" 한 번으로 구성이 뜨게 하려면 AV 빌더(seoul-visual-tech/av-system-builder)에 외부 구성 받기 입구(예: 주소 해시로 받은 구성도 JSON 불러오기)가 필요합니다. 그 저장소가 들어 있는 세션에서 작업합니다. 파일 형식은 0.171 `RtCore.avBuilder`와 같습니다(`docs/implementation/SIGNAL_INPUT_0.171.md` §5).
+- [ ] rtcom 구성기에서 "AV 빌더에서 열기" 한 번으로 구성이 뜨게 하려면 AV 빌더(seoul-visual-tech/av-system-builder)에 외부 구성 받기 입구(예: 주소 해시로 받은 구성도 JSON 불러오기)가 필요합니다. 그 저장소가 들어 있는 세션에서 작업합니다. 파일 형식은 0.172 `RtCore.avBuilder`와 같습니다(`docs/implementation/SIGNAL_INPUT_0.172.md` §5).
 
 ## 공개 여부를 사용자에게 물어볼 PDF
 
