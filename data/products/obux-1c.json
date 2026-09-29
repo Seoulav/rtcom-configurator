@@ -211,7 +211,7 @@
     {
       "group": "Video",
       "name": "HDCP",
-      "value": "HDCP v1.x, v2.2 지원",
+      "value": "HDCP 1.x, 2.2 지원",
       "unit": "",
       "condition": "",
       "source": "M1",

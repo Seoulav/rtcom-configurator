@@ -167,7 +167,7 @@
     {
       "group": "Video",
       "name": "HDCP",
-      "value": "HDCP 2.2 support",
+      "value": "HDCP 2.2 지원",
       "unit": "",
       "condition": "",
       "source": "C",
