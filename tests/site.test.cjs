@@ -91,10 +91,10 @@ test('rear photo slot zones stay inside each photo and match the card faceplate 
     'VDM-8X':[2,2,[1,1],true],'VDM-32X':[8,8,[4,4]],'VDM-48X':[12,12,[4,4]],'VDM-64X':[16,16,[4,4]],'VDM-80X':[20,20,[11,11]],'VDM-128X':[32,32,[11,11]],'VDM-180X':[45,45,[15,15]],'VDM-256X':[64,64,[11,11]],
     'SPX-M810':[1,1,[1,1],true],'SPX-M1620':[2,2,[1,1],true],'SPX-M3236':[4,3,[1,1],true],'SPX-M2472':[3,6,[3,6]],'SPX-M24120':[3,10,[3,10]]};
   const faceplateRatio={XDM:9.7,VDM:5.7,SPX:13.8};
-  // SPX-M1620 매뉴얼 후면 사진은 가로로 눌려 있다(사진 662×418, 실제 483×177mm). 사진 속 판넬 비율(약 9.8:1)로 확인한다.
+  // 0.178: SPX-M1620 후면 그림을 실제 비율(몸체 약 440×177mm)로 넓혀 다시 그렸으므로, 예전 사진 비율 예외(9.8:1)를 없애고 SPX 판넬 비율(13.8:1)로 확인한다.
   // VDM 후면 선 도면은 모델마다 보드 비율이 다르게 그려져 있어 도면 속 비율로 확인한다.
   // 0.120: VDM 그림은 슬롯 칸을 카드 사진 비율(5.7:1)과 똑같이 그려 도면 비율 예외(128X 3.9, 180X 8.2)를 없앴고, VDM은 ±3% 안에 들어야 한다.
-  const photoRatio={'SPX-M1620':9.8};
+  const photoRatio={};
   for(const [model,photo] of Object.entries(rearPhotos)){
     const family=model.split('-')[0];
     assert.ok(catalog[family].models.includes(model));

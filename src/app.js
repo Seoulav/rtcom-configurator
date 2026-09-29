@@ -93,11 +93,11 @@
       'VDM-180X':{src:'output/design/assets/frames/vdm-180x-rear-art.webp',page:19,manual:VDM_MANUAL,kind:'그림',size:[706,2000],input:[12,71,656,805],output:[12,1079,656,1813]},
       'VDM-256X':{src:'output/design/assets/frames/vdm-256x-rear-art.webp',page:20,manual:VDM_MANUAL,kind:'그림',size:[1121,2000],input:[[14,28,541,848],[558,28,1083,848]],output:[[14,998,541,1817],[558,998,1083,1817]]},
       // SPX 국문 사용자 매뉴얼(250805) 후면 사진. M810·M1620·M3236은 가로 카드(입력 위·출력 아래), M2472·M24120은 세로 카드(입력 왼쪽·출력 오른쪽).
-      'SPX-M810':{src:'output/design/assets/frames/spx-m810-rear-art.webp',page:7,manual:SPX_MANUAL,kind:'그림',size:[2000,451],input:[246,70,1758,182],output:[246,182,1758,293]},
-      'SPX-M1620':{src:'output/design/assets/frames/spx-m1620-rear-art.webp',page:8,manual:SPX_MANUAL,kind:'그림',size:[2000,1263],input:[202,350,1795,677],output:[202,677,1795,1003]},
+      'SPX-M810':{src:'output/design/assets/frames/spx-m810-rear-art.webp',page:7,manual:SPX_MANUAL,kind:'그림',size:[2000,400],input:[331,62,1672,161],output:[331,161,1672,260]},
+      'SPX-M1620':{src:'output/design/assets/frames/spx-m1620-rear-art.webp',page:8,manual:SPX_MANUAL,kind:'그림',size:[2000,804],input:[202,223,1794,431],output:[202,431,1794,638]},
       'SPX-M3236':{src:'output/design/assets/frames/spx-m3236-rear-art.webp',page:6,manual:SPX_MANUAL,kind:'그림',size:[2000,1360],input:[219,28,1642,416],output:[219,900,1642,1193]},
-      'SPX-M2472':{src:'output/design/assets/frames/spx-m2472-rear-art.webp',page:9,manual:SPX_MANUAL,kind:'그림',size:[2000,1995],input:[16,208,328,1682],output:[844,208,1458,1682]},
-      'SPX-M24120':{src:'output/design/assets/frames/spx-m24120-rear-art.webp',page:9,manual:SPX_MANUAL,kind:'그림',size:[1990,2000],input:[10,209,324,1681],output:[836,209,1869,1681]}
+      'SPX-M2472':{src:'output/design/assets/frames/spx-m2472-rear-art.webp',page:9,manual:SPX_MANUAL,kind:'그림',size:[2000,1658],input:[13,173,273,1398],output:[1039,173,1550,1398]},
+      'SPX-M24120':{src:'output/design/assets/frames/spx-m24120-rear-art.webp',page:9,manual:SPX_MANUAL,kind:'그림',size:[2000,1669],input:[9,174,270,1403],output:[1037,174,1900,1403]}
     };
     const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     function card(id){return [...families[state.family].input,...families[state.family].output].find(c=>c[0]===id)}

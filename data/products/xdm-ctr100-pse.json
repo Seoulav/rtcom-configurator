@@ -142,10 +142,6 @@
     {
       "text": "오디오 추출 지원(후면 5핀 L·R·접지, 스피커 직결)",
       "source": "S1"
-    },
-    {
-      "text": "동작 상태 LED 4개 표시 지원(Rx Signal·Tx Signal·Tx/Rx·Link, 정상 시 TX는 Link·Tx/Rx·Tx Signal, RX는 Link·Tx/Rx·Rx Signal 켜짐)",
-      "source": "M1"
     }
   ],
   "specifications": [
