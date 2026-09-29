@@ -154,7 +154,9 @@ test('VDM Quad card remains two ports and VDM remote cards link to confirmed ext
 
 test('CSV contains draft status, combined quantities and accessory limitation',()=>{
   const csv=core.csv(configured());
-  assert.match(csv,/UNVERIFIED_DRAFT/);assert.match(csv,/"XDM-CTR100","5"/);assert.match(csv,/"전원 장비"/);assert.match(csv,/기본 포함품 미확정/);
+  // 0.172: 영문 상태 코드는 행마다 반복하지 않고 맨 아래 안내 행에 "검토용 초안"으로 한 번만 둔다.
+  assert.doesNotMatch(csv,/UNVERIFIED_DRAFT/);assert.match(csv,/"안내","검토용 초안"/);assert.match(csv,/"XDM-CTR100","[^"]*","5"/);assert.match(csv,/"전원 장비"/);assert.match(csv,/기본 포함품은 목록에 없습니다/);
+  assert.match(csv.split('\r\n')[0],/"구분","모델","비고","수량","장착 위치"/);
 });
 
 test('HDBaseT and fiber cards default to their catalog paired extenders',()=>{
@@ -293,7 +295,9 @@ test('BOM includes a blank-cover row with quantity and no card row for BLANK pla
 test('CSV and JSON export report completion and blank quantity',()=>{
   const state=core.checkState({...core.initial(),model:'XDM-12',placements:{'in-1':'XDM-CIS100','in-2':'BLANK'}});
   const csv=core.csv(state);
-  assert.match(csv,/"슬롯 완성도"/);
+  assert.match(csv,/슬롯 완성도/);
+  assert.match(csv,/"마감재","블랭크 커버","[^"]*","1","입력 2"/);
+  assert.match(csv,/"입력 카드","XDM-CIS100","[^"]*4ch","1","입력 1"/);
   assert.match(csv,/카드 1 . 블랭크 1 . 빈칸 4 \/ 전체 6/);
   const doc=core.document(state);
   assert.deepEqual(doc.completion,{cards:1,blanks:1,empty:4,total:6});
