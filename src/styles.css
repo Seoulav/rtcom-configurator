@@ -866,6 +866,35 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
   #rtcom-design .rt-link-flow-node{flex:0 1 132px;width:auto;min-width:0}
   #rtcom-design .rt-link-flow-cable{flex:0 1 96px;width:auto;min-width:64px}
 }
+/* 0.176 04 전송기 왼쪽 목록 한 줄 정리(사용자 결정 2026-09-29 "둘 다 진행", 시안 docs/qa/link-step-0.175/mock-compact-list-pc.png):
+   카드마다 "전송기"·"연결하지 않음" 큰 상자 2개(설명 2줄씩)를 제목·연결 채널 한 줄 + [전송기 | 연결하지 않음] 선택 막대 한 줄로 줄인다.
+   역할·케이블 설명은 오른쪽 미리보기("케이블" 줄)와 아래 전원 안내에 있으므로 여기서는 숨기고 버튼 title로만 남긴다.
+   "현재 구성에는 … 카드가 없습니다" 안내도 한 줄 + 돌아가기 버튼으로 줄인다. */
+#rtcom-design .rt-cg-link-group{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px;align-items:center;padding:10px 12px;border:1px solid #e3e9f3;border-radius:12px;background:#fff}
+#rtcom-design .rt-cg-link-group+.rt-cg-link-group,#rtcom-design .rt-cg-link-umbrella .rt-cg-link-group+.rt-cg-link-group{border-top:1px solid #e3e9f3;padding-top:10px;margin-top:8px}
+#rtcom-design .rt-cg-link-group-head{display:contents}
+#rtcom-design .rt-cg-link-group-title{grid-column:1;padding:0;min-width:0}
+#rtcom-design .rt-cg-link-group-title strong{font-size:13px}
+#rtcom-design .rt-cg-link-group .rt-link-count{grid-column:2;flex-direction:row;align-items:center;gap:6px;white-space:nowrap}
+#rtcom-design .rt-cg-link-group .rt-link-count select{min-width:0;padding:4px 8px;font-size:12px}
+#rtcom-design .rt-cg-link-group-rows{grid-column:1/-1;flex-direction:row;gap:4px;padding:3px;background:#eef2f8;border-radius:10px}
+#rtcom-design .rt-cg-link-group-rows .rt-cg-row{flex:1 1 0;min-width:0;flex-direction:row;align-items:center;justify-content:center;gap:0;padding:7px 10px;border:0;border-radius:8px;background:transparent;box-shadow:none}
+#rtcom-design .rt-cg-link-group-rows .rt-cg-row:hover{background:#ffffffa6}
+#rtcom-design .rt-cg-link-group-rows .rt-cg-row[aria-pressed=true]{background:#fff;box-shadow:0 1px 4px #0002}
+#rtcom-design .rt-cg-link-group-rows .rt-cg-row[aria-pressed=true] .rt-cg-row-head strong{color:var(--pg-accent-2,#0057d8)}
+#rtcom-design .rt-cg-link-group-rows .rt-cg-row-specs,#rtcom-design .rt-cg-link-group-rows .rt-cg-dot,#rtcom-design .rt-cg-link-group-rows .rt-cg-row-head strong small,#rtcom-design .rt-cg-link-group-rows .rt-cg-row-head strong em{display:none}
+#rtcom-design .rt-cg-link-group-rows .rt-cg-row-head{justify-content:center;text-align:center}
+#rtcom-design .rt-cg-link-group-rows .rt-cg-row-head strong{font-size:12.5px;line-height:1.3}
+#rtcom-design .rt-cg-link-group-rows>.rt-notice{flex:1}
+#rtcom-design .rt-link-empty{display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:10px 14px;text-align:left;min-height:0;margin-bottom:12px}
+#rtcom-design .rt-link-empty p{display:none}
+#rtcom-design .rt-link-empty strong{font-size:12.5px;margin:0 auto 0 0}
+#rtcom-design .rt-link-empty .rt-button{padding:6px 12px;min-height:0;font-size:12px;flex:none}
+#rtcom-design .rt-cg-link-umbrella-head p{font-size:11.5px;margin:2px 0 10px}
+@media(max-width:560px){
+  #rtcom-design .rt-cg-link-group-title strong{font-size:12.5px}
+  #rtcom-design .rt-cg-link-group-rows .rt-cg-row{padding:7px 6px}
+}
 /* 0.175 04 전송기 미리보기 정리(사용자 지적 2026-09-29 "이 부분 개선이 필요해보여"):
    ① 케이블 점선 위에는 "최대 100m"만 두고 문장 전체는 흐름 아래 한 줄(rt-link-flow-spec)로 옮겨 전송기 사진과 겹치지 않게 한다.
    ② PSE + CTR100처럼 사진이 두 장이면 두 장이 상자 폭을 나눠 가져 상자 밖으로 넘치지 않게 하고, 그 상자만 조금 넓힌다.

@@ -10,11 +10,6 @@
 - [ ] 두 Worker 주소(`rtcom-ai-api…workers.dev`, `rtcom-ai-login…workers.dev`)를 Claude에게 알려 주기 → `src/ai-search.js`의 `CONFIG` 채워 배포
 - [ ] 첫 실제 질문으로 답 품질·건당 토큰(`cacheWrite`·`cacheRead`) 확인
 
-## 04 전송기 목록 한 줄 정리 — 사용자 결정 대기 (0.175)
-
-시안은 `docs/qa/link-step-0.175/mock-compact-list-pc.png`, 설명은 `docs/implementation/LINK_STEP_FIX_0.175.md` §3에 있습니다.
-- [ ] 카드마다 큰 선택 상자 2개 대신 한 줄([전송기 | 연결하지 않음] 선택 + 연결 채널), "카드가 없습니다" 안내는 얇은 한 줄
-
 ## 03 카드 슬롯 개선안 B·C — 사용자 결정 대기 (0.167)
 
 시안은 `docs/qa/card-signal-badge-0.167/mock-B.png`·`mock-C.png`, 설명은 `docs/implementation/CARD_SIGNAL_BADGE_0.167.md` "남은 일"에 있습니다. 시안 A는 0.167.0에 반영했습니다.

@@ -443,7 +443,7 @@
         {
           "n": 3,
           "label": "HDBaseT OUT",
-          "desc": "RJ45 · XDM-CIS100, XDM-CTR100(RX 모드), XDM-CR103과 CAT6a U/FTP로 연결",
+          "desc": "RJ45 · XDM-CIS100, XDM-CTR100(RX 모드), XDM-CR103과 CAT6A S/FTP로 연결",
           "side": "right",
           "y1": 172,
           "y2": 550
@@ -504,7 +504,7 @@
         {
           "n": 3,
           "label": "HDBaseT IN",
-          "desc": "RJ45 · XDM-COS100, XDM-CTR100(TX 모드), XDM-CT103과 CAT6a U/FTP로 연결",
+          "desc": "RJ45 · XDM-COS100, XDM-CTR100(TX 모드), XDM-CT103과 CAT6A S/FTP로 연결",
           "side": "right",
           "y1": 100,
           "y2": 298
@@ -562,7 +562,7 @@
       "code": "U2",
       "name": "서울영상테크 SI사업본부 확인",
       "page": "",
-      "scope": "사용자 확인(2026-09-28) — HDBaseT 3.0 4K60 100m 전송 안정성을 위해 권장 케이블을 CAT6A S/FTP(차폐) 이상으로 정정, UTP(비차폐)는 사용하지 않음. XDM-CTR100·XDM-CTR100 PSE와 동등 사양"
+      "scope": "사용자 확인(2026-09-28) — HDBaseT 3.0 4K60 100m 전송 안정성을 위해 권장 케이블을 CAT6A S/FTP(차폐) 이상으로 정정, UTP(비차폐)는 사용하지 않음. XDM-CTR100·XDM-CTR100 PSE와 동등 사양. 단자 지도 RJ45 설명의 \"CAT6a U/FTP\"도 사용자 결정(2026-09-29 \"둘 다 진행\")으로 \"CAT6A S/FTP\"로 통일"
     },
     {
       "code": "M2",
