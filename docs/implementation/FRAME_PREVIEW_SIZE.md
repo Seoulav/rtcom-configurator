@@ -14,7 +14,7 @@
 
 - `src/app.js`
   - `frameRackU`: 프레임별 랙 높이(U). 값은 제품 데이터 `lineup[].rackUnits`와 같습니다(VDM 3·7·12·19·24·27·37·38·39·38, XDM 4·9·9·16·29·40, SPX 2·4·7·8·8).
-  - `frameShowHeight(model)`: `round(90 + 410 · ln(U/2) / ln(20))`. 2U → 90px, 3U → 146, 7U → 261, 12U → 335, 19U → 398, 27U → 446, 38U → 493, 40U → 500. 실제 높이 비율(3U:38U = 1:12.7)을 그대로 쓰면 작은 프레임이 보이지 않아 로그로 눌렀습니다.
+  - `frameShowHeight(model)`: `round(90 + 410 · ln(U/2) / ln(20))`. 2U → 90px, 3U → 145, 7U → 261, 12U → 335, 19U → 398, 27U → 446, 38U → 493, 40U → 500. 실제 높이 비율(3U:38U = 1:12.7)을 그대로 쓰면 작은 프레임이 보이지 않아 로그로 눌렀습니다.
   - `chassisViewV2()`: 미리보기에 `rt-cg-scaled` 클래스와 `--rt-fh`(px 수)를 붙입니다. 표에 없는 모델은 붙이지 않아 예전 상한이 그대로 적용됩니다.
 - `src/styles.css`(파일 끝)
   - `.rt-cg-scaled img{height:calc(var(--rt-fh)*1px);width:auto;max-width:100%;object-fit:contain}`: 상한이 아니라 **정해진 높이**로 그립니다. 폭이 부족하면 `max-width`와 `object-fit:contain`으로 비율을 지키며 줄어듭니다.
