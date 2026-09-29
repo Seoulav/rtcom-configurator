@@ -977,23 +977,25 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-config-summary li .rt-summary-card b{color:#1f2a3d;font-size:14px;font-weight:800;white-space:nowrap}
 #rtcom-design .rt-config-summary ul:has(.rt-summary-card){display:grid;gap:6px}
 /* 0.167 신호 배지(시안 A): 색은 이 배지 하나에만 쓴다. 카드 트레이·후면 슬롯·범례·내 구성이 같은 색 */
-#rtcom-design [data-sig="hdmi"]{--rt-sig:#2f6fe0}
-#rtcom-design [data-sig="dp"]{--rt-sig:#7c4ddb}
-#rtcom-design [data-sig="hdbt"],#rtcom-design [data-sig="catx"]{--rt-sig:#15924a}
-/* 0.168 광 전송은 OM3 멀티모드 광케이블 외피색(TIA-598 아쿠아, 사용자 요청 2026-09-29 "Fiber 멀티모드 광케이블 색상으로 하자 om3").
-   0.169 글자는 다른 배지와 같은 흰색(사용자 요청 "fiber글자는 흰색으로하자"). 밝은 바탕에서 흰 글자가 번지지 않게 얇은 그림자만 더한다 */
-#rtcom-design [data-sig="fiber"]{--rt-sig:#00AEC7}
-#rtcom-design .rt-sig-badge[data-sig="fiber"]{text-shadow:0 0 2px #00596680}
-#rtcom-design [data-sig="sdi"]{--rt-sig:#d0384f}
+/* 0.170 회사 범례 색(사용자 제공 2026-09-29 "우리 회사 범례 색상이야": 광 하늘색, SDI 검정, LAN 초록, DP/HDMI 빨강, A.AUDIO 보라 #7030A0, USB 파랑 #0000FF).
+   HDBaseT·CATx는 LAN 초록. 광은 0.168 OM3 아쿠아 대신 회사 범례 하늘색 */
+#rtcom-design [data-sig="dp"]{--rt-sig:#FF0000}
+/* HDMI는 회사 범례(DP와 같은 빨강) 대신 남색(사용자 요청 2026-09-29 "HDMI 색상을 남색으로 하면 어때?"), DP와 구별 */
+#rtcom-design [data-sig="hdmi"]{--rt-sig:#002060}
+#rtcom-design [data-sig="hdbt"],#rtcom-design [data-sig="catx"]{--rt-sig:#00B050}
+#rtcom-design [data-sig="fiber"]{--rt-sig:#00B0F0}
+#rtcom-design [data-sig="sdi"]{--rt-sig:#000000}
 #rtcom-design [data-sig="etc"]{--rt-sig:#667085}
-#rtcom-design .rt-sig-badge{display:inline-grid;place-items:center;flex:none;min-width:34px;height:18px;padding:0 5px;border-radius:5px;background:var(--rt-sig);color:#fff;font:800 9.5px/1 system-ui,sans-serif;font-style:normal;letter-spacing:.02em}
+#rtcom-design .rt-sig-badge{display:inline-grid;place-items:center;flex:none;min-width:34px;height:18px;padding:0 5px;border-radius:5px;background:var(--rt-sig);color:#fff;font:800 9.5px/1 system-ui,sans-serif;font-style:normal;text-shadow:0 0 2px #0005;letter-spacing:.02em}
 #rtcom-design .rt-sig-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 14px;margin-top:6px;color:var(--rt-muted);font-size:11.5px}
 #rtcom-design .rt-sig-legend span{display:inline-flex;align-items:center;gap:5px}
 #rtcom-design .rt-card-info-chip strong:has(.rt-sig-badge){display:flex;align-items:center;gap:6px}
-/* 후면 장착 슬롯 배지: 슬롯 크기(container)에 맞춰 줄이고, 너무 얇은 슬롯에서는 숨긴다 */
-#rtcom-design .rt-rack-slot .rt-slot-sig{position:absolute;z-index:2;top:50%;left:clamp(3px,3cqw,14px);min-width:0;height:clamp(10px,58cqh,18px);padding:0 clamp(3px,12cqh,6px);font-size:clamp(7px,34cqh,9.5px);transform:translateY(-50%);box-shadow:0 1px 3px #0007;pointer-events:none}
-#rtcom-design .rt-rack-vs .rt-rack-slot .rt-slot-sig,#rtcom-design .rt-rack-vt .rt-rack-slot .rt-slot-sig{top:auto;bottom:clamp(3px,3cqh,14px);left:50%;height:auto;width:clamp(10px,58cqw,18px);padding:clamp(3px,12cqw,6px) 0;font-size:clamp(7px,34cqw,9.5px);writing-mode:vertical-rl;transform:translateX(-50%) rotate(180deg)}
-@container (max-height:13px){#rtcom-design .rt-rack-slot .rt-slot-sig{display:none}}
+/* 0.170 후면 장착 슬롯 태그(2안): 번호(IN/OUT 색)와 신호 배지를 한 태그로 붙여 늘 보여 준다. 0.17의 "장착 슬롯 번호표 숨김"은 이 태그에는 적용하지 않는다 */
+#rtcom-design .rt-rack-slot-filled .rt-rack-slot-no.rt-slot-tag{opacity:1;display:inline-flex;align-items:stretch;padding:0;overflow:hidden;border-radius:4px;color:#fff;font-size:11px;box-shadow:0 0 0 1px #ffffff4d,0 1px 3px #0008}
+#rtcom-design .rt-slot-tag .rt-slot-tag-n{display:flex;align-items:center;padding:2px 5px}
+#rtcom-design .rt-slot-tag .rt-slot-tag-s{min-width:0;height:auto;padding:2px 5px;border-radius:0;font-size:inherit;line-height:inherit}
+#rtcom-design .rt-rack-vs .rt-slot-tag .rt-slot-tag-n,#rtcom-design .rt-rack-vt .rt-slot-tag .rt-slot-tag-n,#rtcom-design .rt-rack-vs .rt-slot-tag .rt-slot-tag-s,#rtcom-design .rt-rack-vt .rt-slot-tag .rt-slot-tag-s{padding:5px 2px}
+#rtcom-design .rt-rack-vs .rt-rack-slot-filled .rt-rack-slot-no.rt-slot-tag,#rtcom-design .rt-rack-vt .rt-rack-slot-filled .rt-rack-slot-no.rt-slot-tag{padding:0}
 #rtcom-design .rt-card-info-bar{display:grid;gap:10px;margin-top:14px;padding:14px 16px;border-radius:16px;background:#ffffffb3;border:1px solid #e3e9f3}
 #rtcom-design .rt-card-info-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}
 #rtcom-design .rt-card-info-head strong{font-size:13px}
