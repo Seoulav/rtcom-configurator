@@ -291,7 +291,7 @@
         const rawValue=state.placements[slot.id],isBlank=rawValue==='BLANK',c=isBlank?null:slotCard(slot.id),selecting=modalSlot===slot.id;
         const stateClass=c?'rt-rack-slot-filled':isBlank?'rt-rack-slot-blank':'rt-rack-slot-empty';
         const label=c?`${c[0]} 장착됨 · 눌러서 변경`:isBlank?'블랭크 커버 · 눌러서 변경':'비어 있음 · 눌러서 카드 선택';
-        return `<button type="button" class="rt-rack-slot ${stateClass} ${selecting?'rt-rack-slot-selecting':''} ${changed===slot.id?'rt-rack-slot-changed':''}" data-slot="${slot.id}"${rawValue?' draggable="true"':''} aria-label="${esc(slot.label)}, ${label}" title="${esc(slot.label)}${c?` · ${c[0]}`:isBlank?' · 블랭크 커버':''}"><span class="rt-rack-slot-no rt-rack-slot-no-${slot.dir}" aria-hidden="true">${shortLabel(slot)}</span>${c?`<img draggable="false" class="rt-faceplate" src="${cardAsset(c[0])}" alt="">`:isBlank?`<img draggable="false" class="rt-faceplate rt-blank-plate" src="${blankPlates[state.family]}" alt="">`:'<span class="rt-rack-slot-add" aria-hidden="true">+</span>'}</button>`;
+        return `<button type="button" class="rt-rack-slot ${stateClass} ${selecting?'rt-rack-slot-selecting':''} ${changed===slot.id?'rt-rack-slot-changed':''}" data-slot="${slot.id}"${rawValue?' draggable="true"':''} aria-label="${esc(slot.label)}, ${label}" title="${esc(slot.label)}${c?` · ${c[0]}`:isBlank?' · 블랭크 커버':''}"><span class="rt-rack-slot-no rt-rack-slot-no-${slot.dir}" aria-hidden="true">${shortLabel(slot)}</span>${rawValue?`<span class="rt-rack-slot-x" role="button" tabindex="-1" data-slot-clear="${slot.id}" aria-label="${esc(slot.label)} ${c?c[0]:'블랭크 커버'} 빼기" title="카드 빼기">×</span>`:''}${c?`<img draggable="false" class="rt-faceplate" src="${cardAsset(c[0])}" alt="">`:isBlank?`<img draggable="false" class="rt-faceplate rt-blank-plate" src="${blankPlates[state.family]}" alt="">`:'<span class="rt-rack-slot-add" aria-hidden="true">+</span>'}</button>`;
       };
       const bank=(dir,items)=>`<section class="rt-rack-bank rt-rack-bank-${dir}" aria-label="${dir==='input'?'입력':'출력'} 카드 슬롯"><div class="rt-rack-bank-title"><strong>${dir==='input'?'입력':'출력'}</strong><span>${items.filter(item=>slotCard(item.id)).length} / ${items.length}</span></div><div class="rt-rack-grid">${items.map(slotButton).join('')}</div></section>`;
       const photo=rearPhotos[model];
@@ -423,12 +423,24 @@
       const id=slotButton?slotButton.dataset.slot:event.target.closest?.('.rt-card-modal')?modalSlot:null;
       if(!id||state.step!==2||!Object.prototype.hasOwnProperty.call(state.placements,id))return;
       event.preventDefault();
+      removeSlotCard(id);
+    });
+    // 0.145(사용자 요청 2026-09-29 "선택된 카드 위에 카드를 삭제하는 x 버튼이 생겼으면 좋겠어, 단 마우스를 올렸을 때에 한하여"): 장착된 슬롯에 마우스를 올리면 나타나는 ×를 누르면 Delete 키와 같이 카드를 뺀다.
+    // ×는 슬롯 버튼 안의 span이라 슬롯 클릭(카드 선택 팝업 열기)보다 먼저 잡아(capture) 팝업이 열리지 않게 한다.
+    function removeSlotCard(id){
       const was=state.placements[id];
       if(modalSlot)closeCardModal(id);
       delete state.placements[id];delete state.links[id];
       state.slot=id;changedSlot=id;focusSlotAfterRender=id;syncPorts();changed();
       announce(`${id.replace(/^in-/,'입력 슬롯 ').replace(/^out-/,'출력 슬롯 ')}에서 ${was==='BLANK'?'블랭크 커버':was}를 뺐습니다. 실행 취소로 되돌릴 수 있습니다.`);
-    });
+    }
+    root.addEventListener('click',event=>{
+      const clear=event.target.closest?.('[data-slot-clear]');
+      if(!clear)return;
+      event.preventDefault();event.stopImmediatePropagation();
+      const id=clear.dataset.slotClear;
+      if(state.step===2&&Object.prototype.hasOwnProperty.call(state.placements,id))removeSlotCard(id);
+    },true);
     function openCardModal(){
       const dialog=main.querySelector('.rt-card-modal');
       if(!dialog){if(focusSlotAfterRender){const id=focusSlotAfterRender;focusSlotAfterRender=null;requestAnimationFrame(()=>focusSlot(id))}return}
