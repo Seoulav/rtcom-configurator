@@ -96,7 +96,8 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('카드 선택 후 팝업이 닫히고 슬롯에 실물 판넬 이미지 표시',placed===2&&await page.locator('.rt-card-modal').count()===0,`${placed}개`);
     check('장착한 판넬 이미지가 정상 로드됨',await page.$$eval('.rt-rack-slot-filled img.rt-faceplate',images=>images.every(image=>image.naturalWidth>0)));
     check('구성 요약에 장착 카드가 표시됨',await page.locator('.rt-config-summary li').count()===2);
-    check('구성 요약의 카드 판넬이 목록 폭에 맞춰 크게 표시됨',await page.$$eval('.rt-config-summary li',items=>items.every(item=>{const image=item.querySelector('img').getBoundingClientRect(),box=item.getBoundingClientRect();return image.width>=box.width*0.85})));
+    // 0.166(사용자 요청 "그냥 모델명(HDMI) X 수량만"): 0.17의 "판넬 사진 크게" 대신 사진 없이 모델명·수량 한 줄로 바뀌었다.
+    check('구성 요약 카드 행은 판넬 사진 없이 모델명과 수량(× N)만 한 줄로 표시됨',await page.$$eval('.rt-config-summary li',items=>items.every(item=>!item.querySelector('img')&&/× \d+$/.test(item.textContent.trim()))));
     check('XDM-144 후면 그림 위에 슬롯이 표시되고 그림이 정상 로드됨',await page.locator('.rt-rack-photo .rt-rack-slot').count()===72&&await page.$eval('.rt-rack-photo-image',image=>image.naturalWidth>0));
     await page.locator('button[data-slot="in-2"]').click();
     await page.locator('.rt-card-modal .rt-card-choice[data-card="XDM-CIS100"]').click();
@@ -1095,6 +1096,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       // 0.163(사용자 요청 "하단에 이걸 배치해서 드래그하는 형태로"): 끌 수 있는 버튼은 내 구성 카드 행처럼 판넬 사진 타일이고, 장착한 카드에는 수량(× N)이 붙는다.
       const tiles=await p3.evaluate(()=>{const all=[...document.querySelectorAll('.rt-card-palette .rt-palette-tile')];return {count:all.length,withImg:all.filter(t=>t.querySelector('img')?.naturalWidth>0).length,hos:document.querySelector('.rt-palette-tile[data-palette-card="XDM-HOS100"] b')?.textContent||'',hi:document.querySelector('.rt-palette-tile[data-palette-card="XDM-HI100"] b')?.textContent||''}});
       check('끌어 놓기 버튼 12개가 모두 판넬 사진 타일이고, 장착한 XDM-HOS100에만 × 1 수량이 붙음',tiles.count===12&&tiles.withImg===12&&tiles.hos==='× 1'&&tiles.hi==='',JSON.stringify(tiles));
+      // 0.166(사용자 요청 "카드 정보쪽에 … 색상이 있어서 구분감", "그냥 모델명(HDMI) X 수량만"): 타일은 신호 종류별 윗줄 색, 내 구성은 사진 없이 "모델명 (신호) × N" 한 줄과 흰 글자 수량 알약.
+      const sig=await p3.evaluate(()=>{const top=id=>getComputedStyle(document.querySelector(`.rt-palette-tile[data-palette-card="${id}"]`)).borderTopColor;const row=document.querySelector('.rt-config-summary .rt-summary-card[data-card-info="XDM-HOS100"]'),pill=row&&getComputedStyle(row.querySelector('b'));return {hdmi:top('XDM-HIS100'),sdi:top('XDM-SIS100'),fiber:top('XDM-FIS100'),rowText:row?.textContent.replace(/\s+/g,' ').trim(),rowImg:!!row?.querySelector('img'),pillColor:pill?.color,pillBg:pill?.backgroundColor}});
+      check('카드 정보 타일은 신호 종류마다 윗줄 색이 다르고, 내 구성 행은 사진 없이 "XDM-HOS100 (HDMI) × 1"과 흰 글자 색 알약으로 보임',new Set([sig.hdmi,sig.sdi,sig.fiber]).size===3&&/^XDM-HOS100 \(HDMI\) ?× 1$/.test(sig.rowText)&&!sig.rowImg&&sig.pillColor==='rgb(255, 255, 255)'&&sig.pillBg!==sig.pillColor,JSON.stringify(sig));
       await p3.locator('button.rt-card-info-chip[data-palette-card="XDM-HIS100"]').click();
       const infoOpen=await p3.locator('dialog.rt-card-info-modal[open]').count();await p3.keyboard.press('Escape');
       check('끌 수 있는 카드 정보 버튼도 누르면 카드 상세 정보가 열림',infoOpen===1,String(infoOpen));
