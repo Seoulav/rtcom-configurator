@@ -1,5 +1,8 @@
 ## Unreleased
 
+- **0.166.0 배포 기록**: `docs/qa/DEPLOYMENT_0.166_2026-09-29.md`(PR #231 → main 병합, Pages 배포 run 36557650468)
+- **0.165.0 배포 기록**: `docs/qa/DEPLOYMENT_0.165_2026-09-29.md`(PR #227 → main 병합, Pages 배포 run 36557099231)
+- **0.164.0 배포 기록**: `docs/qa/DEPLOYMENT_0.164_2026-09-29.md`(PR #230 → main 병합)
 - **0.163.0 배포 기록**: `docs/qa/DEPLOYMENT_0.163_2026-09-29.md`(PR #228 → main 병합, Pages 배포 run 36556055771)
 - **0.162.0 배포 기록**: `docs/qa/DEPLOYMENT_0.162_2026-09-29.md`(PR #221 → main 병합, Pages 배포 run 36554909807)
 - **0.161.0 배포 기록**: `docs/qa/DEPLOYMENT_0.161_2026-09-29.md`(PR #224 → main 병합, Pages 배포 run 36554423934)
@@ -19,6 +22,15 @@
 - **0.146.0 배포 기록**: `docs/qa/DEPLOYMENT_0.146_2026-09-29.md`(PR #195 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.145.0 배포 기록**: `docs/qa/DEPLOYMENT_0.145_2026-09-29.md`(PR #194 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.144.0 배포 기록**: `docs/qa/DEPLOYMENT_0.144_2026-09-29.md`(PR #192 → main 병합, Pages 배포 run 162, 공개 파일 337/338 일치, `.nojekyll` 제외)
+
+## 0.166.0
+
+사용자 요청 2026-09-29("최대 전송거리부분에 너무 나열되어 있어 이 부분을 아래와 같이 정리해줘 너가 좀 고민해줘"):
+
+- **SPX-TX/RX 전송거리 한 행으로**: 04 제품 사양의 전송거리 5행(매뉴얼 공식 CAT5e/6 4K60 50m·1080p 60m·Long Reach 100m, 자사 실측 UTP 50m·SF/UTP 70m)을 "4K60 실효 전송거리" 한 행으로 합쳤습니다. 값은 두 줄 "UTP CAT6 50m(Belden 7814A 케이블 기준)"·"S/FTP CAT6A 70m(Belden 10GXE02 케이블 기준)"이고, 조건은 "서울영상테크 SI사업본부 실측"입니다. 두 번째 케이블은 사용자가 준 표기대로 SF/UTP(Belden CI6522)에서 S/FTP CAT6A(Belden 10GXE02)로 바꿨습니다.
+- 매뉴얼 공식 거리는 05 주요 기능("CAT5e/6 전송 지원(4K60 최대 50m, 1080p 최대 60m)", "Long Reach 모드 지원(1080p 최대 100m)")과 개요에 그대로 남겨 정보가 빠지지 않게 했습니다.
+- 사양 값이 여러 줄이면 줄마다 값과 괄호 속 케이블 모델(작은 회색 글자)을 나눠 보여 주도록 사양표 표시를 보완했습니다(`specValue`). 03 Signal Flow 범례에는 "4K60 실효 전송거리: UTP CAT6 50m · S/FTP CAT6A 70m"으로 나옵니다.
+- 되돌리는 방법: `data/products/spx-rx-tx.json`의 Transmission 행을 0.165 이전 판으로 되돌립니다(표시 보완 코드는 한 줄 값에는 영향이 없음).
 
 ## 0.165.0
 
