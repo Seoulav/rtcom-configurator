@@ -588,15 +588,16 @@
     const LAYOUT_SHAPES={
       'QUAD':[[1,0,0,50,50],[2,50,0,50,50],[3,0,50,50,50],[4,50,50,50,50]],
       '3-BOTTOM':[[1,0,0,100,50],[2,0,50,33.33,50],[3,33.33,50,33.34,50],[4,66.67,50,33.33,50]],
-      '3-SIDE RIGHT':[[1,0,0,70,100],[2,70,0,30,33.33],[3,70,33.33,30,33.34],[4,70,66.67,30,33.33]],
-      '3-SIDE LEFT':[[2,0,0,30,33.33],[3,0,33.33,30,33.34],[4,0,66.67,30,33.33],[1,30,0,70,100]],
+      // 0.147: QMS-88UX 매뉴얼 21쪽 재대조(사용자 요청 "1~3번 모두 진행") — 3-SIDE는 1번 60%·오른쪽(왼쪽) 열 40%, Quad PBP/PIP의 작은 창은 아래 끝까지, USER MODE 1은 50:50, USER MODE 2는 위 가운데 1번(절반 높이)+아래 2·3번.
+      '3-SIDE RIGHT':[[1,0,0,60,100],[2,60,0,40,33.33],[3,60,33.33,40,33.34],[4,60,66.67,40,33.33]],
+      '3-SIDE LEFT':[[2,0,0,40,33.33],[3,0,33.33,40,33.34],[4,0,66.67,40,33.33],[1,40,0,60,100]],
       'HORIZONTAL PBP':[[1,0,0,50,100],[2,50,0,50,100]],
       'VERTICAL PBP':[[1,0,0,100,50],[2,0,50,100,50]],
-      'QUAD PBP, PIP':[[1,0,0,50,100],[2,28,62,20,32],[3,50,0,50,100],[4,78,62,20,32]],
+      'QUAD PBP, PIP':[[1,0,0,50,100],[2,23,58,26,42],[3,50,0,50,100],[4,74,58,26,42]],
       'SINGLE SELECT A PORT':[[1,0,0,100,100]],
       '3CH-MODE2':[[3,0,0,30,100],[1,30,0,40,50],[2,30,50,40,50],[4,70,0,30,100]],
-      'USER MODE 1':[[1,0,0,65,100],[2,65,0,35,50],[3,65,50,35,50]],
-      'USER MODE 2':[[1,25,0,50,40],[2,0,40,50,60],[3,50,40,50,60]],
+      'USER MODE 1':[[1,0,0,50,100],[2,50,0,50,50],[3,50,50,50,50]],
+      'USER MODE 2':[[1,25,0,50,50],[2,0,50,50,50],[3,50,50,50,50]],
       'DEFAULT SINGLE':[[1,0,0,100,100]],
       '2×2':[[1,0,0,50,50],[2,50,0,50,50],[3,0,50,50,50],[4,50,50,50,50]],
       '2×1':[[1,0,0,50,100],[2,50,0,50,100]],
@@ -672,15 +673,19 @@
       }
       // 한 화면 분할: 모니터 200×134(베젤 6, 화면 188×106 ≈ 16:9, 스탠드). 칸 좌표 0~100을 화면 크기로 늘린다.
       const SX=6,SY=6,SW=188,SH=106,mx=v=>SX+v*SW/100,my=v=>SY+v*SH/100;
+      // 검은 여백 판정은 0.85·0.146·0.147 규칙 그대로(칸이 가장자리를 다 채우지 못하거나 매뉴얼에 검은 여백이 있는 레이아웃). 화면 바탕 사각형에 표시 클래스를 붙인다.
+      const minX=Math.min(...cells.map(c=>c[1])),minY=Math.min(...cells.map(c=>c[2]));
+      const maxX=Math.max(...cells.map(c=>c[1]+c[3])),maxY=Math.max(...cells.map(c=>c[2]+c[4]));
+      const letterbox=minX>0.5||minY>0.5||maxX<99.5||maxY<99.5||(own?.shapes[key]?own.black.has(key):key==='USER MODE 2');
       const used=[...new Set(cells.map(c=>c[0]))];
       const grads=used.map(n=>{const col=LAYOUT_COLORS[(n-1)%LAYOUT_COLORS.length];return `<linearGradient id="${id}g${n}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${col}"/><stop offset="1" stop-color="${col}" stop-opacity=".62"/></linearGradient>`}).join('');
       const tiles=cells.map(([n,x,y,w,h,lx,ly])=>{
         const X=mx(x),Y=my(y),Wd=w*SW/100,Hd=h*SH/100,fs=Math.max(7,Math.min(20,Math.min(Wd,Hd)*0.42));
         const tx=lx!=null?mx(lx):X+Wd/2,ty=ly!=null?my(ly):Y+Hd/2;
         const hill=Hd>18&&Wd>24?`<path d="M${X} ${Y+Hd}V${Y+Hd*0.8}Q${X+Wd*0.3} ${Y+Hd*0.62} ${X+Wd*0.55} ${Y+Hd*0.78}T${X+Wd} ${Y+Hd*0.72}V${Y+Hd}Z" fill="#fff" fill-opacity=".16"/>`:'';
-        return `<g><rect class="rt-pg-cell" x="${X}" y="${Y}" width="${Wd}" height="${Hd}" fill="url(#${id}g${n})" stroke="#fff" stroke-opacity=".7" stroke-width=".9"/>${hill}<text x="${tx}" y="${ty}" font-size="${fs.toFixed(1)}" font-weight="800" fill="#fff" text-anchor="middle" dominant-baseline="central" style="paint-order:stroke;stroke:rgba(0,0,0,.28);stroke-width:1.6px">${n}</text></g>`;
+        return `<g><rect class="rt-pg-cell" data-w="${w}" data-h="${h}" x="${X}" y="${Y}" width="${Wd}" height="${Hd}" fill="url(#${id}g${n})" stroke="#fff" stroke-opacity=".7" stroke-width=".9"/>${hill}<text x="${tx}" y="${ty}" font-size="${fs.toFixed(1)}" font-weight="800" fill="#fff" text-anchor="middle" dominant-baseline="central" style="paint-order:stroke;stroke:rgba(0,0,0,.28);stroke-width:1.6px">${n}</text></g>`;
       }).join('');
-      return `<svg viewBox="0 0 200 134" role="img" ${label}><defs>${grads}<clipPath id="${id}c"><rect x="${SX}" y="${SY}" width="${SW}" height="${SH}"/></clipPath></defs><rect x="1" y="1" width="198" height="118" rx="6" fill="#1f2532"/><rect x="${SX}" y="${SY}" width="${SW}" height="${SH}" fill="#0b0d12"/><g clip-path="url(#${id}c)">${tiles}</g><circle cx="100" cy="115.5" r="1.3" fill="#5b6475"/><path d="M92 119h16l3 9H89z" fill="#3a4150"/><rect x="72" y="127.5" width="56" height="5" rx="2.5" fill="#3a4150"/></svg>`;
+      return `<svg viewBox="0 0 200 134" role="img" ${label}><defs>${grads}<clipPath id="${id}c"><rect x="${SX}" y="${SY}" width="${SW}" height="${SH}"/></clipPath></defs><rect x="1" y="1" width="198" height="118" rx="6" fill="#1f2532"/><rect${letterbox?' class="rt-pg-layout-letterbox"':''} x="${SX}" y="${SY}" width="${SW}" height="${SH}" fill="#0b0d12"/><g clip-path="url(#${id}c)">${tiles}</g><circle cx="100" cy="115.5" r="1.3" fill="#5b6475"/><path d="M92 119h16l3 9H89z" fill="#3a4150"/><rect x="72" y="127.5" width="56" height="5" rx="2.5" fill="#3a4150"/></svg>`;
     }
     function videoModesSection(item){
       const vm=item.videoModes;
@@ -959,6 +964,7 @@
     window.addEventListener('resize',()=>initDiagramScroll(body));
     function show(state){
       view.hidden=!state.products;configurator.hidden=state.products;
+      document.documentElement.classList.toggle('rt-print-products',state.products); // 0.147: 제품정보 화면에서 인쇄/PDF를 누르면 구성기 검토 시트가 아니라 지금 보는 제품 화면을 인쇄한다(src/styles.css 끝의 print 규칙).
       for(const tab of tabs){const active=(tab.dataset.viewTab==='products')===state.products;tab.setAttribute('aria-current',active?'page':'false')}
       if(!state.products)return;
       body.innerHTML=`<div class="rt-pg-orbs"></div><div class="rt-pg-wrap"><p class="rt-pg-count" role="status">제품 정보를 불러오는 중입니다…</p></div>`;

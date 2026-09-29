@@ -1,4 +1,4 @@
-# QMS-44UX·QMS-88UX 06 화면 구성 모드 분할 예시 그래픽 (0.147.0)
+# QMS-44UX·QMS-88UX 06 화면 구성 모드 분할 예시 그래픽 (0.148.0)
 
 ## 요청과 결정
 
@@ -20,8 +20,8 @@
 
 ## 검증
 
-- `node --test tests/*.test.cjs` 62/62, `build-product-index --check` 31개, `package-site`, `e2e-smoke` 189/189, `git diff --check`
-- 두 제품 레이아웃 41종 전체를 눌러 찍은 시안: `docs/qa/qms-layout-art/qms-44ux-layouts.png`, `qms-88ux-layouts.png`. 스크립트 오류 없음.
+- `node --test tests/*.test.cjs` 62/62, `build-product-index --check` 31개, `package-site`, `e2e-smoke` 192/192, `git diff --check`
+- 두 제품 레이아웃 41종 전체를 눌러 찍은 시안: `docs/qa/qms-layout-art/qms-44ux-layouts.png`, `qms-88ux-layouts.png`(main 0.147의 QMS-88UX 도해 재대조 반영 후 다시 찍음). 스크립트 오류 없음. main 0.147 e2e 검사(3-SIDE RIGHT 1번 폭 60·USER MODE 2 검은 여백)는 칸의 `data-w`와 화면 바탕의 `rt-pg-layout-letterbox` 클래스로 같은 뜻을 유지한다.
 
 ## 되돌리기
 
