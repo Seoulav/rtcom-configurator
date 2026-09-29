@@ -1,4 +1,4 @@
-# 0.155.0 QMS-44UX DUAL 그림 매뉴얼 기준 정리 · QMS-88UX WALL 출력 9·10번
+# 0.156.0 QMS-44UX DUAL 그림 매뉴얼 기준 정리 · QMS-88UX WALL 출력 9·10번
 
 사용자 결정 2026-09-29:
 - QMS-44UX DUAL PBP-Full·User Mode 그림: "메뉴얼 기준으로 해줘"
@@ -23,12 +23,12 @@
 - 19쪽 "월 1개면 최대 3×3 또는 2×5": 2×5는 출력 10개(매트릭스 1~8 + 9·10)가 모두 필요합니다.
 - 35쪽 RS-232 `OW` 예시: 출력 1~4번 2×2 월 + 출력 5~10번 3×2 월.
 - 사용자 확인: "10번은 분할 구성이 가능해."
-- 반영: WALL `detail` "멀티뷰 출력 9·10번도 월 구성에 사용 가능". `docs/handoff/OPEN_ITEMS.md`의 확인 항목을 지웠습니다.
+- 반영: 0.155.0(#211)이 WALL `detail` "(출력 9·10번도 월에 사용 가능)"과 월 레이아웃 4종을 먼저 넣어, 이 묶음은 데이터 문장을 바꾸지 않고 근거만 남겼습니다. `docs/handoff/OPEN_ITEMS.md`의 확인 항목을 지웠습니다.
 - 카탈로그(`qms-88ux-catalog.pdf`)에는 "최대 3X3 비디오 월"만 있어 추가 근거가 없었습니다.
 
 ## 검증
 
-단위 테스트, `build-product-index --check`, `package-site`, e2e 195/195(신규 1건, 기존 WALL 확인 문장 보강), 단위 63/63, `git diff --check`. 화면: `docs/qa/qms-dual-wall-0.155/`
+단위 테스트, `build-product-index --check`, `package-site`, e2e(QMS-44UX DUAL 신규 1건, QMS-88UX WALL은 0.155 검사 그대로), 단위 63/63, `git diff --check`. 화면: `docs/qa/qms-dual-wall-0.156/`
 
 ## 되돌리기
 
