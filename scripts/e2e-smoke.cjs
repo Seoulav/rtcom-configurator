@@ -739,16 +739,16 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.waitForSelector('[data-layout-chip]');
     const beforeLayout=await page.evaluate(()=>document.querySelector('[data-layout-name]').textContent);
     await page.locator('[data-layout-chip]',{hasText:'3-SIDE RIGHT'}).click();
-    const afterLayout=await page.evaluate(()=>({name:document.querySelector('[data-layout-name]').textContent,on:document.querySelector('.rt-pg-layout-chip.on')?.textContent,rects:document.querySelector('[data-layout-preview]').querySelectorAll('svg rect').length}));
+    const afterLayout=await page.evaluate(()=>({name:document.querySelector('[data-layout-name]').textContent,on:document.querySelector('.rt-pg-layout-chip.on')?.textContent,rects:document.querySelector('[data-layout-preview]').querySelectorAll('svg rect.rt-pg-cell').length}));
     check('QMS-88UX 06 화면 구성 모드에서 레이아웃 버튼을 누르면 미리보기 도해가 바뀜',beforeLayout==='QUAD'&&afterLayout.name==='3-SIDE RIGHT'&&afterLayout.on==='3-SIDE RIGHT'&&afterLayout.rects===4,JSON.stringify({beforeLayout,afterLayout}));
     // 0.66 — QMS-88UX 출력 9번에 매뉴얼 22~23쪽 Output Option 2·3(비율 유지 없이 그대로 8분할)을 레이아웃 목록 13번째로 추가(사용자 요청 2026-09-27 "출력9에 비율무시8분할도 추가해줘").
     await page.locator('[data-layout-chip]',{hasText:'8분할(비율무시)'}).click();
-    const split8=await page.evaluate(()=>({name:document.querySelector('[data-layout-name]').textContent,rects:document.querySelector('[data-layout-preview]').querySelectorAll('svg rect').length}));
+    const split8=await page.evaluate(()=>({name:document.querySelector('[data-layout-name]').textContent,rects:document.querySelector('[data-layout-preview]').querySelectorAll('svg rect.rt-pg-cell').length}));
     check('QMS-88UX 06 화면 구성 모드에 "8분할(비율무시)" 레이아웃이 있고 8칸 도해로 미리보기됨',split8.name==='8분할(비율무시)'&&split8.rects===8,JSON.stringify(split8));
     // 0.90 — QMS-88UX DUAL 카드가 "듀얼 모드" 한 마디뿐이었다(사용자 질문 2026-09-28 "QMS-88Ux도 듀얼 출력되지 않아??"). 매뉴얼 KV.04 20~21쪽 근거로 2분할(PBP)·PIP 레이아웃 3종을 넣고, 카드 안에서만 미리보기가 바뀌는지 확인.
     const dualCard=page.locator('.rt-pg-vmode-card',{hasText:'DUAL'});
     await dualCard.locator('[data-layout-chip]',{hasText:'Vertical PBP'}).click();
-    const dual=await dualCard.evaluate(card=>({chips:[...card.querySelectorAll('[data-layout-chip]')].map(b=>b.textContent),name:card.querySelector('[data-layout-name]')?.textContent,rects:card.querySelectorAll('[data-layout-preview] svg rect').length,text:card.querySelector('p')?.textContent||''}));
+    const dual=await dualCard.evaluate(card=>({chips:[...card.querySelectorAll('[data-layout-chip]')].map(b=>b.textContent),name:card.querySelector('[data-layout-name]')?.textContent,rects:card.querySelectorAll('[data-layout-preview] svg rect.rt-pg-cell').length,text:card.querySelector('p')?.textContent||''}));
     const quadName=await page.locator('.rt-pg-vmode-card',{hasText:'QUAD'}).first().evaluate(card=>card.querySelector('[data-layout-name]')?.textContent);
     check('QMS-88UX 06 DUAL 카드에 PBP·PIP 레이아웃 3종이 있고 Vertical PBP를 누르면 2칸 도해로 바뀌며 QUAD 카드 미리보기는 그대로임',dual.chips.join('|')==='Horizontal PBP|Vertical PBP|Quad PBP, PIP'&&dual.name==='Vertical PBP'&&dual.rects===2&&/출력 9·10번/.test(dual.text)&&quadName==='8분할(비율무시)',JSON.stringify({dual,quadName}));
     // 0.62 — videoModes(QMS) 카드 4개+레이아웃 칩 12개까지 있어 05 옆 좁은 칸에 넣으면 글자가 카드 밖으로 넘쳤다(사용자 확인 2026-09-27 "06화면모드 짤린다"). 전체 폭 아래로 되돌려 카드 안에서 텍스트가 넘치지 않는지 확인.
@@ -993,7 +993,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
         await shapePage.waitForSelector('.rt-pg-layout-chip');
         const card=shapePage.locator('.rt-pg-vmode-card',{has:shapePage.locator(`.rt-pg-layout-chip[data-layout="${layout}"]`)}).first();
         await card.locator(`.rt-pg-layout-chip[data-layout="${layout}"]`).click();
-        return card.locator('.rt-pg-layout-preview svg rect:not(.rt-pg-layout-letterbox)').count();
+        return card.locator('.rt-pg-layout-preview svg rect.rt-pg-cell').count();
       };
       const got={cascade:await cellCount('qms-44ux','CASCADE1'),pop:await cellCount('qms-44ux','4CH-POP'),mode1:await cellCount('qms-44ux','3CH-MODE1'),user2:await cellCount('qms-44ux','USER MODE 2'),user1:await cellCount('qms-44ux','USER MODE 1'),user88:await cellCount('qms-88ux','USER MODE 1')};
       check('QMS-44UX QUAD 도해가 매뉴얼대로(CASCADE1 4칸·4CH-POP 4칸·3CH-MODE1 3칸·USER MODE 1 4칸·USER MODE 2 4칸)이고 QMS-88UX USER MODE 1은 3칸 그대로',got.cascade===4&&got.pop===4&&got.mode1===3&&got.user1===4&&got.user2===4&&got.user88===3,JSON.stringify(got));
@@ -1009,7 +1009,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
         await card.locator(`.rt-pg-layout-chip[data-layout="${layout}"]`).click();
         return card.locator('.rt-pg-layout-preview svg');
       };
-      const side=await pick('3-SIDE RIGHT');const sideW=await side.locator('rect:not(.rt-pg-layout-letterbox)').first().getAttribute('width');
+      const side=await pick('3-SIDE RIGHT');const sideW=await side.locator('rect.rt-pg-cell').first().getAttribute('data-w');
       const um2=await pick('USER MODE 2');const um2Black=await um2.locator('rect.rt-pg-layout-letterbox').count();
       check('QMS-88UX 도해가 매뉴얼 21쪽대로(3-SIDE RIGHT 1번 폭 60, USER MODE 2 검은 여백)',sideW==='60'&&um2Black===1,`${sideW}/${um2Black}`);
       await p3.goto(`${home}#products/ct104-u-cr104-u`,{waitUntil:'networkidle'});await p3.waitForSelector('.rt-pg-title');
