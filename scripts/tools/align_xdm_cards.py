@@ -5,15 +5,20 @@
 가로 방향 이동·늘이기(x' = a·x + b)를 카드마다 구하고, 판넬 좌우 끝과 5핀 커넥터 첫·마지막 열을 기준 카드와 같은 위치로 구간별로 늘여 적용한다. 세로는 건드리지 않고, 포트 모양은 그대로다.
 원본은 git 기록에 있다(재실행하면 이미 맞춰진 카드는 거의 변하지 않는다).
 필요 패키지: pillow, numpy
-사용법: python3 scripts/tools/align_xdm_input_cards.py [--dry]
+사용법: python3 scripts/tools/align_xdm_cards.py [input|output] [--dry]  (묶음을 안 쓰면 둘 다)
 """
 import sys
 import numpy as np
 from PIL import Image
 
 DIR = 'output/design/assets/cards/'
-REF = 'XDM-HI100'
-CARDS = ['XDM-HI100', 'XDM-HIS100', 'XDM-DPI100', 'XDM-CIS100', 'XDM-FIS100', 'XDM-SIS100']
+# 카드 묶음: 기준 카드, 카드 목록, 기준 카드 5핀(2핀) 커넥터 첫 열 왼쪽·마지막 열 오른쪽(눈으로 잰 값, 프로필 맞춤 기준점)
+# 0.139.0에서 출력 카드 묶음 추가(사용자 요청 2026-09-29 "XDM 출력 카드 6종도 같은 방식으로 맞추고"). WOS100은 커넥터가 없어 판넬 좌우 끝만 맞춘다.
+GROUPS = {
+    'input': ('XDM-HI100', ['XDM-HI100', 'XDM-HIS100', 'XDM-DPI100', 'XDM-CIS100', 'XDM-FIS100', 'XDM-SIS100'], (238.0, 1090.0)),
+    'output': ('XDM-HOS100', ['XDM-HOS100', 'XDM-DPOS100', 'XDM-COS100', 'XDM-FOS100', 'XDM-SOS100', 'XDM-WOS100'], (252.0, 1068.0)),
+}
+NO_CONNECTOR = {'XDM-WOS100'}
 
 
 def profile(name):
@@ -78,13 +83,18 @@ def warp(name, a, b, ref_ext, ref_inner):
 
 if __name__ == '__main__':
     dry = '--dry' in sys.argv
-    ref = profile(REF)
-    ref_ext = extent(REF)
-    ref_inner = (238.0, 1090.0)  # 기준 카드(HI100) 5핀 커넥터 첫 열 왼쪽·마지막 열 오른쪽(눈으로 잰 값, 프로필 맞춤 기준점)
-    for name in CARDS:
-        if name == REF:
-            continue
-        a, b, score = best_affine(ref, profile(name))
-        print(f'{name}: 배율 {a:.3f}, 이동 {b:+.1f}px, 일치도 {score:.3f}')
-        if not dry:
-            warp(name, a, b, ref_ext, ref_inner).save(DIR + name + '.webp', 'WEBP', quality=92, method=6)
+    picks = [a for a in sys.argv[1:] if a in GROUPS] or list(GROUPS)
+    for group in picks:
+        REF, CARDS, ref_inner = GROUPS[group]
+        ref = profile(REF)
+        ref_ext = extent(REF)
+        for name in CARDS:
+            if name == REF:
+                continue
+            if name in NO_CONNECTOR:
+                a, b, score = 1.0, 0.0, 0.0
+            else:
+                a, b, score = best_affine(ref, profile(name))
+            print(f'{name}: 배율 {a:.3f}, 이동 {b:+.1f}px, 일치도 {score:.3f}')
+            if not dry:
+                warp(name, a, b, ref_ext, ref_inner).save(DIR + name + '.webp', 'WEBP', quality=92, method=6)
