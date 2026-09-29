@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.160.0 배포 기록**: `docs/qa/DEPLOYMENT_0.160_2026-09-29.md`(PR #222 → main 병합, Pages 배포 run 36554030696)
 - **0.159.0 배포 기록**: `docs/qa/DEPLOYMENT_0.159_2026-09-29.md`(PR #218 → main 병합, Pages 배포 run 36553527412)
 - **0.158.0 배포 기록**: `docs/qa/DEPLOYMENT_0.158_2026-09-29.md`(PR #217 → main 병합, Pages 배포 run 36553303239)
 - **0.157.0 배포 기록**: `docs/qa/DEPLOYMENT_0.157_2026-09-29.md`(PR #212 → main 병합, Pages 배포 run 36552181076)
@@ -16,7 +17,7 @@
 - **0.145.0 배포 기록**: `docs/qa/DEPLOYMENT_0.145_2026-09-29.md`(PR #194 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.144.0 배포 기록**: `docs/qa/DEPLOYMENT_0.144_2026-09-29.md`(PR #192 → main 병합, Pages 배포 run 162, 공개 파일 337/338 일치, `.nojekyll` 제외)
 
-## 0.160.0
+## 0.161.0
 
 직원 제안("하단에 카드를 드래그해서 구성하는 방식"), 사용자 승인 2026-09-29("위 범위로 진행해줘 샘플을 구현하고 검증한 뒤 병합·배포"):
 
@@ -25,7 +26,16 @@
 - **연동 전송기**: 끌어 놓은 카드는 카드 팝업에서 카드를 하나 눌렀을 때와 같은 기본 전송기로 연결됩니다(예: XDM-CIS100 → XDM-CTR100 TX). 04 전송기 단계에서 바꿀 수 있습니다.
 - **마우스에서만 동작**: 휴대폰·태블릿(터치)에서는 버튼을 끌 수 없고 안내 문구도 기존과 같습니다.
 - **되돌리기**: `src/app.js`의 `PALETTE_DRAG`를 `false`로 바꾸면 이 기능을 넣기 전 화면과 같아집니다. 저장 형식(`rtcom.configuration.v1`, schema 3)은 바꾸지 않았습니다.
-- 근거·검증: `docs/implementation/CARD_PALETTE_DRAG_0.160.md`, 화면 `docs/qa/card-palette-drag-0.160/`
+- 근거·검증: `docs/implementation/CARD_PALETTE_DRAG_0.161.md`, 화면 `docs/qa/card-palette-drag-0.161/`
+
+## 0.160.0
+
+사용자 요청 2026-09-29("1번 진행해줘": 여러 세션 동시 작업 정리):
+
+- **여러 세션이 동시에 작업할 때의 규칙**: 같은 날 0.149~0.159 사이에 세션 여러 개가 거의 동시에 병합하면서 버전 번호가 여러 번 밀리고, PR 두 개(#210·#211)가 같은 `0.154.0`을 제목에 쓰는 일이 있었습니다. CLAUDE.md "Git 명령 정책"에 세션마다 자기 작업 브랜치만 쓰기, 버전은 병합 직전 main + 1로 확정하기, 문서만 바뀐 PR은 번호 유지하기, 병합 직전 순서(fetch → main 병합 → 번호 확정 → 검증 → push → 그 커밋으로 병합)를 적었습니다.
+- **`scripts/check-version.cjs`**: index.html·README·CHANGELOG 첫 제목·CLAUDE.md 이력의 버전이 서로 맞는지, CHANGELOG 제목이 겹치지 않는지 확인합니다. `--against origin/main`을 붙이면 main보다 정확히 한 단계 높은지(문서만 바뀌었으면 같은지)도 확인합니다. 기본 검증 명령과 단위 테스트(2건)에 넣었습니다.
+- `docs/handoff/OPEN_ITEMS.md`의 옛 공유 브랜치(`claude/relaxed-euler-mq1di9`) 안내를 새 규칙으로 바꿨습니다.
+- 화면 변경은 없습니다. 근거: `docs/implementation/MULTI_SESSION_VERSIONING_0.160.md`
 
 ## 0.159.0
 

@@ -44,5 +44,5 @@
 
 ## 참고
 
-- 여러 세션이 같은 작업 브랜치(`claude/relaxed-euler-mq1di9`)에 동시에 올리는 일이 잦습니다.
-- 버전 번호가 겹치지 않도록, 병합 직전에 `origin/main`과 원격 브랜치를 다시 받아 합치고 버전을 정합니다.
+- 세션마다 자기 작업 브랜치만 씁니다(옛 공유 브랜치 `claude/relaxed-euler-mq1di9`는 쓰지 않음).
+- 버전 번호는 병합 직전에 `origin/main`을 합친 뒤 main + 1로 확정하고, `node scripts/check-version.cjs --against origin/main`으로 확인합니다(CLAUDE.md "여러 세션이 동시에 작업할 때", 0.160).

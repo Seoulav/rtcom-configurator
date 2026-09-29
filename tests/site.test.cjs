@@ -457,3 +457,27 @@ test('0.158: SPX-R6 수신 모듈 장착·SPX-RX IR 기능은 사용자 확인(U
   assert.ok(r6.sources.some(source=>source.code==='U2'));
   assert.doesNotMatch(read('docs/handoff/OPEN_ITEMS.md'),/IR Blaster|모듈 종류:/,'확인 항목은 처리했으므로 지운다');
 });
+
+// 0.160 — 여러 세션 동시 병합으로 버전이 겹치거나 건너뛰지 않게 하는 점검(scripts/check-version.cjs, CLAUDE.md "여러 세션이 동시에 작업할 때").
+test('버전 표기 네 곳(index.html·README·CHANGELOG·CLAUDE.md)이 서로 맞고 CHANGELOG 제목이 겹치지 않는다',()=>{
+  const {checkConsistency}=require('../scripts/check-version.cjs');
+  const {problems,versions}=checkConsistency({index:read('index.html'),readme:read('README.md'),changelog:read('CHANGELOG.md'),claude:read('CLAUDE.md')});
+  assert.deepEqual(problems,[]);
+  assert.ok(versions.index,'index.html 버전을 읽어야 한다');
+});
+
+test('버전 점검은 번호 중복·main보다 낮은 번호·건너뛴 번호·문서만 바꾼 PR의 번호 올림을 잡는다',()=>{
+  const {checkConsistency,checkAgainst}=require('../scripts/check-version.cjs');
+  const files=v=>({index:`CATALOG BASED · ${v}<`,readme:`**현재 버전: ${v}**`,changelog:`## Unreleased\n\n## ${v}.0\n\n## 0.1.0\n`,claude:`은 \`${v}.0\`으로 기록했습니다. 다음 기능 묶음은 \`0.${Number(v.split('.')[1])+1}.0\``});
+  assert.deepEqual(checkConsistency(files('0.5')).problems,[]);
+  const dup={...files('0.5'),changelog:'## 0.5.0\n\n## 0.5.0\n'};
+  assert.match(checkConsistency(dup).problems.join('\n'),/두 번/);
+  assert.match(checkConsistency({...files('0.5'),readme:'**현재 버전: 0.4**'}).problems.join('\n'),/README/);
+  const code=['src/app.js'],docs=['docs/qa/DEPLOYMENT_0.5.md','CHANGELOG.md'];
+  assert.deepEqual(checkAgainst([0,6],[0,5],code),[]);
+  assert.deepEqual(checkAgainst([0,5],[0,5],docs),[]);
+  assert.match(checkAgainst([0,5],[0,6],code).join(),/main이 0\.6/);
+  assert.match(checkAgainst([0,5],[0,5],code).join(),/올리세요/);
+  assert.match(checkAgainst([0,8],[0,5],code).join(),/한 단계 넘게/);
+  assert.match(checkAgainst([0,6],[0,5],docs).join(),/문서만/);
+});

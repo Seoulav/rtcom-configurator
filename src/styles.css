@@ -988,7 +988,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-card-info-chip:hover,#rtcom-design .rt-card-info-chip:focus-visible{border-color:#007AFF;background:#eef5ff;outline:none}
 #rtcom-design .rt-card-info-chip strong{font-size:12px;white-space:nowrap}
 #rtcom-design .rt-card-info-chip small{color:var(--rt-muted);font-size:10.5px}
-/* 0.160 카드 끌어 놓기 샘플: 끌 수 있는 카드 버튼, 끄는 동안 놓을 수 있는 슬롯(같은 방향)만 점선 강조·나머지는 흐리게 */
+/* 0.161 카드 끌어 놓기 샘플: 끌 수 있는 카드 버튼, 끄는 동안 놓을 수 있는 슬롯(같은 방향)만 점선 강조·나머지는 흐리게 */
 #rtcom-design .rt-card-palette .rt-card-info-chip{cursor:grab}
 #rtcom-design .rt-card-palette .rt-card-info-chip:active{cursor:grabbing}
 #rtcom-design .rt-card-info-chip.rt-card-info-chip-dragging{opacity:.5;border-style:dashed}
