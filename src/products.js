@@ -588,15 +588,16 @@
     const LAYOUT_SHAPES={
       'QUAD':[[1,0,0,50,50],[2,50,0,50,50],[3,0,50,50,50],[4,50,50,50,50]],
       '3-BOTTOM':[[1,0,0,100,50],[2,0,50,33.33,50],[3,33.33,50,33.34,50],[4,66.67,50,33.33,50]],
-      '3-SIDE RIGHT':[[1,0,0,70,100],[2,70,0,30,33.33],[3,70,33.33,30,33.34],[4,70,66.67,30,33.33]],
-      '3-SIDE LEFT':[[2,0,0,30,33.33],[3,0,33.33,30,33.34],[4,0,66.67,30,33.33],[1,30,0,70,100]],
+      // 0.147: QMS-88UX 매뉴얼 21쪽 재대조(사용자 요청 "1~3번 모두 진행") — 3-SIDE는 1번 60%·오른쪽(왼쪽) 열 40%, Quad PBP/PIP의 작은 창은 아래 끝까지, USER MODE 1은 50:50, USER MODE 2는 위 가운데 1번(절반 높이)+아래 2·3번.
+      '3-SIDE RIGHT':[[1,0,0,60,100],[2,60,0,40,33.33],[3,60,33.33,40,33.34],[4,60,66.67,40,33.33]],
+      '3-SIDE LEFT':[[2,0,0,40,33.33],[3,0,33.33,40,33.34],[4,0,66.67,40,33.33],[1,40,0,60,100]],
       'HORIZONTAL PBP':[[1,0,0,50,100],[2,50,0,50,100]],
       'VERTICAL PBP':[[1,0,0,100,50],[2,0,50,100,50]],
-      'QUAD PBP, PIP':[[1,0,0,50,100],[2,28,62,20,32],[3,50,0,50,100],[4,78,62,20,32]],
+      'QUAD PBP, PIP':[[1,0,0,50,100],[2,23,58,26,42],[3,50,0,50,100],[4,74,58,26,42]],
       'SINGLE SELECT A PORT':[[1,0,0,100,100]],
       '3CH-MODE2':[[3,0,0,30,100],[1,30,0,40,50],[2,30,50,40,50],[4,70,0,30,100]],
-      'USER MODE 1':[[1,0,0,65,100],[2,65,0,35,50],[3,65,50,35,50]],
-      'USER MODE 2':[[1,25,0,50,40],[2,0,40,50,60],[3,50,40,50,60]],
+      'USER MODE 1':[[1,0,0,50,100],[2,50,0,50,50],[3,50,50,50,50]],
+      'USER MODE 2':[[1,25,0,50,50],[2,0,50,50,50],[3,50,50,50,50]],
       'DEFAULT SINGLE':[[1,0,0,100,100]],
       '2×2':[[1,0,0,50,50],[2,50,0,50,50],[3,0,50,50,50],[4,50,50,50,50]],
       '2×1':[[1,0,0,50,100],[2,50,0,50,100]],
@@ -648,7 +649,7 @@
       // (QMS-88UX "8분할(16:9 비율)"처럼 비율을 유지하려고 위·아래를 비우는 레이아웃, 매뉴얼 KV.04 23쪽 Output Option 5·6 예시 근거)
       const minX=Math.min(...cells.map(c=>c[1])),minY=Math.min(...cells.map(c=>c[2]));
       const maxX=Math.max(...cells.map(c=>c[1]+c[3])),maxY=Math.max(...cells.map(c=>c[2]+c[4]));
-      const letterbox=minX>0.5||minY>0.5||maxX<99.5||maxY<99.5||(own?.shapes[key]&&own.black.has(key));
+      const letterbox=minX>0.5||minY>0.5||maxX<99.5||maxY<99.5||(own?.shapes[key]?own.black.has(key):key==='USER MODE 2');
       const rects=cells.map(([n,x,y,w,h,lx,ly])=>`<g><rect x="${x}" y="${y}" width="${w}" height="${h}"/><text x="${lx??x+w/2}" y="${ly??y+h/2}">${n}</text></g>`).join('');
       return `<svg viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label="${esc(name)} 화면 구성">${letterbox?'<rect class="rt-pg-layout-letterbox" x="0" y="0" width="100" height="100"/>':''}${rects}</svg>`;
     }
@@ -929,6 +930,7 @@
     window.addEventListener('resize',()=>initDiagramScroll(body));
     function show(state){
       view.hidden=!state.products;configurator.hidden=state.products;
+      document.documentElement.classList.toggle('rt-print-products',state.products); // 0.147: 제품정보 화면에서 인쇄/PDF를 누르면 구성기 검토 시트가 아니라 지금 보는 제품 화면을 인쇄한다(src/styles.css 끝의 print 규칙).
       for(const tab of tabs){const active=(tab.dataset.viewTab==='products')===state.products;tab.setAttribute('aria-current',active?'page':'false')}
       if(!state.products)return;
       body.innerHTML=`<div class="rt-pg-orbs"></div><div class="rt-pg-wrap"><p class="rt-pg-count" role="status">제품 정보를 불러오는 중입니다…</p></div>`;
