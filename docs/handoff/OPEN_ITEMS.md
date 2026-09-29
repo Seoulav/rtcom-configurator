@@ -36,7 +36,7 @@
 
 ## GitHub 설정 — 사용자 작업 대기
 
-- [ ] `main` 브랜치에 필수 검사 `RTCOM checks / verify`를 켜기(0.164, 순서: `docs/implementation/TOUCH_SLOT_X_AND_CI_0.164.md` §2). 켜기 전에도 검사는 PR마다 돌고, Claude는 통과를 확인한 뒤 병합합니다.
+- [ ] `main` 브랜치에 필수 검사 `RTCOM checks / verify`를 켜기(0.165, 순서: `docs/implementation/TOUCH_SLOT_X_AND_CI_0.165.md` §2). 켜기 전에도 검사는 PR마다 돌고, Claude는 통과를 확인한 뒤 병합합니다.
 
 ## 공개 여부를 사용자에게 물어볼 PDF
 

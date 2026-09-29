@@ -1063,7 +1063,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       const left=await p3.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.placements['in-1']||null);
       const modalOpen=await p3.locator('dialog.rt-card-modal[open]').count();
       check('장착 슬롯은 평소에는 × 가 안 보이고 마우스를 올리면 보이며, 누르면 카드가 빠지고 팝업은 열리지 않음',!xBefore&&xHover&&left===null&&modalOpen===0,JSON.stringify({xBefore,xHover,left,modalOpen}));
-      // 0.164(사용자 결정 2026-09-29 "터치 화면에서는 × 버튼을 항상 보이게"): 마우스가 없는 화면(hasTouch·isMobile)은 × 가 늘 보이고, 손가락으로 누르면 카드가 빠진다(팝업은 열리지 않음).
+      // 0.165(사용자 결정 2026-09-29 "터치 화면에서는 × 버튼을 항상 보이게"): 마우스가 없는 화면(hasTouch·isMobile)은 × 가 늘 보이고, 손가락으로 누르면 카드가 빠진다(팝업은 열리지 않음).
       {
         const touchCtx=await browser.newContext({viewport:{width:820,height:1180},isMobile:true,hasTouch:true});
         const t=await touchCtx.newPage();
