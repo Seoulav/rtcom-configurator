@@ -55,14 +55,15 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.goto(home,{waitUntil:'networkidle'});
     check('첫 화면에 구성기가 표시됨',await page.locator('#matrix-configurator h1').isVisible());
     await page.click('button[data-family="XDM"]');
-    // 0.127 01 제품군 미리보기의 "프레임 선택" 버튼(사용자 요청 2026-09-28 "이것도 버튼 위로 배치하고 오른쪽 화살표도 보이게"): 태그 줄 아래에 있고,
-    // → 화살표가 버튼 글자색(흰색)으로 보이며(예전에는 강조색 파랑이라 파란 버튼에 묻힘), 아래 바 버튼의 화살표도 같다. 누르면 02 프레임 선택으로 넘어간다.
-    const familyNext=await page.evaluate(()=>{const button=document.querySelector('.rt-cg-preview [data-action="preview-next"]'),chips=document.querySelector('.rt-cg-preview .rt-cg-chips'),foot=document.querySelector('.rt-footer [data-action="next"] .rt-arrow');if(!button||!chips||!foot)return null;const arrow=button.querySelector('.rt-arrow'),color=el=>getComputedStyle(el).color;return {below:button.getBoundingClientRect().top>=chips.getBoundingClientRect().bottom-1,text:button.textContent.trim(),panelArrow:color(arrow),footArrow:color(foot),buttonInk:color(button),footArrowText:foot.textContent}});
+    // 0.128 01 제품군에는 미리보기의 "프레임 선택" 버튼 하나만 보인다(사용자 요청 2026-09-28 "이것도 버튼 위로 배치하고 오른쪽 화살표도 보이게", 지적 2026-09-29 "버튼이 중복이다").
+    // 버튼은 태그 줄 아래에 있고 → 화살표가 버튼 글자색(흰색)으로 보이며(예전에는 강조색 파랑이라 파란 버튼에 묻힘), 아래 바 다음 버튼은 01에서 숨는다. 02부터는 아래 바 버튼의 화살표도 흰색이다.
+    const familyNext=await page.evaluate(()=>{const visible=el=>!!el&&el.offsetParent!==null&&getComputedStyle(el).display!=='none',button=document.querySelector('.rt-cg-preview [data-action="preview-next"]'),chips=document.querySelector('.rt-cg-preview .rt-cg-chips'),foot=document.querySelector('.rt-footer [data-action="next"]');if(!button||!chips||!foot)return null;const arrow=button.querySelector('.rt-arrow'),color=el=>getComputedStyle(el).color;return {visibleNext:[...document.querySelectorAll('[data-action="next"],[data-action="preview-next"]')].filter(visible).length,below:button.getBoundingClientRect().top>=chips.getBoundingClientRect().bottom-1,text:button.textContent.trim(),panelArrow:color(arrow),buttonInk:color(button),footVisible:visible(foot)}});
     await page.click('.rt-cg-preview [data-action="preview-next"]');
     await page.waitForSelector('button[data-model]');
-    check('01 제품군 미리보기 태그 줄 아래 "프레임 선택" 버튼이 02로 이동하고, 두 버튼의 → 화살표가 흰색으로 보임',!!familyNext&&familyNext.below&&familyNext.text.startsWith('프레임 선택')&&familyNext.panelArrow==='rgb(255, 255, 255)'&&familyNext.footArrow==='rgb(255, 255, 255)'&&familyNext.footArrow===familyNext.buttonInk&&familyNext.footArrowText==='→'&&(await page.locator('.rt-main .rt-eyebrow').first().textContent()).includes('02 / 프레임 선택'),JSON.stringify(familyNext));
+    const footStep2=await page.evaluate(()=>{const foot=document.querySelector('.rt-footer [data-action="next"]'),arrow=foot.querySelector('.rt-arrow');return {visible:foot.offsetParent!==null,arrow:getComputedStyle(arrow).color,ink:getComputedStyle(foot).color,text:arrow.textContent}});
+    check('01 제품군에는 태그 줄 아래 "프레임 선택" 버튼 하나만 보이고(아래 바 버튼은 숨김) 02로 이동하며, → 화살표가 흰색으로 보임(02 아래 바 버튼 포함)',!!familyNext&&familyNext.visibleNext===1&&familyNext.footVisible===false&&familyNext.below&&familyNext.text.startsWith('프레임 선택')&&familyNext.panelArrow==='rgb(255, 255, 255)'&&familyNext.panelArrow===familyNext.buttonInk&&footStep2.visible&&footStep2.arrow==='rgb(255, 255, 255)'&&footStep2.arrow===footStep2.ink&&footStep2.text==='→'&&(await page.locator('.rt-main .rt-eyebrow').first().textContent()).includes('02 / 프레임 선택'),JSON.stringify({familyNext,footStep2}));
     await page.click('[data-action="back"]');
-    await page.click('[data-action="next"]');
+    await page.click('.rt-cg-preview [data-action="preview-next"]');
     check('프레임 선택 화면에 XDM 프레임 6종 표시(XDM-288 제외)',await page.locator('button[data-model]').count()===6);
     await page.click('button[data-model="XDM-144"]');await acceptConfirm();
     await page.click('[data-action="next"]');
@@ -135,7 +136,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.evaluate(()=>localStorage.clear());
     await page.goto(home,{waitUntil:'networkidle'});
     await page.click('button[data-family="SPX"]');
-    await page.click('[data-action="next"]');
+    await page.click('.rt-cg-preview [data-action="preview-next"]');
     await page.click('button[data-model="SPX-M3236"]');await acceptConfirm();
     await page.click('[data-action="next"]');
     await page.waitForLoadState('networkidle');
@@ -177,7 +178,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.evaluate(()=>localStorage.clear());
     await page.goto(home,{waitUntil:'networkidle'});
     await page.click('button[data-family="XDM"]');
-    await page.click('[data-action="next"]');
+    await page.click('.rt-cg-preview [data-action="preview-next"]');
     await page.click('button[data-model="XDM-12"]');await acceptConfirm();
     await page.click('[data-action="next"]');
     const cardsUrl=page.url();
@@ -200,7 +201,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.evaluate(()=>localStorage.clear());
     await page.goto(home,{waitUntil:'networkidle'});
     await page.click('button[data-family="XDM"]');await acceptConfirm();
-    await page.click('[data-action="next"]');
+    await page.click('.rt-cg-preview [data-action="preview-next"]');
     await page.click('button[data-model="XDM-36"]');await acceptConfirm();
     await page.click('[data-action="next"]');
     await page.locator('button[data-slot="in-1"]').click();
@@ -250,7 +251,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       await page.evaluate(()=>localStorage.clear());
       await page.goto(home,{waitUntil:'networkidle'});
       await page.click(`button[data-family="${family}"]`);
-      await page.click('[data-action="next"]');
+      await page.click('.rt-cg-preview [data-action="preview-next"]');
       let ok=0;const toggles=[];const models=await page.locator('button[data-model]').evaluateAll(nodes=>nodes.map(node=>node.dataset.model));
       for(const model of models){
         await page.click(`button[data-model="${model}"]`);
@@ -299,7 +300,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.evaluate(()=>localStorage.clear());
     await page.goto(home,{waitUntil:'networkidle'});
     await page.click('button[data-family="SPX"]');
-    await page.click('[data-action="next"]');
+    await page.click('.rt-cg-preview [data-action="preview-next"]');
     // 02 프레임(2-2, Analog Way 구조): 목록 행에는 사진이 없고, 고른 모델의 전면 사진이 오른쪽 고정 미리보기에 표시된다.
     check('SPX 프레임 5종 목록에 모두 사진 없이 이름·사양 행으로 표시됨',await page.locator('button[data-model]').count()===5&&await page.locator('button[data-model] img').count()===0);
     const spxModels=await page.locator('button[data-model]').evaluateAll(nodes=>nodes.map(node=>node.dataset.model));
@@ -319,7 +320,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.evaluate(()=>localStorage.clear());
     await page.goto(home,{waitUntil:'networkidle'});
     await page.click('button[data-family="VDM"]');
-    await page.click('[data-action="next"]');
+    await page.click('.rt-cg-preview [data-action="preview-next"]');
     const vdmModels=await page.locator('button[data-model]').evaluateAll(nodes=>nodes.map(node=>node.dataset.model));
     let vdmFrontCount=0,vdm288Placeholder=false,vdmArt=0;const vdmToggles=[];
     for(const model of vdmModels){
@@ -646,13 +647,13 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.goto(home,{waitUntil:'networkidle'});
     for(const [fam,related] of [['SPX',2],['VDM',6],['XDM',6]]){ // 0.72 XDM은 XDM-PSU를 더해 6개
       await page.click(`button[data-family="${fam}"]`);await acceptConfirm();
-      if(await page.locator('[data-action="next"]').isEnabled())await page.click('[data-action="next"]');
+      if(await page.locator('.rt-cg-preview [data-action="preview-next"]').isEnabled())await page.click('.rt-cg-preview [data-action="preview-next"]');
       await page.waitForSelector('.rt-rel-card');
       const rel=await page.evaluate(()=>({eyebrow:document.querySelector('.rt-main .rt-eyebrow')?.textContent,cards:[...document.querySelectorAll('.rt-rel-card')].map(a=>a.getAttribute('href')),noChassis:!document.body.innerText.includes('섀시')}));
       check(`${fam} 02 프레임 선택 아래 "함께 보면 좋은 제품" ${related}개(시리즈 상세 포함)가 제품정보로 연결되고, 화면에 "섀시" 표기가 없음`,rel.eyebrow==='02 / 프레임 선택'&&rel.cards.length===related&&rel.cards[0]===`#products/${fam.toLowerCase()}`&&rel.noChassis,JSON.stringify(rel));
       await page.click('[data-jump="0"]');
     }
-    await page.click('[data-action="next"]');
+    await page.click('.rt-cg-preview [data-action="preview-next"]');
     await page.click('button[data-model="XDM-36"]');await acceptConfirm();
     await page.click('[data-action="next"]');
     await page.locator('button[data-slot="in-2"]').click();
@@ -753,7 +754,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     const pc=await pcContext.newPage();
     await pc.goto(home,{waitUntil:'networkidle'});
     await pc.click('button[data-family="XDM"]');
-    await pc.click('[data-action="next"]');
+    await pc.click('.rt-cg-preview [data-action="preview-next"]');
     await pc.click('button[data-model="XDM-36"]');
     await pc.click('[data-action="next"]');
     await pc.waitForLoadState('networkidle');
@@ -795,7 +796,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     const mobile=await phone.newPage();
     await mobile.goto(home,{waitUntil:'networkidle'});
     await mobile.click('button[data-family="SPX"]');
-    await mobile.click('[data-action="next"]');
+    await mobile.click('.rt-cg-preview [data-action="preview-next"]');
     await mobile.click('button[data-model="SPX-M3236"]');
     await mobile.click('[data-action="next"]');
     await mobile.waitForLoadState('networkidle');
@@ -806,7 +807,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await mobile.evaluate(()=>localStorage.clear());
     await mobile.goto(home,{waitUntil:'networkidle'});
     await mobile.click('button[data-family="XDM"]');
-    await mobile.click('[data-action="next"]');
+    await mobile.click('.rt-cg-preview [data-action="preview-next"]');
     await mobile.click('button[data-model="XDM-20"]');
     await mobile.click('[data-action="next"]');
     await mobile.evaluate(()=>document.querySelector('button[data-slot="out-2"]').click());

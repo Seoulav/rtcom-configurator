@@ -20,3 +20,11 @@
 ## 되돌리는 방법
 
 - 이 변경을 `git revert` 합니다. 데이터·저장 형식(`rtcom.configuration.v1`, JSON schema 3, `catalogVersion`)은 바뀌지 않았습니다.
+
+## 0.128.0 보완: 버튼 중복 제거 (사용자 지적 2026-09-29 "버튼이 중복이다")
+
+- 0.127.0은 미리보기에 버튼을 **추가**하고 아래 바 버튼을 남겨 "프레임 선택"이 화면에 두 개 보였습니다. "버튼 위로 배치"는 옮기라는 뜻이었습니다.
+- `src/app.js` `render()`: `next.hidden=state.step===0;`로 01 제품군에서만 아래 바 다음 버튼을 숨깁니다. 02 이후에는 그대로 나옵니다. 아래 바에는 선택 요약(`XDM 제품군 · 카테고리: 매트릭스`)만 남습니다.
+- `src/styles.css`: `.rt-button.rt-primary`가 `display:flex`라서 `hidden` 속성만으로는 숨겨지지 않아 `.rt-button[hidden]{display:none!important}`를 더했습니다.
+- `scripts/e2e-smoke.cjs`: 01에서 아래 바 다음 버튼을 누르던 11곳을 미리보기 버튼(`.rt-cg-preview [data-action="preview-next"]`)으로 바꾸고, 01에서 보이는 다음 버튼이 정확히 1개인지와 02 아래 바 화살표 색을 검사합니다.
+- 02 프레임 선택은 0.114부터 미리보기와 아래 바에 버튼이 함께 있습니다. 이번에는 요청 범위(01)만 바꾸었고, 같은 방식으로 정리할지는 사용자 결정 사항입니다.

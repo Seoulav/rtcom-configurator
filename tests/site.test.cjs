@@ -374,3 +374,10 @@ test('0.127: 01 제품군 미리보기에 프레임 선택 버튼이 있고 파�
   assert.match(app,/rt-cg-chips">\$\{pf\.tags\.map\(t=>`<em>\$\{esc\(t\)\}<\/em>`\)\.join\(''\)\}<\/div>\$\{familyNext\}/,'버튼은 태그 줄 바로 아래에 둔다');
   assert.match(css,/\.rt-button\.rt-primary \.rt-arrow\{color:currentColor/,'화살표는 버튼 글자색을 쓴다(강조색 파랑은 파란 버튼에 묻힘)');
 });
+
+test('0.128: 01 제품군에서는 아래 바 다음 버튼을 숨겨 프레임 선택 버튼이 중복되지 않는다',()=>{
+  // 사용자 지적 2026-09-29 "버튼이 중복이다"
+  const app=read('src/app.js'),css=read('src/styles.css');
+  assert.match(app,/next\.hidden=state\.step===0;/,'01 제품군에서는 아래 바 다음 버튼을 숨긴다');
+  assert.match(css,/\.rt-button\[hidden\]\{display:none!important\}/,'hidden 속성이 display:flex 규칙에 밀리지 않게 한다');
+});
