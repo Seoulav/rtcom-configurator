@@ -300,17 +300,19 @@
       // 0.153(사용자 요청 2026-09-29 "모든 제품 프레임에 내 구성 … 몇 U인지 표기를해줘"): 슬롯 수 뒤에 랙 높이(frameRackU)를 붙인다.
       return `<aside class="rt-config-summary" aria-label="구성 요약"><span class="rt-eyebrow">내 구성</span><h3>${esc(state.model)}</h3><p>${state.family} · 입력 ${slotList.filter(item=>item.dir==='input').length} / 출력 ${slotList.filter(item=>item.dir==='output').length} 슬롯${frameRackU[state.model]?` · ${frameRackU[state.model]}U`:''}</p>${meter('입력',t.input,capacity('input'))}${meter('출력',t.output,capacity('output'))}${segbar}<h4>입력 카드</h4>${rows('input')}<h4>출력 카드</h4>${rows('output')}${blankRow}<div class="rt-summary-total"><span>장착 카드</span><b>${cards}장</b></div><p class="rt-summary-note">${state.family==='SPX'?'다음 단계에서 CATx 출력 카드(COS12)에 연결할 SPX-RX를 확인합니다.':'다음 단계에서 HDBaseT·광 카드에 연결할 전송기를 고릅니다.'}</p></aside>`;
     }
-    function cardsViewV4(){
+    // 0.170 opts.figureOnly: 06 구성 보고서(인쇄·미리보기)에 넣을 후면 그림만 돌려준다. 이때 슬롯은 누를 수 없는 표시용 칸(span)이다.
+    function cardsViewV4(opts={}){
       const slotList=currentSlots(),model=state.model,layout=rackLayout(model),plan=slotPlanFor(model),count=plan?.[0]||0;
       const inputSlots=slotList.filter(item=>item.dir==='input'),outputSlots=slotList.filter(item=>item.dir==='output');
       const inputCards=inputSlots.filter(item=>slotCard(item.id)).length,outputCards=outputSlots.filter(item=>slotCard(item.id)).length;
       const columns=rackColumns(model,layout);
       const shortLabel=slot=>slot.id.replace(/^in-/,'IN ').replace(/^out-/,'OUT ').toUpperCase();
-      const changed=changedSlot;changedSlot=null;
+      const changed=opts.figureOnly?null:changedSlot;if(!opts.figureOnly)changedSlot=null;
       // 슬롯 상태(2-3, 사용자 결정 2026-09-27): 빈칸=흰색(+는 호버·포커스에만), 카드=실제 사진, 블랭크=blankPlates(사용자가 고른 슬롯에만), 선택 중=파란 테두리.
       const slotButton=slot=>{
         const rawValue=state.placements[slot.id],isBlank=rawValue==='BLANK',c=isBlank?null:slotCard(slot.id),selecting=modalSlot===slot.id;
         const stateClass=c?'rt-rack-slot-filled':isBlank?'rt-rack-slot-blank':'rt-rack-slot-empty';
+        if(opts.figureOnly)return `<span class="rt-rack-slot ${stateClass}">${c?`<img class="rt-faceplate" src="${cardAsset(c[0])}" alt="">${sigBadge(c[1],'rt-slot-sig')}`:isBlank?`<img class="rt-faceplate rt-blank-plate" src="${blankPlates[state.family]}" alt="">`:''}</span>`;
         const label=c?`${c[0]} 장착됨 · 눌러서 변경`:isBlank?'블랭크 커버 · 눌러서 변경':'비어 있음 · 눌러서 카드 선택';
         return `<button type="button" class="rt-rack-slot ${stateClass} ${selecting?'rt-rack-slot-selecting':''} ${changed===slot.id?'rt-rack-slot-changed':''}" data-slot="${slot.id}"${rawValue?' draggable="true"':''} aria-label="${esc(slot.label)}, ${label}" title="${esc(slot.label)}${c?` · ${c[0]}`:isBlank?' · 블랭크 커버':''}"><span class="rt-rack-slot-no rt-rack-slot-no-${slot.dir}" aria-hidden="true">${shortLabel(slot)}</span>${rawValue?`<span class="rt-rack-slot-x" role="button" tabindex="-1" data-slot-clear="${slot.id}" aria-label="${esc(slot.label)} ${c?c[0]:'블랭크 커버'} 빼기" title="카드 빼기">×</span>`:''}${c?`<img draggable="false" class="rt-faceplate" src="${cardAsset(c[0])}" alt="">${sigBadge(c[1],'rt-slot-sig')}`:isBlank?`<img draggable="false" class="rt-faceplate rt-blank-plate" src="${blankPlates[state.family]}" alt="">`:'<span class="rt-rack-slot-add" aria-hidden="true">+</span>'}</button>`;
       };
@@ -319,6 +321,7 @@
       const zoneRect=(dir,[x0,y0,x1,y1],items)=>{const [w,h]=photo.size,own=state.family==='SPX'&&layout==='vs',cols=own?items.length:columns,rows=Math.ceil(items.length/cols);return `<section class="rt-rack-zone rt-rack-zone-${dir}" aria-label="${dir==='input'?'입력':'출력'} 카드 슬롯" style="left:${(x0/w*100).toFixed(3)}%;top:${(y0/h*100).toFixed(3)}%;width:${((x1-x0)/w*100).toFixed(3)}%;height:${((y1-y0)/h*100).toFixed(3)}%;--rt-rack-zone-rows:${rows}${own?`;--rt-rack-columns:${cols}`:''}"><div class="rt-rack-grid">${items.map(slotButton).join('')}</div></section>`};
       const zone=(dir,items)=>{const rects=Array.isArray(photo[dir][0])?photo[dir]:[photo[dir]],size=Math.ceil(items.length/rects.length);return rects.map((rect,index)=>zoneRect(dir,rect,items.slice(index*size,(index+1)*size))).join('')};
       const photoRack=photo?`<figure class="rt-rack-photo rt-rack-${layout} rt-rack-family-${state.family}" style="--rt-rack-columns:${columns};--rt-slot-ratio:${slotRatios[state.family]||9.7};--rt-photo-ratio:${(photo.size[0]/photo.size[1]).toFixed(4)}"><img class="rt-rack-photo-image" src="${photo.src}" alt="${esc(model)} 후면 ${photo.kind==='그림'?'그림':'사진'}"><div class="rt-rack-photo-zones">${zone('input',inputSlots)}${zone('output',outputSlots)}</div><figcaption>후면 ${photo.kind||'사진'} · ${photo.manual||'XDM 국문 매뉴얼'}${photo.page?` p.${photo.page}`:''} · 선택한 카드만 표시</figcaption></figure>`:'';
+      if(opts.figureOnly)return photoRack;
       const layoutText=!plan?'슬롯 구성 검토용 논리 도식':state.family==='SPX'?`${layout==='vs'?'왼쪽':'상단'} 입력 ${plan[0]}슬롯(카드당 8포트) / ${layout==='vs'?'오른쪽':'하단'} 출력 ${plan[1]}슬롯(카드당 10~12포트)`:`${layout==='vt'?'상단':'왼쪽'} 입력 ${plan[0]}슬롯 / ${layout==='vt'?'하단':'오른쪽'} 출력 ${plan[1]}슬롯 · 카드당 4채널`;
       const completion=RtCore.completionFor(state);
       // 완성 배너(제목 위)·범례·채우기 줄(2-3, 사용자 결정 2026-09-27).
@@ -399,7 +402,63 @@
     function bom(){return RtCore.bom(state).map(row=>[row.category,row.model,row.quantity])}
     function table(){return `<div class="rt-table-wrap"><table><thead><tr><th>구분</th><th>모델</th><th>수량</th></tr></thead><tbody>${bom().map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')}</tbody></table></div>`}
     function reviewViewV2(){const t=totals(),slotList=currentSlots(),inputCards=slotList.filter(slot=>slot.dir==='input'&&slotCard(slot.id)).length,outputCards=slotList.filter(slot=>slot.dir==='output'&&slotCard(slot.id)).length;return heading('05 / 구성 검토','장착한 카드 구성을 확인하세요.','프레임, 입력 카드, 출력 카드와 전송 장비 수량을 검토합니다.')+`<div class="rt-review-head"><div class="rt-review-stat">선택 프레임<strong>${state.model}</strong></div><div class="rt-review-stat">장착 카드<strong>${inputCards} IN / ${outputCards} OUT</strong></div><div class="rt-review-stat">구성 채널<strong>${t.input} IN / ${t.output} OUT</strong></div></div><h3 class="rt-review-title">장비 목록</h3>${table()}${validationView()}<div class="rt-notice">${state.family==='XDM'&&slotList[0].id==='in-1'?`${state.model}은 입력 카드 ${slotList.filter(slot=>slot.dir==='input').length}장과 출력 카드 ${slotList.filter(slot=>slot.dir==='output').length}장, 카드당 4채널을 기준으로 검토합니다.`:'현재 모델은 슬롯 구조 확인이 더 필요합니다.'}</div>`}
-    function exportView(){const data=RtCore.document(state);const content=state.format==='PDF'?`<div class="rt-paper-title">Matrix Configuration</div><p class="rt-caption">${state.family} / ${state.model}</p><div class="rt-line"></div>${table()}<p class="rt-board-note">미검증 검토용 초안 · 실제 설치 승인 자료가 아닙니다.</p>`:`<pre>${esc(state.format==='JSON'?JSON.stringify(data,null,2):RtCore.csv(state))}</pre>`;return heading('06 / 내보내기','구성을 저장하고 공유하세요.','연락처 입력 없이 구성 요약과 장비 목록을 내보내는 흐름입니다.')+`<div class="rt-export"><div class="rt-export-options">${[['PDF','구성 요약 · 슬롯·전송기 연결'],['CSV','장비 목록 · 모델별 수량'],['JSON','구성 저장 · 다시 불러오기']].map(([id,n])=>`<button type="button" class="rt-format" data-format="${id}" aria-pressed="${state.format===id}"><div><strong>${id}</strong><span>${n}</span></div><span class="rt-radio" aria-hidden="true">${state.format===id?'✓':''}</span></button>`).join('')}<p class="rt-board-note">내보낸 자료는 미검증 검토용 초안입니다.<br>PDF는 인쇄 창에서 PDF로 저장하세요.</p></div><div class="rt-paper"><div class="rt-preview-label"><span>RTCOM</span><span class="rt-pill">초안 미리보기</span></div>${content}</div></div><button type="button" class="rt-button rt-primary" data-tool="export">${state.format==='PDF'?'검토용 보고서 인쇄 / PDF':'검토용 '+state.format+' 다운로드'}</button>`}
+    // 0.170 06 내보내기 개편(사용자 요청 2026-09-29 "06 내보내기가 잘 안된다", 시안 승인 "pdf좋아", "사이트에서 사용하는 애플호환폰트로 인쇄되게해줘").
+    // 구성 보고서(PDF)는 화면 미리보기와 인쇄물(#print-report)이 같은 reportHtml()을 쓴다. 글꼴은 사이트와 같은 Pretendard Variable이다.
+    // 표지 칸(프로젝트명 등)은 구성 파일(JSON schema 3)에 넣지 않고 이 브라우저에만 따로 보관한다(rtcom.report.v1).
+    const reportKey='rtcom.report.v1',reportFields=[['project','프로젝트명','예: ○○아트센터 회의실 AV 구축'],['client','고객사','예: ○○문화재단'],['author','작성자','이름 또는 부서'],['contact','연락처','전화 또는 메일']];
+    function reportMeta(){try{const value=JSON.parse(localStorage.getItem(reportKey)||'{}');return value&&typeof value==='object'?value:{}}catch{return {}}}
+    function saveReportMeta(meta){try{localStorage.setItem(reportKey,JSON.stringify(meta))}catch{}}
+    const pad=n=>String(n).padStart(2,'0');
+    function today(sep='-'){const d=new Date();return [d.getFullYear(),pad(d.getMonth()+1),pad(d.getDate())].join(sep)}
+    function appVersion(){return /(\d+\.\d+)/.exec(root.querySelector('.rt-meta')?.textContent||'')?.[1]||''}
+    // 인쇄 창을 열 수 없는 앱 안 브라우저(카카오톡·네이버·인스타그램·페이스북·라인 등).
+    const inAppBrowser=/KAKAOTALK|NAVER\(inapp|Instagram|FBAN|FBAV|Line\/|; wv\)/i.test(navigator.userAgent);
+    function reportHtml(){
+      const meta=reportMeta(),slotList=currentSlots(),completion=RtCore.completionFor(state),result=RtCore.validate(state);
+      const channels=dir=>slotList.filter(s=>s.dir===dir&&slotCard(s.id)).reduce((sum,s)=>sum+Number(slotCard(s.id)[2]||0),0);
+      const cardsOf=dir=>slotList.filter(s=>s.dir===dir&&slotCard(s.id)).length;
+      const linked=Object.values(state.links).reduce((sum,l)=>sum+(l?.device?Number(l.count)||0:0),0);
+      const docNo=`RTCOM-${state.model||state.family}-${today('')}`;
+      const metaCell=(label,value,blank)=>`<div class="${value?'':'rt-rp-blank'}"><span>${label}</span><b>${value?esc(value):blank||'&nbsp;'}</b></div>`;
+      const kpi=(label,value,unit)=>`<div><span>${label}</span><b>${value}<small>${unit}</small></b></div>`;
+      const rows=RtCore.csvRows(state).slice(1).filter(r=>r.length&&r[0]!=='안내');
+      const groups=[...new Set(rows.map(r=>r[0]))];
+      const badgeFor=model=>{const c=card(model);return c?sigBadge(c[1]):''};
+      const bomTable=`<div class="rt-rp-scroll"><table class="rt-rp-table"><thead><tr><th>모델</th><th>비고</th><th>장착 위치</th><th class="rt-rp-n">수량</th></tr></thead><tbody>${groups.map(g=>`<tr class="rt-rp-group"><td colspan="4">${esc(g)}</td></tr>`+rows.filter(r=>r[0]===g).map(r=>`<tr><td><span class="rt-rp-model">${badgeFor(r[1])}${esc(r[1])}</span></td><td class="rt-rp-muted">${esc(r[2])}</td><td class="rt-rp-muted">${esc(r[4])}</td><td class="rt-rp-n">${r[3]}</td></tr>`).join('')).join('')||'<tr><td colspan="4">선택한 장비가 없습니다.</td></tr>'}</tbody></table></div>`;
+      const slotRows=slotList.map(s=>{
+        const value=state.placements[s.id],c=slotCard(s.id),l=state.links[s.id];
+        if(value==='BLANK')return `<tr><td>${esc(s.label)}</td><td class="rt-rp-muted">블랭크 커버</td><td></td><td class="rt-rp-n">-</td><td></td><td class="rt-rp-n">-</td></tr>`;
+        if(!c)return `<tr><td>${esc(s.label)}</td><td class="rt-rp-muted">비어 있음</td><td></td><td class="rt-rp-n">-</td><td></td><td class="rt-rp-n">-</td></tr>`;
+        const pair=l?.device===RtCore.psePair;
+        return `<tr><td>${esc(s.label)}</td><td>${esc(c[0])}</td><td>${sigBadge(c[1])}</td><td class="rt-rp-n">${c[2]}</td><td${l?.device?'':' class="rt-rp-muted"'}>${l?.device?esc(pair?'CTR100 PSE + CTR100':l.device):'직접 연결'}</td><td class="rt-rp-n">${l?.device?`${l.count}${pair?'쌍':'대'}`:'-'}</td></tr>`;
+      }).join('');
+      const order={ERROR:0,WARNING:1,UNVERIFIED:2,VALID:3},names={ERROR:'오류',WARNING:'확인 필요',UNVERIFIED:'미확정',VALID:'충족'};
+      const checks=[...result.issues].sort((a,b)=>order[a.level]-order[b.level]).map(i=>`<li><span class="rt-rp-lv" data-level="${i.level}">${names[i.level]}</span><span>${esc(i.message)}</span></li>`).join('');
+      const figure=state.model?cardsViewV4({figureOnly:true}):'';
+      const version=appVersion();
+      return `<header class="rt-rp-head"><div class="rt-rp-brand"><span class="rt-rp-mark" aria-hidden="true">▦</span><div><b>RT<span>COM</span> Configurator</b><small>XDM · SPX · VDM CARD SLOT DESIGN</small></div></div><div class="rt-rp-draft">검토용 초안<small>구매·설치 승인 자료 아님</small></div></header>
+<h1 class="rt-rp-title">매트릭스 구성 보고서</h1><p class="rt-rp-sub">${esc(state.family)} 시리즈 · ${state.model?`${esc(state.model)} 메인프레임${frameRackU[state.model]?` · ${frameRackU[state.model]}U`:''}`:'프레임 미선택'}</p>
+<div class="rt-rp-meta">${metaCell('프로젝트명',meta.project)}${metaCell('고객사',meta.client)}${metaCell('작성일',today())}${metaCell('작성자',meta.author)}${metaCell('연락처',meta.contact)}${metaCell('문서 번호',docNo)}</div>
+<div class="rt-rp-kpi">${kpi('입력 채널',channels('input'),` ch · 카드 ${cardsOf('input')}장`)}${kpi('출력 채널',channels('output'),` ch · 카드 ${cardsOf('output')}장`)}${kpi('전송기 연결',linked,' ch')}${kpi('슬롯 구성',`${completion.cards+completion.blanks}/${completion.total}`,completion.total&&!completion.empty?' 완료':' 채움')}</div>
+${figure?`<h2 class="rt-rp-h"><i>1</i>후면 슬롯 배치</h2><div class="rt-rp-figure">${figure}</div><p class="rt-rp-caption">그림은 슬롯 위치를 설명하는 평면도이며 실제 외관과 다를 수 있습니다.</p>`:''}
+<h2 class="rt-rp-h"><i>${figure?2:1}</i>장비 목록</h2>${bomTable}
+<section class="rt-rp-page2"><h2 class="rt-rp-h"><i>${figure?3:2}</i>슬롯별 카드 · 전송기 연결</h2><div class="rt-rp-scroll"><table class="rt-rp-table"><thead><tr><th>슬롯</th><th>카드</th><th>신호</th><th class="rt-rp-n">채널</th><th>연동 전송기</th><th class="rt-rp-n">연결</th></tr></thead><tbody>${slotRows||'<tr><td colspan="6">프레임을 선택하지 않았습니다.</td></tr>'}</tbody></table></div>
+<h2 class="rt-rp-h"><i>${figure?4:3}</i>검토 결과 · 확인 사항</h2><ul class="rt-rp-checks">${checks}</ul>
+<h2 class="rt-rp-h"><i>${figure?5:4}</i>참고</h2><p class="rt-rp-muted rt-rp-note">이 보고서는 RTCOM Configurator에서 만든 검토용 초안이며, 구매·설치를 승인하는 자료가 아닙니다. 설치 전에 제조사 매뉴얼과 현장 조건(케이블 종류·거리·전원)을 함께 확인해 주세요. 같은 구성은 "구성 파일 저장"으로 저장해 두면 다시 불러와 수정할 수 있습니다.</p>
+<h2 class="rt-rp-h"><i>${figure?6:5}</i>확인</h2><div class="rt-rp-sign"><div>작성</div><div>검토</div><div>승인</div></div></section>
+<footer class="rt-rp-foot"><span>RTCOM Configurator${version?` ${version}`:''} · 카탈로그 ${esc(RtCore.catalogVersion)} · ${today()} 작성</span><span>${esc(docNo)}</span></footer>`;
+    }
+    function csvPreview(){const rows=RtCore.csvRows(state);return `<div class="rt-rp-csv"><table class="rt-rp-table"><thead><tr>${rows[0].map(h=>`<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.slice(1).map(r=>r.length?`<tr${r[0]==='안내'?' class="rt-rp-group"':''}>${r.map(v=>`<td>${esc(v)}</td>`).join('')}</tr>`:'').join('')}</tbody></table></div>`}
+    function exportView(){
+      const format=state.format==='CSV'?'CSV':'PDF',meta=reportMeta();
+      const options=[['PDF','구성 보고서','A4 · 후면 그림·장비 목록·슬롯 연결 · 인쇄 창에서 PDF로 저장'],['CSV','장비 목록','엑셀에서 열기 · 모델별 수량과 장착 위치']].map(([id,title,n])=>`<button type="button" class="rt-format" data-format="${id}" aria-pressed="${format===id}"><div><strong>${title} <em>${id}</em></strong><span>${n}</span></div><span class="rt-radio" aria-hidden="true">${format===id?'✓':''}</span></button>`).join('');
+      const fields=format==='PDF'?`<fieldset class="rt-report-fields"><legend>보고서 표지 <span>선택 입력 · 이 브라우저에만 저장</span></legend>${reportFields.map(([key,label,hint])=>`<label>${label}<input type="text" maxlength="60" data-report-field="${key}" value="${esc(meta[key]||'')}" placeholder="${hint}"></label>`).join('')}</fieldset>`:'';
+      const warn=format==='PDF'&&inAppBrowser?'<p class="rt-export-warn">지금 보고 계신 앱 안 브라우저에서는 인쇄 창이 열리지 않을 수 있습니다. 화면 오른쪽 위 메뉴에서 "다른 브라우저로 열기"를 누르거나 PC에서 여세요.</p>':'';
+      const action=`<button type="button" class="rt-button rt-primary rt-export-action" data-tool="export">${format==='PDF'?'구성 보고서 인쇄 / PDF 저장':'장비 목록 CSV 다운로드'}</button>`;
+      const save=`<div class="rt-export-save"><strong>작업 저장</strong><p>구성 파일(JSON)은 지금 구성을 저장해 두었다가 "구성 파일 불러오기"로 다시 열어 이어서 작업하는 파일입니다. 고객에게 보내는 자료가 아닙니다.</p><button type="button" class="rt-button" data-tool="backup">구성 파일 저장 (JSON)</button></div>`;
+      const preview=format==='PDF'?`<div class="rt-paper rt-report-paper"><div class="rt-report">${reportHtml()}</div></div>`:`<div class="rt-paper">${csvPreview()}</div>`;
+      return heading('06 / 내보내기','구성을 저장하고 공유하세요.','고객에게 보낼 구성 보고서(PDF)나 견적용 장비 목록(CSV)을 만듭니다.')+`<div class="rt-export"><div class="rt-export-options">${options}${fields}${action}${warn}<p class="rt-board-note">내보낸 자료는 미검증 검토용 초안입니다.${format==='PDF'?'<br>인쇄 창의 대상에서 "PDF로 저장"을 고르면 파일로 저장됩니다.':''}</p>${save}</div><div class="rt-export-preview"><div class="rt-preview-label"><span>미리보기</span><span class="rt-pill">${format==='PDF'?'A4 보고서':'CSV · 엑셀'}</span></div>${preview}</div></div>`;
+    }
     // 단계 탭(밑줄형, 2-1): 완료 단계는 ✓ + rt-step-done, 현재 단계는 rt-step-current(파란 원·넓은 칸). data-jump 동작·aria-current는 그대로 둔다.
     const shortLabels=['제품군','프레임','카드','전송기','검토','출력'];
     function render(){
@@ -558,7 +617,7 @@
       if(b.dataset.cgSide){previewSide=b.dataset.cgSide;render();return}
       // 04 전송기 오른쪽 미리보기 세그먼트(왼쪽 묶음 제목 버튼도 같은 속성을 쓴다): previewSide와 같은 순수 화면 토글이다.
       if(b.dataset.linkPreview){linkPreviewSlot=b.dataset.linkPreview;render();return}
-      if(b.dataset.family){if(state.family!==b.dataset.family){if(!await confirmReset())return;state.family=b.dataset.family;state.model=null;state.placements={};state.portAssignments={};state.links={};state.maxStep=0;state.slot='in-a'}previewSide='front';linkPreviewSlot=null;changed();return}if(b.dataset.model){if(state.model!==b.dataset.model){if(!confirmReset())return;state.model=b.dataset.model;state.placements={};state.portAssignments={};state.links={};state.maxStep=1;state.slot=currentSlots()[0].id}previewSide='front';linkPreviewSlot=null;changed();return}if(b.dataset.slot){state.slot=b.dataset.slot;modalSlot=b.dataset.slot;modalQtys={};modalExt={};modalExtQty={};changed();return}if(b.dataset.modalClose!==undefined){closeCardModal();return}if(b.dataset.linkDevice!==undefined){const id=b.dataset.owner,old=state.links[id]||{device:'',count:0,distance:'30'},slot=currentSlots().find(item=>item.id===id),c=slot&&slotCard(slot.id);if(!c||(b.dataset.linkDevice&&!choices(slot,c).includes(b.dataset.linkDevice)))return;linkPreviewSlot=id;if(old.device===b.dataset.linkDevice){render();return}old.device=b.dataset.linkDevice;old.count=old.device?(old.count||c[2]):0;state.links[id]=old;syncPorts();changed();return}if(b.dataset.card){const reopen=modalSlot;modalSlot=null;if(state.placements[state.slot]===b.dataset.card){const nextDev=extChoice(b.dataset.card,state.slot),nextQty=extQty(b.dataset.card,state.slot),cur=state.links[state.slot];if((cur?.device||'')!==nextDev||(nextDev&&cur?.count!==nextQty)){const link=linkFor(state.slot,b.dataset.card,nextDev,nextQty);if(link)state.links[state.slot]=link;else delete state.links[state.slot];modalExt={};modalExtQty={};focusSlotAfterRender=reopen;syncPorts();changed();announce(`${b.dataset.card} 연동 전송기를 ${link?`${extenderInfo[link.device]?.model||link.device} ${link.count}${link.device===RtCore.psePair?'쌍':'대'}`:'연결 안 함'}으로 바꿨습니다.`);return}closeCardModal(reopen);return}focusSlotAfterRender=reopen;changedSlot=state.slot;const targets=RtCore.fillTargets(state,state.slot,modalQtys[b.dataset.card]||1);modalQtys={};const selectedCard=b.dataset.card==='BLANK'?null:card(b.dataset.card),device=selectedCard?extChoice(b.dataset.card,state.slot):'',qty=selectedCard?extQty(b.dataset.card,state.slot):0;modalExt={};modalExtQty={};for(const id of targets){state.placements[id]=b.dataset.card;const link=selectedCard?linkFor(id,b.dataset.card,device,qty):null;if(link)state.links[id]=link;else delete state.links[id]}syncPorts();changed();if(targets.length>1)announce(`${b.dataset.card==='BLANK'?'블랭크 커버':b.dataset.card} ${targets.length}개를 채웠습니다.`);return}if(b.dataset.format){state.format=b.dataset.format;changed();return}if(b.dataset.jump!==undefined){const n=Number(b.dataset.jump);if(n<=state.maxStep){state.step=n;changed()}return}if(b.dataset.action==='remove'){focusSlotAfterRender=modalSlot;changedSlot=state.slot;modalSlot=null;delete state.placements[state.slot];delete state.links[state.slot];syncPorts();changed();return}
+      if(b.dataset.family){if(state.family!==b.dataset.family){if(!await confirmReset())return;state.family=b.dataset.family;state.model=null;state.placements={};state.portAssignments={};state.links={};state.maxStep=0;state.slot='in-a'}previewSide='front';linkPreviewSlot=null;changed();return}if(b.dataset.model){if(state.model!==b.dataset.model){if(!confirmReset())return;state.model=b.dataset.model;state.placements={};state.portAssignments={};state.links={};state.maxStep=1;state.slot=currentSlots()[0].id}previewSide='front';linkPreviewSlot=null;changed();return}if(b.dataset.slot){state.slot=b.dataset.slot;modalSlot=b.dataset.slot;modalQtys={};modalExt={};modalExtQty={};changed();return}if(b.dataset.modalClose!==undefined){closeCardModal();return}if(b.dataset.linkDevice!==undefined){const id=b.dataset.owner,old=state.links[id]||{device:'',count:0,distance:'30'},slot=currentSlots().find(item=>item.id===id),c=slot&&slotCard(slot.id);if(!c||(b.dataset.linkDevice&&!choices(slot,c).includes(b.dataset.linkDevice)))return;linkPreviewSlot=id;if(old.device===b.dataset.linkDevice){render();return}old.device=b.dataset.linkDevice;old.count=old.device?(old.count||c[2]):0;state.links[id]=old;syncPorts();changed();return}if(b.dataset.card){const reopen=modalSlot;modalSlot=null;if(state.placements[state.slot]===b.dataset.card){const nextDev=extChoice(b.dataset.card,state.slot),nextQty=extQty(b.dataset.card,state.slot),cur=state.links[state.slot];if((cur?.device||'')!==nextDev||(nextDev&&cur?.count!==nextQty)){const link=linkFor(state.slot,b.dataset.card,nextDev,nextQty);if(link)state.links[state.slot]=link;else delete state.links[state.slot];modalExt={};modalExtQty={};focusSlotAfterRender=reopen;syncPorts();changed();announce(`${b.dataset.card} 연동 전송기를 ${link?`${extenderInfo[link.device]?.model||link.device} ${link.count}${link.device===RtCore.psePair?'쌍':'대'}`:'연결 안 함'}으로 바꿨습니다.`);return}closeCardModal(reopen);return}focusSlotAfterRender=reopen;changedSlot=state.slot;const targets=RtCore.fillTargets(state,state.slot,modalQtys[b.dataset.card]||1);modalQtys={};const selectedCard=b.dataset.card==='BLANK'?null:card(b.dataset.card),device=selectedCard?extChoice(b.dataset.card,state.slot):'',qty=selectedCard?extQty(b.dataset.card,state.slot):0;modalExt={};modalExtQty={};for(const id of targets){state.placements[id]=b.dataset.card;const link=selectedCard?linkFor(id,b.dataset.card,device,qty):null;if(link)state.links[id]=link;else delete state.links[id]}syncPorts();changed();if(targets.length>1)announce(`${b.dataset.card==='BLANK'?'블랭크 커버':b.dataset.card} ${targets.length}개를 채웠습니다.`);return}if(b.dataset.format){state.format=b.dataset.format;render();saveLocal();return}if(b.dataset.jump!==undefined){const n=Number(b.dataset.jump);if(n<=state.maxStep){state.step=n;changed()}return}if(b.dataset.action==='remove'){focusSlotAfterRender=modalSlot;changedSlot=state.slot;modalSlot=null;delete state.placements[state.slot];delete state.links[state.slot];syncPorts();changed();return}
       // "남은 N칸 블랭크로 채우기"(2-3): 빈 슬롯만 BLANK로 바꾸고, 이미 넣은 카드는 그대로 둔다. 실행 취소 1단계.
       if(b.dataset.action==='fill-blanks'){const filled=RtCore.fillBlanks(state);state.placements=filled.placements;syncPorts();changed();return}
       if(b.dataset.action==='back'){state.step=Math.max(0,state.step-1);changed();return}if(b.dataset.action==='next'||b.dataset.action==='preview-next'){state.step=state.step===5?0:state.step+1;state.maxStep=Math.max(state.maxStep,state.step);changed()}});
@@ -581,6 +640,8 @@
       else state.portAssignments[key][field]=target.value;
       return true;
     }
+    // 0.170 보고서 표지 칸: 입력할 때마다 이 브라우저에 저장하고 미리보기만 다시 그린다(화면 전체를 다시 그리면 입력 칸의 커서가 사라진다).
+    root.addEventListener('input',event=>{const key=event.target.dataset?.reportField;if(!key)return;const meta=reportMeta();meta[key]=event.target.value.slice(0,60);saveReportMeta(meta);const paper=root.querySelector('.rt-report-paper .rt-report');if(paper)paper.innerHTML=reportHtml()});
     root.addEventListener('input',event=>{if(updateRequirementField(event.target)||updatePortField(event.target))persist()});
     root.addEventListener('change',event=>{if(updateRequirementField(event.target)||updatePortField(event.target))changed()});
     root.addEventListener('focusout',event=>{if(event.target.matches('input[data-requirement-field],input[data-port-field]'))changed()});
@@ -632,19 +693,19 @@
     function download(text,type,extension){
       const blob=new Blob([text],{type});
       const url=URL.createObjectURL(blob),a=document.createElement('a');
-      a.href=url;a.download=`RTCOM-${state.model||state.family}-draft.${extension}`;
+      a.href=url;a.download=`RTCOM-${state.model||state.family}-draft-${today('')}.${extension}`;
       document.body.append(a);a.click();a.remove();
       setTimeout(()=>URL.revokeObjectURL(url),1000);
       announce(`${extension.toUpperCase()} 검토용 초안 다운로드를 요청했습니다.`);
     }
-    function report(){
-      // 블랭크 커버를 넣은 슬롯도 보고서에 남긴다(0.37 검수: BOM에는 수량만 있고 어느 슬롯인지 보이지 않았음).
-      const rows=currentSlots().filter(s=>slotCard(s.id)||state.placements[s.id]==='BLANK').map(s=>{
-        if(state.placements[s.id]==='BLANK')return `<tr><td>${s.label}</td><td>블랭크 커버</td><td>0</td><td>-</td><td>-</td></tr>`;
-        const c=slotCard(s.id),l=state.links[s.id];
-        return `<tr><td>${s.label}</td><td>${esc(c[0])}</td><td>${c[2]}</td><td>${l?.device?esc(l.device):'미지정'}</td><td>${l?.device?l.count:0}</td></tr>`;
-      }).join('');
-      document.getElementById('print-report').innerHTML=`<h1>RTCOM Matrix Configuration</h1><p><strong>미검증 검토용 초안 · 설치 및 구매 승인 자료가 아닙니다.</strong></p><p>${esc(state.family)} / ${esc(state.model||'프레임 미선택')} · ${new Date().toLocaleString('ko-KR')}</p><h2>장비 목록</h2>${table()}<h2>카드 슬롯 구성</h2><table><thead><tr><th>슬롯</th><th>카드</th><th>채널</th><th>전송 장비</th><th>연결 채널</th></tr></thead><tbody>${rows||'<tr><td colspan="5">장착한 카드가 없습니다.</td></tr>'}</tbody></table>${validationView()}<p>카탈로그 버전: ${RtCore.catalogVersion} · 케이블·전원·기본 포함품은 별도 확인이 필요합니다.</p>`;
+    // 0.170 인쇄물은 06 미리보기와 같은 구성 보고서(reportHtml)다. #print-report는 #rtcom-design 안에 있어 후면 그림의 화면 규칙을 그대로 쓴다.
+    function report(){document.getElementById('print-report').innerHTML=`<div class="rt-report">${reportHtml()}</div>`}
+    // 인쇄 창을 열기 전에 글꼴(Pretendard)과 후면 그림·카드 사진이 다 받아졌는지 기다린다(최대 3초). 받기 전에 인쇄하면 기본 글꼴·빈 그림으로 찍힌다.
+    async function printReport(){
+      report();
+      const waitImages=Promise.all([...document.querySelectorAll('#print-report img')].map(img=>img.complete?null:new Promise(done=>{img.addEventListener('load',done,{once:true});img.addEventListener('error',done,{once:true})})));
+      await Promise.race([Promise.all([document.fonts?.ready,waitImages,document.fonts?.load?.('700 12px "Pretendard Variable"')]),new Promise(done=>setTimeout(done,3000))]);
+      window.print();
     }
     window.addEventListener('beforeprint',report);
     root.addEventListener('click',async event=>{
@@ -665,7 +726,7 @@
       if(action==='export'){
         if(state.format==='JSON')download(JSON.stringify(RtCore.document(state),null,2),'application/json;charset=utf-8','json');
         else if(state.format==='CSV')download('\uFEFF'+RtCore.csv(state),'text/csv;charset=utf-8','csv');
-        else {report();window.print()}
+        else printReport();
       }
     });
     root.querySelector('#import-file').addEventListener('change',async event=>{
