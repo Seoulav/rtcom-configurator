@@ -390,12 +390,12 @@
     {
      "where": "data/products/spx-r6.json",
      "what": "SPX-R6 신규 제품(사양·기능·단자, 평면 그림 배치 근거)",
-     "release": "0.157.0"
+     "release": "0.157.0, PR #212"
     },
     {
      "where": "output/design/assets/docs/spx-r6-catalog.pdf",
      "what": "제품 상세 카탈로그 버튼으로 공개",
-     "release": "0.157.0"
+     "release": "0.157.0, PR #212"
     }
    ],
    "note": "SPX-R6 제품 사양서 1쪽. 사진·연결도에 다른 회사 로고 → 평면 그림으로 대체(사용자 결정 2026-09-29)",
@@ -412,7 +412,7 @@
     {
      "where": "data/products/spx.json",
      "what": "SPX-M2472·M24120 깊이 443.7mm 근거(C3)",
-     "release": "0.157.0"
+     "release": "0.157.0, PR #212"
     }
    ],
    "note": "SPX 시리즈 카탈로그 2023(6쪽, 옛 보드 이름 HI8·HO10·HO12·CO12). 공개하지 않음(사용자 결정 2026-09-29), 5쪽 SPX-M24120 기준 구성도",
@@ -429,12 +429,12 @@
     {
      "where": "data/products/spx.json",
      "what": "SPX-M2472·M24120 깊이 443.7mm(7~9쪽, M1)",
-     "release": "0.157.0"
+     "release": "0.157.0, PR #212"
     },
     {
      "where": "output/design/assets/docs/spx-manual.pdf",
      "what": "SPX 시리즈 상세 매뉴얼 버튼으로 공개",
-     "release": "0.157.0"
+     "release": "0.157.0, PR #212"
     }
    ],
    "note": "SPX 국문 사용자 매뉴얼 250805(54쪽). 구성기 슬롯·후면 근거(U07)로 이미 쓰던 판",
@@ -451,7 +451,7 @@
     {
      "where": "output/design/assets/docs/spx-rx-tx-manual.pdf",
      "what": "SPX-TX / SPX-RX 상세 매뉴얼 버튼으로 공개",
-     "release": "0.157.0"
+     "release": "0.157.0, PR #212"
     }
    ],
    "note": "0.64에서 사양·단자·딥 스위치를 반영한 Ver.2.0과 같은 판(4쪽 사양 일치)",
