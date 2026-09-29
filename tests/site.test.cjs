@@ -51,16 +51,20 @@ test('every XDM card and documented rear photo has an image asset',()=>{
   // 0.120: VDM 카드 판넬 사진은 모두 가로:세로 5.7:1(±3%)이어야 슬롯 칸에 늘어나지 않고 맞는다(HOS4S-UW 4.0, CIS4-U·COS4-U 5.2를 잘라 맞춤).
   const webpSize=file=>{const b=fs.readFileSync(file);const chunk=b.toString('ascii',12,16);if(chunk==='VP8X')return [1+b.readUIntLE(24,3),1+b.readUIntLE(27,3)];if(chunk==='VP8 ')return [b.readUInt16LE(26)&0x3fff,b.readUInt16LE(28)&0x3fff];if(chunk==='VP8L'){const v=b.readUInt32LE(21);return [(v&0x3fff)+1,((v>>14)&0x3fff)+1]}throw new Error('unknown webp '+file)};
   for(const id of [...catalog.VDM.input,...catalog.VDM.output].map(card=>card[0]).concat('VDM-BLANK')){const [w,h]=webpSize(`output/design/assets/cards/${id}.webp`);assert.ok(Math.abs(w/h/5.7-1)<0.03,`${id} faceplate ratio ${(w/h).toFixed(2)} should be 5.7:1`)}
-  for(const model of ['8x','16x','32x','48x','64x','80x','128x','180x','256x'])assert.ok(fs.existsSync(`output/design/assets/frames/vdm-${model}-front.webp`)&&fs.existsSync(`output/design/assets/frames/vdm-${model}-rear.webp`),`missing VDM ${model} front/rear image`);
-  // 0.111: 실물 사진이 없는 VDM 전면 7종·후면 8종은 scripts/tools/draw_vdm_frames.cjs 평면 그림(-art)을 쓰고, 실물 사진(16X 전면·후면, 48X 전면)은 그대로 둔다.
+  for(const model of ['8x','16x','32x','48x','64x','80x','128x','180x','256x'])assert.ok(fs.existsSync(`output/design/assets/frames/vdm-${model}-front-art.webp`)&&fs.existsSync(`output/design/assets/frames/vdm-${model}-rear-art.webp`),`missing VDM ${model} front/rear image`);
+  // 0.135: 프레임 정면·후면은 모두 평면 그림(-art)을 쓰고 실물 사진은 쓰지 않는다(사용자 요청 2026-09-29). VDM 전면 9종·후면 9종.
   const vdmArt=[...read('src/app.js').matchAll(/frames\/(vdm-\d+x-(?:front|rear))-art\.webp/g)].map(match=>match[1]).sort();
-  assert.deepEqual(vdmArt,[...['8x','32x','64x','80x','128x','180x','256x'].map(m=>`vdm-${m}-front`),...['8x','16x','32x','48x','64x','80x','128x','180x','256x'].map(m=>`vdm-${m}-rear`)].sort());
+  assert.deepEqual(vdmArt,[...['8x','16x','32x','48x','64x','80x','128x','180x','256x'].map(m=>`vdm-${m}-front`),...['8x','16x','32x','48x','64x','80x','128x','180x','256x'].map(m=>`vdm-${m}-rear`)].sort());
   // 0.113: XDM·SPX 후면(구성기 03 카드 슬롯)도 scripts/tools/draw_xdm_spx_rear_frames.cjs 평면 그림을 쓴다(XDM-216 포함 11종).
   const rearArt=[...read('src/app.js').matchAll(/frames\/((?:xdm|spx)-[a-z0-9]+)-rear-art\.webp/g)].map(match=>match[1]).sort();
   assert.deepEqual(rearArt,['spx-m1620','spx-m24120','spx-m2472','spx-m3236','spx-m810','xdm-12','xdm-144','xdm-20','xdm-216','xdm-36','xdm-72']);
-  // 0.119: VDM-16X 후면도 카드가 꽂힌 실물 사진 대신 빈 슬롯 그림(-rear-art)을 쓴다. 전면 실물 사진(16X·48X)은 그대로.
-  for(const photo of ['vdm-16x-front','vdm-48x-front'])assert.ok(read('src/app.js').includes(`frames/${photo}.webp'`),`${photo} keeps the real photo`);
-  for(const model of ['m810','m1620','m3236','m2472','m24120'])for(const side of ['front','rear'])assert.ok(fs.existsSync(`output/design/assets/frames/spx-${model}-${side}.webp`),`missing SPX ${model} ${side} photo`);
+  // 0.135: XDM·SPX 정면도 평면 그림(-front-art) 11종이고, 예전 실물 사진(-front.webp·-rear.webp)은 공개 폴더에 남기지 않는다.
+  const frontArt=[...read('src/app.js').matchAll(/frames\/((?:xdm|spx)-[a-z0-9]+)-front-art\.webp/g)].map(match=>match[1]).sort();
+  assert.deepEqual(frontArt,rearArt);
+  const photos=fs.readdirSync('output/design/assets/frames').filter(name=>/^(xdm|spx)-.*-(front|rear)\.webp$|^vdm-(16x|48x)-(front|rear)\.webp$/.test(name));
+  assert.deepEqual(photos,[],'frame real photos must not ship');
+  for(const family of ['xdm','spx','vdm'])assert.ok(fs.existsSync(`output/design/assets/${family}.jpg`)&&!fs.existsSync(`output/design/assets/${family}-lineup-art.webp`),`${family} lineup must use the original catalog jpg`);
+  for(const model of ['m810','m1620','m3236','m2472','m24120'])for(const side of ['front','rear'])assert.ok(fs.existsSync(`output/design/assets/frames/spx-${model}-${side}-art.webp`),`missing SPX ${model} ${side} art`);
   for(const card of [...catalog.SPX.input,...catalog.SPX.output])assert.ok(fs.existsSync(`output/design/assets/cards/${card[0]}.webp`),`missing SPX faceplate for ${card[0]}`);
   const extenders=[...new Set([...read('src/app.js').matchAll(/'(output\/design\/assets\/extenders\/[^']+)'/g)].map(match=>match[1]))];
   assert.equal(extenders.length,10,'XDM 6 + VDM 4 extender photos');
@@ -358,6 +362,13 @@ test('0.121: HD-D102U Rack마운트는 HD-D102U와 서로 관련 제품으로 �
   assert.ok(rack.documents.every(doc=>!doc.file),'사용자 제공 도면 PDF는 공개 폴더에 올리지 않는다');
   assert.equal('drawing' in rack,false,'0.123: 실도면(치수 도면)은 넣지 않고 그래픽 이미지만 보여준다(사용자 요청 "실도면은하지말고 그래픽이미지만")');
   assert.ok(rack.images.every(image=>!/drawing|dims/.test(image.file)),'치수선이 있는 도면 그림은 쓰지 않는다');
+  // 0.130(사용자 요청 2026-09-29 "윗면 옆면은 전부 삭제해줘 정면만 남겨줘", "XDM-PSU 그래픽컨셉을 계승해줘"): 정면 그림 한 장만 두고, 밝은 회색 금속 몸체로 그린다.
+  assert.deepEqual(rack.images.map(image=>image.file),['hd-d102u-rack-front-art.webp']);
+  assert.equal(rack.portMap.length,1,'단자 지도는 정면 한 장만');
+  assert.equal(JSON.stringify(rack).includes('윗면')||JSON.stringify(rack).includes('옆면'),false,'윗면·옆면 표기는 남기지 않는다');
+  for(const name of ['top','side'])assert.equal(fs.existsSync(`output/design/assets/products/hd-d102u-rack-${name}-art.webp`),false,`${name} 그림 파일은 지운다`);
+  assert.match(read('scripts/tools/draw_hd_d102u_rack.cjs'),/const L=\{body:'#c5cbd5',ear:'#b1b8c4',rail:'#d0d5de'/,'그림은 밝은 회색 금속 계열이되 분배기 칸(#f7f8fa)보다 어두운 몸체·랙 귀·레일 색을 쓴다(0.135)');
+  assert.match(read('scripts/tools/draw_hd_d102u_rack.cjs'),/card:'#f7f8fa'/,'분배기 칸은 밝은 색을 유지한다');
   const order=JSON.parse(read('data/products/index.json')).products.map(product=>product.id);
   assert.equal(order.indexOf('hd-d102u-rack'),order.indexOf('hd-d102u')+1,'목록에서 HD-D102U 바로 뒤에 보인다');
 });
@@ -378,7 +389,7 @@ test('0.127: 01 제품군 미리보기에 프레임 선택 버튼이 있고 파�
 test('0.128: 01 제품군에서는 아래 바 다음 버튼을 숨겨 프레임 선택 버튼이 중복되지 않는다',()=>{
   // 사용자 지적 2026-09-29 "버튼이 중복이다"
   const app=read('src/app.js'),css=read('src/styles.css');
-  assert.match(app,/next\.hidden=state\.step===0;/,'01 제품군에서는 아래 바 다음 버튼을 숨긴다');
+  assert.match(app,/next\.hidden=state\.step<=1;/,'01 제품군·02 프레임 선택에서는 아래 바 다음 버튼을 숨긴다(0.135, 사용자 승인 2026-09-29 "02 아래 바 버튼 숨기기")');
   assert.match(css,/\.rt-button\[hidden\]\{display:none!important\}/,'hidden 속성이 display:flex 규칙에 밀리지 않게 한다');
 });
 
@@ -388,4 +399,17 @@ test('0.129: 구성기 아래 바의 요약 글(제품군 / 모델 · 카테고�
   assert.doesNotMatch(app,/카테고리: 매트릭스/);
   assert.match(app,/querySelector\('\.rt-footer'\)\.hidden=state\.step===0/);
   assert.match(read('src/styles.css'),/\.rt-footer\[hidden\]\{display:none\}/);
+});
+
+test('0.132: 02 프레임 선택 미리보기 그림 높이는 랙 높이(U)에서 정하고 VDM·SPX·XDM 모든 프레임이 등록되어 있다',()=>{
+  // 사용자 요청 2026-09-29 "VDM-8X는 다소 크다 … 적정한 크기 판단해서 이미지 개선해줘", "SPX, XDM도 비슷한 컨셉으로 수정해줘"
+  const catalog=loadCatalog(),app=read('src/app.js'),css=read('src/styles.css');
+  const table=app.match(/const frameRackU=\{([\s\S]*?)\};/)[1];
+  for(const family of Object.values(catalog))for(const model of family.models)assert.match(table,new RegExp(`'${model}':\\d+`),`${model} must have a rack height in frameRackU`);
+  assert.match(app,/frameShowHeight=model=>frameRackU\[model\]\?Math\.round\(90\+410\*Math\.log\(frameRackU\[model\]\/2\)\/Math\.log\(20\)\):0/);
+  assert.match(app,/rt-cg-preview\$\{fh\?' rt-cg-scaled':''\}/);
+  assert.match(css,/\.rt-cg-preview\.rt-cg-scaled img\{height:calc\(var\(--rt-fh\)\*1px\)/);
+  // 크기 눈금: 작은 프레임은 작게, 큰 프레임은 크게(2U 90px … 40U 500px)
+  const u=n=>Math.round(90+410*Math.log(n/2)/Math.log(20));
+  assert.equal(u(2),90);assert.equal(u(40),500);assert.ok(u(3)<u(7)&&u(7)<u(12)&&u(38)<=u(40));
 });

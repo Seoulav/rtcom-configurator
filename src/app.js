@@ -61,10 +61,11 @@
     // VDM 후면 배치(매뉴얼 도면): 8X는 가로 보드 좌우, 16X~64X는 세로 보드 '입력 4 | 출력 4'를 단으로 쌓고, 80X 이상은 입력 위·출력 아래. 256X는 128X와 같은 랙 2대가 나란히 선다.
     // 열 수는 매뉴얼 후면 도면의 한 줄 보드 수다: 80X·128X는 11열(남는 칸은 제어 보드·빈칸), 180X는 15열, 256X는 랙 2대 × 11열.
     const vdmRacks={'VDM-8X':['h',1],'VDM-16X':['vs',4],'VDM-32X':['vs',4],'VDM-48X':['vs',4],'VDM-64X':['vs',4],'VDM-80X':['vt',11],'VDM-128X':['vt',11],'VDM-180X':['vt',15],'VDM-256X':['vt',11]};
-    const frameFronts={'XDM-12':'output/design/assets/frames/xdm-12-front.webp','XDM-20':'output/design/assets/frames/xdm-20-front.webp','XDM-36':'output/design/assets/frames/xdm-36-front.webp','XDM-72':'output/design/assets/frames/xdm-72-front.webp','XDM-144':'output/design/assets/frames/xdm-144-front.webp','XDM-216':'output/design/assets/frames/xdm-216-front.webp','VDM-16X':'output/design/assets/frames/vdm-16x-front.webp','SPX-M810':'output/design/assets/frames/spx-m810-front.webp','SPX-M1620':'output/design/assets/frames/spx-m1620-front.webp','SPX-M3236':'output/design/assets/frames/spx-m3236-front.webp','SPX-M2472':'output/design/assets/frames/spx-m2472-front.webp','SPX-M24120':'output/design/assets/frames/spx-m24120-front.webp','VDM-48X':'output/design/assets/frames/vdm-48x-front.webp',
-      // 실물 전면 사진이 없는 VDM은 매뉴얼 전면 선 도면(KV07 PDF pp.12–20) 배치를 따라 그린 평면 그림을 쓴다(scripts/tools/draw_vdm_frames.cjs).
+    const frameFronts={'XDM-12':'output/design/assets/frames/xdm-12-front-art.webp','XDM-20':'output/design/assets/frames/xdm-20-front-art.webp','XDM-36':'output/design/assets/frames/xdm-36-front-art.webp','XDM-72':'output/design/assets/frames/xdm-72-front-art.webp','XDM-144':'output/design/assets/frames/xdm-144-front-art.webp','XDM-216':'output/design/assets/frames/xdm-216-front-art.webp','VDM-16X':'output/design/assets/frames/vdm-16x-front-art.webp','SPX-M810':'output/design/assets/frames/spx-m810-front-art.webp','SPX-M1620':'output/design/assets/frames/spx-m1620-front-art.webp','SPX-M3236':'output/design/assets/frames/spx-m3236-front-art.webp','SPX-M2472':'output/design/assets/frames/spx-m2472-front-art.webp','SPX-M24120':'output/design/assets/frames/spx-m24120-front-art.webp','VDM-48X':'output/design/assets/frames/vdm-48x-front-art.webp',
+      // 0.135(사용자 요청 2026-09-29 "프레임 실물 이미지는 사용하지 말자 전부 그래픽이미지로 변경해줘"): 프레임 정면은 모두 평면 그림이다.
+      // VDM(scripts/tools/draw_vdm_frames.cjs)은 매뉴얼 전면 선 도면(KV07 PDF pp.12–20)·VDM-16X 사진 배치, XDM·SPX(scripts/tools/draw_xdm_spx_front_frames.cjs)는 카탈로그 mm 크기와 예전 사진의 배치를 따른다.
       'VDM-8X':'output/design/assets/frames/vdm-8x-front-art.webp','VDM-32X':'output/design/assets/frames/vdm-32x-front-art.webp','VDM-64X':'output/design/assets/frames/vdm-64x-front-art.webp','VDM-80X':'output/design/assets/frames/vdm-80x-front-art.webp','VDM-128X':'output/design/assets/frames/vdm-128x-front-art.webp','VDM-180X':'output/design/assets/frames/vdm-180x-front-art.webp','VDM-256X':'output/design/assets/frames/vdm-256x-front-art.webp'};
-    const frontDrawings=new Set(['VDM-8X','VDM-32X','VDM-64X','VDM-80X','VDM-128X','VDM-180X','VDM-256X']);
+    const frontDrawings=new Set(Object.keys(frameFronts));
     // 국문 매뉴얼(KV08) 후면 사진과 사진 속 입력·출력 카드 영역(사진 픽셀 좌표: 왼쪽, 위, 오른쪽, 아래). 카드 고정 나사 간격으로 측정했다.
     // 업체의 빈 프레임 후면 사진을 받으면 src와 좌표만 바꾼다.
     // 0.113: XDM·SPX 후면도 매뉴얼 사진 배치를 따라 그린 평면 그림(scripts/tools/draw_xdm_spx_rear_frames.cjs)을 쓴다. 좌표는 원래 사진 좌표를 그림 배율대로 늘린 값이다.
@@ -141,6 +142,14 @@
     const maxPorts=dir=>Math.max(...families[state.family][dir].map(item=>item[2]));
     // 02 프레임(2-2, Analog Way 구조): 왼쪽 목록 | 오른쪽 고정 미리보기(정면|후면 세그먼트). 랙 U 값은 PRODUCT_GLASS_REDESIGN_SPEC.md 2-3과 같다.
     const chassisRackU={'XDM-12':'4U','XDM-20':'9U','XDM-36':'9U','XDM-72':'16U','XDM-144':'29U','XDM-216':'40U'};
+    // 0.132 02 프레임 선택 미리보기 크기(사용자 요청 2026-09-29 "VDM-8X는 다소 크다 이거보다는 작게해주고 나머지 VDM프레임 크기는 다소 작아서 너가 적정한 크기 판단해서 이미지 개선해줘", "SPX, XDM도 비슷한 컨셉으로 수정해줘"):
+    // 예전에는 그림 높이 상한(210·300·400px)만 있어 가장 작은 VDM-8X(3U)가 패널 폭을 꽉 채워 가장 크게 보이고, 큰 프레임(VDM-80X~180X, XDM-144·216)은 가늘고 작게 보였다.
+    // 이제 랙 높이(U, 제품 데이터 lineup의 rackUnits)에 따라 그림 높이를 로그 눈금으로 정한다: 2U → 90px … 40U → 500px. 큰 프레임일수록 크게 보이되 작은 프레임도 알아볼 수 있게 눌렀다.
+    // 휴대폰(820px 이하)은 CSS에서 0.45배로 줄인다. 아래에 없는 모델은 예전 상한을 그대로 쓴다.
+    const frameRackU={'XDM-12':4,'XDM-20':9,'XDM-36':9,'XDM-72':16,'XDM-144':29,'XDM-216':40,
+      'SPX-M810':2,'SPX-M1620':4,'SPX-M3236':7,'SPX-M2472':8,'SPX-M24120':8,
+      'VDM-8X':3,'VDM-16X':7,'VDM-32X':12,'VDM-48X':19,'VDM-64X':24,'VDM-80X':27,'VDM-128X':37,'VDM-180X':38,'VDM-256X':39,'VDM-288X':38};
+    const frameShowHeight=model=>frameRackU[model]?Math.round(90+410*Math.log(frameRackU[model]/2)/Math.log(20)):0;
     // 0.70 "함께 보면 좋은 제품"(사용자 요청 "MATRIX 선택 시 연관 제품 목록이 보이게", 쇼핑몰 상품 상세 아래 추천 줄 참고):
     // 제품정보 데이터(data/products/<제품군>.json의 related)를 한 번 읽어 와서, 02 프레임 선택 아래에 시리즈 상세와 연동 전송기를 사진 카드 한 줄로 보여 준다.
     // 데이터를 읽지 못하면 이 줄만 빠지고 구성기는 그대로 동작한다. 화면 상태일 뿐 저장·실행 취소 대상이 아니다.
@@ -181,7 +190,7 @@
       // 정면·후면을 함께 보여 준다. 후면 이미지 세로/가로 비율로 배치를 고른다 — 1.1 이하는 위아래(stack), 2.0 이하는 좌우(row),
       // 그보다 긴 대형 프레임(XDM-144·216, VDM-80X·128X·180X)만 예전처럼 정면/후면 버튼으로 한 장씩 본다(toggle).
       const aspect=rearInfo?rearInfo.size[1]/rearInfo.size[0]:0;
-      const duo=front&&rearInfo?(aspect>2?'':aspect>1.1?'row':'stack'):'';
+      const duo=front&&rearInfo?(aspect>1.1?'row':'stack'):''; // 0.137(사용자 요청 2026-09-29 "프레임 뒷면 없는 제품 VDM-80, 128,180"): 대형 프레임도 정면/후면 버튼 없이 좌우로 함께 보여 준다.
       const side=previewSide==='rear'&&rearInfo?'rear':'front';
       const img=side==='rear'?rearInfo.src:front;
       const kindOf=which=>(which==='front'?frontDrawings.has(previewModel):rearInfo?.kind==='그림')?'그림':'사진';
@@ -190,7 +199,8 @@
       const nextHere=`<button type="button" class="rt-button rt-primary rt-cg-preview-next" data-action="preview-next" ${state.model?'':'disabled'}>다음 · 카드 슬롯 구성 <span aria-hidden="true">→</span></button>`;
       const seg=`<span class="rt-cg-seg" role="group" aria-label="사진 방향"><button type="button" class="${side==='front'?'rt-cg-seg-on':''}" data-cg-side="front">정면</button><button type="button" class="${side==='rear'?'rt-cg-seg-on':''}" data-cg-side="rear">후면</button></span>`;
       const duoView=duo?`<div class="rt-cg-duo rt-cg-duo-${duo}"><figure><img src="${front}" data-cg-img="front" alt="${esc(previewModel)} 전면 ${kindOf('front')}"><figcaption>정면</figcaption></figure><figure><img src="${rearInfo.src}" data-cg-img="rear" alt="${esc(previewModel)} 후면 ${kindOf('rear')}"><figcaption>후면</figcaption></figure></div>`:'';
-      const preview=`<div class="rt-cg-preview">${duo?duoView:`${rearInfo?seg:''}${img?`<img src="${img}" data-cg-img="${side}" alt="${esc(previewModel)} ${side==='rear'?'후면':'전면'} ${kindOf(side)}">`:'<div class="rt-cg-preview-placeholder">사진 준비 중</div>'}`}<div class="rt-cg-preview-cap"><strong>${esc(previewModel)}</strong><span>${plan?`입력 ${plan[0]} / 출력 ${plan[1]} 슬롯`:'슬롯 구성 제조사 확인 필요'}</span></div>${nextHere}</div>`;
+      const fh=frameShowHeight(previewModel);
+      const preview=`<div class="rt-cg-preview${fh?' rt-cg-scaled':''}"${fh?` style="--rt-fh:${fh}"`:''}>${duo?duoView:`${rearInfo?seg:''}${img?`<img src="${img}" data-cg-img="${side}" alt="${esc(previewModel)} ${side==='rear'?'후면':'전면'} ${kindOf(side)}">`:'<div class="rt-cg-preview-placeholder">사진 준비 중</div>'}`}<div class="rt-cg-preview-cap"><strong>${esc(previewModel)}</strong><span>${plan?`입력 ${plan[0]} / 출력 ${plan[1]} 슬롯`:'슬롯 구성 제조사 확인 필요'}</span></div>${nextHere}</div>`;
       return heading('02 / 프레임 선택','구성의 중심이 될 프레임을 선택하세요.',`${state.family} 제품군 · 메인프레임 ${f.models.length}종`)+`<div class="rt-cg-split"><div class="rt-cg-list" role="list">${f.models.map(row).join('')}</div>${preview}</div>${relatedSection(state.family)}${xdmFeature}`;
     }
     function cardChoiceModal(){
@@ -209,7 +219,9 @@
       const qtyMax=RtCore.fillTargets(state,slot.id,999).length;
       const choiceButton=c=>`<button type="button" class="rt-card-choice" data-card="${c[0]}" aria-pressed="${installed===c[0]}"><span class="rt-card-choice-plate"><img src="${cardAsset(c[0])}" alt="${c[0]} 카드 후면 판넬"></span><span class="rt-card-choice-copy"><strong>${c[0]}${cardBadge(c[0])}</strong><small>${esc(c[1])} · ${c[2]}채널</small><span>${esc(cardTip(c[0]))}</span></span><span class="rt-card-choice-state" aria-hidden="true">${installed===c[0]?'장착됨':'선택'}</span></button>`;
       // 0.70 카드별 수량: 카드 버튼 아래에 −/+ 수량 칸을 둔다(버튼 안에 버튼을 넣지 않도록 형제로 둔다). 합계는 채울 수 있는 칸 수(qtyMax)를 넘지 않는다.
-      const cardQty=c=>{const n=modalQtys[c[0]]||0,full=qtySum()>=qtyMax;return sameDirTotal>1?`<div class="rt-card-choice-qty"><span>${esc(c[0])} 수량</span><div class="rt-card-qty-stepper"><button type="button" data-card-qty-step="-1" data-qty-card="${c[0]}" aria-label="${c[0]} 수량 줄이기" ${n<=0?'disabled':''}>−</button><output data-qty-out="${c[0]}" aria-live="polite">${n}</output><button type="button" data-card-qty-step="1" data-qty-card="${c[0]}" aria-label="${c[0]} 수량 늘리기" ${full?'disabled':''}>+</button></div></div>`:''};
+      // 0.137(사용자 요청 2026-09-29 "입출력 선택 후 다시 들어갈때 기존 선택된 카드 수량이 보일 수 있게"): 스테퍼는 빈 슬롯에 새로 채울 수량이라 다시 열면 0이다. 이 방향 슬롯에 이미 장착된 같은 카드 장수를 "현재 N장 장착"으로 함께 보여 준다.
+      const haveQty=id=>others.filter(item=>state.placements[item.id]===id).length+(installed===id?1:0);
+      const cardQty=c=>{const n=modalQtys[c[0]]||0,full=qtySum()>=qtyMax,have=haveQty(c[0]);return sameDirTotal>1?`<div class="rt-card-choice-qty">${have?`<em class="rt-card-have" data-have-qty="${c[0]}">현재 ${have}장 장착</em>`:''}<span>${esc(c[0])} 수량</span><div class="rt-card-qty-stepper"><button type="button" data-card-qty-step="-1" data-qty-card="${c[0]}" aria-label="${c[0]} 수량 줄이기" ${n<=0?'disabled':''}>−</button><output data-qty-out="${c[0]}" aria-live="polite">${n}</output><button type="button" data-card-qty-step="1" data-qty-card="${c[0]}" aria-label="${c[0]} 수량 늘리기" ${full?'disabled':''}>+</button></div></div>`:''};
       // 0.79 상세 보기(사용자 요청 2026-09-28 "카드 선택창에도 상세보기 추가해"): 장착 버튼과 형제로 두어 누르면 카드 사양 창(openCardInfo)이 선택창 위에 뜬다.
       // 0.117 연동 전송기: 전송기와 짝을 이루는 카드(CIS·COS·FIS·FOS·HDMI 카드·SPX-COS12·VDM CAT/광 카드)는 카드 아래에서 전송기를 함께 고른다.
       // 고른 전송기는 카드를 장착할 때(선택·장착 버튼) 슬롯에 연결되고, 04 전송기에서 채널 수·거리를 다시 조정할 수 있다.
@@ -377,8 +389,9 @@
       root.querySelector('.rt-footer').hidden=state.step===0;
       const next=root.querySelector('[data-action=next]');
       next.disabled=state.step===1&&!state.model;
-      // 0.128 01 제품군에서는 미리보기의 "프레임 선택" 버튼 하나만 둔다(사용자 지적 2026-09-29 "버튼이 중복이다"). 아래 바 다음 버튼은 02부터 나온다.
-      next.hidden=state.step===0;
+      // 0.128 01 제품군에서는 미리보기의 "프레임 선택" 버튼 하나만 둔다(사용자 지적 2026-09-29 "버튼이 중복이다").
+      // 0.135 02 프레임 선택도 같은 방식으로 미리보기의 "다음 · 카드 슬롯 구성" 버튼 하나만 둔다(사용자 승인 2026-09-29 "02 아래 바 버튼 숨기기"). 아래 바 다음 버튼은 03부터 나온다.
+      next.hidden=state.step<=1;
       const nextLabels=['프레임 선택','카드 슬롯 구성','전송기 연결','구성 검토','출력 미리보기','처음으로'];
       // 03 카드 슬롯(2-3): 완성이면 "선택 완료 · 전송기 연결", 빈칸이 남으면 "빈칸 N개 남음 · 그래도 다음". 이동은 막지 않는다.
       let nextLabel=nextLabels[state.step];
@@ -437,7 +450,7 @@
       else if(!restoringNav&&state.step!==navStep)window.history.pushState({rtStep:state.step},'',location.href);
       navStep=state.step;
     }
-    // 로고(RTCOM Matrix Configurator)를 누르면 확인 후 첫 화면(제품군 선택)으로 간다. 구성은 지우지 않는다.
+    // 로고(RTCOM Configurator)를 누르면 확인 후 첫 화면(제품군 선택)으로 간다. 구성은 지우지 않는다.
     document.querySelector('.rt-brand-lockup')?.addEventListener('click',async event=>{
       event.preventDefault();
       if(state.step===0){window.scrollTo({top:0,behavior:'smooth'});return}
