@@ -377,6 +377,24 @@
       "cardImage": "obux-1c-main.webp"
     },
     {
+      "id": "spx-r6",
+      "group": "extender",
+      "productName": "SPX-R6",
+      "model": "SPX-R6",
+      "itemType": "PRODUCT",
+      "categories": [
+        "영상",
+        "Video",
+        "Extender",
+        "Rack Mount"
+      ],
+      "english": "6 HDMI Extender Module Chassis — rack chassis for up to 6 SPX-Extender modules with a single power supply, front LCD and buttons, and 2 IR ports.",
+      "korean": "SPX-Extender 모듈을 최대 6개 장착하고 단일 전원으로 전원을 공급하는 SPX 시리즈 랙 모듈형 전송기 섀시다.",
+      "catalogPages": null,
+      "packageStatus": "VERIFIED",
+      "cardImage": "spx-r6-front-art.webp"
+    },
+    {
       "id": "spx-rx-tx",
       "group": "extender",
       "productName": "SPX-TX / SPX-RX",

@@ -154,7 +154,7 @@ test('public product data (0.19) is valid, brochure-level only and listed in ind
   assert.equal(read('data/products/index.json'),text,'run node scripts/build-product-index.cjs');
   assert.equal(index.schema,'rtcom.products.v1');
   const count=group=>index.products.filter(product=>product.group===group).length;
-  assert.deepEqual({series:count('series'),integrated:count('integrated'),distribution:count('distribution'),extender:count('extender'),cable:count('cable')},{series:3,integrated:2,distribution:8,extender:14,cable:4});
+  assert.deepEqual({series:count('series'),integrated:count('integrated'),distribution:count('distribution'),extender:count('extender'),cable:count('cable')},{series:3,integrated:2,distribution:8,extender:15,cable:4});
   for(const model of EXCLUDED)assert.equal(index.products.some(product=>product.model===model),false,`${model} is excluded like AV Portal`);
   for(const model of ['HD-104U','HD-108U','QMS-44UX','MR-4S'])assert.ok(index.products.some(product=>product.model===model),`missing ${model}`);
   for(const product of index.products)assert.ok(product.cardImage,`${product.id} needs a card image`);
@@ -422,4 +422,25 @@ test('검토 결과에 내부 근거 문서 링크를 넣지 않는다(0.149)', 
   for (const file of ['src/app.js', 'src/workspace.inc.js']) {
     assert.ok(!read(file).includes('docs/evidence/RTCOM_MATRIX_EVIDENCE_AND_GAPS.md'), `${file} must not link the internal evidence ledger`);
   }
+});
+
+test('0.151: SPX-R6는 사양서 근거로 등록하고, 로고 없는 평면 그림·사양서 카탈로그 버튼을 쓰며, SPX 매뉴얼 2권을 공개하고 M2472·M24120 깊이는 443.7mm다',()=>{
+  // 사용자 결정 2026-09-29: PDF 3개 공개(SPX-R6 사양서·SPX-TX/RX 매뉴얼 Ver.2.0·SPX 공통 매뉴얼 250805), SPX-R6는 "평면 그래픽", 깊이 "443.7mm", 비디오 월 표기는 유지.
+  const r6=JSON.parse(read('data/products/spx-r6.json')),txrx=JSON.parse(read('data/products/spx-rx-tx.json')),spx=JSON.parse(read('data/products/spx.json'));
+  assert.equal(r6.group,'extender');
+  assert.deepEqual(r6.images.map(image=>image.file),['spx-r6-front-art.webp','spx-r6-rear-art.webp'],'사양서 사진(다른 회사 로고)은 쓰지 않고 그림만 쓴다');
+  for(const image of r6.images)assert.ok(fs.existsSync(`output/design/assets/products/${image.file}`));
+  assert.ok(!/AmberTech/i.test(JSON.stringify(r6))&&!/AmberTech/i.test(read('scripts/tools/draw_spx_r6_panels.cjs').replace(/\/\/.*$/gm,'')),'로고 글자를 그림·데이터에 넣지 않는다');
+  assert.deepEqual(r6.documents.filter(doc=>doc.file).map(doc=>[doc.type,doc.file]),[['Catalog','spx-r6-catalog.pdf']]);
+  assert.ok(r6.related.some(link=>link.relation==='WORKS_WITH'&&link.target==='spx-rx-tx'));
+  assert.ok(txrx.related.some(link=>link.relation==='WORKS_WITH'&&link.target==='spx-r6'));
+  assert.equal(txrx.documents.find(doc=>doc.type==='Manual').file,'spx-rx-tx-manual.pdf');
+  assert.equal(spx.documents.find(doc=>doc.type==='Manual').file,'spx-manual.pdf');
+  for(const name of ['spx-r6-catalog.pdf','spx-rx-tx-manual.pdf','spx-manual.pdf'])assert.ok(fs.existsSync(`output/design/assets/docs/${name}`),name);
+  for(const model of ['SPX-M2472','SPX-M24120'])assert.match(spx.lineup.find(entry=>entry.model===model).summary,/483×443\.7×365mm/);
+  assert.ok(!JSON.stringify(spx.lineup).includes('433.7'),'라인업에 종합 카탈로그 2026의 433.7mm 표기를 남기지 않는다');
+  assert.ok(spx.features.some(feature=>feature.text.includes('2x2, 3x3, 3x4')),'비디오 월 표기는 그대로 둔다(사용자 결정 "지금 표기 유지")');
+  assert.match(read('src/products.js'),/if\(item\.id==='spx-r6'\)return rackExtenderDiagram\(item\);/);
+  const order=JSON.parse(read('data/products/index.json')).products.map(product=>product.id);
+  assert.equal(order.indexOf('spx-r6')+1,order.indexOf('spx-rx-tx'),'전송기 목록에서 SPX-TX / SPX-RX 바로 앞에 보인다');
 });

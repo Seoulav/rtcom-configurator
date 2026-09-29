@@ -381,6 +381,84 @@
    ],
    "note": "VDM 매뉴얼 KV07 30쪽 HOS4-U 사양표 캡처",
    "date": "2026-09-28"
+  },
+  {
+   "sha256": "83b64b82be6328b1",
+   "file": "RTCOM/sheet/RTcom_ProductSheet_SPX-R6.pdf",
+   "status": "published",
+   "reflected": [
+    {
+     "where": "data/products/spx-r6.json",
+     "what": "SPX-R6 신규 제품(사양·기능·단자, 평면 그림 배치 근거)",
+     "release": "0.151.0"
+    },
+    {
+     "where": "output/design/assets/docs/spx-r6-catalog.pdf",
+     "what": "제품 상세 카탈로그 버튼으로 공개",
+     "release": "0.151.0"
+    }
+   ],
+   "note": "SPX-R6 제품 사양서 1쪽. 사진·연결도에 다른 회사 로고 → 평면 그림으로 대체(사용자 결정 2026-09-29)",
+   "date": "2026-09-29",
+   "original": "RTcom_Specificaion_SPX-R6.pdf",
+   "model": "SPX-R6",
+   "version": ""
+  },
+  {
+   "sha256": "30e597bc80986097",
+   "file": "RTCOM/catalog/RTcom_Catalog_SPX_2023.pdf",
+   "status": "reflected",
+   "reflected": [
+    {
+     "where": "data/products/spx.json",
+     "what": "SPX-M2472·M24120 깊이 443.7mm 근거(C3)",
+     "release": "0.151.0"
+    }
+   ],
+   "note": "SPX 시리즈 카탈로그 2023(6쪽, 옛 보드 이름 HI8·HO10·HO12·CO12). 공개하지 않음(사용자 결정 2026-09-29), 5쪽 SPX-M24120 기준 구성도",
+   "date": "2026-09-29",
+   "original": "RTcom_Catalogue_SPX_KOR.pdf",
+   "model": "SPX",
+   "version": "2023"
+  },
+  {
+   "sha256": "39e7c005648e6f20",
+   "file": "RTCOM/manual/RTcom_Manual_SPX_250805.pdf",
+   "status": "published",
+   "reflected": [
+    {
+     "where": "data/products/spx.json",
+     "what": "SPX-M2472·M24120 깊이 443.7mm(7~9쪽, M1)",
+     "release": "0.151.0"
+    },
+    {
+     "where": "output/design/assets/docs/spx-manual.pdf",
+     "what": "SPX 시리즈 상세 매뉴얼 버튼으로 공개",
+     "release": "0.151.0"
+    }
+   ],
+   "note": "SPX 국문 사용자 매뉴얼 250805(54쪽). 구성기 슬롯·후면 근거(U07)로 이미 쓰던 판",
+   "date": "2026-09-29",
+   "original": "SPX_Series_User_Manual_250805KOR.pdf",
+   "model": "SPX",
+   "version": "250805"
+  },
+  {
+   "sha256": "6076a53e111e4ef3",
+   "file": "RTCOM/manual/RTcom_Manual_SPX-TX-SPX-RX_Ver2.0.pdf",
+   "status": "published",
+   "reflected": [
+    {
+     "where": "output/design/assets/docs/spx-rx-tx-manual.pdf",
+     "what": "SPX-TX / SPX-RX 상세 매뉴얼 버튼으로 공개",
+     "release": "0.151.0"
+    }
+   ],
+   "note": "0.64에서 사양·단자·딥 스위치를 반영한 Ver.2.0과 같은 판(4쪽 사양 일치)",
+   "date": "2026-09-29",
+   "original": "SPX-TX_RX_Manual_Ver.2.0.pdf",
+   "model": "SPX-TX-SPX-RX",
+   "version": "Ver2.0"
   }
  ]
 }

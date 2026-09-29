@@ -28,12 +28,19 @@
 | 2 | FT103-U-H / FR103-U | 송·수신기 앞면·뒷면 | 매뉴얼 사진(수신기 386px) |
 | 3 | SPX-TX/RX, HD-D102U 비스듬한 사진, VDM 프레임, AHOC·LHOC·UMC | 대표 사진 | 600~700px |
 
+## SPX-R6(0.151) — 확인할 사항
+
+`docs/implementation/SPX_R6_0.151.md` §4에 근거가 있습니다.
+- [ ] 크기·무게·전원 어댑터 전압: 사양서에 없어 04 제품 사양에 적지 않았습니다. 자료를 받으면 추가합니다.
+- [ ] 사양서 연결도의 SPX-RX "IR Blaster": SPX-TX/RX 매뉴얼 Ver.2.0의 SPX-RX에는 IR 단자가 없어 Signal Flow에 그리지 않았습니다. 사양서 그림의 수신기가 다른 판인지 확인이 필요합니다.
+- [ ] 모듈 종류: 사양서는 "SPX-Extender 모듈"이라고만 적고, 연결도는 모든 칸이 HDMI IN·CAT OUT(송신)입니다. 수신 모듈을 꽂을 수 있는지 확인이 필요합니다.
+- [ ] RTCOM 로고가 있는 실물 사진이 생기면 평면 그림 대신 사진으로 바꿀 수 있습니다.
+
 ## 공개 여부를 사용자에게 물어볼 PDF
 
 `.source-materials/`에 있고 아직 제품 상세 버튼이 없는 자료입니다. 공개하려면 목록을 보여 주고 확인을 받습니다(CLAUDE.md 규칙).
 - CT-CR-103-U 매뉴얼 KV01 → CT103-U-H / CR103-U
 - FT-FR-103-U-H 매뉴얼 Ver1.4 → FT103-U-H / FR103-U
-- SPX-TX/RX 매뉴얼 Ver2.0 → SPX-TX / SPX-RX
 - HD-13U 제품 안내서, XDM-CTR100 PSE 제품 안내서
 - `XDM-POE2U_030_ASSY.pdf`는 내부 조립 도면으로 보여 후보에서 뺐습니다.
 
