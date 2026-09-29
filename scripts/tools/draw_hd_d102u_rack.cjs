@@ -5,6 +5,7 @@
 //  - 그래픽 컨셉은 XDM-PSU 그림(scripts/tools/draw_xdm_psu_panels.cjs)을 따른다: 밝은 회색 금속 몸체(#eceff4)·연한 랙 귀(#dfe3ea)·흰 모듈 카드,
 //    구멍은 흰색에 어두운 테두리(#3a4150), 글자는 진한 남색(#1f2532). 이전의 검은 몸체(VDM·XDM·SPX 프레임 그림 방식)는 쓰지 않는다.
 //  - 윗면·옆면 그림은 지우고 정면만 남겼다. 배치(mm 좌표)는 그대로라서 제품 데이터 portMap의 번호 좌표가 바뀌지 않는다.
+// 0.133: 칸 번호를 파란 원 배지 + 흰 숫자로 키움(사용자 요청 2026-09-29 "분배기 장착 번호가 너무 작다 다른 색상으로 표기해서 눈의띄게 해줘").
 // 실행: NODE_PATH=$(npm root -g) node scripts/tools/draw_hd_d102u_rack.cjs  → output/design/assets/products/hd-d102u-rack-front-art.webp (python PIL 필요)
 const path=require('path');
 const P=require('./draw_vdm_frames.cjs');
@@ -28,7 +29,8 @@ function front(){
     s+=rect(cx-12.8,46.5,25.6,100.5,L.card,L.cardLine,0.6,1.2);
     for(const y of [66,81.7,96.6,111.5])s+=pin(cx,y,1.5);
     s+=rect(cx-1.3,125.5,2.6,3.6,'#fff',L.dark,0.5);
-    s+=text(cx,142,String(i+1),4.2,L.ink,'text-anchor="middle" font-weight="800"');
+    // 장착 칸 번호: 작아서 안 보인다는 지적(사용자 요청 2026-09-29)에 따라 파란 원 배지에 흰 굵은 숫자로 키운다(사이트 강조색 #007aff).
+    s+=`<circle cx="${f(cx)}" cy="137" r="6.2" fill="#007aff" stroke="#fff" stroke-width="0.8"/>`+text(cx,139.6,String(i+1),7.4,'#fff','text-anchor="middle" font-weight="800"');
   }
   return s;
 }
