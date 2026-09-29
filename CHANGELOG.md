@@ -1,5 +1,7 @@
 ## Unreleased
 
+- **AI 검색 베타 허용 도메인 확정**: 사용자 결정(2026-09-29 "현재는 @seoulav1.co.kr만")으로 베타 동안 `@seoulav1.co.kr`만 허용합니다(설정 변경 없음, `docs/implementation/AI_SEARCH_BETA.md`·`docs/handoff/OPEN_ITEMS.md` 기록).
+
 - **0.142.0 배포 기록**: `docs/qa/DEPLOYMENT_0.142_2026-09-29.md`(PR #186 → main 병합, Pages 배포 run 156, 공개 파일 337/337 일치, `.nojekyll` 제외)
 
 - **0.141.0 배포 기록**: `docs/qa/DEPLOYMENT_0.141_2026-09-29.md`(PR #184 → main 병합, Pages 배포 run 155, 공개 파일 335/336 일치, `.nojekyll` 제외)
