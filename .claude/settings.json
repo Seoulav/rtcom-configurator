@@ -7,6 +7,8 @@
       "Bash(node scripts/package-site.cjs)",
       "Bash(node scripts/e2e-smoke.cjs)",
       "Bash(node scripts/input-doc-status.cjs *)",
+      "Bash(node scripts/check-version.cjs)",
+      "Bash(node scripts/check-version.cjs *)",
       "Bash(npm test)",
       "Bash(npm run e2e)",
       "Bash(python scripts/input_doc.py scan)",
