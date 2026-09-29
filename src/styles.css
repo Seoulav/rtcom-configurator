@@ -992,6 +992,18 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-card-palette .rt-card-info-chip{cursor:grab}
 #rtcom-design .rt-card-palette .rt-card-info-chip:active{cursor:grabbing}
 #rtcom-design .rt-card-info-chip.rt-card-info-chip-dragging{opacity:.5;border-style:dashed}
+/* 0.163 끌어 놓기 타일: 내 구성 카드 행(.rt-summary-card)과 같은 판넬 사진 + 이름 + 신호 + 장착 수량 */
+#rtcom-design .rt-card-palette .rt-card-info-group{grid-template-columns:1fr;gap:6px}
+#rtcom-design .rt-card-palette .rt-card-info-group>span{padding-top:0}
+#rtcom-design .rt-card-palette .rt-card-info-group>div{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+@media(max-width:1100px){#rtcom-design .rt-card-palette .rt-card-info-group>div{grid-template-columns:repeat(3,minmax(0,1fr))}}
+#rtcom-design .rt-palette-tile{grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:7px 8px;padding:9px;border-color:transparent;border-radius:12px;background:#f5f8fc}
+#rtcom-design .rt-palette-tile:hover,#rtcom-design .rt-palette-tile:focus-visible{border-color:#007AFF66;background:#eef5ff}
+#rtcom-design .rt-palette-tile img{grid-column:1/-1;display:block;width:100%;height:auto;border-radius:3px;pointer-events:none}
+#rtcom-design .rt-palette-tile>span{min-width:0}
+#rtcom-design .rt-palette-tile strong{display:block}
+#rtcom-design .rt-palette-tile small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#rtcom-design .rt-palette-tile b{color:#2f63c8;font-size:12px;white-space:nowrap}
 #rtcom-design.rt-palette-drag-input .rt-rack-slot[data-slot^="in-"],#rtcom-design.rt-palette-drag-output .rt-rack-slot[data-slot^="out-"]{outline:2px dashed rgba(57,120,238,.75);outline-offset:-2px}
 #rtcom-design.rt-palette-drag-input .rt-rack-slot[data-slot^="out-"],#rtcom-design.rt-palette-drag-output .rt-rack-slot[data-slot^="in-"]{opacity:.35}
 #rtcom-design.rt-palette-drag-input .rt-rack-slot.rt-rack-slot-drop,#rtcom-design.rt-palette-drag-output .rt-rack-slot.rt-rack-slot-drop{outline:3px solid #007AFF;outline-offset:-3px}
