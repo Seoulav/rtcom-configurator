@@ -483,3 +483,18 @@ test('버전 점검은 번호 중복·main보다 낮은 번호·건너뛴 번호
   assert.match(checkAgainst([0,8],[0,5],code).join(),/한 단계 넘게/);
   assert.match(checkAgainst([0,6],[0,5],docs).join(),/문서만/);
 });
+
+test('0.165: SPX-TX/RX 04 제품 사양의 전송거리는 "4K60 실효 전송거리" 한 행(두 줄)으로 정리한다',()=>{
+  // 사용자 요청 2026-09-29 "최대 전송거리부분에 너무 나열되어 있어 이 부분을 아래와 같이 정리해줘"
+  const txrx=JSON.parse(read('data/products/spx-rx-tx.json'));
+  const rows=txrx.specifications.filter(spec=>spec.group==='Transmission');
+  assert.equal(rows.length,1,'전송거리 행은 하나만 둔다');
+  assert.equal(rows[0].name,'4K60 실효 전송거리');
+  assert.equal(rows[0].value,'UTP CAT6 50m (Belden 7814A 케이블 기준)\nS/FTP CAT6A 70m (Belden 10GXE02 케이블 기준)');
+  assert.equal(rows[0].source,'U3');
+  assert.ok(!JSON.stringify(txrx.specifications).includes('CI6522'),'예전 SF/UTP CI6522 표기는 쓰지 않는다');
+  assert.ok(txrx.features.some(feature=>/4K60 최대 50m, 1080p 최대 60m/.test(feature.text))&&txrx.features.some(feature=>/Long Reach/.test(feature.text)),'매뉴얼 공식 거리는 05 주요 기능에 남긴다');
+  const products=read('src/products.js');
+  assert.match(products,/const specValue=value=>\{/,'여러 줄 값은 줄마다 값과 괄호 설명을 나눠 보여 준다');
+  assert.match(read('src/styles.css'),/\.rt-pg-spec-table td \.rt-pg-spec-line\{display:block\}/);
+});
