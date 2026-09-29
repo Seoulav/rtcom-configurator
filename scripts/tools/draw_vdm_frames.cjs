@@ -101,18 +101,26 @@ const chassis=(w,h,t)=>rect(t*0.5,t*0.5,w-t,h-t,C.body,C.edge,t,t*2);
 const CARD_RATIO=5.7;
 const r2=n=>Math.round(n*100)/100;
 // 세로 카드(16X~64X): 왼쪽 입력 | 가운데 칸 | 오른쪽 출력(입력과 좌우 대칭). 칸 높이 = 칸 너비 × 5.7.
+// 0.179(사용자 요청 2026-09-29 "VDM 후면 그림도 실제 비율로 다시 그려줘"): H(목표 전체 높이)를 주면 슬롯 칸 모양(5.7:1)은 그대로 두고
+// 모자란 높이를 위 통풍구(30%)와 슬롯 아래 통풍 판(70%)에 나눠 채운다. 가운데 칸(오디오·통신·전원)은 아래 통풍 판 끝까지 늘어난다.
 function vsFrame(o){
-  const cw=(o.inX[1]-o.inX[0])/o.cols,zh=cw*CARD_RATIO*o.rows,y1=r2(o.top+zh),H=r2(y1+o.bottom),outX=[r2(o.W-o.inX[1]),r2(o.W-o.inX[0])];
-  return {size:[o.W,H],input:[o.inX[0],o.top,o.inX[1],y1],output:[outX[0],o.top,outX[1],y1],cols:o.cols,slots:o.cols*o.rows,draw(){
-    let s=o.top>=18?vents(10,4,o.W-20,o.top-7,Math.round(o.W/18),2):'';
-    return s+center(o.inX[1],o.top,outX[0],y1,o.blocks,o.audioRows)}};
+  const cw=(o.inX[1]-o.inX[0])/o.cols,zh=cw*CARD_RATIO*o.rows,extra=o.H?Math.max(0,o.H-(o.top+zh+o.bottom)):0;
+  const top=r2(o.top+extra*0.3),y1=r2(top+zh),H=o.H?o.H:r2(y1+o.bottom),outX=[r2(o.W-o.inX[1]),r2(o.W-o.inX[0])],foot=r2(H-y1-o.bottom);
+  return {size:[o.W,H],input:[o.inX[0],top,o.inX[1],y1],output:[outX[0],top,outX[1],y1],cols:o.cols,slots:o.cols*o.rows,draw(){
+    let s=top>=18?vents(10,4,o.W-20,top-7,Math.round(o.W/18),Math.max(2,Math.round((top-7)/10))):'';
+    if(foot>6)for(const [x0,x1] of [o.inX,outX])s+=rect(x0,y1+2,x1-x0,foot-2,C.panel,C.edge,0.8,3)+vents(x0+4,y1+6,x1-x0-8,foot-10,Math.round((x1-x0)/14),Math.max(2,Math.round((foot-10)/9)));
+    return s+center(o.inX[1],top,outX[0],foot>6?r2(H-o.bottom):y1,o.blocks,o.audioRows)}};
 }
 // 가로로 쌓는 대형 프레임(80X 이상): 위 명판 · 입력 · 가운데 띠 · 출력 · 아래 전원. 칸 높이 = 칸 너비 × 5.7.
+// 0.179: H를 주면 모자란 높이를 grow=[위, 가운데 띠, 아래] 비율로 나눈다. 위는 명판 아래 통풍구, 아래는 전원 아래 통풍구로 그린다.
 function vtFrame(o){
   const cw=(o.racks[0][1]-o.racks[0][0])/o.cols,zh=cw*CARD_RATIO*o.rows;
-  const g={in0:o.top,in1:r2(o.top+zh)};g.out0=r2(g.in1+o.mid);g.out1=r2(g.out0+zh);g.H=r2(g.out1+o.bottom);
+  const extra=o.H?Math.max(0,o.H-(o.top+zh*2+o.mid+o.bottom)):0,[gt,gm]=o.grow||[0,1,0];
+  const top=r2(o.top+extra*gt),mid=r2(o.mid+extra*gm);
+  const g={in0:top,in1:r2(top+zh)};g.out0=r2(g.in1+mid);g.out1=r2(g.out0+zh);g.H=o.H?o.H:r2(g.out1+o.bottom);
   const zones=(a,b)=>o.racks.length>1?o.racks.map(([x0,x1])=>[x0,a,x1,b]):[o.racks[0][0],a,o.racks[0][1],b];
-  return {size:[o.W,g.H],input:zones(g.in0,g.in1),output:zones(g.out0,g.out1),cols:o.cols,slots:o.slots,draw(){return o.draw(g)},extraIn:o.extraIn,extraOut:o.extraOut};
+  const ventStrip=(y0,y1)=>y1-y0>6?o.racks.map(([x0,x1])=>rect(x0,y0,x1-x0,y1-y0,C.panel,C.edge,0.8,3)+vents(x0+4,y0+3,x1-x0-8,y1-y0-6,Math.round((x1-x0)/14),Math.max(2,Math.round((y1-y0-6)/9)))).join(''):'';
+  return {size:[o.W,g.H],input:zones(g.in0,g.in1),output:zones(g.out0,g.out1),cols:o.cols,slots:o.slots,draw(){return ventStrip(o.top,top-2)+o.draw(g)+ventStrip(g.out1+o.bottom,g.H-3)},extraIn:o.extraIn,extraOut:o.extraOut};
 }
 const REAR={
   'VDM-8X':{size:[637,195],input:[3,8,318,118],output:[329,8,634,118],cols:1,slots:2,horizontal:true,draw(){
@@ -125,17 +133,18 @@ const REAR={
   // 0.120(사용자 요청 2026-09-28 "VDM카드를 정교하게 맞춰줘"): 슬롯 한 칸의 세로:가로(가로 카드는 가로:세로)를 VDM 카드 판넬 사진 비율 CARD_RATIO(5.7:1)와 똑같이 맞춘다.
   // 그전에는 매뉴얼 도면 좌표를 그대로 써서 칸 비율이 16X 6.2 · 64X 5.1 · 128X 3.9 · 180X 8.2 · 256X 5.2로 달라 카드 사진이 늘어나거나 눌렸다.
   // 칸 너비(열 수·좌우 위치)는 도면 배치를 따르고, 높이는 칸 너비 × 5.7로 계산해 그림 전체 높이를 정한다(vsFrame·vtFrame).
-  'VDM-16X':vsFrame({W:449,inX:[2,165],cols:4,rows:1,top:24,bottom:3,blocks:2,audioRows:4}),
-  'VDM-32X':vsFrame({W:458,inX:[8,165],cols:4,rows:2,top:10,bottom:12,blocks:2,audioRows:8}),
-  'VDM-48X':vsFrame({W:448,inX:[8,165],cols:4,rows:3,top:8,bottom:12,blocks:2,audioRows:12}),
+  'VDM-16X':vsFrame({W:449,H:317,inX:[2,165],cols:4,rows:1,top:24,bottom:3,blocks:2,audioRows:4}),
+  'VDM-32X':vsFrame({W:458,H:554,inX:[8,165],cols:4,rows:2,top:10,bottom:12,blocks:2,audioRows:8}),
+  'VDM-48X':vsFrame({W:448,H:859,inX:[8,165],cols:4,rows:3,top:8,bottom:12,blocks:2,audioRows:12}),
   // 64X는 4단이라 칸 너비를 도면(39)보다 좁혀(35) 전체 높이를 도면과 비슷하게 유지하고, 그만큼 가운데 칸을 넓혔다.
-  'VDM-64X':vsFrame({W:451,inX:[8,147],cols:4,rows:4,top:8,bottom:16,blocks:2,audioRows:16}),
-  'VDM-80X':vtFrame({W:239,racks:[[6,234]],cols:11,rows:2,slots:20,top:20,mid:71,bottom:61,draw(g){
+  // 0.179: H는 실제 후면 비율(몸체 폭 440mm ÷ 카탈로그 높이, 256X는 랙 2대 880mm ÷ 39U)에 맞춘 전체 높이다.
+  'VDM-64X':vsFrame({W:451,H:1093,inX:[8,147],cols:4,rows:4,top:8,bottom:16,blocks:2,audioRows:16}),
+  'VDM-80X':vtFrame({W:239,H:651,grow:[0,1,0],racks:[[6,234]],cols:11,rows:2,slots:20,top:20,mid:71,bottom:61,draw(g){
     let s=plate(50,5,140,12);
     s+=band(6,g.in1+2,234,g.out0-2,2,[],2);
     s+=powerH(6,g.out1+2,228,g.H-g.out1-5,2);
     return s},extraOut:(i)=>i===21?'control':null}),
-  'VDM-128X':vtFrame({W:477,racks:[[3,453]],cols:11,rows:3,slots:32,top:12,mid:93,bottom:115,draw(g){
+  'VDM-128X':vtFrame({W:477,H:1782,grow:[0.3,0.4,0.3],racks:[[3,453]],cols:11,rows:3,slots:32,top:12,mid:93,bottom:115,draw(g){
     let s=plate(120,0.5,236,11);
     s+=band(3,g.in1+2,453,g.out0-2,4,[],4);
     const py=g.out1+2;
@@ -143,7 +152,7 @@ const REAR={
     s+=powerGroup(30,py+37,150,56,3)+powerGroup(296,py+37,150,56,3);
     s+=rect(456,12,18,g.out1-12,C.panel,C.edge,1,3);
     return s},extraIn:(i)=>i===32?'control':null}),
-  'VDM-180X':vtFrame({W:170,racks:[[3,158]],cols:15,rows:3,slots:45,top:17,mid:66,bottom:45,draw(g){
+  'VDM-180X':vtFrame({W:170,H:652,grow:[0.35,0.3,0.35],racks:[[3,158]],cols:15,rows:3,slots:45,top:17,mid:66,bottom:45,draw(g){
     let s=plate(22,3,126,11);
     s+=band(3,g.in1+2,158,g.out0-2,2,[],1);
     const zh=g.in1-g.in0;
@@ -153,7 +162,7 @@ const REAR={
     s+=rect(3,py,164,40,C.panel,C.line,0.8,2)+text(8,py+10,'100-240VAC 50/60Hz',6,C.sub,'font-weight="700"');
     s+=powerGroup(56,py+13,58,24,3)+vents(6,py+14,46,22,3,3)+vents(118,py+14,46,22,3,3);
     return s}}),
-  'VDM-256X':vtFrame({W:472,racks:[[6,228],[235,456]],cols:11,rows:3,slots:32,top:12,mid:63,bottom:77,draw(g){
+  'VDM-256X':vtFrame({W:472,H:930,grow:[0.3,0.4,0.3],racks:[[6,228],[235,456]],cols:11,rows:3,slots:32,top:12,mid:63,bottom:77,draw(g){
     let s='';
     for(const [x0,x1] of [[6,228],[235,456]]){
       s+=plate(x0+30,1,x1-x0-60,10);
