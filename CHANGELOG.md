@@ -1,16 +1,25 @@
 ## Unreleased
 
+- **0.148.0 배포 기록**: `docs/qa/DEPLOYMENT_0.148_2026-09-29.md`(PR #198 → main 병합, Pages 배포 run 36547084450)
 - **0.147.0 배포 기록**: `docs/qa/DEPLOYMENT_0.147_2026-09-29.md`(PR #196 → main 병합, 공개 파일 337/338 일치, `.nojekyll` 제외)
 - **0.146.0 배포 기록**: `docs/qa/DEPLOYMENT_0.146_2026-09-29.md`(PR #195 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.145.0 배포 기록**: `docs/qa/DEPLOYMENT_0.145_2026-09-29.md`(PR #194 → main 병합, 공개 확인은 0.147.0 배포에 포함)
+- **0.148.0 배포 기록**: `docs/qa/DEPLOYMENT_0.148_2026-09-29.md`(PR #198 → main 병합, Pages 배포 run 36547084450)
 
-## 0.148.0
+## 0.149.0
 
 - **QMS-44UX·QMS-88UX 06 화면 구성 모드 분할 예시를 그래픽으로**(사용자 요청 2026-09-29 "44,88모두 분할 부분구성 예시를 그래픽작업해달라는거야", 시안 확인 "메뉴얼을 기반으로 했다면 좋아"): 흰 칸 도식 대신, 한 화면 분할(쿼드 뷰·듀얼)은 모니터(검은 베젤·스탠드) 안에 입력 번호마다 다른 색 화면을 칸대로 채우고, 비디오 월은 디스플레이 여러 대에 사진 한 장이 베젤을 건너 이어지게 그립니다. 칸이 덮지 않는 곳은 매뉴얼처럼 검은 여백입니다.
 - 칸 배치(`LAYOUT_SHAPES`·`LAYOUT_SHAPES_BY_PRODUCT`)는 바꾸지 않았습니다. 쿼드 뷰는 매뉴얼 도해(44UX 21~22쪽, 88UX 20~23쪽) 그대로이고, 비디오 월·듀얼은 매뉴얼에 도해가 없어 기존처럼 이름 뜻대로의 배치입니다.
-- e2e는 칸 사각형(`rect.rt-pg-cell`)만 세도록 바꿨습니다. 근거·시안: `docs/implementation/QMS_LAYOUT_ART_0.148.md`, `docs/qa/qms-layout-art/`
+- e2e는 칸 사각형(`rect.rt-pg-cell`)만 세도록 바꿨습니다. 근거·시안: `docs/implementation/QMS_LAYOUT_ART_0.149.md`, `docs/qa/qms-layout-art/`
 
 - **0.144.0 배포 기록**: `docs/qa/DEPLOYMENT_0.144_2026-09-29.md`(PR #192 → main 병합, Pages 배포 run 162, 공개 파일 337/338 일치, `.nojekyll` 제외)
+
+## 0.148.0
+
+사용자 요청 2026-09-29("모든 제품 04 제품사양에 mini USB 있다면 모두 삭제해줘", "HDCP표기는 HDCP Compliant v2.2 지원 ==> HDCP X(특정버전)지원"):
+
+- **04 제품 사양 Mini USB 정보 삭제**: QMS-44UX "기타"(미니 USB 포트 사용) 행을 지우고, QMS-88UX "연결 단자"에서 Mini USB-serial을 뺐습니다. 다른 제품의 04 제품 사양에는 Mini USB 항목이 없었습니다. 단자 지도(Port Map)와 제조사 자료 입출력 단자 표의 Mini USB 표시는 실제 단자이므로 그대로 둡니다.
+- **HDCP 표기 통일**: 04 제품 사양 HDCP 행 17개 제품을 "HDCP 2.2 지원"·"HDCP 1.x 지원"·"HDCP 1.x, 2.2 지원"처럼 "HDCP 버전 지원" 형식으로 맞췄습니다(QMS-88UX "HDCP Compliant v2.2 지원", XDM "HDCP 2.2 support", SPX "HDCP 2.2", VDM 전송기 "HDCP 1.X" 등). OBHD-2C는 매뉴얼 Ver.2.1 4쪽에도 버전 없이 "HDCP 지원"만 있어 "HDCP 지원"으로 적었습니다.
 
 ## 0.147.0
 

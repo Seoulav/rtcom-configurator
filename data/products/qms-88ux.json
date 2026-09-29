@@ -182,7 +182,7 @@
     {
       "group": "General",
       "name": "연결 단자",
-      "value": "RS-232, LAN(RJ45), Mini USB-serial, 3.5mm stereo, 3-pin phoenix, HDMI 19-Pin Female",
+      "value": "RS-232, LAN(RJ45), 3.5mm stereo, 3-pin phoenix, HDMI 19-Pin Female",
       "unit": "",
       "condition": "",
       "source": "U2",
@@ -200,7 +200,7 @@
     {
       "group": "Video",
       "name": "HDCP",
-      "value": "HDCP Compliant v2.2 지원",
+      "value": "HDCP 2.2 지원",
       "unit": "",
       "condition": "",
       "source": "C",

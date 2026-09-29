@@ -190,7 +190,7 @@
     {
       "group": "Video",
       "name": "HDCP",
-      "value": "HDCP 1.X",
+      "value": "HDCP 1.x 지원",
       "unit": "",
       "condition": "",
       "source": "C",
