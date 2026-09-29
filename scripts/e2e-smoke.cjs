@@ -1074,6 +1074,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       const dragged=await saved();
       const palette={chipDraggable,wrongDir,in2:dragged.placements['in-2'],out1:dragged.placements['out-1'],link:dragged.links['in-2']?.device||null,modal:await p3.locator('dialog.rt-card-modal[open]').count()};
       check('카드 정보 버튼을 끌어 같은 방향 슬롯에 놓으면 장착·교체되고(CIS100은 기본 연동 전송기 연결), 입력 카드는 출력 슬롯에 놓이지 않음',palette.chipDraggable==='true'&&palette.wrongDir===null&&palette.in2==='XDM-CIS100'&&palette.out1==='XDM-HOS100'&&!!palette.link&&palette.modal===0,JSON.stringify(palette));
+      // 0.163(사용자 요청 "하단에 이걸 배치해서 드래그하는 형태로"): 끌 수 있는 버튼은 내 구성 카드 행처럼 판넬 사진 타일이고, 장착한 카드에는 수량(× N)이 붙는다.
+      const tiles=await p3.evaluate(()=>{const all=[...document.querySelectorAll('.rt-card-palette .rt-palette-tile')];return {count:all.length,withImg:all.filter(t=>t.querySelector('img')?.naturalWidth>0).length,hos:document.querySelector('.rt-palette-tile[data-palette-card="XDM-HOS100"] b')?.textContent||'',hi:document.querySelector('.rt-palette-tile[data-palette-card="XDM-HI100"] b')?.textContent||''}});
+      check('끌어 놓기 버튼 12개가 모두 판넬 사진 타일이고, 장착한 XDM-HOS100에만 × 1 수량이 붙음',tiles.count===12&&tiles.withImg===12&&tiles.hos==='× 1'&&tiles.hi==='',JSON.stringify(tiles));
       await p3.locator('button.rt-card-info-chip[data-palette-card="XDM-HIS100"]').click();
       const infoOpen=await p3.locator('dialog.rt-card-info-modal[open]').count();await p3.keyboard.press('Escape');
       check('끌 수 있는 카드 정보 버튼도 누르면 카드 상세 정보가 열림',infoOpen===1,String(infoOpen));
