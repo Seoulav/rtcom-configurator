@@ -1,6 +1,30 @@
 ## Unreleased
 
+- **0.143.0 배포 기록**: `docs/qa/DEPLOYMENT_0.143_2026-09-29.md`(PR #190 → main 병합, 공개 파일 337/338 일치, `.nojekyll` 제외)
+
+- **0.140.0 배포 기록**: `docs/qa/DEPLOYMENT_0.140_2026-09-29.md`(PR #183 → main 병합, 공개 파일 335/336 일치, `.nojekyll` 제외)
+
+- **AI 검색 베타 허용 도메인 확정**: 사용자 결정(2026-09-29 "현재는 @seoulav1.co.kr만")으로 베타 동안 `@seoulav1.co.kr`만 허용합니다(설정 변경 없음, `docs/implementation/AI_SEARCH_BETA.md`·`docs/handoff/OPEN_ITEMS.md` 기록).
+
+- **0.142.0 배포 기록**: `docs/qa/DEPLOYMENT_0.142_2026-09-29.md`(PR #186 → main 병합, Pages 배포 run 156, 공개 파일 337/337 일치, `.nojekyll` 제외)
+
 - **0.141.0 배포 기록**: `docs/qa/DEPLOYMENT_0.141_2026-09-29.md`(PR #184 → main 병합, Pages 배포 run 155, 공개 파일 335/336 일치, `.nojekyll` 제외)
+
+## 0.143.0
+
+- **제품정보 04 카드 라인업 카드 상세 팝업**(사용자 요청 2026-09-29 "카드 정보를 클릭하면 카드에 관련된 상세 정보가 나왔으면 좋겠고", "VDM,SPX 모두 동일하게 수정"): XDM·SPX·VDM 제품정보의 "04 카드 라인업" 행을 눌러 카드 사진·구분·신호·채널·포트 구성·커넥터·해상도·규격·카탈로그 쪽을 보는 팝업을 추가했습니다(구성기 카드 정보 팝업과 같은 사양 데이터 `src/card-specs.js`).
+- **연동 전송기 표기 삭제**: 같은 행에서 "↔ CTR100 TX · CT103" 같은 연동 전송기 표기를 빼고 신호 종류(HDBaseT 3.0 등)만 남겼습니다. 팝업에도 연동 전송기는 넣지 않았습니다. 구성기 카드 팝업의 연동 전송기 선택은 그대로입니다.
+- 화면 확인: `docs/qa/product-card-info-screens/`
+
+## 0.142.0 — 2026-09-29
+
+- **RTCOM AI 검색(사내 베타)**: 사용자 요청("알티컴 구성기 Claude ai검색을 넣을거야 우리 회사 직원만 쓸수 있게하고 잠궈서 test해보고 싶어")과 결정(메일 인증 + 허용 명단, 공개 구성기 안 숨은 버튼, 질의응답·구성안 제안·사양 비교)에 따라 추가했습니다. 근거·설정 절차: `docs/implementation/AI_SEARCH_BETA.md`.
+  - `src/ai-search.js`: `?ai=beta`로 한 번 연 브라우저에만 머리글 "AI 검색 β" 버튼과 오른쪽 창(휴대폰은 전체 화면)을 띄웁니다. `?ai=off`로 끕니다. 답은 이스케이프한 뒤 제목·목록·표·굵게·`[[제품id]]` 제품 링크만 그립니다.
+  - `workers/ai-search/`: 같은 코드를 두 Cloudflare Worker로 배포합니다. `rtcom-ai-login`은 Access로 잠그고 JWT·허용 명단을 다시 확인해 12시간 서명 토큰을 발급합니다. `rtcom-ai-api`는 토큰·origin·명단을 매번 확인하고 Claude(`claude-opus-5-5`, 프롬프트 캐시, `fallbacks: "default"`)의 답을 NDJSON으로 흘려 보냅니다. API 키는 Worker 비밀값에만 있습니다.
+  - 허용 메일 도메인은 영업팀 `seoulav1.co.kr`입니다(사용자 지시 2026-09-29 "영업팀은 @seoulav1.co.kr 사용해서 이걸로 변경해줘").
+  - `scripts/build-ai-context.cjs`: 공개 제품정보 31종과 구성기 카탈로그(프레임별 슬롯 수·카드 포트 수·카드 사양·연동 전송기)를 글로 줄여 `dist/data/ai-context.json`(약 6.4만 자)을 만듭니다. 사진 좌표·출처는 빼고, 같은 데이터면 같은 결과(sha256)를 냅니다.
+  - 서버 주소(`CONFIG`)는 사용자가 Worker를 배포한 뒤 채웁니다. 그전에는 창에 "AI 서버가 아직 준비되지 않았습니다"만 보입니다.
+  - 검증: 단위 테스트 8건(`tests/ai-search.test.cjs`), e2e 10건, `wrangler dev`(workerd) 실제 실행·`wrangler deploy --dry-run` 번들 확인.
 
 ## 0.141.0
 

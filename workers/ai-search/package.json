@@ -1,0 +1,16 @@
+{
+  "name": "rtcom-ai-search",
+  "private": true,
+  "type": "module",
+  "description": "RTCOM AI 검색 사내 베타 Worker (Cloudflare Access + Claude API)",
+  "scripts": {
+    "deploy": "wrangler deploy && wrangler deploy --env login",
+    "dev": "wrangler dev"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.129.0"
+  },
+  "devDependencies": {
+    "wrangler": "4.143.0"
+  }
+}
