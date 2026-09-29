@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.149.0 배포 기록**: `docs/qa/DEPLOYMENT_0.149_2026-09-29.md`(PR #200 → main 병합, 공개 파일 337/338 일치, `.nojekyll` 제외)
 - **0.150.0 배포 기록**: `docs/qa/DEPLOYMENT_0.150_2026-09-29.md`(PR #201 → main 병합, 공개 파일 337/338 일치, `.nojekyll` 제외)
 - **0.148.0 배포 기록**: `docs/qa/DEPLOYMENT_0.148_2026-09-29.md`(PR #198 → main 병합, Pages 배포 run 36547084450)
 - **0.147.0 배포 기록**: `docs/qa/DEPLOYMENT_0.147_2026-09-29.md`(PR #196 → main 병합, 공개 파일 337/338 일치, `.nojekyll` 제외)
