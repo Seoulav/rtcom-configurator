@@ -866,10 +866,30 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
   #rtcom-design .rt-link-flow-node{flex:0 1 132px;width:auto;min-width:0}
   #rtcom-design .rt-link-flow-cable{flex:0 1 96px;width:auto;min-width:64px}
 }
+/* 0.175 04 전송기 미리보기 정리(사용자 지적 2026-09-29 "이 부분 개선이 필요해보여"):
+   ① 케이블 점선 위에는 "최대 100m"만 두고 문장 전체는 흐름 아래 한 줄(rt-link-flow-spec)로 옮겨 전송기 사진과 겹치지 않게 한다.
+   ② PSE + CTR100처럼 사진이 두 장이면 두 장이 상자 폭을 나눠 가져 상자 밖으로 넘치지 않게 하고, 그 상자만 조금 넓힌다.
+   ③ 카드 이름(XDM-WOS100)이 하이픈에서 두 줄로 꺾이지 않게 한 줄로 두고 카드 상자 최소 폭을 둔다. */
+#rtcom-design .rt-link-flow-ext-imgs{gap:4px;width:100%}
+#rtcom-design .rt-link-flow-ext-imgs img{flex:1 1 0;min-width:0;width:0;height:48px;max-height:none;object-fit:contain;margin:0 0 6px}
+#rtcom-design .rt-link-flow-pair .rt-link-flow-ext{width:168px}
+#rtcom-design .rt-link-flow-card strong,#rtcom-design .rt-link-flow-endpoint strong{white-space:nowrap}
+#rtcom-design .rt-link-flow-node small{word-break:keep-all}
+#rtcom-design .rt-link-flow-card{min-width:112px}
+#rtcom-design .rt-link-flow-cable{width:72px}
+#rtcom-design .rt-link-flow-cable small{white-space:nowrap}
+#rtcom-design .rt-link-flow-spec{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px;margin:12px auto 0;font-size:12px;font-weight:700;color:#1b6e3d;text-align:center}
+#rtcom-design .rt-link-flow-spec span{font-size:10px;font-weight:800;letter-spacing:.04em;color:#fff;background:#1E9E52;border-radius:999px;padding:2px 8px}
+@media(min-width:821px){
+  #rtcom-design .rt-link-flow-card{flex:0 0 auto;width:auto;min-width:112px;max-width:140px}
+  #rtcom-design .rt-link-flow-pair .rt-link-flow-ext{flex:0 1 168px}
+  #rtcom-design .rt-link-flow-cable{flex:0 1 72px;min-width:56px}
+  #rtcom-design .rt-link-flow-endpoint{flex:0 1 104px}
+}
 /* 휴대폰에서는 가로 한 줄이 들어가지 않으므로 위에서 아래로 세운다(→는 ↓로, 케이블 점선은 세로로). */
 @media(max-width:560px){
   #rtcom-design .rt-link-flow{flex-direction:column;flex-wrap:nowrap;gap:6px}
-  #rtcom-design .rt-link-flow-node{width:180px}
+  #rtcom-design .rt-link-flow-node,#rtcom-design .rt-link-flow-pair .rt-link-flow-ext{width:180px}
   #rtcom-design .rt-link-flow-arrow{transform:rotate(90deg)}
   #rtcom-design .rt-link-flow-cable{width:auto;border-bottom:0;border-left:2px dashed #1E9E52;padding:6px 0 6px 10px;text-align:left}
   #rtcom-design .rt-link-flow-cable::after{right:auto;left:-7px;bottom:-8px;border:5px solid transparent;border-top-color:#1E9E52;border-left-color:transparent}
@@ -1114,7 +1134,6 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 }
 
 /* 0.137 카드 팝업: 이미 장착된 같은 카드 장수 표시(스테퍼는 새로 채울 수량) */
-#rtcom-design .rt-card-choice-qty .rt-card-have{margin-right:auto;font-style:normal;font-size:12px;font-weight:800;color:#0a66d6;background:#e8f1ff;border-radius:999px;padding:4px 10px}
 
 /* 0.137 정면·후면을 위아래로 겹쳐 보이는 프레임(stack): 실제 랙 폭은 같으므로 후면 그림 폭을 정면 그림 폭에 맞춘다(사용자 요청 2026-09-29 "프레임앞뒤면 좌우 크기차이 있는 제품 SPX-M1620·M810·M2472·M24120").
    그리드 한 칸의 폭은 정면 그림이 정하고, 후면 그림은 폭 0 + min-width:100%로 칸 폭을 그대로 받는다(높이는 자기 비율대로 자동). */

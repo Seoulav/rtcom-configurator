@@ -223,11 +223,18 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     const saved=()=>page.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.placements);
     let moveState=await saved();
     check('카드 팝업에서 XDM-HI100 수량 3을 넣고 장착하면 선택한 슬롯부터 입력 슬롯 3칸이 채워짐',qtyShown==='3'&&moveState['in-1']==='XDM-HI100'&&moveState['in-2']==='XDM-HI100'&&moveState['in-3']==='XDM-HI100'&&!moveState['in-4'],JSON.stringify(moveState));
-    // 0.137(사용자 요청 2026-09-29 "입출력 선택 후 다시 들어갈때 기존 선택된 카드 수량이 보일 수 있게"): 이미 장착한 카드는 팝업을 다시 열면 "현재 N장 장착"으로 보인다.
+    // 0.137 → 0.175(사용자 결정 2026-09-29 안 A "현재 N장 장착 대신 수량 칸에 N"): 팝업을 다시 열면 수량 칸이 장착된 장수(3)에서 시작하고 − 로 그 아래로 줄지 않는다.
+    // + 로 4를 만들고 장착하면 연 슬롯(IN 2)을 덮어쓰지 않고 다음 빈 슬롯(IN 4)에 1장만 더 들어간다.
     await page.locator('button[data-slot="in-2"]').click();
-    const haveText=await page.locator('.rt-card-modal [data-have-qty="XDM-HI100"]').textContent().catch(()=>null);
-    check('카드 팝업을 다시 열면 이미 장착한 XDM-HI100이 "현재 3장 장착"으로 보임',haveText==='현재 3장 장착',String(haveText));
-    await page.keyboard.press('Escape');
+    const haveQty=await page.evaluate(()=>{const out=document.querySelector('.rt-card-modal [data-qty-out="XDM-HI100"]');return {n:out?.textContent,minus:out?.parentElement.querySelector('[data-card-qty-step="-1"]').disabled,note:!!document.querySelector('.rt-card-modal .rt-card-have')}});
+    await page.locator('.rt-card-modal [data-card-qty-step="1"][data-qty-card="XDM-HI100"]').click();
+    const haveQty2=await page.locator('.rt-card-modal [data-qty-out="XDM-HI100"]').textContent();
+    await page.locator('.rt-card-modal [data-action="fill-qty"]').click();
+    const addState=await saved();
+    check('카드 팝업을 다시 열면 XDM-HI100 수량 칸이 장착된 3에서 시작하고(− 잠김, 따로 쓴 "현재 N장 장착" 없음) 4로 늘려 장착하면 IN 4에만 1장이 더 들어감',haveQty.n==='3'&&haveQty.minus===true&&!haveQty.note&&haveQty2==='4'&&['in-1','in-2','in-3','in-4'].every(id=>addState[id]==='XDM-HI100')&&!addState['in-5'],JSON.stringify({haveQty,haveQty2,addState}));
+    await page.locator('button[data-slot="in-4"]').click();
+    await page.locator('.rt-card-modal [data-action="remove"]').click();
+    moveState=await saved();
     // 0.55: XDM 세로 슬롯 카드 글자가 바로 읽히도록 90도(기존 -90도에서 180도) 회전, 작업 단계 표기는 한글.
     const xdmFace=await page.evaluate(()=>{const img=document.querySelector('button[data-slot="in-1"] img.rt-faceplate');const m=new DOMMatrix(getComputedStyle(img).transform);return {b:Math.round(m.b),eyebrow:document.querySelector('.rt-main .rt-eyebrow')?.textContent||'',bank:document.querySelector('.rt-rack-bank-title strong, .rt-frame-count')?.textContent||''}});
     check('XDM 세로 슬롯 카드는 90도로 돌아가 글자가 바로 보이고, 단계 제목·입출력 표기가 한글',xdmFace.b===1&&xdmFace.eyebrow.includes('03 / 카드 슬롯')&&!/INPUT|OUTPUT/.test(xdmFace.bank),JSON.stringify(xdmFace));
@@ -851,6 +858,9 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     const centers=flowNodes.map(node=>node.center);
     const flowSpread=centers.length?Math.max(...centers)-Math.min(...centers):Infinity;
     check('PC(1280px) 04 연결 흐름 노드가 한 줄로 나옴(세로 중심 차이 2px 이하)',flowSpread<=2,`노드 ${flowNodes.length}개, 세로 중심 차이 ${flowSpread.toFixed(1)}px, top 목록 ${JSON.stringify(flowNodes.map(node=>Math.round(node.top)))}`);
+    // 0.175(사용자 지적 2026-09-29 "이 부분 개선이 필요해보여"): 케이블 점선 위에는 거리만 두고 긴 문장은 흐름 아래 한 줄로 옮겨, 전송기 사진과 겹치거나 잘리지 않는다.
+    const flowFit=await pc.evaluate(()=>{const inside=(a,b)=>a.left>=b.left-1&&a.right<=b.right+1&&a.top>=b.top-1&&a.bottom<=b.bottom+1;const imgs=[...document.querySelectorAll('.rt-link-flow-node img')].map(img=>inside(img.getBoundingClientRect(),img.closest('.rt-link-flow-node').getBoundingClientRect()));const cable=document.querySelector('.rt-link-flow-cable'),label=cable?.querySelector('small');const names=[...document.querySelectorAll('.rt-link-flow-node strong')].map(el=>Math.round(el.getBoundingClientRect().height));return {imgs,cable:label?.textContent,cableFit:cable&&label?inside(label.getBoundingClientRect(),cable.getBoundingClientRect()):false,spec:document.querySelector('.rt-link-flow-spec')?.textContent||'',names,old:/CAT6a\/CAT7/.test(document.querySelector('#matrix-configurator').innerText)}});
+    check('PC 04 연결 흐름: 사진은 상자 안, 케이블 점선 위는 "최대 100m"만(상자 안), 케이블 문장은 아래 한 줄에 "S/FTP CAT6A 필수", 이름은 한 줄, 옛 "CAT6a/CAT7" 표기 없음',flowFit.imgs.length>0&&flowFit.imgs.every(Boolean)&&flowFit.cable==='최대 100m'&&flowFit.cableFit&&/S\/FTP CAT6A 필수/.test(flowFit.spec)&&flowFit.names.every(h=>h<=22)&&!flowFit.old,JSON.stringify(flowFit));
     const [listHeight,previewHeight]=await pc.evaluate(()=>[document.querySelector('.rt-cg-list').getBoundingClientRect().height,document.querySelector('.rt-cg-preview.rt-link-preview').getBoundingClientRect().height]);
     if(listHeight>previewHeight){
       // sticky는 부모 컨테이너(.rt-cg-split, 높이 = 목록 높이)를 벗어나는 순간 풀린다. 문서 맨 아래(document.body.scrollHeight)까지

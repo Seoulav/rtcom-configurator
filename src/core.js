@@ -182,6 +182,16 @@
     const count=Math.max(1,Math.min(Math.floor(Number(quantity))||1,empty.length+1));
     return [startId,...empty.slice(0,count-1)];
   }
+  // 0.175 카드 팝업 수량 칸(사용자 결정 2026-09-29, 안 A): 수량 칸은 "이 방향에 장착된 장수"에서 시작하고, 더한 만큼만 빈 슬롯에 채운다.
+  // 그래서 지금 연 슬롯에 카드가 있으면 그 칸은 덮어쓰지 않고(덮어쓰면 늘린 수만큼 늘지 않는다) 그 다음 빈 슬롯부터 채운다. 연 슬롯이 비어 있으면 fillTargets와 같다.
+  function addTargets(state, startId, quantity) {
+    const slots=slotsFor(state),start=slots.find(slot=>slot.id===startId);
+    if (!start) return [];
+    if (!own(state.placements||{},startId)) return fillTargets(state,startId,quantity);
+    const same=slots.filter(slot=>slot.dir===start.dir),at=same.indexOf(start);
+    const empty=[...same.slice(at+1),...same.slice(0,at)].filter(slot=>!own(state.placements||{},slot.id)).map(slot=>slot.id);
+    return empty.slice(0,Math.max(0,Math.floor(Number(quantity))||0));
+  }
   // 0.55 슬롯 이동(사용자 요청 "입력은 입력끼리, 출력도 마찬가지로 이동"): 같은 방향 슬롯끼리만 카드를 옮긴다.
   // 옮길 곳이 비어 있으면 이동, 카드(또는 블랭크)가 있으면 서로 맞바꾼다. 전송기 연결과 포트 지정도 함께 옮긴다.
   function moveCard(state, from, to) {
@@ -386,5 +396,5 @@
     const cell=value=>'"'+String(value).replace(/^[=+@-]/,"'$&").replace(/"/g,'""')+'"';
     return csvRows(input).map(row=>row.map(cell).join(',')).join('\r\n');
   }
-  scope.RtCore={fillTargets,avBuilder,moveCard,initial,checkState,choices,defaultLink,psePair,slotPlan,syncPorts,slotsFor,requirementSummary,validate,bom,document,parse,csv,csvRows,completionFor,fillBlanks,catalogVersion,schemaVersion,signalTypes};
+  scope.RtCore={fillTargets,addTargets,avBuilder,moveCard,initial,checkState,choices,defaultLink,psePair,slotPlan,syncPorts,slotsFor,requirementSummary,validate,bom,document,parse,csv,csvRows,completionFor,fillBlanks,catalogVersion,schemaVersion,signalTypes};
 })(globalThis);
