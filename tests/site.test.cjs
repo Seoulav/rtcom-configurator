@@ -395,3 +395,16 @@ test('0.129: 구성기 아래 바의 요약 글(제품군 / 모델 · 카테고�
   assert.match(app,/querySelector\('\.rt-footer'\)\.hidden=state\.step===0/);
   assert.match(read('src/styles.css'),/\.rt-footer\[hidden\]\{display:none\}/);
 });
+
+test('0.132: 02 프레임 선택 미리보기 그림 높이는 랙 높이(U)에서 정하고 VDM·SPX·XDM 모든 프레임이 등록되어 있다',()=>{
+  // 사용자 요청 2026-09-29 "VDM-8X는 다소 크다 … 적정한 크기 판단해서 이미지 개선해줘", "SPX, XDM도 비슷한 컨셉으로 수정해줘"
+  const catalog=loadCatalog(),app=read('src/app.js'),css=read('src/styles.css');
+  const table=app.match(/const frameRackU=\{([\s\S]*?)\};/)[1];
+  for(const family of Object.values(catalog))for(const model of family.models)assert.match(table,new RegExp(`'${model}':\\d+`),`${model} must have a rack height in frameRackU`);
+  assert.match(app,/frameShowHeight=model=>frameRackU\[model\]\?Math\.round\(90\+410\*Math\.log\(frameRackU\[model\]\/2\)\/Math\.log\(20\)\):0/);
+  assert.match(app,/rt-cg-preview\$\{fh\?' rt-cg-scaled':''\}/);
+  assert.match(css,/\.rt-cg-preview\.rt-cg-scaled img\{height:calc\(var\(--rt-fh\)\*1px\)/);
+  // 크기 눈금: 작은 프레임은 작게, 큰 프레임은 크게(2U 90px … 40U 500px)
+  const u=n=>Math.round(90+410*Math.log(n/2)/Math.log(20));
+  assert.equal(u(2),90);assert.equal(u(40),500);assert.ok(u(3)<u(7)&&u(7)<u(12)&&u(38)<=u(40));
+});
