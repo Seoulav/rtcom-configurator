@@ -1,6 +1,6 @@
-# 0.163 — PR마다 CLAUDE.md "기본 검증 명령"을 GitHub에서 자동으로 실행한다(사용자 요청 2026-09-29 "GitHub 필수 검사 설정 검토").
+# 0.164 — PR마다 CLAUDE.md "기본 검증 명령"을 GitHub에서 자동으로 실행한다(사용자 요청 2026-09-29 "GitHub 필수 검사 설정 검토").
 # 이 검사를 "통과해야 병합" 규칙(branch protection의 required status check)으로 켜는 일은 사용자가 GitHub 설정 화면에서 한다
-# (docs/implementation/TOUCH_SLOT_X_AND_CI_0.163.md §2, 필수 검사 이름: "RTCOM checks / verify").
+# (docs/implementation/TOUCH_SLOT_X_AND_CI_0.164.md §2, 필수 검사 이름: "RTCOM checks / verify").
 # pull_request 실행은 PR 브랜치를 main에 합친 결과(refs/pull/N/merge)를 검사하므로, main이 먼저 바뀌어 번호가 겹치면 check-version이 실패한다.
 name: RTCOM checks
 on:

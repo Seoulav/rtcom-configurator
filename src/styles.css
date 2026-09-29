@@ -992,6 +992,18 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-card-palette .rt-card-info-chip{cursor:grab}
 #rtcom-design .rt-card-palette .rt-card-info-chip:active{cursor:grabbing}
 #rtcom-design .rt-card-info-chip.rt-card-info-chip-dragging{opacity:.5;border-style:dashed}
+/* 0.163 끌어 놓기 타일: 내 구성 카드 행(.rt-summary-card)과 같은 판넬 사진 + 이름 + 신호 + 장착 수량 */
+#rtcom-design .rt-card-palette .rt-card-info-group{grid-template-columns:1fr;gap:6px}
+#rtcom-design .rt-card-palette .rt-card-info-group>span{padding-top:0}
+#rtcom-design .rt-card-palette .rt-card-info-group>div{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+@media(max-width:1100px){#rtcom-design .rt-card-palette .rt-card-info-group>div{grid-template-columns:repeat(3,minmax(0,1fr))}}
+#rtcom-design .rt-palette-tile{grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:7px 8px;padding:9px;border-color:transparent;border-radius:12px;background:#f5f8fc}
+#rtcom-design .rt-palette-tile:hover,#rtcom-design .rt-palette-tile:focus-visible{border-color:#007AFF66;background:#eef5ff}
+#rtcom-design .rt-palette-tile img{grid-column:1/-1;display:block;width:100%;height:auto;border-radius:3px;pointer-events:none}
+#rtcom-design .rt-palette-tile>span{min-width:0}
+#rtcom-design .rt-palette-tile strong{display:block}
+#rtcom-design .rt-palette-tile small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#rtcom-design .rt-palette-tile b{color:#2f63c8;font-size:12px;white-space:nowrap}
 #rtcom-design.rt-palette-drag-input .rt-rack-slot[data-slot^="in-"],#rtcom-design.rt-palette-drag-output .rt-rack-slot[data-slot^="out-"]{outline:2px dashed rgba(57,120,238,.75);outline-offset:-2px}
 #rtcom-design.rt-palette-drag-input .rt-rack-slot[data-slot^="out-"],#rtcom-design.rt-palette-drag-output .rt-rack-slot[data-slot^="in-"]{opacity:.35}
 #rtcom-design.rt-palette-drag-input .rt-rack-slot.rt-rack-slot-drop,#rtcom-design.rt-palette-drag-output .rt-rack-slot.rt-rack-slot-drop{outline:3px solid #007AFF;outline-offset:-3px}
@@ -1134,14 +1146,14 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-cardrow.rt-pg-cardbtn:hover{background:var(--pg-accent-tint);box-shadow:0 0 0 1.5px var(--pg-accent-2) inset}
 #rtcom-design .rt-pg-cardrow.rt-pg-cardbtn:focus-visible{outline:2px solid var(--pg-accent-2);outline-offset:2px}
 
-/* 0.145 장착된 슬롯 위 카드 빼기 ×: 마우스를 올렸을 때만 보인다(터치 화면은 0.163부터 항상 표시, 아래 규칙). 슬롯 높이에 맞춰 크기를 조절(cqh). */
+/* 0.145 장착된 슬롯 위 카드 빼기 ×: 마우스를 올렸을 때만 보인다(터치 화면은 0.164부터 항상 표시, 아래 규칙). 슬롯 높이에 맞춰 크기를 조절(cqh). */
 #rtcom-design .rt-rack-slot-x{position:absolute;z-index:3;top:50%;right:clamp(2px,6cqh,8px);width:clamp(14px,62cqh,26px);height:clamp(14px,62cqh,26px);display:none;align-items:center;justify-content:center;border-radius:50%;background:#e5484d;color:#fff;font-size:clamp(11px,46cqh,19px);font-weight:900;line-height:1;transform:translateY(-50%);box-shadow:0 1px 4px #0009;cursor:pointer}
 @media(hover:hover){#rtcom-design .rt-rack-slot:hover .rt-rack-slot-x{display:flex}}
 #rtcom-design .rt-rack-slot-x:hover{background:#ff2d34;box-shadow:0 0 0 2px #fff8,0 1px 4px #0009}
 
 /* 0.145 세로로 꽂는 슬롯(rt-rack-vs·vt)은 × 를 오른쪽 가운데가 아니라 슬롯 맨 위 가운데에 둔다(사용자 요청 2026-09-29 "가로형으로 꽂을 때는 우측, 세로형은 맨 위쪽에 배치"). 크기는 슬롯 폭(cqw)에 맞춘다. */
 #rtcom-design .rt-rack-vs .rt-rack-slot-x,#rtcom-design .rt-rack-vt .rt-rack-slot-x{top:clamp(2px,4cqw,8px);right:auto;left:50%;width:clamp(14px,62cqw,26px);height:clamp(14px,62cqw,26px);font-size:clamp(11px,46cqw,19px);transform:translateX(-50%)}
-/* 0.163(사용자 결정 2026-09-29 "터치 화면에서는 × 버튼을 항상 보이게"): 마우스를 올릴 수 없는 화면(태블릿·휴대폰)은 카드가 꽂힌 슬롯마다 × 를 늘 보여 준다.
+/* 0.164(사용자 결정 2026-09-29 "터치 화면에서는 × 버튼을 항상 보이게"): 마우스를 올릴 수 없는 화면(태블릿·휴대폰)은 카드가 꽂힌 슬롯마다 × 를 늘 보여 준다.
    손가락으로 누르기 쉽게 최소 크기를 20px로 키운다. 마우스 화면은 위 규칙 그대로(올렸을 때만 표시). */
 @media(hover:none),(pointer:coarse){
   #rtcom-design .rt-rack-slot .rt-rack-slot-x{display:flex;width:clamp(20px,62cqh,28px);height:clamp(20px,62cqh,28px);font-size:clamp(14px,46cqh,20px)}

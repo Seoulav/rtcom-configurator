@@ -252,7 +252,11 @@
     const paletteDrag=()=>PALETTE_DRAG&&!!globalThis.matchMedia?.('(hover: hover) and (pointer: fine)').matches;
     function cardInfoBar(){
       const f=families[state.family],drag=paletteDrag();
-      const group=dir=>`<div class="rt-card-info-group"><span>${dir==='input'?'입력':'출력'} 카드</span><div>${f[dir].map(c=>`<button type="button" class="rt-card-info-chip" data-card-info="${c[0]}"${drag?` draggable="true" data-palette-card="${c[0]}" data-palette-dir="${dir}" title="누르면 상세 정보 · 후면 ${dir==='input'?'입력':'출력'} 슬롯으로 끌어 놓으면 장착"`:''}><strong>${c[0]}</strong><small>${esc(c[1])}</small></button>`).join('')}</div></div>`;
+      // 0.163(사용자 요청 2026-09-29 "하단에 이걸 배치해서 드래그하는 형태로"): 끌어 놓기가 켜지면 버튼을 내 구성 카드 행처럼 판넬 사진 타일로 보여 주고, 장착 수량을 표시한다.
+      const installed=id=>Object.values(state.placements).filter(value=>value===id).length;
+      const tile=(c,dir)=>{const n=installed(c[0]);return `<button type="button" class="rt-card-info-chip rt-palette-tile" data-card-info="${c[0]}" draggable="true" data-palette-card="${c[0]}" data-palette-dir="${dir}" title="누르면 상세 정보 · 후면 ${dir==='input'?'입력':'출력'} 슬롯으로 끌어 놓으면 장착"><img draggable="false" src="${cardAsset(c[0])}" alt=""><span><strong>${c[0]}</strong><small>${esc(c[1])}</small></span>${n?`<b aria-label="장착 ${n}장">× ${n}</b>`:''}</button>`};
+      const chip=c=>`<button type="button" class="rt-card-info-chip" data-card-info="${c[0]}"><strong>${c[0]}</strong><small>${esc(c[1])}</small></button>`;
+      const group=dir=>`<div class="rt-card-info-group"><span>${dir==='input'?'입력':'출력'} 카드</span><div>${f[dir].map(c=>drag?tile(c,dir):chip(c)).join('')}</div></div>`;
       return `<section class="rt-card-info-bar${drag?' rt-card-palette':''}" aria-label="카드 상세 정보"><div class="rt-card-info-head"><strong>카드 정보</strong><small>${drag?'버튼을 누르면 상세 정보, 후면 슬롯으로 끌어 놓으면 카드가 장착됩니다(입력 카드는 입력 슬롯, 출력 카드는 출력 슬롯)':'버튼을 누르면 카드별 포트·해상도·규격을 볼 수 있습니다'}</small></div>${group('input')}${group('output')}</section>`;
     }
     function openCardInfo(id){
@@ -430,7 +434,7 @@
     }
     root.addEventListener('dragstart',event=>{
       const chip=PALETTE_DRAG&&event.target.closest?.('button[data-palette-card][draggable="true"]');
-      if(chip){dragPalette={card:chip.dataset.paletteCard,dir:chip.dataset.paletteDir};event.dataTransfer.effectAllowed='copy';event.dataTransfer.setData('text/plain',dragPalette.card);chip.classList.add('rt-card-info-chip-dragging');root.classList.add(`rt-palette-drag-${dragPalette.dir}`);return}
+      if(chip){dragPalette={card:chip.dataset.paletteCard,dir:chip.dataset.paletteDir};event.dataTransfer.effectAllowed='copy';event.dataTransfer.setData('text/plain',dragPalette.card);const plate=chip.querySelector('img');if(plate?.complete&&plate.naturalWidth&&event.dataTransfer.setDragImage)event.dataTransfer.setDragImage(plate,Math.min(40,plate.width/2),plate.height/2);chip.classList.add('rt-card-info-chip-dragging');root.classList.add(`rt-palette-drag-${dragPalette.dir}`);return}
     });
     root.addEventListener('dragover',event=>{
       if(!dragPalette)return;
