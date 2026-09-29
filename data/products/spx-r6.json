@@ -18,9 +18,9 @@
   "subtitle": "SPX Series Extender · 6 HDMI Extender Module Chassis",
   "lead": "SPX-Extender 모듈을 **최대 6개** 장착하고 단일 전원으로 전원을 공급하는 랙 모듈형 전송기입니다. 전면 LCD와 버튼으로 신호 유무를 확인하고 EDID를 설정하며, 모듈은 핫스왑으로 교체합니다.",
   "catalogPages": "",
-  "verificationSummary": "사용자 제공 SPX-R6 제품 사양서(1쪽, 2026-09-29)의 소개·제품 기능·제품사양·연결도에서 확인했다. 사진과 연결도에 다른 회사 로고가 있어 화면 그림은 사용자 결정(2026-09-29 \"평면 그래픽\")에 따라 사양서 사진·연결도 배치대로 새로 그렸다. 크기·무게·전원 전압은 사양서에 없어 적지 않았다.",
+  "verificationSummary": "사용자 제공 SPX-R6 제품 사양서(1쪽, 2026-09-29)의 소개·제품 기능·제품사양·연결도에서 확인했다. 사진과 연결도에 다른 회사 로고가 있어 화면 그림은 사용자 결정(2026-09-29 \"평면 그래픽\")에 따라 사양서 사진·연결도 배치대로 새로 그렸다. 크기·무게·전원 전압은 사양서에 없어 적지 않았다. 수신 모듈 장착과 SPX-RX IR 기능은 사용자 확인(2026-09-29)으로 추가했다. 제조사 원본 다이어그램은 사양서 연결도에서 다른 회사 로고만 지워 그대로 쓴다(사용자 요청 2026-09-29).",
   "packageStatus": "VERIFIED",
-  "overview": "SPX-R6는 SPX Extender 제품의 랙 모듈형 제품이다. SPX-Extender 모듈을 최대 6개 장착하고 단일 전원으로 모듈 전체에 전원을 공급한다. 모듈은 핫스왑을 지원해 장애가 생겨도 전원을 끄지 않고 교체할 수 있다.\n\n전면 LCD와 버튼(방향 버튼·MENU·CANCEL)으로 Extender의 신호 유무를 확인하고 EDID를 설정한다. 본체 내장 EDID와 EDID Pass-through를 고를 수 있고, IR 포트 2개(IR IN·IR Ctrl)로 IR 원격 제어와 제어 컨트롤러 연동을 지원한다.\n\n사양서 연결도는 후면 모듈 칸마다 HDMI IN으로 소스를 받아 CAT OUT으로 SPX-RX에 보내는 구성을 보여 준다. HDMI 2.0·HDCP 1.4/2.2·18Gbps·HDR을 지원하고, CAT5e 기준 4K 60Hz 4:4:4 최대 50m, 1080p 최대 60m까지 전송한다. PoC(Power over Cable)로 송·수신기 중 한쪽에만 전원을 연결해도 된다.",
+  "overview": "SPX-R6는 SPX Extender 제품의 랙 모듈형 제품이다. SPX-Extender 모듈을 최대 6개 장착하고 단일 전원으로 모듈 전체에 전원을 공급한다. 모듈은 핫스왑을 지원해 장애가 생겨도 전원을 끄지 않고 교체할 수 있다.\n\n전면 LCD와 버튼(방향 버튼·MENU·CANCEL)으로 Extender의 신호 유무를 확인하고 EDID를 설정한다. 본체 내장 EDID와 EDID Pass-through를 고를 수 있고, IR 포트 2개(IR IN·IR Ctrl)로 IR 원격 제어와 제어 컨트롤러 연동을 지원한다.\n\n사양서 연결도는 후면 모듈 칸마다 HDMI IN으로 소스를 받아 CAT OUT으로 SPX-RX에 보내는 구성을 보여 준다. HDMI 2.0·HDCP 1.4/2.2·18Gbps·HDR을 지원하고, CAT5e 기준 4K 60Hz 4:4:4 최대 50m, 1080p 최대 60m까지 전송한다. PoC(Power over Cable)로 송·수신기 중 한쪽에만 전원을 연결해도 된다.\n\n모듈 칸에는 수신 모듈도 장착할 수 있고, 연결도의 SPX-RX IR 기능(IR Blaster)도 지원한다. 다만 두 기능 모두 현장에서는 잘 쓰지 않는다(서울영상테크 SI사업본부 확인).",
   "images": [
     {
       "role": "Front",
@@ -45,6 +45,17 @@
       "officialSource": true,
       "verificationStatus": "FOUND",
       "resolution": "2000×199"
+    },
+    {
+      "role": "Diagram",
+      "file": "spx-r6-diagram.webp",
+      "alt": "SPX-R6 연결 다이어그램(제조사 제공) — 소스 6대, SPX-R6, SPX-RX 6대, IR 리시버·리모컨·컨트롤러",
+      "note": "Diagram · SPX-R6 제품 사양서 1쪽 제조사 연결도. 다른 회사 로고만 지우고 그대로 사용(사용자 요청 2026-09-29 \"앰버텍만 지워서 활용\")",
+      "provider": "RTCOM",
+      "model": "SPX-R6",
+      "source": "S1",
+      "officialSource": true,
+      "verificationStatus": "FOUND"
     }
   ],
   "imageStatuses": [
@@ -77,6 +88,13 @@
       "previewImages": [
         "spx-r6-catalog-p1.webp"
       ]
+    },
+    {
+      "type": "Diagram",
+      "status": "FOUND",
+      "title": "제조사 연결 다이어그램",
+      "language": "en",
+      "note": "SPX-R6 제품 사양서 1쪽(로고만 지움)"
     }
   ],
   "features": [
@@ -200,12 +218,30 @@
       "verification": "VERIFIED"
     },
     {
+      "group": "General",
+      "name": "수신 모듈 장착",
+      "value": "가능",
+      "unit": "",
+      "condition": "현장에서는 잘 쓰지 않음",
+      "source": "U2",
+      "verification": "VERIFIED"
+    },
+    {
       "group": "Control",
       "name": "제어",
       "value": "IR 포트 2개(IR IN · IR Ctrl)",
       "unit": "",
       "condition": "IR 리모컨 · 제어 컨트롤러 연결",
       "source": "S1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Control",
+      "name": "SPX-RX IR 기능",
+      "value": "지원(IR Blaster)",
+      "unit": "",
+      "condition": "사양서 연결도 · 현장에서는 잘 쓰지 않음",
+      "source": "U2",
       "verification": "VERIFIED"
     },
     {
@@ -394,6 +430,12 @@
       "name": "서울영상테크 SI사업본부 확인",
       "page": "",
       "scope": "사용자 결정(2026-09-29) — SPX-R6 제품 등록, 사양서 PDF 공개, 로고 없는 평면 그래픽 사용"
+    },
+    {
+      "code": "U2",
+      "name": "서울영상테크 SI사업본부 확인",
+      "page": "",
+      "scope": "사용자 확인(2026-09-29 \"SPX-RX의 IR 기능과 수신가능한대 잘 안써\") — SPX-RX IR 기능과 SPX-R6 수신 모듈 장착은 가능하지만 현장에서는 잘 쓰지 않음"
     }
   ],
   "issues": []

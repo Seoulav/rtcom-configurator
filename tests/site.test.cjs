@@ -428,7 +428,9 @@ test('0.157: SPX-R6는 사양서 근거로 등록하고, 로고 없는 평면 �
   // 사용자 결정 2026-09-29: PDF 3개 공개(SPX-R6 사양서·SPX-TX/RX 매뉴얼 Ver.2.0·SPX 공통 매뉴얼 250805), SPX-R6는 "평면 그래픽", 깊이 "443.7mm", 비디오 월 표기는 유지.
   const r6=JSON.parse(read('data/products/spx-r6.json')),txrx=JSON.parse(read('data/products/spx-rx-tx.json')),spx=JSON.parse(read('data/products/spx.json'));
   assert.equal(r6.group,'extender');
-  assert.deepEqual(r6.images.map(image=>image.file),['spx-r6-front-art.webp','spx-r6-rear-art.webp'],'사양서 사진(다른 회사 로고)은 쓰지 않고 그림만 쓴다');
+  assert.deepEqual(r6.images.filter(image=>image.role!=='Diagram').map(image=>image.file),['spx-r6-front-art.webp','spx-r6-rear-art.webp'],'사양서 사진(다른 회사 로고)은 쓰지 않고 그림만 쓴다');
+  // 0.158(사용자 요청 2026-09-29 "앰버텍만 지워서 활용하면 될거 같은데"): 제조사 연결도는 로고만 지운 그림을 원본 다이어그램으로 쓴다.
+  assert.deepEqual(r6.images.filter(image=>image.role==='Diagram').map(image=>image.file),['spx-r6-diagram.webp']);
   for(const image of r6.images)assert.ok(fs.existsSync(`output/design/assets/products/${image.file}`));
   assert.ok(!/AmberTech/i.test(JSON.stringify(r6))&&!/AmberTech/i.test(read('scripts/tools/draw_spx_r6_panels.cjs').replace(/\/\/.*$/gm,'')),'로고 글자를 그림·데이터에 넣지 않는다');
   assert.deepEqual(r6.documents.filter(doc=>doc.file).map(doc=>[doc.type,doc.file]),[['Catalog','spx-r6-catalog.pdf']]);
@@ -443,4 +445,15 @@ test('0.157: SPX-R6는 사양서 근거로 등록하고, 로고 없는 평면 �
   assert.match(read('src/products.js'),/if\(item\.id==='spx-r6'\)return rackExtenderDiagram\(item\);/);
   const order=JSON.parse(read('data/products/index.json')).products.map(product=>product.id);
   assert.equal(order.indexOf('spx-r6')+1,order.indexOf('spx-rx-tx'),'전송기 목록에서 SPX-TX / SPX-RX 바로 앞에 보인다');
+});
+
+test('0.158: SPX-R6 수신 모듈 장착·SPX-RX IR 기능은 사용자 확인(U2)으로 적고, 잘 쓰지 않는다고 표시한다',()=>{
+  // 사용자 확인 2026-09-29 "SPX-RX의 IR 기능과 수신가능한대 잘 안써"
+  const r6=JSON.parse(read('data/products/spx-r6.json'));
+  for(const name of ['수신 모듈 장착','SPX-RX IR 기능']){
+    const row=r6.specifications.find(spec=>spec.name===name);
+    assert.ok(row,name);assert.equal(row.source,'U2');assert.match(row.condition,/잘 쓰지 않음/);
+  }
+  assert.ok(r6.sources.some(source=>source.code==='U2'));
+  assert.doesNotMatch(read('docs/handoff/OPEN_ITEMS.md'),/IR Blaster|모듈 종류:/,'확인 항목은 처리했으므로 지운다');
 });
