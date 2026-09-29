@@ -199,15 +199,6 @@
       "verification": "VERIFIED"
     },
     {
-      "group": "Control",
-      "name": "기타",
-      "value": "미니 USB 포트 사용 (RS232C 사용가능)",
-      "unit": "",
-      "condition": "",
-      "source": "C",
-      "verification": "VERIFIED"
-    },
-    {
       "group": "Power",
       "name": "전원공급",
       "value": "DC 12V 5A",

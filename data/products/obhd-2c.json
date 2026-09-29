@@ -202,7 +202,7 @@
     {
       "group": "Video",
       "name": "HDCP",
-      "value": "지원",
+      "value": "HDCP 지원",
       "unit": "",
       "condition": "",
       "source": "C",
