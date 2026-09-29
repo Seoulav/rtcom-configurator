@@ -10,9 +10,9 @@
 - [ ] 두 Worker 주소(`rtcom-ai-api…workers.dev`, `rtcom-ai-login…workers.dev`)를 Claude에게 알려 주기 → `src/ai-search.js`의 `CONFIG` 채워 배포
 - [ ] 첫 실제 질문으로 답 품질·건당 토큰(`cacheWrite`·`cacheRead`) 확인
 
-## 04 전송기 목록 한 줄 정리 — 사용자 결정 대기 (0.174)
+## 04 전송기 목록 한 줄 정리 — 사용자 결정 대기 (0.175)
 
-시안은 `docs/qa/link-step-0.174/mock-compact-list-pc.png`, 설명은 `docs/implementation/LINK_STEP_FIX_0.174.md` §3에 있습니다.
+시안은 `docs/qa/link-step-0.175/mock-compact-list-pc.png`, 설명은 `docs/implementation/LINK_STEP_FIX_0.175.md` §3에 있습니다.
 - [ ] 카드마다 큰 선택 상자 2개 대신 한 줄([전송기 | 연결하지 않음] 선택 + 연결 채널), "카드가 없습니다" 안내는 얇은 한 줄
 
 ## 03 카드 슬롯 개선안 B·C — 사용자 결정 대기 (0.167)
@@ -49,9 +49,10 @@
 
 - [ ] `main` 브랜치에 필수 검사 `RTCOM checks / verify`를 켜기(0.165, 순서: `docs/implementation/TOUCH_SLOT_X_AND_CI_0.165.md` §2). 켜기 전에도 검사는 PR마다 돌고, Claude는 통과를 확인한 뒤 병합합니다.
 
-## AV 빌더 한 번에 열기(B안) — 저장소 접근 대기
+## AV 빌더 한 번에 열기(B안) — AV 빌더 쪽 작업 대기
 
-- [ ] rtcom 구성기에서 "AV 빌더에서 열기" 한 번으로 구성이 뜨게 하려면 AV 빌더(seoul-visual-tech/av-system-builder)에 외부 구성 받기 입구(예: 주소 해시로 받은 구성도 JSON 불러오기)가 필요합니다. 그 저장소가 들어 있는 세션에서 작업합니다. 파일 형식은 0.173 `RtCore.avBuilder`와 같습니다(`docs/implementation/SIGNAL_INPUT_0.173.md` §5).
+- [x] rtcom 쪽 "AV 빌더에서 바로 열기"(0.174): 새 탭 `?import=rtcom` + 창 사이 메시지, 준비 신호가 없으면 10초 뒤 파일 내려받기.
+- [ ] AV 빌더(seoul-visual-tech/av-system-builder)에 받기 코드 넣기: `docs/handoff/AV_BUILDER_RTCOM_IMPORT.md` §2. 그 저장소가 이 작업 세션에 연결되지 않아(권한 없음) 사용자 쪽에서 저장소 접근을 열거나, 그 저장소를 연 세션에서 작업합니다.
 
 ## 공개 여부를 사용자에게 물어볼 PDF
 

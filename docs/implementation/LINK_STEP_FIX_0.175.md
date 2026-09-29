@@ -1,4 +1,4 @@
-# 04 전송기 흐름 겹침 수정·03 카드 팝업 수량 칸 A (0.174.0)
+# 04 전송기 흐름 겹침 수정·03 카드 팝업 수량 칸 A (0.175.0)
 
 사용자 지적·결정(2026-09-29): 04 전송기 화면 캡처와 함께 "이 부분 개선이 필요해보여", 제안(오류부터 고치고 목록 정리는 시안으로 보여 주기, 수량 칸은 추천 안 A)에 대해 "제안대로 해줘".
 
@@ -27,7 +27,7 @@ VDM(CT104-U 등)·SPX-RX 설명의 케이블 표기는 제조사 자료 값이�
 
 ## 3. 시안: 04 왼쪽 목록 한 줄 정리 (결정 대기)
 
-`docs/qa/link-step-0.174/mock-compact-list-pc.png`(CSS만 덧씌운 시안, 코드 반영 안 함).
+`docs/qa/link-step-0.175/mock-compact-list-pc.png`(CSS만 덧씌운 시안, 코드 반영 안 함).
 
 - 카드마다 "CTR100 PSE + CTR100"·"연결하지 않음" 큰 상자 2개(설명 2줄씩)를 한 줄 선택 막대 `[CTR100 PSE + CTR100 | 연결하지 않음]`로 줄이고 제목 옆에 연결 채널을 둡니다. XDM-12 HDMI 카드 5장 기준 HDMI 연장 목록 높이가 약 1,540px에서 약 570px로 줄어듭니다(1440px 화면 캡처 기준).
 - 상자에 있던 전송기 설명(케이블·전원)은 오른쪽 미리보기의 흐름과 "케이블" 줄, 아래 전원 안내에 이미 있습니다.
@@ -39,10 +39,10 @@ VDM(CT104-U 등)·SPX-RX 설명의 케이블 표기는 제조사 자료 값이�
 - `node scripts/e2e-smoke.cjs`: 214개 통과
   - 0.137 "현재 3장 장착" 검사를 "수량 칸 3에서 시작·− 잠김·4로 늘리면 IN 4에만 1장 추가" 검사로 바꿈
   - PC 04 흐름 검사 추가: 사진은 상자 안, 점선 위는 "최대 100m", 아래 줄에 "S/FTP CAT6A 필수", 이름 한 줄, "CAT6a/CAT7" 없음
-- 전후 캡처: `docs/qa/link-step-0.174/before-*.png`, `after-*.png`
+- 전후 캡처: `docs/qa/link-step-0.175/before-*.png`, `after-*.png`
 
 ## 5. 되돌리는 방법
 
-- 흐름 표시: `src/app.js` `flowFor`의 `cableNode`·`rt-link-flow-spec` 줄과 `src/styles.css`의 "0.174 04 전송기 미리보기 정리" 블록을 되돌립니다.
+- 흐름 표시: `src/app.js` `flowFor`의 `cableNode`·`rt-link-flow-spec` 줄과 `src/styles.css`의 "0.175 04 전송기 미리보기 정리" 블록을 되돌립니다.
 - 수량 칸: `src/app.js`에서 `addTargets`를 `fillTargets`로, 출력값 `${have+n}`을 `${n}`으로 되돌리고 "현재 N장 장착" 글(`rt-card-have`)을 다시 넣습니다. `src/core.js`의 `addTargets`는 남겨 두어도 무방합니다.
 - 저장 형식(`rtcom.configuration.v1`, schema 3)은 바뀌지 않았습니다.

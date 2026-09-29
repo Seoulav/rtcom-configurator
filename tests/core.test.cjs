@@ -325,7 +325,7 @@ test('fillTargets fills the chosen slot first, then empty slots of the same dire
   assert.deepEqual(core.fillTargets(state,'in-1',0),['in-1']);
 });
 
-test('addTargets (0.174 qty A) skips the opened slot when it already holds a card and only fills empty slots',()=>{
+test('addTargets (0.175 qty A) skips the opened slot when it already holds a card and only fills empty slots',()=>{
   const state=core.checkState({...core.initial(),model:'XDM-36',placements:{'in-3':'XDM-HI100','out-1':'XDM-HOS100'}});
   assert.deepEqual(core.addTargets(state,'in-3',2),['in-4','in-5']);
   assert.deepEqual(core.addTargets(state,'in-2',2),core.fillTargets(state,'in-2',2));
