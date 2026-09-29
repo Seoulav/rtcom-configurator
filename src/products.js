@@ -842,10 +842,11 @@
       const inCards=catalog?.input||[],outCards=catalog?.output||[];
       const featureItems=item.features||[];
       const featureShown=6;
+      // 0.143(사용자 요청 2026-09-29 "카드 정보를 클릭하면 카드에 관련된 상세 정보가 나왔으면 좋겠고", "CIS·COS 카드 관련해서 CTR100을 연동해야 된다는 내용은 빼고 HDBaseT 카드라고만 명시"):
+      // 행 전체를 버튼으로 만들어 누르면 카드 상세 팝업(openProductCardInfo)을 열고, "↔ CTR100 TX · CT103" 같은 연동 전송기 표기는 행에서 뺐다.
       const cardRow=(card,isOut)=>{
         const [model,desc,count,sig]=card;
-        const linked=CARD_EXTENDER_LABEL[model];
-        return `<div class="rt-pg-cardrow"><img src="output/design/assets/cards/${encodeURIComponent(model)}.webp" alt="" loading="lazy"><div><b>${esc(model)}</b><span>${esc(desc)}${linked?` · ↔ ${esc(linked)}`:''}</span></div><span class="rt-pg-pc${isOut?' rt-pg-out':''}">${esc(count)}포트</span></div>`;
+        return `<button type="button" class="rt-pg-cardrow rt-pg-cardbtn" data-pg-card="${esc(model)}" data-pg-card-dir="${isOut?'출력':'입력'}" data-pg-card-family="${esc(family)}" aria-label="${esc(model)} 카드 상세 정보 보기"><img src="output/design/assets/cards/${encodeURIComponent(model)}.webp" alt="" loading="lazy"><div><b>${esc(model)}</b><span>${esc(desc)}</span></div><span class="rt-pg-pc${isOut?' rt-pg-out':''}">${esc(count)}포트</span></button>`;
       };
       const SIG_COLOR={HDMI:'var(--pg-sig-hdmi)',DP:'var(--pg-sig-dp)',SDI:'var(--pg-sig-sdi)',CAT:'var(--pg-sig-cat)',FIBER:'var(--pg-sig-fiber)'};
       // SPX의 CAT 카드(SPX-COS12)는 HDBaseT가 아닌 CATx 전송이다(사용자 확인 2026-09-27).
@@ -862,7 +863,7 @@
         <div class="rt-pg-col">
           <section class="rt-pg-card rt-pg-col-mobile-2"><h2><span class="rt-pg-idx">02</span>신호 구성 <span class="rt-pg-note">— 입력 카드 → 메인프레임 → 출력 카드</span></h2>${arch}<ul class="rt-pg-legend">${legendKeys.map(key=>`<li><i style="background:${SIG_COLOR[key]||'#8A8A8E'}"></i>${esc(SIG_NAME[key]||key)}</li>`).join('')}<li><i style="background:transparent;border:1.5px dashed #8A8A8E"></i>전송기(연동)</li></ul></section>
           <section class="rt-pg-card rt-pg-col-mobile-3"><h2><span class="rt-pg-idx">03</span>메인프레임 <span class="rt-pg-note">— ${frames.length}종 · 막대는 랙 높이</span></h2><div class="rt-pg-frames">${frames.map(frame=>{const slug=frame.model.toLowerCase();const hasPhoto=!NO_FRAME_PHOTO.has(frame.model);return `<div class="rt-pg-frame"><div class="rt-pg-ph">${hasPhoto?`<img src="output/design/assets/frames/${slug}-front-art.webp" alt="">`:'<em>사진 준비 중</em>'}</div><b>${esc(frame.model)}</b><small>${esc((frame.summary||'').split(' · ')[0])} · ${frame.rackUnits}U</small><div class="rt-pg-ru"><i style="width:${Math.max(8,frame.rackUnits/maxRU*100)}%"></i></div></div>`}).join('')}</div></section>
-          <section class="rt-pg-card rt-pg-col-mobile-4"><h2><span class="rt-pg-idx">04</span>카드 라인업 <span class="rt-pg-note">— 입력 ${inCards.length} · 출력 ${outCards.length}</span></h2><div class="rt-pg-cards2"><div class="rt-pg-cardcol"><h3>입력</h3>${inCards.map(card=>cardRow(card,false)).join('')}</div><div class="rt-pg-cardcol"><h3>출력</h3>${outCards.map(card=>cardRow(card,true)).join('')}</div></div></section>
+          <section class="rt-pg-card rt-pg-col-mobile-4"><h2><span class="rt-pg-idx">04</span>카드 라인업 <span class="rt-pg-note">— 입력 ${inCards.length} · 출력 ${outCards.length} · 카드를 누르면 상세 정보</span></h2><div class="rt-pg-cards2"><div class="rt-pg-cardcol"><h3>입력</h3>${inCards.map(card=>cardRow(card,false)).join('')}</div><div class="rt-pg-cardcol"><h3>출력</h3>${outCards.map(card=>cardRow(card,true)).join('')}</div></div></section>
           ${recordSection(item,null,null)}
         </div>
       </div>`;
@@ -926,8 +927,26 @@
       }):(body.innerHTML=`<div class="rt-pg-orbs"></div><div class="rt-pg-wrap">${listView()}</div>`))
         .catch(()=>{body.innerHTML=`<div class="rt-pg-wrap"><p class="rt-pg-empty">제품 정보를 불러오지 못했습니다. <a href="#products">목록으로</a></p></div>`});
     }
+    // 0.143 제품정보 04 카드 라인업 카드 상세 팝업: 사양은 src/card-specs.js(RtCardSpecs), 용도 설명은 src/app.js(RtCardTips)를 읽는다. 연동 전송기 표기는 넣지 않는다.
+    function openProductCardInfo(id,dir,family){
+      const specsAll=globalThis.RtCardSpecs||{},tips=globalThis.RtCardTips||{},info=specsAll[id]||{};
+      const cat=(globalThis.RtCatalog||{})[family]||{},all=[...(cat.input||[]),...(cat.output||[])],c=all.find(item=>item[0]===id)||[id,'',''];
+      const rows=[['구분',`${family} ${dir} 카드`],['신호',c[1]],['채널',c[2]?`${c[2]}채널`:''],...(info.specs||[])].filter(([,v])=>v);
+      const dialog=document.createElement('dialog');
+      dialog.className='rt-card-info-modal';
+      dialog.setAttribute('aria-labelledby','rt-pg-card-info-title');
+      dialog.innerHTML=`<div class="rt-card-modal-head"><div><span class="rt-eyebrow">${esc(dir)} 카드 · ${esc(family)}</span><h3 id="rt-pg-card-info-title">${esc(id)}</h3>${info.title?`<p class="rt-card-info-sub">${esc(info.title)}</p>`:''}</div><button type="button" class="rt-card-modal-close" data-card-info-close aria-label="카드 상세 정보 닫기">×</button></div><div class="rt-card-info-body"><div class="rt-card-info-plate"><img src="output/design/assets/cards/${encodeURIComponent(id)}.webp" alt="${esc(id)} 카드 후면 판넬"></div>${tips[id]?`<p class="rt-card-info-tip">${esc(tips[id])}</p>`:''}<table class="rt-card-info-table"><tbody>${rows.map(([k,v])=>`<tr><th scope="row">${esc(k)}</th><td>${esc(v)}</td></tr>`).join('')}</tbody></table>${info.note?`<p class="rt-card-info-note">${esc(info.note)}</p>`:''}${info.missing?`<p class="rt-card-info-missing">상세 사양 준비 중 · ${esc(info.missing)}</p>`:''}<p class="rt-card-info-src">${[info.page?`알티컴 종합 카탈로그 2026 (국문) ${info.page}쪽`:'',info.source?esc(info.source):''].filter(Boolean).join(' · ')||'제조사 자료 확인 중'}</p></div><div class="rt-card-modal-foot"><button type="button" class="rt-button" data-card-info-close>닫기</button></div>`;
+      const opener=document.activeElement;
+      const finish=()=>{if(dialog.open)dialog.close();dialog.remove();opener?.focus?.({preventScroll:true})};
+      dialog.addEventListener('click',event=>{if(event.target===dialog||event.target.closest('[data-card-info-close]'))finish()});
+      dialog.addEventListener('cancel',event=>{event.preventDefault();finish()});
+      root.appendChild(dialog);
+      if(typeof dialog.showModal==='function'){dialog.showModal();dialog.querySelector('.rt-card-modal-close').focus()}else dialog.setAttribute('open','');
+    }
     body.addEventListener('click',event=>{
       const filterBtn=event.target.closest('[data-product-filter]');
+      const pgCard=event.target.closest('[data-pg-card]');
+      if(pgCard){openProductCardInfo(pgCard.dataset.pgCard,pgCard.dataset.pgCardDir,pgCard.dataset.pgCardFamily);return}
       if(filterBtn){filter=filterBtn.dataset.productFilter;body.querySelector('.rt-pg-wrap').innerHTML=listView();body.querySelector(`[data-product-filter="${filter}"]`)?.focus();return}
       const configure=event.target.closest('[data-configure-family]');
       if(configure){event.preventDefault();location.hash='#matrix-configurator';root.dispatchEvent(new CustomEvent('rt-configure-family',{detail:configure.dataset.configureFamily}));return}

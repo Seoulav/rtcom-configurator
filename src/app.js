@@ -108,6 +108,7 @@
       'XDM-HOS100':'HDMI 4채널 출력 또는 최대 4분할(Quad View) 화면 구성에 활용할 수 있습니다.','XDM-DPOS100':'DisplayPort 디스플레이 4채널 출력용입니다.','XDM-COS100':'HDBaseT 3.0 기반 원격 출력 4채널용입니다.','XDM-FOS100':'광 전송 기반의 원거리 출력 4채널용입니다.','XDM-SOS100':'12G-SDI 방송 신호 4채널 출력용입니다.','XDM-WOS100':'4개 레이어를 조합해 월 프로세서처럼 화면 연출에 활용할 수 있습니다.'
     };
     function cardTip(id){return cardTips[id]||'카드 용도와 설치 조건을 검토한 뒤 선택하세요.'}
+    globalThis.RtCardTips=cardTips; // 0.143: 제품정보 04 카드 라인업 상세 팝업(src/products.js)이 같은 카드 설명을 읽는다.
     function cardBadge(id){return id==='XDM-WOS100'?'<em>4레이어</em>':id==='XDM-HOS100'?'<em>쿼드 뷰</em>':''}
     function choices(s,c){return RtCore.choices(c[0])}
     // 카드 팝업에서 고른 전송기 → 없으면 이 슬롯에 이미 연결된 전송기(같은 카드일 때) → 없으면 카드 기본 연동(RtCore.defaultLink). ''는 연결 안 함.
