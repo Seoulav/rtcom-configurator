@@ -1,0 +1,43 @@
+# 0.165 — PR마다 CLAUDE.md "기본 검증 명령"을 GitHub에서 자동으로 실행한다(사용자 요청 2026-09-29 "GitHub 필수 검사 설정 검토").
+# 이 검사를 "통과해야 병합" 규칙(branch protection의 required status check)으로 켜는 일은 사용자가 GitHub 설정 화면에서 한다
+# (docs/implementation/TOUCH_SLOT_X_AND_CI_0.165.md §2, 필수 검사 이름: "RTCOM checks / verify").
+# pull_request 실행은 PR 브랜치를 main에 합친 결과(refs/pull/N/merge)를 검사하므로, main이 먼저 바뀌어 번호가 겹치면 check-version이 실패한다.
+name: RTCOM checks
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: checks-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: 단위 테스트
+        run: node --test tests/*.test.cjs
+      - name: 제품 데이터 검사
+        run: node scripts/build-product-index.cjs --check
+      - name: 공개 사이트 빌드
+        run: node scripts/package-site.cjs
+      - name: 버전 점검(main 대비)
+        run: |
+          git fetch --no-tags origin main
+          node scripts/check-version.cjs --against origin/main
+      - name: 공백 오류 검사
+        run: git diff --check origin/main HEAD
+      - name: 브라우저 설치(Playwright Chromium)
+        run: |
+          npm i --no-save playwright
+          npx playwright install --with-deps chromium
+      - name: 화면 자동 검사(e2e)
+        run: node scripts/e2e-smoke.cjs
