@@ -245,6 +245,16 @@
     // 카드 상세 정보(사용자 요청 2026-09-28 "입력 출력카드 버튼을 만들어 해당 카드 상세정보가 나와야해"): 03 카드 슬롯 아래 입력·출력 카드 버튼과
     // 내 구성의 카드 행을 누르면 card-specs.js(카탈로그 46쪽판 근거) 사양을 대화상자로 보여준다. 화면 상태가 아니라서 실행 취소·자동 저장 대상이 아니다.
     const cardSpecs=globalThis.RtCardSpecs||{};
+    // 0.167 신호 배지(사용자 선택 2026-09-29 시안 A "이거 좋다 한번 해보자"): 색은 작은 배지 하나에만 쓰고, 카드 트레이·후면 장착 슬롯·범례·내 구성에 같은 배지를 반복한다.
+    // 카탈로그 신호 표기 첫 단어로 나눈다. 색은 styles.css의 [data-sig].
+    const signalShort=text=>String(text||'').split(' · ')[0];
+    const signalKind=text=>{const t=signalShort(text);return /HDMI/.test(t)?'hdmi':/DisplayPort/.test(t)?'dp':/CATx/.test(t)?'catx':/HDBaseT/.test(t)?'hdbt':/광/.test(t)?'fiber':/SDI/.test(t)?'sdi':'etc'};
+    const signalAbbr={hdmi:'HDMI',dp:'DP',hdbt:'HDBT',catx:'CATx',fiber:'FIBER',sdi:'SDI',etc:'ETC'};
+    const sigBadge=(text,cls='')=>{const k=signalKind(text);return `<i class="rt-sig-badge${cls?` ${cls}`:''}" data-sig="${k}" aria-hidden="true">${signalAbbr[k]}</i>`};
+    // 후면 아래 범례: 지금 제품군에 있는 신호만, 카탈로그 표기(예: 12G-SDI, 3G/HD-SDI) 그대로.
+    function signalLegend(){const f=families[state.family],seen=new Map();for(const c of [...f.input,...f.output]){const k=signalKind(c[1]);if(!seen.has(k))seen.set(k,c[1])}return `<div class="rt-sig-legend" aria-label="신호 종류">${[...seen].map(([,text])=>`<span>${sigBadge(text)}${esc(signalShort(text))}</span>`).join('')}</div>`}
+    // 내 구성 행의 장착 위치: 같은 방향 슬롯 번호를 이어진 구간으로 줄인다(IN 1–4·7).
+    function slotRanges(ids){const nums=ids.map(id=>Number(id.split('-')[1])).filter(Number.isFinite).sort((a,b)=>a-b),parts=[];for(let i=0;i<nums.length;){let j=i;while(j+1<nums.length&&nums[j+1]===nums[j]+1)j++;parts.push(j>i?`${nums[i]}–${nums[j]}`:String(nums[i]));i=j+1}return parts.join('·')}
     // 0.162 카드 끌어 놓기 샘플(직원 제안, 사용자 승인 2026-09-29 "위 범위로 진행"): 아래 카드 정보 버튼을 후면 슬롯으로 끌어 놓으면 장착한다.
     // 누르면 지금처럼 상세 정보가 열린다. 마우스(정밀 포인터)에서만 켜고, 휴대폰·태블릿은 기존 팝업 방식만 쓴다.
     // 되돌리기: PALETTE_DRAG를 false로 바꾸면 버튼·안내 문구·끌어 놓기 처리가 모두 이 기능을 넣기 전과 같아진다.
@@ -254,9 +264,9 @@
       const f=families[state.family],drag=paletteDrag();
       // 0.163(사용자 요청 2026-09-29 "하단에 이걸 배치해서 드래그하는 형태로"): 끌어 놓기가 켜지면 버튼을 내 구성 카드 행처럼 판넬 사진 타일로 보여 주고, 장착 수량을 표시한다.
       const installed=id=>Object.values(state.placements).filter(value=>value===id).length;
-      const tile=(c,dir)=>{const n=installed(c[0]);return `<button type="button" class="rt-card-info-chip rt-palette-tile" data-card-info="${c[0]}" draggable="true" data-palette-card="${c[0]}" data-palette-dir="${dir}" title="누르면 상세 정보 · 후면 ${dir==='input'?'입력':'출력'} 슬롯으로 끌어 놓으면 장착"><img draggable="false" src="${cardAsset(c[0])}" alt=""><span><strong>${c[0]}</strong><small>${esc(c[1])}</small></span>${n?`<b aria-label="장착 ${n}장">× ${n}</b>`:''}</button>`};
-      const chip=c=>`<button type="button" class="rt-card-info-chip" data-card-info="${c[0]}"><strong>${c[0]}</strong><small>${esc(c[1])}</small></button>`;
-      const group=dir=>`<div class="rt-card-info-group"><span>${dir==='input'?'입력':'출력'} 카드</span><div>${f[dir].map(c=>drag?tile(c,dir):chip(c)).join('')}</div></div>`;
+      const tile=(c,dir)=>{const n=installed(c[0]);return `<button type="button" class="rt-card-info-chip rt-palette-tile" data-card-info="${c[0]}" draggable="true" data-palette-card="${c[0]}" data-palette-dir="${dir}" title="누르면 상세 정보 · 후면 ${dir==='input'?'입력':'출력'} 슬롯으로 끌어 놓으면 장착"><img draggable="false" src="${cardAsset(c[0])}" alt=""><span><strong>${sigBadge(c[1])}${c[0]}</strong><small>${esc(c[1])}</small></span>${n?`<b aria-label="장착 ${n}장">× ${n}</b>`:''}</button>`};
+      const chip=c=>`<button type="button" class="rt-card-info-chip" data-card-info="${c[0]}"><strong>${sigBadge(c[1])}${c[0]}</strong><small>${esc(c[1])}</small></button>`;
+      const group=dir=>`<div class="rt-card-info-group rt-card-info-group-${dir}"><span>${dir==='input'?'입력':'출력'} 카드</span><div>${f[dir].map(c=>drag?tile(c,dir):chip(c)).join('')}</div></div>`;
       return `<section class="rt-card-info-bar${drag?' rt-card-palette':''}" aria-label="카드 상세 정보"><div class="rt-card-info-head"><strong>카드 정보</strong><small>${drag?'버튼을 누르면 상세 정보, 후면 슬롯으로 끌어 놓으면 카드가 장착됩니다(입력 카드는 입력 슬롯, 출력 카드는 출력 슬롯)':'버튼을 누르면 카드별 포트·해상도·규격을 볼 수 있습니다'}</small></div>${group('input')}${group('output')}</section>`;
     }
     function openCardInfo(id){
@@ -279,7 +289,8 @@
       const slotList=currentSlots(),t=totals(),completion=RtCore.completionFor(state),rows=dir=>{
         const counts={};for(const slot of slotList.filter(item=>item.dir===dir)){const c=slotCard(slot.id);if(c)counts[c[0]]=(counts[c[0]]||0)+1}
         const entries=Object.entries(counts);
-        return entries.length?`<ul>${entries.map(([id,qty])=>{const c=card(id);return `<li><button type="button" class="rt-summary-card" data-card-info="${id}" aria-label="${id} 카드 상세 정보 보기"><img src="${cardAsset(id)}" alt=""><span><strong>${id}</strong><small>${esc(c[1])}</small></span><b>× ${qty}</b></button></li>`}).join('')}</ul>`:'<p class="rt-summary-empty">아직 장착한 카드가 없습니다.</p>';
+        // 0.167(시안 A): 판넬 사진 없이 "신호 배지 · 모델명 · 장착 위치(IN 1·2) · ×N" 한 줄. 사용자 요청 "그냥 모델명(HDMI) X 수량만"·"수량이 좀 더 눈에 띄게".
+        return entries.length?`<ul>${entries.map(([id,qty])=>{const c=card(id),at=slotList.filter(slot=>slot.dir===dir&&slotCard(slot.id)?.[0]===id).map(slot=>slot.id),where=`${dir==='input'?'IN':'OUT'} ${slotRanges(at)}`;return `<li><button type="button" class="rt-summary-card" data-card-info="${id}" aria-label="${id} ${qty}장(${where}), 카드 상세 정보 보기">${sigBadge(c[1])}<strong>${id}</strong><small>${where}</small><b>× ${qty}</b></button></li>`}).join('')}</ul>`:'<p class="rt-summary-empty">아직 장착한 카드가 없습니다.</p>';
       };
       const capacity=dir=>slotList.filter(item=>item.dir===dir).length*maxPorts(dir),meter=(label,value,max)=>`<div class="rt-summary-meter"><span>${label}<b>${value} / ${max}채널</b></span><i style="--rt-fill:${max?Math.min(100,Math.round(value/max*100)):0}%"></i></div>`;
       const cards=completion.cards,segTotal=completion.total||1;
@@ -301,7 +312,7 @@
         const rawValue=state.placements[slot.id],isBlank=rawValue==='BLANK',c=isBlank?null:slotCard(slot.id),selecting=modalSlot===slot.id;
         const stateClass=c?'rt-rack-slot-filled':isBlank?'rt-rack-slot-blank':'rt-rack-slot-empty';
         const label=c?`${c[0]} 장착됨 · 눌러서 변경`:isBlank?'블랭크 커버 · 눌러서 변경':'비어 있음 · 눌러서 카드 선택';
-        return `<button type="button" class="rt-rack-slot ${stateClass} ${selecting?'rt-rack-slot-selecting':''} ${changed===slot.id?'rt-rack-slot-changed':''}" data-slot="${slot.id}"${rawValue?' draggable="true"':''} aria-label="${esc(slot.label)}, ${label}" title="${esc(slot.label)}${c?` · ${c[0]}`:isBlank?' · 블랭크 커버':''}"><span class="rt-rack-slot-no rt-rack-slot-no-${slot.dir}" aria-hidden="true">${shortLabel(slot)}</span>${rawValue?`<span class="rt-rack-slot-x" role="button" tabindex="-1" data-slot-clear="${slot.id}" aria-label="${esc(slot.label)} ${c?c[0]:'블랭크 커버'} 빼기" title="카드 빼기">×</span>`:''}${c?`<img draggable="false" class="rt-faceplate" src="${cardAsset(c[0])}" alt="">`:isBlank?`<img draggable="false" class="rt-faceplate rt-blank-plate" src="${blankPlates[state.family]}" alt="">`:'<span class="rt-rack-slot-add" aria-hidden="true">+</span>'}</button>`;
+        return `<button type="button" class="rt-rack-slot ${stateClass} ${selecting?'rt-rack-slot-selecting':''} ${changed===slot.id?'rt-rack-slot-changed':''}" data-slot="${slot.id}"${rawValue?' draggable="true"':''} aria-label="${esc(slot.label)}, ${label}" title="${esc(slot.label)}${c?` · ${c[0]}`:isBlank?' · 블랭크 커버':''}"><span class="rt-rack-slot-no rt-rack-slot-no-${slot.dir}" aria-hidden="true">${shortLabel(slot)}</span>${rawValue?`<span class="rt-rack-slot-x" role="button" tabindex="-1" data-slot-clear="${slot.id}" aria-label="${esc(slot.label)} ${c?c[0]:'블랭크 커버'} 빼기" title="카드 빼기">×</span>`:''}${c?`<img draggable="false" class="rt-faceplate" src="${cardAsset(c[0])}" alt="">${sigBadge(c[1],'rt-slot-sig')}`:isBlank?`<img draggable="false" class="rt-faceplate rt-blank-plate" src="${blankPlates[state.family]}" alt="">`:'<span class="rt-rack-slot-add" aria-hidden="true">+</span>'}</button>`;
       };
       const bank=(dir,items)=>`<section class="rt-rack-bank rt-rack-bank-${dir}" aria-label="${dir==='input'?'입력':'출력'} 카드 슬롯"><div class="rt-rack-bank-title"><strong>${dir==='input'?'입력':'출력'}</strong><span>${items.filter(item=>slotCard(item.id)).length} / ${items.length}</span></div><div class="rt-rack-grid">${items.map(slotButton).join('')}</div></section>`;
       const photo=rearPhotos[model];
@@ -312,7 +323,7 @@
       const completion=RtCore.completionFor(state);
       // 완성 배너(제목 위)·범례·채우기 줄(2-3, 사용자 결정 2026-09-27).
       const doneBanner=completion.total&&!completion.empty?`<div class="rt-slot-done-banner">✓ ${completion.total}개 슬롯을 모두 채웠습니다 · 구성 완성</div>`:'';
-      const legend=`<div class="rt-slot-legend"><span><i class="rt-slot-legend-dot rt-slot-legend-empty"></i>빈 슬롯</span><span><i class="rt-slot-legend-dot rt-slot-legend-installed"></i>장착한 카드</span><span><i class="rt-slot-legend-dot rt-slot-legend-blank"></i>블랭크 커버</span><span><i class="rt-slot-legend-dot rt-slot-legend-selecting"></i>선택 중</span></div>`;
+      const legend=`<div class="rt-slot-legend"><span><i class="rt-slot-legend-dot rt-slot-legend-empty"></i>빈 슬롯</span><span><i class="rt-slot-legend-dot rt-slot-legend-installed"></i>장착한 카드</span><span><i class="rt-slot-legend-dot rt-slot-legend-blank"></i>블랭크 커버</span><span><i class="rt-slot-legend-dot rt-slot-legend-selecting"></i>선택 중</span></div>${signalLegend()}`;
       const fillBar=completion.empty?`<div class="rt-slot-fillbar"><span>비어 있는 슬롯 <b>${completion.empty}개</b> — 카드를 더 넣지 않을 슬롯은 블랭크 커버로 막아 구성을 완성하세요.</span><button type="button" class="rt-button rt-primary" data-action="fill-blanks">남은 ${completion.empty}칸 블랭크로 채우기</button></div>`:'';
       return doneBanner+heading('03 / 카드 슬롯','후면의 빈 슬롯을 눌러 카드를 장착하세요.',`${esc(model)} · ${layoutText}`)+`<div class="rt-config-stage"><section class="rt-rack-canvas"><div class="rt-rack-toolbar"><div><span class="rt-eyebrow">후면</span><h3>${esc(model)}</h3></div><div class="rt-frame-count"><span><b>${inputCards}</b> / ${inputSlots.length} 입력</span><span><b>${outputCards}</b> / ${outputSlots.length} 출력</span></div></div><div class="rt-rack-scroll">${photoRack||`<div class="rt-rack rt-rack-${layout}" style="--rt-rack-columns:${columns};--rt-rack-rows:${Math.max(1,Math.ceil(inputSlots.length/columns))*2};--rt-bank-slots:${columns};--rt-slot-ratio:${slotRatios[state.family]||9.7}"><span class="rt-rack-ear" aria-hidden="true"></span><div class="rt-rack-body">${bank('input',inputSlots)}${bank('output',outputSlots)}<div class="rt-rack-psu" aria-hidden="true"><strong>RTCOM</strong><span>${esc(model)}</span><i></i><small>제어</small><i></i><small>전원</small></div></div><span class="rt-rack-ear" aria-hidden="true"></span></div>`}</div>${photo||layout!=='h'?'<p class="rt-rack-scroll-hint">좌우로 밀어서 후면 전체를 볼 수 있습니다.</p>':''}${count?'':'<p class="rt-stage-warning">이 프레임은 제조사 후면 도면과 카드 허용표를 확보하기 전까지 논리 도식으로 표시합니다. 물리 설치 위치로 사용하지 마세요.</p>'}${count&&!photo?`<p class="rt-rack-note">${state.family==='VDM'?'VDM 매뉴얼에는 이 프레임의 선 도면만 있어, 슬롯 수는 매뉴얼 기준으로 하고 배치는 도면을 단순화한 그림으로 표시합니다.':'이 프레임은 매뉴얼에 후면 사진이 없어 슬롯 배치를 그림으로 표시합니다.'}</p>`:''}${legend}${cardInfoBar()}${fillBar}</section>${configurationSummary()}</div>${cardChoiceModal()}`;
     }
