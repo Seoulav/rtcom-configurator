@@ -339,3 +339,39 @@ test('moveCard moves within the same direction, swaps occupied slots and carries
   assert.equal(core.moveCard(configured(),'in-1','out-2'),null);
   assert.equal(core.moveCard(configured(),'in-2','in-3'),null);
 });
+
+// 0.173 03 카드 슬롯 ② 신호 입력(사용자 결정 2026-09-29 "추천A대로 진행해줘"): 신호명은 portAssignments["슬롯:포트"].assignedDevice(schema 3에 원래 있던 칸)에 넣는다.
+test('신호명은 구성 파일 저장·불러오기에 남고, 카드를 옮기면 함께 옮겨지며, 카드를 빼면 사라진다',()=>{
+  const state=configured();
+  state.portAssignments['in-1:1'].assignedDevice='PC';
+  state.portAssignments['out-1:4'].assignedDevice='프로젝터 1';
+  const restored=core.parse(JSON.stringify(core.document(state)));
+  assert.equal(restored.portAssignments['in-1:1'].assignedDevice,'PC');
+  assert.equal(restored.portAssignments['out-1:4'].assignedDevice,'프로젝터 1');
+  const moved=core.moveCard(restored,'in-1','in-3');
+  assert.equal(moved.portAssignments['in-3:1'].assignedDevice,'PC');
+  assert.equal(moved.portAssignments['in-1:1'],undefined);
+  const removed={...moved,placements:{...moved.placements}};delete removed.placements['in-3'];
+  assert.equal(core.syncPorts(removed)['in-3:1'],undefined);
+  const tooLong={...core.document(state)};tooLong.state={...tooLong.state,portAssignments:{...tooLong.state.portAssignments,'in-1:2':{...tooLong.state.portAssignments['in-1:2'],assignedDevice:'x'.repeat(121)}}};
+  assert.throws(()=>core.parse(JSON.stringify(tooLong)));
+});
+
+// 0.173 AV 빌더(seoul-visual-tech.github.io/av-system-builder) "가져오기 → 구성도 JSON" 형식: nodes(type 'equipment', data 장비)·edges(출력 포트 id → 입력 포트 id).
+test('AV 빌더용 구성도는 매트릭스 1대와 04에서 연결한 채널마다 전송기 상자·연결선을 만들고, 포트 이름에 신호명을 넣는다',()=>{
+  const state={...core.initial(),model:'XDM-12',slot:'in-1',placements:{'in-1':'XDM-CIS100','in-2':'XDM-HIS100','out-1':'XDM-COS100','out-2':'BLANK'},links:{'in-1':{device:'XDM-CTR100 · TX',count:2,distance:'30'},'in-2':{device:'XDM-CTR100 PSE + XDM-CTR100',count:1,distance:'30'},'out-1':{device:'XDM-CTR100 · RX',count:1,distance:'30'}}};
+  state.portAssignments=core.syncPorts(state);
+  state.portAssignments['in-1:1'].assignedDevice='PC';state.portAssignments['out-1:1'].assignedDevice='프로젝터 1';
+  const d=core.avBuilder(state),matrix=d.nodes.find(n=>n.id==='rtcom_matrix').data;
+  assert.equal(matrix.model,'XDM-12');
+  assert.equal(matrix.inputs.length,8);assert.equal(matrix.outputs.length,4);
+  assert.equal(matrix.inputs[0].label,'HDBT #1-1 PC');assert.equal(matrix.inputs[4].label,'HDMI #2-1');assert.equal(matrix.outputs[0].label,'HDBT #1-1 프로젝터 1');
+  assert.deepEqual(matrix.inputs[0].type,'network');assert.equal(matrix.inputs[4].type,'video');
+  // CIS100 2채널 → 송신기 2대, HIS100 PSE 1채널 → CTR100(TX)+PSE(RX) 2대, COS100 1채널 → 수신기 1대
+  assert.equal(d.nodes.length,1+2+2+1);assert.equal(d.edges.length,2+2+1);
+  for(const e of d.edges){const s=d.nodes.find(n=>n.id===e.source),t=d.nodes.find(n=>n.id===e.target);assert.ok(s&&t,'연결선 양 끝 상자');assert.ok(s.data.outputs.some(p=>p.id===e.sourceHandle),'출력 포트');assert.ok(t.data.inputs.some(p=>p.id===e.targetHandle),'입력 포트');assert.ok(['video','network'].includes(e.data.lineTypeId))}
+  assert.ok(d.nodes.every(n=>n.type==='equipment'&&n.data.id.startsWith('rtcom-')));
+  assert.equal(new Set(d.nodes.map(n=>n.id)).size,d.nodes.length,'상자 id는 겹치지 않음');
+  assert.equal(d.nodes.find(n=>n.id==='rtcom_in-1_1_tx').data.inputs[0].label,'HDMI In · PC');
+  assert.deepEqual(core.avBuilder({...core.initial(),model:'XDM-12',slot:'in-1'}).nodes,[]);
+});
