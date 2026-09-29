@@ -1,5 +1,7 @@
 ## Unreleased
 
+- **0.141.0 배포 기록**: `docs/qa/DEPLOYMENT_0.141_2026-09-29.md`(PR #184 → main 병합, Pages 배포 run 155, 공개 파일 335/336 일치, `.nojekyll` 제외)
+
 ## 0.142.0 — 2026-09-29
 
 - **RTCOM AI 검색(사내 베타)**: 사용자 요청("알티컴 구성기 Claude ai검색을 넣을거야 우리 회사 직원만 쓸수 있게하고 잠궈서 test해보고 싶어")과 결정(메일 인증 + 허용 명단, 공개 구성기 안 숨은 버튼, 질의응답·구성안 제안·사양 비교)에 따라 추가했습니다. 근거·설정 절차: `docs/implementation/AI_SEARCH_BETA.md`.
