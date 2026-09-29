@@ -112,11 +112,11 @@
       "source": "M1"
     },
     {
-      "text": "TX/RX 겸용 지원(TX는 XDM-CIS100, RX는 XDM-COS100 카드와 짝, Long Reach 1080p 최대 150m)",
+      "text": "TX/RX 겸용 지원(XDM-CIS100·COS100 카드 연동, Long Reach 1080p 최대 150m)",
       "source": "M1"
     },
     {
-      "text": "PD 모드 지원(PSE와 함께 쓰면 전원 케이블 불필요, CIS100·COS100 카드 직결 시에는 XDM-PSU로 전원 공급)",
+      "text": "PD 모드 지원(PSE 연결 시 전원 케이블 불필요)",
       "source": "U"
     },
     {
@@ -124,7 +124,7 @@
       "source": "U"
     },
     {
-      "text": "TX·RX 겸용 HDMI 연결(TX: HDMI IN에 소스, RX: HDMI OUT에 디스플레이)",
+      "text": "TX·RX 겸용 HDMI 연결 지원(TX: HDMI IN, RX: HDMI OUT)",
       "source": "S1"
     },
     {
@@ -132,7 +132,7 @@
       "source": "S1"
     },
     {
-      "text": "동작 상태 LED 4개 표시 지원(Rx Signal·Tx Signal·Tx/Rx·Link, 정상 시 TX는 Link·Tx/Rx·Tx Signal, RX는 Link·Tx/Rx·Rx Signal 켜짐)",
+      "text": "동작 상태 LED 4개 표시 지원",
       "source": "M1"
     }
   ],
