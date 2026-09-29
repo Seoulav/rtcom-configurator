@@ -377,9 +377,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     // 0.33 — 제품정보 글래스 디자인(rt-pg-*)으로 목록·상세 마크업이 바뀌었다.
     await page.click('a[data-view-tab="products"]');
     await page.waitForSelector('.rt-pg-gridcard');
-    check('제품정보 탭을 누르면 구성기를 숨기고 제품 31종 목록(0.64 SPX-TX/RX, 0.72 XDM-PSU, 0.121 HD-D102U Rack마운트 포함)을 표시',await page.locator('.rt-configurator-view').isHidden()&&await page.locator('.rt-pg-gridcard').count()===31);
+    check('제품정보 탭을 누르면 구성기를 숨기고 제품 32종 목록(0.64 SPX-TX/RX, 0.72 XDM-PSU, 0.121 HD-D102U Rack마운트, 0.157 SPX-R6 포함)을 표시',await page.locator('.rt-configurator-view').isHidden()&&await page.locator('.rt-pg-gridcard').count()===32);
     await page.click('[data-product-filter="extender"]');
-    check('전송기 분류는 14종(0.64 SPX-TX/RX, 0.72 XDM-PSU 포함)',await page.locator('.rt-pg-gridcard').count()===14);
+    check('전송기 분류는 15종(0.64 SPX-TX/RX, 0.72 XDM-PSU, 0.157 SPX-R6 포함)',await page.locator('.rt-pg-gridcard').count()===15);
     await page.click('[data-product-filter="all"]');
     await page.fill('[data-product-search]','QMS');
     check('검색어 QMS로 일체형 매트릭스 2종이 남음',await page.locator('.rt-pg-gridcard').count()===2);
@@ -402,7 +402,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.goBack();
     await page.waitForSelector('.rt-pg-gridcard');
     check('제품정보 목록의 첫 카드는 XDM(0.125, 사용자 요청 "XDM이 처음으로 나오게해")',(await page.locator('.rt-pg-gridcard').first().getAttribute('href'))==='#products/xdm');
-    check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-pg-gridcard').count()===31);
+    check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-pg-gridcard').count()===32);
     // 0.154 제품정보 프레임 정면·후면 팝업: 위아래로 쌓일 때 두 그림의 가로폭이 같아야 한다(사용자 요청 2026-09-29).
     await page.goto(`${home}#products/spx`,{waitUntil:'networkidle'});
     await page.click('[data-pg-frame="SPX-M1620"]');
@@ -538,6 +538,11 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.waitForSelector('#rt-pg-title');
     const spxrt=await page.evaluate(()=>({maps:document.querySelectorAll('.rt-pg-portmap svg image, .rt-pg-portmap image').length||document.querySelectorAll('[data-pm-map], .rt-pg-pm').length,rows:document.querySelectorAll('.rt-pg-dip .rt-pg-dip-row').length,combos:document.querySelectorAll('.rt-pg-dip-combos figure').length,down:document.querySelector('.rt-pg-dip h2')?.textContent.includes('아래쪽이 ON'),flow:[...document.querySelectorAll('.rt-pg-svg-wrap svg')].map(s=>s.textContent).join(' '),broken:[...document.images].filter(i=>i.complete&&!i.naturalWidth).length}));
     check('SPX-TX/RX 상세에 딥 스위치 3행(1·2번, 3·4번 조합 4칸, 아래쪽이 ON)과 CATx 신호 흐름이 나오고 깨진 사진이 없음',spxrt.rows===3&&spxrt.combos===4&&spxrt.down&&spxrt.flow.includes('CATx')&&!spxrt.flow.includes('HDBaseT')&&spxrt.broken===0,JSON.stringify({...spxrt,flow:spxrt.flow.slice(0,80)}));
+    // 0.157 SPX-R6(사용자 제공 사양서): 전면·후면 평면 그림 단자 지도 2장(번호 5·4개), 모듈 6개 → SPX-RX 6대 Signal Flow, 로고 사진 없음.
+    await page.goto(`${home}#products/spx-r6`,{waitUntil:'networkidle'});
+    await page.waitForSelector('#rt-pg-title');
+    const r6=await page.evaluate(()=>{const s=[...document.querySelectorAll('section')].find(s=>/Port Map/i.test(s.querySelector('h2')?.textContent||''));const flow=[...document.querySelectorAll('.rt-pg-svg-wrap svg')].map(x=>x.textContent).join(' ');return {title:document.querySelector('#rt-pg-title')?.textContent,front:!!s?.innerHTML.includes('spx-r6-front-art.webp'),rear:!!s?.innerHTML.includes('spx-r6-rear-art.webp'),ports:[...(s?.querySelectorAll('.rt-pg-ports')||[])].map(x=>x.children.length),rx:(flow.match(/SPX-RX/g)||[]).length,module6:flow.includes('모듈 6'),broken:[...document.images].filter(i=>i.complete&&!i.naturalWidth).length,overflow:document.documentElement.scrollWidth>innerWidth,diagramBtn:!!document.querySelector('[data-open-diagram]'),diagram:!!document.querySelector('.rt-pg-diagram-photo img')?.getAttribute('src')?.includes('spx-r6-diagram.webp')}});
+    check('SPX-R6 상세에 전면·후면 그림 단자 지도(번호 5·4개)와 모듈 6개 → SPX-RX 6대 신호 흐름, 로고를 지운 제조사 원본 다이어그램(0.158)이 나오고 깨진 사진이 없음',/SPX-R6/.test(r6.title||'')&&r6.front&&r6.rear&&r6.ports.join()==='5,4'&&r6.rx>=6&&r6.module6&&r6.broken===0&&!r6.overflow&&r6.diagramBtn&&r6.diagram,JSON.stringify(r6));
     // 0.64 OBUX-1C Tx Mode 딥 스위치(매뉴얼 Ver.2.2): 검은 몸체 4핀, 1번 오디오 + 2·3·4번 EDID 조합 5칸(Through-pass EDID Fix 포함).
     await page.goto(`${home}#products/obux-1c`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-dip');
@@ -547,7 +552,8 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     const obuxPm=await page.evaluate(()=>{const s=[...document.querySelectorAll('section')].find(s=>/Port Map/.test(s.querySelector('h2')?.textContent||''));return {tx:!!s?.innerHTML.includes('obux-1c-tx-front-rear.webp'),rx:!!s?.innerHTML.includes('obux-1c-rx-front-rear.webp'),ports:[...(s?.querySelectorAll('.rt-pg-ports')||[])].map(x=>x.children.length)}});
     // 2026-09-28 제조사 문서 PDF: documents[].file 수만큼 "제품 목록" 옆에 버튼(새 탭 보기 + 내려받기)이 나오고 링크가 PDF로 열림. 등록 파일이 없는 제품은 버튼 없음.
     // 0.105 샘플(HD-13U 카탈로그만): 새 탭 링크 대신 팝업(button[data-doc-preview])이고, 클릭하면 dialog.rt-doc-zoom이 PDF.js로 그 파일을 그린다(0.112).
-    for(const id of ['hd-13u','hd-104u']){
+    // 0.157: SPX-R6 사양서(카탈로그)·SPX 공통 매뉴얼·SPX-TX/RX 매뉴얼 공개(사용자 결정 2026-09-29)도 같은 방식으로 확인한다.
+    for(const id of ['hd-13u','hd-104u','spx-r6','spx-rx-tx','spx']){
       const expected=(JSON.parse(fs.readFileSync(`data/products/${id}.json`,'utf8')).documents||[]).filter(doc=>doc.file).length;
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
       await page.waitForSelector('.rt-pg-toolbar');
@@ -721,7 +727,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.evaluate(()=>localStorage.clear());
     await page.goto(home,{waitUntil:'networkidle'});
     // 0.64 SPX는 HDBaseT가 아닌 CATx 전송(사용자 확인 2026-09-27): SPX 시리즈 상세 신호 범례와 SPX-TX/RX 어디에도 HDBaseT가 나오지 않는다.
-    for(const id of ['spx','spx-rx-tx']){
+    for(const id of ['spx','spx-rx-tx','spx-r6']){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
       await page.waitForSelector('#rt-pg-title');
       const hb=await page.evaluate(()=>{const el=document.querySelector('.rt-products-view');const m=(el?.textContent||'').match(/.{0,40}HDBaseT.{0,40}/);return m?m[0]:false});
@@ -769,6 +775,14 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await wallCard88.locator('[data-layout-chip]',{hasText:'2×5'}).click();
     const wall=await wallCard88.evaluate(card=>({text:card.querySelector('p')?.textContent||'',chips:[...card.querySelectorAll('[data-layout-chip]')].map(b=>b.textContent).join('|'),cells:card.querySelectorAll('[data-layout-preview] svg rect.rt-pg-cell').length}));
     check('QMS-88UX 06 WALL 카드에 2×2 월 2개·3×3·2×5가 적혀 있고 레이아웃 칩 4종(2×2 + 2×2는 8칸, 2×5는 10칸)으로 미리보기됨',/2×2 월 최대 2개/.test(wall.text)&&/3×3·2×5/.test(wall.text)&&wall.chips==='2×2|2×2 + 2×2|3×3|2×5'&&wallTwo===8&&wall.cells===10,JSON.stringify({wall,wallTwo}));
+    // 0.159(사용자 요청 2026-09-29 "1TO1, ALL, 임의스위칭 이거는 빼고 그냥 크로스포인트 이미지만"): MATRIX 카드에는 칩 없이 크로스포인트 그림 한 장(QMS-44UX 출력 4칸, QMS-88UX 출력 8칸).
+    const matrixViews={};
+    for(const id of ['qms-44ux','qms-88ux']){
+      await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
+      await page.waitForSelector('.rt-pg-layout-matrix');
+      matrixViews[id]=await page.locator('.rt-pg-vmode-card',{hasText:'MATRIX'}).first().evaluate(card=>({chips:card.querySelectorAll('[data-layout-chip]').length,outs:card.querySelectorAll('svg.rt-pg-layout-matrix rect.rt-pg-cell').length,lines:card.querySelectorAll('svg.rt-pg-layout-matrix path[stroke-width="2.4"]').length}));
+    }
+    check('QMS-44UX·88UX 06 MATRIX 카드에 칩 없이 크로스포인트 그림(출력 4·8칸, 선 4·8개)이 나옴',matrixViews['qms-44ux'].chips===0&&matrixViews['qms-44ux'].outs===4&&matrixViews['qms-44ux'].lines===4&&matrixViews['qms-88ux'].chips===0&&matrixViews['qms-88ux'].outs===8&&matrixViews['qms-88ux'].lines===8,JSON.stringify(matrixViews));
     // 0.62 — videoModes(QMS) 카드 4개+레이아웃 칩 12개까지 있어 05 옆 좁은 칸에 넣으면 글자가 카드 밖으로 넘쳤다(사용자 확인 2026-09-27 "06화면모드 짤린다"). 전체 폭 아래로 되돌려 카드 안에서 텍스트가 넘치지 않는지 확인.
     for(const id of ['qms-88ux','qms-44ux']){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
@@ -1049,7 +1063,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       const left=await p3.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.placements['in-1']||null);
       const modalOpen=await p3.locator('dialog.rt-card-modal[open]').count();
       check('장착 슬롯은 평소에는 × 가 안 보이고 마우스를 올리면 보이며, 누르면 카드가 빠지고 팝업은 열리지 않음',!xBefore&&xHover&&left===null&&modalOpen===0,JSON.stringify({xBefore,xHover,left,modalOpen}));
-      // 0.157 카드 끌어 놓기 샘플(직원 제안, 사용자 승인 2026-09-29): 아래 카드 정보 버튼을 같은 방향 슬롯에 끌어 놓으면 장착·교체하고, 다른 방향 슬롯에는 놓이지 않으며, 누르면 상세 정보는 그대로 열린다.
+      // 0.160 카드 끌어 놓기 샘플(직원 제안, 사용자 승인 2026-09-29): 아래 카드 정보 버튼을 같은 방향 슬롯에 끌어 놓으면 장착·교체하고, 다른 방향 슬롯에는 놓이지 않으며, 누르면 상세 정보는 그대로 열린다.
       const saved=()=>p3.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state);
       const chipDraggable=await p3.locator('button.rt-card-info-chip[data-palette-card="XDM-HIS100"]').getAttribute('draggable');
       await p3.dragAndDrop('button.rt-card-info-chip[data-palette-card="XDM-HIS100"]','button[data-slot="in-2"]');await p3.waitForTimeout(200);
@@ -1067,7 +1081,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       await tp.goto(home,{waitUntil:'networkidle'});await tp.locator('button[data-family="XDM"]').first().click();await tp.locator('.rt-cg-preview [data-action="preview-next"]').first().click();
       await tp.click('button[data-model="XDM-12"]');await tp.locator('.rt-cg-preview [data-action="preview-next"]').first().click();
       const touchChips=await tp.evaluate(()=>({chips:document.querySelectorAll('.rt-card-info-chip').length,draggable:document.querySelectorAll('.rt-card-info-chip[draggable]').length,palette:!!document.querySelector('.rt-card-palette')}));
-      check('휴대폰(터치)에서는 카드 정보 버튼을 끌 수 없고 안내 문구도 0.156과 같음',touchChips.chips>0&&touchChips.draggable===0&&!touchChips.palette,JSON.stringify(touchChips));
+      check('휴대폰(터치)에서는 카드 정보 버튼을 끌 수 없고 안내 문구도 기존(0.159)과 같음',touchChips.chips>0&&touchChips.draggable===0&&!touchChips.palette,JSON.stringify(touchChips));
       await touch.close();
       await p3.close();
     }

@@ -455,10 +455,42 @@
       const note=extras.length?`<p class="rt-pg-hint" style="text-align:center">그 외 신호(${[...new Set(extras)].map(esc).join(', ')})는 아래 자료 기록의 입출력 표를 확인하세요.</p>`:'';
       return diagramWrap(bodyMarkup,width,height,captions)+note;
     }
+    // SPX-R6 "03 Signal Flow"(0.157). 송·수신기 한 쌍이 아니라 모듈 6개를 품은 섀시라 extenderDiagram이 그리지 못한다.
+    // 사양서 연결도(1쪽)에 있는 연결만 그린다: 소스 6대 → 모듈 칸 HDMI IN → CAT OUT → SPX-RX 6대 → 디스플레이,
+    // IR 리시버(리모컨) → IR IN, 제어 컨트롤러 → IR Ctrl, 외부 전원 어댑터 1개 → 본체(모듈 6개 공급).
+    const COLOR_IR='#7669EF';
+    function rackExtenderDiagram(item){
+      const width=860,rows=6,top=96,head=34,gap=50;
+      const r6X=160,r6W=190,rxX=530,rxW=112,srcX=48,dstX=812,rowY=i=>top+head+18+i*gap;
+      const r6Bottom=top+head+gap*rows+6,height=r6Bottom+92;
+      let body=`<text x="${width/2}" y="22" text-anchor="middle" font-size="12" font-weight="700" fill="#687386">${svgEsc(`${item.model} 1대 = 모듈 6개 · 모듈마다 소스 1대 → SPX-RX 1대 → 디스플레이 1대`)}</text>`;
+      // IR 리시버·제어 컨트롤러(위)와 전원 어댑터(아래)
+      body+=deviceBox(r6X-44,38,120,36,'IR 리시버','리모컨 신호')+deviceBox(r6X+114,38,120,36,'제어 컨트롤러','');
+      body+=arrow(r6X+22,74,r6X+22,top-3,COLOR_IR)+arrow(r6X+168,74,r6X+168,top-3,COLOR_IR);
+      body+=`<text x="${r6X+29}" y="${top-8}" font-size="10" font-weight="700" fill="${COLOR_IR}">IR IN</text><text x="${r6X+175}" y="${top-8}" font-size="10" font-weight="700" fill="${COLOR_IR}">IR Ctrl</text>`;
+      body+=`<rect x="${r6X}" y="${top}" width="${r6W}" height="${r6Bottom-top}" rx="14" fill="#eef2f8" stroke="#c8d3e6" stroke-width="2"/>`;
+      body+=`<text x="${r6X+r6W/2}" y="${top+24}" text-anchor="middle" font-size="14" font-weight="800" fill="#1f2532">${svgEsc(item.model)}</text>`;
+      body+=arrow(r6X+r6W/2,r6Bottom+34,r6X+r6W/2,r6Bottom+4,COLOR_POWER);
+      body+=`<text x="${r6X+r6W/2}" y="${r6Bottom+52}" text-anchor="middle" font-size="11" fill="#687386">전원 어댑터 1개 → 모듈 6개 공급</text>`;
+      for(let i=0;i<rows;i++){
+        const y=rowY(i);
+        body+=monitorIcon(srcX,y-4,i===rows-1?'소스 기기':'',0.8)+arrow(srcX+22,y,r6X-6,y,COLOR_IN);
+        body+=`<rect x="${r6X+12}" y="${y-17}" width="${r6W-24}" height="34" rx="8" fill="#fff" stroke="#c8d3e6" stroke-width="1.5"/><text x="${r6X+24}" y="${y+4}" font-size="12" font-weight="750" fill="#1f2532">모듈 ${i+1}</text><text x="${r6X+r6W-22}" y="${y+4}" text-anchor="end" font-size="10" fill="#687386">HDMI IN → CAT OUT</text>`;
+        body+=`<path d="M${r6X+r6W} ${y}L${rxX} ${y}" stroke="${COLOR_COPPER}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/>`;
+        body+=deviceBox(rxX,y-17,rxW,34,'SPX-RX','');
+        body+=arrow(rxX+rxW+6,y,dstX-22,y,COLOR_OUT)+monitorIcon(dstX,y-4,i===rows-1?'디스플레이':'',0.8);
+      }
+      body+=`<text x="${(r6X+r6W+rxX)/2}" y="${rowY(0)-24}" text-anchor="middle" font-size="11" font-weight="700" fill="${COLOR_COPPER}">CATx(CAT5e) · PoC</text>`;
+      const distances=(item.specifications||[]).filter(spec=>/전송거리/.test(spec.name)).map(spec=>`${/1080p/.test(spec.condition)?'1080p':'4K60'} 최대 ${spec.value}${spec.unit||''}`);
+      const captions=[[COLOR_IN,'입력(HDMI)'],[COLOR_COPPER,'CATx 전송'],[COLOR_IR,'IR 제어'],[COLOR_POWER,'전원'],[COLOR_OUT,'출력(HDMI)']];
+      if(distances.length)captions.push([COLOR_COPPER,`CAT5e 기준 ${distances.join(' · ')}`]);
+      return diagramWrap(body,width,height,captions)+`<p class="rt-pg-hint" style="text-align:center">사양서 연결도 기준입니다. PoC로 송·수신기 중 한쪽에만 전원을 연결해도 됩니다. 수신 모듈 장착과 SPX-RX IR 기능(IR Blaster)도 지원하지만 현장에서는 잘 쓰지 않습니다. IR Blaster 연결은 제조사 원본 다이어그램을 참고하세요.</p>`;
+    }
     function connectionDiagram(item){
       if(item.group==='cable')return cableDiagram(item);
       if(item.group==='distribution'||item.group==='integrated')return ioFlowDiagram(item);
       if(item.id==='xdm-psu')return psuDiagram(item);
+      if(item.id==='spx-r6')return rackExtenderDiagram(item);
       if(item.group==='extender')return extenderDiagram(item);
       return null;
     }
@@ -707,6 +739,22 @@
       }).join('');
       return `<svg viewBox="0 0 200 134" role="img" ${label}><defs>${grads}<clipPath id="${id}c"><rect x="${SX}" y="${SY}" width="${SW}" height="${SH}"/></clipPath></defs><rect x="1" y="1" width="198" height="118" rx="6" fill="#1f2532"/><rect${letterbox?' class="rt-pg-layout-letterbox"':''} x="${SX}" y="${SY}" width="${SW}" height="${SH}" fill="#0b0d12"/><g clip-path="url(#${id}c)">${tiles}</g><circle cx="100" cy="115.5" r="1.3" fill="#5b6475"/><path d="M92 119h16l3 9H89z" fill="#3a4150"/><rect x="72" y="127.5" width="56" height="5" rx="2.5" fill="#3a4150"/></svg>`;
     }
+    // 0.159(사용자 요청 2026-09-29 "매트릭스쪽 비슷한 컨셉으로 하나 만들자", "1TO1, ALL, 임의스위칭 이거는 빼고 그냥 크로스포인트 이미지만"):
+    // MATRIX 카드에 칩 없이 크로스포인트 그림 한 장을 둔다. 왼쪽 입력(IN n)에서 오른쪽 출력 모니터(OUT n)로 입력 색 선을 잇는다(색은 LAYOUT_COLORS, QUAD·DUAL과 같다).
+    // 값은 출력 1번부터 차례로 "들어오는 입력 번호" 예시다. QMS-88UX 출력 9·10번은 멀티뷰 전용이라 매트릭스 그림에서 뺀다.
+    const MATRIX_ROUTES={'qms-44ux':[3,1,3,4],'qms-88ux':[2,7,2,5,1,8,3,3]};
+    function matrixCrosspointSvg(productId){
+      const route=MATRIX_ROUTES[productId];
+      if(!route)return '';
+      const N=route.length,big=N>4,gy=big?30:44,W=380,H=N*gy+8;
+      const iy=i=>6+i*gy,mw=big?40:48,mh=big?22:27,mx=270;
+      const col=n=>LAYOUT_COLORS[(n-1)%LAYOUT_COLORS.length];
+      let lines='',ins='',outs='';
+      route.forEach((inp,o)=>{const y1=iy(inp-1)+14,y2=iy(o)+3+mh/2;lines+=`<path d="M58 ${y1}C140 ${y1},190 ${y2},${mx} ${y2}" stroke="${col(inp)}" stroke-width="2.4" fill="none" opacity=".92"/>`});
+      for(let i=0;i<N;i++){const y=iy(i);ins+=`<rect x="12" y="${y}" width="46" height="28" rx="4" fill="${col(i+1)}"/><rect x="15" y="${y+3}" width="40" height="18" rx="2" fill="#fff" fill-opacity=".25"/><text x="35" y="${y+14}" font-size="11" font-weight="800" fill="#fff" text-anchor="middle" dominant-baseline="central">IN ${i+1}</text>`}
+      route.forEach((inp,o)=>{const x=mx,y=iy(o);outs+=`<rect x="${x}" y="${y}" width="${mw+6}" height="${mh+6}" rx="3" fill="#1f2532"/><rect class="rt-pg-cell" x="${x+3}" y="${y+3}" width="${mw}" height="${mh}" fill="${col(inp)}"/><path d="M${x+3} ${y+3+mh}V${y+3+mh*0.75}Q${x+3+mw*0.3} ${y+3+mh*0.55} ${x+3+mw*0.55} ${y+3+mh*0.72}T${x+3+mw} ${y+3+mh*0.66}V${y+3+mh}Z" fill="#fff" fill-opacity=".18"/><text x="${x+3+mw/2}" y="${y+3+mh/2}" font-size="${big?10:12}" font-weight="800" fill="#fff" text-anchor="middle" dominant-baseline="central">${inp}</text><text x="${x+mw+14}" y="${y+3+mh/2}" font-size="10" font-weight="800" fill="#6b7280" dominant-baseline="central">OUT ${o+1}</text>`});
+      return `<div class="rt-pg-layout-preview rt-pg-matrix-preview"><svg class="rt-pg-layout-matrix" viewBox="0 0 ${W} ${H}" role="img" aria-label="입력 ${N} → 출력 ${N} 크로스포인트 예시">${lines}${ins}${outs}</svg></div>`;
+    }
     function videoModesSection(item){
       const vm=item.videoModes;
       if(!vm||!vm.modes?.length)return '';
@@ -718,7 +766,7 @@
           <div class="rt-pg-vmode-cards">${modes.map(mode=>`<div class="rt-pg-vmode-card">
             <div class="rt-pg-vmode-card-head">${VMODE_ICON[mode.name]||''}<div><b>${esc(VMODE_NAME_KO[mode.name]||mode.name)}</b><small>${esc(mode.name)}</small></div></div>
             <p>${esc(mode.summary)}${mode.detail?` ${esc(mode.detail)}`:''}</p>
-            ${mode.layouts?.length?`<span class="rt-pg-vmode-count">레이아웃 ${mode.layouts.length}종</span><div class="rt-pg-vmode-chips">${mode.layouts.map((layout,index)=>`<button type="button" class="rt-pg-layout-chip${index===0?' on':''}" data-layout-chip data-layout="${esc(layout)}">${esc(layout)}</button>`).join('')}</div><div class="rt-pg-layout-preview" data-layout-preview data-layout-product="${esc(item.id)}" data-layout-mode="${esc(mode.name)}">${layoutShapeSvg(mode.layouts[0],item.id,mode.name)}<small data-layout-name>${esc(mode.layouts[0])}</small></div>`:''}
+            ${mode.layouts?.length?`<span class="rt-pg-vmode-count">레이아웃 ${mode.layouts.length}종</span><div class="rt-pg-vmode-chips">${mode.layouts.map((layout,index)=>`<button type="button" class="rt-pg-layout-chip${index===0?' on':''}" data-layout-chip data-layout="${esc(layout)}">${esc(layout)}</button>`).join('')}</div><div class="rt-pg-layout-preview" data-layout-preview data-layout-product="${esc(item.id)}" data-layout-mode="${esc(mode.name)}">${layoutShapeSvg(mode.layouts[0],item.id,mode.name)}<small data-layout-name>${esc(mode.layouts[0])}</small></div>`:''}${mode.name==='MATRIX'&&!mode.layouts?.length?matrixCrosspointSvg(item.id):''}
           </div>`).join('')}</div>
         </div>
       </section>`;
