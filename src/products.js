@@ -1030,14 +1030,18 @@
     }
 
     // 다이어그램 캔버스가 화면보다 넓어 가로 스크롤이 필요하면 오른쪽 끝에 그러데이션을 보여 "잘린 것"이 아니라 "더 있음"임을 알린다.
+    // 0.178(사용자 요청 2026-09-29 "좌우 이동식 가운데 선이 보이는 문제 해결해줘"): 그러데이션을 스크롤 칸(.rt-pg-svg-wrap) 자신의 ::after로 그리면
+    // 절대 위치 요소가 내용과 함께 밀려서, 옆으로 밀면 그림 가운데에 세로 띠(선)가 남았다. 스크롤하지 않는 바깥 틀(.rt-pg-svg-frame)을 씌워 그 틀의 오른쪽 끝에 고정한다.
     function initDiagramScroll(container){
       container.querySelectorAll('.rt-pg-svg-wrap').forEach(canvas=>{
+        let frame=canvas.parentElement;
+        if(!frame.classList.contains('rt-pg-svg-frame')){frame=document.createElement('div');frame.className='rt-pg-svg-frame';canvas.before(frame);frame.appendChild(canvas)}
         const update=()=>{
           const hasMore=canvas.scrollWidth-canvas.clientWidth-canvas.scrollLeft>4;
-          canvas.classList.toggle('rt-has-more',hasMore);
+          frame.classList.toggle('rt-has-more',hasMore);
         };
         update();
-        canvas.addEventListener('scroll',update,{passive:true});
+        if(!canvas.dataset.scrollHint){canvas.dataset.scrollHint='1';canvas.addEventListener('scroll',update,{passive:true})}
       });
     }
     window.addEventListener('resize',()=>initDiagramScroll(body));
@@ -1097,9 +1101,20 @@
       dialog.className='rt-card-info-modal rt-frame-info-modal';
       dialog.setAttribute('aria-labelledby','rt-pg-frame-info-title');
       dialog.innerHTML=`<div class="rt-card-modal-head"><div><span class="rt-eyebrow">메인프레임 · ${esc(family)}</span><h3 id="rt-pg-frame-info-title">${esc(model)}</h3>${io?`<p class="rt-card-info-sub">${esc(io)} 매트릭스 프레임</p>`:''}</div><button type="button" class="rt-card-modal-close" data-card-info-close aria-label="프레임 정면·후면 닫기">×</button></div><div class="rt-card-info-body">${hasPhoto?`<div class="rt-frame-info-duo">${face('front','정면')}${face('rear','후면')}</div>`:'<p class="rt-card-info-missing">정면·후면 그림 준비 중</p>'}<table class="rt-card-info-table"><tbody>${rows.map(([k,v])=>`<tr><th scope="row">${esc(k)}</th><td>${esc(v)}</td></tr>`).join('')}</tbody></table></div><div class="rt-card-modal-foot"><button type="button" class="rt-button" data-card-info-close>닫기</button></div>`;
-      const rear=dialog.querySelector('[data-frame-face="rear"]');
-      const pickLayout=()=>{if(rear.naturalWidth&&rear.naturalWidth/rear.naturalHeight>1.25)dialog.querySelector('.rt-frame-info-duo')?.classList.add('rt-frame-info-stack')};
-      if(rear){if(rear.complete)pickLayout();else rear.addEventListener('load',pickLayout,{once:true})}
+      const rear=dialog.querySelector('[data-frame-face="rear"]'),front=dialog.querySelector('[data-frame-face="front"]');
+      // 0.178(사용자 요청 2026-09-29 "모듈러 매트릭스 프레임 상하 높이 안맞는문제 일괄 점검 후 수정해"): 좌우 배치에서 두 칸을 1fr 1fr(같은 폭)로 두면
+      // 가로:세로 비율이 다른 정면(랙 날개 포함)·후면 그림의 높이가 달라졌다. 두 그림을 모두 읽은 뒤 비율 합을 넘겨 두 그림을 같은 높이로 그린다(src/styles.css 0.178).
+      // 위아래 배치(가로로 긴 프레임)는 0.154처럼 가로폭을 같게 둔다.
+      const pickLayout=()=>{
+        const duo=dialog.querySelector('.rt-frame-info-duo');
+        if(!duo||!rear.naturalWidth||!front?.naturalWidth)return;
+        if(rear.naturalWidth/rear.naturalHeight>1.25){duo.classList.add('rt-frame-info-stack');return}
+        const rf=front.naturalWidth/front.naturalHeight,rr=rear.naturalWidth/rear.naturalHeight;
+        duo.classList.add('rt-frame-info-row');
+        duo.style.setProperty('--rt-duo-ratio',(rf+rr).toFixed(4));
+      };
+      for(const img of [rear,front])if(img&&!img.complete)img.addEventListener('load',pickLayout,{once:true});
+      if(rear)pickLayout();
       const opener=document.activeElement;
       const finish=()=>{if(dialog.open)dialog.close();dialog.remove();opener?.focus?.({preventScroll:true})};
       dialog.addEventListener('click',event=>{if(event.target===dialog||event.target.closest('[data-card-info-close]'))finish()});
