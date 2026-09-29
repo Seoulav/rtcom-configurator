@@ -437,7 +437,7 @@
       else if(!restoringNav&&state.step!==navStep)window.history.pushState({rtStep:state.step},'',location.href);
       navStep=state.step;
     }
-    // 로고(RTCOM Matrix Configurator)를 누르면 확인 후 첫 화면(제품군 선택)으로 간다. 구성은 지우지 않는다.
+    // 로고(RTCOM Configurator)를 누르면 확인 후 첫 화면(제품군 선택)으로 간다. 구성은 지우지 않는다.
     document.querySelector('.rt-brand-lockup')?.addEventListener('click',async event=>{
       event.preventDefault();
       if(state.step===0){window.scrollTo({top:0,behavior:'smooth'});return}

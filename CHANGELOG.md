@@ -66,6 +66,10 @@
 
 - **0.90.0 배포 기록**: `docs/qa/DEPLOYMENT_0.90_2026-09-28.md`(PR #85 → main 병합, 배포 run 64, 공개 파일 242/242 일치, 비공개 파일 6개 404)
 
+## 0.131.0
+
+- **화면 명칭에서 "Matrix" 삭제**(사용자 요청 2026-09-29): 상단 로고 문구와 README 제목을 "RTCOM Matrix Configurator"에서 "RTCOM Configurator"로 바꿨습니다. 한글 표기(매트릭스 구성기)·`#matrix-configurator` 주소·`/tools/matrix-configurator` 포털 주소·LocalStorage key는 호환성 계약이라 그대로입니다. rollback: 이 PR 되돌리기.
+
 ## 0.130.0
 
 - **HD-D102U Rack마운트 그림을 XDM-PSU 그래픽 컨셉으로 계승**(사용자 요청 2026-09-29 "HD-D102U Rack마운트 이미지도 XDM-PSU 그래픽컨셉을 계승해줘"): 검은 몸체(VDM·XDM·SPX 프레임 그림 방식)였던 정면 그림을 XDM-PSU 앞면·뒷면 그림(`draw_xdm_psu_panels.cjs`)과 같은 색·부품 모양으로 다시 그렸습니다. 밝은 회색 금속 몸체(#eceff4)·연한 랙 귀(#dfe3ea)·흰 모듈 카드(#f7f8fa)·어두운 테두리의 흰 구멍과 나사(#3a4150)·진한 남색 번호(#1f2532)를 씁니다. 배치(mm 좌표)는 그대로라서 02 Port Map 번호표 위치는 바뀌지 않았습니다(`scripts/tools/draw_hd_d102u_rack.cjs`).
