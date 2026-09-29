@@ -3,7 +3,7 @@
 // 사용자 제공 SPX-R6 제품 사양서(1쪽, 제품 상세 카탈로그 버튼으로 공개)의 실물 사진(전면)과 연결도(후면)를 배치 근거로 삼는다.
 // 사진·연결도에는 AmberTech 로고가 찍혀 있어 그대로 쓰지 않고, SPX 프레임 그림(draw_xdm_spx_front_frames.cjs)과 같은
 // 검은 몸체(draw_vdm_frames.cjs C 팔레트)로 다시 그린다. 로고는 그리지 않고, 사진에 보이는 글자(SPX-R6 · 6 HDMI Extender Module Chassis,
-// FW, IR IN·Ctrl, MENU·CANCEL, HDMI IN·CAT OUT)만 옮긴다. 모듈 칸 번호(파란 원 1~6)는 단자 지도 설명을 위해 더한 표시다.
+// FW, IR IN·Ctrl, MENU·CANCEL, HDMI·CAT 단자)만 옮긴다. 모듈 칸 번호(파란 원 1~6)는 단자 지도 설명을 위해 더한 표시다.
 // 좌표 단위: 폭 483 × 높이 48(사진 전면 가로:세로 약 10:1). 렌더링은 긴 변 2000px(2000×199) → 제품 데이터 portMap 좌표 = 단위 × 2000/483.
 // 실행: NODE_PATH=$(npm root -g) node scripts/tools/draw_spx_r6_panels.cjs  → output/design/assets/products/spx-r6-{front,rear}-art.webp (python PIL 필요)
 const path=require('path');
@@ -13,7 +13,8 @@ const W=483,H=48;
 const LCD='#9ccc3c',LCD_D='#5f8a1c',KEY='#eef1f5',BLUE='#007aff';
 // 배치(단위). 전면은 사진 비율(얼굴 폭 기준 LCD 0.20~0.34, 방향 버튼 0.48, MENU·CANCEL 0.54·0.57, 모델명 0.72, FW 0.905, IR 0.937·0.958)을 따른다.
 const FRONT={lcd:[97,15,66,18],pad:[232,24],menu:261,cancel:276,name:348,fw:437,irIn:452,irCtrl:464};
-// 후면은 연결도(전원 칸 1개 + 모듈 칸 6개, 칸마다 왼쪽 HDMI IN · 오른쪽 CAT OUT)를 따른다.
+// 후면은 연결도(전원 칸 1개 + 모듈 칸 6개, 칸마다 왼쪽 HDMI · 오른쪽 CAT)를 따른다.
+// 0.170: 모듈 칸에는 TX(입력)·RX(출력) 모듈을 원하는 대로 꽂으므로(사용자 확인 2026-09-29) 단자 글자를 HDMI IN/OUT · CAT IN/OUT으로 쓴다.
 const POWER_W=33,BAY_W=(W-POWER_W)/6;
 const bayX=i=>POWER_W+i*BAY_W;
 const HDMI_FX=0.21,RJ_FX=0.73;
@@ -51,13 +52,13 @@ function rear(){
   s+=`<circle cx="${f(pcx)}" cy="${f(pcy)}" r="8" fill="${C.port}" stroke="${C.metal}" stroke-width="1.4"/><circle cx="${f(pcx)}" cy="${f(pcy)}" r="5.6" fill="none" stroke="#5d6573" stroke-width="0.6"/>`;
   for(const [dx,dy] of [[-2.4,-2.4],[2.4,-2.4],[-2.4,2.4],[2.4,2.4]])s+=`<circle cx="${f(pcx+dx)}" cy="${f(pcy+dy)}" r="0.9" fill="${C.metal}"/>`;
   s+=`<path d="M${f(pcx-1.2)} ${f(pcy-6.2)}h2.4v1.6h-2.4z" fill="${C.metal}"/>`;
-  // 모듈 칸 6개: 칸마다 HDMI IN · CAT OUT, 손나사 2개, 칸 번호(파란 원)
+  // 모듈 칸 6개: 칸마다 HDMI IN/OUT · CAT IN/OUT, 손나사 2개, 칸 번호(파란 원)
   for(let i=0;i<6;i++){
     const x=bayX(i);
     s+=rect(x+1,2.5,BAY_W-2,H-5,C.bay,C.edge,0.45,1.2);
     s+=screw(x+4.2,7,1.5)+screw(x+BAY_W-4.2,7,1.5);
     const hx=x+BAY_W*HDMI_FX,rx=x+BAY_W*RJ_FX;
-    s+=text(hx,15.5,'HDMI IN',3.3,C.ink,'text-anchor="middle" font-weight="800"')+text(rx,11.5,'CAT OUT',3.3,C.ink,'text-anchor="middle" font-weight="800"');
+    s+=text(hx,15.5,'HDMI IN/OUT',3.3,C.ink,'text-anchor="middle" font-weight="800"')+text(rx,11.5,'CAT IN/OUT',3.3,C.ink,'text-anchor="middle" font-weight="800"');
     s+=hdmi(hx-6.2,20,12.4,5.4)+rj45(rx-6.6,14.5,13.2,12);
     s+=`<circle cx="${f(x+BAY_W/2)}" cy="37.6" r="4.2" fill="${BLUE}" stroke="#fff" stroke-width="0.6"/>`+text(x+BAY_W/2,39.4,String(i+1),5,'#fff','text-anchor="middle" font-weight="800"');
   }

@@ -498,3 +498,14 @@ test('0.166: SPX-TX/RX 04 제품 사양의 전송거리는 "4K60 실효 전송�
   assert.match(products,/const specValue=value=>\{/,'여러 줄 값은 줄마다 값과 괄호 설명을 나눠 보여 준다');
   assert.match(read('src/styles.css'),/\.rt-pg-spec-table td \.rt-pg-spec-line\{display:block\}/);
 });
+
+test('0.170: SPX-R6 모듈 칸 단자는 TX·RX 모듈을 모두 꽂을 수 있게 HDMI IN/OUT · CAT IN/OUT(입출력)으로 적는다',()=>{
+  // 사용자 확인 2026-09-29 "입력카드가 출력카드 원하는대로 꽂는 거라서 HDMI IN/OUT 되게 해야해"
+  const r6=JSON.parse(read('data/products/spx-r6.json'));
+  const rear=r6.portMap.find(map=>map.image==='Rear');
+  assert.deepEqual(rear.items.slice(0,2).map(item=>item.label),['HDMI IN/OUT','CAT IN/OUT']);
+  for(const group of ['Video','Transmission'])assert.equal(r6.io.find(row=>row.group===group).direction,'BIDIR',`${group} 단자는 입출력`);
+  const draw=read('scripts/tools/draw_spx_r6_panels.cjs');
+  assert.match(draw,/'HDMI IN\/OUT'/);assert.match(draw,/'CAT IN\/OUT'/);
+  assert.doesNotMatch(draw,/'HDMI IN',|'CAT OUT',/,'후면 그림에 한 방향 표기를 남기지 않는다');
+});
