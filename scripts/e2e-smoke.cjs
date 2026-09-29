@@ -745,13 +745,15 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     // 0.55 QMS-88UX 06 화면 구성 모드: 레이아웃 버튼을 누르면 해당 도해로 미리보기가 바뀐다(사용자 요청 2026-09-27).
     await page.goto(`${home}#products/qms-88ux`,{waitUntil:'networkidle'});
     await page.waitForSelector('[data-layout-chip]');
-    const beforeLayout=await page.evaluate(()=>document.querySelector('[data-layout-name]').textContent);
-    await page.locator('[data-layout-chip]',{hasText:'3-SIDE RIGHT'}).click();
-    const afterLayout=await page.evaluate(()=>({name:document.querySelector('[data-layout-name]').textContent,on:document.querySelector('.rt-pg-layout-chip.on')?.textContent,rects:document.querySelector('[data-layout-preview]').querySelectorAll('svg rect.rt-pg-cell').length}));
+    // 0.155: WALL 카드에도 칩이 생겨(QMS-44UX와 같은 방식) QUAD 카드 안에서만 본다.
+    const quadCard88=page.locator('.rt-pg-vmode-card',{hasText:'QUAD'}).first();
+    const beforeLayout=await quadCard88.evaluate(card=>card.querySelector('[data-layout-name]').textContent);
+    await quadCard88.locator('[data-layout-chip]',{hasText:'3-SIDE RIGHT'}).click();
+    const afterLayout=await quadCard88.evaluate(card=>({name:card.querySelector('[data-layout-name]').textContent,on:card.querySelector('.rt-pg-layout-chip.on')?.textContent,rects:card.querySelector('[data-layout-preview]').querySelectorAll('svg rect.rt-pg-cell').length}));
     check('QMS-88UX 06 화면 구성 모드에서 레이아웃 버튼을 누르면 미리보기 도해가 바뀜',beforeLayout==='QUAD'&&afterLayout.name==='3-SIDE RIGHT'&&afterLayout.on==='3-SIDE RIGHT'&&afterLayout.rects===4,JSON.stringify({beforeLayout,afterLayout}));
     // 0.66 — QMS-88UX 출력 9번에 매뉴얼 22~23쪽 Output Option 2·3(비율 유지 없이 그대로 8분할)을 레이아웃 목록 13번째로 추가(사용자 요청 2026-09-27 "출력9에 비율무시8분할도 추가해줘").
-    await page.locator('[data-layout-chip]',{hasText:'8분할(비율무시)'}).click();
-    const split8=await page.evaluate(()=>({name:document.querySelector('[data-layout-name]').textContent,rects:document.querySelector('[data-layout-preview]').querySelectorAll('svg rect.rt-pg-cell').length}));
+    await quadCard88.locator('[data-layout-chip]',{hasText:'8분할(비율무시)'}).click();
+    const split8=await quadCard88.evaluate(card=>({name:card.querySelector('[data-layout-name]').textContent,rects:card.querySelector('[data-layout-preview]').querySelectorAll('svg rect.rt-pg-cell').length}));
     check('QMS-88UX 06 화면 구성 모드에 "8분할(비율무시)" 레이아웃이 있고 8칸 도해로 미리보기됨',split8.name==='8분할(비율무시)'&&split8.rects===8,JSON.stringify(split8));
     // 0.90 — QMS-88UX DUAL 카드가 "듀얼 모드" 한 마디뿐이었다(사용자 질문 2026-09-28 "QMS-88Ux도 듀얼 출력되지 않아??"). 매뉴얼 KV.04 20~21쪽 근거로 2분할(PBP)·PIP 레이아웃 3종을 넣고, 카드 안에서만 미리보기가 바뀌는지 확인.
     const dualCard=page.locator('.rt-pg-vmode-card',{hasText:'DUAL'});
@@ -759,9 +761,14 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     const dual=await dualCard.evaluate(card=>({chips:[...card.querySelectorAll('[data-layout-chip]')].map(b=>b.textContent),name:card.querySelector('[data-layout-name]')?.textContent,rects:card.querySelectorAll('[data-layout-preview] svg rect.rt-pg-cell').length,text:card.querySelector('p')?.textContent||''}));
     const quadName=await page.locator('.rt-pg-vmode-card',{hasText:'QUAD'}).first().evaluate(card=>card.querySelector('[data-layout-name]')?.textContent);
     check('QMS-88UX 06 DUAL 카드에 PBP·PIP 레이아웃 3종이 있고 Vertical PBP를 누르면 2칸 도해로 바뀌며 QUAD 카드 미리보기는 그대로임',dual.chips.join('|')==='Horizontal PBP|Vertical PBP|Quad PBP, PIP'&&dual.name==='Vertical PBP'&&dual.rects===2&&/출력 9·10번/.test(dual.text)&&quadName==='8분할(비율무시)',JSON.stringify({dual,quadName}));
-    // 0.152 — QMS-88UX WALL 요약이 "최대 3×3"뿐이었다(매뉴얼 KV.04 19쪽: 2×2 월 최대 2개, 월 1개면 최대 3×3·2×5). 매뉴얼에 배치 도해가 없어 WALL에는 도해를 두지 않는다.
-    const wall=await page.locator('.rt-pg-vmode-card',{hasText:'WALL'}).first().evaluate(card=>({text:card.querySelector('p')?.textContent||'',chips:card.querySelectorAll('[data-layout-chip]').length}));
-    check('QMS-88UX 06 WALL 카드에 2×2 월 2개·3×3·2×5가 적혀 있고 레이아웃 도해 칩은 없음',/2×2 월 최대 2개/.test(wall.text)&&/3×3·2×5/.test(wall.text)&&wall.chips===0,JSON.stringify(wall));
+    // 0.152 — QMS-88UX WALL 요약이 "최대 3×3"뿐이었다(매뉴얼 KV.04 19쪽: 2×2 월 최대 2개, 월 1개면 최대 3×3·2×5).
+    // 0.155(사용자 요청 2026-09-29 "QMS-44 비디오월 기능을 88에도 동일한 컨셉으로 만들어줘"): 0.152에서 두지 않았던 WALL 칩을 44UX처럼 넣었다. 2×2 + 2×2는 월 2개(8칸, 출력 1~8), 2×5는 10칸.
+    const wallCard88=page.locator('.rt-pg-vmode-card',{hasText:'WALL'}).first();
+    await wallCard88.locator('[data-layout-chip]',{hasText:'2×2 + 2×2'}).click();
+    const wallTwo=await wallCard88.evaluate(card=>card.querySelectorAll('[data-layout-preview] svg rect.rt-pg-cell').length);
+    await wallCard88.locator('[data-layout-chip]',{hasText:'2×5'}).click();
+    const wall=await wallCard88.evaluate(card=>({text:card.querySelector('p')?.textContent||'',chips:[...card.querySelectorAll('[data-layout-chip]')].map(b=>b.textContent).join('|'),cells:card.querySelectorAll('[data-layout-preview] svg rect.rt-pg-cell').length}));
+    check('QMS-88UX 06 WALL 카드에 2×2 월 2개·3×3·2×5가 적혀 있고 레이아웃 칩 4종(2×2 + 2×2는 8칸, 2×5는 10칸)으로 미리보기됨',/2×2 월 최대 2개/.test(wall.text)&&/3×3·2×5/.test(wall.text)&&wall.chips==='2×2|2×2 + 2×2|3×3|2×5'&&wallTwo===8&&wall.cells===10,JSON.stringify({wall,wallTwo}));
     // 0.62 — videoModes(QMS) 카드 4개+레이아웃 칩 12개까지 있어 05 옆 좁은 칸에 넣으면 글자가 카드 밖으로 넘쳤다(사용자 확인 2026-09-27 "06화면모드 짤린다"). 전체 폭 아래로 되돌려 카드 안에서 텍스트가 넘치지 않는지 확인.
     for(const id of ['qms-88ux','qms-44ux']){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
