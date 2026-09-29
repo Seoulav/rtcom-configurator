@@ -53,3 +53,12 @@ SPX-R6 사양서와 다른 자료 사이:
 - SPX-R6 제품만 빼려면 `data/products/spx-r6.json`, `spx-r6-*.webp`, `spx-rx-tx.json`의 `spx-r6` 관련 제품 줄, `src/products.js`의 `rackExtenderDiagram`을 지우고 `node scripts/build-product-index.cjs`를 실행합니다.
 - 버튼만 끄려면 `documents[].file`을 지웁니다. 공개 폴더 PDF를 지워도 Git 기록에는 남습니다.
 - 깊이 값은 `data/products/spx.json` `lineup`의 두 줄을 433.7로 되돌립니다.
+
+## 7. 0.158.0 보완(사용자 확인 2026-09-29)
+
+- 사용자 답변: "SPX-RX의 IR 기능과 수신가능한대 잘 안써".
+- SPX-R6 04 제품 사양에 "수신 모듈 장착: 가능"과 "SPX-RX IR 기능: 지원(IR Blaster)"을 추가했습니다. 두 행 모두 조건 칸에 "현장에서는 잘 쓰지 않음"을 적었고, 출처는 U2(사용자 확인)입니다. 개요에도 같은 내용을 한 문단 더했습니다.
+- 03 Signal Flow 그림은 자주 쓰는 구성(송신 모듈 → SPX-RX)만 그대로 두었습니다. 그림 아래 안내 문장에 수신 모듈과 IR Blaster도 지원하지만 잘 쓰지 않아 그림에서 뺐다고 적었습니다.
+- SPX-TX / SPX-RX 상세는 바꾸지 않았습니다. SPX-TX/RX 매뉴얼 Ver.2.0에 IR 단자 정보가 없어 단자 지도나 사양에 넣을 근거가 없기 때문입니다.
+- `docs/handoff/OPEN_ITEMS.md`에서 IR Blaster·모듈 종류 확인 항목 2건을 지웠습니다.
+- 제조사 원본 다이어그램(사용자 요청 "앰버텍만 지워서 활용하면 될거 같은데"): 사양서 1쪽 연결도(1400×1577)에서 로고 7곳(본체 x275~362·y285~336, SPX-RX 6대 가운데 x±26·y1077~1102)을 배경색 (35,31,32)으로 덮어 `output/design/assets/products/spx-r6-diagram.webp`로 저장했습니다. 다른 부분은 바꾸지 않았습니다.

@@ -484,7 +484,7 @@
       const distances=(item.specifications||[]).filter(spec=>/전송거리/.test(spec.name)).map(spec=>`${/1080p/.test(spec.condition)?'1080p':'4K60'} 최대 ${spec.value}${spec.unit||''}`);
       const captions=[[COLOR_IN,'입력(HDMI)'],[COLOR_COPPER,'CATx 전송'],[COLOR_IR,'IR 제어'],[COLOR_POWER,'전원'],[COLOR_OUT,'출력(HDMI)']];
       if(distances.length)captions.push([COLOR_COPPER,`CAT5e 기준 ${distances.join(' · ')}`]);
-      return diagramWrap(body,width,height,captions)+`<p class="rt-pg-hint" style="text-align:center">사양서 연결도 기준입니다. PoC로 송·수신기 중 한쪽에만 전원을 연결해도 됩니다.</p>`;
+      return diagramWrap(body,width,height,captions)+`<p class="rt-pg-hint" style="text-align:center">사양서 연결도 기준입니다. PoC로 송·수신기 중 한쪽에만 전원을 연결해도 됩니다. 수신 모듈 장착과 SPX-RX IR 기능(IR Blaster)도 지원하지만 현장에서는 잘 쓰지 않습니다. IR Blaster 연결은 제조사 원본 다이어그램을 참고하세요.</p>`;
     }
     function connectionDiagram(item){
       if(item.group==='cable')return cableDiagram(item);
