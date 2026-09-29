@@ -373,7 +373,8 @@
       if(state.step!==2)modalSlot=null;
       main.innerHTML=[familyView,chassisViewV2,cardsViewV4,linksViewV4,reviewViewV2,exportView][state.step]();
       openCardModal();
-      root.querySelector('.rt-summary').innerHTML=`<strong>${state.family}</strong>${state.model?' / '+state.model:' 제품군'}<br>${state.step>1?'카드 구성 검토 중':'카테고리: 매트릭스'}`;
+      // 0.129 아래 바의 제품군·모델·카테고리 요약 글을 없앤다(사용자 요청 2026-09-29 "이거 삭제해줘"). 01 제품군은 버튼도 없어 바 전체를 숨긴다.
+      root.querySelector('.rt-footer').hidden=state.step===0;
       const next=root.querySelector('[data-action=next]');
       next.disabled=state.step===1&&!state.model;
       // 0.128 01 제품군에서는 미리보기의 "프레임 선택" 버튼 하나만 둔다(사용자 지적 2026-09-29 "버튼이 중복이다"). 아래 바 다음 버튼은 02부터 나온다.

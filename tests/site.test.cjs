@@ -381,3 +381,11 @@ test('0.128: 01 제품군에서는 아래 바 다음 버튼을 숨겨 프레임 
   assert.match(app,/next\.hidden=state\.step===0;/,'01 제품군에서는 아래 바 다음 버튼을 숨긴다');
   assert.match(css,/\.rt-button\[hidden\]\{display:none!important\}/,'hidden 속성이 display:flex 규칙에 밀리지 않게 한다');
 });
+
+test('0.129: 구성기 아래 바의 요약 글(제품군 / 모델 · 카테고리)은 없고, 01 제품군에서는 아래 바를 숨긴다',()=>{
+  assert.doesNotMatch(read('index.html'),/class="rt-summary"/);
+  const app=read('src/app.js');
+  assert.doesNotMatch(app,/카테고리: 매트릭스/);
+  assert.match(app,/querySelector\('\.rt-footer'\)\.hidden=state\.step===0/);
+  assert.match(read('src/styles.css'),/\.rt-footer\[hidden\]\{display:none\}/);
+});
