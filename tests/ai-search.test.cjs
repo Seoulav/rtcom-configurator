@@ -6,7 +6,9 @@ const path=require('node:path');
 const {webcrypto}=require('node:crypto');
 const {buildAiContext}=require('../scripts/build-ai-context.cjs');
 
-const load=()=>import(path.join(__dirname,'../workers/ai-search/src/core.js'));
+// Windows에서 C:… 절대 경로를 그대로 import()하면 'c:'를 URL 스킴으로 읽어 실패한다(ERR_UNSUPPORTED_ESM_URL_SCHEME). file:// 주소로 바꿔 넘긴다.
+const {pathToFileURL}=require('node:url');
+const load=()=>import(pathToFileURL(path.join(__dirname,'../workers/ai-search/src/core.js')).href);
 const SECRET='x'.repeat(40);
 const SITE='https://seoulav.github.io/rtcom-configurator/';
 const TEAM='seoulav.cloudflareaccess.com',AUD='aud-tag-123';
