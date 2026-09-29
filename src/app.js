@@ -245,10 +245,15 @@
     // 카드 상세 정보(사용자 요청 2026-09-28 "입력 출력카드 버튼을 만들어 해당 카드 상세정보가 나와야해"): 03 카드 슬롯 아래 입력·출력 카드 버튼과
     // 내 구성의 카드 행을 누르면 card-specs.js(카탈로그 46쪽판 근거) 사양을 대화상자로 보여준다. 화면 상태가 아니라서 실행 취소·자동 저장 대상이 아니다.
     const cardSpecs=globalThis.RtCardSpecs||{};
+    // 0.162 카드 끌어 놓기 샘플(직원 제안, 사용자 승인 2026-09-29 "위 범위로 진행"): 아래 카드 정보 버튼을 후면 슬롯으로 끌어 놓으면 장착한다.
+    // 누르면 지금처럼 상세 정보가 열린다. 마우스(정밀 포인터)에서만 켜고, 휴대폰·태블릿은 기존 팝업 방식만 쓴다.
+    // 되돌리기: PALETTE_DRAG를 false로 바꾸면 버튼·안내 문구·끌어 놓기 처리가 모두 이 기능을 넣기 전과 같아진다.
+    const PALETTE_DRAG=true;
+    const paletteDrag=()=>PALETTE_DRAG&&!!globalThis.matchMedia?.('(hover: hover) and (pointer: fine)').matches;
     function cardInfoBar(){
-      const f=families[state.family];
-      const group=dir=>`<div class="rt-card-info-group"><span>${dir==='input'?'입력':'출력'} 카드</span><div>${f[dir].map(c=>`<button type="button" class="rt-card-info-chip" data-card-info="${c[0]}"><strong>${c[0]}</strong><small>${esc(c[1])}</small></button>`).join('')}</div></div>`;
-      return `<section class="rt-card-info-bar" aria-label="카드 상세 정보"><div class="rt-card-info-head"><strong>카드 정보</strong><small>버튼을 누르면 카드별 포트·해상도·규격을 볼 수 있습니다</small></div>${group('input')}${group('output')}</section>`;
+      const f=families[state.family],drag=paletteDrag();
+      const group=dir=>`<div class="rt-card-info-group"><span>${dir==='input'?'입력':'출력'} 카드</span><div>${f[dir].map(c=>`<button type="button" class="rt-card-info-chip" data-card-info="${c[0]}"${drag?` draggable="true" data-palette-card="${c[0]}" data-palette-dir="${dir}" title="누르면 상세 정보 · 후면 ${dir==='input'?'입력':'출력'} 슬롯으로 끌어 놓으면 장착"`:''}><strong>${c[0]}</strong><small>${esc(c[1])}</small></button>`).join('')}</div></div>`;
+      return `<section class="rt-card-info-bar${drag?' rt-card-palette':''}" aria-label="카드 상세 정보"><div class="rt-card-info-head"><strong>카드 정보</strong><small>${drag?'버튼을 누르면 상세 정보, 후면 슬롯으로 끌어 놓으면 카드가 장착됩니다(입력 카드는 입력 슬롯, 출력 카드는 출력 슬롯)':'버튼을 누르면 카드별 포트·해상도·규격을 볼 수 있습니다'}</small></div>${group('input')}${group('output')}</section>`;
     }
     function openCardInfo(id){
       const c=card(id);if(!c)return;
@@ -408,13 +413,41 @@
     // 0.55 슬롯 끌어 옮기기(마우스): 장착한 슬롯을 같은 방향(입력↔입력, 출력↔출력) 슬롯에 놓으면 옮기거나 맞바꾼다.
     // 휴대폰은 끌기 대신 카드 팝업의 "다른 슬롯으로 이동"을 쓴다.
     let dragFrom=null;
+    // 0.162 아래 카드 정보 버튼에서 끌어 온 카드({card, dir}). 슬롯끼리 옮기기(dragFrom)와 따로 둔다.
+    let dragPalette=null;
     const slotDir=id=>id?.startsWith('in-')?'input':id?.startsWith('out-')?'output':null;
-    const clearDrop=()=>root.querySelectorAll('.rt-rack-slot-drop,.rt-rack-slot-dragging').forEach(el=>el.classList.remove('rt-rack-slot-drop','rt-rack-slot-dragging'));
+    const clearDrop=()=>{root.querySelectorAll('.rt-rack-slot-drop,.rt-rack-slot-dragging,.rt-card-info-chip-dragging').forEach(el=>el.classList.remove('rt-rack-slot-drop','rt-rack-slot-dragging','rt-card-info-chip-dragging'));root.classList.remove('rt-palette-drag-input','rt-palette-drag-output')};
+    function placeFromPalette(slotId,cardId){
+      const c=card(cardId);
+      if(!c||!currentSlots().some(item=>item.id===slotId)||state.placements[slotId]===cardId)return;
+      const was=state.placements[slotId];
+      // 연동 전송기는 카드 팝업에서 카드를 하나만 눌렀을 때와 같은 기본값으로 연결한다(04 전송기 단계에서 바꿀 수 있다).
+      const link=linkFor(slotId,cardId,RtCore.defaultLink(cardId,1)?.device||'',c[2]);
+      state.placements[slotId]=cardId;
+      if(link)state.links[slotId]=link;else delete state.links[slotId];
+      state.slot=slotId;changedSlot=slotId;syncPorts();changed();
+      announce(`${slotId.replace(/^in-/,'입력 슬롯 ').replace(/^out-/,'출력 슬롯 ')}에 ${cardId}를 ${was?`${was==='BLANK'?'블랭크 커버':was} 대신 `:''}장착했습니다. 실행 취소로 되돌릴 수 있습니다.`);
+    }
+    root.addEventListener('dragstart',event=>{
+      const chip=PALETTE_DRAG&&event.target.closest?.('button[data-palette-card][draggable="true"]');
+      if(chip){dragPalette={card:chip.dataset.paletteCard,dir:chip.dataset.paletteDir};event.dataTransfer.effectAllowed='copy';event.dataTransfer.setData('text/plain',dragPalette.card);chip.classList.add('rt-card-info-chip-dragging');root.classList.add(`rt-palette-drag-${dragPalette.dir}`);return}
+    });
+    root.addEventListener('dragover',event=>{
+      if(!dragPalette)return;
+      const b=event.target.closest?.('button[data-slot]');if(!b||slotDir(b.dataset.slot)!==dragPalette.dir)return;
+      event.preventDefault();event.dataTransfer.dropEffect='copy';root.querySelectorAll('.rt-rack-slot-drop').forEach(el=>el!==b&&el.classList.remove('rt-rack-slot-drop'));b.classList.add('rt-rack-slot-drop');
+    });
+    root.addEventListener('drop',event=>{
+      if(!dragPalette)return;
+      const b=event.target.closest?.('button[data-slot]'),from=dragPalette;dragPalette=null;clearDrop();
+      if(!b||slotDir(b.dataset.slot)!==from.dir)return;
+      event.preventDefault();event.stopImmediatePropagation();placeFromPalette(b.dataset.slot,from.card);
+    });
     root.addEventListener('dragstart',event=>{const b=event.target.closest?.('button[data-slot][draggable="true"]');if(!b)return;dragFrom=b.dataset.slot;event.dataTransfer.effectAllowed='move';event.dataTransfer.setData('text/plain',dragFrom);b.classList.add('rt-rack-slot-dragging')});
     root.addEventListener('dragover',event=>{const b=event.target.closest?.('button[data-slot]');if(!b||!dragFrom||b.dataset.slot===dragFrom||slotDir(b.dataset.slot)!==slotDir(dragFrom))return;event.preventDefault();event.dataTransfer.dropEffect='move';root.querySelectorAll('.rt-rack-slot-drop').forEach(el=>el!==b&&el.classList.remove('rt-rack-slot-drop'));b.classList.add('rt-rack-slot-drop')});
     root.addEventListener('dragleave',event=>{const b=event.target.closest?.('button[data-slot]');if(b&&!b.contains(event.relatedTarget))b.classList.remove('rt-rack-slot-drop')});
     root.addEventListener('drop',event=>{const b=event.target.closest?.('button[data-slot]');const from=dragFrom;dragFrom=null;clearDrop();if(!b||!from)return;event.preventDefault();const moved=RtCore.moveCard(state,from,b.dataset.slot);if(!moved)return;state=moved;changedSlot=b.dataset.slot;changed();announce(`${b.dataset.slot.replace(/^in-/,'입력 슬롯 ').replace(/^out-/,'출력 슬롯 ')}(으)로 옮겼습니다.`)});
-    root.addEventListener('dragend',()=>{dragFrom=null;clearDrop()});
+    root.addEventListener('dragend',()=>{dragFrom=null;dragPalette=null;clearDrop()});
     // 0.55 Delete 키로 카드 빼기(사용자 요청 "프레임 뒤에서 카드를 선택하고 del키를 누르면 삭제"): 슬롯에 초점이 있거나
     // 그 슬롯의 카드 팝업이 열려 있을 때 Delete(맥은 Backspace)를 누르면 슬롯을 비운다. 실행 취소로 되돌릴 수 있다.
     root.addEventListener('keydown',event=>{
