@@ -84,6 +84,17 @@
 
 - **0.90.0 배포 기록**: `docs/qa/DEPLOYMENT_0.90_2026-09-28.md`(PR #85 → main 병합, 배포 run 64, 공개 파일 242/242 일치, 비공개 파일 6개 404)
 
+
+## 0.140.0 — 2026-09-29
+
+- **RTCOM AI 검색(사내 베타)**: 사용자 요청("알티컴 구성기 Claude ai검색을 넣을거야 우리 회사 직원만 쓸수 있게하고 잠궈서 test해보고 싶어")과 결정(메일 인증 + 허용 명단, 공개 구성기 안 숨은 버튼, 질의응답·구성안 제안·사양 비교)에 따라 추가했습니다. 근거·설정 절차: `docs/implementation/AI_SEARCH_BETA.md`.
+  - `src/ai-search.js`: `?ai=beta`로 한 번 연 브라우저에만 머리글 "AI 검색 β" 버튼과 오른쪽 창(휴대폰은 전체 화면)을 띄웁니다. `?ai=off`로 끕니다. 답은 이스케이프한 뒤 제목·목록·표·굵게·`[[제품id]]` 제품 링크만 그립니다.
+  - `workers/ai-search/`: 같은 코드를 두 Cloudflare Worker로 배포합니다. `rtcom-ai-login`은 Access로 잠그고 JWT·허용 명단을 다시 확인해 12시간 서명 토큰을 발급합니다. `rtcom-ai-api`는 토큰·origin·명단을 매번 확인하고 Claude(`claude-opus-5-5`, 프롬프트 캐시, `fallbacks: "default"`)의 답을 NDJSON으로 흘려 보냅니다. API 키는 Worker 비밀값에만 있습니다.
+  - 허용 메일 도메인은 영업팀 `seoulav1.co.kr`입니다(사용자 지시 2026-09-29 "영업팀은 @seoulav1.co.kr 사용해서 이걸로 변경해줘").
+  - `scripts/build-ai-context.cjs`: 공개 제품정보 31종과 구성기 카탈로그(프레임별 슬롯 수·카드 포트 수·카드 사양·연동 전송기)를 글로 줄여 `dist/data/ai-context.json`(약 6.4만 자)을 만듭니다. 사진 좌표·출처는 빼고, 같은 데이터면 같은 결과(sha256)를 냅니다.
+  - 서버 주소(`CONFIG`)는 사용자가 Worker를 배포한 뒤 채웁니다. 그전에는 창에 "AI 서버가 아직 준비되지 않았습니다"만 보입니다.
+  - 검증: 단위 테스트 8건(`tests/ai-search.test.cjs`), e2e 10건, `wrangler dev`(workerd) 실제 실행·`wrangler deploy --dry-run` 번들 확인.
+
 ## 0.139.0
 
 - **XDM 출력 카드 6종 가로 위치 통일**(사용자 요청 2026-09-29 "XDM 출력 카드 6종도 같은 방식으로 맞추고"): XDM-HOS100·DPOS100·COS100·FOS100·SOS100·WOS100 판넬 사진의 좌우 끝과 2핀 커넥터 열 위치를 XDM-HOS100 기준으로 맞췄습니다(WOS100은 커넥터가 없어 좌우 끝만). 스크립트는 `scripts/tools/align_xdm_cards.py`(입력·출력 묶음)로 이름을 바꿨습니다.

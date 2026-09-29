@@ -2,6 +2,15 @@
 
 새 세션은 이 목록을 먼저 확인합니다. 처리한 항목은 지우고, CHANGELOG에 버전과 함께 남깁니다.
 
+## AI 검색 사내 베타(0.140) — 사용자 설정 대기
+
+`docs/implementation/AI_SEARCH_BETA.md` §5 절차를 사용자가 직접 합니다. Claude는 API 키·비밀값을 받지 않습니다.
+- [ ] Anthropic Console: Workspace·API 키 발급, 월 지출 한도 설정
+- [ ] Cloudflare: 두 Worker 배포, `rtcom-ai-login`에 Access(허용 명단, `@seoulav1.co.kr`) 켜기, 비밀값 7개 넣기
+- [ ] 두 Worker 주소(`rtcom-ai-api…workers.dev`, `rtcom-ai-login…workers.dev`)를 Claude에게 알려 주기 → `src/ai-search.js`의 `CONFIG` 채워 배포
+- [ ] 첫 실제 질문으로 답 품질·건당 토큰(`cacheWrite`·`cacheRead`) 확인
+- [ ] (결정) `@seoulav.co.kr` 메일도 허용할지. 지금은 `seoulav1.co.kr`만 허용합니다.
+
 ## 사용자(RT컴)에게 받을 사진
 
 받으면 `input_doc/`에 넣거나 zip으로 올립니다. 처리는 `.claude/skills/input-doc/SKILL.md`의 사진 교체 절차를 따릅니다.
