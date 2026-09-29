@@ -250,7 +250,9 @@
     const signalShort=text=>String(text||'').split(' · ')[0];
     const signalKind=text=>{const t=signalShort(text);return /HDMI/.test(t)?'hdmi':/DisplayPort/.test(t)?'dp':/CATx/.test(t)?'catx':/HDBaseT/.test(t)?'hdbt':/광/.test(t)?'fiber':/SDI/.test(t)?'sdi':'etc'};
     const signalAbbr={hdmi:'HDMI',dp:'DP',hdbt:'HDBT',catx:'CATx',fiber:'FIBER',sdi:'SDI',etc:'ETC'};
-    const sigBadge=(text,cls='')=>{const k=signalKind(text);return `<i class="rt-sig-badge${cls?` ${cls}`:''}" data-sig="${k}" aria-hidden="true">${signalAbbr[k]}</i>`};
+    const sigBadge=(text,cls='',label)=>{const k=signalKind(text);return `<i class="rt-sig-badge${cls?` ${cls}`:''}" data-sig="${k}" aria-hidden="true">${esc(label||signalAbbr[k])}</i>`};
+    // 0.170(사용자 요청 2026-09-29 "XDM-HI100과 HIS100 구별점을 줘야할 거 같아"): 후면 슬롯 태그는 색으로 신호를, 글자로 모델(HI100·HIS100, HOS4-U·HOS4S-UW 등)을 알려 준다.
+    const slotModel=id=>String(id).replace(/^(XDM|SPX)-/,'');
     // 후면 아래 범례: 지금 제품군에 있는 신호만, 카탈로그 표기(예: 12G-SDI, 3G/HD-SDI) 그대로.
     function signalLegend(){const f=families[state.family],seen=new Map();for(const c of [...f.input,...f.output]){const k=signalKind(c[1]);if(!seen.has(k))seen.set(k,c[1])}return `<div class="rt-sig-legend" aria-label="신호 종류">${[...seen].map(([,text])=>`<span>${sigBadge(text)}${esc(signalShort(text))}</span>`).join('')}</div>`}
     // 내 구성 행의 장착 위치: 같은 방향 슬롯 번호를 이어진 구간으로 줄인다(IN 1–4·7).
@@ -307,12 +309,13 @@
       const columns=rackColumns(model,layout);
       const shortLabel=slot=>slot.id.replace(/^in-/,'IN ').replace(/^out-/,'OUT ').toUpperCase();
       const changed=changedSlot;changedSlot=null;
+      // 0.170(사용자 선택 2026-09-29 2안 "이걸로 가자"): 장착 슬롯은 번호표를 숨기지 않고 번호와 신호를 한 태그(IN 1 | HDMI)로 보여 준다. 0.167의 따로 떨어진 신호 배지가 번호표 자리를 가리던 문제(사용자 지적 "IN/OUT과 신호카드가 인덱스가 겹치는데")를 푼다.
       // 슬롯 상태(2-3, 사용자 결정 2026-09-27): 빈칸=흰색(+는 호버·포커스에만), 카드=실제 사진, 블랭크=blankPlates(사용자가 고른 슬롯에만), 선택 중=파란 테두리.
       const slotButton=slot=>{
         const rawValue=state.placements[slot.id],isBlank=rawValue==='BLANK',c=isBlank?null:slotCard(slot.id),selecting=modalSlot===slot.id;
         const stateClass=c?'rt-rack-slot-filled':isBlank?'rt-rack-slot-blank':'rt-rack-slot-empty';
         const label=c?`${c[0]} 장착됨 · 눌러서 변경`:isBlank?'블랭크 커버 · 눌러서 변경':'비어 있음 · 눌러서 카드 선택';
-        return `<button type="button" class="rt-rack-slot ${stateClass} ${selecting?'rt-rack-slot-selecting':''} ${changed===slot.id?'rt-rack-slot-changed':''}" data-slot="${slot.id}"${rawValue?' draggable="true"':''} aria-label="${esc(slot.label)}, ${label}" title="${esc(slot.label)}${c?` · ${c[0]}`:isBlank?' · 블랭크 커버':''}"><span class="rt-rack-slot-no rt-rack-slot-no-${slot.dir}" aria-hidden="true">${shortLabel(slot)}</span>${rawValue?`<span class="rt-rack-slot-x" role="button" tabindex="-1" data-slot-clear="${slot.id}" aria-label="${esc(slot.label)} ${c?c[0]:'블랭크 커버'} 빼기" title="카드 빼기">×</span>`:''}${c?`<img draggable="false" class="rt-faceplate" src="${cardAsset(c[0])}" alt="">${sigBadge(c[1],'rt-slot-sig')}`:isBlank?`<img draggable="false" class="rt-faceplate rt-blank-plate" src="${blankPlates[state.family]}" alt="">`:'<span class="rt-rack-slot-add" aria-hidden="true">+</span>'}</button>`;
+        return `<button type="button" class="rt-rack-slot ${stateClass} ${selecting?'rt-rack-slot-selecting':''} ${changed===slot.id?'rt-rack-slot-changed':''}" data-slot="${slot.id}"${rawValue?' draggable="true"':''} aria-label="${esc(slot.label)}, ${label}" title="${esc(slot.label)}${c?` · ${c[0]}`:isBlank?' · 블랭크 커버':''}">${c?`<span class="rt-rack-slot-no rt-rack-slot-no-${slot.dir} rt-slot-tag" aria-hidden="true"><span class="rt-slot-tag-n">${shortLabel(slot)}</span>${sigBadge(c[1],'rt-slot-tag-s',slotModel(c[0]))}</span>`:`<span class="rt-rack-slot-no rt-rack-slot-no-${slot.dir}" aria-hidden="true">${shortLabel(slot)}</span>`}${rawValue?`<span class="rt-rack-slot-x" role="button" tabindex="-1" data-slot-clear="${slot.id}" aria-label="${esc(slot.label)} ${c?c[0]:'블랭크 커버'} 빼기" title="카드 빼기">×</span>`:''}${c?`<img draggable="false" class="rt-faceplate" src="${cardAsset(c[0])}" alt="">`:isBlank?`<img draggable="false" class="rt-faceplate rt-blank-plate" src="${blankPlates[state.family]}" alt="">`:'<span class="rt-rack-slot-add" aria-hidden="true">+</span>'}</button>`;
       };
       const bank=(dir,items)=>`<section class="rt-rack-bank rt-rack-bank-${dir}" aria-label="${dir==='input'?'입력':'출력'} 카드 슬롯"><div class="rt-rack-bank-title"><strong>${dir==='input'?'입력':'출력'}</strong><span>${items.filter(item=>slotCard(item.id)).length} / ${items.length}</span></div><div class="rt-rack-grid">${items.map(slotButton).join('')}</div></section>`;
       const photo=rearPhotos[model];

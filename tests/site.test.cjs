@@ -499,7 +499,7 @@ test('0.166: SPX-TX/RX 04 제품 사양의 전송거리는 "4K60 실효 전송�
   assert.match(read('src/styles.css'),/\.rt-pg-spec-table td \.rt-pg-spec-line\{display:block\}/);
 });
 
-test('0.170: SPX-R6 모듈 칸 단자는 TX·RX 모듈을 모두 꽂을 수 있게 HDMI IN/OUT · CAT IN/OUT(입출력)으로 적는다',()=>{
+test('0.171: SPX-R6 모듈 칸 단자는 TX·RX 모듈을 모두 꽂을 수 있게 HDMI IN/OUT · CAT IN/OUT(입출력)으로 적는다',()=>{
   // 사용자 확인 2026-09-29 "입력카드가 출력카드 원하는대로 꽂는 거라서 HDMI IN/OUT 되게 해야해"
   const r6=JSON.parse(read('data/products/spx-r6.json'));
   const rear=r6.portMap.find(map=>map.image==='Rear');

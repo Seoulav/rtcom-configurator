@@ -14,7 +14,7 @@ const LCD='#9ccc3c',LCD_D='#5f8a1c',KEY='#eef1f5',BLUE='#007aff';
 // 배치(단위). 전면은 사진 비율(얼굴 폭 기준 LCD 0.20~0.34, 방향 버튼 0.48, MENU·CANCEL 0.54·0.57, 모델명 0.72, FW 0.905, IR 0.937·0.958)을 따른다.
 const FRONT={lcd:[97,15,66,18],pad:[232,24],menu:261,cancel:276,name:348,fw:437,irIn:452,irCtrl:464};
 // 후면은 연결도(전원 칸 1개 + 모듈 칸 6개, 칸마다 왼쪽 HDMI · 오른쪽 CAT)를 따른다.
-// 0.170: 모듈 칸에는 TX(입력)·RX(출력) 모듈을 원하는 대로 꽂으므로(사용자 확인 2026-09-29) 단자 글자를 HDMI IN/OUT · CAT IN/OUT으로 쓴다.
+// 0.171: 모듈 칸에는 TX(입력)·RX(출력) 모듈을 원하는 대로 꽂으므로(사용자 확인 2026-09-29) 단자 글자를 HDMI IN/OUT · CAT IN/OUT으로 쓴다.
 const POWER_W=33,BAY_W=(W-POWER_W)/6;
 const bayX=i=>POWER_W+i*BAY_W;
 const HDMI_FX=0.21,RJ_FX=0.73;
