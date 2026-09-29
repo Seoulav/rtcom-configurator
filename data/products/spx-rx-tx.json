@@ -98,7 +98,9 @@
       "status": "FOUND",
       "title": "SPX-TX/RX 사용자 매뉴얼 Ver.2.0",
       "language": "ko",
-      "note": "4–11쪽(원본 비공개 보관)"
+      "note": "사용자 제공 매뉴얼 공개본(2026-09-29, 사용자 결정 — SPX-TX/RX 매뉴얼 공개)",
+      "file": "spx-rx-tx-manual.pdf",
+      "preview": "pdfjs"
     }
   ],
   "features": [
@@ -385,6 +387,11 @@
       "relation": "WORKS_WITH",
       "target": "spx",
       "note": "SPX-COS12(CATx 출력 보드) ↔ SPX-RX"
+    },
+    {
+      "relation": "WORKS_WITH",
+      "target": "spx-r6",
+      "note": "SPX-R6 모듈 칸 CAT OUT ↔ SPX-RX(SPX-R6 사양서 연결도)"
     }
   ],
   "sources": [
@@ -404,7 +411,7 @@
       "code": "M1",
       "name": "SPX-TX/RX 사용자 매뉴얼 Ver.2.0",
       "page": "4–11",
-      "scope": "제조사 공식 출처(사용자 제공 2026-09-27, .source-materials/RTcom_Manual_SPX-TX-RX_Ver2.0.pdf)"
+      "scope": "제조사 공식 출처(사용자 제공 2026-09-27·2026-09-29 재제공), 제품 상세 매뉴얼 버튼으로 공개(spx-rx-tx-manual.pdf)"
     },
     {
       "code": "U3",
