@@ -1151,3 +1151,16 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
   html.rt-print-products #rtcom-design .rt-pg-card{break-inside:auto}
   html.rt-print-products #rtcom-design .rt-pg-spec tr,html.rt-print-products #rtcom-design .rt-pg-portitem,html.rt-print-products #rtcom-design figure,html.rt-print-products #rtcom-design img{break-inside:avoid}
 }
+/* 0.151 제품정보 시리즈 03 메인프레임: 타일을 누르면 카드 상세 팝업과 같은 대화상자에 정면·후면을 함께 보여 준다. */
+#rtcom-design button.rt-pg-framebtn{border:0;font:inherit;color:inherit;text-align:left;cursor:pointer;width:100%;transition:box-shadow .15s,transform .15s}
+#rtcom-design button.rt-pg-framebtn:hover{box-shadow:0 0 0 2px var(--pg-blue,#0a84ff) inset;transform:translateY(-1px)}
+#rtcom-design button.rt-pg-framebtn:focus-visible{outline:3px solid var(--pg-blue,#0a84ff);outline-offset:2px}
+#rtcom-design .rt-frame-info-modal{width:min(880px,calc(100vw - 24px))}
+#rtcom-design .rt-frame-info-duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+#rtcom-design .rt-frame-info-duo.rt-frame-info-stack{grid-template-columns:1fr}
+#rtcom-design .rt-frame-info-face{margin:0;display:flex;flex-direction:column;gap:6px}
+#rtcom-design .rt-frame-info-face .rt-card-info-plate{display:grid;place-items:center}
+#rtcom-design .rt-frame-info-face img{width:auto;max-width:100%;max-height:min(56vh,540px);object-fit:contain}
+#rtcom-design .rt-frame-info-stack .rt-frame-info-face img{max-height:min(28vh,300px)}
+#rtcom-design .rt-frame-info-face figcaption{font-size:12px;font-weight:700;color:var(--rt-muted,#6b7280);text-align:center}
+@media (max-width:560px){#rtcom-design .rt-frame-info-face img{max-height:46vh}}
