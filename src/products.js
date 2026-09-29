@@ -584,7 +584,7 @@
     };
     const VMODE_NAME_KO={MATRIX:'매트릭스',QUAD:'쿼드 뷰',WALL:'비디오 월',DUAL:'듀얼'};
     // 레이아웃 이름별 화면 분할 도해(칸 번호·x·y·너비·높이, 0~100 기준). QMS-88UX 매뉴얼(RTcom_Manual_QMS-88UX_KV.03.pdf) 20~21쪽 Layout List 도해를 그대로 옮겼다(사용자 요청 2026-09-27).
-    // QMS-44UX 전용 이름의 QUAD 도해는 아래 LAYOUT_SHAPES_BY_PRODUCT(0.146, 44UX 매뉴얼 21~22쪽 도해)가 우선한다. 매뉴얼에 도해가 없는 WALL·DUAL 레이아웃은 이름 뜻에 맞춰 만든 도식이다.
+    // QMS-44UX 전용 이름의 QUAD 도해는 아래 LAYOUT_SHAPES_BY_PRODUCT(0.146, 44UX 매뉴얼 21~22쪽 도해)가 우선한다. 매뉴얼에 도해가 없는 WALL·DUAL 레이아웃(2×2~FULL, PBP, PBP-FULL, PIP, USER MODE)은 이름 뜻에 맞춰 만든 도식이며 QMS-44UX만 쓴다. QMS-88UX는 WALL 도해가 없고 DUAL은 매뉴얼 Layout 5~7 도해를 쓴다(0.152 재검토).
     const LAYOUT_SHAPES={
       'QUAD':[[1,0,0,50,50],[2,50,0,50,50],[3,0,50,50,50],[4,50,50,50,50]],
       '3-BOTTOM':[[1,0,0,100,50],[2,0,50,33.33,50],[3,33.33,50,33.34,50],[4,66.67,50,33.33,50]],
@@ -918,7 +918,7 @@
         </div>
         <div class="rt-pg-col">
           <section class="rt-pg-card rt-pg-col-mobile-2"><h2><span class="rt-pg-idx">02</span>신호 구성 <span class="rt-pg-note">— 입력 카드 → 메인프레임 → 출력 카드</span></h2>${arch}<ul class="rt-pg-legend">${legendKeys.map(key=>`<li><i style="background:${SIG_COLOR[key]||'#8A8A8E'}"></i>${esc(SIG_NAME[key]||key)}</li>`).join('')}<li><i style="background:transparent;border:1.5px dashed #8A8A8E"></i>전송기(연동)</li></ul></section>
-          <section class="rt-pg-card rt-pg-col-mobile-3"><h2><span class="rt-pg-idx">03</span>메인프레임 <span class="rt-pg-note">— ${frames.length}종 · 막대는 랙 높이</span></h2><div class="rt-pg-frames">${frames.map(frame=>{const slug=frame.model.toLowerCase();const hasPhoto=!NO_FRAME_PHOTO.has(frame.model);return `<div class="rt-pg-frame"><div class="rt-pg-ph">${hasPhoto?`<img src="output/design/assets/frames/${slug}-front-art.webp" alt="">`:'<em>사진 준비 중</em>'}</div><b>${esc(frame.model)}</b><small>${esc((frame.summary||'').split(' · ')[0])} · ${frame.rackUnits}U</small><div class="rt-pg-ru"><i style="width:${Math.max(8,frame.rackUnits/maxRU*100)}%"></i></div></div>`}).join('')}</div></section>
+          <section class="rt-pg-card rt-pg-col-mobile-3"><h2><span class="rt-pg-idx">03</span>메인프레임 <span class="rt-pg-note">— ${frames.length}종 · 막대는 랙 높이 · 누르면 정면·후면</span></h2><div class="rt-pg-frames">${frames.map(frame=>{const slug=frame.model.toLowerCase();const hasPhoto=!NO_FRAME_PHOTO.has(frame.model);return `<button type="button" class="rt-pg-frame rt-pg-framebtn" data-pg-frame="${esc(frame.model)}" data-pg-frame-family="${esc(family)}" data-pg-frame-summary="${esc(frame.summary||'')}" data-pg-frame-ru="${frame.rackUnits}" aria-label="${esc(frame.model)} 정면·후면 보기"><div class="rt-pg-ph">${hasPhoto?`<img src="output/design/assets/frames/${slug}-front-art.webp" alt="">`:'<em>사진 준비 중</em>'}</div><b>${esc(frame.model)}</b><small>${esc((frame.summary||'').split(' · ')[0])} · ${frame.rackUnits}U</small><div class="rt-pg-ru"><i style="width:${Math.max(8,frame.rackUnits/maxRU*100)}%"></i></div></button>`}).join('')}</div></section>
           <section class="rt-pg-card rt-pg-col-mobile-4"><h2><span class="rt-pg-idx">04</span>카드 라인업 <span class="rt-pg-note">— 입력 ${inCards.length} · 출력 ${outCards.length} · 카드를 누르면 상세 정보</span></h2><div class="rt-pg-cards2"><div class="rt-pg-cardcol"><h3>입력</h3>${inCards.map(card=>cardRow(card,false)).join('')}</div><div class="rt-pg-cardcol"><h3>출력</h3>${outCards.map(card=>cardRow(card,true)).join('')}</div></div></section>
           ${recordSection(item,null,null)}
         </div>
@@ -1000,10 +1000,40 @@
       root.appendChild(dialog);
       if(typeof dialog.showModal==='function'){dialog.showModal();dialog.querySelector('.rt-card-modal-close').focus()}else dialog.setAttribute('open','');
     }
+    // 0.151(사용자 요청 2026-09-29 "03 메인프레임에 각 프레임 선택시 팝업이써 정면, 후면이 동시 보이게", "카드랑 같은 방식으로"):
+    // 시리즈 상세 03 메인프레임 타일을 누르면 카드 상세 팝업과 같은 대화상자에 정면·후면 그림을 함께 보여 준다.
+    // 가로로 긴 프레임(1U~9U 가로 그림)은 위아래로, 세로로 긴 대형 프레임은 좌우로 놓는다(후면 그림을 읽은 뒤 비율로 고름).
+    function splitSummary(text){
+      const parts=[];let depth=0,buf='';
+      for(let i=0;i<text.length;i++){const ch=text[i];if(ch==='(')depth++;if(ch===')')depth=Math.max(0,depth-1);if(!depth&&text.startsWith(' · ',i)){parts.push(buf);buf='';i+=2;continue}buf+=ch}
+      if(buf)parts.push(buf);return parts.map(part=>part.trim()).filter(Boolean);
+    }
+    function openProductFrameInfo(model,family,summary,rackUnits){
+      const frame={model,summary,rackUnits:Number(rackUnits)};
+      const [io,...rest]=splitSummary(frame.summary||'');
+      const rows=[['구분',`${family} 메인프레임`],['입출력',io||''],...rest.filter(part=>!/^\d+\s*U$/i.test(part)).map(part=>[/mm/.test(part)?'크기':/kg/.test(part)?'무게':'특징',part]),['랙 높이',typeof frame.rackUnits==='number'?`${frame.rackUnits}U`:'']].filter(([,v])=>v);
+      const slug=model.toLowerCase(),hasPhoto=!NO_FRAME_PHOTO.has(model);
+      const face=(side,label)=>`<figure class="rt-frame-info-face"><div class="rt-card-info-plate"><img src="output/design/assets/frames/${slug}-${side}-art.webp" alt="${esc(model)} ${label} 그림" data-frame-face="${side}"></div><figcaption>${label}</figcaption></figure>`;
+      const dialog=document.createElement('dialog');
+      dialog.className='rt-card-info-modal rt-frame-info-modal';
+      dialog.setAttribute('aria-labelledby','rt-pg-frame-info-title');
+      dialog.innerHTML=`<div class="rt-card-modal-head"><div><span class="rt-eyebrow">메인프레임 · ${esc(family)}</span><h3 id="rt-pg-frame-info-title">${esc(model)}</h3>${io?`<p class="rt-card-info-sub">${esc(io)} 매트릭스 프레임</p>`:''}</div><button type="button" class="rt-card-modal-close" data-card-info-close aria-label="프레임 정면·후면 닫기">×</button></div><div class="rt-card-info-body">${hasPhoto?`<div class="rt-frame-info-duo">${face('front','정면')}${face('rear','후면')}</div>`:'<p class="rt-card-info-missing">정면·후면 그림 준비 중</p>'}<table class="rt-card-info-table"><tbody>${rows.map(([k,v])=>`<tr><th scope="row">${esc(k)}</th><td>${esc(v)}</td></tr>`).join('')}</tbody></table></div><div class="rt-card-modal-foot"><button type="button" class="rt-button" data-card-info-close>닫기</button></div>`;
+      const rear=dialog.querySelector('[data-frame-face="rear"]');
+      const pickLayout=()=>{if(rear.naturalWidth&&rear.naturalWidth/rear.naturalHeight>1.25)dialog.querySelector('.rt-frame-info-duo')?.classList.add('rt-frame-info-stack')};
+      if(rear){if(rear.complete)pickLayout();else rear.addEventListener('load',pickLayout,{once:true})}
+      const opener=document.activeElement;
+      const finish=()=>{if(dialog.open)dialog.close();dialog.remove();opener?.focus?.({preventScroll:true})};
+      dialog.addEventListener('click',event=>{if(event.target===dialog||event.target.closest('[data-card-info-close]'))finish()});
+      dialog.addEventListener('cancel',event=>{event.preventDefault();finish()});
+      root.appendChild(dialog);
+      if(typeof dialog.showModal==='function'){dialog.showModal();dialog.querySelector('.rt-card-modal-close').focus()}else dialog.setAttribute('open','');
+    }
     body.addEventListener('click',event=>{
       const filterBtn=event.target.closest('[data-product-filter]');
       const pgCard=event.target.closest('[data-pg-card]');
       if(pgCard){openProductCardInfo(pgCard.dataset.pgCard,pgCard.dataset.pgCardDir,pgCard.dataset.pgCardFamily);return}
+      const pgFrame=event.target.closest('[data-pg-frame]');
+      if(pgFrame){openProductFrameInfo(pgFrame.dataset.pgFrame,pgFrame.dataset.pgFrameFamily,pgFrame.dataset.pgFrameSummary,pgFrame.dataset.pgFrameRu);return}
       if(filterBtn){filter=filterBtn.dataset.productFilter;body.querySelector('.rt-pg-wrap').innerHTML=listView();body.querySelector(`[data-product-filter="${filter}"]`)?.focus();return}
       const configure=event.target.closest('[data-configure-family]');
       if(configure){event.preventDefault();location.hash='#matrix-configurator';root.dispatchEvent(new CustomEvent('rt-configure-family',{detail:configure.dataset.configureFamily}));return}
