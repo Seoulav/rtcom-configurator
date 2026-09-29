@@ -31,7 +31,7 @@
 
 ## 검증
 
-단위 62/62, `build-product-index --check` 31종 통과, `package-site`, e2e 193/193(신규 1건), `git diff --check`. 화면: `docs/qa/qms88ux-wall-dual-0.152/`
+단위 62/62, `build-product-index --check` 31종 통과, `package-site`, e2e 193/193(신규 1건, main의 XDM 카탈로그 9쪽 확장(PR 205)에 맞춰 기존 기대값 6쪽→9쪽 수정), `git diff --check`. 화면: `docs/qa/qms88ux-wall-dual-0.152/`
 
 ## 되돌리기
 

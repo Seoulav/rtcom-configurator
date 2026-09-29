@@ -580,10 +580,11 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.goto(`${home}#products/xdm`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-toolbar');
     await page.click('[data-doc="Catalog"] button.rt-pg-doc-open[data-doc-kind="image"]');
-    await page.waitForFunction(()=>{const d=document.querySelector('dialog.rt-doc-zoom[open]');return d&&d.querySelectorAll('.rt-doc-pages img').length===6&&!d.querySelector('.rt-doc-status')},null,{timeout:15000});
+    await page.waitForFunction(()=>{const d=document.querySelector('dialog.rt-doc-zoom[open]');return d&&d.querySelectorAll('.rt-doc-pages img').length===9&&!d.querySelector('.rt-doc-status')},null,{timeout:15000});
     const xdmCat=await page.$$eval('dialog.rt-doc-zoom .rt-doc-pages img',imgs=>imgs.map(i=>i.getAttribute('src').split('/').pop()));
     await page.click('dialog.rt-doc-zoom [data-zoom-close]');
-    check('XDM 카탈로그 팝업이 6쪽 그림(xdm-catalog-p1~p6.webp)으로 나옴',xdmCat.join()===[1,2,3,4,5,6].map(n=>`xdm-catalog-p${n}.webp`).join(),JSON.stringify(xdmCat));
+    // 0.151(#205)에서 XDM 카탈로그를 전송기 쪽까지 넣은 4~12쪽(9쪽)으로 늘렸다.
+    check('XDM 카탈로그 팝업이 9쪽 그림(xdm-catalog-p1~p9.webp)으로 나옴',xdmCat.join()===[1,2,3,4,5,6,7,8,9].map(n=>`xdm-catalog-p${n}.webp`).join(),JSON.stringify(xdmCat));
     await page.goto(`${home}#products/vdm`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-toolbar');
     const vdmStart=Date.now();
