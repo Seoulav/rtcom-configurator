@@ -1,5 +1,9 @@
 ## Unreleased
 
+- **0.139.0 배포 기록**: `docs/qa/DEPLOYMENT_0.139_2026-09-29.md`(PR #181 → main 병합, 공개 파일 335/336 일치, `.nojekyll` 제외)
+
+- **0.138.0 배포 기록**: `docs/qa/DEPLOYMENT_0.138_2026-09-29.md`(PR #180 → main 병합, 공개 파일 335/336 일치, `.nojekyll` 제외)
+
 - **0.137.0 배포 기록**: `docs/qa/DEPLOYMENT_0.137_2026-09-29.md`(PR #178 → main 병합, 공개 파일 335/336 일치, `.nojekyll` 제외)
 
 - **0.136.0 배포 기록**: `docs/qa/DEPLOYMENT_0.136_2026-09-29.md`(PR #177 → main 병합, 공개 파일 335/336 일치, `.nojekyll` 제외)
