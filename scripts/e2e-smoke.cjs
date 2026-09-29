@@ -1063,6 +1063,26 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       const left=await p3.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.placements['in-1']||null);
       const modalOpen=await p3.locator('dialog.rt-card-modal[open]').count();
       check('장착 슬롯은 평소에는 × 가 안 보이고 마우스를 올리면 보이며, 누르면 카드가 빠지고 팝업은 열리지 않음',!xBefore&&xHover&&left===null&&modalOpen===0,JSON.stringify({xBefore,xHover,left,modalOpen}));
+      // 0.162 카드 끌어 놓기 샘플(직원 제안, 사용자 승인 2026-09-29): 아래 카드 정보 버튼을 같은 방향 슬롯에 끌어 놓으면 장착·교체하고, 다른 방향 슬롯에는 놓이지 않으며, 누르면 상세 정보는 그대로 열린다.
+      const saved=()=>p3.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state);
+      const chipDraggable=await p3.locator('button.rt-card-info-chip[data-palette-card="XDM-HIS100"]').getAttribute('draggable');
+      await p3.dragAndDrop('button.rt-card-info-chip[data-palette-card="XDM-HIS100"]','button[data-slot="in-2"]');await p3.waitForTimeout(200);
+      await p3.dragAndDrop('button.rt-card-info-chip[data-palette-card="XDM-HIS100"]','button[data-slot="out-1"]');await p3.waitForTimeout(200);
+      const wrongDir=(await saved()).placements['out-1']||null;
+      await p3.dragAndDrop('button.rt-card-info-chip[data-palette-card="XDM-HOS100"]','button[data-slot="out-1"]');await p3.waitForTimeout(200);
+      await p3.dragAndDrop('button.rt-card-info-chip[data-palette-card="XDM-CIS100"]','button[data-slot="in-2"]');await p3.waitForTimeout(200);
+      const dragged=await saved();
+      const palette={chipDraggable,wrongDir,in2:dragged.placements['in-2'],out1:dragged.placements['out-1'],link:dragged.links['in-2']?.device||null,modal:await p3.locator('dialog.rt-card-modal[open]').count()};
+      check('카드 정보 버튼을 끌어 같은 방향 슬롯에 놓으면 장착·교체되고(CIS100은 기본 연동 전송기 연결), 입력 카드는 출력 슬롯에 놓이지 않음',palette.chipDraggable==='true'&&palette.wrongDir===null&&palette.in2==='XDM-CIS100'&&palette.out1==='XDM-HOS100'&&!!palette.link&&palette.modal===0,JSON.stringify(palette));
+      await p3.locator('button.rt-card-info-chip[data-palette-card="XDM-HIS100"]').click();
+      const infoOpen=await p3.locator('dialog.rt-card-info-modal[open]').count();await p3.keyboard.press('Escape');
+      check('끌 수 있는 카드 정보 버튼도 누르면 카드 상세 정보가 열림',infoOpen===1,String(infoOpen));
+      const touch=await browser.newContext({viewport:{width:416,height:900},isMobile:true,hasTouch:true});const tp=await touch.newPage();
+      await tp.goto(home,{waitUntil:'networkidle'});await tp.locator('button[data-family="XDM"]').first().click();await tp.locator('.rt-cg-preview [data-action="preview-next"]').first().click();
+      await tp.click('button[data-model="XDM-12"]');await tp.locator('.rt-cg-preview [data-action="preview-next"]').first().click();
+      const touchChips=await tp.evaluate(()=>({chips:document.querySelectorAll('.rt-card-info-chip').length,draggable:document.querySelectorAll('.rt-card-info-chip[draggable]').length,palette:!!document.querySelector('.rt-card-palette')}));
+      check('휴대폰(터치)에서는 카드 정보 버튼을 끌 수 없고 안내 문구도 기존과 같음',touchChips.chips>0&&touchChips.draggable===0&&!touchChips.palette,JSON.stringify(touchChips));
+      await touch.close();
       await p3.close();
     }
     await phone.close();
