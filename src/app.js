@@ -61,10 +61,11 @@
     // VDM 후면 배치(매뉴얼 도면): 8X는 가로 보드 좌우, 16X~64X는 세로 보드 '입력 4 | 출력 4'를 단으로 쌓고, 80X 이상은 입력 위·출력 아래. 256X는 128X와 같은 랙 2대가 나란히 선다.
     // 열 수는 매뉴얼 후면 도면의 한 줄 보드 수다: 80X·128X는 11열(남는 칸은 제어 보드·빈칸), 180X는 15열, 256X는 랙 2대 × 11열.
     const vdmRacks={'VDM-8X':['h',1],'VDM-16X':['vs',4],'VDM-32X':['vs',4],'VDM-48X':['vs',4],'VDM-64X':['vs',4],'VDM-80X':['vt',11],'VDM-128X':['vt',11],'VDM-180X':['vt',15],'VDM-256X':['vt',11]};
-    const frameFronts={'XDM-12':'output/design/assets/frames/xdm-12-front.webp','XDM-20':'output/design/assets/frames/xdm-20-front.webp','XDM-36':'output/design/assets/frames/xdm-36-front.webp','XDM-72':'output/design/assets/frames/xdm-72-front.webp','XDM-144':'output/design/assets/frames/xdm-144-front.webp','XDM-216':'output/design/assets/frames/xdm-216-front.webp','VDM-16X':'output/design/assets/frames/vdm-16x-front.webp','SPX-M810':'output/design/assets/frames/spx-m810-front.webp','SPX-M1620':'output/design/assets/frames/spx-m1620-front.webp','SPX-M3236':'output/design/assets/frames/spx-m3236-front.webp','SPX-M2472':'output/design/assets/frames/spx-m2472-front.webp','SPX-M24120':'output/design/assets/frames/spx-m24120-front.webp','VDM-48X':'output/design/assets/frames/vdm-48x-front.webp',
-      // 실물 전면 사진이 없는 VDM은 매뉴얼 전면 선 도면(KV07 PDF pp.12–20) 배치를 따라 그린 평면 그림을 쓴다(scripts/tools/draw_vdm_frames.cjs).
+    const frameFronts={'XDM-12':'output/design/assets/frames/xdm-12-front-art.webp','XDM-20':'output/design/assets/frames/xdm-20-front-art.webp','XDM-36':'output/design/assets/frames/xdm-36-front-art.webp','XDM-72':'output/design/assets/frames/xdm-72-front-art.webp','XDM-144':'output/design/assets/frames/xdm-144-front-art.webp','XDM-216':'output/design/assets/frames/xdm-216-front-art.webp','VDM-16X':'output/design/assets/frames/vdm-16x-front-art.webp','SPX-M810':'output/design/assets/frames/spx-m810-front-art.webp','SPX-M1620':'output/design/assets/frames/spx-m1620-front-art.webp','SPX-M3236':'output/design/assets/frames/spx-m3236-front-art.webp','SPX-M2472':'output/design/assets/frames/spx-m2472-front-art.webp','SPX-M24120':'output/design/assets/frames/spx-m24120-front-art.webp','VDM-48X':'output/design/assets/frames/vdm-48x-front-art.webp',
+      // 0.135(사용자 요청 2026-09-29 "프레임 실물 이미지는 사용하지 말자 전부 그래픽이미지로 변경해줘"): 프레임 정면은 모두 평면 그림이다.
+      // VDM(scripts/tools/draw_vdm_frames.cjs)은 매뉴얼 전면 선 도면(KV07 PDF pp.12–20)·VDM-16X 사진 배치, XDM·SPX(scripts/tools/draw_xdm_spx_front_frames.cjs)는 카탈로그 mm 크기와 예전 사진의 배치를 따른다.
       'VDM-8X':'output/design/assets/frames/vdm-8x-front-art.webp','VDM-32X':'output/design/assets/frames/vdm-32x-front-art.webp','VDM-64X':'output/design/assets/frames/vdm-64x-front-art.webp','VDM-80X':'output/design/assets/frames/vdm-80x-front-art.webp','VDM-128X':'output/design/assets/frames/vdm-128x-front-art.webp','VDM-180X':'output/design/assets/frames/vdm-180x-front-art.webp','VDM-256X':'output/design/assets/frames/vdm-256x-front-art.webp'};
-    const frontDrawings=new Set(['VDM-8X','VDM-32X','VDM-64X','VDM-80X','VDM-128X','VDM-180X','VDM-256X']);
+    const frontDrawings=new Set(Object.keys(frameFronts));
     // 국문 매뉴얼(KV08) 후면 사진과 사진 속 입력·출력 카드 영역(사진 픽셀 좌표: 왼쪽, 위, 오른쪽, 아래). 카드 고정 나사 간격으로 측정했다.
     // 업체의 빈 프레임 후면 사진을 받으면 src와 좌표만 바꾼다.
     // 0.113: XDM·SPX 후면도 매뉴얼 사진 배치를 따라 그린 평면 그림(scripts/tools/draw_xdm_spx_rear_frames.cjs)을 쓴다. 좌표는 원래 사진 좌표를 그림 배율대로 늘린 값이다.
@@ -386,8 +387,9 @@
       root.querySelector('.rt-footer').hidden=state.step===0;
       const next=root.querySelector('[data-action=next]');
       next.disabled=state.step===1&&!state.model;
-      // 0.128 01 제품군에서는 미리보기의 "프레임 선택" 버튼 하나만 둔다(사용자 지적 2026-09-29 "버튼이 중복이다"). 아래 바 다음 버튼은 02부터 나온다.
-      next.hidden=state.step===0;
+      // 0.128 01 제품군에서는 미리보기의 "프레임 선택" 버튼 하나만 둔다(사용자 지적 2026-09-29 "버튼이 중복이다").
+      // 0.135 02 프레임 선택도 같은 방식으로 미리보기의 "다음 · 카드 슬롯 구성" 버튼 하나만 둔다(사용자 승인 2026-09-29 "02 아래 바 버튼 숨기기"). 아래 바 다음 버튼은 03부터 나온다.
+      next.hidden=state.step<=1;
       const nextLabels=['프레임 선택','카드 슬롯 구성','전송기 연결','구성 검토','출력 미리보기','처음으로'];
       // 03 카드 슬롯(2-3): 완성이면 "선택 완료 · 전송기 연결", 빈칸이 남으면 "빈칸 N개 남음 · 그래도 다음". 이동은 막지 않는다.
       let nextLabel=nextLabels[state.step];

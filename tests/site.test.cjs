@@ -51,16 +51,20 @@ test('every XDM card and documented rear photo has an image asset',()=>{
   // 0.120: VDM 카드 판넬 사진은 모두 가로:세로 5.7:1(±3%)이어야 슬롯 칸에 늘어나지 않고 맞는다(HOS4S-UW 4.0, CIS4-U·COS4-U 5.2를 잘라 맞춤).
   const webpSize=file=>{const b=fs.readFileSync(file);const chunk=b.toString('ascii',12,16);if(chunk==='VP8X')return [1+b.readUIntLE(24,3),1+b.readUIntLE(27,3)];if(chunk==='VP8 ')return [b.readUInt16LE(26)&0x3fff,b.readUInt16LE(28)&0x3fff];if(chunk==='VP8L'){const v=b.readUInt32LE(21);return [(v&0x3fff)+1,((v>>14)&0x3fff)+1]}throw new Error('unknown webp '+file)};
   for(const id of [...catalog.VDM.input,...catalog.VDM.output].map(card=>card[0]).concat('VDM-BLANK')){const [w,h]=webpSize(`output/design/assets/cards/${id}.webp`);assert.ok(Math.abs(w/h/5.7-1)<0.03,`${id} faceplate ratio ${(w/h).toFixed(2)} should be 5.7:1`)}
-  for(const model of ['8x','16x','32x','48x','64x','80x','128x','180x','256x'])assert.ok(fs.existsSync(`output/design/assets/frames/vdm-${model}-front.webp`)&&fs.existsSync(`output/design/assets/frames/vdm-${model}-rear.webp`),`missing VDM ${model} front/rear image`);
-  // 0.111: 실물 사진이 없는 VDM 전면 7종·후면 8종은 scripts/tools/draw_vdm_frames.cjs 평면 그림(-art)을 쓰고, 실물 사진(16X 전면·후면, 48X 전면)은 그대로 둔다.
+  for(const model of ['8x','16x','32x','48x','64x','80x','128x','180x','256x'])assert.ok(fs.existsSync(`output/design/assets/frames/vdm-${model}-front-art.webp`)&&fs.existsSync(`output/design/assets/frames/vdm-${model}-rear-art.webp`),`missing VDM ${model} front/rear image`);
+  // 0.135: 프레임 정면·후면은 모두 평면 그림(-art)을 쓰고 실물 사진은 쓰지 않는다(사용자 요청 2026-09-29). VDM 전면 9종·후면 9종.
   const vdmArt=[...read('src/app.js').matchAll(/frames\/(vdm-\d+x-(?:front|rear))-art\.webp/g)].map(match=>match[1]).sort();
-  assert.deepEqual(vdmArt,[...['8x','32x','64x','80x','128x','180x','256x'].map(m=>`vdm-${m}-front`),...['8x','16x','32x','48x','64x','80x','128x','180x','256x'].map(m=>`vdm-${m}-rear`)].sort());
+  assert.deepEqual(vdmArt,[...['8x','16x','32x','48x','64x','80x','128x','180x','256x'].map(m=>`vdm-${m}-front`),...['8x','16x','32x','48x','64x','80x','128x','180x','256x'].map(m=>`vdm-${m}-rear`)].sort());
   // 0.113: XDM·SPX 후면(구성기 03 카드 슬롯)도 scripts/tools/draw_xdm_spx_rear_frames.cjs 평면 그림을 쓴다(XDM-216 포함 11종).
   const rearArt=[...read('src/app.js').matchAll(/frames\/((?:xdm|spx)-[a-z0-9]+)-rear-art\.webp/g)].map(match=>match[1]).sort();
   assert.deepEqual(rearArt,['spx-m1620','spx-m24120','spx-m2472','spx-m3236','spx-m810','xdm-12','xdm-144','xdm-20','xdm-216','xdm-36','xdm-72']);
-  // 0.119: VDM-16X 후면도 카드가 꽂힌 실물 사진 대신 빈 슬롯 그림(-rear-art)을 쓴다. 전면 실물 사진(16X·48X)은 그대로.
-  for(const photo of ['vdm-16x-front','vdm-48x-front'])assert.ok(read('src/app.js').includes(`frames/${photo}.webp'`),`${photo} keeps the real photo`);
-  for(const model of ['m810','m1620','m3236','m2472','m24120'])for(const side of ['front','rear'])assert.ok(fs.existsSync(`output/design/assets/frames/spx-${model}-${side}.webp`),`missing SPX ${model} ${side} photo`);
+  // 0.135: XDM·SPX 정면도 평면 그림(-front-art) 11종이고, 예전 실물 사진(-front.webp·-rear.webp)은 공개 폴더에 남기지 않는다.
+  const frontArt=[...read('src/app.js').matchAll(/frames\/((?:xdm|spx)-[a-z0-9]+)-front-art\.webp/g)].map(match=>match[1]).sort();
+  assert.deepEqual(frontArt,rearArt);
+  const photos=fs.readdirSync('output/design/assets/frames').filter(name=>/^(xdm|spx)-.*-(front|rear)\.webp$|^vdm-(16x|48x)-(front|rear)\.webp$/.test(name));
+  assert.deepEqual(photos,[],'frame real photos must not ship');
+  for(const family of ['xdm','spx','vdm'])assert.ok(fs.existsSync(`output/design/assets/${family}-lineup-art.webp`),`missing ${family} lineup art`);
+  for(const model of ['m810','m1620','m3236','m2472','m24120'])for(const side of ['front','rear'])assert.ok(fs.existsSync(`output/design/assets/frames/spx-${model}-${side}-art.webp`),`missing SPX ${model} ${side} art`);
   for(const card of [...catalog.SPX.input,...catalog.SPX.output])assert.ok(fs.existsSync(`output/design/assets/cards/${card[0]}.webp`),`missing SPX faceplate for ${card[0]}`);
   const extenders=[...new Set([...read('src/app.js').matchAll(/'(output\/design\/assets\/extenders\/[^']+)'/g)].map(match=>match[1]))];
   assert.equal(extenders.length,10,'XDM 6 + VDM 4 extender photos');
@@ -385,7 +389,7 @@ test('0.127: 01 제품군 미리보기에 프레임 선택 버튼이 있고 파�
 test('0.128: 01 제품군에서는 아래 바 다음 버튼을 숨겨 프레임 선택 버튼이 중복되지 않는다',()=>{
   // 사용자 지적 2026-09-29 "버튼이 중복이다"
   const app=read('src/app.js'),css=read('src/styles.css');
-  assert.match(app,/next\.hidden=state\.step===0;/,'01 제품군에서는 아래 바 다음 버튼을 숨긴다');
+  assert.match(app,/next\.hidden=state\.step<=1;/,'01 제품군·02 프레임 선택에서는 아래 바 다음 버튼을 숨긴다(0.135, 사용자 승인 2026-09-29 "02 아래 바 버튼 숨기기")');
   assert.match(css,/\.rt-button\[hidden\]\{display:none!important\}/,'hidden 속성이 display:flex 규칙에 밀리지 않게 한다');
 });
 

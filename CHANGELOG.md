@@ -76,6 +76,12 @@
 
 - **0.90.0 배포 기록**: `docs/qa/DEPLOYMENT_0.90_2026-09-28.md`(PR #85 → main 병합, 배포 run 64, 공개 파일 242/242 일치, 비공개 파일 6개 404)
 
+## 0.136.0
+
+- **프레임 실물 사진을 모두 평면 그래픽 이미지로 교체**(사용자 요청 2026-09-29 "프레임 실물 이미지는 사용하지 말자 전부 그래픽이미지로 변경해줘"): XDM 6종·SPX 5종 정면과 VDM-16X·48X 정면을 VDM 정면 그림과 같은 진한 몸체 평면 그림(`*-front-art.webp`)으로 새로 그리고(`scripts/tools/draw_xdm_spx_front_frames.cjs`, `draw_vdm_frames.cjs`), 01 제품군 대표 그림 3장(`{xdm,spx,vdm}-lineup-art.webp`)도 그 그림을 겹쳐 세워 만들었습니다(`draw_family_lineups.cjs`). 제품정보 03 메인프레임 카드도 같은 그림을 씁니다. 예전 실물 사진 26장과 `xdm.jpg`·`spx.jpg`·`vdm.jpg`는 공개 폴더에서 삭제했습니다. 제품정보의 제품 사진(`data/products/*`)은 그대로입니다.
+- **02 프레임 선택 아래 바의 "다음" 버튼 숨김**(사용자 승인 2026-09-29): 미리보기의 "다음 · 카드 슬롯 구성" 버튼과 겹치던 아래 바 버튼을 01과 같은 방식으로 03부터만 보이게 했습니다.
+- 근거·rollback: `docs/implementation/FRAME_GRAPHIC_FRONTS.md`, 화면 확인 `docs/qa/frame-graphic-fronts-screens/`
+
 ## 0.135.0
 
 - **HD-D102U Rack마운트 정면 그림에서 분배기 칸 밖 영역을 한 단계 더 어둡게 마무리**(사용자 요청 2026-09-29 "조금만 더 어둡게해서 마무리"): 몸체 #d5dae2→#c5cbd5, 랙 귀 #c3c9d3→#b1b8c4, 위아래 레일 #dfe3ea→#d0d5de, 테두리 #7d8696→#6f7888. 분배기 12칸(#f7f8fa)·파란 번호 배지·좌표는 그대로입니다. 0.121 테스트의 색 기준도 함께 갱신했습니다. rollback: 이 PR 되돌리기.
