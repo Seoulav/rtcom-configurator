@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.156.0 배포 기록**: `docs/qa/DEPLOYMENT_0.156_2026-09-29.md`(PR #213 → main 병합, Pages 배포 run 36551775581)
 - **0.155.0 배포 기록**: `docs/qa/DEPLOYMENT_0.155_2026-09-29.md`(PR #211 → main 병합, Pages 배포 run 36551445624)
 - **0.153.0 배포 기록**: `docs/qa/DEPLOYMENT_0.153_2026-09-29.md`(PR #208 → main 병합, Pages 배포 run 36550041670)
 - **0.152.0 배포 기록**: `docs/qa/DEPLOYMENT_0.152_2026-09-29.md`(PR #204 → main 병합, Pages 배포 run 36549588587)
