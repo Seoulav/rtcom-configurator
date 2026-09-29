@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// SPX-R6(6 HDMI Extender Module Chassis) 전면·후면 평면 그림(0.156, 사용자 결정 2026-09-29 "평면 그래픽").
+// SPX-R6(6 HDMI Extender Module Chassis) 전면·후면 평면 그림(0.157, 사용자 결정 2026-09-29 "평면 그래픽").
 // 사용자 제공 SPX-R6 제품 사양서(1쪽, 제품 상세 카탈로그 버튼으로 공개)의 실물 사진(전면)과 연결도(후면)를 배치 근거로 삼는다.
 // 사진·연결도에는 AmberTech 로고가 찍혀 있어 그대로 쓰지 않고, SPX 프레임 그림(draw_xdm_spx_front_frames.cjs)과 같은
 // 검은 몸체(draw_vdm_frames.cjs C 팔레트)로 다시 그린다. 로고는 그리지 않고, 사진에 보이는 글자(SPX-R6 · 6 HDMI Extender Module Chassis,
