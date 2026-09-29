@@ -458,7 +458,7 @@ test('0.158: SPX-R6 수신 모듈 장착·SPX-RX IR 기능은 사용자 확인(U
   assert.doesNotMatch(read('docs/handoff/OPEN_ITEMS.md'),/IR Blaster|모듈 종류:/,'확인 항목은 처리했으므로 지운다');
 });
 
-// 0.159 — 여러 세션 동시 병합으로 버전이 겹치거나 건너뛰지 않게 하는 점검(scripts/check-version.cjs, CLAUDE.md "여러 세션이 동시에 작업할 때").
+// 0.160 — 여러 세션 동시 병합으로 버전이 겹치거나 건너뛰지 않게 하는 점검(scripts/check-version.cjs, CLAUDE.md "여러 세션이 동시에 작업할 때").
 test('버전 표기 네 곳(index.html·README·CHANGELOG·CLAUDE.md)이 서로 맞고 CHANGELOG 제목이 겹치지 않는다',()=>{
   const {checkConsistency}=require('../scripts/check-version.cjs');
   const {problems,versions}=checkConsistency({index:read('index.html'),readme:read('README.md'),changelog:read('CHANGELOG.md'),claude:read('CLAUDE.md')});
