@@ -912,6 +912,63 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       }
       check('입출력 단자 표에서 방향("입력"·"출력"·"입출력")·수량(숫자) 칸이 31개 제품·6개 화면 폭(320~1024px)에서 두 줄로 쪼개지지 않음',wrappedFixedCells.length===0,JSON.stringify(wrappedFixedCells));
     }
+    // 0.142 AI 검색(사내 베타): 기본 공개 화면에는 버튼이 없고 ?ai=beta로 켠 브라우저에만 보인다. 서버는 가짜(route)로 대신해 로그인 토큰 수신·질문·답 표시를 확인한다.
+    {
+      const plain=await browser.newPage({viewport:{width:1280,height:900}});
+      await plain.goto(home,{waitUntil:'networkidle'});
+      check('AI 검색: 공개 사이트 기본 화면에는 AI 검색 버튼이 없음',await plain.locator('.rt-ai-open').count()===0);
+      await plain.goto(`${home}?ai=beta#matrix-configurator`,{waitUntil:'networkidle'});
+      const flagged={button:await plain.locator('.rt-ai-open').count(),url:plain.url()};
+      await plain.click('.rt-ai-open');
+      const notReady=await plain.locator('.rt-ai-panel .rt-ai-notice').first().textContent();
+      check('AI 검색: ?ai=beta로 켜면 버튼이 생기고 주소의 ai=beta는 지워지며, 서버 주소가 없으면 준비 중 안내·보내기 잠김',flagged.button===1&&!flagged.url.includes('ai=beta')&&/준비되지 않았습니다/.test(notReady)&&await plain.locator('.rt-ai-form .rt-ai-send').isDisabled(),JSON.stringify(flagged));
+      await plain.goto(`${home}#products`,{waitUntil:'networkidle'});
+      check('AI 검색: 한 번 켠 브라우저는 다음 방문에도 버튼 유지',await plain.locator('.rt-ai-open').count()===1);
+      await plain.goto(`${home}?ai=off`,{waitUntil:'networkidle'});
+      check('AI 검색: ?ai=off로 버튼 끄기',await plain.locator('.rt-ai-open').count()===0);
+      // 로그인 창이 opener를 잃으면 Worker가 ?ai=beta#ai-token=… 으로 돌려보낸다. 토큰을 저장하고 주소에서 지운 뒤 구성기 첫 화면을 연다.
+      await plain.goto(`${home}?ai=beta#ai-token=abc.def`,{waitUntil:'networkidle'});
+      const fragment=await plain.evaluate(()=>({hash:location.hash,search:location.search,token:localStorage.getItem('rtcom.ai.token.v1'),button:!!document.querySelector('.rt-ai-open'),configurator:!document.querySelector('.rt-configurator-view').hidden}));
+      check('AI 검색: #ai-token= 으로 돌아온 토큰을 저장하고 주소에서 지움',fragment.hash==='#matrix-configurator'&&fragment.search===''&&/abc\.def/.test(fragment.token||'')&&fragment.button&&fragment.configurator,JSON.stringify(fragment));
+      await plain.close();
+      const aiContext=await browser.newContext({viewport:{width:390,height:844}});
+      await aiContext.addInitScript(()=>{globalThis.RTCOM_AI_TEST_CONFIG={api:'https://ai-api.test',login:'https://ai-login.test'};try{localStorage.setItem('rtcom.ai.beta.v1','1')}catch(error){}});
+      const asked=[];
+      await aiContext.route('https://ai-api.test/**',async route=>{
+        const request=route.request(),cors={'access-control-allow-origin':origin,'access-control-allow-headers':'authorization, content-type','access-control-allow-methods':'GET, POST, OPTIONS'};
+        if(request.method()==='OPTIONS')return route.fulfill({status:204,headers:cors});
+        if(request.headers().authorization!=='Bearer test-token')return route.fulfill({status:401,headers:{...cors,'content-type':'application/json'},body:JSON.stringify({error:'login',message:'회사 메일로 다시 로그인해 주세요.'})});
+        if(request.url().endsWith('/api/me'))return route.fulfill({status:200,headers:{...cors,'content-type':'application/json'},body:JSON.stringify({email:'sales1@seoulav1.co.kr',exp:Date.now()+3600e3})});
+        asked.push(JSON.parse(request.postData()));
+        const lines=[{t:'text',v:'### 추천\n- [[hd-13u]] 1:3 분배, [[qms-88ux]]와 비교\n'},{t:'text',v:'| 구분 | HD-13U | QMS-88UX |\n|---|---|---|\n| 출력 | **3** | 10 |\n\n<img src=x onerror=alert(1)>'},{t:'done',stop:'end_turn'}];
+        return route.fulfill({status:200,headers:{...cors,'content-type':'application/x-ndjson'},body:lines.map(line=>JSON.stringify(line)).join('\n')+'\n'});
+      });
+      const ai=await aiContext.newPage();
+      const aiErrors=[];ai.on('pageerror',error=>aiErrors.push(error.message));
+      await ai.goto(home,{waitUntil:'networkidle'});
+      await ai.click('.rt-ai-open');
+      await ai.waitForSelector('.rt-ai-login [data-ai="login"]');
+      await ai.evaluate(()=>window.dispatchEvent(new MessageEvent('message',{origin:'https://evil.test',data:{type:'rtcom-ai-token',token:'evil',email:'x@evil.test'}})));
+      const afterEvil=await ai.evaluate(()=>localStorage.getItem('rtcom.ai.token.v1'));
+      await ai.evaluate(()=>window.dispatchEvent(new MessageEvent('message',{origin:'https://ai-login.test',data:{type:'rtcom-ai-token',token:'test-token',email:'sales1@seoulav1.co.kr',exp:Date.now()+3600e3}})));
+      const stored=await ai.evaluate(()=>localStorage.getItem('rtcom.ai.token.v1'));
+      check('AI 검색: 로그인 창(허용 origin)에서 온 토큰만 받고 로그인 메일을 표시',afterEvil===null&&/test-token/.test(stored||'')&&(await ai.locator('.rt-ai-who').textContent())==='sales1@seoulav1.co.kr'&&await ai.locator('.rt-ai-login').count()===0,String(afterEvil));
+      await ai.click('.rt-ai-modes [data-mode="compare"]');
+      await ai.fill('.rt-ai-form textarea','HD-13U와 QMS-88UX 출력 수 비교');
+      await ai.click('.rt-ai-form .rt-ai-send');
+      await ai.waitForSelector('.rt-ai-assistant table');
+      const rendered=await ai.evaluate(()=>{const answer=document.querySelector('.rt-ai-assistant'),links=[...answer.querySelectorAll('a.rt-ai-product')];return {links:links.map(link=>`${link.getAttribute('href')}=${link.textContent}`),h4:answer.querySelector('h4')?.textContent,strong:answer.querySelector('td strong')?.textContent,img:answer.querySelectorAll('img').length,raw:answer.textContent.includes('<img')}});
+      check('AI 검색: 답의 [[제품id]]는 제품 상세 링크, 제목·표·굵게를 그리고 HTML은 글자로만 보임',rendered.links.join()==='#products/hd-13u=HD-13U,#products/qms-88ux=QMS-88UX'&&rendered.h4==='추천'&&rendered.strong==='3'&&rendered.img===0&&rendered.raw,JSON.stringify(rendered));
+      check('AI 검색: 질문은 선택한 요청 유형(사양 비교)과 함께 전송',asked.length===1&&asked[0].mode==='compare'&&asked[0].question==='HD-13U와 QMS-88UX 출력 수 비교'&&Array.isArray(asked[0].history),JSON.stringify(asked));
+      const panelBox=await ai.evaluate(()=>{const rect=document.querySelector('.rt-ai-panel').getBoundingClientRect();return {width:Math.round(rect.width),viewport:innerWidth,scroll:document.documentElement.scrollWidth}});
+      check('AI 검색: 휴대폰에서 창이 화면 폭에 맞고 가로 스크롤 없음',Math.abs(panelBox.width-panelBox.viewport)<2&&panelBox.scroll<=panelBox.viewport,JSON.stringify(panelBox));
+      await ai.screenshot({path:'docs/qa/ai-search-beta/mobile-answer.png'});
+      await ai.setViewportSize({width:1400,height:900});
+      await ai.screenshot({path:'docs/qa/ai-search-beta/desktop-answer.png'});
+      await ai.keyboard.press('Escape');
+      check('AI 검색: Esc로 창 닫기·스크립트 오류 없음',await ai.locator('.rt-ai-panel').isHidden()&&aiErrors.length===0,aiErrors.join(' | '));
+      await aiContext.close();
+    }
     await phone.close();
   }finally{
     await browser.close();
