@@ -1121,3 +1121,8 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-ai-send:disabled{opacity:.5;cursor:default}
 @media(max-width:560px){#rtcom-design .rt-ai-panel{top:0;right:0;bottom:0;width:100vw;border-radius:0;border:0}#rtcom-design .rt-ai-form textarea{font-size:16px}}
 @media print{#rtcom-design .rt-ai-open,#rtcom-design .rt-ai-panel{display:none}}
+
+/* 0.143 제품정보 04 카드 라인업 행을 버튼으로: 누르면 카드 상세 팝업(src/products.js openProductCardInfo). 버튼 기본 모양을 지우고 예전 행 모양을 유지한다. */
+#rtcom-design .rt-pg-cardrow.rt-pg-cardbtn{width:100%;border:0;font:inherit;color:inherit;text-align:left;cursor:pointer;transition:background .15s,box-shadow .15s}
+#rtcom-design .rt-pg-cardrow.rt-pg-cardbtn:hover{background:var(--pg-accent-tint);box-shadow:0 0 0 1.5px var(--pg-accent-2) inset}
+#rtcom-design .rt-pg-cardrow.rt-pg-cardbtn:focus-visible{outline:2px solid var(--pg-accent-2);outline-offset:2px}

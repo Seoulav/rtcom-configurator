@@ -969,6 +969,22 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       check('AI 검색: Esc로 창 닫기·스크립트 오류 없음',await ai.locator('.rt-ai-panel').isHidden()&&aiErrors.length===0,aiErrors.join(' | '));
       await aiContext.close();
     }
+    // 0.143(사용자 요청 2026-09-29 "카드 정보를 클릭하면 상세 정보", "VDM,SPX 모두 동일하게"): 제품정보 04 카드 라인업 행을 누르면 카드 상세 팝업이 열리고, 행·팝업에 연동 전송기 표기가 없다.
+    {
+      const cardPage=await browser.newPage({viewport:{width:1280,height:1000}});
+      const cardResult={};
+      for(const id of ['xdm','spx','vdm']){
+        await cardPage.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
+        await cardPage.waitForSelector('.rt-pg-cardbtn');
+        const rows=await cardPage.$$eval('.rt-pg-cardbtn',nodes=>nodes.map(node=>node.textContent.replace(/\s+/g,' ').trim()));
+        await cardPage.locator('.rt-pg-cardbtn').first().click();
+        const dialogText=await cardPage.locator('dialog.rt-card-info-modal').innerText();
+        cardResult[id]={rows:rows.length,linkedInRows:rows.filter(text=>/↔|CTR100|CT103|CR103|FT101|FR101|CT104|CR104/.test(text)).length,linkedInPopup:dialogText.includes('연동 전송기'),hasSpec:/신호/.test(dialogText)};
+        await cardPage.locator('dialog.rt-card-info-modal [data-card-info-close]').first().click();
+      }
+      check('제품정보 XDM·SPX·VDM 04 카드 라인업: 행을 누르면 카드 상세 팝업이 열리고 연동 전송기 표기가 없음',Object.values(cardResult).every(r=>r.rows>=4&&r.linkedInRows===0&&!r.linkedInPopup&&r.hasSpec),JSON.stringify(cardResult));
+      await cardPage.close();
+    }
     await phone.close();
   }finally{
     await browser.close();
