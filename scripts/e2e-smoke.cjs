@@ -999,6 +999,36 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       check('QMS-44UX QUAD 도해가 매뉴얼대로(CASCADE1 4칸·4CH-POP 4칸·3CH-MODE1 3칸·USER MODE 1 4칸·USER MODE 2 4칸)이고 QMS-88UX USER MODE 1은 3칸 그대로',got.cascade===4&&got.pop===4&&got.mode1===3&&got.user1===4&&got.user2===4&&got.user88===3,JSON.stringify(got));
       await shapePage.close();
     }
+    // 0.147 (1) QMS-88UX 도해 재대조: 3-SIDE RIGHT 1번 60%·USER MODE 2 검은 여백. (2) 제품정보 인쇄/PDF는 제품 화면을 인쇄(구성기 검토 시트 숨김). (3) 장착 슬롯 호버 × 로 카드 빼기.
+    {
+      const p3=await browser.newPage({viewport:{width:1300,height:1000}});
+      const pick=async(layout)=>{
+        await p3.goto(`${home}#products/qms-88ux`,{waitUntil:'networkidle'});
+        await p3.waitForSelector('.rt-pg-layout-chip');
+        const card=p3.locator('.rt-pg-vmode-card',{has:p3.locator(`.rt-pg-layout-chip[data-layout="${layout}"]`)}).first();
+        await card.locator(`.rt-pg-layout-chip[data-layout="${layout}"]`).click();
+        return card.locator('.rt-pg-layout-preview svg');
+      };
+      const side=await pick('3-SIDE RIGHT');const sideW=await side.locator('rect:not(.rt-pg-layout-letterbox)').first().getAttribute('width');
+      const um2=await pick('USER MODE 2');const um2Black=await um2.locator('rect.rt-pg-layout-letterbox').count();
+      check('QMS-88UX 도해가 매뉴얼 21쪽대로(3-SIDE RIGHT 1번 폭 60, USER MODE 2 검은 여백)',sideW==='60'&&um2Black===1,`${sideW}/${um2Black}`);
+      await p3.goto(`${home}#products/ct104-u-cr104-u`,{waitUntil:'networkidle'});await p3.waitForSelector('.rt-pg-title');
+      await p3.emulateMedia({media:'print'});
+      const pr=await p3.evaluate(()=>({report:getComputedStyle(document.getElementById('print-report')).display,title:getComputedStyle(document.querySelector('.rt-pg-title')).display,toolbar:getComputedStyle(document.querySelector('.rt-pg-toolbar')).display}));
+      check('제품정보에서 인쇄/PDF는 구성기 검토 시트(#print-report)를 숨기고 제품 화면을 인쇄함',pr.report==='none'&&pr.title!=='none'&&pr.toolbar==='none',JSON.stringify(pr));
+      await p3.emulateMedia({media:'screen'});
+      await p3.goto(home,{waitUntil:'networkidle'});await p3.evaluate(()=>localStorage.clear());await p3.goto(home,{waitUntil:'networkidle'});
+      await p3.locator('button[data-family="XDM"]').first().click();await p3.locator('.rt-cg-preview [data-action="preview-next"]').first().click();
+      await p3.click('button[data-model="XDM-12"]');await p3.locator('.rt-cg-preview [data-action="preview-next"]').first().click();
+      await p3.locator('button[data-slot="in-1"]').click();await p3.locator('.rt-card-modal .rt-card-choice').nth(1).click();
+      const xBefore=await p3.locator('button[data-slot="in-1"] .rt-rack-slot-x').isVisible();
+      await p3.locator('button[data-slot="in-1"]').hover();const xHover=await p3.locator('button[data-slot="in-1"] .rt-rack-slot-x').isVisible();
+      await p3.locator('button[data-slot="in-1"] .rt-rack-slot-x').click();await p3.waitForTimeout(200);
+      const left=await p3.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.placements['in-1']||null);
+      const modalOpen=await p3.locator('dialog.rt-card-modal[open]').count();
+      check('장착 슬롯은 평소에는 × 가 안 보이고 마우스를 올리면 보이며, 누르면 카드가 빠지고 팝업은 열리지 않음',!xBefore&&xHover&&left===null&&modalOpen===0,JSON.stringify({xBefore,xHover,left,modalOpen}));
+      await p3.close();
+    }
     await phone.close();
   }finally{
     await browser.close();

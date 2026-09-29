@@ -573,7 +573,7 @@
     }
     function saveLocal(){
       try{localStorage.setItem(storageKey,JSON.stringify(RtCore.document(state)));announce('이 브라우저에 자동 저장됨 · '+new Date().toLocaleTimeString('ko-KR'))}
-      catch{announce('자동 저장을 사용할 수 없습니다. JSON 백업으로 구성을 보관하세요.')}
+      catch{announce('자동 저장을 사용할 수 없습니다. 구성 파일 저장으로 구성을 보관하세요.')}
     }
     function validationView(){
       const result=RtCore.validate(state);
@@ -629,11 +629,11 @@
       }catch(error){announce('불러오기 실패: '+error.message)}
     });
     function initialize(){
-      let message='이 브라우저에 자동 저장됩니다. 다른 기기로 옮길 때는 JSON 백업을 사용하세요.';
+      let message='이 브라우저에 자동 저장됩니다. 다른 기기로 옮길 때는 구성 파일 저장·불러오기를 사용하세요.';
       try{
         const saved=localStorage.getItem(storageKey);
         if(saved){state=RtCore.parse(saved);message=state.notice||'이 브라우저에 저장된 구성을 복원했습니다.'}
-      }catch(error){message='저장된 구성을 복원하지 못했습니다. '+error.message+' JSON 백업이 있으면 불러오세요.'}
+      }catch(error){message='저장된 구성을 복원하지 못했습니다. '+error.message+' 저장해 둔 구성 파일이 있으면 불러오세요.'}
       recordHistory();render();announce(message);
     }
 
