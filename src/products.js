@@ -584,7 +584,7 @@
     };
     const VMODE_NAME_KO={MATRIX:'매트릭스',QUAD:'쿼드 뷰',WALL:'비디오 월',DUAL:'듀얼'};
     // 레이아웃 이름별 화면 분할 도해(칸 번호·x·y·너비·높이, 0~100 기준). QMS-88UX 매뉴얼(RTcom_Manual_QMS-88UX_KV.03.pdf) 20~21쪽 Layout List 도해를 그대로 옮겼다(사용자 요청 2026-09-27).
-    // QMS-44UX 전용 이름의 QUAD 도해는 아래 LAYOUT_SHAPES_BY_PRODUCT(0.146, 44UX 매뉴얼 21~22쪽 도해)가 우선한다. 매뉴얼에 도해가 없는 WALL·DUAL 레이아웃(2×2~FULL, PBP, PBP-FULL, PIP, USER MODE)은 이름 뜻에 맞춰 만든 도식이며 QMS-44UX만 쓴다. QMS-88UX DUAL은 매뉴얼 Layout 5~7 도해를 쓴다(0.152 재검토). QMS-88UX WALL은 아래 WALL_SPECS(0.154, 매뉴얼 19쪽 월 설정)를 쓴다.
+    // QMS-44UX 전용 이름의 QUAD 도해는 아래 LAYOUT_SHAPES_BY_PRODUCT(0.146, 44UX 매뉴얼 21~22쪽 도해)가 우선한다. 매뉴얼에 도해가 없는 WALL·DUAL 레이아웃(2×2~FULL, PBP, PBP-FULL, PIP, USER MODE)은 이름 뜻에 맞춰 만든 도식이며 QMS-44UX만 쓴다. QMS-88UX DUAL은 매뉴얼 Layout 5~7 도해를 쓴다(0.152 재검토). QMS-88UX WALL은 아래 WALL_SPECS(0.155, 매뉴얼 19쪽 월 설정)를 쓴다.
     const LAYOUT_SHAPES={
       'QUAD':[[1,0,0,50,50],[2,50,0,50,50],[3,0,50,50,50],[4,50,50,50,50]],
       '3-BOTTOM':[[1,0,0,100,50],[2,0,50,33.33,50],[3,33.33,50,33.34,50],[4,66.67,50,33.33,50]],
@@ -640,7 +640,7 @@
       },
       black:new Set(['3-BOTTOM','3-SIDE RIGHT','3-SIDE LEFT','3CH-MODE2','USER MODE 1','USER MODE 2','USER MODE 3'])
     }};
-    // 0.154(사용자 요청 2026-09-29 "QMS-44 비디오월 기능을 88에도 동일한 컨셉으로 만들어줘", "메뉴얼 읽어보고 작업해줘"): QMS-88UX 매뉴얼 KV.04 19쪽 6) Wall Mode.
+    // 0.155(사용자 요청 2026-09-29 "QMS-44 비디오월 기능을 88에도 동일한 컨셉으로 만들어줘", "메뉴얼 읽어보고 작업해줘"): QMS-88UX 매뉴얼 KV.04 19쪽 6) Wall Mode.
     // Wall 1·Wall 2를 각각 가로(H)×세로(V)와 시작(Start)·끝(End) 출력 포트로 정한다. 2×2 월은 2개까지, 월 1개면 최대 3×3 또는 2×5(매뉴얼 H×V 표기 그대로 가로 2 × 세로 5).
     // 출력 9·10번(M1·M2)은 평소 멀티뷰 포트지만 Wall 모드로 설정하면 월에 넣을 수 있다. 값: [[가로, 세로, 시작 출력 번호], …].
     const WALL_SPECS={'qms-88ux':{

@@ -403,6 +403,13 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.waitForSelector('.rt-pg-gridcard');
     check('제품정보 목록의 첫 카드는 XDM(0.125, 사용자 요청 "XDM이 처음으로 나오게해")',(await page.locator('.rt-pg-gridcard').first().getAttribute('href'))==='#products/xdm');
     check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-pg-gridcard').count()===31);
+    // 0.154 제품정보 프레임 정면·후면 팝업: 위아래로 쌓일 때 두 그림의 가로폭이 같아야 한다(사용자 요청 2026-09-29).
+    await page.goto(`${home}#products/spx`,{waitUntil:'networkidle'});
+    await page.click('[data-pg-frame="SPX-M1620"]');
+    await page.waitForFunction(()=>[...document.querySelectorAll('.rt-frame-info-face img')].length===2&&[...document.querySelectorAll('.rt-frame-info-face img')].every(image=>image.complete&&image.naturalWidth>0),null,{timeout:10000}).catch(()=>{});
+    const faceWidths=await page.$$eval('.rt-frame-info-face img',images=>images.map(image=>Math.round(image.getBoundingClientRect().width)));
+    check('SPX-M1620 정면·후면 팝업의 두 그림 가로폭이 같음(0.154)',faceWidths.length===2&&Math.abs(faceWidths[0]-faceWidths[1])<=1,JSON.stringify(faceWidths));
+    await page.keyboard.press('Escape');
     // 0.121·0.123·0.130 HD-D102U Rack마운트: 02 Port Map은 XDM-PSU 그림 방식의 정면 그래픽 이미지 1장만 두고(윗면·옆면은 삭제, 사용자 요청 2026-09-29) 실도면(치수 도면) 카드는 없다. HD-D102U와 관련 제품 링크.
     await page.goto(`${home}#products/hd-d102u-rack`,{waitUntil:'networkidle'});
     await page.waitForSelector('#rt-pg-title');
@@ -738,7 +745,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     // 0.55 QMS-88UX 06 화면 구성 모드: 레이아웃 버튼을 누르면 해당 도해로 미리보기가 바뀐다(사용자 요청 2026-09-27).
     await page.goto(`${home}#products/qms-88ux`,{waitUntil:'networkidle'});
     await page.waitForSelector('[data-layout-chip]');
-    // 0.154: WALL 카드에도 칩이 생겨(QMS-44UX와 같은 방식) QUAD 카드 안에서만 본다.
+    // 0.155: WALL 카드에도 칩이 생겨(QMS-44UX와 같은 방식) QUAD 카드 안에서만 본다.
     const quadCard88=page.locator('.rt-pg-vmode-card',{hasText:'QUAD'}).first();
     const beforeLayout=await quadCard88.evaluate(card=>card.querySelector('[data-layout-name]').textContent);
     await quadCard88.locator('[data-layout-chip]',{hasText:'3-SIDE RIGHT'}).click();
@@ -755,7 +762,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     const quadName=await page.locator('.rt-pg-vmode-card',{hasText:'QUAD'}).first().evaluate(card=>card.querySelector('[data-layout-name]')?.textContent);
     check('QMS-88UX 06 DUAL 카드에 PBP·PIP 레이아웃 3종이 있고 Vertical PBP를 누르면 2칸 도해로 바뀌며 QUAD 카드 미리보기는 그대로임',dual.chips.join('|')==='Horizontal PBP|Vertical PBP|Quad PBP, PIP'&&dual.name==='Vertical PBP'&&dual.rects===2&&/출력 9·10번/.test(dual.text)&&quadName==='8분할(비율무시)',JSON.stringify({dual,quadName}));
     // 0.152 — QMS-88UX WALL 요약이 "최대 3×3"뿐이었다(매뉴얼 KV.04 19쪽: 2×2 월 최대 2개, 월 1개면 최대 3×3·2×5).
-    // 0.154(사용자 요청 2026-09-29 "QMS-44 비디오월 기능을 88에도 동일한 컨셉으로 만들어줘"): 0.152에서 두지 않았던 WALL 칩을 44UX처럼 넣었다. 2×2 + 2×2는 월 2개(8칸, 출력 1~8), 2×5는 10칸.
+    // 0.155(사용자 요청 2026-09-29 "QMS-44 비디오월 기능을 88에도 동일한 컨셉으로 만들어줘"): 0.152에서 두지 않았던 WALL 칩을 44UX처럼 넣었다. 2×2 + 2×2는 월 2개(8칸, 출력 1~8), 2×5는 10칸.
     const wallCard88=page.locator('.rt-pg-vmode-card',{hasText:'WALL'}).first();
     await wallCard88.locator('[data-layout-chip]',{hasText:'2×2 + 2×2'}).click();
     const wallTwo=await wallCard88.evaluate(card=>card.querySelectorAll('[data-layout-preview] svg rect.rt-pg-cell').length);
