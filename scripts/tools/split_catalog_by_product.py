@@ -5,7 +5,7 @@ output/design/assets/docs/rtcom-catalog-2026.pdf에서 제품마다 data/product
 catalogPages 쪽만 뽑아 output/design/assets/docs/<id>-catalog.pdf로 저장한다.
 쪽 내용은 바꾸지 않고 그대로 복사한다(텍스트·이미지 재압축 없음).
 
-사용법: python3 scripts/tools/split_catalog_by_product.py [--check]
+사용법: python3 scripts/tools/split_catalog_by_product.py [--check] [제품id ...]
   --check  파일을 쓰지 않고, 이미 있는 제품별 PDF의 쪽 수·쪽 내용이 원본과 같은지만 확인한다.
 필요 패키지: pymupdf (pip install pymupdf)
 """
@@ -22,7 +22,9 @@ OUT_DIR = 'output/design/assets/docs'
 # catalogPages가 다른 제품 쪽까지 묶고 있는 경우, "해당 제품만 보이게"(사용자 요청 2026-09-28) 범위를 좁힌다.
 #  - xdm: 4~12쪽 중 10~12쪽은 XDM 전송기(CTR100·CT103·FT101) 쪽이다. 전송기는 각자 제품별 PDF가 있으므로 메인프레임·카드 4~9쪽만 쓴다.
 #  - spx-rx-tx: 15쪽은 SPX 메인프레임 사양 쪽이고 SPX-TX/RX 사양은 16쪽이다(기존 카탈로그 버튼도 16쪽을 열었다).
-PAGE_OVERRIDES = {'xdm': '4-9', 'spx-rx-tx': '16'}
+#  - 0.151(사용자 요청 2026-09-29 "SPX Series에서 카달로그를 누르면 SPX전체내용이 다 나오게해줘 VDM,XDM도 동일하게"):
+#    시리즈 카탈로그는 시리즈 구역 전체를 담는다. xdm은 전송기 10~12쪽까지 4~12쪽, vdm은 전송기 21~25쪽까지 17~25쪽, spx는 원래 13~16쪽.
+PAGE_OVERRIDES = {'vdm': '17-25', 'spx-rx-tx': '16'}
 
 
 def page_range(text):
@@ -45,7 +47,10 @@ def main():
     check = '--check' in sys.argv
     src = pymupdf.open(SOURCE)
     bad = 0
+    only = [a for a in sys.argv[1:] if not a.startswith('--')]
     for pid, model, pages in targets():
+        if only and pid not in only:
+            continue
         out = os.path.join(OUT_DIR, f'{pid}-catalog.pdf')
         if check:
             if not os.path.exists(out):
