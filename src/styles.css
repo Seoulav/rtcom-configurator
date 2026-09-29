@@ -980,10 +980,11 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design [data-sig="hdmi"]{--rt-sig:#2f6fe0}
 #rtcom-design [data-sig="dp"]{--rt-sig:#7c4ddb}
 #rtcom-design [data-sig="hdbt"],#rtcom-design [data-sig="catx"]{--rt-sig:#15924a}
-#rtcom-design [data-sig="fiber"]{--rt-sig:#0a8aa6}
+/* 0.168 광 전송은 OM3 멀티모드 광케이블 외피색(TIA-598 아쿠아, 사용자 요청 2026-09-29 "Fiber 멀티모드 광케이블 색상으로 하자 om3"). 밝은 색이라 글자는 짙은 청록 */
+#rtcom-design [data-sig="fiber"]{--rt-sig:#00AEC7;--rt-sig-ink:#05343b}
 #rtcom-design [data-sig="sdi"]{--rt-sig:#d0384f}
 #rtcom-design [data-sig="etc"]{--rt-sig:#667085}
-#rtcom-design .rt-sig-badge{display:inline-grid;place-items:center;flex:none;min-width:34px;height:18px;padding:0 5px;border-radius:5px;background:var(--rt-sig);color:#fff;font:800 9.5px/1 system-ui,sans-serif;font-style:normal;letter-spacing:.02em}
+#rtcom-design .rt-sig-badge{display:inline-grid;place-items:center;flex:none;min-width:34px;height:18px;padding:0 5px;border-radius:5px;background:var(--rt-sig);color:var(--rt-sig-ink,#fff);font:800 9.5px/1 system-ui,sans-serif;font-style:normal;letter-spacing:.02em}
 #rtcom-design .rt-sig-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 14px;margin-top:6px;color:var(--rt-muted);font-size:11.5px}
 #rtcom-design .rt-sig-legend span{display:inline-flex;align-items:center;gap:5px}
 #rtcom-design .rt-card-info-chip strong:has(.rt-sig-badge){display:flex;align-items:center;gap:6px}
