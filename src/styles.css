@@ -5,7 +5,7 @@
     #rtcom-design .rt-top{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:23px 32px;border-bottom:1px solid var(--rt-line)}#rtcom-design .rt-brand{font-size:25px;letter-spacing:-1.2px;font-weight:500;line-height:1}#rtcom-design .rt-brand span{color:var(--rt-accent)}#rtcom-design .rt-brand-sub{display:block;font-size:10px;letter-spacing:2px;margin-top:8px;color:var(--rt-muted)}#rtcom-design .rt-meta{text-align:right;color:var(--rt-muted);font-size:12px}#rtcom-design .rt-meta b{font-weight:500;color:var(--rt-ink)}
     #rtcom-design .rt-nav{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;padding:20px 32px 0}#rtcom-design .rt-step{background:transparent;border:0;border-bottom:2px solid var(--rt-line);padding:9px 0 15px;text-align:left;display:flex;align-items:center;gap:8px;font-size:12px;white-space:nowrap}#rtcom-design .rt-step i{font-style:normal;display:grid;place-items:center;width:22px;height:22px;border:1px solid var(--rt-line);border-radius:50%;font-size:11px}#rtcom-design .rt-step[aria-current=step]{color:var(--rt-accent);border-bottom-color:var(--rt-accent)}#rtcom-design .rt-step[aria-current=step] i{background:var(--rt-accent);color:var(--rt-bg);border-color:var(--rt-accent)}
     #rtcom-design .rt-main{padding:35px 32px 28px;min-height:475px}#rtcom-design .rt-eyebrow{font-size:11px;letter-spacing:2px;color:var(--rt-accent);margin-bottom:10px}#rtcom-design h2{font-size:29px;line-height:1.35;font-weight:500;letter-spacing:-1.2px;margin:0 0 10px}#rtcom-design h3{font-size:20px;line-height:1.4;font-weight:500;margin:0}#rtcom-design p{margin:0}#rtcom-design .rt-description{color:var(--rt-muted);font-size:13px;margin-bottom:26px}#rtcom-design .rt-radio{width:18px;height:18px;border:1px solid var(--rt-line);border-radius:50%;display:grid;place-items:center;font-size:11px}
-    #rtcom-design .rt-footer{border-top:1px solid var(--rt-line);padding:18px 32px;display:flex;align-items:center;justify-content:space-between;gap:15px;background:var(--rt-soft)}#rtcom-design .rt-summary{font-size:12px;color:var(--rt-muted);min-width:0}#rtcom-design .rt-summary strong{color:var(--rt-ink);font-weight:500}#rtcom-design .rt-actions{display:flex;gap:9px;flex-shrink:0}#rtcom-design .rt-button{border:1px solid var(--rt-line);background:var(--rt-bg);padding:10px 17px;min-height:42px;font-size:12px}#rtcom-design .rt-button.rt-primary{background:var(--rt-cta);border-color:var(--rt-cta);color:var(--rt-cta-ink);display:flex;gap:28px;justify-content:space-between;align-items:center}#rtcom-design .rt-button.rt-quiet{background:transparent;border-color:transparent;padding-left:0}#rtcom-design .rt-arrow{color:var(--rt-accent);font-size:18px}
+    #rtcom-design .rt-footer{border-top:1px solid var(--rt-line);padding:18px 32px;display:flex;align-items:center;justify-content:space-between;gap:15px;background:var(--rt-soft)}#rtcom-design .rt-footer[hidden]{display:none}#rtcom-design .rt-actions{display:flex;gap:9px;flex-shrink:0;margin-left:auto}#rtcom-design .rt-button{border:1px solid var(--rt-line);background:var(--rt-bg);padding:10px 17px;min-height:42px;font-size:12px}#rtcom-design .rt-button.rt-primary{background:var(--rt-cta);border-color:var(--rt-cta);color:var(--rt-cta-ink);display:flex;gap:28px;justify-content:space-between;align-items:center}#rtcom-design .rt-button.rt-quiet{background:transparent;border-color:transparent;padding-left:0}#rtcom-design .rt-arrow{color:var(--rt-accent);font-size:18px}
     #rtcom-design .rt-line{height:1px;background:var(--rt-line);margin:18px 0}#rtcom-design .rt-caption{font-size:11px;color:var(--rt-muted)}#rtcom-design .rt-preview-label{display:flex;justify-content:space-between;align-items:center;gap:10px}#rtcom-design .rt-pill{background:var(--rt-tint);color:var(--rt-accent);font-size:11px;padding:4px 8px}
     #rtcom-design .rt-board-note{font-size:11px;color:var(--rt-muted);margin-top:15px}
     #rtcom-design .rt-link-list{display:grid;gap:14px}#rtcom-design label{font-size:11px;color:var(--rt-muted);display:block}#rtcom-design select{width:100%;margin-top:5px;border:1px solid var(--rt-line);padding:9px;background:var(--rt-bg);color:var(--rt-ink);border-radius:0;min-height:40px;font-size:12px}#rtcom-design .rt-empty{padding:30px 20px;background:var(--rt-soft);text-align:center;color:var(--rt-muted);font-size:13px}#rtcom-design .rt-review-head{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-bottom:24px}#rtcom-design .rt-review-stat{border-bottom:1px solid var(--rt-line);padding-bottom:15px;font-size:12px;color:var(--rt-muted)}#rtcom-design .rt-review-stat strong{display:block;color:var(--rt-ink);font-size:23px;font-weight:500;margin-top:6px}#rtcom-design .rt-table-wrap{overflow-x:auto}#rtcom-design table{width:100%;border-collapse:collapse;font-size:12px}#rtcom-design th{font-size:11px;color:var(--rt-muted);font-weight:400;text-align:left;background:var(--rt-soft)}#rtcom-design td,#rtcom-design th{padding:12px;border-bottom:1px solid var(--rt-line)}#rtcom-design td:last-child,#rtcom-design th:last-child{text-align:right}#rtcom-design .rt-notice{padding:12px 15px;margin:18px 0 0;background:var(--rt-tint);color:var(--rt-accent);font-size:12px}#rtcom-design .rt-export{display:grid;grid-template-columns:1fr 1.3fr;gap:28px}#rtcom-design .rt-paper{border:1px solid var(--rt-line);background:var(--rt-bg);padding:25px;box-shadow:0 8px 25px #00000009}#rtcom-design .rt-paper-title{font-size:21px;font-weight:500;margin:18px 0 2px}#rtcom-design .rt-export-options{display:grid;gap:10px;align-content:start}#rtcom-design .rt-format{padding:15px;border:1px solid var(--rt-line);text-align:left;background:var(--rt-bg);display:flex;justify-content:space-between;align-items:center}#rtcom-design .rt-format[aria-pressed=true]{border-color:var(--rt-accent);background:var(--rt-tint)}#rtcom-design .rt-format span{display:block;font-size:11px;color:var(--rt-muted)}#rtcom-design .rt-format strong{font-weight:500}#rtcom-design .rt-paper pre{font-size:11px;white-space:pre-wrap;overflow-wrap:anywhere;background:var(--rt-soft);padding:13px}
@@ -466,11 +466,32 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-doc a:hover,#rtcom-design .rt-pg-doc button:hover{background:var(--pg-seg-track)}
 #rtcom-design .rt-pg-doc a:focus-visible,#rtcom-design .rt-pg-doc button:focus-visible{outline:2px solid var(--pg-accent);outline-offset:-2px}
 /* 카탈로그 팝업 미리보기(0.105 샘플, HD-13U 전용, 사용자 요청 "1장짜리라서 파일다운받아서 다시 열기 불편해") */
-#rtcom-design .rt-doc-zoom{width:min(720px,calc(100vw - 16px));height:calc(100vh - 24px);max-width:none;max-height:none;padding:0;border:0;border-radius:20px;background:#fff;color:var(--pg-ink,#1f2532);box-shadow:0 30px 80px #0f172a59;overflow:hidden}
+#rtcom-design .rt-doc-zoom{width:min(1040px,calc(100vw - 16px));height:calc(100vh - 24px);max-width:calc(100vw - 16px);max-height:none;padding:0;border:0;border-radius:20px;background:#fff;color:var(--pg-ink,#1f2532);box-shadow:0 30px 80px #0f172a59;overflow:hidden}
 #rtcom-design .rt-doc-zoom[open]{display:flex;flex-direction:column}
 #rtcom-design .rt-doc-zoom::backdrop{background:#0f172aa6;backdrop-filter:blur(3px)}
-#rtcom-design .rt-doc-zoom-body{flex:1;overflow:hidden}
-#rtcom-design .rt-doc-zoom-body iframe{width:100%;height:100%;border:0;display:block}
+#rtcom-design .rt-doc-zoom-body{flex:1;overflow:auto;padding:12px;background:#eef1f6;-webkit-overflow-scrolling:touch}
+#rtcom-design .rt-doc-pages{display:flex;flex-direction:column;align-items:center;gap:12px;width:max-content;min-width:100%}
+#rtcom-design .rt-doc-page,#rtcom-design .rt-doc-pages img{display:block;flex-shrink:0;background:#fff;box-shadow:0 2px 10px #0f172a26;border-radius:4px;overflow:hidden}
+#rtcom-design .rt-doc-page canvas{display:block;width:100%;height:100%}
+#rtcom-design .rt-doc-pages img{height:auto;max-width:none}
+#rtcom-design .rt-doc-status{margin:24px auto;text-align:center;font-size:13px;color:#415069}
+#rtcom-design .rt-doc-status a{color:#007AFF;font-weight:700}
+#rtcom-design .rt-doc-zoom .rt-flow-zoom-head b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#rtcom-design .rt-doc-zoom .rt-flow-zoom-tools{flex-shrink:0}
+@media(max-width:560px){#rtcom-design .rt-doc-zoom .rt-flow-zoom-head{flex-wrap:wrap;row-gap:8px;padding:10px 12px}#rtcom-design .rt-doc-zoom .rt-flow-zoom-head b{flex:1 1 100%}#rtcom-design .rt-doc-zoom .rt-flow-zoom-tools{margin-left:auto}}
+#rtcom-design .rt-doc-zoom-link{white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;height:38px;min-width:38px;padding:0 12px;border-radius:19px;background:#f0f4fa;color:#415069;font-size:13px;font-weight:700;text-decoration:none}
+/* 0.126 PC 창 폭 조절: 좌우 가장자리를 끌면 폭이 바뀐다. 가장자리에 마우스를 올리면 세로 막대가 보인다. */
+/* 끌기 막대는 창 좌우의 8px 테두리 안에만 있어 문서 스크롤바를 가리지 않는다. */
+#rtcom-design .rt-doc-zoom{padding:0 8px}
+#rtcom-design .rt-doc-resize{position:absolute;top:0;bottom:0;width:8px;cursor:ew-resize;touch-action:none;z-index:2}
+#rtcom-design .rt-doc-resize[data-doc-resize="left"]{left:0}
+#rtcom-design .rt-doc-resize[data-doc-resize="right"]{right:0}
+#rtcom-design .rt-doc-resize::after{content:"";position:absolute;top:50%;left:2px;width:4px;height:56px;margin-top:-28px;border-radius:2px;background:#9aa6b8;opacity:.35;transition:opacity .15s}
+#rtcom-design .rt-doc-resize:hover::after,#rtcom-design .rt-doc-resizing .rt-doc-resize::after{opacity:.9}
+#rtcom-design .rt-doc-resizing,#rtcom-design .rt-doc-resizing *{cursor:ew-resize!important;user-select:none}
+#rtcom-design .rt-doc-zoom .rt-doc-wide{display:inline-flex;align-items:center;justify-content:center;font-size:0}
+#rtcom-design .rt-doc-zoom .rt-doc-wide[aria-pressed="true"]{background:#007AFF;color:#fff}
+@media(max-width:560px),(pointer:coarse){#rtcom-design .rt-doc-zoom{padding:0}#rtcom-design .rt-doc-resize,#rtcom-design .rt-doc-zoom .rt-doc-wide{display:none}}
 @media print{#rtcom-design .rt-doc-zoom{display:none}}
 #rtcom-design .rt-pg-btn.rt-pg-primary{background:var(--pg-accent);color:#fff;box-shadow:0 6px 16px -6px var(--pg-accent)}
 #rtcom-design .rt-pg-cols{display:grid;grid-template-columns:360px 1fr;gap:22px;align-items:start}
@@ -705,14 +726,26 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-cg-preview-cap{text-align:center}
 #rtcom-design .rt-cg-preview-cap strong{display:block;font-size:20px;font-weight:800;letter-spacing:-.02em;color:var(--pg-ink,#1f2532)}
 #rtcom-design .rt-cg-preview-cap span{font-size:12.5px;color:var(--pg-muted,#8a8a8e)}
+#rtcom-design .rt-cg-preview-next{margin-top:6px;min-width:220px}
+/* 0.116 정면·후면 함께 보기: stack(위아래)·row(좌우). 대형 프레임은 앱에서 예전 토글(rt-cg-seg)로 그린다. */
+#rtcom-design .rt-cg-duo{display:flex;gap:14px;width:100%;align-items:center;justify-content:center}
+#rtcom-design .rt-cg-duo-stack{flex-direction:column;gap:10px}
+#rtcom-design .rt-cg-duo figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
+#rtcom-design .rt-cg-duo-row figure{flex:1 1 0}
+#rtcom-design .rt-cg-duo img{max-width:100%;max-height:210px}
+#rtcom-design .rt-cg-duo-row img{max-height:400px}
+#rtcom-design .rt-cg-duo figcaption{font-size:11.5px;font-weight:700;letter-spacing:.04em;color:var(--pg-muted,#8a8a8e)}
 #rtcom-design .rt-cg-chips{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
 #rtcom-design .rt-cg-chips em{font-style:normal;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:980px;background:rgba(255,255,255,.85);color:var(--pg-ink-2,#3a3a3c)}
-#rtcom-design .rt-cg-seg{position:absolute;top:18px;right:18px;display:inline-flex;gap:2px;padding:2px;background:rgba(118,118,128,.16);border-radius:11px}
+#rtcom-design .rt-cg-seg{position:absolute;top:18px;right:18px;z-index:2;display:inline-flex;gap:2px;padding:2px;background:rgba(118,118,128,.16);border-radius:11px}
 #rtcom-design .rt-cg-seg button{border:0;background:transparent;border-radius:9px;font:600 12.5px/1 inherit;padding:7px 13px;color:var(--pg-ink-2,#3a3a3c);cursor:pointer}
 #rtcom-design .rt-cg-seg button.rt-cg-seg-on{background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.14),0 1px 2px rgba(0,0,0,.1)}
 @media(max-width:820px){
   #rtcom-design .rt-cg-split{grid-template-columns:1fr}
-  #rtcom-design .rt-cg-preview{order:-1;max-height:260px;border-left:0;border-bottom:1px solid var(--pg-line,rgba(60,60,67,.12))}
+  /* 0.116: 휴대폰에서도 정면·후면과 다음 버튼이 잘리지 않도록 미리보기 높이 제한(260px)을 없앴다. */
+  #rtcom-design .rt-cg-preview{order:-1;border-left:0;border-bottom:1px solid var(--pg-line,rgba(60,60,67,.12))}
+  #rtcom-design .rt-cg-duo-stack img{max-height:120px}
+  #rtcom-design .rt-cg-duo-row img{max-height:200px}
   #rtcom-design .rt-cg-preview img{max-height:190px}
   /* 04 연결 흐름은 사진 한 장(01/02)보다 세로로 쉽게 길어져서 260px 안에 못 들어가면 위아래로 넘친다(justify-content:center 특성상 위로도 샌다).
      이 표시가 있을 때만 높이 제한을 풀고 위에서부터 쌓는다. */
@@ -918,7 +951,8 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-card-choice-qty{display:flex;justify-content:flex-end;align-items:center;gap:10px;margin:0 12px 12px;padding-top:10px;border-top:1px dashed #e0e7f1;color:#56627a;font-size:12px;font-weight:750}
 #rtcom-design .rt-card-choice-qty .rt-card-qty-stepper button{width:30px;height:30px;font-size:16px}
 #rtcom-design .rt-card-choice-qty .rt-card-qty-stepper output{min-width:30px;font-size:15px}
-#rtcom-design .rt-card-modal-foot [data-action="fill-qty"]{margin-right:auto}
+/* 0.115(사용자 요청 2026-09-28 "하단에 장착을 우측으로 배치하고 델리트키는 왼쪽에 배치해줘"): 슬롯 비우기(Del)는 왼쪽, 장착·닫기는 오른쪽. */
+#rtcom-design .rt-card-modal-foot [data-action="remove"]{margin-right:auto}
 #rtcom-design [data-action="fill-qty"]:disabled{opacity:.45;cursor:default}
 /* 0.70 02 프레임 선택 아래 "함께 보면 좋은 제품" — 사진 카드 한 줄(넘치면 가로 스크롤) */
 #rtcom-design .rt-rel{margin-top:22px}
@@ -999,3 +1033,50 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-flow-zoom-body{flex:1;overflow:auto;padding:12px;-webkit-overflow-scrolling:touch}
 #rtcom-design .rt-flow-zoom-canvas svg{display:block;width:100%;height:auto}
 @media print{#rtcom-design .rt-flow-zoom-bar{display:none}}
+/* 0.117 카드 팝업 연동 전송기: 카드 버튼 아래 칩 줄. 고른 칩은 파란 테두리. */
+#rtcom-design .rt-card-choice-ext{margin:0 12px;padding:10px 0 2px;border-top:1px dashed #e0e7f1}
+#rtcom-design .rt-card-choice-ext-title{display:block;margin-bottom:7px;font-size:12px;font-weight:800;color:var(--rt-ink)}
+#rtcom-design .rt-card-choice-ext-title small{margin-left:6px;font-weight:600;color:var(--rt-muted,#8a8a8e)}
+#rtcom-design .rt-card-choice-ext-row{display:flex;flex-wrap:wrap;gap:8px}
+#rtcom-design .rt-ext-chip{display:inline-flex;align-items:center;gap:8px;min-height:44px;max-width:100%;padding:5px 12px 5px 6px;border:1px solid #dfe6f0;border-radius:12px;background:#fff;font:inherit;text-align:left;cursor:pointer}
+#rtcom-design .rt-ext-chip img{width:46px;height:32px;object-fit:contain;flex:none}
+#rtcom-design .rt-ext-chip i{display:grid;place-items:center;width:32px;height:32px;flex:none;font-style:normal;color:#9aa3b2}
+#rtcom-design .rt-ext-chip span{display:flex;flex-direction:column;min-width:0}
+#rtcom-design .rt-ext-chip strong{font-size:12.5px;font-weight:800;color:var(--rt-ink)}
+#rtcom-design .rt-ext-chip strong em{margin-left:5px;padding:1px 6px;border-radius:999px;background:#edf4ff;color:#2f63c8;font-size:10.5px;font-style:normal;font-weight:800}
+#rtcom-design .rt-ext-chip small{max-width:230px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:11px;color:var(--rt-muted,#8a8a8e)}
+#rtcom-design .rt-ext-chip[aria-pressed="true"]{border-color:#007AFF;background:#eef5ff;box-shadow:0 0 0 2px rgba(0,122,255,.18)}
+#rtcom-design .rt-ext-chip:focus-visible{outline:2px solid #007AFF;outline-offset:2px}
+/* 0.118 카드 팝업 전송기 수량(카드 1장당). "연결 안 함"이면 흐리게. */
+#rtcom-design .rt-card-choice-ext-qty{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px 12px;margin-top:10px}
+#rtcom-design .rt-card-choice-ext-qty>span{font-size:12px;font-weight:800;color:var(--rt-ink)}
+#rtcom-design .rt-card-choice-ext-qty>span small{margin-left:6px;font-weight:600;color:var(--rt-muted,#8a8a8e)}
+#rtcom-design .rt-card-choice-ext-qty .rt-card-qty-stepper button{width:30px;height:30px;font-size:16px}
+#rtcom-design .rt-card-choice-ext-qty .rt-card-qty-stepper output{min-width:30px;font-size:15px}
+#rtcom-design .rt-card-choice-ext-qty[data-off]{opacity:.45}
+
+/* 0.127 파란 "다음" 버튼(아래 바·미리보기)의 → 화살표: 예전에는 강조색(파랑)이라 파란 버튼 배경에 묻혀 보이지 않았다. 버튼 글자색(흰색)을 그대로 쓴다. */
+#rtcom-design .rt-button.rt-primary .rt-arrow{color:currentColor;font-size:20px;font-weight:700;line-height:1}
+#rtcom-design .rt-cg-preview .rt-cg-preview-next{display:inline-flex;gap:18px;justify-content:center}
+
+/* 0.128 hidden 속성이 있는 버튼은 display:flex 규칙(.rt-button.rt-primary)에 밀리지 않고 숨긴다. */
+#rtcom-design .rt-button[hidden]{display:none!important}
+
+/* 0.132 프레임 미리보기 그림 높이를 랙 높이(U)에 맞춤(--rt-fh, src/app.js frameShowHeight). 정면·후면을 위아래로 겹쳐 보여 주는 작은 프레임(stack)은 0.9배. 휴대폰은 0.45배. */
+#rtcom-design .rt-cg-preview.rt-cg-scaled img{height:calc(var(--rt-fh)*1px);width:auto;max-width:100%;max-height:none;object-fit:contain}
+#rtcom-design .rt-cg-preview.rt-cg-scaled .rt-cg-duo-stack img{height:calc(var(--rt-fh)*.9px)}
+@media(max-width:820px){
+  /* 가장 작은 프레임(SPX-M810 2U)도 휴대폰에서 알아볼 수 있게 최소 높이 56px */
+  #rtcom-design .rt-cg-preview.rt-cg-scaled img,#rtcom-design .rt-cg-preview.rt-cg-scaled .rt-cg-duo-stack img{height:max(56px,calc(var(--rt-fh)*.45px))}
+}
+
+/* 0.137 카드 팝업: 이미 장착된 같은 카드 장수 표시(스테퍼는 새로 채울 수량) */
+#rtcom-design .rt-card-choice-qty .rt-card-have{margin-right:auto;font-style:normal;font-size:12px;font-weight:800;color:#0a66d6;background:#e8f1ff;border-radius:999px;padding:4px 10px}
+
+/* 0.137 정면·후면을 위아래로 겹쳐 보이는 프레임(stack): 실제 랙 폭은 같으므로 후면 그림 폭을 정면 그림 폭에 맞춘다(사용자 요청 2026-09-29 "프레임앞뒤면 좌우 크기차이 있는 제품 SPX-M1620·M810·M2472·M24120").
+   그리드 한 칸의 폭은 정면 그림이 정하고, 후면 그림은 폭 0 + min-width:100%로 칸 폭을 그대로 받는다(높이는 자기 비율대로 자동). */
+#rtcom-design .rt-cg-preview.rt-cg-scaled .rt-cg-duo-stack{display:grid;justify-items:stretch;width:fit-content;max-width:100%;margin:0 auto}
+#rtcom-design .rt-cg-preview.rt-cg-scaled .rt-cg-duo-stack figure:last-child img{width:0;min-width:100%;height:auto;max-height:none;object-fit:fill}
+@media(max-width:820px){
+  #rtcom-design .rt-cg-preview.rt-cg-scaled .rt-cg-duo-stack figure:last-child img{height:auto}
+}

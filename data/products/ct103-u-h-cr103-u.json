@@ -24,25 +24,25 @@
       "role": "Main",
       "file": "ct103-u-h-cr103-u-main.webp",
       "alt": "RTCOM CT103-U-H 벽부형 송신기(TX) 전면",
-      "note": "Main · TX CT103-U-H 카탈로그 사진",
+      "note": "Main · TX CT-103-U-H 사용자 매뉴얼 Ver.1.4 표지 제품 사진",
       "provider": "RTCOM",
       "model": "CT103-U-H",
       "source": "C",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "383×374"
+      "resolution": "542×532"
     },
     {
       "role": "Other",
       "file": "cr103-u-manual.webp",
       "alt": "RTCOM CR103-U 벽부형 수신기(RX) 앞면",
-      "note": "Other · RX CR-103-U 사용자 매뉴얼 KV01 표지 제품 사진",
+      "note": "Other · RX CR-103-U 사용자 매뉴얼 Ver.1.4 표지 제품 사진",
       "provider": "RTCOM",
       "model": "CR103-U",
       "source": "M1",
       "officialSource": true,
       "verificationStatus": "FOUND",
-      "resolution": "483×475"
+      "resolution": "544×534"
     }
   ],
   "imageStatuses": [
@@ -74,7 +74,11 @@
       "title": "알티컴 종합 카탈로그 2026 (국문)",
       "language": "ko",
       "note": "카탈로그 46쪽판 22쪽 발췌 · 제품별 공개본(2026-09-28 사용자 결정 \"제품별로 잘라 공개\")",
-      "file": "ct103-u-h-cr103-u-catalog.pdf"
+      "file": "ct103-u-h-cr103-u-catalog.pdf",
+      "preview": "image",
+      "previewImages": [
+        "ct103-u-h-cr103-u-catalog-p1.webp"
+      ]
     },
     {
       "type": "Manual",
@@ -321,45 +325,45 @@
           "label": "HDMI IN 1·2",
           "desc": "HDMI 소스 2대 · INPUT 버튼으로 선택",
           "side": "left",
-          "x": 77,
-          "y1": 143,
-          "y2": 231
+          "x": 80,
+          "y1": 198,
+          "y2": 348
         },
         {
           "n": 4,
           "label": "POWER · ST LED",
           "desc": "전원 · 입력 신호 표시",
-          "x1": 241,
-          "x2": 271,
+          "x1": 366,
+          "x2": 414,
           "side": "top",
-          "y": 104
+          "y": 132
         },
         {
           "n": 2,
           "label": "AUDIO IN",
           "desc": "3.5mm 스테레오 오디오 입력",
           "side": "right",
-          "x": 291,
-          "y1": 166,
-          "y2": 196
+          "x": 458,
+          "y1": 226,
+          "y2": 284
         },
         {
           "n": 3,
           "label": "RS-232",
           "desc": "3핀(Tx·Rx·접지) · 제어 신호 전송",
           "side": "right",
-          "x": 291,
-          "y1": 209,
-          "y2": 237
+          "x": 458,
+          "y1": 314,
+          "y2": 364
         },
         {
           "n": 5,
           "label": "INPUT 버튼",
           "desc": "HDMI 1·2 입력 전환",
-          "x1": 148,
-          "x2": 162,
+          "x1": 205,
+          "x2": 226,
           "side": "top",
-          "y": 120
+          "y": 128
         }
       ]
     },
@@ -373,28 +377,28 @@
           "n": 1,
           "label": "HDMI OUT",
           "desc": "디스플레이 연결(DVI/HDMI) · 스케일링·심리스 지원",
-          "x1": 117,
-          "x2": 180,
+          "x1": 122,
+          "x2": 200,
           "side": "bottom",
-          "y": 258
+          "y": 292
         },
         {
           "n": 3,
           "label": "POWER · ST LED",
           "desc": "전원 · 상태 표시",
-          "x1": 323,
-          "x2": 369,
+          "x1": 356,
+          "x2": 404,
           "side": "top",
-          "y": 128
+          "y": 140
         },
         {
           "n": 2,
           "label": "RS-232",
           "desc": "3핀(Tx·Rx·접지) · 제어 신호 수신",
           "side": "right",
-          "x": 397,
-          "y1": 228,
-          "y2": 264
+          "x": 466,
+          "y1": 240,
+          "y2": 296
         }
       ]
     }
