@@ -722,11 +722,14 @@
             badges+=`<circle cx="${fx+BZ+7}" cy="${fy+BZ+7}" r="5.2" fill="#fff" fill-opacity=".92"/><text x="${fx+BZ+7}" y="${fy+BZ+7.2}" font-size="7" font-weight="800" fill="#1f2532" text-anchor="middle" dominant-baseline="central">${n}</text>`;
           }
           const x0=ox+BZ,y0=oy+BZ,x1=ox+ww-BZ,y1=oy+wh-BZ,iw=x1-x0,ih=y1-y0;
-          const hill=`M${x0} ${y0+ih*0.78}C${x0+iw*0.18} ${y0+ih*0.52},${x0+iw*0.32} ${y0+ih*0.6},${x0+iw*0.46} ${y0+ih*0.46}S${x0+iw*0.78} ${y0+ih*0.62},${x1} ${y0+ih*0.5}V${y1}H${x0}Z`;
+          // 0.155 위 줄(1·2번 화면)에도 산이 보이도록 뒤쪽 산줄기(봉우리)를 더하고 앞 언덕은 조금 낮췄다.
+          const ridgePts=[[0,0.62],[0.16,0.27],[0.30,0.5],[0.47,0.16],[0.64,0.5],[0.81,0.3],[1,0.54]];
+          const ridge=`M${ridgePts.map(([a,b])=>`${(x0+iw*a).toFixed(1)} ${(y0+ih*b).toFixed(1)}`).join('L')}V${y1}H${x0}Z`;
+          const hill=`M${x0} ${y0+ih*0.84}C${x0+iw*0.18} ${y0+ih*0.6},${x0+iw*0.32} ${y0+ih*0.68},${x0+iw*0.46} ${y0+ih*0.58}S${x0+iw*0.78} ${y0+ih*0.7},${x1} ${y0+ih*0.6}V${y1}H${x0}Z`;
           const hill2=`M${x0} ${y0+ih*0.9}C${x0+iw*0.3} ${y0+ih*0.7},${x0+iw*0.55} ${y0+ih*0.86},${x0+iw*0.75} ${y0+ih*0.72}S${x1-iw*0.05} ${y0+ih*0.8},${x1} ${y0+ih*0.76}V${y1}H${x0}Z`;
           // 월이 둘이면 두 번째 월은 다른 영상(노을)으로 칠해 서로 다른 소스임을 보인다.
-          const sky=wi?['#ff9a62','#ffe0b8']:['#5aa9ff','#cfe6ff'],land=wi?['#8a5a3c','#5c3a24']:['#34a853','#1e7a3c'];
-          body+=`<defs><linearGradient id="${id}s${wi}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky[0]}"/><stop offset="1" stop-color="${sky[1]}"/></linearGradient><clipPath id="${id}c${wi}">${screens.replace(/ class="rt-pg-cell"/g,'')}</clipPath></defs>${frames}${screens.replace(/<rect class="rt-pg-cell"/g,'<rect class="rt-pg-cell" fill="#0b0d12"')}<g clip-path="url(#${id}c${wi})"><rect x="${x0}" y="${y0}" width="${iw}" height="${ih}" fill="url(#${id}s${wi})"/><circle cx="${x0+iw*0.76}" cy="${y0+ih*0.26}" r="${Math.min(iw,ih)*0.09}" fill="#ffd66b"/><path d="${hill}" fill="${land[0]}"/><path d="${hill2}" fill="${land[1]}"/></g>${badges}`;
+          const sky=wi?['#ff9a62','#ffe0b8']:['#5aa9ff','#cfe6ff'],land=wi?['#8a5a3c','#5c3a24']:['#34a853','#1e7a3c'],far=wi?'#c98a62':'#5f86c9';
+          body+=`<defs><linearGradient id="${id}s${wi}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky[0]}"/><stop offset="1" stop-color="${sky[1]}"/></linearGradient><clipPath id="${id}c${wi}">${screens.replace(/ class="rt-pg-cell"/g,'')}</clipPath></defs>${frames}${screens.replace(/<rect class="rt-pg-cell"/g,'<rect class="rt-pg-cell" fill="#0b0d12"')}<g clip-path="url(#${id}c${wi})"><rect x="${x0}" y="${y0}" width="${iw}" height="${ih}" fill="url(#${id}s${wi})"/><circle cx="${x0+iw*0.76}" cy="${y0+ih*0.13}" r="${Math.min(iw,ih)*0.08}" fill="#ffd66b"/><path d="${ridge}" fill="${far}"/><path d="${hill}" fill="${land[0]}"/><path d="${hill2}" fill="${land[1]}"/></g>${badges}`;
           ox+=ww+WGAP;
         });
         return `<svg class="rt-pg-layout-wall" viewBox="0 0 ${W} ${H}" role="img" ${label}>${body}</svg>`;
