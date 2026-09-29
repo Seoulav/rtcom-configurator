@@ -584,7 +584,7 @@
     };
     const VMODE_NAME_KO={MATRIX:'매트릭스',QUAD:'쿼드 뷰',WALL:'비디오 월',DUAL:'듀얼'};
     // 레이아웃 이름별 화면 분할 도해(칸 번호·x·y·너비·높이, 0~100 기준). QMS-88UX 매뉴얼(RTcom_Manual_QMS-88UX_KV.03.pdf) 20~21쪽 Layout List 도해를 그대로 옮겼다(사용자 요청 2026-09-27).
-    // QMS-44UX 전용 이름의 QUAD 도해는 아래 LAYOUT_SHAPES_BY_PRODUCT(0.146, 44UX 매뉴얼 21~22쪽 도해)가 우선한다. 매뉴얼에 도해가 없는 WALL·DUAL 레이아웃(2×2~FULL, PBP, PBP-FULL, PIP, USER MODE)은 이름 뜻에 맞춰 만든 도식이며 QMS-44UX만 쓴다. QMS-88UX는 WALL 도해가 없고 DUAL은 매뉴얼 Layout 5~7 도해를 쓴다(0.152 재검토).
+    // QMS-44UX 전용 이름의 QUAD 도해는 아래 LAYOUT_SHAPES_BY_PRODUCT(0.146, 44UX 매뉴얼 21~22쪽 도해)가 우선한다. 매뉴얼에 도해가 없는 QMS-44UX WALL(2×2~FULL, 23쪽 이름·29쪽 가로×세로 배치)과 DUAL PBP·PIP(24쪽 "2분할")는 이름 뜻에 맞춘 도식이며 QMS-44UX만 쓴다. PBP-Full·User Mode는 그림을 두지 않는다(0.155). QMS-88UX는 WALL 도해가 없고 DUAL은 매뉴얼 Layout 5~7 도해를 쓴다(0.152 재검토).
     const LAYOUT_SHAPES={
       'QUAD':[[1,0,0,50,50],[2,50,0,50,50],[3,0,50,50,50],[4,50,50,50,50]],
       '3-BOTTOM':[[1,0,0,100,50],[2,0,50,33.33,50],[3,33.33,50,33.34,50],[4,66.67,50,33.33,50]],
@@ -608,9 +608,7 @@
       '1×4':[[1,0,0,100,25],[2,0,25,100,25],[3,0,50,100,25],[4,0,75,100,25]],
       'FULL':[[1,0,0,100,100]],
       'PBP':[[1,0,0,50,100],[2,50,0,50,100]],
-      'PBP-FULL':[[1,0,0,50,100],[2,50,0,50,100]],
       'PIP':[[1,0,0,100,100],[2,62,62,32,32]],
-      'USER MODE':[[1,0,0,65,100],[2,65,0,35,50],[3,65,50,35,50]],
       'CASCADE1':[[1,0,0,100,100],[2,50,50,40,40]],
       '4CH-POP':[[1,0,0,50,100],[2,28,62,20,32],[3,50,0,50,100],[4,78,62,20,32]],
       '2CH-SIDE':[[1,0,0,50,100],[2,50,0,50,100]],
@@ -638,7 +636,10 @@
         'USER MODE 2':[[1,0,25,25,50],[2,25,25,25,50],[3,50,25,25,50],[4,75,25,25,50]],
         'USER MODE 3':[[1,20,0,60,25],[2,20,25,60,25],[3,20,50,60,25],[4,20,75,60,25]]
       },
-      black:new Set(['3-BOTTOM','3-SIDE RIGHT','3-SIDE LEFT','3CH-MODE2','USER MODE 1','USER MODE 2','USER MODE 3'])
+      black:new Set(['3-BOTTOM','3-SIDE RIGHT','3-SIDE LEFT','3CH-MODE2','USER MODE 1','USER MODE 2','USER MODE 3']),
+      // 0.155(사용자 결정 2026-09-29 "메뉴얼 기준으로 해줘"): DUAL의 PBP-Full·User Mode는 매뉴얼 24쪽에 이름만 있고 배치 설명이 없다.
+      // 이전에는 PBP와 같은 그림·창 3개 그림(24쪽 "2분할"과 어긋남)을 이름만 보고 그렸으므로, 그림 대신 "매뉴얼에 배치 그림 없음"을 보여 준다.
+      noDrawing:new Set(['PBP-FULL','USER MODE'])
     }};
     // 0.147(사용자 요청 2026-09-29 "44,88모두 분할 부분구성 예시를 그래픽작업해달라는거야"): 흰 칸 도식 대신 실제 화면처럼 그린다.
     // 한 화면 분할(MATRIX·QUAD·DUAL 등)은 모니터(검은 베젤·스탠드) 안에 입력마다 다른 색 화면을 칸대로 채우고,
@@ -649,6 +650,7 @@
     function layoutShapeSvg(name,productId,modeName){
       const own=LAYOUT_SHAPES_BY_PRODUCT[productId];
       const key=String(name||'').trim().toUpperCase();
+      if(own?.noDrawing?.has(key))return '<div class="rt-pg-layout-missing" data-layout-nodrawing>매뉴얼에 배치 그림 없음</div>';
       const cells=own?.shapes[key]||LAYOUT_SHAPES[key];
       if(!cells)return '<div class="rt-pg-layout-missing">도해 준비 중</div>';
       const id=`lay${++layoutSvgSeq}`;

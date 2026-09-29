@@ -761,7 +761,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('QMS-88UX 06 DUAL 카드에 PBP·PIP 레이아웃 3종이 있고 Vertical PBP를 누르면 2칸 도해로 바뀌며 QUAD 카드 미리보기는 그대로임',dual.chips.join('|')==='Horizontal PBP|Vertical PBP|Quad PBP, PIP'&&dual.name==='Vertical PBP'&&dual.rects===2&&/출력 9·10번/.test(dual.text)&&quadName==='8분할(비율무시)',JSON.stringify({dual,quadName}));
     // 0.152 — QMS-88UX WALL 요약이 "최대 3×3"뿐이었다(매뉴얼 KV.04 19쪽: 2×2 월 최대 2개, 월 1개면 최대 3×3·2×5). 매뉴얼에 배치 도해가 없어 WALL에는 도해를 두지 않는다.
     const wall=await page.locator('.rt-pg-vmode-card',{hasText:'WALL'}).first().evaluate(card=>({text:card.querySelector('p')?.textContent||'',chips:card.querySelectorAll('[data-layout-chip]').length}));
-    check('QMS-88UX 06 WALL 카드에 2×2 월 2개·3×3·2×5가 적혀 있고 레이아웃 도해 칩은 없음',/2×2 월 최대 2개/.test(wall.text)&&/3×3·2×5/.test(wall.text)&&wall.chips===0,JSON.stringify(wall));
+    check('QMS-88UX 06 WALL 카드에 2×2 월 2개·3×3·2×5와 출력 9·10번 월 사용이 적혀 있고 레이아웃 도해 칩은 없음',/2×2 월 최대 2개/.test(wall.text)&&/3×3·2×5/.test(wall.text)&&/9·10번도 월 구성/.test(wall.text)&&wall.chips===0,JSON.stringify(wall));
     // 0.62 — videoModes(QMS) 카드 4개+레이아웃 칩 12개까지 있어 05 옆 좁은 칸에 넣으면 글자가 카드 밖으로 넘쳤다(사용자 확인 2026-09-27 "06화면모드 짤린다"). 전체 폭 아래로 되돌려 카드 안에서 텍스트가 넘치지 않는지 확인.
     for(const id of ['qms-88ux','qms-44ux']){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
@@ -1008,6 +1008,10 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       };
       const got={cascade:await cellCount('qms-44ux','CASCADE1'),pop:await cellCount('qms-44ux','4CH-POP'),mode1:await cellCount('qms-44ux','3CH-MODE1'),user2:await cellCount('qms-44ux','USER MODE 2'),user1:await cellCount('qms-44ux','USER MODE 1'),user88:await cellCount('qms-88ux','USER MODE 1')};
       check('QMS-44UX QUAD 도해가 매뉴얼대로(CASCADE1 4칸·4CH-POP 4칸·3CH-MODE1 3칸·USER MODE 1 4칸·USER MODE 2 4칸)이고 QMS-88UX USER MODE 1은 3칸 그대로',got.cascade===4&&got.pop===4&&got.mode1===3&&got.user1===4&&got.user2===4&&got.user88===3,JSON.stringify(got));
+      // 0.155(사용자 결정 "메뉴얼 기준으로 해줘"): QMS-44UX DUAL PBP·PIP는 2칸 그림, 매뉴얼에 배치 설명이 없는 PBP-Full·User Mode는 그림 없이 안내 문구만.
+      const noDraw=async(layout)=>{const card=shapePage.locator('.rt-pg-vmode-card',{has:shapePage.locator(`.rt-pg-layout-chip[data-layout="${layout}"]`)}).first();await card.locator(`.rt-pg-layout-chip[data-layout="${layout}"]`).click();return card.locator('.rt-pg-layout-preview').evaluate(el=>({cells:el.querySelectorAll('rect.rt-pg-cell').length,note:el.querySelector('[data-layout-nodrawing]')?.textContent||''}))};
+      const dual44={pbp:await cellCount('qms-44ux','PBP'),pip:await cellCount('qms-44ux','PIP'),full:await noDraw('PBP-Full'),user:await noDraw('User Mode')};
+      check('QMS-44UX DUAL PBP·PIP는 2칸 그림이고 PBP-Full·User Mode는 "매뉴얼에 배치 그림 없음" 안내만 나옴',dual44.pbp===2&&dual44.pip===2&&dual44.full.cells===0&&dual44.user.cells===0&&dual44.full.note==='매뉴얼에 배치 그림 없음'&&dual44.user.note==='매뉴얼에 배치 그림 없음',JSON.stringify(dual44));
       await shapePage.close();
     }
     // 0.147 (1) QMS-88UX 도해 재대조: 3-SIDE RIGHT 1번 60%·USER MODE 2 검은 여백. (2) 제품정보 인쇄/PDF는 제품 화면을 인쇄(구성기 검토 시트 숨김). (3) 장착 슬롯 호버 × 로 카드 빼기.
