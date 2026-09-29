@@ -42,3 +42,18 @@
 ## 되돌리기
 
 병합 커밋을 되돌립니다. 이미 적은 신호명은 구성 파일에 남아 있어도 이전 화면에서는 보이지 않을 뿐 파일은 그대로 열립니다.
+
+## 5. AV 빌더로 보내기 (A안)
+
+사용자 결정 2026-09-29: "포트명 기입이 끝나면은 링크av 빌더에 똑같은 구성으로 자동 생성되게 해줘" → 선택지 A(파일)·B(한 번에 열기) 중 "시안 그대로, A로 전송기 포함해서 진행해줘".
+
+- AV 빌더(https://seoul-visual-tech.github.io/av-system-builder/, v1.19.1)가 외부 구성을 받는 입구는 파일 가져오기(Share → 가져오기 → 구성도 JSON)와 자체 서버 공유 링크(`?share=`)뿐입니다. AV 빌더 저장소(seoul-visual-tech/av-system-builder)는 이 세션에서 접근할 수 없어, rtcom 쪽에서 그 파일 형식을 만듭니다.
+- 형식(공개 스크립트에서 확인): `{nodes:[{id,type:'equipment',position,data}], edges:[{id,source,target,sourceHandle,targetHandle,type:'smoothstep',style,data:{lineTypeId,label}}]}`. `data` = `{id,category,name,model,manufacturer,series,inputs,outputs,bidirectional,imageUrl}`, 포트 = `{id,label,type,direction}`. 선·포트 종류는 AV 빌더 기본값 `video`(HDMI)·`network`(LAN)·`sdi`.
+- `RtCore.avBuilder(state)`(`src/core.js`):
+  - 매트릭스 1대. 카드 포트를 `HDMI #1-1 PC`(신호 약어 #슬롯-포트 + 신호명)로 적고, HDMI·DP는 `video`, SDI는 `sdi`, HDBaseT·CATx·광은 `network`.
+  - 04에서 연결한 채널(`links[슬롯].count`)마다 전송기 상자. HDBaseT·광·CATx 카드는 송신기(입력 쪽)·수신기(출력 쪽) 한 대, HDMI 카드의 `XDM-CTR100 PSE + XDM-CTR100`은 PSE(매트릭스 쪽)와 CTR100(먼 쪽) 두 대와 HDBaseT 선.
+  - 상자 이름은 "송신기"·"수신기"·"PSE 송신/수신", 신호명은 상자의 HDMI 포트 이름(`HDMI In · PC`)과 연결선 글자에 넣습니다. AV 빌더는 불러온 상자의 장비를 장비 목록에 추가하므로(같은 `data.id`는 한 번만), 장비 id를 모델별로 고정(`rtcom-XDM-CTR100-TX` 등)해 여러 번 불러와도 목록이 늘지 않게 했습니다.
+  - 배치: 송신기 x −320(PSE 쌍이면 −640·−320), 매트릭스 x 80, 수신기 x 560(쌍이면 560·880), 줄 간격 190.
+- 화면: 03 ② 신호 입력 아래와 06 내보내기 아래 "AV 빌더로 보내기" 영역(내려받기 버튼, AV 빌더 열기, 두 줄 사용법). 파일 이름 `RTCOM-<모델>-av-builder.json`.
+- 확인: AV 빌더 공개 파일(index.html·스크립트·CSS)을 이 컴퓨터에 받아 띄우고(테스트 브라우저가 이 환경의 인증서를 믿지 않아 인증서 검사를 끄는 대신 사용), Share → 가져오기 → 구성도 JSON에 파일을 넣어 "Diagram state loaded successfully!", 장비 9대·연결 8개가 그려짐을 확인했습니다(`docs/qa/av-builder-0.171/2-av-builder-imported.png`). 받은 파일은 저장소에 넣지 않았습니다.
+- 한계: AV 빌더 쪽 옵션 카드 카탈로그(`selectedOptionQuantities`)와는 연결하지 않고, 포트를 상자에 직접 적었습니다. 한 번에 열기(B안)는 AV 빌더에 "외부 구성 받기" 입구가 필요합니다.

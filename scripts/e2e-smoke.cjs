@@ -1101,6 +1101,10 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
         const focused=await s.evaluate(()=>document.activeElement?.dataset.signalPort);
         const saved=await s.evaluate(()=>{const p=JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.portAssignments;return [p['in-1:1'].assignedDevice,p['in-1:2'].assignedDevice]});
         const count=await s.locator('[data-signal-count] b').textContent();
+        const [avbDownload]=await Promise.all([s.waitForEvent('download'),s.click('[data-action="av-builder"]')]);
+        const avb=JSON.parse(require('node:fs').readFileSync(await avbDownload.path(),'utf8'));
+        const avbOk=avbDownload.suggestedFilename()==='RTCOM-XDM-12-av-builder.json'&&avb.nodes.some(n=>n.id==='rtcom_matrix'&&n.data.inputs.length===8&&n.data.inputs[0].label==='HDMI #1-1 PC')&&Array.isArray(avb.edges);
+        check('03 ② 신호 입력의 "AV 빌더용 파일 내려받기"가 AV 빌더 구성도 JSON(매트릭스 입력 8포트, 첫 포트 "HDMI #1-1 PC")을 내려받음',avbOk,JSON.stringify({file:avbDownload.suggestedFilename(),nodes:avb.nodes.length,edges:avb.edges.length}));
         await s.click('[data-tool="undo"]');
         const afterUndo=await s.evaluate(()=>[...document.querySelectorAll('.rt-signal-input')].slice(0,2).map(i=>i.value));
         await s.click('[data-action="back"]');const backToSlots=await s.locator('.rt-rack-slot').count()>0&&await s.locator('.rt-signal-input').count()===0;

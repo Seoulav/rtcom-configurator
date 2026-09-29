@@ -36,8 +36,11 @@
   - Enter로 다음 칸 이동, 글자마다 자동 저장, 칸을 벗어나면 실행 취소 기록. 신호명은 선택 사항이라 비워 두어도 다음으로 넘어갑니다(다음 버튼에 "이름 없는 포트 N개" 표시).
   - 신호명은 구성 파일의 포트 기록 `portAssignments["슬롯:포트"].assignedDevice`(schema 3에 원래 있던 빈 칸, 최대 120자 검증)에 넣어 저장 형식·LocalStorage 키가 그대로입니다. 카드를 다른 슬롯으로 옮기면 신호명도 따라갑니다.
 - 자동 검사: 단위 1건(저장·불러오기·카드 이동·카드 빼기·길이 제한), 화면 1건(전환 탭·16칸·슬롯 이름·Enter 이동·자동 저장·실행 취소·이전·04 이동). 03 → 04로 가는 기존 검사 4곳은 신호 입력 화면을 거치도록 고쳤습니다.
-- 다음 묶음 예정: 05 구성 검토 배정표, 06 출력 인쇄·CSV에 신호명 싣기.
-- 근거: `docs/implementation/SIGNAL_INPUT_0.171.md`, 화면 `docs/qa/signal-input-0.171/`
+- **AV 빌더로 보내기**(사용자 결정 2026-09-29 "시안 그대로, A로 전송기 포함해서 진행해줘"): 03 ② 신호 입력과 06 내보내기에 "AV 빌더용 파일 내려받기"를 두었습니다. 받은 파일을 [AV 빌더](https://seoul-visual-tech.github.io/av-system-builder/)의 Share → 가져오기 → 구성도 JSON으로 열면 같은 구성이 그려집니다.
+  - 매트릭스 1대(포트 "HDMI #1-1 PC"), 04에서 연결한 채널마다 송신기·수신기 상자(HDMI 카드 PSE 한 쌍은 PSE + CTR100 두 상자), HDBaseT·광 연결선. 상자 이름은 "송신기"·"수신기"로 두고 신호명은 포트 이름(`HDMI In · PC`)에 넣습니다.
+  - AV 빌더 v1.19.1 공개 파일로 실제 불러오기를 확인했습니다(장비 9대·연결 8개, "Diagram state loaded successfully!").
+- 다음 묶음 예정: 05 구성 검토 배정표, 06 출력 인쇄·CSV에 신호명 싣기. 한 번에 열기(B안)는 AV 빌더 저장소 작업이 필요합니다(OPEN_ITEMS).
+- 근거: `docs/implementation/SIGNAL_INPUT_0.171.md`, 화면 `docs/qa/signal-input-0.171/`, `docs/qa/av-builder-0.171/`
 
 ## 0.170.0
 

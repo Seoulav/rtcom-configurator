@@ -1247,3 +1247,11 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-signal-name input:focus{outline:none;border-color:var(--rt-accent);box-shadow:0 0 0 3px #3978ee33}
 #rtcom-design .rt-signal-name input:not(:placeholder-shown){border-color:#b9c7dd;background:#f7faff;font-weight:700}
 @media(max-width:560px){#rtcom-design .rt-signal-side{padding:10px}#rtcom-design .rt-signal-name input{font-size:16px}}
+/* 0.171 AV 빌더로 보내기(사용자 결정 2026-09-29 "A로 전송기 포함해서 진행해줘") */
+#rtcom-design .rt-avb{display:flex;flex-wrap:wrap;gap:14px 24px;align-items:center;justify-content:space-between;margin-top:18px;padding:16px 18px;border:1px solid #c9d8f5;border-radius:16px;background:#f3f7ff}
+#rtcom-design .rt-avb strong{font-size:14px;color:var(--rt-ink)}
+#rtcom-design .rt-avb p{margin:4px 0 6px;font-size:12.5px;color:var(--rt-muted)}
+#rtcom-design .rt-avb ol{margin:0;padding-left:18px;font-size:12.5px;color:var(--rt-ink);line-height:1.7}
+#rtcom-design .rt-avb a{color:var(--rt-accent)}
+#rtcom-design .rt-avb-actions{display:flex;flex-wrap:wrap;gap:8px}
+#rtcom-design .rt-avb-actions .rt-button{text-decoration:none}
