@@ -245,7 +245,7 @@
     // 카드 상세 정보(사용자 요청 2026-09-28 "입력 출력카드 버튼을 만들어 해당 카드 상세정보가 나와야해"): 03 카드 슬롯 아래 입력·출력 카드 버튼과
     // 내 구성의 카드 행을 누르면 card-specs.js(카탈로그 46쪽판 근거) 사양을 대화상자로 보여준다. 화면 상태가 아니라서 실행 취소·자동 저장 대상이 아니다.
     const cardSpecs=globalThis.RtCardSpecs||{};
-    // 0.161 카드 끌어 놓기 샘플(직원 제안, 사용자 승인 2026-09-29 "위 범위로 진행"): 아래 카드 정보 버튼을 후면 슬롯으로 끌어 놓으면 장착한다.
+    // 0.162 카드 끌어 놓기 샘플(직원 제안, 사용자 승인 2026-09-29 "위 범위로 진행"): 아래 카드 정보 버튼을 후면 슬롯으로 끌어 놓으면 장착한다.
     // 누르면 지금처럼 상세 정보가 열린다. 마우스(정밀 포인터)에서만 켜고, 휴대폰·태블릿은 기존 팝업 방식만 쓴다.
     // 되돌리기: PALETTE_DRAG를 false로 바꾸면 버튼·안내 문구·끌어 놓기 처리가 모두 이 기능을 넣기 전과 같아진다.
     const PALETTE_DRAG=true;
@@ -413,7 +413,7 @@
     // 0.55 슬롯 끌어 옮기기(마우스): 장착한 슬롯을 같은 방향(입력↔입력, 출력↔출력) 슬롯에 놓으면 옮기거나 맞바꾼다.
     // 휴대폰은 끌기 대신 카드 팝업의 "다른 슬롯으로 이동"을 쓴다.
     let dragFrom=null;
-    // 0.161 아래 카드 정보 버튼에서 끌어 온 카드({card, dir}). 슬롯끼리 옮기기(dragFrom)와 따로 둔다.
+    // 0.162 아래 카드 정보 버튼에서 끌어 온 카드({card, dir}). 슬롯끼리 옮기기(dragFrom)와 따로 둔다.
     let dragPalette=null;
     const slotDir=id=>id?.startsWith('in-')?'input':id?.startsWith('out-')?'output':null;
     const clearDrop=()=>{root.querySelectorAll('.rt-rack-slot-drop,.rt-rack-slot-dragging,.rt-card-info-chip-dragging').forEach(el=>el.classList.remove('rt-rack-slot-drop','rt-rack-slot-dragging','rt-card-info-chip-dragging'));root.classList.remove('rt-palette-drag-input','rt-palette-drag-output')};

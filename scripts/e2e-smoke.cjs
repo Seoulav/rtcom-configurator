@@ -1063,7 +1063,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       const left=await p3.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.placements['in-1']||null);
       const modalOpen=await p3.locator('dialog.rt-card-modal[open]').count();
       check('장착 슬롯은 평소에는 × 가 안 보이고 마우스를 올리면 보이며, 누르면 카드가 빠지고 팝업은 열리지 않음',!xBefore&&xHover&&left===null&&modalOpen===0,JSON.stringify({xBefore,xHover,left,modalOpen}));
-      // 0.161 카드 끌어 놓기 샘플(직원 제안, 사용자 승인 2026-09-29): 아래 카드 정보 버튼을 같은 방향 슬롯에 끌어 놓으면 장착·교체하고, 다른 방향 슬롯에는 놓이지 않으며, 누르면 상세 정보는 그대로 열린다.
+      // 0.162 카드 끌어 놓기 샘플(직원 제안, 사용자 승인 2026-09-29): 아래 카드 정보 버튼을 같은 방향 슬롯에 끌어 놓으면 장착·교체하고, 다른 방향 슬롯에는 놓이지 않으며, 누르면 상세 정보는 그대로 열린다.
       const saved=()=>p3.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state);
       const chipDraggable=await p3.locator('button.rt-card-info-chip[data-palette-card="XDM-HIS100"]').getAttribute('draggable');
       await p3.dragAndDrop('button.rt-card-info-chip[data-palette-card="XDM-HIS100"]','button[data-slot="in-2"]');await p3.waitForTimeout(200);
