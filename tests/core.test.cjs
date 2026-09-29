@@ -154,7 +154,7 @@ test('VDM Quad card remains two ports and VDM remote cards link to confirmed ext
 
 test('CSV contains draft status, combined quantities and accessory limitation',()=>{
   const csv=core.csv(configured());
-  // 0.170: 영문 상태 코드는 행마다 반복하지 않고 맨 아래 안내 행에 "검토용 초안"으로 한 번만 둔다.
+  // 0.172: 영문 상태 코드는 행마다 반복하지 않고 맨 아래 안내 행에 "검토용 초안"으로 한 번만 둔다.
   assert.doesNotMatch(csv,/UNVERIFIED_DRAFT/);assert.match(csv,/"안내","검토용 초안"/);assert.match(csv,/"XDM-CTR100","[^"]*","5"/);assert.match(csv,/"전원 장비"/);assert.match(csv,/기본 포함품은 목록에 없습니다/);
   assert.match(csv.split('\r\n')[0],/"구분","모델","비고","수량","장착 위치"/);
 });

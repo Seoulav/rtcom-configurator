@@ -250,7 +250,9 @@
     const signalShort=text=>String(text||'').split(' · ')[0];
     const signalKind=text=>{const t=signalShort(text);return /HDMI/.test(t)?'hdmi':/DisplayPort/.test(t)?'dp':/CATx/.test(t)?'catx':/HDBaseT/.test(t)?'hdbt':/광/.test(t)?'fiber':/SDI/.test(t)?'sdi':'etc'};
     const signalAbbr={hdmi:'HDMI',dp:'DP',hdbt:'HDBT',catx:'CATx',fiber:'FIBER',sdi:'SDI',etc:'ETC'};
-    const sigBadge=(text,cls='')=>{const k=signalKind(text);return `<i class="rt-sig-badge${cls?` ${cls}`:''}" data-sig="${k}" aria-hidden="true">${signalAbbr[k]}</i>`};
+    const sigBadge=(text,cls='',label)=>{const k=signalKind(text);return `<i class="rt-sig-badge${cls?` ${cls}`:''}" data-sig="${k}" aria-hidden="true">${esc(label||signalAbbr[k])}</i>`};
+    // 0.170(사용자 요청 2026-09-29 "XDM-HI100과 HIS100 구별점을 줘야할 거 같아"): 후면 슬롯 태그는 색으로 신호를, 글자로 모델(HI100·HIS100, HOS4-U·HOS4S-UW 등)을 알려 준다.
+    const slotModel=id=>String(id).replace(/^(XDM|SPX)-/,'');
     // 후면 아래 범례: 지금 제품군에 있는 신호만, 카탈로그 표기(예: 12G-SDI, 3G/HD-SDI) 그대로.
     function signalLegend(){const f=families[state.family],seen=new Map();for(const c of [...f.input,...f.output]){const k=signalKind(c[1]);if(!seen.has(k))seen.set(k,c[1])}return `<div class="rt-sig-legend" aria-label="신호 종류">${[...seen].map(([,text])=>`<span>${sigBadge(text)}${esc(signalShort(text))}</span>`).join('')}</div>`}
     // 내 구성 행의 장착 위치: 같은 방향 슬롯 번호를 이어진 구간으로 줄인다(IN 1–4·7).
@@ -300,7 +302,7 @@
       // 0.153(사용자 요청 2026-09-29 "모든 제품 프레임에 내 구성 … 몇 U인지 표기를해줘"): 슬롯 수 뒤에 랙 높이(frameRackU)를 붙인다.
       return `<aside class="rt-config-summary" aria-label="구성 요약"><span class="rt-eyebrow">내 구성</span><h3>${esc(state.model)}</h3><p>${state.family} · 입력 ${slotList.filter(item=>item.dir==='input').length} / 출력 ${slotList.filter(item=>item.dir==='output').length} 슬롯${frameRackU[state.model]?` · ${frameRackU[state.model]}U`:''}</p>${meter('입력',t.input,capacity('input'))}${meter('출력',t.output,capacity('output'))}${segbar}<h4>입력 카드</h4>${rows('input')}<h4>출력 카드</h4>${rows('output')}${blankRow}<div class="rt-summary-total"><span>장착 카드</span><b>${cards}장</b></div><p class="rt-summary-note">${state.family==='SPX'?'다음 단계에서 CATx 출력 카드(COS12)에 연결할 SPX-RX를 확인합니다.':'다음 단계에서 HDBaseT·광 카드에 연결할 전송기를 고릅니다.'}</p></aside>`;
     }
-    // 0.170 opts.figureOnly: 06 구성 보고서(인쇄·미리보기)에 넣을 후면 그림만 돌려준다. 이때 슬롯은 누를 수 없는 표시용 칸(span)이다.
+    // 0.172 opts.figureOnly: 06 구성 보고서(인쇄·미리보기)에 넣을 후면 그림만 돌려준다. 이때 슬롯은 누를 수 없는 표시용 칸(span)이다.
     function cardsViewV4(opts={}){
       const slotList=currentSlots(),model=state.model,layout=rackLayout(model),plan=slotPlanFor(model),count=plan?.[0]||0;
       const inputSlots=slotList.filter(item=>item.dir==='input'),outputSlots=slotList.filter(item=>item.dir==='output');
@@ -308,13 +310,14 @@
       const columns=rackColumns(model,layout);
       const shortLabel=slot=>slot.id.replace(/^in-/,'IN ').replace(/^out-/,'OUT ').toUpperCase();
       const changed=opts.figureOnly?null:changedSlot;if(!opts.figureOnly)changedSlot=null;
+      // 0.170(사용자 선택 2026-09-29 2안 "이걸로 가자"): 장착 슬롯은 번호표를 숨기지 않고 번호와 신호를 한 태그(IN 1 | HDMI)로 보여 준다. 0.167의 따로 떨어진 신호 배지가 번호표 자리를 가리던 문제(사용자 지적 "IN/OUT과 신호카드가 인덱스가 겹치는데")를 푼다.
       // 슬롯 상태(2-3, 사용자 결정 2026-09-27): 빈칸=흰색(+는 호버·포커스에만), 카드=실제 사진, 블랭크=blankPlates(사용자가 고른 슬롯에만), 선택 중=파란 테두리.
       const slotButton=slot=>{
         const rawValue=state.placements[slot.id],isBlank=rawValue==='BLANK',c=isBlank?null:slotCard(slot.id),selecting=modalSlot===slot.id;
         const stateClass=c?'rt-rack-slot-filled':isBlank?'rt-rack-slot-blank':'rt-rack-slot-empty';
-        if(opts.figureOnly)return `<span class="rt-rack-slot ${stateClass}">${c?`<img class="rt-faceplate" src="${cardAsset(c[0])}" alt="">${sigBadge(c[1],'rt-slot-sig')}`:isBlank?`<img class="rt-faceplate rt-blank-plate" src="${blankPlates[state.family]}" alt="">`:''}</span>`;
+        if(opts.figureOnly)return `<span class="rt-rack-slot ${stateClass}">${c?`<span class="rt-rack-slot-no rt-rack-slot-no-${slot.dir} rt-slot-tag"><span class="rt-slot-tag-n">${shortLabel(slot)}</span>${sigBadge(c[1],'rt-slot-tag-s',slotModel(c[0]))}</span><img class="rt-faceplate" src="${cardAsset(c[0])}" alt="">`:isBlank?`<img class="rt-faceplate rt-blank-plate" src="${blankPlates[state.family]}" alt="">`:''}</span>`;
         const label=c?`${c[0]} 장착됨 · 눌러서 변경`:isBlank?'블랭크 커버 · 눌러서 변경':'비어 있음 · 눌러서 카드 선택';
-        return `<button type="button" class="rt-rack-slot ${stateClass} ${selecting?'rt-rack-slot-selecting':''} ${changed===slot.id?'rt-rack-slot-changed':''}" data-slot="${slot.id}"${rawValue?' draggable="true"':''} aria-label="${esc(slot.label)}, ${label}" title="${esc(slot.label)}${c?` · ${c[0]}`:isBlank?' · 블랭크 커버':''}"><span class="rt-rack-slot-no rt-rack-slot-no-${slot.dir}" aria-hidden="true">${shortLabel(slot)}</span>${rawValue?`<span class="rt-rack-slot-x" role="button" tabindex="-1" data-slot-clear="${slot.id}" aria-label="${esc(slot.label)} ${c?c[0]:'블랭크 커버'} 빼기" title="카드 빼기">×</span>`:''}${c?`<img draggable="false" class="rt-faceplate" src="${cardAsset(c[0])}" alt="">${sigBadge(c[1],'rt-slot-sig')}`:isBlank?`<img draggable="false" class="rt-faceplate rt-blank-plate" src="${blankPlates[state.family]}" alt="">`:'<span class="rt-rack-slot-add" aria-hidden="true">+</span>'}</button>`;
+        return `<button type="button" class="rt-rack-slot ${stateClass} ${selecting?'rt-rack-slot-selecting':''} ${changed===slot.id?'rt-rack-slot-changed':''}" data-slot="${slot.id}"${rawValue?' draggable="true"':''} aria-label="${esc(slot.label)}, ${label}" title="${esc(slot.label)}${c?` · ${c[0]}`:isBlank?' · 블랭크 커버':''}">${c?`<span class="rt-rack-slot-no rt-rack-slot-no-${slot.dir} rt-slot-tag" aria-hidden="true"><span class="rt-slot-tag-n">${shortLabel(slot)}</span>${sigBadge(c[1],'rt-slot-tag-s',slotModel(c[0]))}</span>`:`<span class="rt-rack-slot-no rt-rack-slot-no-${slot.dir}" aria-hidden="true">${shortLabel(slot)}</span>`}${rawValue?`<span class="rt-rack-slot-x" role="button" tabindex="-1" data-slot-clear="${slot.id}" aria-label="${esc(slot.label)} ${c?c[0]:'블랭크 커버'} 빼기" title="카드 빼기">×</span>`:''}${c?`<img draggable="false" class="rt-faceplate" src="${cardAsset(c[0])}" alt="">`:isBlank?`<img draggable="false" class="rt-faceplate rt-blank-plate" src="${blankPlates[state.family]}" alt="">`:'<span class="rt-rack-slot-add" aria-hidden="true">+</span>'}</button>`;
       };
       const bank=(dir,items)=>`<section class="rt-rack-bank rt-rack-bank-${dir}" aria-label="${dir==='input'?'입력':'출력'} 카드 슬롯"><div class="rt-rack-bank-title"><strong>${dir==='input'?'입력':'출력'}</strong><span>${items.filter(item=>slotCard(item.id)).length} / ${items.length}</span></div><div class="rt-rack-grid">${items.map(slotButton).join('')}</div></section>`;
       const photo=rearPhotos[model];
@@ -402,7 +405,7 @@
     function bom(){return RtCore.bom(state).map(row=>[row.category,row.model,row.quantity])}
     function table(){return `<div class="rt-table-wrap"><table><thead><tr><th>구분</th><th>모델</th><th>수량</th></tr></thead><tbody>${bom().map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')}</tbody></table></div>`}
     function reviewViewV2(){const t=totals(),slotList=currentSlots(),inputCards=slotList.filter(slot=>slot.dir==='input'&&slotCard(slot.id)).length,outputCards=slotList.filter(slot=>slot.dir==='output'&&slotCard(slot.id)).length;return heading('05 / 구성 검토','장착한 카드 구성을 확인하세요.','프레임, 입력 카드, 출력 카드와 전송 장비 수량을 검토합니다.')+`<div class="rt-review-head"><div class="rt-review-stat">선택 프레임<strong>${state.model}</strong></div><div class="rt-review-stat">장착 카드<strong>${inputCards} IN / ${outputCards} OUT</strong></div><div class="rt-review-stat">구성 채널<strong>${t.input} IN / ${t.output} OUT</strong></div></div><h3 class="rt-review-title">장비 목록</h3>${table()}${validationView()}<div class="rt-notice">${state.family==='XDM'&&slotList[0].id==='in-1'?`${state.model}은 입력 카드 ${slotList.filter(slot=>slot.dir==='input').length}장과 출력 카드 ${slotList.filter(slot=>slot.dir==='output').length}장, 카드당 4채널을 기준으로 검토합니다.`:'현재 모델은 슬롯 구조 확인이 더 필요합니다.'}</div>`}
-    // 0.170 06 내보내기 개편(사용자 요청 2026-09-29 "06 내보내기가 잘 안된다", 시안 승인 "pdf좋아", "사이트에서 사용하는 애플호환폰트로 인쇄되게해줘").
+    // 0.172 06 내보내기 개편(사용자 요청 2026-09-29 "06 내보내기가 잘 안된다", 시안 승인 "pdf좋아", "사이트에서 사용하는 애플호환폰트로 인쇄되게해줘").
     // 구성 보고서(PDF)는 화면 미리보기와 인쇄물(#print-report)이 같은 reportHtml()을 쓴다. 글꼴은 사이트와 같은 Pretendard Variable이다.
     // 표지 칸(프로젝트명 등)은 구성 파일(JSON schema 3)에 넣지 않고 이 브라우저에만 따로 보관한다(rtcom.report.v1).
     const reportKey='rtcom.report.v1',reportFields=[['project','프로젝트명','예: ○○아트센터 회의실 AV 구축'],['client','고객사','예: ○○문화재단'],['author','작성자','이름 또는 부서'],['contact','연락처','전화 또는 메일']];
@@ -640,7 +643,7 @@ ${figure?`<h2 class="rt-rp-h"><i>1</i>후면 슬롯 배치</h2><div class="rt-rp
       else state.portAssignments[key][field]=target.value;
       return true;
     }
-    // 0.170 보고서 표지 칸: 입력할 때마다 이 브라우저에 저장하고 미리보기만 다시 그린다(화면 전체를 다시 그리면 입력 칸의 커서가 사라진다).
+    // 0.172 보고서 표지 칸: 입력할 때마다 이 브라우저에 저장하고 미리보기만 다시 그린다(화면 전체를 다시 그리면 입력 칸의 커서가 사라진다).
     root.addEventListener('input',event=>{const key=event.target.dataset?.reportField;if(!key)return;const meta=reportMeta();meta[key]=event.target.value.slice(0,60);saveReportMeta(meta);const paper=root.querySelector('.rt-report-paper .rt-report');if(paper)paper.innerHTML=reportHtml()});
     root.addEventListener('input',event=>{if(updateRequirementField(event.target)||updatePortField(event.target))persist()});
     root.addEventListener('change',event=>{if(updateRequirementField(event.target)||updatePortField(event.target))changed()});
@@ -698,7 +701,7 @@ ${figure?`<h2 class="rt-rp-h"><i>1</i>후면 슬롯 배치</h2><div class="rt-rp
       setTimeout(()=>URL.revokeObjectURL(url),1000);
       announce(`${extension.toUpperCase()} 검토용 초안 다운로드를 요청했습니다.`);
     }
-    // 0.170 인쇄물은 06 미리보기와 같은 구성 보고서(reportHtml)다. #print-report는 #rtcom-design 안에 있어 후면 그림의 화면 규칙을 그대로 쓴다.
+    // 0.172 인쇄물은 06 미리보기와 같은 구성 보고서(reportHtml)다. #print-report는 #rtcom-design 안에 있어 후면 그림의 화면 규칙을 그대로 쓴다.
     function report(){document.getElementById('print-report').innerHTML=`<div class="rt-report">${reportHtml()}</div>`}
     // 인쇄 창을 열기 전에 글꼴(Pretendard)과 후면 그림·카드 사진이 다 받아졌는지 기다린다(최대 3초). 받기 전에 인쇄하면 기본 글꼴·빈 그림으로 찍힌다.
     async function printReport(){

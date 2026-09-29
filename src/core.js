@@ -298,7 +298,7 @@
     if (data.catalogVersion!==catalogVersion) throw new Error('카탈로그 버전이 다릅니다. 현재 버전과 검토한 뒤 가져와야 합니다.');
     return checkState(data.state);
   }
-  // 0.170 CSV(사용자 요청 2026-09-29 06 내보내기 설계 검토): 엑셀 견적용으로 행마다 반복되던 영문 상태 코드(UNVERIFIED_DRAFT)를 빼고 비고·장착 위치 열을 더한다. 초안 표시는 맨 아래 안내 행에 한 번만 둔다.
+  // 0.172 CSV(사용자 요청 2026-09-29 06 내보내기 설계 검토): 엑셀 견적용으로 행마다 반복되던 영문 상태 코드(UNVERIFIED_DRAFT)를 빼고 비고·장착 위치 열을 더한다. 초안 표시는 맨 아래 안내 행에 한 번만 둔다.
   function csvRows(input) {
     const state=checkState(input), slots=slotsFor(state), completion=completionFor(state);
     const label=id=>(slots.find(item=>item.id===id)?.label||id).replace(' 슬롯 ',' ');
