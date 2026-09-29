@@ -118,7 +118,13 @@
     }
     const table=(head,rows)=>rows.length?`<div class="rt-pg-tablewrap"><table><thead><tr>${head.map(cell=>`<th scope="col">${cell}</th>`).join('')}</tr></thead><tbody>${rows.map(row=>`<tr>${row.map((cell,i)=>`<td data-label="${head[i]}">${cell}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`:'';
     // 04 제품 사양 표는 다른 표보다 줄 간격을 약 15% 줄인다(사용자 요청 2026-09-27 "04 사양도 상하 간격을 15% 정도 줄여도 되겠다"). 표 틀에 rt-pg-spec-table을 붙여 CSS로만 구분한다.
-    const specTable=specs=>table(['구분','사양'],specs.map(spec=>[`<span class="rt-pg-spec-dot" style="display:inline-block;width:8px;height:8px;border-radius:999px;margin-right:6px;background:${GROUP_DOT[spec.group]||'#8a94a6'}" title="${esc(spec.group)}"></span>${esc(spec.name)}`,`${esc(spec.value)}${spec.unit?` ${esc(spec.unit)}`:''}${verification(spec.verification)}${spec.condition?`<span class="rt-pg-note-line">${esc(spec.condition)}</span>`:''}`])).replace('class="rt-pg-tablewrap"','class="rt-pg-tablewrap rt-pg-spec-table"');
+    // 0.166: 값이 여러 줄이면(SPX-TX/RX "4K60 실효 전송거리") 줄마다 앞부분을 값으로, 끝 괄호 속 설명(케이블 모델)을 그 아래 작은 글자로 보여 준다.
+    const specValue=value=>{
+      const text=String(value??'');
+      if(!text.includes('\n'))return esc(text);
+      return text.split('\n').map(line=>{const m=line.match(/^(.*?)\s*\(([^)]*)\)\s*$/);return m?`<span class="rt-pg-spec-line">${esc(m[1])}<span class="rt-pg-note-line">${esc(m[2])}</span></span>`:`<span class="rt-pg-spec-line">${esc(line)}</span>`}).join('');
+    };
+    const specTable=specs=>table(['구분','사양'],specs.map(spec=>[`<span class="rt-pg-spec-dot" style="display:inline-block;width:8px;height:8px;border-radius:999px;margin-right:6px;background:${GROUP_DOT[spec.group]||'#8a94a6'}" title="${esc(spec.group)}"></span>${esc(spec.name)}`,`${specValue(spec.value)}${spec.unit?` ${esc(spec.unit)}`:''}${verification(spec.verification)}${spec.condition?`<span class="rt-pg-note-line">${esc(spec.condition)}</span>`:''}`])).replace('class="rt-pg-tablewrap"','class="rt-pg-tablewrap rt-pg-spec-table"');
 
     // ---- 연결 다이어그램(신호 흐름, 02 카드). 기존 자동 생성 로직을 새 팔레트로 그대로 재사용한다 ----
     const COLOR_IN='#007AFF',COLOR_OUT='#BF5AF2',COLOR_FIBER='#30B0C7',COLOR_COPPER='#1E9E52';
@@ -388,6 +394,8 @@
       const isHDBaseT=/HDBaseT/i.test(JSON.stringify([item.english,item.korean,item.overview,item.features]));
       const cableName=isFiber?'광케이블':isHDBaseT?'HDBaseT(CATx)':'CATx';
       const cableLabelFor=spec=>{
+        // 0.166: 값이 여러 줄인 행(SPX-TX/RX "4K60 실효 전송거리")은 괄호 속 케이블 모델을 빼고 한 줄로 이어 범례에 쓴다.
+        if(String(spec.value).includes('\n'))return `${spec.name}: ${String(spec.value).split('\n').map(line=>line.replace(/\s*\([^)]*\)/g,'').trim()).join(' · ')}`;
         const m=(spec.condition||'').match(/(BELDEN\s*)?([A-Z0-9]+)\s*\(([^)]+)\)/);
         if(!m&&!isFiber&&!isHDBaseT){const seg=(spec.condition||'').split('·').map(s=>s.replace(/\([^)]*\)/g,'').trim()).find(s=>/4K|1080p|Long Reach/i.test(s));if(seg)return `${seg.replace(/\s*모드$/,'')} 최대 ${spec.value}${spec.unit||''}`;}
         if(!m)return `최대 ${spec.value}${spec.unit||''}`;
@@ -455,10 +463,42 @@
       const note=extras.length?`<p class="rt-pg-hint" style="text-align:center">그 외 신호(${[...new Set(extras)].map(esc).join(', ')})는 아래 자료 기록의 입출력 표를 확인하세요.</p>`:'';
       return diagramWrap(bodyMarkup,width,height,captions)+note;
     }
+    // SPX-R6 "03 Signal Flow"(0.157). 송·수신기 한 쌍이 아니라 모듈 6개를 품은 섀시라 extenderDiagram이 그리지 못한다.
+    // 사양서 연결도(1쪽)에 있는 연결만 그린다: 소스 6대 → 모듈 칸 HDMI IN → CAT OUT → SPX-RX 6대 → 디스플레이,
+    // IR 리시버(리모컨) → IR IN, 제어 컨트롤러 → IR Ctrl, 외부 전원 어댑터 1개 → 본체(모듈 6개 공급).
+    const COLOR_IR='#7669EF';
+    function rackExtenderDiagram(item){
+      const width=860,rows=6,top=96,head=34,gap=50;
+      const r6X=160,r6W=190,rxX=530,rxW=112,srcX=48,dstX=812,rowY=i=>top+head+18+i*gap;
+      const r6Bottom=top+head+gap*rows+6,height=r6Bottom+92;
+      let body=`<text x="${width/2}" y="22" text-anchor="middle" font-size="12" font-weight="700" fill="#687386">${svgEsc(`${item.model} 1대 = 모듈 6개 · 모듈마다 소스 1대 → SPX-RX 1대 → 디스플레이 1대`)}</text>`;
+      // IR 리시버·제어 컨트롤러(위)와 전원 어댑터(아래)
+      body+=deviceBox(r6X-44,38,120,36,'IR 리시버','리모컨 신호')+deviceBox(r6X+114,38,120,36,'제어 컨트롤러','');
+      body+=arrow(r6X+22,74,r6X+22,top-3,COLOR_IR)+arrow(r6X+168,74,r6X+168,top-3,COLOR_IR);
+      body+=`<text x="${r6X+29}" y="${top-8}" font-size="10" font-weight="700" fill="${COLOR_IR}">IR IN</text><text x="${r6X+175}" y="${top-8}" font-size="10" font-weight="700" fill="${COLOR_IR}">IR Ctrl</text>`;
+      body+=`<rect x="${r6X}" y="${top}" width="${r6W}" height="${r6Bottom-top}" rx="14" fill="#eef2f8" stroke="#c8d3e6" stroke-width="2"/>`;
+      body+=`<text x="${r6X+r6W/2}" y="${top+24}" text-anchor="middle" font-size="14" font-weight="800" fill="#1f2532">${svgEsc(item.model)}</text>`;
+      body+=arrow(r6X+r6W/2,r6Bottom+34,r6X+r6W/2,r6Bottom+4,COLOR_POWER);
+      body+=`<text x="${r6X+r6W/2}" y="${r6Bottom+52}" text-anchor="middle" font-size="11" fill="#687386">전원 어댑터 1개 → 모듈 6개 공급</text>`;
+      for(let i=0;i<rows;i++){
+        const y=rowY(i);
+        body+=monitorIcon(srcX,y-4,i===rows-1?'소스 기기':'',0.8)+arrow(srcX+22,y,r6X-6,y,COLOR_IN);
+        body+=`<rect x="${r6X+12}" y="${y-17}" width="${r6W-24}" height="34" rx="8" fill="#fff" stroke="#c8d3e6" stroke-width="1.5"/><text x="${r6X+24}" y="${y+4}" font-size="12" font-weight="750" fill="#1f2532">모듈 ${i+1}</text><text x="${r6X+r6W-22}" y="${y+4}" text-anchor="end" font-size="10" fill="#687386">HDMI IN → CAT OUT</text>`;
+        body+=`<path d="M${r6X+r6W} ${y}L${rxX} ${y}" stroke="${COLOR_COPPER}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/>`;
+        body+=deviceBox(rxX,y-17,rxW,34,'SPX-RX','');
+        body+=arrow(rxX+rxW+6,y,dstX-22,y,COLOR_OUT)+monitorIcon(dstX,y-4,i===rows-1?'디스플레이':'',0.8);
+      }
+      body+=`<text x="${(r6X+r6W+rxX)/2}" y="${rowY(0)-24}" text-anchor="middle" font-size="11" font-weight="700" fill="${COLOR_COPPER}">CATx(CAT5e) · PoC</text>`;
+      const distances=(item.specifications||[]).filter(spec=>/전송거리/.test(spec.name)).map(spec=>`${/1080p/.test(spec.condition)?'1080p':'4K60'} 최대 ${spec.value}${spec.unit||''}`);
+      const captions=[[COLOR_IN,'입력(HDMI)'],[COLOR_COPPER,'CATx 전송'],[COLOR_IR,'IR 제어'],[COLOR_POWER,'전원'],[COLOR_OUT,'출력(HDMI)']];
+      if(distances.length)captions.push([COLOR_COPPER,`CAT5e 기준 ${distances.join(' · ')}`]);
+      return diagramWrap(body,width,height,captions)+`<p class="rt-pg-hint" style="text-align:center">사양서 연결도 기준입니다. PoC로 송·수신기 중 한쪽에만 전원을 연결해도 됩니다. 모듈은 TX(송신)·RX(수신)를 골라 쓸 수 있고(그림은 자주 쓰는 TX 구성), RX 사용과 SPX-RX IR 기능(IR Blaster)은 현장에서는 잘 쓰지 않습니다. IR Blaster 연결은 제조사 원본 다이어그램을 참고하세요.</p>`;
+    }
     function connectionDiagram(item){
       if(item.group==='cable')return cableDiagram(item);
       if(item.group==='distribution'||item.group==='integrated')return ioFlowDiagram(item);
       if(item.id==='xdm-psu')return psuDiagram(item);
+      if(item.id==='spx-r6')return rackExtenderDiagram(item);
       if(item.group==='extender')return extenderDiagram(item);
       return null;
     }
@@ -584,7 +624,7 @@
     };
     const VMODE_NAME_KO={MATRIX:'매트릭스',QUAD:'쿼드 뷰',WALL:'비디오 월',DUAL:'듀얼'};
     // 레이아웃 이름별 화면 분할 도해(칸 번호·x·y·너비·높이, 0~100 기준). QMS-88UX 매뉴얼(RTcom_Manual_QMS-88UX_KV.03.pdf) 20~21쪽 Layout List 도해를 그대로 옮겼다(사용자 요청 2026-09-27).
-    // QMS-44UX 전용 이름의 QUAD 도해는 아래 LAYOUT_SHAPES_BY_PRODUCT(0.146, 44UX 매뉴얼 21~22쪽 도해)가 우선한다. 매뉴얼에 도해가 없는 WALL·DUAL 레이아웃(2×2~FULL, PBP, PBP-FULL, PIP, USER MODE)은 이름 뜻에 맞춰 만든 도식이며 QMS-44UX만 쓴다. QMS-88UX는 WALL 도해가 없고 DUAL은 매뉴얼 Layout 5~7 도해를 쓴다(0.152 재검토).
+    // QMS-44UX 전용 이름의 QUAD 도해는 아래 LAYOUT_SHAPES_BY_PRODUCT(0.146, 44UX 매뉴얼 21~22쪽 도해)가 우선한다. 매뉴얼에 도해가 없는 QMS-44UX WALL(2×2~FULL, 23쪽 이름·29쪽 가로×세로 배치)과 DUAL PBP·PIP(24쪽 "2분할")는 이름 뜻에 맞춘 도식이며 QMS-44UX만 쓴다. PBP-Full·User Mode는 그림을 두지 않는다(0.156). QMS-88UX DUAL은 매뉴얼 Layout 5~7 도해를 쓴다(0.152 재검토). QMS-88UX WALL은 아래 WALL_SPECS(0.155, 매뉴얼 19쪽 월 설정)를 쓴다.
     const LAYOUT_SHAPES={
       'QUAD':[[1,0,0,50,50],[2,50,0,50,50],[3,0,50,50,50],[4,50,50,50,50]],
       '3-BOTTOM':[[1,0,0,100,50],[2,0,50,33.33,50],[3,33.33,50,33.34,50],[4,66.67,50,33.33,50]],
@@ -608,9 +648,7 @@
       '1×4':[[1,0,0,100,25],[2,0,25,100,25],[3,0,50,100,25],[4,0,75,100,25]],
       'FULL':[[1,0,0,100,100]],
       'PBP':[[1,0,0,50,100],[2,50,0,50,100]],
-      'PBP-FULL':[[1,0,0,50,100],[2,50,0,50,100]],
       'PIP':[[1,0,0,100,100],[2,62,62,32,32]],
-      'USER MODE':[[1,0,0,65,100],[2,65,0,35,50],[3,65,50,35,50]],
       'CASCADE1':[[1,0,0,100,100],[2,50,50,40,40]],
       '4CH-POP':[[1,0,0,50,100],[2,28,62,20,32],[3,50,0,50,100],[4,78,62,20,32]],
       '2CH-SIDE':[[1,0,0,50,100],[2,50,0,50,100]],
@@ -638,7 +676,19 @@
         'USER MODE 2':[[1,0,25,25,50],[2,25,25,25,50],[3,50,25,25,50],[4,75,25,25,50]],
         'USER MODE 3':[[1,20,0,60,25],[2,20,25,60,25],[3,20,50,60,25],[4,20,75,60,25]]
       },
-      black:new Set(['3-BOTTOM','3-SIDE RIGHT','3-SIDE LEFT','3CH-MODE2','USER MODE 1','USER MODE 2','USER MODE 3'])
+      black:new Set(['3-BOTTOM','3-SIDE RIGHT','3-SIDE LEFT','3CH-MODE2','USER MODE 1','USER MODE 2','USER MODE 3']),
+      // 0.156(사용자 결정 2026-09-29 "메뉴얼 기준으로 해줘"): DUAL의 PBP-Full·User Mode는 매뉴얼 24쪽에 이름만 있고 배치 설명이 없다.
+      // 이전에는 PBP와 같은 그림·창 3개 그림(24쪽 "2분할"과 어긋남)을 이름만 보고 그렸으므로, 그림 대신 "매뉴얼에 배치 그림 없음"을 보여 준다.
+      noDrawing:new Set(['PBP-FULL','USER MODE'])
+    }};
+    // 0.155(사용자 요청 2026-09-29 "QMS-44 비디오월 기능을 88에도 동일한 컨셉으로 만들어줘", "메뉴얼 읽어보고 작업해줘"): QMS-88UX 매뉴얼 KV.04 19쪽 6) Wall Mode.
+    // Wall 1·Wall 2를 각각 가로(H)×세로(V)와 시작(Start)·끝(End) 출력 포트로 정한다. 2×2 월은 2개까지, 월 1개면 최대 3×3 또는 2×5(매뉴얼 H×V 표기 그대로 가로 2 × 세로 5).
+    // 출력 9·10번(M1·M2)은 평소 멀티뷰 포트지만 Wall 모드로 설정하면 월에 넣을 수 있다. 값: [[가로, 세로, 시작 출력 번호], …].
+    const WALL_SPECS={'qms-88ux':{
+      '2×2':[[2,2,1]],
+      '2×2 + 2×2':[[2,2,1],[2,2,5]],
+      '3×3':[[3,3,1]],
+      '2×5':[[2,5,1]]
     }};
     // 0.147(사용자 요청 2026-09-29 "44,88모두 분할 부분구성 예시를 그래픽작업해달라는거야"): 흰 칸 도식 대신 실제 화면처럼 그린다.
     // 한 화면 분할(MATRIX·QUAD·DUAL 등)은 모니터(검은 베젤·스탠드) 안에 입력마다 다른 색 화면을 칸대로 채우고,
@@ -649,27 +699,37 @@
     function layoutShapeSvg(name,productId,modeName){
       const own=LAYOUT_SHAPES_BY_PRODUCT[productId];
       const key=String(name||'').trim().toUpperCase();
-      const cells=own?.shapes[key]||LAYOUT_SHAPES[key];
+      if(own?.noDrawing?.has(key))return '<div class="rt-pg-layout-missing" data-layout-nodrawing>매뉴얼에 배치 그림 없음</div>';
+      const cells=own?.shapes[key]||LAYOUT_SHAPES[key]||(modeName==='WALL'&&WALL_SPECS[productId]?.[key]?[[1,0,0,100,100]]:null);
       if(!cells)return '<div class="rt-pg-layout-missing">도해 준비 중</div>';
       const id=`lay${++layoutSvgSeq}`;
       const label=`aria-label="${esc(name)} 화면 구성"`;
       if(modeName==='WALL'){
-        // 디스플레이 한 대 = 16:9 칸(64×36) + 베젤 3, 대 사이 틈 2. 칸 수는 첫 칸의 폭·높이로 센다(2×2 → 2열 2행).
-        const cols=Math.max(1,Math.round(100/cells[0][3])),rows=Math.max(1,Math.round(100/cells[0][4]));
-        const DW=64,DH=36,BZ=3,GAP=2,PAD=4;
-        const W=PAD*2+cols*(DW+BZ*2)+(cols-1)*GAP,H=PAD*2+rows*(DH+BZ*2)+(rows-1)*GAP;
-        const at=(c,r)=>[PAD+c*(DW+BZ*2+GAP),PAD+r*(DH+BZ*2+GAP)];
-        let screens='',frames='',badges='';
-        cells.forEach(([n,x,y])=>{
-          const c=Math.round(x/(100/cols)),r=Math.round(y/(100/rows)),[fx,fy]=at(c,r);
-          frames+=`<rect x="${fx}" y="${fy}" width="${DW+BZ*2}" height="${DH+BZ*2}" rx="2.5" fill="#1f2532"/>`;
-          screens+=`<rect class="rt-pg-cell" x="${fx+BZ}" y="${fy+BZ}" width="${DW}" height="${DH}"/>`;
-          badges+=`<circle cx="${fx+BZ+7}" cy="${fy+BZ+7}" r="5.2" fill="#fff" fill-opacity=".92"/><text x="${fx+BZ+7}" y="${fy+BZ+7.2}" font-size="7" font-weight="800" fill="#1f2532" text-anchor="middle" dominant-baseline="central">${n}</text>`;
+        // 디스플레이 한 대 = 16:9 칸(64×36) + 베젤 3, 대 사이 틈 2. 월 하나는 [가로 대수, 세로 대수, 시작 출력 번호]다.
+        // QMS-44UX는 칸 배치(LAYOUT_SHAPES)의 첫 칸 폭·높이로 가로·세로 대수를 센다(2×2 → 2열 2행). QMS-88UX는 WALL_SPECS(월 2개까지)를 쓴다.
+        const walls=WALL_SPECS[productId]?.[key]||[[Math.max(1,Math.round(100/cells[0][3])),Math.max(1,Math.round(100/cells[0][4])),1]];
+        const DW=64,DH=36,BZ=3,GAP=2,PAD=4,WGAP=14;
+        const sizeOf=([cols,rows])=>[cols*(DW+BZ*2)+(cols-1)*GAP,rows*(DH+BZ*2)+(rows-1)*GAP];
+        const W=PAD*2+walls.reduce((sum,wall)=>sum+sizeOf(wall)[0],0)+(walls.length-1)*WGAP,H=PAD*2+Math.max(...walls.map(wall=>sizeOf(wall)[1]));
+        let body='',ox=PAD;
+        walls.forEach(([cols,rows,first],wi)=>{
+          const [ww,wh]=sizeOf([cols,rows]),oy=PAD+(H-PAD*2-wh)/2;
+          let screens='',frames='',badges='';
+          for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+            const fx=ox+c*(DW+BZ*2+GAP),fy=oy+r*(DH+BZ*2+GAP),n=first+r*cols+c;
+            frames+=`<rect x="${fx}" y="${fy}" width="${DW+BZ*2}" height="${DH+BZ*2}" rx="2.5" fill="#1f2532"/>`;
+            screens+=`<rect class="rt-pg-cell" x="${fx+BZ}" y="${fy+BZ}" width="${DW}" height="${DH}"/>`;
+            badges+=`<circle cx="${fx+BZ+7}" cy="${fy+BZ+7}" r="5.2" fill="#fff" fill-opacity=".92"/><text x="${fx+BZ+7}" y="${fy+BZ+7.2}" font-size="7" font-weight="800" fill="#1f2532" text-anchor="middle" dominant-baseline="central">${n}</text>`;
+          }
+          const x0=ox+BZ,y0=oy+BZ,x1=ox+ww-BZ,y1=oy+wh-BZ,iw=x1-x0,ih=y1-y0;
+          const hill=`M${x0} ${y0+ih*0.78}C${x0+iw*0.18} ${y0+ih*0.52},${x0+iw*0.32} ${y0+ih*0.6},${x0+iw*0.46} ${y0+ih*0.46}S${x0+iw*0.78} ${y0+ih*0.62},${x1} ${y0+ih*0.5}V${y1}H${x0}Z`;
+          const hill2=`M${x0} ${y0+ih*0.9}C${x0+iw*0.3} ${y0+ih*0.7},${x0+iw*0.55} ${y0+ih*0.86},${x0+iw*0.75} ${y0+ih*0.72}S${x1-iw*0.05} ${y0+ih*0.8},${x1} ${y0+ih*0.76}V${y1}H${x0}Z`;
+          // 월이 둘이면 두 번째 월은 다른 영상(노을)으로 칠해 서로 다른 소스임을 보인다.
+          const sky=wi?['#ff9a62','#ffe0b8']:['#5aa9ff','#cfe6ff'],land=wi?['#8a5a3c','#5c3a24']:['#34a853','#1e7a3c'];
+          body+=`<defs><linearGradient id="${id}s${wi}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky[0]}"/><stop offset="1" stop-color="${sky[1]}"/></linearGradient><clipPath id="${id}c${wi}">${screens.replace(/ class="rt-pg-cell"/g,'')}</clipPath></defs>${frames}${screens.replace(/<rect class="rt-pg-cell"/g,'<rect class="rt-pg-cell" fill="#0b0d12"')}<g clip-path="url(#${id}c${wi})"><rect x="${x0}" y="${y0}" width="${iw}" height="${ih}" fill="url(#${id}s${wi})"/><circle cx="${x0+iw*0.76}" cy="${y0+ih*0.26}" r="${Math.min(iw,ih)*0.09}" fill="#ffd66b"/><path d="${hill}" fill="${land[0]}"/><path d="${hill2}" fill="${land[1]}"/></g>${badges}`;
+          ox+=ww+WGAP;
         });
-        const x0=PAD+BZ,y0=PAD+BZ,x1=W-PAD-BZ,y1=H-PAD-BZ,iw=x1-x0,ih=y1-y0;
-        const hill=`M${x0} ${y0+ih*0.78}C${x0+iw*0.18} ${y0+ih*0.52},${x0+iw*0.32} ${y0+ih*0.6},${x0+iw*0.46} ${y0+ih*0.46}S${x0+iw*0.78} ${y0+ih*0.62},${x1} ${y0+ih*0.5}V${y1}H${x0}Z`;
-        const hill2=`M${x0} ${y0+ih*0.9}C${x0+iw*0.3} ${y0+ih*0.7},${x0+iw*0.55} ${y0+ih*0.86},${x0+iw*0.75} ${y0+ih*0.72}S${x1-iw*0.05} ${y0+ih*0.8},${x1} ${y0+ih*0.76}V${y1}H${x0}Z`;
-        return `<svg class="rt-pg-layout-wall" viewBox="0 0 ${W} ${H}" role="img" ${label}><defs><linearGradient id="${id}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5aa9ff"/><stop offset="1" stop-color="#cfe6ff"/></linearGradient><clipPath id="${id}c">${screens.replace(/ class="rt-pg-cell"/g,'')}</clipPath></defs>${frames}${screens.replace(/<rect class="rt-pg-cell"/g,'<rect class="rt-pg-cell" fill="#0b0d12"')}<g clip-path="url(#${id}c)"><rect x="${x0}" y="${y0}" width="${iw}" height="${ih}" fill="url(#${id}s)"/><circle cx="${x0+iw*0.76}" cy="${y0+ih*0.26}" r="${Math.min(iw,ih)*0.09}" fill="#ffd66b"/><path d="${hill}" fill="#34a853"/><path d="${hill2}" fill="#1e7a3c"/></g>${badges}</svg>`;
+        return `<svg class="rt-pg-layout-wall" viewBox="0 0 ${W} ${H}" role="img" ${label}>${body}</svg>`;
       }
       // 한 화면 분할: 모니터 200×134(베젤 6, 화면 188×106 ≈ 16:9, 스탠드). 칸 좌표 0~100을 화면 크기로 늘린다.
       const SX=6,SY=6,SW=188,SH=106,mx=v=>SX+v*SW/100,my=v=>SY+v*SH/100;
@@ -687,6 +747,22 @@
       }).join('');
       return `<svg viewBox="0 0 200 134" role="img" ${label}><defs>${grads}<clipPath id="${id}c"><rect x="${SX}" y="${SY}" width="${SW}" height="${SH}"/></clipPath></defs><rect x="1" y="1" width="198" height="118" rx="6" fill="#1f2532"/><rect${letterbox?' class="rt-pg-layout-letterbox"':''} x="${SX}" y="${SY}" width="${SW}" height="${SH}" fill="#0b0d12"/><g clip-path="url(#${id}c)">${tiles}</g><circle cx="100" cy="115.5" r="1.3" fill="#5b6475"/><path d="M92 119h16l3 9H89z" fill="#3a4150"/><rect x="72" y="127.5" width="56" height="5" rx="2.5" fill="#3a4150"/></svg>`;
     }
+    // 0.159(사용자 요청 2026-09-29 "매트릭스쪽 비슷한 컨셉으로 하나 만들자", "1TO1, ALL, 임의스위칭 이거는 빼고 그냥 크로스포인트 이미지만"):
+    // MATRIX 카드에 칩 없이 크로스포인트 그림 한 장을 둔다. 왼쪽 입력(IN n)에서 오른쪽 출력 모니터(OUT n)로 입력 색 선을 잇는다(색은 LAYOUT_COLORS, QUAD·DUAL과 같다).
+    // 값은 출력 1번부터 차례로 "들어오는 입력 번호" 예시다. QMS-88UX 출력 9·10번은 멀티뷰 전용이라 매트릭스 그림에서 뺀다.
+    const MATRIX_ROUTES={'qms-44ux':[3,1,3,4],'qms-88ux':[2,7,2,5,1,8,3,3]};
+    function matrixCrosspointSvg(productId){
+      const route=MATRIX_ROUTES[productId];
+      if(!route)return '';
+      const N=route.length,big=N>4,gy=big?30:44,W=380,H=N*gy+8;
+      const iy=i=>6+i*gy,mw=big?40:48,mh=big?22:27,mx=270;
+      const col=n=>LAYOUT_COLORS[(n-1)%LAYOUT_COLORS.length];
+      let lines='',ins='',outs='';
+      route.forEach((inp,o)=>{const y1=iy(inp-1)+14,y2=iy(o)+3+mh/2;lines+=`<path d="M58 ${y1}C140 ${y1},190 ${y2},${mx} ${y2}" stroke="${col(inp)}" stroke-width="2.4" fill="none" opacity=".92"/>`});
+      for(let i=0;i<N;i++){const y=iy(i);ins+=`<rect x="12" y="${y}" width="46" height="28" rx="4" fill="${col(i+1)}"/><rect x="15" y="${y+3}" width="40" height="18" rx="2" fill="#fff" fill-opacity=".25"/><text x="35" y="${y+14}" font-size="11" font-weight="800" fill="#fff" text-anchor="middle" dominant-baseline="central">IN ${i+1}</text>`}
+      route.forEach((inp,o)=>{const x=mx,y=iy(o);outs+=`<rect x="${x}" y="${y}" width="${mw+6}" height="${mh+6}" rx="3" fill="#1f2532"/><rect class="rt-pg-cell" x="${x+3}" y="${y+3}" width="${mw}" height="${mh}" fill="${col(inp)}"/><path d="M${x+3} ${y+3+mh}V${y+3+mh*0.75}Q${x+3+mw*0.3} ${y+3+mh*0.55} ${x+3+mw*0.55} ${y+3+mh*0.72}T${x+3+mw} ${y+3+mh*0.66}V${y+3+mh}Z" fill="#fff" fill-opacity=".18"/><text x="${x+3+mw/2}" y="${y+3+mh/2}" font-size="${big?10:12}" font-weight="800" fill="#fff" text-anchor="middle" dominant-baseline="central">${inp}</text><text x="${x+mw+14}" y="${y+3+mh/2}" font-size="10" font-weight="800" fill="#6b7280" dominant-baseline="central">OUT ${o+1}</text>`});
+      return `<div class="rt-pg-layout-preview rt-pg-matrix-preview"><svg class="rt-pg-layout-matrix" viewBox="0 0 ${W} ${H}" role="img" aria-label="입력 ${N} → 출력 ${N} 크로스포인트 예시">${lines}${ins}${outs}</svg></div>`;
+    }
     function videoModesSection(item){
       const vm=item.videoModes;
       if(!vm||!vm.modes?.length)return '';
@@ -698,7 +774,7 @@
           <div class="rt-pg-vmode-cards">${modes.map(mode=>`<div class="rt-pg-vmode-card">
             <div class="rt-pg-vmode-card-head">${VMODE_ICON[mode.name]||''}<div><b>${esc(VMODE_NAME_KO[mode.name]||mode.name)}</b><small>${esc(mode.name)}</small></div></div>
             <p>${esc(mode.summary)}${mode.detail?` ${esc(mode.detail)}`:''}</p>
-            ${mode.layouts?.length?`<span class="rt-pg-vmode-count">레이아웃 ${mode.layouts.length}종</span><div class="rt-pg-vmode-chips">${mode.layouts.map((layout,index)=>`<button type="button" class="rt-pg-layout-chip${index===0?' on':''}" data-layout-chip data-layout="${esc(layout)}">${esc(layout)}</button>`).join('')}</div><div class="rt-pg-layout-preview" data-layout-preview data-layout-product="${esc(item.id)}" data-layout-mode="${esc(mode.name)}">${layoutShapeSvg(mode.layouts[0],item.id,mode.name)}<small data-layout-name>${esc(mode.layouts[0])}</small></div>`:''}
+            ${mode.layouts?.length?`<span class="rt-pg-vmode-count">레이아웃 ${mode.layouts.length}종</span><div class="rt-pg-vmode-chips">${mode.layouts.map((layout,index)=>`<button type="button" class="rt-pg-layout-chip${index===0?' on':''}" data-layout-chip data-layout="${esc(layout)}">${esc(layout)}</button>`).join('')}</div><div class="rt-pg-layout-preview" data-layout-preview data-layout-product="${esc(item.id)}" data-layout-mode="${esc(mode.name)}">${layoutShapeSvg(mode.layouts[0],item.id,mode.name)}<small data-layout-name>${esc(mode.layouts[0])}</small></div>`:''}${mode.name==='MATRIX'&&!mode.layouts?.length?matrixCrosspointSvg(item.id):''}
           </div>`).join('')}</div>
         </div>
       </section>`;

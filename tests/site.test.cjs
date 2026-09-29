@@ -154,7 +154,7 @@ test('public product data (0.19) is valid, brochure-level only and listed in ind
   assert.equal(read('data/products/index.json'),text,'run node scripts/build-product-index.cjs');
   assert.equal(index.schema,'rtcom.products.v1');
   const count=group=>index.products.filter(product=>product.group===group).length;
-  assert.deepEqual({series:count('series'),integrated:count('integrated'),distribution:count('distribution'),extender:count('extender'),cable:count('cable')},{series:3,integrated:2,distribution:8,extender:14,cable:4});
+  assert.deepEqual({series:count('series'),integrated:count('integrated'),distribution:count('distribution'),extender:count('extender'),cable:count('cable')},{series:3,integrated:2,distribution:8,extender:15,cable:4});
   for(const model of EXCLUDED)assert.equal(index.products.some(product=>product.model===model),false,`${model} is excluded like AV Portal`);
   for(const model of ['HD-104U','HD-108U','QMS-44UX','MR-4S'])assert.ok(index.products.some(product=>product.model===model),`missing ${model}`);
   for(const product of index.products)assert.ok(product.cardImage,`${product.id} needs a card image`);
@@ -422,4 +422,90 @@ test('검토 결과에 내부 근거 문서 링크를 넣지 않는다(0.149)', 
   for (const file of ['src/app.js', 'src/workspace.inc.js']) {
     assert.ok(!read(file).includes('docs/evidence/RTCOM_MATRIX_EVIDENCE_AND_GAPS.md'), `${file} must not link the internal evidence ledger`);
   }
+});
+
+test('0.157: SPX-R6는 사양서 근거로 등록하고, 로고 없는 평면 그림·사양서 카탈로그 버튼을 쓰며, SPX 매뉴얼 2권을 공개하고 M2472·M24120 깊이는 443.7mm다',()=>{
+  // 사용자 결정 2026-09-29: PDF 3개 공개(SPX-R6 사양서·SPX-TX/RX 매뉴얼 Ver.2.0·SPX 공통 매뉴얼 250805), SPX-R6는 "평면 그래픽", 깊이 "443.7mm", 비디오 월 표기는 유지.
+  const r6=JSON.parse(read('data/products/spx-r6.json')),txrx=JSON.parse(read('data/products/spx-rx-tx.json')),spx=JSON.parse(read('data/products/spx.json'));
+  assert.equal(r6.group,'extender');
+  assert.deepEqual(r6.images.filter(image=>image.role!=='Diagram').map(image=>image.file),['spx-r6-front-art.webp','spx-r6-rear-art.webp'],'사양서 사진(다른 회사 로고)은 쓰지 않고 그림만 쓴다');
+  // 0.158(사용자 요청 2026-09-29 "앰버텍만 지워서 활용하면 될거 같은데"): 제조사 연결도는 로고만 지운 그림을 원본 다이어그램으로 쓴다.
+  assert.deepEqual(r6.images.filter(image=>image.role==='Diagram').map(image=>image.file),['spx-r6-diagram.webp']);
+  for(const image of r6.images)assert.ok(fs.existsSync(`output/design/assets/products/${image.file}`));
+  assert.ok(!/AmberTech/i.test(JSON.stringify(r6))&&!/AmberTech/i.test(read('scripts/tools/draw_spx_r6_panels.cjs').replace(/\/\/.*$/gm,'')),'로고 글자를 그림·데이터에 넣지 않는다');
+  assert.deepEqual(r6.documents.filter(doc=>doc.file).map(doc=>[doc.type,doc.file]),[['Catalog','spx-r6-catalog.pdf']]);
+  assert.ok(r6.related.some(link=>link.relation==='WORKS_WITH'&&link.target==='spx-rx-tx'));
+  assert.ok(txrx.related.some(link=>link.relation==='WORKS_WITH'&&link.target==='spx-r6'));
+  assert.equal(txrx.documents.find(doc=>doc.type==='Manual').file,'spx-rx-tx-manual.pdf');
+  assert.equal(spx.documents.find(doc=>doc.type==='Manual').file,'spx-manual.pdf');
+  for(const name of ['spx-r6-catalog.pdf','spx-rx-tx-manual.pdf','spx-manual.pdf'])assert.ok(fs.existsSync(`output/design/assets/docs/${name}`),name);
+  for(const model of ['SPX-M2472','SPX-M24120'])assert.match(spx.lineup.find(entry=>entry.model===model).summary,/483×443\.7×365mm/);
+  assert.ok(!JSON.stringify(spx.lineup).includes('433.7'),'라인업에 종합 카탈로그 2026의 433.7mm 표기를 남기지 않는다');
+  assert.ok(spx.features.some(feature=>feature.text.includes('2x2, 3x3, 3x4')),'비디오 월 표기는 그대로 둔다(사용자 결정 "지금 표기 유지")');
+  assert.match(read('src/products.js'),/if\(item\.id==='spx-r6'\)return rackExtenderDiagram\(item\);/);
+  const order=JSON.parse(read('data/products/index.json')).products.map(product=>product.id);
+  assert.equal(order.indexOf('spx-r6')+1,order.indexOf('spx-rx-tx'),'전송기 목록에서 SPX-TX / SPX-RX 바로 앞에 보인다');
+});
+
+test('0.158: SPX-R6 수신 모듈 장착·SPX-RX IR 기능은 사용자 확인(U2)으로 적고, 잘 쓰지 않는다고 표시한다',()=>{
+  // 사용자 확인 2026-09-29 "SPX-RX의 IR 기능과 수신가능한대 잘 안써"
+  const r6=JSON.parse(read('data/products/spx-r6.json'));
+  // 0.164(사용자 확인 "SPX-R6에 TX, RX선택해서 사용할 수가 있어"): "수신 모듈 장착" 행을 "모듈 TX·RX 선택"으로 바꿨다.
+  const pick=r6.specifications.find(spec=>spec.name==='모듈 TX·RX 선택');
+  assert.ok(pick);assert.equal(pick.source,'U2');assert.match(pick.value,/TX\(송신\)·RX\(수신\) 선택/);assert.match(pick.condition,/드묾/);
+  assert.ok(!r6.specifications.some(spec=>spec.name==='수신 모듈 장착'));
+  const ir=r6.specifications.find(spec=>spec.name==='SPX-RX IR 기능');
+  assert.ok(ir);assert.equal(ir.source,'U2');assert.match(ir.condition,/잘 쓰지 않음/);
+  assert.ok(r6.sources.some(source=>source.code==='U2'));
+  assert.doesNotMatch(read('docs/handoff/OPEN_ITEMS.md'),/IR Blaster|모듈 종류:/,'확인 항목은 처리했으므로 지운다');
+});
+
+// 0.160 — 여러 세션 동시 병합으로 버전이 겹치거나 건너뛰지 않게 하는 점검(scripts/check-version.cjs, CLAUDE.md "여러 세션이 동시에 작업할 때").
+test('버전 표기 네 곳(index.html·README·CHANGELOG·CLAUDE.md)이 서로 맞고 CHANGELOG 제목이 겹치지 않는다',()=>{
+  const {checkConsistency}=require('../scripts/check-version.cjs');
+  const {problems,versions}=checkConsistency({index:read('index.html'),readme:read('README.md'),changelog:read('CHANGELOG.md'),claude:read('CLAUDE.md')});
+  assert.deepEqual(problems,[]);
+  assert.ok(versions.index,'index.html 버전을 읽어야 한다');
+});
+
+test('버전 점검은 번호 중복·main보다 낮은 번호·건너뛴 번호·문서만 바꾼 PR의 번호 올림을 잡는다',()=>{
+  const {checkConsistency,checkAgainst}=require('../scripts/check-version.cjs');
+  const files=v=>({index:`CATALOG BASED · ${v}<`,readme:`**현재 버전: ${v}**`,changelog:`## Unreleased\n\n## ${v}.0\n\n## 0.1.0\n`,claude:`은 \`${v}.0\`으로 기록했습니다. 다음 기능 묶음은 \`0.${Number(v.split('.')[1])+1}.0\``});
+  assert.deepEqual(checkConsistency(files('0.5')).problems,[]);
+  const dup={...files('0.5'),changelog:'## 0.5.0\n\n## 0.5.0\n'};
+  assert.match(checkConsistency(dup).problems.join('\n'),/두 번/);
+  assert.match(checkConsistency({...files('0.5'),readme:'**현재 버전: 0.4**'}).problems.join('\n'),/README/);
+  const code=['src/app.js'],docs=['docs/qa/DEPLOYMENT_0.5.md','CHANGELOG.md'];
+  assert.deepEqual(checkAgainst([0,6],[0,5],code),[]);
+  assert.deepEqual(checkAgainst([0,5],[0,5],docs),[]);
+  assert.match(checkAgainst([0,5],[0,6],code).join(),/main이 0\.6/);
+  assert.match(checkAgainst([0,5],[0,5],code).join(),/올리세요/);
+  assert.match(checkAgainst([0,8],[0,5],code).join(),/한 단계 넘게/);
+  assert.match(checkAgainst([0,6],[0,5],docs).join(),/문서만/);
+});
+
+test('0.166: SPX-TX/RX 04 제품 사양의 전송거리는 "4K60 실효 전송거리" 한 행(두 줄)으로 정리한다',()=>{
+  // 사용자 요청 2026-09-29 "최대 전송거리부분에 너무 나열되어 있어 이 부분을 아래와 같이 정리해줘"
+  const txrx=JSON.parse(read('data/products/spx-rx-tx.json'));
+  const rows=txrx.specifications.filter(spec=>spec.group==='Transmission');
+  assert.equal(rows.length,1,'전송거리 행은 하나만 둔다');
+  assert.equal(rows[0].name,'4K60 실효 전송거리');
+  assert.equal(rows[0].value,'UTP CAT6 50m (Belden 7814A 케이블 기준)\nS/FTP CAT6A 70m (Belden 10GXE02 케이블 기준)');
+  assert.equal(rows[0].source,'U3');
+  assert.ok(!JSON.stringify(txrx.specifications).includes('CI6522'),'예전 SF/UTP CI6522 표기는 쓰지 않는다');
+  assert.ok(txrx.features.some(feature=>/4K60 최대 50m, 1080p 최대 60m/.test(feature.text))&&txrx.features.some(feature=>/Long Reach/.test(feature.text)),'매뉴얼 공식 거리는 05 주요 기능에 남긴다');
+  const products=read('src/products.js');
+  assert.match(products,/const specValue=value=>\{/,'여러 줄 값은 줄마다 값과 괄호 설명을 나눠 보여 준다');
+  assert.match(read('src/styles.css'),/\.rt-pg-spec-table td \.rt-pg-spec-line\{display:block\}/);
+});
+
+test('0.171: SPX-R6 모듈 칸 단자는 TX·RX 모듈을 모두 꽂을 수 있게 HDMI IN/OUT · CAT IN/OUT(입출력)으로 적는다',()=>{
+  // 사용자 확인 2026-09-29 "입력카드가 출력카드 원하는대로 꽂는 거라서 HDMI IN/OUT 되게 해야해"
+  const r6=JSON.parse(read('data/products/spx-r6.json'));
+  const rear=r6.portMap.find(map=>map.image==='Rear');
+  assert.deepEqual(rear.items.slice(0,2).map(item=>item.label),['HDMI IN/OUT','CAT IN/OUT']);
+  for(const group of ['Video','Transmission'])assert.equal(r6.io.find(row=>row.group===group).direction,'BIDIR',`${group} 단자는 입출력`);
+  const draw=read('scripts/tools/draw_spx_r6_panels.cjs');
+  assert.match(draw,/'HDMI IN\/OUT'/);assert.match(draw,/'CAT IN\/OUT'/);
+  assert.doesNotMatch(draw,/'HDMI IN',|'CAT OUT',/,'후면 그림에 한 방향 표기를 남기지 않는다');
 });

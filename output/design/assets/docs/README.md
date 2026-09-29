@@ -7,6 +7,7 @@
 **공개 중(2026-09-28, 0.88.0):** 매뉴얼 17개 — `hd-13u`·`hd-104u`·`hd-108u`·`hd-210u`·`hds-21u`·`hds-42mu`·`obhd-2c`·`obux-1c`·`qms-44ux`·`qms-88ux`·`xdm-ctr100`·`xdm-ctr100-pse`·`xdm-ft101-fr101`·`xdm`·`vdm`의 `-manual.pdf`, `xdm-ct103-cr103-manual-ct103.pdf`·`-manual-cr103.pdf`. 카탈로그 발췌본은 아직 없습니다.
 
 **전체 카탈로그(2026-09-28, 0.95.0):** `rtcom-catalog-2026.pdf`(46쪽판, 사용자 결정 "전체 카탈로그 공개해도 돼"). 29개 제품의 카탈로그 버튼이 이 파일을 함께 쓰고 `page`로 제품 쪽을 엽니다. 새 판이 나오면 같은 이름으로 덮어쓰고, 쪽 번호가 바뀌면 각 제품의 `page`·`catalogPages`도 고칩니다. 제품별 발췌본을 올리면 그 제품만 발췌본으로 바꿉니다.
+**SPX 자료(2026-09-29, 0.157.0):** 사용자 결정으로 `spx-r6-catalog.pdf`(SPX-R6 제품 사양서 1쪽)·`spx-manual.pdf`(SPX 시리즈 사용자 매뉴얼 250805, 54쪽)·`spx-rx-tx-manual.pdf`(SPX-TX/RX 매뉴얼 Ver.2.0, 13쪽)를 추가로 공개합니다. SPX 카탈로그(2023)는 근거 자료로만 쓰고 공개하지 않습니다.
 구조 설명은 `docs/implementation/PRODUCT_DOCUMENT_DOWNLOADS.md`에 있습니다.
 
 ## 올리는 방법 (GitHub 웹)
@@ -50,6 +51,7 @@
 | OBUX-1C | `obux-1c-catalog.pdf` | `obux-1c-manual.pdf` |
 | QMS-44UX | `qms-44ux-catalog.pdf` | `qms-44ux-manual.pdf` |
 | QMS-88UX | `qms-88ux-catalog.pdf` | `qms-88ux-manual.pdf` |
+| SPX-R6 | `spx-r6-catalog.pdf`(제품 사양서 1쪽) | — |
 | SPX-TX / SPX-RX | `spx-rx-tx-catalog.pdf` | `spx-rx-tx-manual.pdf` |
 | SPX Series | `spx-catalog.pdf` | `spx-manual.pdf` |
 | UMC | `umc-catalog.pdf` | `umc-manual.pdf` |

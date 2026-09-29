@@ -22,7 +22,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 
 @media(max-width:720px){body{padding:0}#rtcom-design{border:0}#rtcom-design .rt-workspace{padding:12px 16px}#rtcom-design .rt-tools{gap:6px}#rtcom-design .rt-tools .rt-button{font-size:11px;padding:6px 9px}#rtcom-design .rt-validation{padding:14px}}
 @media(max-width:480px){#rtcom-design .rt-frame-count{justify-content:flex-start}}
-@media print{@page{size:A4;margin:16mm}html,body{background:white!important;color:black!important;padding:0;margin:0}#rtcom-design{display:none!important}#print-report{display:block;color:#111;font:10pt/1.5 Arial,'Malgun Gothic',sans-serif}#print-report h1{font-size:22pt}#print-report h2{font-size:15pt;margin-top:24px}#print-report table{border-collapse:collapse;width:100%;font-size:9pt}#print-report th,#print-report td{border:1px solid #bbb;padding:7px;text-align:left}#print-report tr{break-inside:avoid}#print-report thead{display:table-header-group}#print-report h2,#print-report h3{break-after:avoid}#print-report .rt-validation{margin-top:24px}#print-report li{margin-bottom:8px}#print-report a{display:none}#print-report small{display:block}}
+@media print{@page{size:A4;margin:12mm 13mm}html,body{background:white!important;color:black!important;padding:0;margin:0}html:not(.rt-print-products) #rtcom-design>*:not(#print-report){display:none!important}html:not(.rt-print-products) #rtcom-design{max-width:none;margin:0;padding:0;border:0;box-shadow:none;background:#fff}#print-report{display:block}}
 
 /* 0.5 — Seoul AV LED calculator inspired visual system */
 :root{color-scheme:light}html{background:#f4f7ff}body{padding:18px;background:radial-gradient(circle at 8% 0,#dceaff 0,transparent 34%),radial-gradient(circle at 92% 4%,#f0e1ff 0,transparent 32%),linear-gradient(135deg,#f7fbff,#fbf8ff);background-attachment:fixed}
@@ -620,8 +620,9 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 /* 0.147: 분할 예시를 모니터·비디오 월 그림으로 그린다(색·글자는 SVG 안에서 지정). 비디오 월은 대수에 따라 가로·세로로 길어지므로 높이도 제한한다. */
 #rtcom-design .rt-pg-layout-preview svg{display:block;width:100%;max-width:200px;height:auto;max-height:150px;filter:drop-shadow(0 4px 10px rgba(31,37,50,.18))}
 #rtcom-design .rt-pg-layout-preview svg.rt-pg-layout-wall{max-width:230px}
+#rtcom-design .rt-pg-layout-preview svg.rt-pg-layout-matrix{max-width:340px;max-height:260px;filter:none}
 #rtcom-design .rt-pg-layout-preview small{font-size:10.5px;color:var(--pg-muted);font-weight:700}
-#rtcom-design .rt-pg-layout-missing{width:100%;max-width:150px;aspect-ratio:16/10;display:grid;place-items:center;background:var(--pg-field-fill);border-radius:8px;color:var(--pg-muted);font-size:10.5px}
+#rtcom-design .rt-pg-layout-missing{width:100%;max-width:200px;aspect-ratio:200/134;display:grid;place-items:center;background:var(--pg-field-fill);border-radius:8px;color:var(--pg-muted);font-size:10.5px}
 @media(max-width:720px){#rtcom-design .rt-pg-vmode{grid-template-columns:1fr}#rtcom-design .rt-pg-vmode-cards{grid-template-columns:1fr}}
 
 /* EDID 설정(전면 로터리 스위치 등 단일 컨트롤 강조, 0.35) */
@@ -865,10 +866,30 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
   #rtcom-design .rt-link-flow-node{flex:0 1 132px;width:auto;min-width:0}
   #rtcom-design .rt-link-flow-cable{flex:0 1 96px;width:auto;min-width:64px}
 }
+/* 0.175 04 전송기 미리보기 정리(사용자 지적 2026-09-29 "이 부분 개선이 필요해보여"):
+   ① 케이블 점선 위에는 "최대 100m"만 두고 문장 전체는 흐름 아래 한 줄(rt-link-flow-spec)로 옮겨 전송기 사진과 겹치지 않게 한다.
+   ② PSE + CTR100처럼 사진이 두 장이면 두 장이 상자 폭을 나눠 가져 상자 밖으로 넘치지 않게 하고, 그 상자만 조금 넓힌다.
+   ③ 카드 이름(XDM-WOS100)이 하이픈에서 두 줄로 꺾이지 않게 한 줄로 두고 카드 상자 최소 폭을 둔다. */
+#rtcom-design .rt-link-flow-ext-imgs{gap:4px;width:100%}
+#rtcom-design .rt-link-flow-ext-imgs img{flex:1 1 0;min-width:0;width:0;height:48px;max-height:none;object-fit:contain;margin:0 0 6px}
+#rtcom-design .rt-link-flow-pair .rt-link-flow-ext{width:168px}
+#rtcom-design .rt-link-flow-card strong,#rtcom-design .rt-link-flow-endpoint strong{white-space:nowrap}
+#rtcom-design .rt-link-flow-node small{word-break:keep-all}
+#rtcom-design .rt-link-flow-card{min-width:112px}
+#rtcom-design .rt-link-flow-cable{width:72px}
+#rtcom-design .rt-link-flow-cable small{white-space:nowrap}
+#rtcom-design .rt-link-flow-spec{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px;margin:12px auto 0;font-size:12px;font-weight:700;color:#1b6e3d;text-align:center}
+#rtcom-design .rt-link-flow-spec span{font-size:10px;font-weight:800;letter-spacing:.04em;color:#fff;background:#1E9E52;border-radius:999px;padding:2px 8px}
+@media(min-width:821px){
+  #rtcom-design .rt-link-flow-card{flex:0 0 auto;width:auto;min-width:112px;max-width:140px}
+  #rtcom-design .rt-link-flow-pair .rt-link-flow-ext{flex:0 1 168px}
+  #rtcom-design .rt-link-flow-cable{flex:0 1 72px;min-width:56px}
+  #rtcom-design .rt-link-flow-endpoint{flex:0 1 104px}
+}
 /* 휴대폰에서는 가로 한 줄이 들어가지 않으므로 위에서 아래로 세운다(→는 ↓로, 케이블 점선은 세로로). */
 @media(max-width:560px){
   #rtcom-design .rt-link-flow{flex-direction:column;flex-wrap:nowrap;gap:6px}
-  #rtcom-design .rt-link-flow-node{width:180px}
+  #rtcom-design .rt-link-flow-node,#rtcom-design .rt-link-flow-pair .rt-link-flow-ext{width:180px}
   #rtcom-design .rt-link-flow-arrow{transform:rotate(90deg)}
   #rtcom-design .rt-link-flow-cable{width:auto;border-bottom:0;border-left:2px dashed #1E9E52;padding:6px 0 6px 10px;text-align:left}
   #rtcom-design .rt-link-flow-cable::after{right:auto;left:-7px;bottom:-8px;border:5px solid transparent;border-top-color:#1E9E52;border-left-color:transparent}
@@ -969,13 +990,32 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-card-modal-foot{flex-wrap:wrap}
 /* 카드 상세 정보(2026-09-28): 03 카드 슬롯 아래 입력·출력 카드 버튼, 내 구성 카드 행 버튼, 카드 사양 대화상자 */
 #rtcom-design .rt-config-summary li:has(>.rt-summary-card){display:block;padding:0;background:none}
-#rtcom-design .rt-summary-card{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px 10px;width:100%;padding:10px;border:1px solid transparent;border-radius:12px;background:#f5f8fc;color:inherit;font:inherit;text-align:left;cursor:pointer;transition:border-color .15s,background .15s}
+#rtcom-design .rt-summary-card{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;align-items:center;gap:8px;width:100%;padding:8px 10px;border:1px solid transparent;border-radius:10px;background:#f5f8fc;color:inherit;font:inherit;text-align:left;cursor:pointer;transition:border-color .15s,background .15s}
 #rtcom-design .rt-summary-card:hover,#rtcom-design .rt-summary-card:focus-visible{border-color:#007AFF66;background:#eef5ff;outline:none}
-#rtcom-design .rt-summary-card img{grid-column:1/-1;display:block;width:100%;height:auto;border-radius:3px}
-#rtcom-design .rt-summary-card>span{min-width:0}
-#rtcom-design .rt-summary-card strong{display:block;font-size:12px}
-#rtcom-design .rt-summary-card small{display:block;overflow:hidden;color:var(--rt-muted);font-size:10px;text-overflow:ellipsis;white-space:nowrap}
-#rtcom-design .rt-summary-card b{color:#2f63c8;font-size:13px}
+#rtcom-design .rt-config-summary li .rt-summary-card strong{display:block;font-size:12.5px;white-space:nowrap}
+#rtcom-design .rt-config-summary li .rt-summary-card small{display:block;min-width:0;overflow:hidden;color:var(--rt-muted);font-size:11px;text-align:right;text-overflow:ellipsis;white-space:nowrap}
+#rtcom-design .rt-config-summary li .rt-summary-card b{color:#1f2a3d;font-size:14px;font-weight:800;white-space:nowrap}
+#rtcom-design .rt-config-summary ul:has(.rt-summary-card){display:grid;gap:6px}
+/* 0.167 신호 배지(시안 A): 색은 이 배지 하나에만 쓴다. 카드 트레이·후면 슬롯·범례·내 구성이 같은 색 */
+/* 0.170 회사 범례 색(사용자 제공 2026-09-29 "우리 회사 범례 색상이야": 광 하늘색, SDI 검정, LAN 초록, DP/HDMI 빨강, A.AUDIO 보라 #7030A0, USB 파랑 #0000FF).
+   HDBaseT·CATx는 LAN 초록. 광은 0.168 OM3 아쿠아 대신 회사 범례 하늘색 */
+#rtcom-design [data-sig="dp"]{--rt-sig:#FF0000}
+/* HDMI는 회사 범례(DP와 같은 빨강) 대신 남색(사용자 요청 2026-09-29 "HDMI 색상을 남색으로 하면 어때?"), DP와 구별 */
+#rtcom-design [data-sig="hdmi"]{--rt-sig:#002060}
+#rtcom-design [data-sig="hdbt"],#rtcom-design [data-sig="catx"]{--rt-sig:#00B050}
+#rtcom-design [data-sig="fiber"]{--rt-sig:#00B0F0}
+#rtcom-design [data-sig="sdi"]{--rt-sig:#000000}
+#rtcom-design [data-sig="etc"]{--rt-sig:#667085}
+#rtcom-design .rt-sig-badge{display:inline-grid;place-items:center;flex:none;min-width:34px;height:18px;padding:0 5px;border-radius:5px;background:var(--rt-sig);color:#fff;font:800 9.5px/1 system-ui,sans-serif;font-style:normal;text-shadow:0 0 2px #0005;letter-spacing:.02em}
+#rtcom-design .rt-sig-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 14px;margin-top:6px;color:var(--rt-muted);font-size:11.5px}
+#rtcom-design .rt-sig-legend span{display:inline-flex;align-items:center;gap:5px}
+#rtcom-design .rt-card-info-chip strong:has(.rt-sig-badge){display:flex;align-items:center;gap:6px}
+/* 0.170 후면 장착 슬롯 태그(2안): 번호(IN/OUT 색)와 신호 배지를 한 태그로 붙여 늘 보여 준다. 0.17의 "장착 슬롯 번호표 숨김"은 이 태그에는 적용하지 않는다 */
+#rtcom-design .rt-rack-slot-filled .rt-rack-slot-no.rt-slot-tag{opacity:1;display:inline-flex;align-items:stretch;padding:0;overflow:hidden;border-radius:4px;color:#fff;font-size:11px;box-shadow:0 0 0 1px #ffffff4d,0 1px 3px #0008}
+#rtcom-design .rt-slot-tag .rt-slot-tag-n{display:flex;align-items:center;padding:2px 5px}
+#rtcom-design .rt-slot-tag .rt-slot-tag-s{min-width:0;height:auto;padding:2px 5px;border-radius:0;font-size:inherit;line-height:inherit}
+#rtcom-design .rt-rack-vs .rt-slot-tag .rt-slot-tag-n,#rtcom-design .rt-rack-vt .rt-slot-tag .rt-slot-tag-n,#rtcom-design .rt-rack-vs .rt-slot-tag .rt-slot-tag-s,#rtcom-design .rt-rack-vt .rt-slot-tag .rt-slot-tag-s{padding:5px 2px}
+#rtcom-design .rt-rack-vs .rt-rack-slot-filled .rt-rack-slot-no.rt-slot-tag,#rtcom-design .rt-rack-vt .rt-rack-slot-filled .rt-rack-slot-no.rt-slot-tag{padding:0}
 #rtcom-design .rt-card-info-bar{display:grid;gap:10px;margin-top:14px;padding:14px 16px;border-radius:16px;background:#ffffffb3;border:1px solid #e3e9f3}
 #rtcom-design .rt-card-info-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}
 #rtcom-design .rt-card-info-head strong{font-size:13px}
@@ -987,6 +1027,30 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-card-info-chip:hover,#rtcom-design .rt-card-info-chip:focus-visible{border-color:#007AFF;background:#eef5ff;outline:none}
 #rtcom-design .rt-card-info-chip strong{font-size:12px;white-space:nowrap}
 #rtcom-design .rt-card-info-chip small{color:var(--rt-muted);font-size:10.5px}
+/* 0.162 카드 끌어 놓기 샘플: 끌 수 있는 카드 버튼, 끄는 동안 놓을 수 있는 슬롯(같은 방향)만 점선 강조·나머지는 흐리게 */
+#rtcom-design .rt-card-palette .rt-card-info-chip{cursor:grab}
+#rtcom-design .rt-card-palette .rt-card-info-chip:active{cursor:grabbing}
+#rtcom-design .rt-card-info-chip.rt-card-info-chip-dragging{opacity:.5;border-style:dashed}
+/* 0.163 끌어 놓기 타일: 내 구성 카드 행(.rt-summary-card)과 같은 판넬 사진 + 이름 + 신호 + 장착 수량 */
+#rtcom-design .rt-card-palette .rt-card-info-group{grid-template-columns:1fr;gap:6px}
+#rtcom-design .rt-card-palette .rt-card-info-group>span{padding-top:0}
+#rtcom-design .rt-card-palette .rt-card-info-group>div{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+@media(max-width:1100px){#rtcom-design .rt-card-palette .rt-card-info-group>div{grid-template-columns:repeat(3,minmax(0,1fr))}}
+#rtcom-design .rt-palette-tile{grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:7px 8px;padding:9px;border:1px solid #e3e9f3;border-radius:12px;background:#fff}
+#rtcom-design .rt-palette-tile:hover,#rtcom-design .rt-palette-tile:focus-visible{border-color:#007AFF66;background:#f5f9ff}
+#rtcom-design .rt-palette-tile small{color:var(--rt-muted)}
+/* 입력·출력 줄 제목: 후면 슬롯 번호표와 같은 계열 색 글자 */
+#rtcom-design .rt-card-palette .rt-card-info-group>span{justify-self:start;font-size:11.5px}
+#rtcom-design .rt-card-palette .rt-card-info-group-input>span{color:#2f63c8}
+#rtcom-design .rt-card-palette .rt-card-info-group-output>span{color:#c2410c}
+#rtcom-design .rt-palette-tile img{grid-column:1/-1;display:block;width:100%;height:auto;border-radius:3px;pointer-events:none}
+#rtcom-design .rt-palette-tile>span{min-width:0}
+#rtcom-design .rt-palette-tile small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#rtcom-design .rt-palette-tile{position:relative}
+#rtcom-design .rt-palette-tile b{position:absolute;top:-10px;right:8px;box-shadow:0 1px 3px #0003;padding:2px 8px;border-radius:999px;background:#1f2a3d;color:#fff;font-size:12px;font-weight:800;white-space:nowrap}
+#rtcom-design.rt-palette-drag-input .rt-rack-slot[data-slot^="in-"],#rtcom-design.rt-palette-drag-output .rt-rack-slot[data-slot^="out-"]{outline:2px dashed rgba(57,120,238,.75);outline-offset:-2px}
+#rtcom-design.rt-palette-drag-input .rt-rack-slot[data-slot^="out-"],#rtcom-design.rt-palette-drag-output .rt-rack-slot[data-slot^="in-"]{opacity:.35}
+#rtcom-design.rt-palette-drag-input .rt-rack-slot.rt-rack-slot-drop,#rtcom-design.rt-palette-drag-output .rt-rack-slot.rt-rack-slot-drop{outline:3px solid #007AFF;outline-offset:-3px}
 #rtcom-design .rt-card-info-modal{width:min(640px,calc(100vw - 24px));max-height:calc(100vh - 40px);padding:0;border:0;border-radius:24px;background:#fff;color:var(--rt-ink);box-shadow:0 30px 80px #0f172a59;overflow:auto}
 #rtcom-design .rt-card-info-modal::backdrop{background:#0f172aa6;backdrop-filter:blur(3px)}
 #rtcom-design .rt-card-info-sub{margin:4px 0 0;color:var(--rt-muted);font-size:13px}
@@ -1070,7 +1134,6 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 }
 
 /* 0.137 카드 팝업: 이미 장착된 같은 카드 장수 표시(스테퍼는 새로 채울 수량) */
-#rtcom-design .rt-card-choice-qty .rt-card-have{margin-right:auto;font-style:normal;font-size:12px;font-weight:800;color:#0a66d6;background:#e8f1ff;border-radius:999px;padding:4px 10px}
 
 /* 0.137 정면·후면을 위아래로 겹쳐 보이는 프레임(stack): 실제 랙 폭은 같으므로 후면 그림 폭을 정면 그림 폭에 맞춘다(사용자 요청 2026-09-29 "프레임앞뒤면 좌우 크기차이 있는 제품 SPX-M1620·M810·M2472·M24120").
    그리드 한 칸의 폭은 정면 그림이 정하고, 후면 그림은 폭 0 + min-width:100%로 칸 폭을 그대로 받는다(높이는 자기 비율대로 자동). */
@@ -1126,13 +1189,19 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-cardrow.rt-pg-cardbtn:hover{background:var(--pg-accent-tint);box-shadow:0 0 0 1.5px var(--pg-accent-2) inset}
 #rtcom-design .rt-pg-cardrow.rt-pg-cardbtn:focus-visible{outline:2px solid var(--pg-accent-2);outline-offset:2px}
 
-/* 0.145 장착된 슬롯 위 카드 빼기 ×: 마우스를 올렸을 때만 보인다(터치 화면에서는 카드 팝업의 "슬롯 비우기"를 쓴다). 슬롯 높이에 맞춰 크기를 조절(cqh). */
+/* 0.145 장착된 슬롯 위 카드 빼기 ×: 마우스를 올렸을 때만 보인다(터치 화면은 0.165부터 항상 표시, 아래 규칙). 슬롯 높이에 맞춰 크기를 조절(cqh). */
 #rtcom-design .rt-rack-slot-x{position:absolute;z-index:3;top:50%;right:clamp(2px,6cqh,8px);width:clamp(14px,62cqh,26px);height:clamp(14px,62cqh,26px);display:none;align-items:center;justify-content:center;border-radius:50%;background:#e5484d;color:#fff;font-size:clamp(11px,46cqh,19px);font-weight:900;line-height:1;transform:translateY(-50%);box-shadow:0 1px 4px #0009;cursor:pointer}
 @media(hover:hover){#rtcom-design .rt-rack-slot:hover .rt-rack-slot-x{display:flex}}
 #rtcom-design .rt-rack-slot-x:hover{background:#ff2d34;box-shadow:0 0 0 2px #fff8,0 1px 4px #0009}
 
 /* 0.145 세로로 꽂는 슬롯(rt-rack-vs·vt)은 × 를 오른쪽 가운데가 아니라 슬롯 맨 위 가운데에 둔다(사용자 요청 2026-09-29 "가로형으로 꽂을 때는 우측, 세로형은 맨 위쪽에 배치"). 크기는 슬롯 폭(cqw)에 맞춘다. */
 #rtcom-design .rt-rack-vs .rt-rack-slot-x,#rtcom-design .rt-rack-vt .rt-rack-slot-x{top:clamp(2px,4cqw,8px);right:auto;left:50%;width:clamp(14px,62cqw,26px);height:clamp(14px,62cqw,26px);font-size:clamp(11px,46cqw,19px);transform:translateX(-50%)}
+/* 0.165(사용자 결정 2026-09-29 "터치 화면에서는 × 버튼을 항상 보이게"): 마우스를 올릴 수 없는 화면(태블릿·휴대폰)은 카드가 꽂힌 슬롯마다 × 를 늘 보여 준다.
+   손가락으로 누르기 쉽게 최소 크기를 20px로 키운다. 마우스 화면은 위 규칙 그대로(올렸을 때만 표시). */
+@media(hover:none),(pointer:coarse){
+  #rtcom-design .rt-rack-slot .rt-rack-slot-x{display:flex;width:clamp(20px,62cqh,28px);height:clamp(20px,62cqh,28px);font-size:clamp(14px,46cqh,20px)}
+  #rtcom-design .rt-rack-vs .rt-rack-slot-x,#rtcom-design .rt-rack-vt .rt-rack-slot-x{width:clamp(20px,62cqw,28px);height:clamp(20px,62cqw,28px);font-size:clamp(14px,46cqw,20px)}
+}
 
 /* 0.147(사용자 지적 2026-09-29 "제품정보에서 오른쪽 위 인쇄/PDF를 눌렀더니 구성기 문서가 나온다"): 인쇄 기본 규칙은 화면 전체를 숨기고 구성기 검토 시트(#print-report)만 보여 준다.
    제품정보 화면(html.rt-print-products)에서는 반대로 검토 시트를 숨기고 지금 보는 제품 화면을 흰 바탕에 그대로 인쇄한다. */
@@ -1167,3 +1236,99 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 
 /* 0.154 프레임 정면·후면 팝업(위아래 배치): 두 그림 가로폭을 같게 맞춤 */
 #rtcom-design .rt-frame-info-stack .rt-frame-info-face img{width:min(100%,560px);max-width:100%;max-height:none;height:auto}
+/* 0.166 사양 값이 여러 줄일 때(SPX-TX/RX "4K60 실효 전송거리") 줄마다 한 덩어리로 보이게 간격을 둔다 */
+#rtcom-design .rt-pg-spec-table td .rt-pg-spec-line{display:block}#rtcom-design .rt-pg-spec-table td .rt-pg-spec-line+.rt-pg-spec-line{margin-top:6px}
+
+/* 0.173 03 카드 슬롯 ① 카드 장착 / ② 신호 입력 전환(사용자 결정 2026-09-29 "추천A대로 진행해줘"). 표 형식은 사용자 제공 엑셀 표(입력슬롯·슬롯내·신호명). */
+#rtcom-design .rt-cards-sub{display:inline-flex;gap:4px;margin:4px 0 14px;padding:4px;border:1px solid var(--rt-line);border-radius:12px;background:var(--rt-soft)}
+#rtcom-design .rt-cards-sub button{min-height:36px;padding:0 16px;border:0;border-radius:9px;background:transparent;color:var(--rt-muted);font:700 13px/1 inherit;cursor:pointer}
+#rtcom-design .rt-cards-sub button.on{background:#fff;color:var(--rt-ink);box-shadow:0 1px 4px #1f253222}
+#rtcom-design .rt-cards-sub button:focus-visible{outline:2px solid var(--rt-accent);outline-offset:2px}
+#rtcom-design .rt-signal-count{margin:0 0 12px;font-size:13px;color:var(--rt-muted)}
+#rtcom-design .rt-signal-count b{color:var(--rt-accent);font-size:15px}
+#rtcom-design .rt-signal-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+@media(max-width:980px){#rtcom-design .rt-signal-grid{grid-template-columns:1fr}}
+#rtcom-design .rt-signal-side{padding:16px;border:1px solid var(--rt-line);border-radius:18px;background:#fff}
+#rtcom-design .rt-signal-side h3{margin:0 0 10px;padding:6px 10px;border-radius:8px;font-size:13px;letter-spacing:.08em}
+#rtcom-design .rt-signal-side-input h3{background:#f3e8ff;color:#6b21a8}
+#rtcom-design .rt-signal-side-output h3{background:#fff7cc;color:#7a5b00}
+#rtcom-design .rt-signal-table{width:100%;border-collapse:collapse;font-size:13px}
+#rtcom-design .rt-signal-table th,#rtcom-design .rt-signal-table td{padding:4px 8px;border-bottom:1px solid var(--rt-line);text-align:left;vertical-align:middle}
+#rtcom-design .rt-signal-table thead th{font-size:11.5px;color:var(--rt-muted);font-weight:700;background:var(--rt-soft)}
+#rtcom-design .rt-signal-table tr.rt-signal-first>*{border-top:2px solid #c9d3e2}
+#rtcom-design .rt-signal-slot{width:34%;border-left:4px solid var(--rt-sig,#667085);background:#fafbfd}
+#rtcom-design .rt-signal-slot strong{display:block;font-size:14px;color:var(--rt-ink)}
+#rtcom-design .rt-signal-slot small{display:block;margin-top:2px;font-size:11px;color:var(--rt-muted);font-weight:500}
+#rtcom-design .rt-signal-range{display:inline-block;margin-bottom:3px;padding:1px 6px;border-radius:5px;background:var(--rt-sig,#667085);color:#fff;font-size:10.5px;font-weight:800}
+#rtcom-design .rt-signal-port{width:52px;text-align:center!important;font-weight:700;color:var(--rt-muted)}
+#rtcom-design .rt-signal-name{padding:3px 6px!important}
+#rtcom-design .rt-signal-name input{width:100%;min-height:32px;padding:5px 9px;border:1px solid var(--rt-line);border-radius:8px;background:#fff;color:var(--rt-ink);font:500 13.5px/1.2 inherit}
+#rtcom-design .rt-signal-name input:focus{outline:none;border-color:var(--rt-accent);box-shadow:0 0 0 3px #3978ee33}
+#rtcom-design .rt-signal-name input:not(:placeholder-shown){border-color:#b9c7dd;background:#f7faff;font-weight:700}
+@media(max-width:560px){#rtcom-design .rt-signal-side{padding:10px}#rtcom-design .rt-signal-name input{font-size:16px}}
+/* 0.173 AV 빌더로 보내기(사용자 결정 2026-09-29 "A로 전송기 포함해서 진행해줘") */
+#rtcom-design .rt-avb{display:flex;flex-wrap:wrap;gap:14px 24px;align-items:center;justify-content:space-between;margin-top:18px;padding:16px 18px;border:1px solid #c9d8f5;border-radius:16px;background:#f3f7ff}
+#rtcom-design .rt-avb strong{font-size:14px;color:var(--rt-ink)}
+#rtcom-design .rt-avb p{margin:4px 0 6px;font-size:12.5px;color:var(--rt-muted)}
+#rtcom-design .rt-avb ol{margin:0;padding-left:18px;font-size:12.5px;color:var(--rt-ink);line-height:1.7}
+#rtcom-design .rt-avb a{color:var(--rt-accent)}
+#rtcom-design .rt-avb-actions{display:flex;flex-wrap:wrap;gap:8px}
+#rtcom-design .rt-avb-actions .rt-button{text-decoration:none}
+/* 0.172 06 내보내기 개편: 구성 보고서(PDF) — 06 미리보기와 인쇄물(#print-report)이 같은 규칙을 쓴다. 글꼴은 사이트와 같은 Pretendard Variable(애플 SD 산돌고딕 계열 모양, fonts/PretendardVariable.woff2). */
+#rtcom-design .rt-export{grid-template-columns:minmax(260px,.8fr) minmax(0,1.5fr);align-items:start}
+#rtcom-design .rt-export-options{position:sticky;top:12px}
+#rtcom-design .rt-format strong{font-weight:700}#rtcom-design .rt-format strong em{margin-left:6px;padding:1px 6px;border-radius:5px;background:#e8eef8;color:#48607f;font-size:10px;font-style:normal;font-weight:700;vertical-align:1px}
+#rtcom-design .rt-report-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0 0;padding:12px;border:1px solid var(--rt-line);border-radius:14px}
+#rtcom-design .rt-report-fields legend{padding:0 4px;font-size:12px;font-weight:700;color:var(--rt-ink)}#rtcom-design .rt-report-fields legend span{margin-left:6px;color:var(--rt-muted);font-size:10px;font-weight:500}
+#rtcom-design .rt-report-fields input{width:100%;margin-top:4px;padding:8px 10px;border:1px solid var(--rt-line);border-radius:9px;font:inherit;font-size:12px;color:var(--rt-ink);background:#fff}
+#rtcom-design .rt-export-action{width:100%;justify-content:center;min-height:46px}
+#rtcom-design .rt-export-warn{margin:0;padding:10px 12px;border-radius:12px;background:#fff3d8;color:#7e5a39;font-size:11px;line-height:1.5}
+#rtcom-design .rt-export-save{margin-top:6px;padding:14px;border-radius:14px;background:#f3f6fb}#rtcom-design .rt-export-save strong{font-size:12px}#rtcom-design .rt-export-save p{margin:4px 0 10px;color:var(--rt-muted);font-size:11px;line-height:1.5}
+#rtcom-design .rt-export-preview{min-width:0}#rtcom-design .rt-export-preview .rt-preview-label{margin-bottom:8px;color:var(--rt-muted);font-size:11px;font-weight:700}
+#rtcom-design .rt-report-paper{padding:28px 30px;background:#fff}
+#rtcom-design .rt-rp-csv{overflow-x:auto}
+@media(max-width:900px){#rtcom-design .rt-export{grid-template-columns:1fr}#rtcom-design .rt-export-options{position:static}#rtcom-design .rt-report-paper{padding:16px}}
+@media(max-width:480px){#rtcom-design .rt-report-fields{grid-template-columns:1fr}}
+
+#rtcom-design .rt-report{color:#1d2433;font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;font-size:12.5px;line-height:1.5;font-feature-settings:"tnum"}
+#rtcom-design .rt-report *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+#rtcom-design .rt-rp-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding-bottom:10px;border-bottom:2.5px solid #1d2433}
+#rtcom-design .rt-rp-brand{display:flex;align-items:center;gap:10px}#rtcom-design .rt-rp-mark{display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#347ff2,#8268f3);color:#fff;font-size:19px;font-weight:800}
+#rtcom-design .rt-rp-brand b{display:block;font-size:18px;font-weight:760;letter-spacing:-.4px}#rtcom-design .rt-rp-brand b span{color:#3978ee}#rtcom-design .rt-rp-brand small{display:block;color:#7a8597;font-size:8.5px;font-weight:700;letter-spacing:1.2px}
+#rtcom-design .rt-rp-draft{padding:4px 9px;border:1.5px solid #c5671a;border-radius:5px;color:#c5671a;font-size:10.5px;font-weight:800;text-align:center;line-height:1.3}#rtcom-design .rt-rp-draft small{display:block;font-size:9px;font-weight:600}
+#rtcom-design .rt-rp-title{margin:12px 0 0;font-size:25px;font-weight:760;letter-spacing:-.6px;line-height:1.3}#rtcom-design .rt-rp-sub{margin:0;color:#5d687a}
+#rtcom-design .rt-rp-meta{display:grid;grid-template-columns:repeat(3,1fr);margin-top:12px;border:1px solid #d7dde7;border-radius:8px;overflow:hidden}
+#rtcom-design .rt-rp-meta div{min-width:0;padding:7px 10px;border-right:1px solid #e3e7ee;border-bottom:1px solid #e3e7ee}#rtcom-design .rt-rp-meta div:nth-child(3n){border-right:0}#rtcom-design .rt-rp-meta div:nth-last-child(-n+3){border-bottom:0}
+#rtcom-design .rt-rp-meta span{display:block;color:#7a8597;font-size:10px;font-weight:700}#rtcom-design .rt-rp-meta b{display:block;min-height:1.5em;font-weight:650;overflow-wrap:anywhere}
+#rtcom-design .rt-rp-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}#rtcom-design .rt-rp-kpi div{padding:8px 10px;border-radius:8px;background:#f2f6fc}
+#rtcom-design .rt-rp-kpi span{display:block;color:#5d687a;font-size:10px;font-weight:700}#rtcom-design .rt-rp-kpi b{font-size:19px;font-weight:760;letter-spacing:-.3px}#rtcom-design .rt-rp-kpi small{color:#5d687a;font-size:10.5px;font-weight:600}
+#rtcom-design .rt-rp-h{display:flex;align-items:center;gap:7px;margin:16px 0 6px;font-size:15px;font-weight:760;letter-spacing:0;line-height:1.4;break-after:avoid}#rtcom-design .rt-rp-h i{padding:1px 6px;border-radius:4px;background:#1d2433;color:#fff;font-size:10px;font-style:normal}
+#rtcom-design .rt-rp-figure{break-inside:avoid}
+#rtcom-design .rt-report .rt-rack-photo{width:min(100%,calc(95mm * var(--rt-photo-ratio)))!important;min-width:0!important;margin:0 auto;filter:none}
+#rtcom-design .rt-report .rt-rack-photo figcaption{display:none}
+#rtcom-design .rt-report .rt-rack-slot{cursor:default}#rtcom-design .rt-report .rt-rack-slot:hover{outline:0}
+#rtcom-design .rt-rp-caption{margin:4px 0 0;color:#7a8597;font-size:10px}
+#rtcom-design .rt-rp-table{width:100%;border-collapse:collapse;font-size:11.5px}
+#rtcom-design .rt-rp-table th{padding:6px 8px;border:0;border-bottom:1.5px solid #c9d2df;background:#eef2f8;color:#48546a;font-size:10px;font-weight:700;text-align:left;white-space:nowrap}
+#rtcom-design .rt-rp-table td{padding:4px 8px;border:0;border-bottom:1px solid #e6eaf0;vertical-align:middle}
+#rtcom-design .rt-rp-table td,#rtcom-design .rt-rp-table th{text-align:left}#rtcom-design .rt-rp-table tr{break-inside:avoid}#rtcom-design .rt-rp-table thead{display:table-header-group}
+#rtcom-design .rt-rp-table .rt-rp-n,#rtcom-design .rt-rp-csv td:nth-child(4),#rtcom-design .rt-rp-csv th:nth-child(4){width:52px;text-align:right;font-weight:700;white-space:nowrap}
+#rtcom-design .rt-rp-group td{padding:4px 8px;background:#fafbfd;color:#5d687a;font-size:10px;font-weight:700}
+#rtcom-design .rt-rp-model{display:inline-flex;align-items:center;gap:6px;font-weight:650;white-space:nowrap}
+#rtcom-design .rt-report .rt-sig-badge{min-width:30px;height:16px;font-size:8.5px}
+#rtcom-design .rt-rp-muted{color:#6c7789}
+#rtcom-design .rt-rp-checks{display:grid;gap:6px;margin:0;padding:0;list-style:none}#rtcom-design .rt-rp-checks li{display:grid;grid-template-columns:64px 1fr;gap:8px;align-items:start;padding:7px 10px;border-radius:7px;background:#f6f8fb;break-inside:avoid}
+#rtcom-design .rt-rp-lv{padding:1px 0;border-radius:4px;font-size:10px;font-weight:800;text-align:center}
+#rtcom-design .rt-rp-lv[data-level=VALID]{background:#e1f4e8;color:#1c7a43}#rtcom-design .rt-rp-lv[data-level=WARNING],#rtcom-design .rt-rp-lv[data-level=UNVERIFIED]{background:#fff1dc;color:#a4550f}#rtcom-design .rt-rp-lv[data-level=ERROR]{background:#fde4e4;color:#b42323}
+#rtcom-design .rt-rp-note{margin:0}
+#rtcom-design .rt-rp-sign{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;break-inside:avoid}#rtcom-design .rt-rp-sign div{height:60px;padding:6px 9px;border:1px solid #d7dde7;border-radius:7px;color:#7a8597;font-size:10px;font-weight:700}
+#rtcom-design .rt-rp-foot{display:flex;justify-content:space-between;gap:10px;margin-top:18px;padding-top:6px;border-top:1px solid #dfe4ec;color:#8a94a5;font-size:9.5px}
+#rtcom-design .rt-rp-scroll{overflow-x:auto}
+@media(max-width:560px){#rtcom-design .rt-rp-scroll .rt-rp-table{min-width:560px}#rtcom-design .rt-rp-meta{grid-template-columns:1fr 1fr}#rtcom-design .rt-rp-meta div:nth-child(n){border-right:1px solid #e3e7ee;border-bottom:1px solid #e3e7ee}#rtcom-design .rt-rp-kpi{grid-template-columns:1fr 1fr}#rtcom-design .rt-rp-table{font-size:10.5px}}
+@media print{
+  /* 쪽 나눔을 강제하지 않는다: 장비가 많으면 장비 목록이 다음 쪽으로 자연스럽게 이어지고, 표의 한 줄·검토 항목·서명 칸만 쪽 사이에서 자르지 않는다. */
+  #rtcom-design #print-report .rt-report .rt-rack-photo{width:min(100%,calc(80mm * var(--rt-photo-ratio)))!important}
+  #rtcom-design #print-report .rt-rp-table{font-size:11px}#rtcom-design #print-report .rt-rp-table td{padding:3px 8px}
+  #rtcom-design #print-report .rt-rp-h{margin:12px 0 5px}
+  #rtcom-design #print-report .rt-rp-meta{grid-template-columns:repeat(3,1fr)}#rtcom-design #print-report .rt-rp-kpi{grid-template-columns:repeat(4,1fr)}
+}

@@ -1,0 +1,446 @@
+{
+  "id": "spx-r6",
+  "group": "extender",
+  "manufacturer": "RTCOM",
+  "productName": "SPX-R6",
+  "model": "SPX-R6",
+  "series": "SPX Series Extender",
+  "seriesNote": "SPX Extender 제품의 랙 모듈형 제품이다. SPX-Extender 모듈을 최대 6개 장착하고 단일 전원으로 모듈에 전원을 공급한다.",
+  "itemType": "PRODUCT",
+  "categories": [
+    "영상",
+    "Video",
+    "Extender",
+    "Rack Mount"
+  ],
+  "english": "6 HDMI Extender Module Chassis — rack chassis for up to 6 SPX-Extender modules with a single power supply, front LCD and buttons, and 2 IR ports.",
+  "korean": "SPX-Extender 모듈을 최대 6개 장착하고 단일 전원으로 전원을 공급하는 SPX 시리즈 랙 모듈형 전송기 섀시다.",
+  "subtitle": "SPX Series Extender · 6 HDMI Extender Module Chassis",
+  "lead": "SPX-Extender 모듈을 **최대 6개** 장착하고 단일 전원으로 전원을 공급하는 랙 모듈형 전송기입니다. 전면 LCD와 버튼으로 신호 유무를 확인하고 EDID를 설정하며, 모듈은 핫스왑으로 교체합니다.",
+  "catalogPages": "",
+  "verificationSummary": "사용자 제공 SPX-R6 제품 사양서(1쪽, 2026-09-29)의 소개·제품 기능·제품사양·연결도에서 확인했다. 사진과 연결도에 다른 회사 로고가 있어 화면 그림은 사용자 결정(2026-09-29 \"평면 그래픽\")에 따라 사양서 사진·연결도 배치대로 새로 그렸다. 크기·무게·전원 전압은 사양서에 없어 적지 않았다. 모듈 TX·RX 선택 사용과 SPX-RX IR 기능은 사용자 확인(2026-09-29)으로 추가했다. 제조사 원본 다이어그램은 사양서 연결도에서 다른 회사 로고만 지워 그대로 쓴다(사용자 요청 2026-09-29).",
+  "packageStatus": "VERIFIED",
+  "overview": "SPX-R6는 SPX Extender 제품의 랙 모듈형 제품이다. SPX-Extender 모듈을 최대 6개 장착하고 단일 전원으로 모듈 전체에 전원을 공급한다. 모듈은 핫스왑을 지원해 장애가 생겨도 전원을 끄지 않고 교체할 수 있다.\n\n전면 LCD와 버튼(방향 버튼·MENU·CANCEL)으로 Extender의 신호 유무를 확인하고 EDID를 설정한다. 본체 내장 EDID와 EDID Pass-through를 고를 수 있고, IR 포트 2개(IR IN·IR Ctrl)로 IR 원격 제어와 제어 컨트롤러 연동을 지원한다.\n\n사양서 연결도는 후면 모듈 칸마다 HDMI IN으로 소스를 받아 CAT OUT으로 SPX-RX에 보내는 구성을 보여 준다. HDMI 2.0·HDCP 1.4/2.2·18Gbps·HDR을 지원하고, CAT5e 기준 4K 60Hz 4:4:4 최대 50m, 1080p 최대 60m까지 전송한다. PoC(Power over Cable)로 송·수신기 중 한쪽에만 전원을 연결해도 된다.\n\n모듈은 TX(송신)·RX(수신)를 골라 쓸 수 있고, 연결도의 SPX-RX IR 기능(IR Blaster)도 지원한다. 다만 RX 사용과 IR 기능은 현장에서는 잘 쓰지 않는다(서울영상테크 SI사업본부 확인).",
+  "images": [
+    {
+      "role": "Front",
+      "file": "spx-r6-front-art.webp",
+      "alt": "SPX-R6 전면 그림(LCD 표시창·방향 버튼·MENU·CANCEL·FW·IR IN·IR Ctrl)",
+      "note": "Front · 사양서 실물 사진의 전면 배치를 로고 없이 평면 그림으로 다시 그림(scripts/tools/draw_spx_r6_panels.cjs)",
+      "provider": "RTCOM",
+      "model": "SPX-R6",
+      "source": "S1",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "2000×199"
+    },
+    {
+      "role": "Rear",
+      "file": "spx-r6-rear-art.webp",
+      "alt": "SPX-R6 후면 그림(전원 입력 단자와 모듈 칸 1~6, 칸마다 HDMI IN/OUT·CAT IN/OUT)",
+      "note": "Rear · 사양서 연결도의 후면 배치를 평면 그림으로 다시 그림. 칸 번호(1~6)는 설명용 표시(scripts/tools/draw_spx_r6_panels.cjs)",
+      "provider": "RTCOM",
+      "model": "SPX-R6",
+      "source": "S1",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "2000×199"
+    },
+    {
+      "role": "Diagram",
+      "file": "spx-r6-diagram.webp",
+      "alt": "SPX-R6 연결 다이어그램(제조사 제공) — 소스 6대, SPX-R6, SPX-RX 6대, IR 리시버·리모컨·컨트롤러",
+      "note": "Diagram · SPX-R6 제품 사양서 1쪽 제조사 연결도. 다른 회사 로고만 지우고 그대로 사용(사용자 요청 2026-09-29 \"앰버텍만 지워서 활용\")",
+      "provider": "RTCOM",
+      "model": "SPX-R6",
+      "source": "S1",
+      "officialSource": true,
+      "verificationStatus": "FOUND"
+    }
+  ],
+  "imageStatuses": [
+    {
+      "role": "Main",
+      "status": "MISSING"
+    },
+    {
+      "role": "Front",
+      "status": "FOUND"
+    },
+    {
+      "role": "Rear",
+      "status": "FOUND"
+    },
+    {
+      "role": "Perspective",
+      "status": "MISSING"
+    }
+  ],
+  "documents": [
+    {
+      "type": "Catalog",
+      "status": "FOUND",
+      "title": "SPX-R6 제품 사양서",
+      "language": "ko",
+      "note": "사용자 제공 사양서 1쪽 공개본(2026-09-29, 사용자 결정 — 제품 상세 PDF 버튼으로 공개)",
+      "file": "spx-r6-catalog.pdf",
+      "preview": "image",
+      "previewImages": [
+        "spx-r6-catalog-p1.webp"
+      ]
+    },
+    {
+      "type": "Diagram",
+      "status": "FOUND",
+      "title": "제조사 연결 다이어그램",
+      "language": "en",
+      "note": "SPX-R6 제품 사양서 1쪽(로고만 지움)"
+    }
+  ],
+  "features": [
+    {
+      "text": "HDMI 2.0 · HDCP 1.4, 2.2 지원",
+      "source": "S1"
+    },
+    {
+      "text": "18Gbps 대역폭 · HDR 지원",
+      "source": "S1"
+    },
+    {
+      "text": "CAT5e 전송 지원(4K60 4:4:4 최대 50m, 1080p 최대 60m)",
+      "source": "S1"
+    },
+    {
+      "text": "SPX-Extender 모듈 최대 6개 장착 · 핫스왑 지원",
+      "source": "S1"
+    },
+    {
+      "text": "모듈 TX(송신)·RX(수신) 선택 사용 지원",
+      "source": "U2"
+    },
+    {
+      "text": "단일 전원으로 모듈 6개 전원 공급",
+      "source": "S1"
+    },
+    {
+      "text": "PoC(Power over Cable) 지원(송·수신기 중 한쪽만 전원 연결)",
+      "source": "S1"
+    },
+    {
+      "text": "IR 원격 제어 · IR 컨트롤러 연동 지원",
+      "source": "S1"
+    },
+    {
+      "text": "전면 LCD·버튼으로 신호 상태 확인 · EDID 설정",
+      "source": "S1"
+    },
+    {
+      "text": "내장 EDID · EDID Pass-through 지원",
+      "source": "S1"
+    }
+  ],
+  "specifications": [
+    {
+      "group": "Video",
+      "name": "최대 해상도",
+      "value": "4K 60Hz (4:4:4)",
+      "unit": "",
+      "condition": "",
+      "source": "S1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "비디오 대역폭",
+      "value": "18",
+      "unit": "Gbps",
+      "condition": "",
+      "source": "S1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "크로마 샘플링",
+      "value": "RGB·YCbCr 4:4:4, YCbCr 4:2:2 / 4:2:0",
+      "unit": "",
+      "condition": "",
+      "source": "S1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "지원 사양",
+      "value": "HDMI 2.0, HDR",
+      "unit": "",
+      "condition": "",
+      "source": "S1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "HDCP",
+      "value": "HDCP 1.4, 2.2 지원",
+      "unit": "",
+      "condition": "",
+      "source": "S1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "EDID",
+      "value": "내장 EDID · EDID Pass-through",
+      "unit": "",
+      "condition": "전면 LCD·버튼으로 설정",
+      "source": "S1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "name": "최대 전송거리",
+      "value": "50",
+      "unit": "m",
+      "condition": "CAT5e 기준 · 4K 60Hz 4:4:4",
+      "source": "S1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "name": "최대 전송거리",
+      "value": "60",
+      "unit": "m",
+      "condition": "CAT5e 기준 · 1080p 60Hz",
+      "source": "S1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "General",
+      "name": "장착 모듈",
+      "value": "최대 6",
+      "unit": "개",
+      "condition": "SPX-Extender 모듈 · 핫스왑",
+      "source": "S1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "General",
+      "name": "모듈 TX·RX 선택",
+      "value": "TX(송신)·RX(수신) 선택 사용",
+      "unit": "",
+      "condition": "RX(수신) 사용은 현장에서는 드묾",
+      "source": "U2",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Control",
+      "name": "제어",
+      "value": "IR 포트 2개(IR IN · IR Ctrl)",
+      "unit": "",
+      "condition": "IR 리모컨 · 제어 컨트롤러 연결",
+      "source": "S1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Control",
+      "name": "SPX-RX IR 기능",
+      "value": "지원(IR Blaster)",
+      "unit": "",
+      "condition": "사양서 연결도 · 현장에서는 잘 쓰지 않음",
+      "source": "U2",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "name": "전원 공급",
+      "value": "Transmitter 3 W / Receiver 3 W",
+      "unit": "",
+      "condition": "단일 전원으로 모듈 6개에 공급",
+      "source": "S1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Environment",
+      "name": "동작 온도·습도",
+      "value": "0~40°C, 10~90% RH",
+      "unit": "",
+      "condition": "불응축",
+      "source": "S1",
+      "verification": "VERIFIED"
+    }
+  ],
+  "io": [
+    {
+      "group": "Video",
+      "connector": "HDMI Type A (19-pin Female)",
+      "signal": "HDMI",
+      "direction": "BIDIR",
+      "quantity": "6",
+      "protocol": "HDMI 2.0",
+      "condition": "모듈 칸마다 1개(HDMI IN/OUT) · TX 모듈은 소스 입력, RX 모듈은 디스플레이 출력",
+      "source": "S1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Transmission",
+      "connector": "RJ-45",
+      "signal": "CATx",
+      "direction": "BIDIR",
+      "quantity": "6",
+      "protocol": "",
+      "condition": "모듈 칸마다 1개(CAT IN/OUT) · TX 모듈은 SPX-RX로 출력, RX 모듈은 SPX-TX에서 입력",
+      "source": "S1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Control",
+      "connector": "IR 단자",
+      "signal": "IR",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "IR IN · IR 리시버(리모컨) 연결",
+      "source": "S1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Control",
+      "connector": "IR 단자",
+      "signal": "IR",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "IR Ctrl · 제어 컨트롤러 연결",
+      "source": "S1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "connector": "전원 입력 단자",
+      "signal": "Power",
+      "direction": "IN",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "외부 전원 어댑터(Power Supply) 1개로 모듈 6개 공급",
+      "source": "S1",
+      "verification": "VERIFIED"
+    }
+  ],
+  "related": [
+    {
+      "relation": "PART_OF_SERIES",
+      "target": "spx",
+      "note": "SPX 시리즈 전송기 랙 모듈형 제품"
+    },
+    {
+      "relation": "WORKS_WITH",
+      "target": "spx-rx-tx",
+      "note": "모듈 칸 CAT OUT ↔ SPX-RX(사양서 연결도)"
+    }
+  ],
+  "portMap": [
+    {
+      "title": "전면",
+      "basis": "그래픽 이미지",
+      "image": "Front",
+      "items": [
+        {
+          "n": 1,
+          "label": "IR IN",
+          "desc": "IR 리시버 연결 · 리모컨 원격 제어",
+          "x1": 1859,
+          "x2": 1884,
+          "side": "bottom"
+        },
+        {
+          "n": 2,
+          "label": "IR Ctrl",
+          "desc": "제어 컨트롤러 연결",
+          "x1": 1909,
+          "x2": 1934,
+          "side": "bottom"
+        },
+        {
+          "n": 3,
+          "label": "FW",
+          "desc": "펌웨어 업데이트 단자",
+          "x1": 1793,
+          "x2": 1826,
+          "side": "top"
+        },
+        {
+          "n": 4,
+          "label": "LCD 표시창",
+          "desc": "Extender 신호 유무 · EDID 설정 상태 표시",
+          "x1": 393,
+          "x2": 683
+        },
+        {
+          "n": 5,
+          "label": "방향 버튼 · MENU · CANCEL",
+          "desc": "EDID 설정 등 메뉴 조작",
+          "x1": 903,
+          "x2": 1164
+        }
+      ]
+    },
+    {
+      "title": "후면",
+      "basis": "그래픽 이미지",
+      "image": "Rear",
+      "items": [
+        {
+          "n": 1,
+          "label": "HDMI IN/OUT",
+          "desc": "모듈 칸마다 1개 · TX 모듈은 소스 입력, RX 모듈은 디스플레이 출력",
+          "x1": 175,
+          "x2": 229,
+          "side": "bottom"
+        },
+        {
+          "n": 2,
+          "label": "CAT IN/OUT",
+          "desc": "모듈 칸마다 1개 · TX 모듈은 SPX-RX로 출력, RX 모듈은 SPX-TX에서 입력(CAT5e)",
+          "x1": 334,
+          "x2": 392,
+          "side": "bottom"
+        },
+        {
+          "n": 3,
+          "label": "모듈 칸 1~6",
+          "desc": "SPX-Extender 모듈 최대 6개 장착 · TX·RX 선택 · 핫스왑",
+          "x1": 141,
+          "x2": 1996,
+          "side": "top"
+        },
+        {
+          "n": 4,
+          "label": "전원 입력",
+          "desc": "외부 전원 어댑터 연결 · 모듈 6개에 단일 전원 공급",
+          "x1": 8,
+          "x2": 133,
+          "side": "top"
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "code": "S1",
+      "name": "SPX-R6 제품 사양서",
+      "page": "1",
+      "scope": "제조사 공식 출처 — 사용자 제공 PDF(2026-09-29), 제품 상세 카탈로그 버튼으로 공개(spx-r6-catalog.pdf)"
+    },
+    {
+      "code": "U",
+      "name": "서울영상테크 SI사업본부 확인",
+      "page": "",
+      "scope": "사용자 결정(2026-09-29) — SPX-R6 제품 등록, 사양서 PDF 공개, 로고 없는 평면 그래픽 사용"
+    },
+    {
+      "code": "U2",
+      "name": "서울영상테크 SI사업본부 확인",
+      "page": "",
+      "scope": "사용자 확인(2026-09-29 \"SPX-RX의 IR 기능과 수신가능한대 잘 안써\") — SPX-RX IR 기능과 SPX-R6 수신 모듈 장착은 가능하지만 현장에서는 잘 쓰지 않음. 추가 확인(2026-09-29 \"SPX-R6에 TX, RX선택해서 사용할 수가 있어\") — 모듈을 TX·RX 중 골라 사용"
+    }
+  ],
+  "issues": []
+}
