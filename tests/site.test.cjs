@@ -338,6 +338,17 @@ test('0.124: 등록된 제품별 카탈로그는 모두 쪽 그림 팝업, 매�
   assert.match(products,/state\.pdf\?\.destroy\(\)/,'팝업을 닫으면 PDF 문서를 푼다');
 });
 
+test('0.126: PC 문서 팝업은 기본 폭이 넓고 좌우 가장자리를 끌어 폭을 바꾸며, 고른 폭은 저장이 막혀도 동작한다',()=>{
+  const products=read('src/products.js'),styles=read('src/styles.css');
+  assert.match(styles,/\.rt-doc-zoom\{width:min\(1040px,calc\(100vw - 16px\)\)/,'PC 기본 폭 1040px');
+  for(const side of ['left','right'])assert.ok(products.includes(`data-doc-resize="${side}"`),`${side} 끌기 막대`);
+  assert.match(products,/function bindDocResize\(/);
+  assert.match(products,/const readDocWidth=\(\)=>\{try\{/,'저장된 폭 읽기는 try로 감싼다');
+  assert.match(products,/const saveDocWidth=w=>\{try\{/,'폭 저장은 try로 감싼다');
+  assert.match(products,/new ResizeObserver\(/,'창 크기가 바뀌면 쪽을 다시 맞춘다');
+  assert.match(styles,/@media\(max-width:560px\),\(pointer:coarse\)\{[^}]*\{padding:0\}#rtcom-design \.rt-doc-resize/,'휴대폰에서는 끌기 막대를 숨긴다');
+});
+
 test('0.121: HD-D102U Rack마운트는 HD-D102U와 서로 관련 제품으로 이어지고, 도면 그림만 공개하며 사용자 도면 PDF는 배포하지 않는다',()=>{
   const rack=JSON.parse(read('data/products/hd-d102u-rack.json')),base=JSON.parse(read('data/products/hd-d102u.json'));
   assert.equal(rack.model,'HD-D102U Rack마운트');
@@ -354,4 +365,19 @@ test('0.121: HD-D102U Rack마운트는 HD-D102U와 서로 관련 제품으로 �
 test('0.125: 제품정보 목록은 XDM이 맨 앞이고, 매트릭스 시리즈는 XDM · SPX · VDM 순서다',()=>{
   const ids=JSON.parse(read('data/products/index.json')).products.map(product=>product.id);
   assert.deepEqual(ids.slice(0,3),['xdm','spx','vdm']);
+});
+
+test('0.127: 01 제품군 미리보기에 프레임 선택 버튼이 있고 파란 버튼의 → 화살표가 버튼 글자색으로 보인다',()=>{
+  // 사용자 요청 2026-09-28 "이것도 버튼 위로 배치하고 오른쪽 화살표도 보이게"
+  const app=read('src/app.js'),css=read('src/styles.css');
+  assert.match(app,/const familyNext=`<button type="button" class="rt-button rt-primary rt-cg-preview-next" data-action="preview-next">/);
+  assert.match(app,/rt-cg-chips">\$\{pf\.tags\.map\(t=>`<em>\$\{esc\(t\)\}<\/em>`\)\.join\(''\)\}<\/div>\$\{familyNext\}/,'버튼은 태그 줄 바로 아래에 둔다');
+  assert.match(css,/\.rt-button\.rt-primary \.rt-arrow\{color:currentColor/,'화살표는 버튼 글자색을 쓴다(강조색 파랑은 파란 버튼에 묻힘)');
+});
+
+test('0.128: 01 제품군에서는 아래 바 다음 버튼을 숨겨 프레임 선택 버튼이 중복되지 않는다',()=>{
+  // 사용자 지적 2026-09-29 "버튼이 중복이다"
+  const app=read('src/app.js'),css=read('src/styles.css');
+  assert.match(app,/next\.hidden=state\.step===0;/,'01 제품군에서는 아래 바 다음 버튼을 숨긴다');
+  assert.match(css,/\.rt-button\[hidden\]\{display:none!important\}/,'hidden 속성이 display:flex 규칙에 밀리지 않게 한다');
 });

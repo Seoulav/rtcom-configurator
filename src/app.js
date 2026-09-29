@@ -126,7 +126,10 @@
         return `<button type="button" class="rt-cg-row" data-family="${id}" aria-pressed="${state.family===id}"><span class="rt-cg-row-head"><strong>${id}<small>${esc(f.name)}</small></strong><span class="rt-cg-dot" aria-hidden="true"></span></span><ul class="rt-cg-row-specs"><li>${esc(f.copy)}</li><li>메인프레임 ${f.models.length}종</li><li>${f.tags.map(esc).join(' · ')}</li></ul></button>`;
       }).join('');
       const pf=families[current];
-      const preview=`<div class="rt-cg-preview"><img src="${assets[current]}" alt="${current} 제품군 참고 이미지"><div class="rt-cg-preview-cap"><strong>${current} Series</strong><span>${esc(pf.copy)}</span></div><div class="rt-cg-chips">${pf.tags.map(t=>`<em>${esc(t)}</em>`).join('')}</div></div>`;
+      // 0.127 01 제품군 미리보기에 "프레임 선택" 버튼(사용자 요청 2026-09-28 "이것도 버튼 위로 배치하고 오른쪽 화살표도 보이게", 02 프레임 선택과 같은 방식):
+      // 태그 줄 아래에 두어 맨 아래 바까지 내려가지 않고 바로 02로 넘어간다. 아래 바의 다음 버튼과 같은 동작(preview-next)이다.
+      const familyNext=`<button type="button" class="rt-button rt-primary rt-cg-preview-next" data-action="preview-next"><span>프레임 선택</span><span class="rt-arrow" aria-hidden="true">→</span></button>`;
+      const preview=`<div class="rt-cg-preview"><img src="${assets[current]}" alt="${current} 제품군 참고 이미지"><div class="rt-cg-preview-cap"><strong>${current} Series</strong><span>${esc(pf.copy)}</span></div><div class="rt-cg-chips">${pf.tags.map(t=>`<em>${esc(t)}</em>`).join('')}</div>${familyNext}</div>`;
       return heading('01 / 제품군','연결의 시작, 제품군을 선택하세요.','제품군마다 카드와 전송기 선택 항목이 달라집니다.')+`<div class="rt-cg-split"><div class="rt-cg-list" role="list">${rows}</div>${preview}</div>`;
     }
     function slotPlanFor(model){return RtCore.slotPlan(state.family,model)}
@@ -373,6 +376,8 @@
       root.querySelector('.rt-summary').innerHTML=`<strong>${state.family}</strong>${state.model?' / '+state.model:' 제품군'}<br>${state.step>1?'카드 구성 검토 중':'카테고리: 매트릭스'}`;
       const next=root.querySelector('[data-action=next]');
       next.disabled=state.step===1&&!state.model;
+      // 0.128 01 제품군에서는 미리보기의 "프레임 선택" 버튼 하나만 둔다(사용자 지적 2026-09-29 "버튼이 중복이다"). 아래 바 다음 버튼은 02부터 나온다.
+      next.hidden=state.step===0;
       const nextLabels=['프레임 선택','카드 슬롯 구성','전송기 연결','구성 검토','출력 미리보기','처음으로'];
       // 03 카드 슬롯(2-3): 완성이면 "선택 완료 · 전송기 연결", 빈칸이 남으면 "빈칸 N개 남음 · 그래도 다음". 이동은 막지 않는다.
       let nextLabel=nextLabels[state.step];

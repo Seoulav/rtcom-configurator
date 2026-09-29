@@ -55,7 +55,15 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.goto(home,{waitUntil:'networkidle'});
     check('첫 화면에 구성기가 표시됨',await page.locator('#matrix-configurator h1').isVisible());
     await page.click('button[data-family="XDM"]');
-    await page.click('[data-action="next"]');
+    // 0.128 01 제품군에는 미리보기의 "프레임 선택" 버튼 하나만 보인다(사용자 요청 2026-09-28 "이것도 버튼 위로 배치하고 오른쪽 화살표도 보이게", 지적 2026-09-29 "버튼이 중복이다").
+    // 버튼은 태그 줄 아래에 있고 → 화살표가 버튼 글자색(흰색)으로 보이며(예전에는 강조색 파랑이라 파란 버튼에 묻힘), 아래 바 다음 버튼은 01에서 숨는다. 02부터는 아래 바 버튼의 화살표도 흰색이다.
+    const familyNext=await page.evaluate(()=>{const visible=el=>!!el&&el.offsetParent!==null&&getComputedStyle(el).display!=='none',button=document.querySelector('.rt-cg-preview [data-action="preview-next"]'),chips=document.querySelector('.rt-cg-preview .rt-cg-chips'),foot=document.querySelector('.rt-footer [data-action="next"]');if(!button||!chips||!foot)return null;const arrow=button.querySelector('.rt-arrow'),color=el=>getComputedStyle(el).color;return {visibleNext:[...document.querySelectorAll('[data-action="next"],[data-action="preview-next"]')].filter(visible).length,below:button.getBoundingClientRect().top>=chips.getBoundingClientRect().bottom-1,text:button.textContent.trim(),panelArrow:color(arrow),buttonInk:color(button),footVisible:visible(foot)}});
+    await page.click('.rt-cg-preview [data-action="preview-next"]');
+    await page.waitForSelector('button[data-model]');
+    const footStep2=await page.evaluate(()=>{const foot=document.querySelector('.rt-footer [data-action="next"]'),arrow=foot.querySelector('.rt-arrow');return {visible:foot.offsetParent!==null,arrow:getComputedStyle(arrow).color,ink:getComputedStyle(foot).color,text:arrow.textContent}});
+    check('01 제품군에는 태그 줄 아래 "프레임 선택" 버튼 하나만 보이고(아래 바 버튼은 숨김) 02로 이동하며, → 화살표가 흰색으로 보임(02 아래 바 버튼 포함)',!!familyNext&&familyNext.visibleNext===1&&familyNext.footVisible===false&&familyNext.below&&familyNext.text.startsWith('프레임 선택')&&familyNext.panelArrow==='rgb(255, 255, 255)'&&familyNext.panelArrow===familyNext.buttonInk&&footStep2.visible&&footStep2.arrow==='rgb(255, 255, 255)'&&footStep2.arrow===footStep2.ink&&footStep2.text==='→'&&(await page.locator('.rt-main .rt-eyebrow').first().textContent()).includes('02 / 프레임 선택'),JSON.stringify({familyNext,footStep2}));
+    await page.click('[data-action="back"]');
+    await page.click('.rt-cg-preview [data-action="preview-next"]');
     check('프레임 선택 화면에 XDM 프레임 6종 표시(XDM-288 제외)',await page.locator('button[data-model]').count()===6);
     await page.click('button[data-model="XDM-144"]');await acceptConfirm();
     await page.click('[data-action="next"]');
@@ -128,7 +136,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.evaluate(()=>localStorage.clear());
     await page.goto(home,{waitUntil:'networkidle'});
     await page.click('button[data-family="SPX"]');
-    await page.click('[data-action="next"]');
+    await page.click('.rt-cg-preview [data-action="preview-next"]');
     await page.click('button[data-model="SPX-M3236"]');await acceptConfirm();
     await page.click('[data-action="next"]');
     await page.waitForLoadState('networkidle');
@@ -170,7 +178,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.evaluate(()=>localStorage.clear());
     await page.goto(home,{waitUntil:'networkidle'});
     await page.click('button[data-family="XDM"]');
-    await page.click('[data-action="next"]');
+    await page.click('.rt-cg-preview [data-action="preview-next"]');
     await page.click('button[data-model="XDM-12"]');await acceptConfirm();
     await page.click('[data-action="next"]');
     const cardsUrl=page.url();
@@ -193,7 +201,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.evaluate(()=>localStorage.clear());
     await page.goto(home,{waitUntil:'networkidle'});
     await page.click('button[data-family="XDM"]');await acceptConfirm();
-    await page.click('[data-action="next"]');
+    await page.click('.rt-cg-preview [data-action="preview-next"]');
     await page.click('button[data-model="XDM-36"]');await acceptConfirm();
     await page.click('[data-action="next"]');
     await page.locator('button[data-slot="in-1"]').click();
@@ -243,7 +251,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       await page.evaluate(()=>localStorage.clear());
       await page.goto(home,{waitUntil:'networkidle'});
       await page.click(`button[data-family="${family}"]`);
-      await page.click('[data-action="next"]');
+      await page.click('.rt-cg-preview [data-action="preview-next"]');
       let ok=0;const toggles=[];const models=await page.locator('button[data-model]').evaluateAll(nodes=>nodes.map(node=>node.dataset.model));
       for(const model of models){
         await page.click(`button[data-model="${model}"]`);
@@ -292,7 +300,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.evaluate(()=>localStorage.clear());
     await page.goto(home,{waitUntil:'networkidle'});
     await page.click('button[data-family="SPX"]');
-    await page.click('[data-action="next"]');
+    await page.click('.rt-cg-preview [data-action="preview-next"]');
     // 02 프레임(2-2, Analog Way 구조): 목록 행에는 사진이 없고, 고른 모델의 전면 사진이 오른쪽 고정 미리보기에 표시된다.
     check('SPX 프레임 5종 목록에 모두 사진 없이 이름·사양 행으로 표시됨',await page.locator('button[data-model]').count()===5&&await page.locator('button[data-model] img').count()===0);
     const spxModels=await page.locator('button[data-model]').evaluateAll(nodes=>nodes.map(node=>node.dataset.model));
@@ -312,7 +320,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.evaluate(()=>localStorage.clear());
     await page.goto(home,{waitUntil:'networkidle'});
     await page.click('button[data-family="VDM"]');
-    await page.click('[data-action="next"]');
+    await page.click('.rt-cg-preview [data-action="preview-next"]');
     const vdmModels=await page.locator('button[data-model]').evaluateAll(nodes=>nodes.map(node=>node.dataset.model));
     let vdmFrontCount=0,vdm288Placeholder=false,vdmArt=0;const vdmToggles=[];
     for(const model of vdmModels){
@@ -547,6 +555,34 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     const vdmEnd=await page.evaluate(()=>{const d=document.querySelector('dialog.rt-doc-zoom');return {first:!!d.querySelector('.rt-doc-page[data-doc-page="1"] canvas'),canvases:d.querySelectorAll('.rt-doc-page canvas').length}});
     await page.click('dialog.rt-doc-zoom [data-zoom-close]');
     check('VDM 매뉴얼 103쪽 팝업이 보이는 쪽만 그리고(첫 화면 canvas 10장 이하) 끝으로 내리면 103쪽이 그려지며 첫 쪽 canvas는 비워짐',vdmTop.pages===103&&vdmTop.canvases>=1&&vdmTop.canvases<=10&&!vdmEnd.first&&vdmEnd.canvases<=10,JSON.stringify({vdmTop,vdmEnd,vdmFirstMs}));
+    // 0.126 PC 문서 팝업 폭(사용자 요청 "팝업창의 가로폭이 너무 좁아", "마우스로 창 크기 가변가능할까?"): 기본 1040px,
+    // 가장자리를 끌면 폭과 쪽 너비가 함께 바뀌고 다시 열어도 기억하며, 넓게 버튼은 화면 폭, 가장자리 두 번 누르기는 기본 폭. 휴대폰 폭에서는 끌기 막대가 없다.
+    {
+      const docPc=await browser.newContext({viewport:{width:1600,height:900}});
+      const dp=await docPc.newPage();
+      await dp.goto(`${home}#products/vdm`,{waitUntil:'networkidle'});
+      const openMan=async()=>{await dp.click('[data-doc="Manual"] .rt-pg-doc-open');await dp.waitForFunction(()=>document.querySelector('dialog.rt-doc-zoom[open] .rt-doc-page[data-doc-page="1"] canvas'),null,{timeout:30000})};
+      const size=()=>dp.evaluate(()=>{const d=document.querySelector('dialog.rt-doc-zoom');return {dlg:Math.round(d.getBoundingClientRect().width),page:Math.round(d.querySelector('.rt-doc-page').getBoundingClientRect().width)}});
+      const pageAfter=w=>dp.waitForFunction(w=>{const d=document.querySelector('dialog.rt-doc-zoom');const c=d.querySelector('.rt-doc-page[data-doc-page="1"] canvas');return c&&Math.abs(d.getBoundingClientRect().width-w)<2&&Math.abs(c.getBoundingClientRect().width-(w-40))<4},w,{timeout:15000});
+      await openMan();
+      const def=await size();
+      const bb=await (await dp.$('[data-doc-resize="right"]')).boundingBox();
+      await dp.mouse.move(bb.x+4,bb.y+bb.height/2);await dp.mouse.down();await dp.mouse.move(bb.x+154,bb.y+bb.height/2,{steps:6});await dp.mouse.up();
+      const dragW=(await size()).dlg;await pageAfter(dragW);
+      await dp.keyboard.press('Escape');await openMan();
+      const reopened=await size();
+      await dp.click('dialog.rt-doc-zoom [data-doc-wide]');await pageAfter(1584);
+      await dp.dblclick('[data-doc-resize="left"]');await pageAfter(1040);
+      await dp.keyboard.press('Escape');
+      await docPc.close();
+      check('PC 매뉴얼 팝업이 기본 1040px이고 가장자리를 끌면 폭·쪽 너비가 함께 넓어지며 다시 열어도 기억, 넓게 버튼은 화면 폭, 두 번 누르면 기본 폭',def.dlg===1040&&def.page===1000&&dragW>=def.dlg+250&&reopened.dlg===dragW,JSON.stringify({def,dragW,reopened}));
+      await page.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
+      await page.click('[data-doc="Catalog"] button.rt-pg-doc-open');
+      await page.waitForSelector('dialog.rt-doc-zoom[open] .rt-doc-pages img');
+      const phone=await page.evaluate(()=>{const d=document.querySelector('dialog.rt-doc-zoom');return {handles:[...d.querySelectorAll('[data-doc-resize]')].map(h=>getComputedStyle(h).display),wide:getComputedStyle(d.querySelector('[data-doc-wide]')).display,dlg:Math.round(d.getBoundingClientRect().width),vw:innerWidth}});
+      await page.click('dialog.rt-doc-zoom [data-zoom-close]');
+      check('휴대폰 폭에서는 문서 팝업에 끌기 막대·넓게 버튼이 없고 창이 화면 폭(여백 16px)',phone.handles.every(d=>d==='none')&&phone.wide==='none'&&phone.dlg===phone.vw-16,JSON.stringify(phone));
+    }
     check('OBUX-1C 송신기 단자 지도가 고해상도 앞뒤 합성 사진에 번호 6개, 수신기 5개(S/P 포함)로 나옴',obuxPm.tx&&obuxPm.rx&&obuxPm.ports.join()==='6,5',JSON.stringify(obuxPm));
     // 0.98 XDM-PSU 03 Signal Flow: 제조사 연결도처럼 프레임(CIS100·COS100) · PSU(POH·PHX) · CTR100 Tx/Rx를 장비 그림으로 그리고 케이블 위 점선이 흐른다. 움직임 줄이기 설정에서는 멈춘다.
     await page.goto(`${home}#products/xdm-psu`,{waitUntil:'networkidle'});
@@ -611,13 +647,13 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.goto(home,{waitUntil:'networkidle'});
     for(const [fam,related] of [['SPX',2],['VDM',6],['XDM',6]]){ // 0.72 XDM은 XDM-PSU를 더해 6개
       await page.click(`button[data-family="${fam}"]`);await acceptConfirm();
-      if(await page.locator('[data-action="next"]').isEnabled())await page.click('[data-action="next"]');
+      if(await page.locator('.rt-cg-preview [data-action="preview-next"]').isEnabled())await page.click('.rt-cg-preview [data-action="preview-next"]');
       await page.waitForSelector('.rt-rel-card');
       const rel=await page.evaluate(()=>({eyebrow:document.querySelector('.rt-main .rt-eyebrow')?.textContent,cards:[...document.querySelectorAll('.rt-rel-card')].map(a=>a.getAttribute('href')),noChassis:!document.body.innerText.includes('섀시')}));
       check(`${fam} 02 프레임 선택 아래 "함께 보면 좋은 제품" ${related}개(시리즈 상세 포함)가 제품정보로 연결되고, 화면에 "섀시" 표기가 없음`,rel.eyebrow==='02 / 프레임 선택'&&rel.cards.length===related&&rel.cards[0]===`#products/${fam.toLowerCase()}`&&rel.noChassis,JSON.stringify(rel));
       await page.click('[data-jump="0"]');
     }
-    await page.click('[data-action="next"]');
+    await page.click('.rt-cg-preview [data-action="preview-next"]');
     await page.click('button[data-model="XDM-36"]');await acceptConfirm();
     await page.click('[data-action="next"]');
     await page.locator('button[data-slot="in-2"]').click();
@@ -718,7 +754,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     const pc=await pcContext.newPage();
     await pc.goto(home,{waitUntil:'networkidle'});
     await pc.click('button[data-family="XDM"]');
-    await pc.click('[data-action="next"]');
+    await pc.click('.rt-cg-preview [data-action="preview-next"]');
     await pc.click('button[data-model="XDM-36"]');
     await pc.click('[data-action="next"]');
     await pc.waitForLoadState('networkidle');
@@ -760,7 +796,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     const mobile=await phone.newPage();
     await mobile.goto(home,{waitUntil:'networkidle'});
     await mobile.click('button[data-family="SPX"]');
-    await mobile.click('[data-action="next"]');
+    await mobile.click('.rt-cg-preview [data-action="preview-next"]');
     await mobile.click('button[data-model="SPX-M3236"]');
     await mobile.click('[data-action="next"]');
     await mobile.waitForLoadState('networkidle');
@@ -771,7 +807,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await mobile.evaluate(()=>localStorage.clear());
     await mobile.goto(home,{waitUntil:'networkidle'});
     await mobile.click('button[data-family="XDM"]');
-    await mobile.click('[data-action="next"]');
+    await mobile.click('.rt-cg-preview [data-action="preview-next"]');
     await mobile.click('button[data-model="XDM-20"]');
     await mobile.click('[data-action="next"]');
     await mobile.evaluate(()=>document.querySelector('button[data-slot="out-2"]').click());
