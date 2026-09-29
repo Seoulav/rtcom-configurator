@@ -44,9 +44,10 @@
 
 - [ ] `main` 브랜치에 필수 검사 `RTCOM checks / verify`를 켜기(0.165, 순서: `docs/implementation/TOUCH_SLOT_X_AND_CI_0.165.md` §2). 켜기 전에도 검사는 PR마다 돌고, Claude는 통과를 확인한 뒤 병합합니다.
 
-## AV 빌더 한 번에 열기(B안) — 저장소 접근 대기
+## AV 빌더 한 번에 열기(B안) — AV 빌더 쪽 작업 대기
 
-- [ ] rtcom 구성기에서 "AV 빌더에서 열기" 한 번으로 구성이 뜨게 하려면 AV 빌더(seoul-visual-tech/av-system-builder)에 외부 구성 받기 입구(예: 주소 해시로 받은 구성도 JSON 불러오기)가 필요합니다. 그 저장소가 들어 있는 세션에서 작업합니다. 파일 형식은 0.173 `RtCore.avBuilder`와 같습니다(`docs/implementation/SIGNAL_INPUT_0.173.md` §5).
+- [x] rtcom 쪽 "AV 빌더에서 바로 열기"(0.174): 새 탭 `?import=rtcom` + 창 사이 메시지, 준비 신호가 없으면 10초 뒤 파일 내려받기.
+- [ ] AV 빌더(seoul-visual-tech/av-system-builder)에 받기 코드 넣기: `docs/handoff/AV_BUILDER_RTCOM_IMPORT.md` §2. 그 저장소가 이 작업 세션에 연결되지 않아(권한 없음) 사용자 쪽에서 저장소 접근을 열거나, 그 저장소를 연 세션에서 작업합니다.
 
 ## 공개 여부를 사용자에게 물어볼 PDF
 
