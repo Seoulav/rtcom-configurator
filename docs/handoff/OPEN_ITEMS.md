@@ -10,6 +10,12 @@
 - [ ] 두 Worker 주소(`rtcom-ai-api…workers.dev`, `rtcom-ai-login…workers.dev`)를 Claude에게 알려 주기 → `src/ai-search.js`의 `CONFIG` 채워 배포
 - [ ] 첫 실제 질문으로 답 품질·건당 토큰(`cacheWrite`·`cacheRead`) 확인
 
+## 03 카드 슬롯 개선안 B·C — 사용자 결정 대기 (0.167)
+
+시안은 `docs/qa/card-signal-badge-0.167/mock-B.png`·`mock-C.png`, 설명은 `docs/implementation/CARD_SIGNAL_BADGE_0.167.md` "남은 일"에 있습니다. 시안 A는 0.167.0에 반영했습니다.
+- [ ] B: 후면 왼쪽 세로 카드 트레이(입력·출력 탭, 채널 수·전송기 연동 표시, 블랭크 커버), 트레이에서 눌러서 장착(휴대폰 지원). 후면 그림이 조금 작아짐
+- [ ] C: 슬롯 채널 번호(CH 1–4 등), 신호 색 슬롯 완성도 막대, 내 구성 "자동 연동 전송기" 묶음
+
 ## 사용자(RT컴)에게 받을 사진
 
 받으면 `input_doc/`에 넣거나 zip으로 올립니다. 처리는 `.claude/skills/input-doc/SKILL.md`의 사진 교체 절차를 따릅니다.
