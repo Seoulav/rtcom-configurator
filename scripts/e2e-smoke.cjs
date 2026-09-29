@@ -751,7 +751,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     const dual=await dualCard.evaluate(card=>({chips:[...card.querySelectorAll('[data-layout-chip]')].map(b=>b.textContent),name:card.querySelector('[data-layout-name]')?.textContent,rects:card.querySelectorAll('[data-layout-preview] svg rect.rt-pg-cell').length,text:card.querySelector('p')?.textContent||''}));
     const quadName=await page.locator('.rt-pg-vmode-card',{hasText:'QUAD'}).first().evaluate(card=>card.querySelector('[data-layout-name]')?.textContent);
     check('QMS-88UX 06 DUAL 카드에 PBP·PIP 레이아웃 3종이 있고 Vertical PBP를 누르면 2칸 도해로 바뀌며 QUAD 카드 미리보기는 그대로임',dual.chips.join('|')==='Horizontal PBP|Vertical PBP|Quad PBP, PIP'&&dual.name==='Vertical PBP'&&dual.rects===2&&/출력 9·10번/.test(dual.text)&&quadName==='8분할(비율무시)',JSON.stringify({dual,quadName}));
-    // 0.151 — QMS-88UX WALL 요약이 "최대 3×3"뿐이었다(매뉴얼 KV.04 19쪽: 2×2 월 최대 2개, 월 1개면 최대 3×3·2×5). 매뉴얼에 배치 도해가 없어 WALL에는 도해를 두지 않는다.
+    // 0.152 — QMS-88UX WALL 요약이 "최대 3×3"뿐이었다(매뉴얼 KV.04 19쪽: 2×2 월 최대 2개, 월 1개면 최대 3×3·2×5). 매뉴얼에 배치 도해가 없어 WALL에는 도해를 두지 않는다.
     const wall=await page.locator('.rt-pg-vmode-card',{hasText:'WALL'}).first().evaluate(card=>({text:card.querySelector('p')?.textContent||'',chips:card.querySelectorAll('[data-layout-chip]').length}));
     check('QMS-88UX 06 WALL 카드에 2×2 월 2개·3×3·2×5가 적혀 있고 레이아웃 도해 칩은 없음',/2×2 월 최대 2개/.test(wall.text)&&/3×3·2×5/.test(wall.text)&&wall.chips===0,JSON.stringify(wall));
     // 0.62 — videoModes(QMS) 카드 4개+레이아웃 칩 12개까지 있어 05 옆 좁은 칸에 넣으면 글자가 카드 밖으로 넘쳤다(사용자 확인 2026-09-27 "06화면모드 짤린다"). 전체 폭 아래로 되돌려 카드 안에서 텍스트가 넘치지 않는지 확인.

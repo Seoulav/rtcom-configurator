@@ -1,4 +1,4 @@
-# 0.151.0 QMS-88UX 06 화면 구성 모드 WALL·DUAL 재검토
+# 0.152.0 QMS-88UX 06 화면 구성 모드 WALL·DUAL 재검토
 
 사용자 요청 2026-09-29: "QMS-88UX 06 화면 구성 모드에서 WALL·DUAL 도해를 재검토해 주세요. 매뉴얼에 도해가 없어 이름만 보고 그린 부분이 있습니다." 결과 보고 뒤 "추천하는대로 진행해줘".
 
@@ -31,7 +31,7 @@
 
 ## 검증
 
-단위 62/62, `build-product-index --check` 31종 통과, `package-site`, e2e 193/193(신규 1건), `git diff --check`. 화면: `docs/qa/qms88ux-wall-dual-0.151/`
+단위 62/62, `build-product-index --check` 31종 통과, `package-site`, e2e 193/193(신규 1건), `git diff --check`. 화면: `docs/qa/qms88ux-wall-dual-0.152/`
 
 ## 되돌리기
 
