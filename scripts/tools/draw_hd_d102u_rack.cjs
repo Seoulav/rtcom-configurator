@@ -7,12 +7,13 @@
 //  - 윗면·옆면 그림은 지우고 정면만 남겼다. 배치(mm 좌표)는 그대로라서 제품 데이터 portMap의 번호 좌표가 바뀌지 않는다.
 // 0.133: 칸 번호를 파란 원 배지 + 흰 숫자로 키움(사용자 요청 2026-09-29 "분배기 장착 번호가 너무 작다 다른 색상으로 표기해서 눈의띄게 해줘").
 // 0.134: 분배기 칸을 뺀 몸체·랙 귀·위아래 레일을 조금 어둡게(사용자 요청 2026-09-29 "분배기를 제외한 영역 색상 조금만 어둡게해줘"). 분배기 칸은 밝은 흰색 유지.
+// 0.135: 한 단계 더 어둡게 마무리(사용자 요청 2026-09-29 "조금만 더 어둡게해서 마무리"): 몸체 #c5cbd5·랙 귀 #b1b8c4·레일 #d0d5de.
 // 실행: NODE_PATH=$(npm root -g) node scripts/tools/draw_hd_d102u_rack.cjs  → output/design/assets/products/hd-d102u-rack-front-art.webp (python PIL 필요)
 const path=require('path');
 const P=require('./draw_vdm_frames.cjs');
 const {f,rect,text,render}=P;
 // XDM-PSU 그림과 같은 색(draw_xdm_psu_panels.cjs BODY·EDGE·INK·SUB 등)
-const L={body:'#d5dae2',ear:'#c3c9d3',rail:'#dfe3ea',edge:'#7d8696',card:'#f7f8fa',cardLine:'#a9b1be',dark:'#3a4150',ink:'#1f2532'};
+const L={body:'#c5cbd5',ear:'#b1b8c4',rail:'#d0d5de',edge:'#6f7888',card:'#f7f8fa',cardLine:'#a9b1be',dark:'#3a4150',ink:'#1f2532'};
 const hole=(cx,cy,r)=>`<circle cx="${f(cx)}" cy="${f(cy)}" r="${f(r)}" fill="#fff" stroke="${L.dark}" stroke-width="${f(r*0.4)}"/>`;
 const slot=(cx,cy,w,h)=>rect(cx-w/2,cy-h/2,w,h,'#fff',L.dark,0.6,Math.min(w,h)/2);
 const pin=(cx,cy,r)=>`<circle cx="${f(cx)}" cy="${f(cy)}" r="${f(r)}" fill="${L.dark}"/><path d="M${f(cx-r*0.55)} ${f(cy)}h${f(r*1.1)}M${f(cx)} ${f(cy-r*0.55)}v${f(r*1.1)}" stroke="${L.edge}" stroke-width="${f(r*0.22)}"/>`;
