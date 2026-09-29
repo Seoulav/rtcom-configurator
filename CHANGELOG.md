@@ -2,6 +2,13 @@
 
 - **0.144.0 배포 기록**: `docs/qa/DEPLOYMENT_0.144_2026-09-29.md`(PR #192 → main 병합, Pages 배포 run 162, 공개 파일 337/338 일치, `.nojekyll` 제외)
 
+## 0.148.0
+
+사용자 요청 2026-09-29("모든 제품 04 제품사양에 mini USB 있다면 모두 삭제해줘", "HDCP표기는 HDCP Compliant v2.2 지원 ==> HDCP X(특정버전)지원"):
+
+- **04 제품 사양 Mini USB 정보 삭제**: QMS-44UX "기타"(미니 USB 포트 사용) 행을 지우고, QMS-88UX "연결 단자"에서 Mini USB-serial을 뺐습니다. 다른 제품의 04 제품 사양에는 Mini USB 항목이 없었습니다. 단자 지도(Port Map)와 제조사 자료 입출력 단자 표의 Mini USB 표시는 실제 단자이므로 그대로 둡니다.
+- **HDCP 표기 통일**: 04 제품 사양 HDCP 행 17개 제품을 "HDCP 2.2 지원"·"HDCP 1.x 지원"·"HDCP 1.x, 2.2 지원"처럼 "HDCP 버전 지원" 형식으로 맞췄습니다(QMS-88UX "HDCP Compliant v2.2 지원", XDM "HDCP 2.2 support", SPX "HDCP 2.2", VDM 전송기 "HDCP 1.X" 등). OBHD-2C는 매뉴얼 Ver.2.1 4쪽에도 버전 없이 "HDCP 지원"만 있어 "HDCP 지원"으로 적었습니다.
+
 ## 0.147.0
 
 사용자 요청 2026-09-29("1~3번 모두 진행하자", "이 페이지에서 인쇄/PDF를 눌렀더니 아래 것이 나온다", "JSON 백업이라는 말이 직관적이지 않다"):
