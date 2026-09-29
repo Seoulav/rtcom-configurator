@@ -325,6 +325,17 @@ test('fillTargets fills the chosen slot first, then empty slots of the same dire
   assert.deepEqual(core.fillTargets(state,'in-1',0),['in-1']);
 });
 
+test('addTargets (0.174 qty A) skips the opened slot when it already holds a card and only fills empty slots',()=>{
+  const state=core.checkState({...core.initial(),model:'XDM-36',placements:{'in-3':'XDM-HI100','out-1':'XDM-HOS100'}});
+  assert.deepEqual(core.addTargets(state,'in-3',2),['in-4','in-5']);
+  assert.deepEqual(core.addTargets(state,'in-2',2),core.fillTargets(state,'in-2',2));
+  assert.deepEqual(core.addTargets(state,'in-3',0),[]);
+  const inputs=core.slotsFor(state).filter(slot=>slot.dir==='input').length;
+  assert.equal(core.addTargets(state,'in-3',99).length,inputs-1);
+  const full=core.checkState({...core.initial(),model:'XDM-12',placements:{'in-1':'XDM-HI100','in-2':'XDM-HI100','in-3':'XDM-HI100'}});
+  assert.deepEqual(core.addTargets(full,'in-2',3),[]);
+});
+
 test('moveCard moves within the same direction, swaps occupied slots and carries links and ports',()=>{
   const moved=core.moveCard(configured(),'in-1','in-3');
   assert.equal(moved.placements['in-3'],'XDM-CIS100');
