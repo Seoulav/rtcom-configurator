@@ -7,8 +7,17 @@
 - **0.147.0 배포 기록**: `docs/qa/DEPLOYMENT_0.147_2026-09-29.md`(PR #196 → main 병합, 공개 파일 337/338 일치, `.nojekyll` 제외)
 - **0.146.0 배포 기록**: `docs/qa/DEPLOYMENT_0.146_2026-09-29.md`(PR #195 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.145.0 배포 기록**: `docs/qa/DEPLOYMENT_0.145_2026-09-29.md`(PR #194 → main 병합, 공개 확인은 0.147.0 배포에 포함)
-- **0.148.0 배포 기록**: `docs/qa/DEPLOYMENT_0.148_2026-09-29.md`(PR #198 → main 병합, Pages 배포 run 36547084450)
 - **0.144.0 배포 기록**: `docs/qa/DEPLOYMENT_0.144_2026-09-29.md`(PR #192 → main 병합, Pages 배포 run 162, 공개 파일 337/338 일치, `.nojekyll` 제외)
+
+## 0.152.0
+
+사용자 요청 2026-09-29("QMS-88UX 06 화면 구성 모드에서 WALL·DUAL 도해를 재검토해 주세요", "추천하는대로 진행해줘"):
+
+- **재검토 결과**: 매뉴얼 KV.04 19~23쪽과 코드(`LAYOUT_SHAPES`)를 대조했습니다. QMS-88UX DUAL 레이아웃 3종(Horizontal PBP·Vertical PBP·Quad PBP, PIP)은 매뉴얼 21쪽 Layout 5~7 도해와 같아 그대로 두었습니다. "이름 뜻에 맞춰 만든 WALL·DUAL 도식"(2×2~FULL, PBP, PBP-FULL, PIP, USER MODE)은 QMS-44UX 화면에만 쓰이고, QMS-88UX WALL에는 도해가 없습니다.
+- **WALL 요약 보완**: "최대 3×3 비디오월, 베젤 조정" → "2×2 월 최대 2개, 또는 월 1개 최대 3×3·2×5, 베젤 조정"(매뉴얼 19쪽). 매뉴얼에 배치 도해가 없어 레이아웃 도해는 넣지 않았습니다.
+- **DUAL 요약 정리**: "한 화면 2분할(PBP)·PIP 구성" → "2분할(PBP)·PIP 레이아웃". Layout 7은 창이 4개라 "한 화면 2분할"이 맞지 않았습니다.
+- 남은 확인: 출력 10번이 비디오 월에 들어가는지(19쪽은 9번만, 35쪽 명령 예시는 5~10번 3×2 월)는 `docs/handoff/OPEN_ITEMS.md`에 남겼습니다.
+- 근거·비교표: `docs/implementation/QMS88UX_WALL_DUAL_0.152.md`
 
 ## 0.151.0
 

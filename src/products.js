@@ -584,7 +584,7 @@
     };
     const VMODE_NAME_KO={MATRIX:'매트릭스',QUAD:'쿼드 뷰',WALL:'비디오 월',DUAL:'듀얼'};
     // 레이아웃 이름별 화면 분할 도해(칸 번호·x·y·너비·높이, 0~100 기준). QMS-88UX 매뉴얼(RTcom_Manual_QMS-88UX_KV.03.pdf) 20~21쪽 Layout List 도해를 그대로 옮겼다(사용자 요청 2026-09-27).
-    // QMS-44UX 전용 이름의 QUAD 도해는 아래 LAYOUT_SHAPES_BY_PRODUCT(0.146, 44UX 매뉴얼 21~22쪽 도해)가 우선한다. 매뉴얼에 도해가 없는 WALL·DUAL 레이아웃은 이름 뜻에 맞춰 만든 도식이다.
+    // QMS-44UX 전용 이름의 QUAD 도해는 아래 LAYOUT_SHAPES_BY_PRODUCT(0.146, 44UX 매뉴얼 21~22쪽 도해)가 우선한다. 매뉴얼에 도해가 없는 WALL·DUAL 레이아웃(2×2~FULL, PBP, PBP-FULL, PIP, USER MODE)은 이름 뜻에 맞춰 만든 도식이며 QMS-44UX만 쓴다. QMS-88UX는 WALL 도해가 없고 DUAL은 매뉴얼 Layout 5~7 도해를 쓴다(0.152 재검토).
     const LAYOUT_SHAPES={
       'QUAD':[[1,0,0,50,50],[2,50,0,50,50],[3,0,50,50,50],[4,50,50,50,50]],
       '3-BOTTOM':[[1,0,0,100,50],[2,0,50,33.33,50],[3,33.33,50,33.34,50],[4,66.67,50,33.33,50]],
