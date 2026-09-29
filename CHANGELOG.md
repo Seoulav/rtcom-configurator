@@ -7,6 +7,14 @@
 - **0.148.0 배포 기록**: `docs/qa/DEPLOYMENT_0.148_2026-09-29.md`(PR #198 → main 병합, Pages 배포 run 36547084450)
 - **0.144.0 배포 기록**: `docs/qa/DEPLOYMENT_0.144_2026-09-29.md`(PR #192 → main 병합, Pages 배포 run 162, 공개 파일 337/338 일치, `.nojekyll` 제외)
 
+## 0.149.0
+
+사용자 문의 2026-09-29("이거는 무슨 내용이야?"):
+
+- **검토 결과의 근거 문서 링크 삭제**: 구성기 03 검토 결과 아래 "제품 근거 및 확인 필요 사항 보기 ↗" 링크를 뺐습니다. 이 링크는 내부 근거 정리 문서(`docs/evidence/RTCOM_MATRIX_EVIDENCE_AND_GAPS.md`)를 서식 없는 검은 텍스트 화면으로 열어 일반 사용자가 읽기 어려웠습니다. 문서 자체는 저장소에 그대로 두며 화면에서만 연결을 끊었습니다.
+- 되돌리는 방법: `src/app.js`·`src/workspace.inc.js`의 검토 결과 템플릿 끝에 링크(`<a href="docs/evidence/..."`)를 다시 넣으면 됩니다.
+- 근거: `docs/implementation/EVIDENCE_LINK_REMOVED_0.149.md`
+
 ## 0.148.0
 
 사용자 요청 2026-09-29("모든 제품 04 제품사양에 mini USB 있다면 모두 삭제해줘", "HDCP표기는 HDCP Compliant v2.2 지원 ==> HDCP X(특정버전)지원"):

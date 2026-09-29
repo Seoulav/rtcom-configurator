@@ -23,7 +23,7 @@
     function validationView(){
       const result=RtCore.validate(state);
       const names={ERROR:'입력 필요',WARNING:'확인',UNCONFIRMED:'자료 미확정',INFO:'참고'};
-      return `<section class="rt-validation" aria-label="검토 결과"><h3>검토 결과 <span class="rt-pill">미검증 초안</span></h3><p>현재 자료로 실제 설치 가능한 구성인지 확정할 수 없습니다.</p><ul>${result.issues.map(i=>`<li><strong>${names[i.level]}</strong><span>${esc(i.message)}${i.evidence?` <small>근거: ${esc(i.evidence)}</small>`:''}</span></li>`).join('')}</ul><a href="docs/evidence/RTCOM_MATRIX_EVIDENCE_AND_GAPS.md" target="_blank" rel="noopener">제품 근거 및 확인 필요 사항 보기 ↗</a></section>`;
+      return `<section class="rt-validation" aria-label="검토 결과"><h3>검토 결과 <span class="rt-pill">미검증 초안</span></h3><p>현재 자료로 실제 설치 가능한 구성인지 확정할 수 없습니다.</p><ul>${result.issues.map(i=>`<li><strong>${names[i.level]}</strong><span>${esc(i.message)}${i.evidence?` <small>근거: ${esc(i.evidence)}</small>`:''}</span></li>`).join('')}</ul></section>`;
     }
     function download(text,type,extension){
       const blob=new Blob([text],{type});
