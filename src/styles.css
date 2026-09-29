@@ -616,11 +616,10 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-layout-chip{font:700 10.5px/1 var(--pg-sans);padding:3px 8px;border-radius:999px;background:var(--pg-accent-tint);color:var(--pg-accent-2);border:1px solid transparent;cursor:pointer}
 #rtcom-design .rt-pg-layout-chip.on{background:var(--pg-accent);color:#fff}
 #rtcom-design .rt-pg-layout-preview{margin-top:8px;display:grid;justify-items:center;gap:4px}
-#rtcom-design .rt-pg-layout-preview svg{width:100%;max-width:150px;aspect-ratio:16/10;background:var(--pg-field-fill);border-radius:8px;box-shadow:inset 0 0 0 1px var(--pg-line)}
-#rtcom-design .rt-pg-layout-preview svg rect{fill:#fff;stroke:var(--pg-accent);stroke-width:1.4;fill-opacity:.9}
 /* 칸이 캔버스를 다 채우지 못하는 레이아웃(16:9 유지용 레터박스)의 남는 자리를 매뉴얼처럼 짙은 막대로 보여준다(0.100, 사용자 지적 "8분할시 비율유지는 안되는거 같은") */
-#rtcom-design .rt-pg-layout-preview svg rect.rt-pg-layout-letterbox{fill:#2c2c2e;stroke:none;fill-opacity:1}
-#rtcom-design .rt-pg-layout-preview svg text{font-size:13px;font-weight:800;fill:var(--pg-ink-2);text-anchor:middle;dominant-baseline:central}
+/* 0.147: 분할 예시를 모니터·비디오 월 그림으로 그린다(색·글자는 SVG 안에서 지정). 비디오 월은 대수에 따라 가로·세로로 길어지므로 높이도 제한한다. */
+#rtcom-design .rt-pg-layout-preview svg{display:block;width:100%;max-width:200px;height:auto;max-height:150px;filter:drop-shadow(0 4px 10px rgba(31,37,50,.18))}
+#rtcom-design .rt-pg-layout-preview svg.rt-pg-layout-wall{max-width:230px}
 #rtcom-design .rt-pg-layout-preview small{font-size:10.5px;color:var(--pg-muted);font-weight:700}
 #rtcom-design .rt-pg-layout-missing{width:100%;max-width:150px;aspect-ratio:16/10;display:grid;place-items:center;background:var(--pg-field-fill);border-radius:8px;color:var(--pg-muted);font-size:10.5px}
 @media(max-width:720px){#rtcom-design .rt-pg-vmode{grid-template-columns:1fr}#rtcom-design .rt-pg-vmode-cards{grid-template-columns:1fr}}

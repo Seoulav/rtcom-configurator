@@ -639,18 +639,48 @@
       },
       black:new Set(['3-BOTTOM','3-SIDE RIGHT','3-SIDE LEFT','3CH-MODE2','USER MODE 1','USER MODE 2','USER MODE 3'])
     }};
-    function layoutShapeSvg(name,productId){
+    // 0.147(사용자 요청 2026-09-29 "44,88모두 분할 부분구성 예시를 그래픽작업해달라는거야"): 흰 칸 도식 대신 실제 화면처럼 그린다.
+    // 한 화면 분할(MATRIX·QUAD·DUAL 등)은 모니터(검은 베젤·스탠드) 안에 입력마다 다른 색 화면을 칸대로 채우고,
+    // 비디오 월(WALL)은 디스플레이 여러 대를 붙이고 영상 한 장(하늘·산 그림)이 베젤을 건너 이어지게 그린다. 칸 배치(LAYOUT_SHAPES)는 그대로라 매뉴얼 도해와 같다.
+    // 칸 사각형에만 rt-pg-cell 클래스를 붙인다(e2e가 칸 수를 센다). 화면 바탕은 검정이라, 칸이 덮지 않은 곳은 매뉴얼처럼 검은 여백으로 보인다.
+    const LAYOUT_COLORS=['#2f7cf6','#f08c1a','#1fb45a','#9b51e0','#e5484d','#12a594','#e0409b','#5b5bd6'];
+    let layoutSvgSeq=0;
+    function layoutShapeSvg(name,productId,modeName){
       const own=LAYOUT_SHAPES_BY_PRODUCT[productId];
       const key=String(name||'').trim().toUpperCase();
       const cells=own?.shapes[key]||LAYOUT_SHAPES[key];
       if(!cells)return '<div class="rt-pg-layout-missing">도해 준비 중</div>';
-      // 칸들을 다 모아도 캔버스(0~100) 가장자리를 채우지 못하면 매뉴얼처럼 나머지를 레터박스(검은 막대)로 보여준다.
-      // (QMS-88UX "8분할(16:9 비율)"처럼 비율을 유지하려고 위·아래를 비우는 레이아웃, 매뉴얼 KV.04 23쪽 Output Option 5·6 예시 근거)
-      const minX=Math.min(...cells.map(c=>c[1])),minY=Math.min(...cells.map(c=>c[2]));
-      const maxX=Math.max(...cells.map(c=>c[1]+c[3])),maxY=Math.max(...cells.map(c=>c[2]+c[4]));
-      const letterbox=minX>0.5||minY>0.5||maxX<99.5||maxY<99.5||(own?.shapes[key]&&own.black.has(key));
-      const rects=cells.map(([n,x,y,w,h,lx,ly])=>`<g><rect x="${x}" y="${y}" width="${w}" height="${h}"/><text x="${lx??x+w/2}" y="${ly??y+h/2}">${n}</text></g>`).join('');
-      return `<svg viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label="${esc(name)} 화면 구성">${letterbox?'<rect class="rt-pg-layout-letterbox" x="0" y="0" width="100" height="100"/>':''}${rects}</svg>`;
+      const id=`lay${++layoutSvgSeq}`;
+      const label=`aria-label="${esc(name)} 화면 구성"`;
+      if(modeName==='WALL'){
+        // 디스플레이 한 대 = 16:9 칸(64×36) + 베젤 3, 대 사이 틈 2. 칸 수는 첫 칸의 폭·높이로 센다(2×2 → 2열 2행).
+        const cols=Math.max(1,Math.round(100/cells[0][3])),rows=Math.max(1,Math.round(100/cells[0][4]));
+        const DW=64,DH=36,BZ=3,GAP=2,PAD=4;
+        const W=PAD*2+cols*(DW+BZ*2)+(cols-1)*GAP,H=PAD*2+rows*(DH+BZ*2)+(rows-1)*GAP;
+        const at=(c,r)=>[PAD+c*(DW+BZ*2+GAP),PAD+r*(DH+BZ*2+GAP)];
+        let screens='',frames='',badges='';
+        cells.forEach(([n,x,y])=>{
+          const c=Math.round(x/(100/cols)),r=Math.round(y/(100/rows)),[fx,fy]=at(c,r);
+          frames+=`<rect x="${fx}" y="${fy}" width="${DW+BZ*2}" height="${DH+BZ*2}" rx="2.5" fill="#1f2532"/>`;
+          screens+=`<rect class="rt-pg-cell" x="${fx+BZ}" y="${fy+BZ}" width="${DW}" height="${DH}"/>`;
+          badges+=`<circle cx="${fx+BZ+7}" cy="${fy+BZ+7}" r="5.2" fill="#fff" fill-opacity=".92"/><text x="${fx+BZ+7}" y="${fy+BZ+7.2}" font-size="7" font-weight="800" fill="#1f2532" text-anchor="middle" dominant-baseline="central">${n}</text>`;
+        });
+        const x0=PAD+BZ,y0=PAD+BZ,x1=W-PAD-BZ,y1=H-PAD-BZ,iw=x1-x0,ih=y1-y0;
+        const hill=`M${x0} ${y0+ih*0.78}C${x0+iw*0.18} ${y0+ih*0.52},${x0+iw*0.32} ${y0+ih*0.6},${x0+iw*0.46} ${y0+ih*0.46}S${x0+iw*0.78} ${y0+ih*0.62},${x1} ${y0+ih*0.5}V${y1}H${x0}Z`;
+        const hill2=`M${x0} ${y0+ih*0.9}C${x0+iw*0.3} ${y0+ih*0.7},${x0+iw*0.55} ${y0+ih*0.86},${x0+iw*0.75} ${y0+ih*0.72}S${x1-iw*0.05} ${y0+ih*0.8},${x1} ${y0+ih*0.76}V${y1}H${x0}Z`;
+        return `<svg class="rt-pg-layout-wall" viewBox="0 0 ${W} ${H}" role="img" ${label}><defs><linearGradient id="${id}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5aa9ff"/><stop offset="1" stop-color="#cfe6ff"/></linearGradient><clipPath id="${id}c">${screens.replace(/ class="rt-pg-cell"/g,'')}</clipPath></defs>${frames}${screens.replace(/<rect class="rt-pg-cell"/g,'<rect class="rt-pg-cell" fill="#0b0d12"')}<g clip-path="url(#${id}c)"><rect x="${x0}" y="${y0}" width="${iw}" height="${ih}" fill="url(#${id}s)"/><circle cx="${x0+iw*0.76}" cy="${y0+ih*0.26}" r="${Math.min(iw,ih)*0.09}" fill="#ffd66b"/><path d="${hill}" fill="#34a853"/><path d="${hill2}" fill="#1e7a3c"/></g>${badges}</svg>`;
+      }
+      // 한 화면 분할: 모니터 200×134(베젤 6, 화면 188×106 ≈ 16:9, 스탠드). 칸 좌표 0~100을 화면 크기로 늘린다.
+      const SX=6,SY=6,SW=188,SH=106,mx=v=>SX+v*SW/100,my=v=>SY+v*SH/100;
+      const used=[...new Set(cells.map(c=>c[0]))];
+      const grads=used.map(n=>{const col=LAYOUT_COLORS[(n-1)%LAYOUT_COLORS.length];return `<linearGradient id="${id}g${n}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${col}"/><stop offset="1" stop-color="${col}" stop-opacity=".62"/></linearGradient>`}).join('');
+      const tiles=cells.map(([n,x,y,w,h,lx,ly])=>{
+        const X=mx(x),Y=my(y),Wd=w*SW/100,Hd=h*SH/100,fs=Math.max(7,Math.min(20,Math.min(Wd,Hd)*0.42));
+        const tx=lx!=null?mx(lx):X+Wd/2,ty=ly!=null?my(ly):Y+Hd/2;
+        const hill=Hd>18&&Wd>24?`<path d="M${X} ${Y+Hd}V${Y+Hd*0.8}Q${X+Wd*0.3} ${Y+Hd*0.62} ${X+Wd*0.55} ${Y+Hd*0.78}T${X+Wd} ${Y+Hd*0.72}V${Y+Hd}Z" fill="#fff" fill-opacity=".16"/>`:'';
+        return `<g><rect class="rt-pg-cell" x="${X}" y="${Y}" width="${Wd}" height="${Hd}" fill="url(#${id}g${n})" stroke="#fff" stroke-opacity=".7" stroke-width=".9"/>${hill}<text x="${tx}" y="${ty}" font-size="${fs.toFixed(1)}" font-weight="800" fill="#fff" text-anchor="middle" dominant-baseline="central" style="paint-order:stroke;stroke:rgba(0,0,0,.28);stroke-width:1.6px">${n}</text></g>`;
+      }).join('');
+      return `<svg viewBox="0 0 200 134" role="img" ${label}><defs>${grads}<clipPath id="${id}c"><rect x="${SX}" y="${SY}" width="${SW}" height="${SH}"/></clipPath></defs><rect x="1" y="1" width="198" height="118" rx="6" fill="#1f2532"/><rect x="${SX}" y="${SY}" width="${SW}" height="${SH}" fill="#0b0d12"/><g clip-path="url(#${id}c)">${tiles}</g><circle cx="100" cy="115.5" r="1.3" fill="#5b6475"/><path d="M92 119h16l3 9H89z" fill="#3a4150"/><rect x="72" y="127.5" width="56" height="5" rx="2.5" fill="#3a4150"/></svg>`;
     }
     function videoModesSection(item){
       const vm=item.videoModes;
@@ -663,7 +693,7 @@
           <div class="rt-pg-vmode-cards">${modes.map(mode=>`<div class="rt-pg-vmode-card">
             <div class="rt-pg-vmode-card-head">${VMODE_ICON[mode.name]||''}<div><b>${esc(VMODE_NAME_KO[mode.name]||mode.name)}</b><small>${esc(mode.name)}</small></div></div>
             <p>${esc(mode.summary)}${mode.detail?` ${esc(mode.detail)}`:''}</p>
-            ${mode.layouts?.length?`<span class="rt-pg-vmode-count">레이아웃 ${mode.layouts.length}종</span><div class="rt-pg-vmode-chips">${mode.layouts.map((layout,index)=>`<button type="button" class="rt-pg-layout-chip${index===0?' on':''}" data-layout-chip data-layout="${esc(layout)}">${esc(layout)}</button>`).join('')}</div><div class="rt-pg-layout-preview" data-layout-preview data-layout-product="${esc(item.id)}">${layoutShapeSvg(mode.layouts[0],item.id)}<small data-layout-name>${esc(mode.layouts[0])}</small></div>`:''}
+            ${mode.layouts?.length?`<span class="rt-pg-vmode-count">레이아웃 ${mode.layouts.length}종</span><div class="rt-pg-vmode-chips">${mode.layouts.map((layout,index)=>`<button type="button" class="rt-pg-layout-chip${index===0?' on':''}" data-layout-chip data-layout="${esc(layout)}">${esc(layout)}</button>`).join('')}</div><div class="rt-pg-layout-preview" data-layout-preview data-layout-product="${esc(item.id)}" data-layout-mode="${esc(mode.name)}">${layoutShapeSvg(mode.layouts[0],item.id,mode.name)}<small data-layout-name>${esc(mode.layouts[0])}</small></div>`:''}
           </div>`).join('')}</div>
         </div>
       </section>`;
@@ -998,7 +1028,7 @@
         chips.querySelectorAll('[data-layout-chip]').forEach(btn=>btn.classList.toggle('on',btn===layoutChip));
         const preview=chips.nextElementSibling;
         if(preview?.matches('[data-layout-preview]')){
-          preview.innerHTML=`${layoutShapeSvg(layoutChip.dataset.layout,preview.dataset.layoutProduct)}<small data-layout-name>${esc(layoutChip.dataset.layout)}</small>`;
+          preview.innerHTML=`${layoutShapeSvg(layoutChip.dataset.layout,preview.dataset.layoutProduct,preview.dataset.layoutMode)}<small data-layout-name>${esc(layoutChip.dataset.layout)}</small>`;
         }
         return;
       }
