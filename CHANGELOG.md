@@ -1,5 +1,7 @@
 ## Unreleased
 
+- **0.129.0 배포 기록**: `docs/qa/DEPLOYMENT_0.129_2026-09-29.md`(PR #162 → main 병합, 배포 run 138, 공개 파일 349/349 일치, 비공개 파일 5개 404)
+
 - **0.128.0 배포 기록**: `docs/qa/DEPLOYMENT_0.128_2026-09-29.md`(PR #160 → main 병합, 배포 run 136, 공개 파일 349/350 일치, `.nojekyll` 제외)
 
 - **0.127.0 배포 기록**: `docs/qa/DEPLOYMENT_0.127_2026-09-28.md`(PR #159 → main 병합, 배포 run 135, 공개 파일 349/350 일치, `.nojekyll` 제외)
