@@ -358,6 +358,12 @@ test('0.121: HD-D102U Rack마운트는 HD-D102U와 서로 관련 제품으로 �
   assert.ok(rack.documents.every(doc=>!doc.file),'사용자 제공 도면 PDF는 공개 폴더에 올리지 않는다');
   assert.equal('drawing' in rack,false,'0.123: 실도면(치수 도면)은 넣지 않고 그래픽 이미지만 보여준다(사용자 요청 "실도면은하지말고 그래픽이미지만")');
   assert.ok(rack.images.every(image=>!/drawing|dims/.test(image.file)),'치수선이 있는 도면 그림은 쓰지 않는다');
+  // 0.130(사용자 요청 2026-09-29 "윗면 옆면은 전부 삭제해줘 정면만 남겨줘", "XDM-PSU 그래픽컨셉을 계승해줘"): 정면 그림 한 장만 두고, 밝은 회색 금속 몸체로 그린다.
+  assert.deepEqual(rack.images.map(image=>image.file),['hd-d102u-rack-front-art.webp']);
+  assert.equal(rack.portMap.length,1,'단자 지도는 정면 한 장만');
+  assert.equal(JSON.stringify(rack).includes('윗면')||JSON.stringify(rack).includes('옆면'),false,'윗면·옆면 표기는 남기지 않는다');
+  for(const name of ['top','side'])assert.equal(fs.existsSync(`output/design/assets/products/hd-d102u-rack-${name}-art.webp`),false,`${name} 그림 파일은 지운다`);
+  assert.match(read('scripts/tools/draw_hd_d102u_rack.cjs'),/const L=\{body:'#eceff4'/,'그림은 XDM-PSU 그림과 같은 밝은 회색 몸체 색을 쓴다');
   const order=JSON.parse(read('data/products/index.json')).products.map(product=>product.id);
   assert.equal(order.indexOf('hd-d102u-rack'),order.indexOf('hd-d102u')+1,'목록에서 HD-D102U 바로 뒤에 보인다');
 });
