@@ -7,6 +7,7 @@
 - 원본 소스: `Seoulav/rtcom-configurator`
 - 정식 공개 사이트: `Seoulav/rtcom-configurator`의 GitHub Pages(`https://seoulav.github.io/rtcom-configurator/`). `.github/workflows/pages.yml`(`Deploy RTCOM to GitHub Pages`)이 `main`의 `node scripts/package-site.cjs` 산출물(`dist/`)만 배포합니다. 저장소 전체가 아니라 `dist/`만 공개되므로, 감사·명세·시안 등 이 문서 아래 나머지 규칙은 그대로 적용합니다. 주의: 0.46까지는 GitHub 기본 브랜치 배포(`pages build and deployment`)도 켜져 있어 `main`에 병합될 때마다 저장소 전체를 올렸습니다(`docs/qa/DEPLOYMENT_0.45_2026-09-27.md`). 0.47·0.48 병합 뒤에는 이 배포가 돌지 않아 Settings → Pages → Source가 GitHub Actions로 바뀐 것으로 봅니다(`docs/qa/DEPLOYMENT_0.48_2026-09-27.md`). 문서만 바뀐 병합이라도 병합 뒤 `Deploy RTCOM to GitHub Pages`를 실행하고, 공개 주소의 `CLAUDE.md`가 404인지 확인합니다. `pages build and deployment` 실행이 다시 보이면 그 작업보다 늦게 배포 작업을 끝냅니다.
 - 별도 배포 저장소 `hkkim0454/rtcom-av-design`은 두 저장소가 공통 Git 조상이 없다는 전제로 계획했으나, 현재 GitHub Pages가 개설되어 있지 않아 운영하지 않습니다(사용자 결정 2026-09-27, `docs/qa/DEPLOYMENT_0.38_2026-09-27.md`). 이 저장소를 다시 쓰게 되면 원본 소스의 검증된 build 산출물만 이식하고 `git merge --allow-unrelated-histories`는 사용하지 않습니다.
+- AI 검색 사내 베타(0.142부터)의 Cloudflare Worker 코드는 `workers/ai-search/`에 있고 Pages로 배포하지 않습니다. 사용자가 `wrangler`로 직접 배포하며, API 키·`TOKEN_SECRET`·허용 명단은 `wrangler secret`으로만 넣고 저장소·채팅에 남기지 않습니다(`docs/implementation/AI_SEARCH_BETA.md`).
 - 브로셔 수준 알티컴 제품정보의 원본은 이 저장소입니다. 비공개 AV Portal은 이 저장소의 공개 데이터를 읽기만 하며, 단가·노하우 등 회사 내부 정보는 이 저장소에 넣지 않습니다(`docs/audit/SITE_SCOPE_REVIEW.md` §9, 2026-09-26 결정).
 
 ## 작업 순서

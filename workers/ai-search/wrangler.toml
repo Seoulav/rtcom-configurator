@@ -1,0 +1,36 @@
+# RTCOM AI 검색(사내 베타). 같은 코드를 두 Worker로 배포한다. 절차: docs/implementation/AI_SEARCH_BETA.md
+#   npx wrangler deploy              → rtcom-ai-api   (구성기가 질문을 보내는 곳, 서명 토큰 필수)
+#   npx wrangler deploy --env login  → rtcom-ai-login (Cloudflare Access로 통째로 잠그는 로그인 전용)
+# 비밀값은 저장소에 넣지 않고 `npx wrangler secret put <이름> [--env login]`으로만 넣는다.
+#   api:   ANTHROPIC_API_KEY, TOKEN_SECRET, ALLOWED_EMAILS
+#   login: TOKEN_SECRET(api와 같은 값), ALLOWED_EMAILS, ACCESS_AUD, ACCESS_TEAM_DOMAIN(예: "<팀이름>.cloudflareaccess.com")
+name = "rtcom-ai-api"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+
+[vars]
+ROLE = "api"
+SITE_URL = "https://seoulav.github.io/rtcom-configurator/"
+# 영업팀 메일 도메인(사용자 지시 2026-09-29 "영업팀은 @seoulav1.co.kr 사용해서 이걸로 변경해줘"). 여러 개면 쉼표로 잇는다.
+ALLOWED_EMAIL_DOMAINS = "seoulav1.co.kr"
+# 로컬 시험용 추가 주소(예: "http://localhost:4173"). 운영에서는 비워 둔다.
+EXTRA_ORIGINS = ""
+MODEL = "claude-opus-5-5"
+EFFORT = "medium"
+MAX_TOKENS = "8000"
+RATE_PER_HOUR = "30"
+
+[observability]
+enabled = true
+
+[env.login]
+name = "rtcom-ai-login"
+
+[env.login.vars]
+ROLE = "login"
+SITE_URL = "https://seoulav.github.io/rtcom-configurator/"
+ALLOWED_EMAIL_DOMAINS = "seoulav1.co.kr"
+EXTRA_ORIGINS = ""
+TOKEN_HOURS = "12"
