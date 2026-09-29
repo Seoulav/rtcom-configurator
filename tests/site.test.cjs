@@ -19,7 +19,7 @@ test('Pretendard Variable font and its OFL license are present and referenced by
 test('index.html is a configurator-only page that keeps the legacy anchors',()=>{
   const html=read('index.html');
   for(const id of ['rtcom-design','matrix-configurator','print-report','rtcom-assets'])assert.match(html,new RegExp(`id="${id}"`));
-  // 0.140 AI 검색(사내 베타) 스크립트는 라우터보다 먼저 #ai-token을 읽도록 맨 앞에 둔다(docs/implementation/AI_SEARCH_BETA.md).
+  // 0.142 AI 검색(사내 베타) 스크립트는 라우터보다 먼저 #ai-token을 읽도록 맨 앞에 둔다(docs/implementation/AI_SEARCH_BETA.md).
   assert.deepEqual([...html.matchAll(/<script src="([^"]+)"/g)].map(match=>match[1]),['src/ai-search.js',...runtimeScripts]);
   assert.doesNotMatch(html,/data-route-view|data-route-link|equipment-library|\.pdf/);
   assert.match(html,/<a class="rt-portal-link" href="https:\/\/seoulav\.github\.io\/AV-Portal\/" target="_blank" rel="noopener">/);
@@ -31,7 +31,7 @@ test('runtime code has no in-app navigation that would break relative asset path
     const calls=[...read(file).matchAll(/(pushState|replaceState)\(([^)]*)\)/g)];
     for(const call of calls)assert.match(call[2],/,'',location\.href$/,`${file} must keep the document URL (${call[0]})`);
   }
-  // 0.140 AI 검색은 ?ai=beta·#ai-token=을 지울 때 경로(location.pathname)는 그대로 둔다(상대 경로 자산이 깨지지 않게).
+  // 0.142 AI 검색은 ?ai=beta·#ai-token=을 지울 때 경로(location.pathname)는 그대로 둔다(상대 경로 자산이 깨지지 않게).
   for(const call of read('src/ai-search.js').matchAll(/replaceState\(([^;]*?)\);/g))assert.match(call[1],/^null,'',location\.pathname\+/,call[0]);
   assert.doesNotMatch(read('src/ai-search.js'),/pushState/);
 });

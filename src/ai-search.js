@@ -1,4 +1,4 @@
-/* 0.140 RTCOM AI 검색(사내 베타). 공개 사이트에는 버튼이 보이지 않고, 주소 끝에 ?ai=beta를 붙여 한 번 연 브라우저에만 "AI 검색 β" 버튼이 생긴다.
+/* 0.142 RTCOM AI 검색(사내 베타). 공개 사이트에는 버튼이 보이지 않고, 주소 끝에 ?ai=beta를 붙여 한 번 연 브라우저에만 "AI 검색 β" 버튼이 생긴다.
    질문은 Cloudflare Worker(workers/ai-search)로만 가며, 회사 메일 인증(Cloudflare Access)과 허용 명단을 통과해 받은 서명 토큰이 있어야 답한다.
    API 키는 Worker에만 있다. 근거·설정 절차: docs/implementation/AI_SEARCH_BETA.md */
 (function(){

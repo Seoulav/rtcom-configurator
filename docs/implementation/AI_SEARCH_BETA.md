@@ -1,4 +1,4 @@
-# RTCOM AI 검색 — 사내 베타 (0.140.0)
+# RTCOM AI 검색 — 사내 베타 (0.142.0)
 
 ## 1. 요청과 결정
 
@@ -131,7 +131,7 @@ Cloudflare와 Anthropic 화면 문구는 개편으로 조금 다를 수 있습�
 ## 7. 되돌리기
 
 - **개인 브라우저에서 버튼 끄기:** `?ai=off`를 붙여 엽니다.
-- **사이트에서 제거:** `index.html`의 `src/ai-search.js` 태그, `scripts/package-site.cjs`의 두 줄(`src/ai-search.js`, `data/ai-context.json`), `src/styles.css` 끝의 0.140 블록을 지운 뒤 배포합니다. 구성기 저장 데이터(`rtcom.configuration.v1`)와는 무관합니다.
+- **사이트에서 제거:** `index.html`의 `src/ai-search.js` 태그, `scripts/package-site.cjs`의 두 줄(`src/ai-search.js`, `data/ai-context.json`), `src/styles.css` 끝의 0.142 블록을 지운 뒤 배포합니다. 구성기 저장 데이터(`rtcom.configuration.v1`)와는 무관합니다.
 - **서버 제거:** `npx wrangler delete` 및 `npx wrangler delete --env login`을 실행하고, Access 앱과 API 키를 삭제합니다.
 
 ## 8. AV Portal로 옮길 때
@@ -148,7 +148,7 @@ Cloudflare와 Anthropic 화면 문구는 개편으로 조금 다를 수 있습�
   - 실제 건당 토큰
 - **2단계 후보:** 구성안을 구성기에 바로 불러오기(구조화 출력 JSON).
 
-## 9. 검증(0.140.0)
+## 9. 검증(0.142.0)
 
 - **단위 테스트** `tests/ai-search.test.cjs` 8건, 네트워크 없이 실행합니다.
   - 토큰 위조·만료

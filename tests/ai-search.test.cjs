@@ -1,4 +1,4 @@
-// 0.140 AI 검색(사내 베타): Worker 인증(Access JWT·서명 토큰·허용 명단)·질문 중계·공개 자료 묶음을 네트워크 없이 검사한다.
+// 0.142 AI 검색(사내 베타): Worker 인증(Access JWT·서명 토큰·허용 명단)·질문 중계·공개 자료 묶음을 네트워크 없이 검사한다.
 const test=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
@@ -30,7 +30,7 @@ function fakeClient({events=[{type:'content_block_delta',delta:{type:'text_delta
 const contextFetch=async url=>url.endsWith('data/ai-context.json')?new Response(JSON.stringify({schema:'rtcom.ai-context.v1',sha256:'abc',text:'# 알티컴 공개 제품 데이터'}),{status:200}):new Response('no',{status:404});
 const readLines=async response=>(await response.text()).trim().split('\n').map(line=>JSON.parse(line));
 
-test('0.140 AI 검색: 서명 토큰은 위조·만료·다른 비밀값을 거부한다',async()=>{
+test('0.142 AI 검색: 서명 토큰은 위조·만료·다른 비밀값을 거부한다',async()=>{
   const {issueToken,verifyToken}=await load();
   const now=Date.now(),token=await issueToken('Sales1@seoulav1.co.kr',SECRET,now,12);
   assert.deepEqual(await verifyToken(token,SECRET,now),{email:'sales1@seoulav1.co.kr',exp:now+12*3600*1000});
@@ -43,7 +43,7 @@ test('0.140 AI 검색: 서명 토큰은 위조·만료·다른 비밀값을 거�
   await assert.rejects(()=>issueToken('a@seoulav1.co.kr','short'),/32/);
 });
 
-test('0.140 AI 검색: 영업팀 도메인(seoulav1.co.kr)과 허용 명단을 모두 만족해야 들어온다',async()=>{
+test('0.142 AI 검색: 영업팀 도메인(seoulav1.co.kr)과 허용 명단을 모두 만족해야 들어온다',async()=>{
   const {emailAllowed}=await load();
   assert.equal(emailAllowed('sales1@seoulav1.co.kr',baseEnv()),true);
   assert.equal(emailAllowed('SALES2@SEOULAV1.CO.KR',baseEnv()),true);
@@ -56,7 +56,7 @@ test('0.140 AI 검색: 영업팀 도메인(seoulav1.co.kr)과 허용 명단을 �
   assert.doesNotMatch(toml,/sk-ant|ANTHROPIC_API_KEY\s*=|TOKEN_SECRET\s*=|ALLOWED_EMAILS\s*=/,'비밀값·허용 명단은 wrangler.toml에 적지 않는다');
 });
 
-test('0.140 AI 검색: Cloudflare Access JWT를 팀 공개키·aud·iss·만료로 다시 검증한다',async()=>{
+test('0.142 AI 검색: Cloudflare Access JWT를 팀 공개키·aud·iss·만료로 다시 검증한다',async()=>{
   const {verifyAccessJwt,resetCaches}=await load();resetCaches();
   const {sign,fetchImpl,calls}=await accessFixture();
   const env=baseEnv({ACCESS_TEAM_DOMAIN:TEAM,ACCESS_AUD:AUD});
@@ -72,7 +72,7 @@ test('0.140 AI 검색: Cloudflare Access JWT를 팀 공개키·aud·iss·만료�
   assert.equal(await verifyAccessJwt(null,env,fetchImpl),null);
 });
 
-test('0.140 AI 검색: 로그인 Worker는 명단 확인 뒤 구성기 창에만 토큰을 넘긴다',async()=>{
+test('0.142 AI 검색: 로그인 Worker는 명단 확인 뒤 구성기 창에만 토큰을 넘긴다',async()=>{
   const {handle,verifyToken,resetCaches}=await load();resetCaches();
   const {sign,fetchImpl}=await accessFixture();
   const env=baseEnv({ROLE:'login',ACCESS_TEAM_DOMAIN:TEAM,ACCESS_AUD:AUD,EXTRA_ORIGINS:'http://localhost:4173'});
@@ -91,7 +91,7 @@ test('0.140 AI 검색: 로그인 Worker는 명단 확인 뒤 구성기 창에만
   assert.equal((await handle(new Request('https://rtcom-ai-login.example.workers.dev/api/ask'),env,{fetch:fetchImpl})).status,404,'로그인 Worker는 질문을 받지 않는다');
 });
 
-test('0.140 AI 검색: API Worker는 origin·토큰·명단을 확인하고 답을 NDJSON으로 흘려 보낸다',async()=>{
+test('0.142 AI 검색: API Worker는 origin·토큰·명단을 확인하고 답을 NDJSON으로 흘려 보낸다',async()=>{
   const {handle,issueToken,resetCaches,SYSTEM_PROMPT}=await load();resetCaches();
   const env=baseEnv({ROLE:'api'});
   const token=await issueToken('sales1@seoulav1.co.kr',SECRET);
@@ -124,7 +124,7 @@ test('0.140 AI 검색: API Worker는 origin·토큰·명단을 확인하고 답�
   assert.doesNotMatch(JSON.stringify(params),/sk-ant/);
 });
 
-test('0.140 AI 검색: 거절·API 오류·입력 오류·시간당 한도를 사용자 말로 알린다',async()=>{
+test('0.142 AI 검색: 거절·API 오류·입력 오류·시간당 한도를 사용자 말로 알린다',async()=>{
   const {handle,issueToken,resetCaches,parseAsk}=await load();resetCaches();
   const env=baseEnv({ROLE:'api',RATE_PER_HOUR:'2'});
   const token=await issueToken('sales1@seoulav1.co.kr',SECRET);
@@ -145,7 +145,7 @@ test('0.140 AI 검색: 거절·API 오류·입력 오류·시간당 한도를 �
   assert.equal(noContext.status,503);
 });
 
-test('0.140 AI 검색: 공개 자료 묶음은 전 제품·구성기 카탈로그를 담고 좌표·출처는 빼며 항상 같은 결과를 낸다',()=>{
+test('0.142 AI 검색: 공개 자료 묶음은 전 제품·구성기 카탈로그를 담고 좌표·출처는 빼며 항상 같은 결과를 낸다',()=>{
   const a=buildAiContext(),b=buildAiContext();
   assert.equal(a.sha256,b.sha256,'같은 데이터면 같은 글(프롬프트 캐시 유지)');
   const index=JSON.parse(fs.readFileSync(path.join(__dirname,'../data/products/index.json'),'utf8'));
@@ -158,7 +158,7 @@ test('0.140 AI 검색: 공개 자료 묶음은 전 제품·구성기 카탈로�
   assert.ok(a.text.length<120000,`자료 묶음이 너무 크다: ${a.text.length}`);
 });
 
-test('0.140 AI 검색: 공개 사이트에는 숨은 버튼 스크립트만 싣고 Worker 코드는 배포하지 않는다',()=>{
+test('0.142 AI 검색: 공개 사이트에는 숨은 버튼 스크립트만 싣고 Worker 코드는 배포하지 않는다',()=>{
   const read=file=>fs.readFileSync(path.join(__dirname,'..',file),'utf8');
   const html=read('index.html');
   assert.ok(html.indexOf('src/ai-search.js')>0&&html.indexOf('src/ai-search.js')<html.indexOf('src/catalog.js'),'라우터보다 먼저 #ai-token을 읽도록 맨 앞');

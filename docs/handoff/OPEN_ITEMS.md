@@ -2,7 +2,7 @@
 
 새 세션은 이 목록을 먼저 확인합니다. 처리한 항목은 지우고, CHANGELOG에 버전과 함께 남깁니다.
 
-## AI 검색 사내 베타(0.140) — 사용자 설정 대기
+## AI 검색 사내 베타(0.142) — 사용자 설정 대기
 
 `docs/implementation/AI_SEARCH_BETA.md` §5 절차를 사용자가 직접 합니다. Claude는 API 키·비밀값을 받지 않습니다.
 - [ ] Anthropic Console: Workspace·API 키 발급, 월 지출 한도 설정

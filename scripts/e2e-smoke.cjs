@@ -912,7 +912,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       }
       check('입출력 단자 표에서 방향("입력"·"출력"·"입출력")·수량(숫자) 칸이 31개 제품·6개 화면 폭(320~1024px)에서 두 줄로 쪼개지지 않음',wrappedFixedCells.length===0,JSON.stringify(wrappedFixedCells));
     }
-    // 0.140 AI 검색(사내 베타): 기본 공개 화면에는 버튼이 없고 ?ai=beta로 켠 브라우저에만 보인다. 서버는 가짜(route)로 대신해 로그인 토큰 수신·질문·답 표시를 확인한다.
+    // 0.142 AI 검색(사내 베타): 기본 공개 화면에는 버튼이 없고 ?ai=beta로 켠 브라우저에만 보인다. 서버는 가짜(route)로 대신해 로그인 토큰 수신·질문·답 표시를 확인한다.
     {
       const plain=await browser.newPage({viewport:{width:1280,height:900}});
       await plain.goto(home,{waitUntil:'networkidle'});

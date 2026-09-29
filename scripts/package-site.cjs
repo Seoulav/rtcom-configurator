@@ -33,7 +33,7 @@ fs.writeFileSync(path.join(output,'404.html'),`<!doctype html>
 <html lang="ko"><head><meta charset="utf-8"><meta name="robots" content="noindex"><title>RTCOM 매트릭스 구성기로 이동</title><script>(function(){var base=['/rtcom-configurator/','/rtcom-av-design/'].find(function(item){return location.pathname.indexOf(item)===0})||'/';location.replace(base+location.hash)})()</script></head>
 <body><p>요청한 주소가 없습니다. <a href="/rtcom-configurator/">매트릭스 구성기로 이동</a></p></body></html>
 `);
-// 0.140 AI 검색(사내 베타) Worker가 읽는 공개 자료 묶음. data/products와 구성기 카탈로그에서 매번 새로 만든다(scripts/build-ai-context.cjs).
+// 0.142 AI 검색(사내 베타) Worker가 읽는 공개 자료 묶음. data/products와 구성기 카탈로그에서 매번 새로 만든다(scripts/build-ai-context.cjs).
 // Worker 코드(workers/ai-search)와 설정 문서는 배포하지 않는다.
 fs.writeFileSync(path.join(output,'data/ai-context.json'),JSON.stringify(require('./build-ai-context.cjs').buildAiContext()));
 fs.writeFileSync(path.join(output,'.nojekyll'),'');

@@ -1,4 +1,4 @@
-// 0.140 AI 검색(사내 베타)용 공개 자료 묶음. 공개 제품정보(data/products)와 구성기 카탈로그(src/catalog.js·card-specs.js·core.js)만
+// 0.142 AI 검색(사내 베타)용 공개 자료 묶음. 공개 제품정보(data/products)와 구성기 카탈로그(src/catalog.js·card-specs.js·core.js)만
 // 글로 줄여 dist/data/ai-context.json에 넣는다. 사진 좌표(portMap)·출처 표기·검토 기록처럼 답에 필요 없는 항목은 뺀다.
 // 단가·노하우 등 회사 내부 정보는 이 저장소에 없으므로 여기에도 들어가지 않는다(docs/implementation/AI_SEARCH_BETA.md).
 // 같은 데이터면 글자 하나까지 같은 결과가 나와야 Claude 프롬프트 캐시가 계속 맞는다(정렬 고정, 날짜·난수 금지).
