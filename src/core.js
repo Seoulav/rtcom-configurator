@@ -298,14 +298,93 @@
     if (data.catalogVersion!==catalogVersion) throw new Error('카탈로그 버전이 다릅니다. 현재 버전과 검토한 뒤 가져와야 합니다.');
     return checkState(data.state);
   }
-  function csv(input) {
-    const state=checkState(input);
-    const cell=value=>'"'+String(value).replace(/^[=+@-]/,"'$&").replace(/"/g,'""')+'"';
-    const completion=completionFor(state);
-    const rows=[['상태','구분','모델','수량','비고'],
-      ['UNVERIFIED_DRAFT','슬롯 완성도',`카드 ${completion.cards} · 블랭크 ${completion.blanks} · 빈칸 ${completion.empty} / 전체 ${completion.total}`,completion.total,completion.empty?'빈 슬롯이 있습니다. 카드나 블랭크 커버로 채워야 완성됩니다.':'모든 슬롯을 채웠습니다.'],
-      ...bom(state).map(row=>['UNVERIFIED_DRAFT',row.category,row.model,row.quantity,'미검증 검토용 · 케이블/전원/기본 포함품 미확정'])];
-    return rows.map(row=>row.map(cell).join(',')).join('\r\n');
+  // 0.172 CSV(사용자 요청 2026-09-29 06 내보내기 설계 검토): 엑셀 견적용으로 행마다 반복되던 영문 상태 코드(UNVERIFIED_DRAFT)를 빼고 비고·장착 위치 열을 더한다. 초안 표시는 맨 아래 안내 행에 한 번만 둔다.
+  function csvRows(input) {
+    const state=checkState(input), slots=slotsFor(state), completion=completionFor(state);
+    const label=id=>(slots.find(item=>item.id===id)?.label||id).replace(' 슬롯 ',' ');
+    const where=(model,category)=>{
+      const found=[];
+      for (const [slot,id] of Object.entries(state.placements)) if (id===model||(category==='마감재'&&id==='BLANK')) found.push(label(slot));
+      for (const [slot,link] of Object.entries(state.links||{})) {
+        if (!link?.device||!link.count) continue;
+        const pair=link.device===psePair;
+        if (pair!==category.startsWith('HDMI 연장')) continue;
+        if ((pair?['XDM-CTR100 PSE','XDM-CTR100']:[link.device.split(' · ')[0]]).includes(model)) found.push(label(slot));
+      }
+      return found.join(', ');
+    };
+    const cardNote=model=>{const item=card(state,model);return item?`${item[1]} · ${item[2]}ch`:''};
+    const split=model=>{const match=/^(.*?)(?: \((.*?)\))?(?: · (.*))?$/.exec(model);return [match[1],[match[2],match[3]].filter(Boolean).join(' · ')]};
+    return [['구분','모델','비고','수량','장착 위치'],
+      ...bom(state).map(row=>{const [model,note]=split(row.model);return [row.category,model,note||cardNote(model),row.quantity,row.category==='메인프레임'?'':where(model,row.category)]}),
+      [],
+      ['안내','검토용 초안',`슬롯 완성도: 카드 ${completion.cards} · 블랭크 ${completion.blanks} · 빈칸 ${completion.empty} / 전체 ${completion.total}`,'',''],
+      ['안내','미포함','케이블, 전원 코드, 기본 포함품은 목록에 없습니다. 발주 전에 별도로 확인하세요.','','']];
   }
-  scope.RtCore={fillTargets,moveCard,initial,checkState,choices,defaultLink,psePair,slotPlan,syncPorts,slotsFor,requirementSummary,validate,bom,document,parse,csv,completionFor,fillBlanks,catalogVersion,schemaVersion,signalTypes};
+  // 0.173 AV 빌더(https://seoul-visual-tech.github.io/av-system-builder/) "가져오기 → 구성도 JSON"용 파일(사용자 결정 2026-09-29 "A로 전송기 포함해서 진행해줘").
+  // AV 빌더 구성도 형식: {nodes:[{id,type:'equipment',position,data:장비}], edges:[{id,source,target,sourceHandle,targetHandle,type:'smoothstep',style,data:{lineTypeId}}]}.
+  // 장비 = {id,category,name,model,manufacturer,series,inputs,outputs,bidirectional}, 포트 = {id,label,type,direction}. 선·포트 종류는 AV 빌더 기본값(video=HDMI·network=LAN·sdi=SDI).
+  // 매트릭스 1대(카드 포트를 "HDMI #1-1 PC"처럼 슬롯·포트·신호명으로) + 04에서 연결한 채널마다 전송기 상자와 연결선. 장비 id는 모델별로 고정해 여러 번 불러와도 AV 빌더 장비 목록이 늘지 않게 한다.
+  function avBuilder(state) {
+    const abbr=text=>{const t=String(text||'').split(' · ')[0];return /HDMI/.test(t)?'HDMI':/DisplayPort/.test(t)?'DP':/CATx/.test(t)?'CATx':/HDBaseT/.test(t)?'HDBT':/광/.test(t)?'FIBER':/SDI/.test(t)?'SDI':'ETC'};
+    const portType=kind=>kind==='HDMI'||kind==='DP'?'video':kind==='SDI'?'sdi':'network';
+    const colors={video:'#ef4444',network:'#22c55e',sdi:'#374151'};
+    const linkName=kind=>kind==='FIBER'?'광':kind==='CATx'?'CATx':'HDBaseT';
+    const slug=text=>String(text).replace(/[^A-Za-z0-9]+/g,'-').replace(/^-|-$/g,'');
+    const ports=plain(state.portAssignments)?state.portAssignments:{};
+    const slots=slotsFor(state),matrix={id:`rtcom-${slug(state.model||state.family)}`,category:'video',name:`${state.family} 매트릭스`,model:state.model||state.family,manufacturer:'RTCOM',series:`${state.family} 시리즈`,inputs:[],outputs:[],bidirectional:[],imageUrl:''};
+    const nodes=[],edges=[],devices=[];
+    for (const slot of slots) {
+      const selected=card(state,state.placements?.[slot.id]);
+      if (!selected) continue;
+      const kind=abbr(selected[1]),no=slot.id.split('-')[1],dir=slot.dir==='input'?'in':'out';
+      for (let index=1;index<=selected[2];index++) {
+        const name=String(ports[`${slot.id}:${index}`]?.assignedDevice||'').trim(),tag=`${kind} #${no}-${index}`;
+        const port={id:`${dir}-${slot.id}-${index}`,label:name?`${tag} ${name}`:tag,type:portType(kind),direction:dir};
+        (dir==='in'?matrix.inputs:matrix.outputs).push(port);
+        const link=state.links?.[slot.id];
+        if (link?.device&&index<=link.count) devices.push({slot,index,dir,kind,name,tag,port,device:link.device});
+      }
+    }
+    if (!matrix.inputs.length&&!matrix.outputs.length) return {nodes:[],edges:[],meta:{source:'RTCOM Configurator',model:state.model||'',empty:true}};
+    const box=(id,name,model,inputs,outputs)=>({id:`rtcom-${slug(model)}`,category:'video',name,model,manufacturer:'RTCOM',inputs,outputs,bidirectional:[],imageUrl:'',_node:id});
+    const p=(id,label,type,direction)=>({id,label,type,direction});
+    const edge=(source,sourceHandle,target,targetHandle,type,label)=>{edges.push({id:`rtcom_e${edges.length+1}`,source,target,sourceHandle,targetHandle,type:'smoothstep',animated:false,style:{stroke:colors[type],strokeWidth:2},data:{lineTypeId:type,label}})};
+    const left=[],right=[];
+    for (const item of devices) {
+      // 상자 이름은 "송신기"·"수신기"·"PSE"로 두고(불러오면 AV 빌더 장비 목록에 모델당 한 번만 추가됨), 신호명은 상자의 HDMI 포트 이름과 연결선 글자에 넣는다.
+      const who=item.name||item.tag,sig=item.name?` · ${item.name}`:` · ${item.tag}`,base=`rtcom_${item.slot.id}_${item.index}`,wire=linkName(item.kind);
+      const model=item.device===psePair?'':item.device.replace(' · ',' (')+(item.device.includes(' · ')?')':'');
+      if (item.device===psePair) {
+        // HDMI 카드 + XDM-CTR100 PSE(매트릭스 쪽) + XDM-CTR100(먼 쪽) 한 쌍, HDBaseT로 연장.
+        if (item.dir==='in') {
+          const far=box(`${base}_far`,'송신기','XDM-CTR100 (TX)',[p('in-hdmi-1',`HDMI In${sig}`,'video','in')],[p('out-hdbt-1','HDBaseT Out','network','out')]);
+          const pse=box(`${base}_pse`,'PSE 수신','XDM-CTR100 PSE (RX)',[p('in-hdbt-1','HDBaseT In','network','in')],[p('out-hdmi-1',`HDMI Out${sig}`,'video','out')]);
+          left.push([far,pse]);edge(far._node,'out-hdbt-1',pse._node,'in-hdbt-1','network','HDBaseT');edge(pse._node,'out-hdmi-1','rtcom_matrix',item.port.id,'video',who);
+        } else {
+          const pse=box(`${base}_pse`,'PSE 송신','XDM-CTR100 PSE (TX)',[p('in-hdmi-1',`HDMI In${sig}`,'video','in')],[p('out-hdbt-1','HDBaseT Out','network','out')]);
+          const far=box(`${base}_far`,'수신기','XDM-CTR100 (RX)',[p('in-hdbt-1','HDBaseT In','network','in')],[p('out-hdmi-1',`HDMI Out${sig}`,'video','out')]);
+          right.push([pse,far]);edge('rtcom_matrix',item.port.id,pse._node,'in-hdmi-1','video',who);edge(pse._node,'out-hdbt-1',far._node,'in-hdbt-1','network','HDBaseT');
+        }
+      } else if (item.dir==='in') {
+        const tx=box(`${base}_tx`,'송신기',model,[p('in-hdmi-1',`HDMI In${sig}`,'video','in')],[p('out-link-1',`${wire} Out`,'network','out')]);
+        left.push([tx]);edge(tx._node,'out-link-1','rtcom_matrix',item.port.id,'network',wire);
+      } else {
+        const rx=box(`${base}_rx`,'수신기',model,[p('in-link-1',`${wire} In`,'network','in')],[p('out-hdmi-1',`HDMI Out${sig}`,'video','out')]);
+        right.push([rx]);edge('rtcom_matrix',item.port.id,rx._node,'in-link-1','network',wire);
+      }
+    }
+    // 배치: 왼쪽 송신기 열(PSE는 한 칸 더 매트릭스 쪽), 가운데 매트릭스, 오른쪽 수신기 열. 상자 높이(약 165)가 겹치지 않게 줄 간격 190.
+    const row=190,height=Math.max(matrix.inputs.length,matrix.outputs.length)*28+120,mid=Math.max(left.length,right.length,1)*row/2-height/2;
+    const place=(item,x,y)=>{const {_node,...data}=item;nodes.push({id:_node,type:'equipment',position:{x,y},data})};
+    left.forEach((chain,i)=>chain.forEach((item,j)=>place(item,chain.length===2?(j===0?-640:-320):-320,i*row)));
+    nodes.push({id:'rtcom_matrix',type:'equipment',position:{x:80,y:Math.round(mid)},data:matrix});
+    right.forEach((chain,i)=>chain.forEach((item,j)=>place(item,chain.length===2?(j===0?560:880):560,i*row)));
+    return {nodes,edges,meta:{source:'RTCOM Configurator',format:'av-builder-diagram',model:state.model||'',family:state.family,createdAt:new Date().toISOString()}};
+  }
+  function csv(input) {
+    const cell=value=>'"'+String(value).replace(/^[=+@-]/,"'$&").replace(/"/g,'""')+'"';
+    return csvRows(input).map(row=>row.map(cell).join(',')).join('\r\n');
+  }
+  scope.RtCore={fillTargets,avBuilder,moveCard,initial,checkState,choices,defaultLink,psePair,slotPlan,syncPorts,slotsFor,requirementSummary,validate,bom,document,parse,csv,csvRows,completionFor,fillBlanks,catalogVersion,schemaVersion,signalTypes};
 })(globalThis);
