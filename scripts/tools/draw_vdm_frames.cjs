@@ -280,7 +280,7 @@ async function render(items){
     const png=path.join(tmp,`${item.name}.png`);
     await page.screenshot({path:png,clip:{x:0,y:0,width:pw,height:ph}});
     await page.close();
-    execFileSync('python3',['-c',`from PIL import Image;Image.open(${JSON.stringify(png)}).convert('RGB').save(${JSON.stringify(path.join(OUT,item.name+'.webp'))},'WEBP',quality=90,method=6)`]);
+    execFileSync(process.env.PYTHON||'python3',['-c',`from PIL import Image;Image.open(${JSON.stringify(png)}).convert('RGB').save(${JSON.stringify(path.join(OUT,item.name+'.webp'))},'WEBP',quality=90,method=6)`]);
     console.log(`${OUT}/${item.name}.webp ${pw}x${ph}`);
     if(item.input){
       const sc=r=>Array.isArray(r[0])?r.map(sc):r.map(v=>Math.round(v*k));
