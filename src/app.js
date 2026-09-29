@@ -190,7 +190,7 @@
       // 정면·후면을 함께 보여 준다. 후면 이미지 세로/가로 비율로 배치를 고른다 — 1.1 이하는 위아래(stack), 2.0 이하는 좌우(row),
       // 그보다 긴 대형 프레임(XDM-144·216, VDM-80X·128X·180X)만 예전처럼 정면/후면 버튼으로 한 장씩 본다(toggle).
       const aspect=rearInfo?rearInfo.size[1]/rearInfo.size[0]:0;
-      const duo=front&&rearInfo?(aspect>2?'':aspect>1.1?'row':'stack'):'';
+      const duo=front&&rearInfo?(aspect>1.1?'row':'stack'):''; // 0.137(사용자 요청 2026-09-29 "프레임 뒷면 없는 제품 VDM-80, 128,180"): 대형 프레임도 정면/후면 버튼 없이 좌우로 함께 보여 준다.
       const side=previewSide==='rear'&&rearInfo?'rear':'front';
       const img=side==='rear'?rearInfo.src:front;
       const kindOf=which=>(which==='front'?frontDrawings.has(previewModel):rearInfo?.kind==='그림')?'그림':'사진';
@@ -219,7 +219,9 @@
       const qtyMax=RtCore.fillTargets(state,slot.id,999).length;
       const choiceButton=c=>`<button type="button" class="rt-card-choice" data-card="${c[0]}" aria-pressed="${installed===c[0]}"><span class="rt-card-choice-plate"><img src="${cardAsset(c[0])}" alt="${c[0]} 카드 후면 판넬"></span><span class="rt-card-choice-copy"><strong>${c[0]}${cardBadge(c[0])}</strong><small>${esc(c[1])} · ${c[2]}채널</small><span>${esc(cardTip(c[0]))}</span></span><span class="rt-card-choice-state" aria-hidden="true">${installed===c[0]?'장착됨':'선택'}</span></button>`;
       // 0.70 카드별 수량: 카드 버튼 아래에 −/+ 수량 칸을 둔다(버튼 안에 버튼을 넣지 않도록 형제로 둔다). 합계는 채울 수 있는 칸 수(qtyMax)를 넘지 않는다.
-      const cardQty=c=>{const n=modalQtys[c[0]]||0,full=qtySum()>=qtyMax;return sameDirTotal>1?`<div class="rt-card-choice-qty"><span>${esc(c[0])} 수량</span><div class="rt-card-qty-stepper"><button type="button" data-card-qty-step="-1" data-qty-card="${c[0]}" aria-label="${c[0]} 수량 줄이기" ${n<=0?'disabled':''}>−</button><output data-qty-out="${c[0]}" aria-live="polite">${n}</output><button type="button" data-card-qty-step="1" data-qty-card="${c[0]}" aria-label="${c[0]} 수량 늘리기" ${full?'disabled':''}>+</button></div></div>`:''};
+      // 0.137(사용자 요청 2026-09-29 "입출력 선택 후 다시 들어갈때 기존 선택된 카드 수량이 보일 수 있게"): 스테퍼는 빈 슬롯에 새로 채울 수량이라 다시 열면 0이다. 이 방향 슬롯에 이미 장착된 같은 카드 장수를 "현재 N장 장착"으로 함께 보여 준다.
+      const haveQty=id=>others.filter(item=>state.placements[item.id]===id).length+(installed===id?1:0);
+      const cardQty=c=>{const n=modalQtys[c[0]]||0,full=qtySum()>=qtyMax,have=haveQty(c[0]);return sameDirTotal>1?`<div class="rt-card-choice-qty">${have?`<em class="rt-card-have" data-have-qty="${c[0]}">현재 ${have}장 장착</em>`:''}<span>${esc(c[0])} 수량</span><div class="rt-card-qty-stepper"><button type="button" data-card-qty-step="-1" data-qty-card="${c[0]}" aria-label="${c[0]} 수량 줄이기" ${n<=0?'disabled':''}>−</button><output data-qty-out="${c[0]}" aria-live="polite">${n}</output><button type="button" data-card-qty-step="1" data-qty-card="${c[0]}" aria-label="${c[0]} 수량 늘리기" ${full?'disabled':''}>+</button></div></div>`:''};
       // 0.79 상세 보기(사용자 요청 2026-09-28 "카드 선택창에도 상세보기 추가해"): 장착 버튼과 형제로 두어 누르면 카드 사양 창(openCardInfo)이 선택창 위에 뜬다.
       // 0.117 연동 전송기: 전송기와 짝을 이루는 카드(CIS·COS·FIS·FOS·HDMI 카드·SPX-COS12·VDM CAT/광 카드)는 카드 아래에서 전송기를 함께 고른다.
       // 고른 전송기는 카드를 장착할 때(선택·장착 버튼) 슬롯에 연결되고, 04 전송기에서 채널 수·거리를 다시 조정할 수 있다.
