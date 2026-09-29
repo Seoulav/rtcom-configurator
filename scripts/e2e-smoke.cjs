@@ -433,6 +433,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     const spxWidths={};
     for(const model of ['SPX-M810','SPX-M1620','SPX-M2472','SPX-M24120']){
       await page.click(`button[data-model="${model}"]`);await acceptConfirm();
+      await page.waitForFunction(()=>['front','rear'].every(side=>{const image=document.querySelector(`.rt-cg-preview img[data-cg-img="${side}"]`);return image&&image.complete&&image.naturalWidth>0}),null,{timeout:10000}).catch(()=>{});
       spxWidths[model]=await page.evaluate(()=>['front','rear'].map(side=>Math.round(document.querySelector(`.rt-cg-preview img[data-cg-img="${side}"]`).getBoundingClientRect().width)));
     }
     check('SPX-M810·M1620·M2472·M24120 02 미리보기에서 정면·후면 그림 폭이 같음(2px 이내)',Object.values(spxWidths).every(([front,rear])=>front>0&&Math.abs(front-rear)<=2),JSON.stringify(spxWidths));
