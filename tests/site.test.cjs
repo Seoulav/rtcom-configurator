@@ -417,3 +417,9 @@ test('0.132: 02 프레임 선택 미리보기 그림 높이는 랙 높이(U)에�
   const u=n=>Math.round(90+410*Math.log(n/2)/Math.log(20));
   assert.equal(u(2),90);assert.equal(u(40),500);assert.ok(u(3)<u(7)&&u(7)<u(12)&&u(38)<=u(40));
 });
+
+test('검토 결과에 내부 근거 문서 링크를 넣지 않는다(0.149)', () => {
+  for (const file of ['src/app.js', 'src/workspace.inc.js']) {
+    assert.ok(!read(file).includes('docs/evidence/RTCOM_MATRIX_EVIDENCE_AND_GAPS.md'), `${file} must not link the internal evidence ledger`);
+  }
+});
