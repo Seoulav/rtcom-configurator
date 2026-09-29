@@ -775,6 +775,14 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await wallCard88.locator('[data-layout-chip]',{hasText:'2×5'}).click();
     const wall=await wallCard88.evaluate(card=>({text:card.querySelector('p')?.textContent||'',chips:[...card.querySelectorAll('[data-layout-chip]')].map(b=>b.textContent).join('|'),cells:card.querySelectorAll('[data-layout-preview] svg rect.rt-pg-cell').length}));
     check('QMS-88UX 06 WALL 카드에 2×2 월 2개·3×3·2×5가 적혀 있고 레이아웃 칩 4종(2×2 + 2×2는 8칸, 2×5는 10칸)으로 미리보기됨',/2×2 월 최대 2개/.test(wall.text)&&/3×3·2×5/.test(wall.text)&&wall.chips==='2×2|2×2 + 2×2|3×3|2×5'&&wallTwo===8&&wall.cells===10,JSON.stringify({wall,wallTwo}));
+    // 0.158(사용자 요청 2026-09-29 "1TO1, ALL, 임의스위칭 이거는 빼고 그냥 크로스포인트 이미지만"): MATRIX 카드에는 칩 없이 크로스포인트 그림 한 장(QMS-44UX 출력 4칸, QMS-88UX 출력 8칸).
+    const matrixViews={};
+    for(const id of ['qms-44ux','qms-88ux']){
+      await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
+      await page.waitForSelector('.rt-pg-layout-matrix');
+      matrixViews[id]=await page.locator('.rt-pg-vmode-card',{hasText:'MATRIX'}).first().evaluate(card=>({chips:card.querySelectorAll('[data-layout-chip]').length,outs:card.querySelectorAll('svg.rt-pg-layout-matrix rect.rt-pg-cell').length,lines:card.querySelectorAll('svg.rt-pg-layout-matrix path[stroke-width="2.4"]').length}));
+    }
+    check('QMS-44UX·88UX 06 MATRIX 카드에 칩 없이 크로스포인트 그림(출력 4·8칸, 선 4·8개)이 나옴',matrixViews['qms-44ux'].chips===0&&matrixViews['qms-44ux'].outs===4&&matrixViews['qms-44ux'].lines===4&&matrixViews['qms-88ux'].chips===0&&matrixViews['qms-88ux'].outs===8&&matrixViews['qms-88ux'].lines===8,JSON.stringify(matrixViews));
     // 0.62 — videoModes(QMS) 카드 4개+레이아웃 칩 12개까지 있어 05 옆 좁은 칸에 넣으면 글자가 카드 밖으로 넘쳤다(사용자 확인 2026-09-27 "06화면모드 짤린다"). 전체 폭 아래로 되돌려 카드 안에서 텍스트가 넘치지 않는지 확인.
     for(const id of ['qms-88ux','qms-44ux']){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});

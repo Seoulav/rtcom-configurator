@@ -620,6 +620,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 /* 0.147: 분할 예시를 모니터·비디오 월 그림으로 그린다(색·글자는 SVG 안에서 지정). 비디오 월은 대수에 따라 가로·세로로 길어지므로 높이도 제한한다. */
 #rtcom-design .rt-pg-layout-preview svg{display:block;width:100%;max-width:200px;height:auto;max-height:150px;filter:drop-shadow(0 4px 10px rgba(31,37,50,.18))}
 #rtcom-design .rt-pg-layout-preview svg.rt-pg-layout-wall{max-width:230px}
+#rtcom-design .rt-pg-layout-preview svg.rt-pg-layout-matrix{max-width:340px;max-height:260px;filter:none}
 #rtcom-design .rt-pg-layout-preview small{font-size:10.5px;color:var(--pg-muted);font-weight:700}
 #rtcom-design .rt-pg-layout-missing{width:100%;max-width:200px;aspect-ratio:200/134;display:grid;place-items:center;background:var(--pg-field-fill);border-radius:8px;color:var(--pg-muted);font-size:10.5px}
 @media(max-width:720px){#rtcom-design .rt-pg-vmode{grid-template-columns:1fr}#rtcom-design .rt-pg-vmode-cards{grid-template-columns:1fr}}
