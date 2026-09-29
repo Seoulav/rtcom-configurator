@@ -987,6 +987,13 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-card-info-chip:hover,#rtcom-design .rt-card-info-chip:focus-visible{border-color:#007AFF;background:#eef5ff;outline:none}
 #rtcom-design .rt-card-info-chip strong{font-size:12px;white-space:nowrap}
 #rtcom-design .rt-card-info-chip small{color:var(--rt-muted);font-size:10.5px}
+/* 0.157 카드 끌어 놓기 샘플: 끌 수 있는 카드 버튼, 끄는 동안 놓을 수 있는 슬롯(같은 방향)만 점선 강조·나머지는 흐리게 */
+#rtcom-design .rt-card-palette .rt-card-info-chip{cursor:grab}
+#rtcom-design .rt-card-palette .rt-card-info-chip:active{cursor:grabbing}
+#rtcom-design .rt-card-info-chip.rt-card-info-chip-dragging{opacity:.5;border-style:dashed}
+#rtcom-design.rt-palette-drag-input .rt-rack-slot[data-slot^="in-"],#rtcom-design.rt-palette-drag-output .rt-rack-slot[data-slot^="out-"]{outline:2px dashed rgba(57,120,238,.75);outline-offset:-2px}
+#rtcom-design.rt-palette-drag-input .rt-rack-slot[data-slot^="out-"],#rtcom-design.rt-palette-drag-output .rt-rack-slot[data-slot^="in-"]{opacity:.35}
+#rtcom-design.rt-palette-drag-input .rt-rack-slot.rt-rack-slot-drop,#rtcom-design.rt-palette-drag-output .rt-rack-slot.rt-rack-slot-drop{outline:3px solid #007AFF;outline-offset:-3px}
 #rtcom-design .rt-card-info-modal{width:min(640px,calc(100vw - 24px));max-height:calc(100vh - 40px);padding:0;border:0;border-radius:24px;background:#fff;color:var(--rt-ink);box-shadow:0 30px 80px #0f172a59;overflow:auto}
 #rtcom-design .rt-card-info-modal::backdrop{background:#0f172aa6;backdrop-filter:blur(3px)}
 #rtcom-design .rt-card-info-sub{margin:4px 0 0;color:var(--rt-muted);font-size:13px}
