@@ -288,7 +288,8 @@
       },
       {
         "name": "WALL",
-        "summary": "최대 3×3 비디오월, 베젤 조정"
+        "summary": "2×2 월 최대 2개, 또는 월 1개 최대 3×3·2×5, 베젤 조정",
+        "page": "19"
       },
       {
         "name": "QUAD",
@@ -299,7 +300,7 @@
       },
       {
         "name": "DUAL",
-        "summary": "출력 9·10번 멀티뷰 설정에서 한 화면 2분할(PBP)·PIP 구성",
+        "summary": "출력 9·10번 멀티뷰 설정의 2분할(PBP)·PIP 레이아웃",
         "detail": "멀티뷰 설정에서 그룹(Q1·Q2)별로 2분할 레이아웃 선택",
         "page": "20–21",
         "layouts": ["Horizontal PBP","Vertical PBP","Quad PBP, PIP"]

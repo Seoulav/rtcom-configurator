@@ -377,9 +377,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     // 0.33 — 제품정보 글래스 디자인(rt-pg-*)으로 목록·상세 마크업이 바뀌었다.
     await page.click('a[data-view-tab="products"]');
     await page.waitForSelector('.rt-pg-gridcard');
-    check('제품정보 탭을 누르면 구성기를 숨기고 제품 32종 목록(0.64 SPX-TX/RX, 0.72 XDM-PSU, 0.121 HD-D102U Rack마운트, 0.151 SPX-R6 포함)을 표시',await page.locator('.rt-configurator-view').isHidden()&&await page.locator('.rt-pg-gridcard').count()===32);
+    check('제품정보 탭을 누르면 구성기를 숨기고 제품 32종 목록(0.64 SPX-TX/RX, 0.72 XDM-PSU, 0.121 HD-D102U Rack마운트, 0.154 SPX-R6 포함)을 표시',await page.locator('.rt-configurator-view').isHidden()&&await page.locator('.rt-pg-gridcard').count()===32);
     await page.click('[data-product-filter="extender"]');
-    check('전송기 분류는 15종(0.64 SPX-TX/RX, 0.72 XDM-PSU, 0.151 SPX-R6 포함)',await page.locator('.rt-pg-gridcard').count()===15);
+    check('전송기 분류는 15종(0.64 SPX-TX/RX, 0.72 XDM-PSU, 0.154 SPX-R6 포함)',await page.locator('.rt-pg-gridcard').count()===15);
     await page.click('[data-product-filter="all"]');
     await page.fill('[data-product-search]','QMS');
     check('검색어 QMS로 일체형 매트릭스 2종이 남음',await page.locator('.rt-pg-gridcard').count()===2);
@@ -531,7 +531,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.waitForSelector('#rt-pg-title');
     const spxrt=await page.evaluate(()=>({maps:document.querySelectorAll('.rt-pg-portmap svg image, .rt-pg-portmap image').length||document.querySelectorAll('[data-pm-map], .rt-pg-pm').length,rows:document.querySelectorAll('.rt-pg-dip .rt-pg-dip-row').length,combos:document.querySelectorAll('.rt-pg-dip-combos figure').length,down:document.querySelector('.rt-pg-dip h2')?.textContent.includes('아래쪽이 ON'),flow:[...document.querySelectorAll('.rt-pg-svg-wrap svg')].map(s=>s.textContent).join(' '),broken:[...document.images].filter(i=>i.complete&&!i.naturalWidth).length}));
     check('SPX-TX/RX 상세에 딥 스위치 3행(1·2번, 3·4번 조합 4칸, 아래쪽이 ON)과 CATx 신호 흐름이 나오고 깨진 사진이 없음',spxrt.rows===3&&spxrt.combos===4&&spxrt.down&&spxrt.flow.includes('CATx')&&!spxrt.flow.includes('HDBaseT')&&spxrt.broken===0,JSON.stringify({...spxrt,flow:spxrt.flow.slice(0,80)}));
-    // 0.151 SPX-R6(사용자 제공 사양서): 전면·후면 평면 그림 단자 지도 2장(번호 5·4개), 모듈 6개 → SPX-RX 6대 Signal Flow, 로고 사진 없음.
+    // 0.154 SPX-R6(사용자 제공 사양서): 전면·후면 평면 그림 단자 지도 2장(번호 5·4개), 모듈 6개 → SPX-RX 6대 Signal Flow, 로고 사진 없음.
     await page.goto(`${home}#products/spx-r6`,{waitUntil:'networkidle'});
     await page.waitForSelector('#rt-pg-title');
     const r6=await page.evaluate(()=>{const s=[...document.querySelectorAll('section')].find(s=>/Port Map/i.test(s.querySelector('h2')?.textContent||''));const flow=[...document.querySelectorAll('.rt-pg-svg-wrap svg')].map(x=>x.textContent).join(' ');return {title:document.querySelector('#rt-pg-title')?.textContent,front:!!s?.innerHTML.includes('spx-r6-front-art.webp'),rear:!!s?.innerHTML.includes('spx-r6-rear-art.webp'),ports:[...(s?.querySelectorAll('.rt-pg-ports')||[])].map(x=>x.children.length),rx:(flow.match(/SPX-RX/g)||[]).length,module6:flow.includes('모듈 6'),broken:[...document.images].filter(i=>i.complete&&!i.naturalWidth).length,overflow:document.documentElement.scrollWidth>innerWidth}});
@@ -545,7 +545,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     const obuxPm=await page.evaluate(()=>{const s=[...document.querySelectorAll('section')].find(s=>/Port Map/.test(s.querySelector('h2')?.textContent||''));return {tx:!!s?.innerHTML.includes('obux-1c-tx-front-rear.webp'),rx:!!s?.innerHTML.includes('obux-1c-rx-front-rear.webp'),ports:[...(s?.querySelectorAll('.rt-pg-ports')||[])].map(x=>x.children.length)}});
     // 2026-09-28 제조사 문서 PDF: documents[].file 수만큼 "제품 목록" 옆에 버튼(새 탭 보기 + 내려받기)이 나오고 링크가 PDF로 열림. 등록 파일이 없는 제품은 버튼 없음.
     // 0.105 샘플(HD-13U 카탈로그만): 새 탭 링크 대신 팝업(button[data-doc-preview])이고, 클릭하면 dialog.rt-doc-zoom이 PDF.js로 그 파일을 그린다(0.112).
-    // 0.151: SPX-R6 사양서(카탈로그)·SPX 공통 매뉴얼·SPX-TX/RX 매뉴얼 공개(사용자 결정 2026-09-29)도 같은 방식으로 확인한다.
+    // 0.154: SPX-R6 사양서(카탈로그)·SPX 공통 매뉴얼·SPX-TX/RX 매뉴얼 공개(사용자 결정 2026-09-29)도 같은 방식으로 확인한다.
     for(const id of ['hd-13u','hd-104u','spx-r6','spx-rx-tx','spx']){
       const expected=(JSON.parse(fs.readFileSync(`data/products/${id}.json`,'utf8')).documents||[]).filter(doc=>doc.file).length;
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
@@ -586,10 +586,11 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.goto(`${home}#products/xdm`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-toolbar');
     await page.click('[data-doc="Catalog"] button.rt-pg-doc-open[data-doc-kind="image"]');
-    await page.waitForFunction(()=>{const d=document.querySelector('dialog.rt-doc-zoom[open]');return d&&d.querySelectorAll('.rt-doc-pages img').length===6&&!d.querySelector('.rt-doc-status')},null,{timeout:15000});
+    await page.waitForFunction(()=>{const d=document.querySelector('dialog.rt-doc-zoom[open]');return d&&d.querySelectorAll('.rt-doc-pages img').length===9&&!d.querySelector('.rt-doc-status')},null,{timeout:15000});
     const xdmCat=await page.$$eval('dialog.rt-doc-zoom .rt-doc-pages img',imgs=>imgs.map(i=>i.getAttribute('src').split('/').pop()));
     await page.click('dialog.rt-doc-zoom [data-zoom-close]');
-    check('XDM 카탈로그 팝업이 6쪽 그림(xdm-catalog-p1~p6.webp)으로 나옴',xdmCat.join()===[1,2,3,4,5,6].map(n=>`xdm-catalog-p${n}.webp`).join(),JSON.stringify(xdmCat));
+    // 0.151(#205)에서 XDM 카탈로그를 전송기 쪽까지 넣은 4~12쪽(9쪽)으로 늘렸다.
+    check('XDM 카탈로그 팝업이 9쪽 그림(xdm-catalog-p1~p9.webp)으로 나옴',xdmCat.join()===[1,2,3,4,5,6,7,8,9].map(n=>`xdm-catalog-p${n}.webp`).join(),JSON.stringify(xdmCat));
     await page.goto(`${home}#products/vdm`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-toolbar');
     const vdmStart=Date.now();
@@ -757,6 +758,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     const dual=await dualCard.evaluate(card=>({chips:[...card.querySelectorAll('[data-layout-chip]')].map(b=>b.textContent),name:card.querySelector('[data-layout-name]')?.textContent,rects:card.querySelectorAll('[data-layout-preview] svg rect.rt-pg-cell').length,text:card.querySelector('p')?.textContent||''}));
     const quadName=await page.locator('.rt-pg-vmode-card',{hasText:'QUAD'}).first().evaluate(card=>card.querySelector('[data-layout-name]')?.textContent);
     check('QMS-88UX 06 DUAL 카드에 PBP·PIP 레이아웃 3종이 있고 Vertical PBP를 누르면 2칸 도해로 바뀌며 QUAD 카드 미리보기는 그대로임',dual.chips.join('|')==='Horizontal PBP|Vertical PBP|Quad PBP, PIP'&&dual.name==='Vertical PBP'&&dual.rects===2&&/출력 9·10번/.test(dual.text)&&quadName==='8분할(비율무시)',JSON.stringify({dual,quadName}));
+    // 0.152 — QMS-88UX WALL 요약이 "최대 3×3"뿐이었다(매뉴얼 KV.04 19쪽: 2×2 월 최대 2개, 월 1개면 최대 3×3·2×5). 매뉴얼에 배치 도해가 없어 WALL에는 도해를 두지 않는다.
+    const wall=await page.locator('.rt-pg-vmode-card',{hasText:'WALL'}).first().evaluate(card=>({text:card.querySelector('p')?.textContent||'',chips:card.querySelectorAll('[data-layout-chip]').length}));
+    check('QMS-88UX 06 WALL 카드에 2×2 월 2개·3×3·2×5가 적혀 있고 레이아웃 도해 칩은 없음',/2×2 월 최대 2개/.test(wall.text)&&/3×3·2×5/.test(wall.text)&&wall.chips===0,JSON.stringify(wall));
     // 0.62 — videoModes(QMS) 카드 4개+레이아웃 칩 12개까지 있어 05 옆 좁은 칸에 넣으면 글자가 카드 밖으로 넘쳤다(사용자 확인 2026-09-27 "06화면모드 짤린다"). 전체 폭 아래로 되돌려 카드 안에서 텍스트가 넘치지 않는지 확인.
     for(const id of ['qms-88ux','qms-44ux']){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});

@@ -112,7 +112,8 @@ const SPX={
   'SPX-M1620':{size:[662,418],input:[67,116,594,224],output:[67,224,594,332],draw(){
     let s=chassis(662,418,1.8);
     s+=handle(18,130,9,180);
-    s+=bay(58,22,545,45,false)+bay(58,68,545,45,false);
+    // 0.153(사용자 요청 2026-09-29 "블랭크와 입출력카드만 맞추면 되겠다", 매뉴얼 p.8 사진): 위 블랭크 2줄은 입출력 카드 줄과 같은 폭(67~594)·비슷한 높이다.
+    s+=bay(67,14,527,50,false)+bay(67,64,527,50,false);
     s+=slots(this.input,1,2,false)+slots(this.output,1,2,false);
     s+=ctrlRow(58,336,545,64,SPX_CTRL.map(([l,k],i)=>[l,k,[0.47,0.58,0.74][i]]));
     s+=spxPower(606,200,46,130);
