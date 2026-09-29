@@ -227,6 +227,9 @@ const FRONT={
   'VDM-64X':{size:[500,819],draw(W,H){return door(W,H,{ear:26,screen:[180,365,156,86],rocker:[385,388,24,40],handles:[[72,352,12,108],[432,352,12,108]],logo:[80,335,20],leds:[368,322,82],model:'VDM-64X',sub:'64X64 Cross-Platform Modular Matrix Router',textY:495})}},
   'VDM-128X':{size:[484,1176],draw(W,H){return door(W,H,{ear:18,screen:[115,190,106,82],rocker:[248,200,20,34],handles:[[78,296,10,60],[262,296,10,60]],logo:[70,160,22],leds:[232,146,42],model:'VDM-128X',sub:'128X128 Cross-Platform Modular Matrix Router',textY:436,bodyW:330})}},
   'VDM-256X':{size:[485,777],draw(W,H){return door(W,H,{ear:20,screen:[182,185,104,74],rocker:[310,186,18,30],handles:[[150,282,9,56],[320,282,9,56]],logo:[110,142,22],leds:[292,140,40],model:'VDM-256X',sub:'256X256 Cross-Platform Modular Matrix Router',textY:410})}},
+  // 0.135(사용자 요청 2026-09-29 "프레임 실물 이미지는 사용하지 말자 전부 그래픽이미지로 변경해줘"): 실물 사진(16X·48X 전면)을 같은 스타일의 평면 그림으로 바꾼다. 크기는 카탈로그 mm(483×310.3, 483×843.75).
+  'VDM-16X':{size:[483,310],draw(W,H){return door(W,H,{ear:26,screen:[168,92,150,96],rocker:[360,120,24,44],handles:[[68,92,11,112],[404,92,11,112]],logo:[64,52,24],leds:[340,44,80],model:'VDM-16X',sub:'16X16 Cross-Platform Modular Matrix Router',textY:268})}},
+  'VDM-48X':{size:[483,844],draw(W,H){return tower(W,H,{module:[26,8,457,262],screen:[236,70,200,120],model:'VDM-48X',sub:'48X48 Cross-Platform Modular Matrix Router',vents:[[40,318,403,190],[40,540,403,190],[40,752,403,72]],bolts:[520,738],logoY:290})}},
   'VDM-80X':{size:[270,638],draw(W,H){return tower(W,H,{module:[16,6,238,172],screen:[112,70,110,66],model:'VDM-80X',sub:'80X80 Cross-Platform Modular Matrix Router',vents:[[26,232,218,110],[26,444,218,110],[26,562,218,60]],bolts:[410]})}},
   'VDM-180X':{size:[189,636],draw(W,H){return tower(W,H,{module:[14,4,162,128],screen:[68,24,106,82],model:'VDM-180X',sub:'180X180 Cross-Platform Modular Matrix Router',vents:[[20,550,150,64]],bolts:[357,600],logoY:186})}}
 };
@@ -249,10 +252,10 @@ function tower(W,H,o){
   s+=rect(e,2,W-e*2,H-4,C.body,C.edge,1.6,4);
   const [mx,my,mw,mh]=o.module,[sx,sy,sw,sh]=o.screen;
   s+=rect(mx,my,mw-mx,mh-my,'#30343d',C.edge,1.4,4)+screenUI(sx-(W>200?40:0),sy,sw,sh);
-  const fs=Math.min(13,(mw-mx)/12);
+  const fs=Math.min(W>400?24:13,(mw-mx)/12); // 0.135: 폭 400 넘는 탑형(VDM-48X)은 글자·로고를 키운다
   s+=text(mx+6,mh-8-fs*0.9,o.model,fs,C.ink,'font-weight="900"')+text(mx+6,mh-6,o.sub,fs*0.5,C.sub,'font-weight="700"');
-  s+=W>200?rocker(mw-40,sy+8,20,34):rocker(mx+6,sy+20,14,24);
-  s+=logo(W/2,o.logoY||mh+34,Math.min(16,W*0.08)).replace('<text ','<text text-anchor="middle" ');
+  s+=W>400?rocker(mw-46,sy+12,26,44):W>200?rocker(mw-40,sy+8,20,34):rocker(mx+6,sy+20,14,24);
+  s+=logo(W/2,o.logoY||mh+34,Math.min(W>400?28:16,W*0.08)).replace('<text ','<text text-anchor="middle" ');
   for(const [vx,vy,vw,vh] of o.vents)s+=vents(vx,vy,vw,vh,W>200?7:5,Math.round(vh/14));
   for(const by of o.bolts)for(const fx of [0.2,0.5,0.8])s+=`<circle cx="${f(W*fx)}" cy="${by}" r="2.6" fill="#0b0c0f"/>`;
   s+=handle(e*0.3,H*0.22,e*0.4,H*0.12)+handle(W-e*0.7,H*0.22,e*0.4,H*0.12)+handle(e*0.3,H*0.66,e*0.4,H*0.12)+handle(W-e*0.7,H*0.66,e*0.4,H*0.12);
@@ -289,7 +292,7 @@ async function render(items){
   for(const [m,c] of Object.entries(coords))console.log(`${m} size:${JSON.stringify(c.size)},input:${JSON.stringify(c.input)},output:${JSON.stringify(c.output)}`);
   return coords;
 }
-module.exports={C,f,rect,text,screw,bay,zone,filler,phoenixRow,audioRouter,rj45,hdmi,db9,usb,dcJack,controlH,controlV,iec,powerH,fan,vents,plate,chassis,handle,ear,render};
+module.exports={C,f,rect,text,screw,bay,zone,filler,phoenixRow,audioRouter,rj45,hdmi,db9,usb,dcJack,controlH,controlV,iec,powerH,fan,vents,plate,chassis,handle,ear,render,screenUI,rocker,logo,door,tower};
 if(require.main===module){
   const only=process.argv[2];
   const items=[...Object.keys(FRONT).map(m=>({name:`${m.toLowerCase()}-front-art`,size:FRONT[m].size,body:()=>FRONT[m].draw(...FRONT[m].size),model:m})),

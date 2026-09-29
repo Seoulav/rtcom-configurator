@@ -56,7 +56,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('첫 화면에 구성기가 표시됨',await page.locator('#matrix-configurator h1').isVisible());
     await page.click('button[data-family="XDM"]');
     // 0.128 01 제품군에는 미리보기의 "프레임 선택" 버튼 하나만 보인다(사용자 요청 2026-09-28 "이것도 버튼 위로 배치하고 오른쪽 화살표도 보이게", 지적 2026-09-29 "버튼이 중복이다").
-    // 버튼은 태그 줄 아래에 있고 → 화살표가 버튼 글자색(흰색)으로 보이며(예전에는 강조색 파랑이라 파란 버튼에 묻힘), 아래 바 다음 버튼은 01에서 숨는다. 02부터는 아래 바 버튼의 화살표도 흰색이다.
+    // 버튼은 태그 줄 아래에 있고 → 화살표가 버튼 글자색(흰색)으로 보이며(예전에는 강조색 파랑이라 파란 버튼에 묻힘), 아래 바 다음 버튼은 01에서 숨는다. 0.135부터 02 프레임 선택도 미리보기 버튼 하나만 두고(사용자 승인 2026-09-29 "02 아래 바 버튼 숨기기") 아래 바 다음 버튼을 숨긴다. 숨어 있어도 화살표 색은 흰색이다.
     const familyNext=await page.evaluate(()=>{const visible=el=>!!el&&el.offsetParent!==null&&getComputedStyle(el).display!=='none',button=document.querySelector('.rt-cg-preview [data-action="preview-next"]'),chips=document.querySelector('.rt-cg-preview .rt-cg-chips'),foot=document.querySelector('.rt-footer [data-action="next"]');if(!button||!chips||!foot)return null;const arrow=button.querySelector('.rt-arrow'),color=el=>getComputedStyle(el).color;return {visibleNext:[...document.querySelectorAll('[data-action="next"],[data-action="preview-next"]')].filter(visible).length,below:button.getBoundingClientRect().top>=chips.getBoundingClientRect().bottom-1,text:button.textContent.trim(),panelArrow:color(arrow),buttonInk:color(button),footVisible:visible(foot)}});
     // 0.129 아래 바 요약 글("XDM / XDM-72 · 카테고리: 매트릭스") 삭제(사용자 요청 2026-09-29 "이거 삭제해줘"): 01에서는 아래 바 전체가 숨고, 요약 글은 어느 단계에도 없다.
     const footStep1=await page.evaluate(()=>({bar:document.querySelector('.rt-footer').offsetParent!==null,summary:!!document.querySelector('.rt-summary'),text:document.body.innerText.includes('카테고리: 매트릭스')}));
@@ -66,12 +66,12 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     const footBar2=await page.evaluate(()=>{const f=document.querySelector('.rt-footer'),a=f.querySelector('.rt-actions').getBoundingClientRect(),r=f.getBoundingClientRect();return {bar:f.offsetParent!==null,right:Math.round(r.right-a.right),left:Math.round(a.left-r.left),text:f.innerText.includes('XDM /')}});
     check('02부터 아래 바에는 이전·다음 버튼만 있고(넓은 화면은 오른쪽 정렬, 좁은 화면은 전체 폭) 요약 글은 없음',footBar2.bar&&!footBar2.text&&footBar2.left>=footBar2.right,JSON.stringify(footBar2));
     const footStep2=await page.evaluate(()=>{const foot=document.querySelector('.rt-footer [data-action="next"]'),arrow=foot.querySelector('.rt-arrow');return {visible:foot.offsetParent!==null,arrow:getComputedStyle(arrow).color,ink:getComputedStyle(foot).color,text:arrow.textContent}});
-    check('01 제품군에는 태그 줄 아래 "프레임 선택" 버튼 하나만 보이고(아래 바 버튼은 숨김) 02로 이동하며, → 화살표가 흰색으로 보임(02 아래 바 버튼 포함)',!!familyNext&&familyNext.visibleNext===1&&familyNext.footVisible===false&&familyNext.below&&familyNext.text.startsWith('프레임 선택')&&familyNext.panelArrow==='rgb(255, 255, 255)'&&familyNext.panelArrow===familyNext.buttonInk&&footStep2.visible&&footStep2.arrow==='rgb(255, 255, 255)'&&footStep2.arrow===footStep2.ink&&footStep2.text==='→'&&(await page.locator('.rt-main .rt-eyebrow').first().textContent()).includes('02 / 프레임 선택'),JSON.stringify({familyNext,footStep2}));
+    check('01 제품군에는 태그 줄 아래 "프레임 선택" 버튼 하나만 보이고(아래 바 버튼은 숨김) 02로 이동하며, → 화살표가 흰색으로 보이며 02에서도 아래 바 다음 버튼은 숨음',!!familyNext&&familyNext.visibleNext===1&&familyNext.footVisible===false&&familyNext.below&&familyNext.text.startsWith('프레임 선택')&&familyNext.panelArrow==='rgb(255, 255, 255)'&&familyNext.panelArrow===familyNext.buttonInk&&footStep2.visible===false&&footStep2.arrow==='rgb(255, 255, 255)'&&footStep2.arrow===footStep2.ink&&footStep2.text==='→'&&(await page.locator('.rt-main .rt-eyebrow').first().textContent()).includes('02 / 프레임 선택'),JSON.stringify({familyNext,footStep2}));
     await page.click('[data-action="back"]');
     await page.click('.rt-cg-preview [data-action="preview-next"]');
     check('프레임 선택 화면에 XDM 프레임 6종 표시(XDM-288 제외)',await page.locator('button[data-model]').count()===6);
     await page.click('button[data-model="XDM-144"]');await acceptConfirm();
-    await page.click('[data-action="next"]');
+    await page.click('.rt-cg-preview [data-action="preview-next"]');
     await page.waitForLoadState('networkidle');
     // 사용자 결정 2026-09-27: 빈 슬롯은 빈 슬롯이다. 블랭크 커버 그림은 사용자가 팝업에서 고른 슬롯에만 붙는다(자동으로 씌우지 않는다).
     check('빈 슬롯 72개는 빈 슬롯으로 표시되고 블랭크 커버는 하나도 자동으로 씌워지지 않음',await page.locator('.rt-rack-slot-empty').count()===72&&await page.locator('.rt-rack-slot-blank').count()===0);
@@ -143,7 +143,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.click('button[data-family="SPX"]');
     await page.click('.rt-cg-preview [data-action="preview-next"]');
     await page.click('button[data-model="SPX-M3236"]');await acceptConfirm();
-    await page.click('[data-action="next"]');
+    await page.click('.rt-cg-preview [data-action="preview-next"]');
     await page.waitForLoadState('networkidle');
     check('SPX-M3236은 입력 4·출력 3 슬롯이 모두 빈 슬롯으로 표시됨(블랭크 자동 없음)',await page.locator('.rt-rack-hs .rt-rack-slot-empty').count()===7&&await page.locator('.rt-rack-hs .rt-rack-slot-blank').count()===0);
     // 사진이 다 받아지기 전에 위치를 재면 높이가 0이라 가끔 실패했다(0.64 확인, 재실행 3회 모두 통과). 사진 로드를 최대 5초 기다린 뒤 잰다.
@@ -185,7 +185,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.click('button[data-family="XDM"]');
     await page.click('.rt-cg-preview [data-action="preview-next"]');
     await page.click('button[data-model="XDM-12"]');await acceptConfirm();
-    await page.click('[data-action="next"]');
+    await page.click('.rt-cg-preview [data-action="preview-next"]');
     const cardsUrl=page.url();
     await page.goBack();
     const onChassis=await page.locator('.rt-step[aria-current="step"]').getAttribute('data-jump')==='1';
@@ -208,7 +208,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.click('button[data-family="XDM"]');await acceptConfirm();
     await page.click('.rt-cg-preview [data-action="preview-next"]');
     await page.click('button[data-model="XDM-36"]');await acceptConfirm();
-    await page.click('[data-action="next"]');
+    await page.click('.rt-cg-preview [data-action="preview-next"]');
     await page.locator('button[data-slot="in-1"]').click();
     // 0.70 카드별 수량(사용자 요청 "카드마다 수량 기입해서 순차적으로"): HI100 수량 3을 넣고 "순서대로 장착"을 누르면 선택한 슬롯부터 3칸이 채워진다.
     for(let i=0;i<3;i++)await page.locator('.rt-card-modal [data-card-qty-step="1"][data-qty-card="XDM-HI100"]').click();
@@ -306,18 +306,18 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.goto(home,{waitUntil:'networkidle'});
     await page.click('button[data-family="SPX"]');
     await page.click('.rt-cg-preview [data-action="preview-next"]');
-    // 02 프레임(2-2, Analog Way 구조): 목록 행에는 사진이 없고, 고른 모델의 전면 사진이 오른쪽 고정 미리보기에 표시된다.
+    // 02 프레임(2-2, Analog Way 구조): 목록 행에는 사진이 없고, 고른 모델의 전면 그림이 오른쪽 고정 미리보기에 표시된다.
     check('SPX 프레임 5종 목록에 모두 사진 없이 이름·사양 행으로 표시됨',await page.locator('button[data-model]').count()===5&&await page.locator('button[data-model] img').count()===0);
     const spxModels=await page.locator('button[data-model]').evaluateAll(nodes=>nodes.map(node=>node.dataset.model));
     let spxPreviewOk=true;
     for(const model of spxModels){
       await page.click(`button[data-model="${model}"]`);
       const src=await page.locator('.rt-cg-preview img[data-cg-img="front"]').getAttribute('src');
-      if(!src||!src.includes(`/frames/spx-${model.slice(4).toLowerCase()}-front.webp`))spxPreviewOk=false;
+      if(!src||!src.includes(`/frames/spx-${model.slice(4).toLowerCase()}-front-art.webp`))spxPreviewOk=false;
     }
-    check('프레임 목록에서 모델을 고를 때마다 오른쪽 미리보기가 그 모델의 전면 사진으로 바뀜(SPX 5종)',spxPreviewOk);
+    check('프레임 목록에서 모델을 고를 때마다 오른쪽 미리보기가 그 모델의 전면 그림으로 바뀜(SPX 5종)',spxPreviewOk);
     await page.click('button[data-model="SPX-M2472"]');await acceptConfirm();
-    await page.click('[data-action="next"]');
+    await page.click('.rt-cg-preview [data-action="preview-next"]');
     await page.waitForLoadState('networkidle');
     // 사진이 다 받아지기 전에 naturalWidth를 읽으면 0이라 가끔 실패했다(0.58 확인, 재실행 3회 모두 통과). 사진 로드를 최대 5초 기다린 뒤 본다.
     await page.waitForFunction(()=>document.querySelector('.rt-rack-photo-image')?.naturalWidth>0,null,{timeout:5000}).catch(()=>{});
@@ -341,11 +341,11 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       }
     }
     check('VDM 프레임 10종 중 9종(288X 제외)은 전면 사진 또는 전면 그림을 미리보기에 표시함',vdmFrontCount===9);
-    check('VDM 전면 7종·후면 9종(0.119 VDM-16X 후면 포함)은 평면 그림(긴 변 2000px, 대체 문구 "그림")으로 표시함',vdmArt===16);
+    check('VDM 전면 9종·후면 9종(0.135부터 실물 사진 없음)은 평면 그림(긴 변 2000px, 대체 문구 "그림")으로 표시함',vdmArt===18);
     check('VDM 02 미리보기는 정면·후면을 함께 보여 주고, 대형 VDM-80X·128X·180X만 정면/후면 버튼으로 전환함',JSON.stringify(vdmToggles)==='["VDM-80X","VDM-128X","VDM-180X"]',JSON.stringify(vdmToggles));
     check('VDM-288X는 전면 사진이 없어 미리보기에 "사진 준비 중"이 표시됨',vdm288Placeholder);
     await page.click('button[data-model="VDM-16X"]');await acceptConfirm();
-    await page.click('[data-action="next"]');
+    await page.click('.rt-cg-preview [data-action="preview-next"]');
     await page.waitForLoadState('networkidle');
     // 슬롯 판과 후면 사진이 다 그려지기 전에 세면 가끔 실패했다(2026-09-27 한 번 재현). 슬롯 8칸과 사진 로딩을 기다린 뒤 검사한다.
     await page.waitForFunction(()=>{const image=document.querySelector('.rt-rack-photo-image');return document.querySelectorAll('.rt-rack-photo .rt-rack-slot').length>=8&&image&&image.complete&&image.naturalWidth>0},null,{timeout:10000}).catch(()=>{});
@@ -364,7 +364,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.click('[data-action="back"]');
     await page.click('[data-action="back"]');
     await page.click('button[data-model="VDM-256X"]');await acceptConfirm();
-    await page.click('[data-action="next"]');
+    await page.click('.rt-cg-preview [data-action="preview-next"]');
     await page.locator('button[data-slot="out-64"]').click();
     await page.locator('.rt-card-modal .rt-card-choice[data-card="COS4-U"]').click();
     check('VDM-256X는 후면 그림(랙 2대) 위에 입력 64·출력 64 슬롯이고 64번 슬롯에 카드를 장착할 수 있음',await page.locator('.rt-rack-photo .rt-rack-zone').count()===4&&await page.locator('.rt-rack-slot').count()===128&&await page.locator('button[data-slot="out-64"].rt-rack-slot-filled').count()===1&&await page.$eval('.rt-rack-photo-image',image=>image.naturalWidth>0));
@@ -680,7 +680,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     }
     await page.click('.rt-cg-preview [data-action="preview-next"]');
     await page.click('button[data-model="XDM-36"]');await acceptConfirm();
-    await page.click('[data-action="next"]');
+    await page.click('.rt-cg-preview [data-action="preview-next"]');
     await page.locator('button[data-slot="in-2"]').click();
     await page.locator('.rt-card-modal [data-card-qty-step="1"][data-qty-card="XDM-HI100"]').click();
     await page.locator('.rt-card-modal [data-card-qty-step="1"][data-qty-card="XDM-HI100"]').click();
@@ -781,7 +781,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await pc.click('button[data-family="XDM"]');
     await pc.click('.rt-cg-preview [data-action="preview-next"]');
     await pc.click('button[data-model="XDM-36"]');
-    await pc.click('[data-action="next"]');
+    await pc.click('.rt-cg-preview [data-action="preview-next"]');
     await pc.waitForLoadState('networkidle');
     // 왼쪽 목록이 오른쪽 미리보기보다 확실히 길어지도록 XDM-36의 입력 9칸 모두 CIS100, 출력 9칸 모두 COS100을 장착한다(sticky 검사용).
     for(let index=1;index<=9;index++){
@@ -823,7 +823,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await mobile.click('button[data-family="SPX"]');
     await mobile.click('.rt-cg-preview [data-action="preview-next"]');
     await mobile.click('button[data-model="SPX-M3236"]');
-    await mobile.click('[data-action="next"]');
+    await mobile.click('.rt-cg-preview [data-action="preview-next"]');
     await mobile.waitForLoadState('networkidle');
     const rows=await mobile.$$eval('.rt-rack-zone-input .rt-rack-slot',slots=>slots.map(slot=>slot.getBoundingClientRect()).map(rect=>[rect.top,rect.bottom]));
     const photoFits=await mobile.$eval('.rt-rack-photo',figure=>figure.getBoundingClientRect().right<=document.documentElement.clientWidth);
@@ -834,7 +834,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await mobile.click('button[data-family="XDM"]');
     await mobile.click('.rt-cg-preview [data-action="preview-next"]');
     await mobile.click('button[data-model="XDM-20"]');
-    await mobile.click('[data-action="next"]');
+    await mobile.click('.rt-cg-preview [data-action="preview-next"]');
     await mobile.evaluate(()=>document.querySelector('button[data-slot="out-2"]').click());
     await mobile.locator('.rt-card-modal .rt-card-choice[data-card="XDM-FOS100"]').click();
     await mobile.waitForTimeout(1000);
