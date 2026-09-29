@@ -398,11 +398,11 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.waitForSelector('.rt-pg-gridcard');
     check('제품정보 목록의 첫 카드는 XDM(0.125, 사용자 요청 "XDM이 처음으로 나오게해")',(await page.locator('.rt-pg-gridcard').first().getAttribute('href'))==='#products/xdm');
     check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-pg-gridcard').count()===31);
-    // 0.121·0.123 HD-D102U Rack마운트: 02 Port Map 그래픽 이미지 3장(정면/윗면/옆면)만 두고 실도면(치수 도면) 카드는 없다. HD-D102U와 관련 제품 링크.
+    // 0.121·0.123·0.130 HD-D102U Rack마운트: 02 Port Map은 XDM-PSU 그림 방식의 정면 그래픽 이미지 1장만 두고(윗면·옆면은 삭제, 사용자 요청 2026-09-29) 실도면(치수 도면) 카드는 없다. HD-D102U와 관련 제품 링크.
     await page.goto(`${home}#products/hd-d102u-rack`,{waitUntil:'networkidle'});
     await page.waitForSelector('#rt-pg-title');
     const rack=await page.evaluate(()=>({maps:document.querySelectorAll('.rt-pg-panel svg[aria-label$="단자 지도"]').length,drawing:!!document.querySelector('.rt-pg-drawing'),link:[...document.querySelectorAll('.rt-pg-hint a')].some(a=>a.getAttribute('href')==='#products/hd-d102u')}));
-    check('HD-D102U Rack마운트 상세에 그래픽 이미지 3장(정면·윗면·옆면)과 HD-D102U 관련 제품 링크가 보이고 실도면 카드는 없음',rack.maps===3&&!rack.drawing&&rack.link,JSON.stringify(rack));
+    check('HD-D102U Rack마운트 상세에 정면 그래픽 이미지 1장(윗면·옆면 없음)과 HD-D102U 관련 제품 링크가 보이고 실도면 카드는 없음',rack.maps===1&&!rack.drawing&&rack.link,JSON.stringify(rack));
     // 0.43 벽부형 단자 지도: 송신기·수신기 두 장, 세로 괄호(side left/right) 번호표 11개(0.46에서 HDMI IN 1·2를 한 번호로 묶음), 사진에 보이지 않는 옆면 단자 안내(note).
     await page.goto(`${home}#products/ft103-u-h-fr103-u`,{waitUntil:'networkidle'});
     await page.waitForSelector('#rt-pg-title');

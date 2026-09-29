@@ -11,7 +11,7 @@
 | --- | --- |
 | 새 제품 | `data/products/hd-d102u-rack.json`(31번째 제품, 분배기·선택기 그룹, 분류 `Rack Mount` 추가) |
 | 그림 | `scripts/tools/draw_hd_d102u_rack.cjs` → `output/design/assets/products/hd-d102u-rack-{front,dims,top,side}-art.webp`. VDM·XDM·SPX 프레임 그림과 같은 검은 몸체 평면 그림, 도면 mm 좌표 그대로. 도면에 없는 실크 글자는 넣지 않았습니다. |
-| 02 Port Map | 그래픽 이미지 3장(정면 / 윗면 / 옆면)에 번호표(0.123.0부터 기준 문구 "그래픽 이미지") |
+| 02 Port Map | 그래픽 이미지에 번호표(0.123.0부터 기준 문구 "그래픽 이미지"). 0.130.0부터 정면 1장만 |
 | 04 제품 사양 | 장착 수량 최대 12대 · 크기 483×282×177mm(19인치 랙) · 고정 구멍 줄 간격 147mm |
 | 관련 제품 | Rack마운트 ↔ HD-D102U 양방향 `WORKS_WITH` |
 | 목록 정렬 | `scripts/build-product-index.cjs`: `Rack Mount` 제품은 함께 쓰는 제품의 HDMI 출력 개수로 정렬해 HD-D102U 바로 뒤에 보입니다. |
@@ -30,6 +30,16 @@
 - 0.122.0의 06 도면 카드와 0.121.0의 02 Port Map "정면 · 치수" 그림(치수선 포함)을 지웠습니다. 02 Port Map은 그래픽 이미지 3장(정면·윗면·옆면)만 쓰며, 기준 문구는 "그래픽 이미지"입니다.
 - `drawing` 항목·`drawingSection()`·검증 규칙·CSS와 도면 그림 2장, 그림 스크립트의 `dim`·`frontDims`·`sheet`를 지웠습니다. 남은 그림 3장은 다시 만들어도 바이트가 같습니다.
 - 되돌리기: main에서 0.123.0 커밋을 revert하면 0.122.0 상태(도면 카드 포함)로 돌아갑니다.
+
+## 0.130.0 변경: XDM-PSU 그래픽 컨셉, 정면만
+
+- 사용자 요청(2026-09-29): "HD-D102U Rack마운트 이미지도 XDM-PSU 그래픽컨셉을 계승해줘", "윗면 옆면은 전부 삭제해줘 정면만 남겨줘"
+- **그래픽 컨셉:** XDM-PSU 앞면·뒷면 그림(`scripts/tools/draw_xdm_psu_panels.cjs`, 0.105)과 같은 색·부품 모양으로 `hd-d102u-rack-front-art.webp`를 다시 그렸습니다. 밝은 회색 금속 몸체 `#eceff4`, 랙 귀 `#dfe3ea`, 모듈 카드·레일 `#f7f8fa`(테두리 `#b8bfcb`), 구멍은 흰색에 어두운 테두리 `#3a4150`, 칸 안 나사 점은 어두운 나사 모양, 번호는 진한 남색 `#1f2532`. 이전의 검은 몸체는 쓰지 않습니다.
+- **배치는 그대로:** 도면 mm 좌표(483×177, 칸 간격 35.6, 고정 구멍 줄 간격 147)를 바꾸지 않아 `portMap` 번호 좌표(칸 144~1872px, 랙 귀 2~101px, 고정 구멍 y 62~671px)가 그대로 맞습니다. 도면에 없는 실크 글자는 여전히 넣지 않습니다(칸 번호 1~12만).
+- **윗면·옆면 삭제:** `hd-d102u-rack-top-art.webp`·`hd-d102u-rack-side-art.webp` 파일, `draw_hd_d102u_rack.cjs`의 `top()`·`side()`, 제품 데이터의 `images`(Other 2개)·`imageStatuses`(Other)·`portMap`(윗면·옆면 카드)와 개요·주요 기능의 윗면 통풍 슬릿 문장을 지웠습니다. 02 Port Map은 정면 그래픽 이미지 1장입니다.
+- 크기 483×282×177mm의 깊이 282mm는 도면 치수라서 사양에 그대로 둡니다(윗면·옆면 그림과 별개).
+- 검증: 단위 테스트 53/53, e2e 174/174(지도 3장 → 1장), 화면 `docs/qa/hd-d102u-rack-screens/rack-front-psu-style-*.png`.
+- 되돌리기: 이 변경을 `git revert` 하면 검은 몸체 정면 그림과 윗면·옆면 그림이 돌아옵니다.
 
 ## 확인하지 않은 것
 
