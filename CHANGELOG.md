@@ -1,5 +1,7 @@
 ## Unreleased
 
+- **0.135.0 배포 기록**: `docs/qa/DEPLOYMENT_0.135_2026-09-29.md`(PR #175 → main 병합, 공개 그림 해시 일치)
+
 - **0.134.0 배포 기록**: `docs/qa/DEPLOYMENT_0.134_2026-09-29.md`(PR #173 → main 병합, 공개 그림 해시 일치)
 
 - **0.133.0 배포 기록**: `docs/qa/DEPLOYMENT_0.133_2026-09-29.md`(PR #171 → main 병합, 공개 그림 해시 일치)
