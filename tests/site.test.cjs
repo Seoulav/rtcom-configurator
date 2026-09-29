@@ -484,7 +484,7 @@ test('버전 점검은 번호 중복·main보다 낮은 번호·건너뛴 번호
   assert.match(checkAgainst([0,6],[0,5],docs).join(),/문서만/);
 });
 
-test('0.165: SPX-TX/RX 04 제품 사양의 전송거리는 "4K60 실효 전송거리" 한 행(두 줄)으로 정리한다',()=>{
+test('0.166: SPX-TX/RX 04 제품 사양의 전송거리는 "4K60 실효 전송거리" 한 행(두 줄)으로 정리한다',()=>{
   // 사용자 요청 2026-09-29 "최대 전송거리부분에 너무 나열되어 있어 이 부분을 아래와 같이 정리해줘"
   const txrx=JSON.parse(read('data/products/spx-rx-tx.json'));
   const rows=txrx.specifications.filter(spec=>spec.group==='Transmission');

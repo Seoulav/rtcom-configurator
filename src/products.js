@@ -118,7 +118,7 @@
     }
     const table=(head,rows)=>rows.length?`<div class="rt-pg-tablewrap"><table><thead><tr>${head.map(cell=>`<th scope="col">${cell}</th>`).join('')}</tr></thead><tbody>${rows.map(row=>`<tr>${row.map((cell,i)=>`<td data-label="${head[i]}">${cell}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`:'';
     // 04 제품 사양 표는 다른 표보다 줄 간격을 약 15% 줄인다(사용자 요청 2026-09-27 "04 사양도 상하 간격을 15% 정도 줄여도 되겠다"). 표 틀에 rt-pg-spec-table을 붙여 CSS로만 구분한다.
-    // 0.165: 값이 여러 줄이면(SPX-TX/RX "4K60 실효 전송거리") 줄마다 앞부분을 값으로, 끝 괄호 속 설명(케이블 모델)을 그 아래 작은 글자로 보여 준다.
+    // 0.166: 값이 여러 줄이면(SPX-TX/RX "4K60 실효 전송거리") 줄마다 앞부분을 값으로, 끝 괄호 속 설명(케이블 모델)을 그 아래 작은 글자로 보여 준다.
     const specValue=value=>{
       const text=String(value??'');
       if(!text.includes('\n'))return esc(text);
@@ -394,7 +394,7 @@
       const isHDBaseT=/HDBaseT/i.test(JSON.stringify([item.english,item.korean,item.overview,item.features]));
       const cableName=isFiber?'광케이블':isHDBaseT?'HDBaseT(CATx)':'CATx';
       const cableLabelFor=spec=>{
-        // 0.165: 값이 여러 줄인 행(SPX-TX/RX "4K60 실효 전송거리")은 괄호 속 케이블 모델을 빼고 한 줄로 이어 범례에 쓴다.
+        // 0.166: 값이 여러 줄인 행(SPX-TX/RX "4K60 실효 전송거리")은 괄호 속 케이블 모델을 빼고 한 줄로 이어 범례에 쓴다.
         if(String(spec.value).includes('\n'))return `${spec.name}: ${String(spec.value).split('\n').map(line=>line.replace(/\s*\([^)]*\)/g,'').trim()).join(' · ')}`;
         const m=(spec.condition||'').match(/(BELDEN\s*)?([A-Z0-9]+)\s*\(([^)]+)\)/);
         if(!m&&!isFiber&&!isHDBaseT){const seg=(spec.condition||'').split('·').map(s=>s.replace(/\([^)]*\)/g,'').trim()).find(s=>/4K|1080p|Long Reach/i.test(s));if(seg)return `${seg.replace(/\s*모드$/,'')} 최대 ${spec.value}${spec.unit||''}`;}

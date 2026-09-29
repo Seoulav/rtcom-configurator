@@ -1063,6 +1063,24 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       const left=await p3.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.placements['in-1']||null);
       const modalOpen=await p3.locator('dialog.rt-card-modal[open]').count();
       check('장착 슬롯은 평소에는 × 가 안 보이고 마우스를 올리면 보이며, 누르면 카드가 빠지고 팝업은 열리지 않음',!xBefore&&xHover&&left===null&&modalOpen===0,JSON.stringify({xBefore,xHover,left,modalOpen}));
+      // 0.165(사용자 결정 2026-09-29 "터치 화면에서는 × 버튼을 항상 보이게"): 마우스가 없는 화면(hasTouch·isMobile)은 × 가 늘 보이고, 손가락으로 누르면 카드가 빠진다(팝업은 열리지 않음).
+      {
+        const touchCtx=await browser.newContext({viewport:{width:820,height:1180},isMobile:true,hasTouch:true});
+        const t=await touchCtx.newPage();
+        await t.goto(home,{waitUntil:'networkidle'});await t.evaluate(()=>localStorage.clear());await t.goto(home,{waitUntil:'networkidle'});
+        await t.locator('button[data-family="XDM"]').first().click();await t.locator('.rt-cg-preview [data-action="preview-next"]').first().click();
+        await t.click('button[data-model="XDM-12"]');await t.locator('.rt-cg-preview [data-action="preview-next"]').first().click();
+        await t.locator('button[data-slot="in-1"]').click();await t.locator('.rt-card-modal .rt-card-choice').nth(1).click();
+        const media=await t.evaluate(()=>matchMedia('(hover:none),(pointer:coarse)').matches);
+        const tx=t.locator('button[data-slot="in-1"] .rt-rack-slot-x');
+        const shown=await tx.isVisible();const box=await tx.boundingBox();
+        const emptyX=await t.locator('button[data-slot="in-2"] .rt-rack-slot-x').count();
+        await tx.tap();await t.waitForTimeout(200);
+        const gone=await t.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.placements['in-1']||null);
+        const opened=await t.locator('dialog.rt-card-modal[open]').count();
+        check('터치 화면에서는 장착 슬롯의 × 가 늘 보이고(20px 이상) 빈 슬롯에는 없으며, 누르면 카드가 빠지고 팝업은 열리지 않음',media&&shown&&box&&box.width>=19.5&&emptyX===0&&gone===null&&opened===0,JSON.stringify({media,shown,w:box&&box.width,emptyX,gone,opened}));
+        await touchCtx.close();
+      }
       // 0.162 카드 끌어 놓기 샘플(직원 제안, 사용자 승인 2026-09-29): 아래 카드 정보 버튼을 같은 방향 슬롯에 끌어 놓으면 장착·교체하고, 다른 방향 슬롯에는 놓이지 않으며, 누르면 상세 정보는 그대로 열린다.
       const saved=()=>p3.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state);
       const chipDraggable=await p3.locator('button.rt-card-info-chip[data-palette-card="XDM-HIS100"]').getAttribute('draggable');
