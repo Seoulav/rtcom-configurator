@@ -220,6 +220,11 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     const saved=()=>page.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.placements);
     let moveState=await saved();
     check('카드 팝업에서 XDM-HI100 수량 3을 넣고 장착하면 선택한 슬롯부터 입력 슬롯 3칸이 채워짐',qtyShown==='3'&&moveState['in-1']==='XDM-HI100'&&moveState['in-2']==='XDM-HI100'&&moveState['in-3']==='XDM-HI100'&&!moveState['in-4'],JSON.stringify(moveState));
+    // 0.137(사용자 요청 2026-09-29 "입출력 선택 후 다시 들어갈때 기존 선택된 카드 수량이 보일 수 있게"): 이미 장착한 카드는 팝업을 다시 열면 "현재 N장 장착"으로 보인다.
+    await page.locator('button[data-slot="in-2"]').click();
+    const haveText=await page.locator('.rt-card-modal [data-have-qty="XDM-HI100"]').textContent().catch(()=>null);
+    check('카드 팝업을 다시 열면 이미 장착한 XDM-HI100이 "현재 3장 장착"으로 보임',haveText==='현재 3장 장착',String(haveText));
+    await page.keyboard.press('Escape');
     // 0.55: XDM 세로 슬롯 카드 글자가 바로 읽히도록 90도(기존 -90도에서 180도) 회전, 작업 단계 표기는 한글.
     const xdmFace=await page.evaluate(()=>{const img=document.querySelector('button[data-slot="in-1"] img.rt-faceplate');const m=new DOMMatrix(getComputedStyle(img).transform);return {b:Math.round(m.b),eyebrow:document.querySelector('.rt-main .rt-eyebrow')?.textContent||'',bank:document.querySelector('.rt-rack-bank-title strong, .rt-frame-count')?.textContent||''}});
     check('XDM 세로 슬롯 카드는 90도로 돌아가 글자가 바로 보이고, 단계 제목·입출력 표기가 한글',xdmFace.b===1&&xdmFace.eyebrow.includes('03 / 카드 슬롯')&&!/INPUT|OUTPUT/.test(xdmFace.bank),JSON.stringify(xdmFace));
@@ -268,7 +273,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     };
     const [xdmArt,xdmCount,xdmToggles]=await rearArtOk('XDM');
     check('XDM 프레임 6종(216 포함) 후면 미리보기가 모두 평면 그림(긴 변 2000px)으로 표시됨',xdmCount===6&&xdmArt===6,`${xdmArt}/${xdmCount}`);
-    check('XDM 02 미리보기는 정면·후면을 함께 보여 주고, 대형 XDM-144·216만 정면/후면 버튼으로 전환함',JSON.stringify(xdmToggles)==='["XDM-144","XDM-216"]',JSON.stringify(xdmToggles));
+    check('XDM 02 미리보기는 대형 XDM-144·216도 정면/후면 버튼 없이 정면·후면을 함께 보여 줌(0.137)',JSON.stringify(xdmToggles)==='[]',JSON.stringify(xdmToggles));
     await page.click('button[data-model="XDM-216"]');await acceptConfirm();
     // 0.114: 02 프레임 선택 미리보기 캡션 아래 "다음 · 카드 슬롯 구성" 버튼(사용자 요청 "프레임 선택후 다음 이동 버튼을 여기에 넣어줘")으로 03 카드 슬롯으로 넘어간다.
     const previewNext=await page.evaluate(()=>{const button=document.querySelector('.rt-cg-preview [data-action="preview-next"]'),cap=document.querySelector('.rt-cg-preview-cap');if(!button||!cap)return null;const b=button.getBoundingClientRect(),c=cap.getBoundingClientRect();return {enabled:!button.disabled,below:b.top>=c.bottom-1,text:button.textContent.trim()}});
@@ -342,7 +347,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     }
     check('VDM 프레임 10종 중 9종(288X 제외)은 전면 사진 또는 전면 그림을 미리보기에 표시함',vdmFrontCount===9);
     check('VDM 전면 9종·후면 9종(0.135부터 실물 사진 없음)은 평면 그림(긴 변 2000px, 대체 문구 "그림")으로 표시함',vdmArt===18);
-    check('VDM 02 미리보기는 정면·후면을 함께 보여 주고, 대형 VDM-80X·128X·180X만 정면/후면 버튼으로 전환함',JSON.stringify(vdmToggles)==='["VDM-80X","VDM-128X","VDM-180X"]',JSON.stringify(vdmToggles));
+    check('VDM 02 미리보기는 대형 VDM-80X·128X·180X도 정면/후면 버튼 없이 정면·후면을 함께 보여 줌(0.137)',JSON.stringify(vdmToggles)==='[]',JSON.stringify(vdmToggles));
     check('VDM-288X는 전면 사진이 없어 미리보기에 "사진 준비 중"이 표시됨',vdm288Placeholder);
     await page.click('button[data-model="VDM-16X"]');await acceptConfirm();
     await page.click('.rt-cg-preview [data-action="preview-next"]');
@@ -416,12 +421,22 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       frameHeights[fam]=[];
       for(const model of await page.locator('button[data-model]').evaluateAll(nodes=>nodes.map(node=>node.dataset.model))){
         await page.click(`button[data-model="${model}"]`);await acceptConfirm();
-        const h=await page.evaluate(()=>{const heights=[...document.querySelectorAll('.rt-cg-preview img')].map(img=>img.getBoundingClientRect().height);return heights.length?Math.round(Math.max(...heights)):null});
+        const h=await page.evaluate(()=>{const heights=[...document.querySelectorAll('.rt-cg-preview img[data-cg-img="front"]')].map(img=>img.getBoundingClientRect().height);return heights.length?Math.round(Math.max(...heights)):null});
         if(h)frameHeights[fam].push([model,h]);
       }
       await page.click('[data-jump="0"]');
     }
     const heightsRise=Object.values(frameHeights).every(list=>list.length>=5&&list.every(([,h],i)=>i===0||h>=list[i-1][1]-3));
+    // 0.137(사용자 요청 "프레임앞뒤면 좌우 크기차이 있는 제품 SPX-M1620·M810·M2472·M24120"): 정면·후면을 위아래로 보이는 프레임은 후면 그림 폭이 정면 그림 폭과 같다.
+    await page.click('button[data-family="SPX"]');await acceptConfirm();
+    await page.click('.rt-cg-preview [data-action="preview-next"]');
+    const spxWidths={};
+    for(const model of ['SPX-M810','SPX-M1620','SPX-M2472','SPX-M24120']){
+      await page.click(`button[data-model="${model}"]`);await acceptConfirm();
+      spxWidths[model]=await page.evaluate(()=>['front','rear'].map(side=>Math.round(document.querySelector(`.rt-cg-preview img[data-cg-img="${side}"]`).getBoundingClientRect().width)));
+    }
+    check('SPX-M810·M1620·M2472·M24120 02 미리보기에서 정면·후면 그림 폭이 같음(2px 이내)',Object.values(spxWidths).every(([front,rear])=>front>0&&Math.abs(front-rear)<=2),JSON.stringify(spxWidths));
+    await page.click('[data-jump="0"]');
     check('02 프레임 선택 미리보기 그림 높이가 작은 프레임에서 큰 프레임 순서로 커짐(VDM·SPX·XDM 랙 높이 순)',heightsRise&&frameHeights.VDM[0][1]<frameHeights.VDM.at(-1)[1]&&frameHeights.SPX[0][1]<frameHeights.SPX.at(-1)[1]&&frameHeights.XDM[0][1]<frameHeights.XDM.at(-1)[1],JSON.stringify(frameHeights));
     // 0.43 벽부형 단자 지도: 송신기·수신기 두 장, 세로 괄호(side left/right) 번호표 11개(0.46에서 HDMI IN 1·2를 한 번호로 묶음), 사진에 보이지 않는 옆면 단자 안내(note).
     await page.goto(`${home}#products/ft103-u-h-fr103-u`,{waitUntil:'networkidle'});

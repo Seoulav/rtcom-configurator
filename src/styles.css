@@ -1069,3 +1069,14 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
   /* 가장 작은 프레임(SPX-M810 2U)도 휴대폰에서 알아볼 수 있게 최소 높이 56px */
   #rtcom-design .rt-cg-preview.rt-cg-scaled img,#rtcom-design .rt-cg-preview.rt-cg-scaled .rt-cg-duo-stack img{height:max(56px,calc(var(--rt-fh)*.45px))}
 }
+
+/* 0.137 카드 팝업: 이미 장착된 같은 카드 장수 표시(스테퍼는 새로 채울 수량) */
+#rtcom-design .rt-card-choice-qty .rt-card-have{margin-right:auto;font-style:normal;font-size:12px;font-weight:800;color:#0a66d6;background:#e8f1ff;border-radius:999px;padding:4px 10px}
+
+/* 0.137 정면·후면을 위아래로 겹쳐 보이는 프레임(stack): 실제 랙 폭은 같으므로 후면 그림 폭을 정면 그림 폭에 맞춘다(사용자 요청 2026-09-29 "프레임앞뒤면 좌우 크기차이 있는 제품 SPX-M1620·M810·M2472·M24120").
+   그리드 한 칸의 폭은 정면 그림이 정하고, 후면 그림은 폭 0 + min-width:100%로 칸 폭을 그대로 받는다(높이는 자기 비율대로 자동). */
+#rtcom-design .rt-cg-preview.rt-cg-scaled .rt-cg-duo-stack{display:grid;justify-items:stretch;width:fit-content;max-width:100%;margin:0 auto}
+#rtcom-design .rt-cg-preview.rt-cg-scaled .rt-cg-duo-stack figure:last-child img{width:0;min-width:100%;height:auto;max-height:none;object-fit:fill}
+@media(max-width:820px){
+  #rtcom-design .rt-cg-preview.rt-cg-scaled .rt-cg-duo-stack figure:last-child img{height:auto}
+}

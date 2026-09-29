@@ -76,6 +76,17 @@
 
 - **0.90.0 배포 기록**: `docs/qa/DEPLOYMENT_0.90_2026-09-28.md`(PR #85 → main 병합, 배포 run 64, 공개 파일 242/242 일치, 비공개 파일 6개 404)
 
+## 0.137.0
+
+사용자 요청 2026-09-29(5건):
+
+- **정면·후면 폭 통일**: 정면·후면을 위아래로 겹쳐 보이는 프레임(SPX-M810·M1620·M2472·M24120 포함)에서 후면 그림 폭을 정면 그림 폭에 맞췄습니다(실제 랙 폭이 같음).
+- **대형 프레임 후면 표시**: VDM-80X·128X·180X와 XDM-144·216도 정면/후면 버튼 없이 정면·후면을 좌우로 함께 보여 줍니다.
+- **01 제품군 대표 이미지 원복**: 0.136.0에서 만든 그래픽 대표 그림 3장과 `draw_family_lineups.cjs`를 지우고 예전 카탈로그 사진(`xdm.jpg`·`spx.jpg`·`vdm.jpg`)으로 되돌렸습니다. 02 프레임 정면·후면 그림(0.136.0)은 그대로입니다.
+- **카드 팝업 기존 수량 표시**: 슬롯을 다시 열면 이미 장착한 같은 카드가 "현재 N장 장착"으로 보입니다(수량 조절기는 빈 슬롯에 새로 채울 수량).
+- **SPX 카드 판넬 좌우 간격 통일**: SPX-HIS8·HOS10·HOS12·COS12·BLANK를 같은 크기(1240×88)에 포트 묶음을 가운데(좌우 여백 같음)로 놓고 양쪽 나사를 같게 다시 만들었습니다(`scripts/tools/normalize_spx_cards.py`). XDM 카드는 9.84:1, VDM 카드는 5.7:1 비율로 맞췄습니다(`normalize_card_ratios.py`).
+- 근거·rollback: `docs/implementation/FRAME_PREVIEW_CARD_FIXES_0.137.md`, 화면 확인 `docs/qa/frame-preview-both-screens/`
+
 ## 0.136.0
 
 - **프레임 실물 사진을 모두 평면 그래픽 이미지로 교체**(사용자 요청 2026-09-29 "프레임 실물 이미지는 사용하지 말자 전부 그래픽이미지로 변경해줘"): XDM 6종·SPX 5종 정면과 VDM-16X·48X 정면을 VDM 정면 그림과 같은 진한 몸체 평면 그림(`*-front-art.webp`)으로 새로 그리고(`scripts/tools/draw_xdm_spx_front_frames.cjs`, `draw_vdm_frames.cjs`), 01 제품군 대표 그림 3장(`{xdm,spx,vdm}-lineup-art.webp`)도 그 그림을 겹쳐 세워 만들었습니다(`draw_family_lineups.cjs`). 제품정보 03 메인프레임 카드도 같은 그림을 씁니다. 예전 실물 사진 26장과 `xdm.jpg`·`spx.jpg`·`vdm.jpg`는 공개 폴더에서 삭제했습니다. 제품정보의 제품 사진(`data/products/*`)은 그대로입니다.

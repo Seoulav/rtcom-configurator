@@ -63,7 +63,7 @@ test('every XDM card and documented rear photo has an image asset',()=>{
   assert.deepEqual(frontArt,rearArt);
   const photos=fs.readdirSync('output/design/assets/frames').filter(name=>/^(xdm|spx)-.*-(front|rear)\.webp$|^vdm-(16x|48x)-(front|rear)\.webp$/.test(name));
   assert.deepEqual(photos,[],'frame real photos must not ship');
-  for(const family of ['xdm','spx','vdm'])assert.ok(fs.existsSync(`output/design/assets/${family}-lineup-art.webp`),`missing ${family} lineup art`);
+  for(const family of ['xdm','spx','vdm'])assert.ok(fs.existsSync(`output/design/assets/${family}.jpg`)&&!fs.existsSync(`output/design/assets/${family}-lineup-art.webp`),`${family} lineup must use the original catalog jpg`);
   for(const model of ['m810','m1620','m3236','m2472','m24120'])for(const side of ['front','rear'])assert.ok(fs.existsSync(`output/design/assets/frames/spx-${model}-${side}-art.webp`),`missing SPX ${model} ${side} art`);
   for(const card of [...catalog.SPX.input,...catalog.SPX.output])assert.ok(fs.existsSync(`output/design/assets/cards/${card[0]}.webp`),`missing SPX faceplate for ${card[0]}`);
   const extenders=[...new Set([...read('src/app.js').matchAll(/'(output\/design\/assets\/extenders\/[^']+)'/g)].map(match=>match[1]))];
