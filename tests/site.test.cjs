@@ -450,10 +450,12 @@ test('0.157: SPX-R6는 사양서 근거로 등록하고, 로고 없는 평면 �
 test('0.158: SPX-R6 수신 모듈 장착·SPX-RX IR 기능은 사용자 확인(U2)으로 적고, 잘 쓰지 않는다고 표시한다',()=>{
   // 사용자 확인 2026-09-29 "SPX-RX의 IR 기능과 수신가능한대 잘 안써"
   const r6=JSON.parse(read('data/products/spx-r6.json'));
-  for(const name of ['수신 모듈 장착','SPX-RX IR 기능']){
-    const row=r6.specifications.find(spec=>spec.name===name);
-    assert.ok(row,name);assert.equal(row.source,'U2');assert.match(row.condition,/잘 쓰지 않음/);
-  }
+  // 0.164(사용자 확인 "SPX-R6에 TX, RX선택해서 사용할 수가 있어"): "수신 모듈 장착" 행을 "모듈 TX·RX 선택"으로 바꿨다.
+  const pick=r6.specifications.find(spec=>spec.name==='모듈 TX·RX 선택');
+  assert.ok(pick);assert.equal(pick.source,'U2');assert.match(pick.value,/TX\(송신\)·RX\(수신\) 선택/);assert.match(pick.condition,/드묾/);
+  assert.ok(!r6.specifications.some(spec=>spec.name==='수신 모듈 장착'));
+  const ir=r6.specifications.find(spec=>spec.name==='SPX-RX IR 기능');
+  assert.ok(ir);assert.equal(ir.source,'U2');assert.match(ir.condition,/잘 쓰지 않음/);
   assert.ok(r6.sources.some(source=>source.code==='U2'));
   assert.doesNotMatch(read('docs/handoff/OPEN_ITEMS.md'),/IR Blaster|모듈 종류:/,'확인 항목은 처리했으므로 지운다');
 });
