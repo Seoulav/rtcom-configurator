@@ -9,7 +9,6 @@
 - [ ] Cloudflare: 두 Worker 배포, `rtcom-ai-login`에 Access(허용 명단, `@seoulav1.co.kr`) 켜기, 비밀값 7개 넣기
 - [ ] 두 Worker 주소(`rtcom-ai-api…workers.dev`, `rtcom-ai-login…workers.dev`)를 Claude에게 알려 주기 → `src/ai-search.js`의 `CONFIG` 채워 배포
 - [ ] 첫 실제 질문으로 답 품질·건당 토큰(`cacheWrite`·`cacheRead`) 확인
-- [ ] (결정) `@seoulav.co.kr` 메일도 허용할지. 지금은 `seoulav1.co.kr`만 허용합니다.
 
 ## 사용자(RT컴)에게 받을 사진
 

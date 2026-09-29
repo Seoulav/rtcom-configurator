@@ -8,7 +8,8 @@
   - 화면 위치: **공개 구성기 안의 숨은 버튼.**
   - 기능: **제품 질의응답·추천, 구성기 구성안 제안, 사양 비교** 세 가지.
 - **추가 지시(2026-09-29):** "영업팀은 @seoulav1.co.kr 사용해서 이걸로 변경해줘". 허용 도메인 기본값을 `seoulav1.co.kr`로 두었습니다(`workers/ai-search/wrangler.toml`의 `ALLOWED_EMAIL_DOMAINS`).
-  - `@seoulav.co.kr` 메일(본부 인원 등)도 넣으려면 두 Worker 모두 값을 `"seoulav1.co.kr,seoulav.co.kr"`로 바꿔 다시 배포합니다.
+  - 사용자 결정(2026-09-29 "현재는 @seoulav1.co.kr만"): 베타 동안 `@seoulav.co.kr` 메일은 허용하지 않습니다.
+  - 나중에 `@seoulav.co.kr` 메일(본부 인원 등)도 넣으려면 두 Worker 모두 값을 `"seoulav1.co.kr,seoulav.co.kr"`로 바꿔 다시 배포합니다.
 
 ## 2. 구조
 
