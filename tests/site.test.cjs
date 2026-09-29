@@ -424,7 +424,7 @@ test('검토 결과에 내부 근거 문서 링크를 넣지 않는다(0.149)', 
   }
 });
 
-test('0.154: SPX-R6는 사양서 근거로 등록하고, 로고 없는 평면 그림·사양서 카탈로그 버튼을 쓰며, SPX 매뉴얼 2권을 공개하고 M2472·M24120 깊이는 443.7mm다',()=>{
+test('0.155: SPX-R6는 사양서 근거로 등록하고, 로고 없는 평면 그림·사양서 카탈로그 버튼을 쓰며, SPX 매뉴얼 2권을 공개하고 M2472·M24120 깊이는 443.7mm다',()=>{
   // 사용자 결정 2026-09-29: PDF 3개 공개(SPX-R6 사양서·SPX-TX/RX 매뉴얼 Ver.2.0·SPX 공통 매뉴얼 250805), SPX-R6는 "평면 그래픽", 깊이 "443.7mm", 비디오 월 표기는 유지.
   const r6=JSON.parse(read('data/products/spx-r6.json')),txrx=JSON.parse(read('data/products/spx-rx-tx.json')),spx=JSON.parse(read('data/products/spx.json'));
   assert.equal(r6.group,'extender');

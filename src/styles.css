@@ -1164,3 +1164,6 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-frame-info-stack .rt-frame-info-face img{max-height:min(28vh,300px)}
 #rtcom-design .rt-frame-info-face figcaption{font-size:12px;font-weight:700;color:var(--rt-muted,#6b7280);text-align:center}
 @media (max-width:560px){#rtcom-design .rt-frame-info-face img{max-height:46vh}}
+
+/* 0.154 프레임 정면·후면 팝업(위아래 배치): 두 그림 가로폭을 같게 맞춤 */
+#rtcom-design .rt-frame-info-stack .rt-frame-info-face img{width:min(100%,560px);max-width:100%;max-height:none;height:auto}

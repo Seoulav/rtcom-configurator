@@ -377,9 +377,9 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     // 0.33 — 제품정보 글래스 디자인(rt-pg-*)으로 목록·상세 마크업이 바뀌었다.
     await page.click('a[data-view-tab="products"]');
     await page.waitForSelector('.rt-pg-gridcard');
-    check('제품정보 탭을 누르면 구성기를 숨기고 제품 32종 목록(0.64 SPX-TX/RX, 0.72 XDM-PSU, 0.121 HD-D102U Rack마운트, 0.154 SPX-R6 포함)을 표시',await page.locator('.rt-configurator-view').isHidden()&&await page.locator('.rt-pg-gridcard').count()===32);
+    check('제품정보 탭을 누르면 구성기를 숨기고 제품 32종 목록(0.64 SPX-TX/RX, 0.72 XDM-PSU, 0.121 HD-D102U Rack마운트, 0.155 SPX-R6 포함)을 표시',await page.locator('.rt-configurator-view').isHidden()&&await page.locator('.rt-pg-gridcard').count()===32);
     await page.click('[data-product-filter="extender"]');
-    check('전송기 분류는 15종(0.64 SPX-TX/RX, 0.72 XDM-PSU, 0.154 SPX-R6 포함)',await page.locator('.rt-pg-gridcard').count()===15);
+    check('전송기 분류는 15종(0.64 SPX-TX/RX, 0.72 XDM-PSU, 0.155 SPX-R6 포함)',await page.locator('.rt-pg-gridcard').count()===15);
     await page.click('[data-product-filter="all"]');
     await page.fill('[data-product-search]','QMS');
     check('검색어 QMS로 일체형 매트릭스 2종이 남음',await page.locator('.rt-pg-gridcard').count()===2);
@@ -403,6 +403,13 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.waitForSelector('.rt-pg-gridcard');
     check('제품정보 목록의 첫 카드는 XDM(0.125, 사용자 요청 "XDM이 처음으로 나오게해")',(await page.locator('.rt-pg-gridcard').first().getAttribute('href'))==='#products/xdm');
     check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-pg-gridcard').count()===32);
+    // 0.154 제품정보 프레임 정면·후면 팝업: 위아래로 쌓일 때 두 그림의 가로폭이 같아야 한다(사용자 요청 2026-09-29).
+    await page.goto(`${home}#products/spx`,{waitUntil:'networkidle'});
+    await page.click('[data-pg-frame="SPX-M1620"]');
+    await page.waitForFunction(()=>[...document.querySelectorAll('.rt-frame-info-face img')].length===2&&[...document.querySelectorAll('.rt-frame-info-face img')].every(image=>image.complete&&image.naturalWidth>0),null,{timeout:10000}).catch(()=>{});
+    const faceWidths=await page.$$eval('.rt-frame-info-face img',images=>images.map(image=>Math.round(image.getBoundingClientRect().width)));
+    check('SPX-M1620 정면·후면 팝업의 두 그림 가로폭이 같음(0.154)',faceWidths.length===2&&Math.abs(faceWidths[0]-faceWidths[1])<=1,JSON.stringify(faceWidths));
+    await page.keyboard.press('Escape');
     // 0.121·0.123·0.130 HD-D102U Rack마운트: 02 Port Map은 XDM-PSU 그림 방식의 정면 그래픽 이미지 1장만 두고(윗면·옆면은 삭제, 사용자 요청 2026-09-29) 실도면(치수 도면) 카드는 없다. HD-D102U와 관련 제품 링크.
     await page.goto(`${home}#products/hd-d102u-rack`,{waitUntil:'networkidle'});
     await page.waitForSelector('#rt-pg-title');
@@ -531,7 +538,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.waitForSelector('#rt-pg-title');
     const spxrt=await page.evaluate(()=>({maps:document.querySelectorAll('.rt-pg-portmap svg image, .rt-pg-portmap image').length||document.querySelectorAll('[data-pm-map], .rt-pg-pm').length,rows:document.querySelectorAll('.rt-pg-dip .rt-pg-dip-row').length,combos:document.querySelectorAll('.rt-pg-dip-combos figure').length,down:document.querySelector('.rt-pg-dip h2')?.textContent.includes('아래쪽이 ON'),flow:[...document.querySelectorAll('.rt-pg-svg-wrap svg')].map(s=>s.textContent).join(' '),broken:[...document.images].filter(i=>i.complete&&!i.naturalWidth).length}));
     check('SPX-TX/RX 상세에 딥 스위치 3행(1·2번, 3·4번 조합 4칸, 아래쪽이 ON)과 CATx 신호 흐름이 나오고 깨진 사진이 없음',spxrt.rows===3&&spxrt.combos===4&&spxrt.down&&spxrt.flow.includes('CATx')&&!spxrt.flow.includes('HDBaseT')&&spxrt.broken===0,JSON.stringify({...spxrt,flow:spxrt.flow.slice(0,80)}));
-    // 0.154 SPX-R6(사용자 제공 사양서): 전면·후면 평면 그림 단자 지도 2장(번호 5·4개), 모듈 6개 → SPX-RX 6대 Signal Flow, 로고 사진 없음.
+    // 0.155 SPX-R6(사용자 제공 사양서): 전면·후면 평면 그림 단자 지도 2장(번호 5·4개), 모듈 6개 → SPX-RX 6대 Signal Flow, 로고 사진 없음.
     await page.goto(`${home}#products/spx-r6`,{waitUntil:'networkidle'});
     await page.waitForSelector('#rt-pg-title');
     const r6=await page.evaluate(()=>{const s=[...document.querySelectorAll('section')].find(s=>/Port Map/i.test(s.querySelector('h2')?.textContent||''));const flow=[...document.querySelectorAll('.rt-pg-svg-wrap svg')].map(x=>x.textContent).join(' ');return {title:document.querySelector('#rt-pg-title')?.textContent,front:!!s?.innerHTML.includes('spx-r6-front-art.webp'),rear:!!s?.innerHTML.includes('spx-r6-rear-art.webp'),ports:[...(s?.querySelectorAll('.rt-pg-ports')||[])].map(x=>x.children.length),rx:(flow.match(/SPX-RX/g)||[]).length,module6:flow.includes('모듈 6'),broken:[...document.images].filter(i=>i.complete&&!i.naturalWidth).length,overflow:document.documentElement.scrollWidth>innerWidth}});
@@ -545,7 +552,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     const obuxPm=await page.evaluate(()=>{const s=[...document.querySelectorAll('section')].find(s=>/Port Map/.test(s.querySelector('h2')?.textContent||''));return {tx:!!s?.innerHTML.includes('obux-1c-tx-front-rear.webp'),rx:!!s?.innerHTML.includes('obux-1c-rx-front-rear.webp'),ports:[...(s?.querySelectorAll('.rt-pg-ports')||[])].map(x=>x.children.length)}});
     // 2026-09-28 제조사 문서 PDF: documents[].file 수만큼 "제품 목록" 옆에 버튼(새 탭 보기 + 내려받기)이 나오고 링크가 PDF로 열림. 등록 파일이 없는 제품은 버튼 없음.
     // 0.105 샘플(HD-13U 카탈로그만): 새 탭 링크 대신 팝업(button[data-doc-preview])이고, 클릭하면 dialog.rt-doc-zoom이 PDF.js로 그 파일을 그린다(0.112).
-    // 0.154: SPX-R6 사양서(카탈로그)·SPX 공통 매뉴얼·SPX-TX/RX 매뉴얼 공개(사용자 결정 2026-09-29)도 같은 방식으로 확인한다.
+    // 0.155: SPX-R6 사양서(카탈로그)·SPX 공통 매뉴얼·SPX-TX/RX 매뉴얼 공개(사용자 결정 2026-09-29)도 같은 방식으로 확인한다.
     for(const id of ['hd-13u','hd-104u','spx-r6','spx-rx-tx','spx']){
       const expected=(JSON.parse(fs.readFileSync(`data/products/${id}.json`,'utf8')).documents||[]).filter(doc=>doc.file).length;
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
