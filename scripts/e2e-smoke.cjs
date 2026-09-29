@@ -541,8 +541,8 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     // 0.157 SPX-R6(사용자 제공 사양서): 전면·후면 평면 그림 단자 지도 2장(번호 5·4개), 모듈 6개 → SPX-RX 6대 Signal Flow, 로고 사진 없음.
     await page.goto(`${home}#products/spx-r6`,{waitUntil:'networkidle'});
     await page.waitForSelector('#rt-pg-title');
-    const r6=await page.evaluate(()=>{const s=[...document.querySelectorAll('section')].find(s=>/Port Map/i.test(s.querySelector('h2')?.textContent||''));const flow=[...document.querySelectorAll('.rt-pg-svg-wrap svg')].map(x=>x.textContent).join(' ');return {title:document.querySelector('#rt-pg-title')?.textContent,front:!!s?.innerHTML.includes('spx-r6-front-art.webp'),rear:!!s?.innerHTML.includes('spx-r6-rear-art.webp'),ports:[...(s?.querySelectorAll('.rt-pg-ports')||[])].map(x=>x.children.length),rx:(flow.match(/SPX-RX/g)||[]).length,module6:flow.includes('모듈 6'),broken:[...document.images].filter(i=>i.complete&&!i.naturalWidth).length,overflow:document.documentElement.scrollWidth>innerWidth}});
-    check('SPX-R6 상세에 전면·후면 그림 단자 지도(번호 5·4개)와 모듈 6개 → SPX-RX 6대 신호 흐름이 나오고 깨진 사진이 없음',/SPX-R6/.test(r6.title||'')&&r6.front&&r6.rear&&r6.ports.join()==='5,4'&&r6.rx>=6&&r6.module6&&r6.broken===0&&!r6.overflow,JSON.stringify(r6));
+    const r6=await page.evaluate(()=>{const s=[...document.querySelectorAll('section')].find(s=>/Port Map/i.test(s.querySelector('h2')?.textContent||''));const flow=[...document.querySelectorAll('.rt-pg-svg-wrap svg')].map(x=>x.textContent).join(' ');return {title:document.querySelector('#rt-pg-title')?.textContent,front:!!s?.innerHTML.includes('spx-r6-front-art.webp'),rear:!!s?.innerHTML.includes('spx-r6-rear-art.webp'),ports:[...(s?.querySelectorAll('.rt-pg-ports')||[])].map(x=>x.children.length),rx:(flow.match(/SPX-RX/g)||[]).length,module6:flow.includes('모듈 6'),broken:[...document.images].filter(i=>i.complete&&!i.naturalWidth).length,overflow:document.documentElement.scrollWidth>innerWidth,diagramBtn:!!document.querySelector('[data-open-diagram]'),diagram:!!document.querySelector('.rt-pg-diagram-photo img')?.getAttribute('src')?.includes('spx-r6-diagram.webp')}});
+    check('SPX-R6 상세에 전면·후면 그림 단자 지도(번호 5·4개)와 모듈 6개 → SPX-RX 6대 신호 흐름, 로고를 지운 제조사 원본 다이어그램(0.158)이 나오고 깨진 사진이 없음',/SPX-R6/.test(r6.title||'')&&r6.front&&r6.rear&&r6.ports.join()==='5,4'&&r6.rx>=6&&r6.module6&&r6.broken===0&&!r6.overflow&&r6.diagramBtn&&r6.diagram,JSON.stringify(r6));
     // 0.64 OBUX-1C Tx Mode 딥 스위치(매뉴얼 Ver.2.2): 검은 몸체 4핀, 1번 오디오 + 2·3·4번 EDID 조합 5칸(Through-pass EDID Fix 포함).
     await page.goto(`${home}#products/obux-1c`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-dip');
@@ -775,7 +775,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await wallCard88.locator('[data-layout-chip]',{hasText:'2×5'}).click();
     const wall=await wallCard88.evaluate(card=>({text:card.querySelector('p')?.textContent||'',chips:[...card.querySelectorAll('[data-layout-chip]')].map(b=>b.textContent).join('|'),cells:card.querySelectorAll('[data-layout-preview] svg rect.rt-pg-cell').length}));
     check('QMS-88UX 06 WALL 카드에 2×2 월 2개·3×3·2×5가 적혀 있고 레이아웃 칩 4종(2×2 + 2×2는 8칸, 2×5는 10칸)으로 미리보기됨',/2×2 월 최대 2개/.test(wall.text)&&/3×3·2×5/.test(wall.text)&&wall.chips==='2×2|2×2 + 2×2|3×3|2×5'&&wallTwo===8&&wall.cells===10,JSON.stringify({wall,wallTwo}));
-    // 0.158(사용자 요청 2026-09-29 "1TO1, ALL, 임의스위칭 이거는 빼고 그냥 크로스포인트 이미지만"): MATRIX 카드에는 칩 없이 크로스포인트 그림 한 장(QMS-44UX 출력 4칸, QMS-88UX 출력 8칸).
+    // 0.159(사용자 요청 2026-09-29 "1TO1, ALL, 임의스위칭 이거는 빼고 그냥 크로스포인트 이미지만"): MATRIX 카드에는 칩 없이 크로스포인트 그림 한 장(QMS-44UX 출력 4칸, QMS-88UX 출력 8칸).
     const matrixViews={};
     for(const id of ['qms-44ux','qms-88ux']){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
