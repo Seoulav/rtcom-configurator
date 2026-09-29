@@ -363,7 +363,7 @@ test('0.121: HD-D102U Rack마운트는 HD-D102U와 서로 관련 제품으로 �
   assert.equal(rack.portMap.length,1,'단자 지도는 정면 한 장만');
   assert.equal(JSON.stringify(rack).includes('윗면')||JSON.stringify(rack).includes('옆면'),false,'윗면·옆면 표기는 남기지 않는다');
   for(const name of ['top','side'])assert.equal(fs.existsSync(`output/design/assets/products/hd-d102u-rack-${name}-art.webp`),false,`${name} 그림 파일은 지운다`);
-  assert.match(read('scripts/tools/draw_hd_d102u_rack.cjs'),/const L=\{body:'#d5dae2',ear:'#c3c9d3',rail:'#dfe3ea'/,'그림은 밝은 회색 금속 계열이되 분배기 칸(#f7f8fa)보다 어두운 몸체·랙 귀·레일 색을 쓴다(0.134)');
+  assert.match(read('scripts/tools/draw_hd_d102u_rack.cjs'),/const L=\{body:'#c5cbd5',ear:'#b1b8c4',rail:'#d0d5de'/,'그림은 밝은 회색 금속 계열이되 분배기 칸(#f7f8fa)보다 어두운 몸체·랙 귀·레일 색을 쓴다(0.135)');
   assert.match(read('scripts/tools/draw_hd_d102u_rack.cjs'),/card:'#f7f8fa'/,'분배기 칸은 밝은 색을 유지한다');
   const order=JSON.parse(read('data/products/index.json')).products.map(product=>product.id);
   assert.equal(order.indexOf('hd-d102u-rack'),order.indexOf('hd-d102u')+1,'목록에서 HD-D102U 바로 뒤에 보인다');
