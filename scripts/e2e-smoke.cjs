@@ -985,6 +985,20 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       check('제품정보 XDM·SPX·VDM 04 카드 라인업: 행을 누르면 카드 상세 팝업이 열리고 연동 전송기 표기가 없음',Object.values(cardResult).every(r=>r.rows>=4&&r.linkedInRows===0&&!r.linkedInPopup&&r.hasSpec),JSON.stringify(cardResult));
       await cardPage.close();
     }
+    // 0.146(사용자 요청 2026-09-29 "QMS-44UX 매뉴얼에 나와 있는 분할이 다르다"): QMS-44UX QUAD 레이아웃 도해가 매뉴얼 21~22쪽대로 나오고, 이름이 같은 QMS-88UX 도해는 그대로다.
+    {
+      const shapePage=await browser.newPage({viewport:{width:1300,height:1000}});
+      const cellCount=async(id,layout)=>{
+        await shapePage.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
+        await shapePage.waitForSelector('.rt-pg-layout-chip');
+        const card=shapePage.locator('.rt-pg-vmode-card',{has:shapePage.locator(`.rt-pg-layout-chip[data-layout="${layout}"]`)}).first();
+        await card.locator(`.rt-pg-layout-chip[data-layout="${layout}"]`).click();
+        return card.locator('.rt-pg-layout-preview svg rect:not(.rt-pg-layout-letterbox)').count();
+      };
+      const got={cascade:await cellCount('qms-44ux','CASCADE1'),pop:await cellCount('qms-44ux','4CH-POP'),mode1:await cellCount('qms-44ux','3CH-MODE1'),user2:await cellCount('qms-44ux','USER MODE 2'),user1:await cellCount('qms-44ux','USER MODE 1'),user88:await cellCount('qms-88ux','USER MODE 1')};
+      check('QMS-44UX QUAD 도해가 매뉴얼대로(CASCADE1 4칸·4CH-POP 4칸·3CH-MODE1 3칸·USER MODE 1 4칸·USER MODE 2 4칸)이고 QMS-88UX USER MODE 1은 3칸 그대로',got.cascade===4&&got.pop===4&&got.mode1===3&&got.user1===4&&got.user2===4&&got.user88===3,JSON.stringify(got));
+      await shapePage.close();
+    }
     await phone.close();
   }finally{
     await browser.close();

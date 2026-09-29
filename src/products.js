@@ -584,7 +584,7 @@
     };
     const VMODE_NAME_KO={MATRIX:'매트릭스',QUAD:'쿼드 뷰',WALL:'비디오 월',DUAL:'듀얼'};
     // 레이아웃 이름별 화면 분할 도해(칸 번호·x·y·너비·높이, 0~100 기준). QMS-88UX 매뉴얼(RTcom_Manual_QMS-88UX_KV.03.pdf) 20~21쪽 Layout List 도해를 그대로 옮겼다(사용자 요청 2026-09-27).
-    // 매뉴얼이 없는 QMS-44UX 전용 이름(CASCADE1·4CH-POP·2CH-SIDE·3CH-MODE1) 4종과 WALL·DUAL 레이아웃은 이름 뜻에 맞춰 만든 도식이다.
+    // QMS-44UX 전용 이름의 QUAD 도해는 아래 LAYOUT_SHAPES_BY_PRODUCT(0.146, 44UX 매뉴얼 21~22쪽 도해)가 우선한다. 매뉴얼에 도해가 없는 WALL·DUAL 레이아웃은 이름 뜻에 맞춰 만든 도식이다.
     const LAYOUT_SHAPES={
       'QUAD':[[1,0,0,50,50],[2,50,0,50,50],[3,0,50,50,50],[4,50,50,50,50]],
       '3-BOTTOM':[[1,0,0,100,50],[2,0,50,33.33,50],[3,33.33,50,33.34,50],[4,66.67,50,33.33,50]],
@@ -620,15 +620,36 @@
       // 0.85: Output Option 5(매뉴얼 KV.04 23쪽) — 16:9 칸 8개를 4×2로 두고 위아래를 비움(Option 6은 2×4 세로 배치, 같은 16:9 비율).
       '8분할(16:9 비율)':[[1,0,25,25,25],[2,25,25,25,25],[3,50,25,25,25],[4,75,25,25,25],[5,0,50,25,25],[6,25,50,25,25],[7,50,50,25,25],[8,75,50,25,25]]
     };
-    function layoutShapeSvg(name){
-      const cells=LAYOUT_SHAPES[String(name||'').trim().toUpperCase()];
+    // 0.146(사용자 요청 2026-09-29 "QMS-44UX 매뉴얼에 나와 있는 분할이 다르다, 매뉴얼 읽어 보고 비교해서 찾아줘"): QMS-44UX 사용자 매뉴얼 21~22쪽 Quad Layout List 12종 도해를 그대로 옮긴 전용 도해.
+    // 이름이 같아도 QMS-88UX 매뉴얼의 도해와 다른 레이아웃(3CH-MODE2·USER MODE 1·2)이 있어 제품별로 따로 둔다. 셀 끝의 [lx,ly]는 번호 글자 위치(없으면 셀 가운데), black은 매뉴얼처럼 검은 여백을 깔 레이아웃.
+    const LAYOUT_SHAPES_BY_PRODUCT={'qms-44ux':{
+      shapes:{
+        'QUAD':[[1,0,0,50,50],[2,50,0,50,50],[3,0,50,50,50],[4,50,50,50,50]],
+        '3-BOTTOM':[[1,25,0,50,50],[2,0,50,33.33,50],[3,33.33,50,33.34,50],[4,66.67,50,33.33,50]],
+        '3-SIDE RIGHT':[[1,0,25,60,48.3],[2,60,0,40,33.33],[3,60,33.33,40,33.34],[4,60,66.67,40,33.33]],
+        '3-SIDE LEFT':[[2,0,0,40,33.33],[3,0,33.33,40,33.34],[4,0,66.67,40,33.33],[1,40,25,60,48.3]],
+        'CASCADE1':[[1,0,0,100,100,6,8],[2,21.6,24.2,33.7,33.3,29,52],[3,40.2,39.4,33.7,33.3,47,67],[4,58.8,54.5,33.7,33.3,66,82]],
+        '4CH-POP':[[1,0,0,100,100,3.5,6],[2,7.4,9,86.3,80.9,10.5,15],[3,13.5,19.5,74.2,60.7,16.5,25],[4,18.6,28.1,64.3,45.3,22,34]],
+        '2CH-SIDE':[[3,0,0,29,100],[1,29,0,42,50],[2,29,50,42,50],[4,71,0,29,100]],
+        '3CH-MODE1':[[1,0,0,50,100],[2,50,0,50,50],[3,50,50,50,50]],
+        '3CH-MODE2':[[1,25,0,50,50],[2,0,50,50,50],[3,50,50,50,50]],
+        'USER MODE 1':[[1,0,0,25,25],[2,25,25,25,25],[3,50,50,25,25],[4,75,75,25,25]],
+        'USER MODE 2':[[1,0,25,25,50],[2,25,25,25,50],[3,50,25,25,50],[4,75,25,25,50]],
+        'USER MODE 3':[[1,20,0,60,25],[2,20,25,60,25],[3,20,50,60,25],[4,20,75,60,25]]
+      },
+      black:new Set(['3-BOTTOM','3-SIDE RIGHT','3-SIDE LEFT','3CH-MODE2','USER MODE 1','USER MODE 2','USER MODE 3'])
+    }};
+    function layoutShapeSvg(name,productId){
+      const own=LAYOUT_SHAPES_BY_PRODUCT[productId];
+      const key=String(name||'').trim().toUpperCase();
+      const cells=own?.shapes[key]||LAYOUT_SHAPES[key];
       if(!cells)return '<div class="rt-pg-layout-missing">도해 준비 중</div>';
       // 칸들을 다 모아도 캔버스(0~100) 가장자리를 채우지 못하면 매뉴얼처럼 나머지를 레터박스(검은 막대)로 보여준다.
       // (QMS-88UX "8분할(16:9 비율)"처럼 비율을 유지하려고 위·아래를 비우는 레이아웃, 매뉴얼 KV.04 23쪽 Output Option 5·6 예시 근거)
       const minX=Math.min(...cells.map(c=>c[1])),minY=Math.min(...cells.map(c=>c[2]));
       const maxX=Math.max(...cells.map(c=>c[1]+c[3])),maxY=Math.max(...cells.map(c=>c[2]+c[4]));
-      const letterbox=minX>0.5||minY>0.5||maxX<99.5||maxY<99.5;
-      const rects=cells.map(([n,x,y,w,h])=>`<g><rect x="${x}" y="${y}" width="${w}" height="${h}"/><text x="${x+w/2}" y="${y+h/2}">${n}</text></g>`).join('');
+      const letterbox=minX>0.5||minY>0.5||maxX<99.5||maxY<99.5||(own?.shapes[key]&&own.black.has(key));
+      const rects=cells.map(([n,x,y,w,h,lx,ly])=>`<g><rect x="${x}" y="${y}" width="${w}" height="${h}"/><text x="${lx??x+w/2}" y="${ly??y+h/2}">${n}</text></g>`).join('');
       return `<svg viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label="${esc(name)} 화면 구성">${letterbox?'<rect class="rt-pg-layout-letterbox" x="0" y="0" width="100" height="100"/>':''}${rects}</svg>`;
     }
     function videoModesSection(item){
@@ -642,7 +663,7 @@
           <div class="rt-pg-vmode-cards">${modes.map(mode=>`<div class="rt-pg-vmode-card">
             <div class="rt-pg-vmode-card-head">${VMODE_ICON[mode.name]||''}<div><b>${esc(VMODE_NAME_KO[mode.name]||mode.name)}</b><small>${esc(mode.name)}</small></div></div>
             <p>${esc(mode.summary)}${mode.detail?` ${esc(mode.detail)}`:''}</p>
-            ${mode.layouts?.length?`<span class="rt-pg-vmode-count">레이아웃 ${mode.layouts.length}종</span><div class="rt-pg-vmode-chips">${mode.layouts.map((layout,index)=>`<button type="button" class="rt-pg-layout-chip${index===0?' on':''}" data-layout-chip data-layout="${esc(layout)}">${esc(layout)}</button>`).join('')}</div><div class="rt-pg-layout-preview" data-layout-preview>${layoutShapeSvg(mode.layouts[0])}<small data-layout-name>${esc(mode.layouts[0])}</small></div>`:''}
+            ${mode.layouts?.length?`<span class="rt-pg-vmode-count">레이아웃 ${mode.layouts.length}종</span><div class="rt-pg-vmode-chips">${mode.layouts.map((layout,index)=>`<button type="button" class="rt-pg-layout-chip${index===0?' on':''}" data-layout-chip data-layout="${esc(layout)}">${esc(layout)}</button>`).join('')}</div><div class="rt-pg-layout-preview" data-layout-preview data-layout-product="${esc(item.id)}">${layoutShapeSvg(mode.layouts[0],item.id)}<small data-layout-name>${esc(mode.layouts[0])}</small></div>`:''}
           </div>`).join('')}</div>
         </div>
       </section>`;
@@ -977,7 +998,7 @@
         chips.querySelectorAll('[data-layout-chip]').forEach(btn=>btn.classList.toggle('on',btn===layoutChip));
         const preview=chips.nextElementSibling;
         if(preview?.matches('[data-layout-preview]')){
-          preview.innerHTML=`${layoutShapeSvg(layoutChip.dataset.layout)}<small data-layout-name>${esc(layoutChip.dataset.layout)}</small>`;
+          preview.innerHTML=`${layoutShapeSvg(layoutChip.dataset.layout,preview.dataset.layoutProduct)}<small data-layout-name>${esc(layoutChip.dataset.layout)}</small>`;
         }
         return;
       }
