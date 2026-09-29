@@ -396,9 +396,11 @@
       const dirWord=slot=>slot.dir==='input'?'입력':'출력';
       const row=(slot,option,link)=>{
         const info=extenderInfo[option],selected=link.device===option;
-        return `<button type="button" class="rt-cg-row" data-link-device="${esc(option)}" data-owner="${slot.id}" aria-pressed="${selected}"><span class="rt-cg-row-head"><strong>${esc(info?.model||option)}${info?.recommended?'<em>기본 연동</em>':''}<small>${esc(info?.role||'호환 전송 장비')}</small></strong><span class="rt-cg-dot" aria-hidden="true"></span></span>${info?`<ul class="rt-cg-row-specs">${info.specs.slice(0,2).map(s=>`<li>${esc(s)}</li>`).join('')}</ul>`:''}</button>`;
+        return `<button type="button" class="rt-cg-row" data-link-device="${esc(option)}" data-owner="${slot.id}" aria-pressed="${selected}" title="${esc([info?.role,...(info?.specs||[]).slice(0,2)].filter(Boolean).join(' · '))}"><span class="rt-cg-row-head"><strong>${esc(info?.model||option)}${info?.recommended?'<em>기본 연동</em>':''}<small>${esc(info?.role||'호환 전송 장비')}</small></strong><span class="rt-cg-dot" aria-hidden="true"></span></span>${info?`<ul class="rt-cg-row-specs">${info.specs.slice(0,2).map(s=>`<li>${esc(s)}</li>`).join('')}</ul>`:''}</button>`;
       };
-      const none=(slot,link)=>`<button type="button" class="rt-cg-row" data-link-device="" data-owner="${slot.id}" aria-pressed="${!link.device}"><span class="rt-cg-row-head"><strong>연결하지 않음</strong><span class="rt-cg-dot" aria-hidden="true"></span></span><ul class="rt-cg-row-specs"><li>이 카드의 포트를 다른 장비와 직접 연결</li></ul></button>`;
+      // 0.177(사용자 결정 2026-09-29 "둘 다 진행", 시안 docs/qa/link-step-0.175/mock-compact-list-pc.png): 카드마다 큰 상자 2개를 한 줄 선택 막대로 줄였다.
+      // 상자에 쓰던 역할·케이블 설명은 화면에서 숨기고(오른쪽 미리보기·전원 안내에 같은 내용이 있음) 마우스를 올리면 보이는 title로 남긴다.
+      const none=(slot,link)=>`<button type="button" class="rt-cg-row" data-link-device="" data-owner="${slot.id}" aria-pressed="${!link.device}" title="이 카드의 포트를 다른 장비와 직접 연결"><span class="rt-cg-row-head"><strong>연결하지 않음</strong><span class="rt-cg-dot" aria-hidden="true"></span></span><ul class="rt-cg-row-specs"><li>이 카드의 포트를 다른 장비와 직접 연결</li></ul></button>`;
       const countSelect=slot=>{const c=slotCard(slot.id),link=state.links[slot.id]||{device:'',count:0,distance:'30'};return `<select data-link="count" data-owner="${slot.id}" ${link.device?'':'disabled'}>${Array.from({length:c[2]+1},(_,i)=>`<option value="${i}" ${link.count===i?'selected':''}>${i} / ${c[2]}채널</option>`).join('')}</select>`};
       const group=slot=>{
         const c=slotCard(slot.id),opts=choices(slot,c),link=state.links[slot.id]||{device:'',count:0,distance:'30'};
