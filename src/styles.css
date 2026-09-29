@@ -1219,3 +1219,31 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-frame-info-stack .rt-frame-info-face img{width:min(100%,560px);max-width:100%;max-height:none;height:auto}
 /* 0.166 사양 값이 여러 줄일 때(SPX-TX/RX "4K60 실효 전송거리") 줄마다 한 덩어리로 보이게 간격을 둔다 */
 #rtcom-design .rt-pg-spec-table td .rt-pg-spec-line{display:block}#rtcom-design .rt-pg-spec-table td .rt-pg-spec-line+.rt-pg-spec-line{margin-top:6px}
+
+/* 0.171 03 카드 슬롯 ① 카드 장착 / ② 신호 입력 전환(사용자 결정 2026-09-29 "추천A대로 진행해줘"). 표 형식은 사용자 제공 엑셀 표(입력슬롯·슬롯내·신호명). */
+#rtcom-design .rt-cards-sub{display:inline-flex;gap:4px;margin:4px 0 14px;padding:4px;border:1px solid var(--rt-line);border-radius:12px;background:var(--rt-soft)}
+#rtcom-design .rt-cards-sub button{min-height:36px;padding:0 16px;border:0;border-radius:9px;background:transparent;color:var(--rt-muted);font:700 13px/1 inherit;cursor:pointer}
+#rtcom-design .rt-cards-sub button.on{background:#fff;color:var(--rt-ink);box-shadow:0 1px 4px #1f253222}
+#rtcom-design .rt-cards-sub button:focus-visible{outline:2px solid var(--rt-accent);outline-offset:2px}
+#rtcom-design .rt-signal-count{margin:0 0 12px;font-size:13px;color:var(--rt-muted)}
+#rtcom-design .rt-signal-count b{color:var(--rt-accent);font-size:15px}
+#rtcom-design .rt-signal-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+@media(max-width:980px){#rtcom-design .rt-signal-grid{grid-template-columns:1fr}}
+#rtcom-design .rt-signal-side{padding:16px;border:1px solid var(--rt-line);border-radius:18px;background:#fff}
+#rtcom-design .rt-signal-side h3{margin:0 0 10px;padding:6px 10px;border-radius:8px;font-size:13px;letter-spacing:.08em}
+#rtcom-design .rt-signal-side-input h3{background:#f3e8ff;color:#6b21a8}
+#rtcom-design .rt-signal-side-output h3{background:#fff7cc;color:#7a5b00}
+#rtcom-design .rt-signal-table{width:100%;border-collapse:collapse;font-size:13px}
+#rtcom-design .rt-signal-table th,#rtcom-design .rt-signal-table td{padding:4px 8px;border-bottom:1px solid var(--rt-line);text-align:left;vertical-align:middle}
+#rtcom-design .rt-signal-table thead th{font-size:11.5px;color:var(--rt-muted);font-weight:700;background:var(--rt-soft)}
+#rtcom-design .rt-signal-table tr.rt-signal-first>*{border-top:2px solid #c9d3e2}
+#rtcom-design .rt-signal-slot{width:34%;border-left:4px solid var(--rt-sig,#667085);background:#fafbfd}
+#rtcom-design .rt-signal-slot strong{display:block;font-size:14px;color:var(--rt-ink)}
+#rtcom-design .rt-signal-slot small{display:block;margin-top:2px;font-size:11px;color:var(--rt-muted);font-weight:500}
+#rtcom-design .rt-signal-range{display:inline-block;margin-bottom:3px;padding:1px 6px;border-radius:5px;background:var(--rt-sig,#667085);color:#fff;font-size:10.5px;font-weight:800}
+#rtcom-design .rt-signal-port{width:52px;text-align:center!important;font-weight:700;color:var(--rt-muted)}
+#rtcom-design .rt-signal-name{padding:3px 6px!important}
+#rtcom-design .rt-signal-name input{width:100%;min-height:32px;padding:5px 9px;border:1px solid var(--rt-line);border-radius:8px;background:#fff;color:var(--rt-ink);font:500 13.5px/1.2 inherit}
+#rtcom-design .rt-signal-name input:focus{outline:none;border-color:var(--rt-accent);box-shadow:0 0 0 3px #3978ee33}
+#rtcom-design .rt-signal-name input:not(:placeholder-shown){border-color:#b9c7dd;background:#f7faff;font-weight:700}
+@media(max-width:560px){#rtcom-design .rt-signal-side{padding:10px}#rtcom-design .rt-signal-name input{font-size:16px}}

@@ -34,6 +34,8 @@ const server=http.createServer((req,res)=>{
 });
 const results=[];
 const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${ok?'PASS':'FAIL'} ${name}${detail?` — ${detail}`:''}`)};
+// 0.171 03 카드 슬롯은 ① 카드 장착 → ② 신호 입력 → 04 전송기 순서다(카드가 있을 때). 04로 가는 검사는 이 도우미로 두 화면을 차례로 넘긴다.
+const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.locator('[data-signal-count]').count())await pg.click('[data-action="next"]');await pg.waitForLoadState('networkidle')};
 (async()=>{
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
   const origin=`http://127.0.0.1:${server.address().port}`,home=`${origin}${BASE}`;
@@ -101,7 +103,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     check('XDM-144 후면 그림 위에 슬롯이 표시되고 그림이 정상 로드됨',await page.locator('.rt-rack-photo .rt-rack-slot').count()===72&&await page.$eval('.rt-rack-photo-image',image=>image.naturalWidth>0));
     await page.locator('button[data-slot="in-2"]').click();
     await page.locator('.rt-card-modal .rt-card-choice[data-card="XDM-CIS100"]').click();
-    await page.click('[data-action="next"]');
+    await nextToLinks(page);
     await page.waitForLoadState('networkidle');
     check('CIS100 장착 시 전송기 단계에 XDM-CTR100(TX)이 4채널로 자동 연결됨',await page.locator('button[data-owner="in-2"][data-link-device="XDM-CTR100 · TX"][aria-pressed="true"]').count()===1&&await page.locator('select[data-owner="in-2"][data-link="count"]').inputValue()==='4');
     // 라인업 사진은 지연 로딩(loading=lazy)이라 화면에 보이도록 스크롤한 뒤 로딩이 끝나기를 기다린다.
@@ -162,11 +164,11 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.click('[data-action="fill-blanks"]');
     await page.waitForLoadState('networkidle');
     check('"남은 칸 블랭크로 채우기"는 빈 슬롯만 블랭크로 바꾸고 이미 넣은 카드는 그대로 둠',await page.locator('.rt-rack-slot-blank').count()===6&&await page.locator('button[data-slot="out-1"].rt-rack-slot-filled').count()===1&&await page.locator('.rt-rack-slot-empty').count()===0);
-    check('모든 슬롯을 채우면 완성 배너와 "선택 완료" 다음 버튼이 표시됨',await page.locator('.rt-slot-done-banner').isVisible()&&(await page.locator('[data-action="next"] span').first().textContent())==='선택 완료 · 전송기 연결');
+    check('모든 슬롯을 채우면 완성 배너와 "선택 완료" 다음 버튼이 표시됨',await page.locator('.rt-slot-done-banner').isVisible()&&(await page.locator('[data-action="next"] span').first().textContent())==='선택 완료 · 신호 입력');
     await page.click('[data-tool="undo"]');
     await page.waitForLoadState('networkidle');
     check('실행 취소 1번으로 "채우기"가 통째로 되돌아감(블랭크 6개가 다시 빈칸으로)',await page.locator('.rt-rack-slot-blank').count()===0&&await page.locator('.rt-rack-slot-empty').count()===6&&await page.locator('button[data-slot="out-1"].rt-rack-slot-filled').count()===1&&await page.locator('.rt-slot-done-banner').count()===0);
-    await page.click('[data-action="next"]');
+    await nextToLinks(page);
     // 0.64 SPX 04 전송기 안내는 "HDBaseT·광 카드"가 아니라 "CATx 카드"(SPX는 HDBaseT 전송이 아님, 사용자 확인 2026-09-27).
     const spxLinkText=await page.evaluate(()=>document.querySelector('.rt-configurator-view')?.innerText||'');
     check('SPX 04 전송기 안내가 "CATx 카드"로 표기되고 HDBaseT가 나오지 않음',spxLinkText.includes('CATx 카드')&&!spxLinkText.includes('HDBaseT'),spxLinkText.match(/.{0,30}(CATx 카드|HDBaseT).{0,30}/)?.[0]||'없음');
@@ -363,7 +365,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
     await page.locator('.rt-card-modal .rt-card-choice[data-card="CIS4-U"]').click();
     await page.locator('button[data-slot="out-1"]').click();
     await page.locator('.rt-card-modal .rt-card-choice[data-card="FOS4-U"]').click();
-    await page.click('[data-action="next"]');
+    await nextToLinks(page);
     await page.locator('.rt-ext-lineup').scrollIntoViewIfNeeded();
     await page.waitForFunction(()=>[...document.querySelectorAll('.rt-ext-lineup-card img')].every(image=>image.complete&&image.naturalWidth>0),null,{timeout:10000}).catch(()=>{});
     check('VDM CIS4-U·FOS4-U 장착 시 CT104-U·FR101-U가 4채널로 자동 연결되고 VDM 전송기 라인업 4종이 표시됨',await page.locator('button[data-owner="in-2"][data-link-device="CT104-U"][aria-pressed="true"]').count()===1&&await page.locator('button[data-owner="out-1"][data-link-device="FR101-U"][aria-pressed="true"]').count()===1&&await page.locator('select[data-owner="in-2"][data-link="count"]').inputValue()==='4'&&await page.$$eval('.rt-ext-lineup-card img',images=>images.length===4&&images.every(image=>image.naturalWidth>0)));
@@ -841,7 +843,7 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
       await pc.click(`button[data-slot="out-${index}"]`);
       await pc.click('.rt-card-modal .rt-card-choice[data-card="XDM-COS100"]');
     }
-    await pc.click('[data-action="next"]');
+    await nextToLinks(pc);
     await pc.waitForLoadState('networkidle');
     // .rt-link-flow는 align-items:center라 노드마다 높이가 달라도(엔드포인트·전송기·카드 사진 높이가 제각각) 한 줄이면 top은 다르고
     // "세로 중심"(top+height/2)은 같다. top 자체를 비교하면 정상 상태에서도 오탐 FAIL이 나서(직접 확인함), 세로 중심으로 비교한다.
@@ -1081,6 +1083,31 @@ const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${
         const opened=await t.locator('dialog.rt-card-modal[open]').count();
         check('터치 화면에서는 장착 슬롯의 × 가 늘 보이고(20px 이상) 빈 슬롯에는 없으며, 누르면 카드가 빠지고 팝업은 열리지 않음',media&&shown&&box&&box.width>=19.5&&emptyX===0&&gone===null&&opened===0,JSON.stringify({media,shown,w:box&&box.width,emptyX,gone,opened}));
         await touchCtx.close();
+      }
+      // 0.171(사용자 결정 2026-09-29 "추천A대로 진행해줘"): 03 카드 슬롯에서 카드를 꽂고 "다음"을 누르면 같은 03 안의 ② 신호 입력으로 가고,
+      // 포트마다 신호명을 적으면(Enter로 다음 칸) 자동 저장되며, 실행 취소로 되돌릴 수 있고, 한 번 더 "다음"을 누르면 04 전송기로 간다.
+      {
+        const s=await browser.newPage({viewport:{width:1300,height:1000}});const errs=[];s.on('pageerror',e=>errs.push(e.message));
+        await s.goto(home,{waitUntil:'networkidle'});await s.evaluate(()=>localStorage.clear());await s.goto(home,{waitUntil:'networkidle'});
+        await s.locator('button[data-family="XDM"]').first().click();await s.locator('.rt-cg-preview [data-action="preview-next"]').first().click();
+        await s.click('button[data-model="XDM-12"]');await s.locator('.rt-cg-preview [data-action="preview-next"]').first().click();
+        const noTabs=await s.locator('.rt-cards-sub').count();
+        for(const [slot,cardId] of [['in-1','XDM-HIS100'],['in-2','XDM-HIS100'],['out-1','XDM-COS100'],['out-2','XDM-HOS100']]){await s.locator(`button[data-slot="${slot}"]`).click();await s.locator(`.rt-card-modal .rt-card-choice[data-card="${cardId}"]`).click()}
+        const tabs=await s.locator('.rt-cards-sub [data-cards-sub]').count(),label=await s.locator('[data-action="next"] span').first().textContent();
+        await s.click('[data-action="next"]');
+        const inputs=s.locator('.rt-signal-input'),n=await inputs.count(),step=await s.locator('.rt-step[aria-current="step"]').getAttribute('data-jump');
+        const tags=await s.locator('.rt-signal-slot strong').allTextContents(),ranges=await s.locator('.rt-signal-range').allTextContents();
+        await inputs.nth(0).click();await s.keyboard.type('PC');await s.keyboard.press('Enter');await s.keyboard.type('PC2');await s.keyboard.press('Enter');
+        const focused=await s.evaluate(()=>document.activeElement?.dataset.signalPort);
+        const saved=await s.evaluate(()=>{const p=JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.portAssignments;return [p['in-1:1'].assignedDevice,p['in-1:2'].assignedDevice]});
+        const count=await s.locator('[data-signal-count] b').textContent();
+        await s.click('[data-tool="undo"]');
+        const afterUndo=await s.evaluate(()=>[...document.querySelectorAll('.rt-signal-input')].slice(0,2).map(i=>i.value));
+        await s.click('[data-action="back"]');const backToSlots=await s.locator('.rt-rack-slot').count()>0&&await s.locator('.rt-signal-input').count()===0;
+        await s.click('[data-cards-sub="signals"]');await s.click('[data-action="next"]');
+        const toLinks=await s.locator('.rt-step[aria-current="step"]').getAttribute('data-jump');
+        check('03 카드 슬롯: 카드가 없으면 전환 탭이 없고, 카드를 꽂으면 "다음"이 ② 신호 입력(16칸, HDMI #1·HDMI #2·HDBT #1·HDMI #2, IN 1~4)으로 가며, Enter로 다음 칸·자동 저장·실행 취소·이전(① 카드 장착)·04 전송기 이동이 동작',noTabs===0&&tabs===2&&label==='빈칸 2개 남음 · 그래도 다음'&&n===16&&step==='2'&&tags.join('|')==='HDMI #1|HDMI #2|HDBT #1|HDMI #2'&&ranges[0]==='IN 1~4'&&ranges[1]==='IN 5~8'&&focused==='in-1:3'&&saved.join('|')==='PC|PC2'&&count==='2'&&afterUndo.join('|')==='PC|'&&backToSlots&&toLinks==='3'&&errs.length===0,JSON.stringify({noTabs,tabs,label,n,step,tags,ranges,focused,saved,count,afterUndo,backToSlots,toLinks,errs}));
+        await s.close();
       }
       // 0.162 카드 끌어 놓기 샘플(직원 제안, 사용자 승인 2026-09-29): 아래 카드 정보 버튼을 같은 방향 슬롯에 끌어 놓으면 장착·교체하고, 다른 방향 슬롯에는 놓이지 않으며, 누르면 상세 정보는 그대로 열린다.
       const saved=()=>p3.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state);

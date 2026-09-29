@@ -335,3 +335,20 @@ test('moveCard moves within the same direction, swaps occupied slots and carries
   assert.equal(core.moveCard(configured(),'in-1','out-2'),null);
   assert.equal(core.moveCard(configured(),'in-2','in-3'),null);
 });
+
+// 0.171 03 카드 슬롯 ② 신호 입력(사용자 결정 2026-09-29 "추천A대로 진행해줘"): 신호명은 portAssignments["슬롯:포트"].assignedDevice(schema 3에 원래 있던 칸)에 넣는다.
+test('신호명은 구성 파일 저장·불러오기에 남고, 카드를 옮기면 함께 옮겨지며, 카드를 빼면 사라진다',()=>{
+  const state=configured();
+  state.portAssignments['in-1:1'].assignedDevice='PC';
+  state.portAssignments['out-1:4'].assignedDevice='프로젝터 1';
+  const restored=core.parse(JSON.stringify(core.document(state)));
+  assert.equal(restored.portAssignments['in-1:1'].assignedDevice,'PC');
+  assert.equal(restored.portAssignments['out-1:4'].assignedDevice,'프로젝터 1');
+  const moved=core.moveCard(restored,'in-1','in-3');
+  assert.equal(moved.portAssignments['in-3:1'].assignedDevice,'PC');
+  assert.equal(moved.portAssignments['in-1:1'],undefined);
+  const removed={...moved,placements:{...moved.placements}};delete removed.placements['in-3'];
+  assert.equal(core.syncPorts(removed)['in-3:1'],undefined);
+  const tooLong={...core.document(state)};tooLong.state={...tooLong.state,portAssignments:{...tooLong.state.portAssignments,'in-1:2':{...tooLong.state.portAssignments['in-1:2'],assignedDevice:'x'.repeat(121)}}};
+  assert.throws(()=>core.parse(JSON.stringify(tooLong)));
+});
