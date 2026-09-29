@@ -298,16 +298,30 @@
     if (data.catalogVersion!==catalogVersion) throw new Error('카탈로그 버전이 다릅니다. 현재 버전과 검토한 뒤 가져와야 합니다.');
     return checkState(data.state);
   }
-  function csv(input) {
-    const state=checkState(input);
-    const cell=value=>'"'+String(value).replace(/^[=+@-]/,"'$&").replace(/"/g,'""')+'"';
-    const completion=completionFor(state);
-    const rows=[['상태','구분','모델','수량','비고'],
-      ['UNVERIFIED_DRAFT','슬롯 완성도',`카드 ${completion.cards} · 블랭크 ${completion.blanks} · 빈칸 ${completion.empty} / 전체 ${completion.total}`,completion.total,completion.empty?'빈 슬롯이 있습니다. 카드나 블랭크 커버로 채워야 완성됩니다.':'모든 슬롯을 채웠습니다.'],
-      ...bom(state).map(row=>['UNVERIFIED_DRAFT',row.category,row.model,row.quantity,'미검증 검토용 · 케이블/전원/기본 포함품 미확정'])];
-    return rows.map(row=>row.map(cell).join(',')).join('\r\n');
+  // 0.172 CSV(사용자 요청 2026-09-29 06 내보내기 설계 검토): 엑셀 견적용으로 행마다 반복되던 영문 상태 코드(UNVERIFIED_DRAFT)를 빼고 비고·장착 위치 열을 더한다. 초안 표시는 맨 아래 안내 행에 한 번만 둔다.
+  function csvRows(input) {
+    const state=checkState(input), slots=slotsFor(state), completion=completionFor(state);
+    const label=id=>(slots.find(item=>item.id===id)?.label||id).replace(' 슬롯 ',' ');
+    const where=(model,category)=>{
+      const found=[];
+      for (const [slot,id] of Object.entries(state.placements)) if (id===model||(category==='마감재'&&id==='BLANK')) found.push(label(slot));
+      for (const [slot,link] of Object.entries(state.links||{})) {
+        if (!link?.device||!link.count) continue;
+        const pair=link.device===psePair;
+        if (pair!==category.startsWith('HDMI 연장')) continue;
+        if ((pair?['XDM-CTR100 PSE','XDM-CTR100']:[link.device.split(' · ')[0]]).includes(model)) found.push(label(slot));
+      }
+      return found.join(', ');
+    };
+    const cardNote=model=>{const item=card(state,model);return item?`${item[1]} · ${item[2]}ch`:''};
+    const split=model=>{const match=/^(.*?)(?: \((.*?)\))?(?: · (.*))?$/.exec(model);return [match[1],[match[2],match[3]].filter(Boolean).join(' · ')]};
+    return [['구분','모델','비고','수량','장착 위치'],
+      ...bom(state).map(row=>{const [model,note]=split(row.model);return [row.category,model,note||cardNote(model),row.quantity,row.category==='메인프레임'?'':where(model,row.category)]}),
+      [],
+      ['안내','검토용 초안',`슬롯 완성도: 카드 ${completion.cards} · 블랭크 ${completion.blanks} · 빈칸 ${completion.empty} / 전체 ${completion.total}`,'',''],
+      ['안내','미포함','케이블, 전원 코드, 기본 포함품은 목록에 없습니다. 발주 전에 별도로 확인하세요.','','']];
   }
-  // 0.172 AV 빌더(https://seoul-visual-tech.github.io/av-system-builder/) "가져오기 → 구성도 JSON"용 파일(사용자 결정 2026-09-29 "A로 전송기 포함해서 진행해줘").
+  // 0.173 AV 빌더(https://seoul-visual-tech.github.io/av-system-builder/) "가져오기 → 구성도 JSON"용 파일(사용자 결정 2026-09-29 "A로 전송기 포함해서 진행해줘").
   // AV 빌더 구성도 형식: {nodes:[{id,type:'equipment',position,data:장비}], edges:[{id,source,target,sourceHandle,targetHandle,type:'smoothstep',style,data:{lineTypeId}}]}.
   // 장비 = {id,category,name,model,manufacturer,series,inputs,outputs,bidirectional}, 포트 = {id,label,type,direction}. 선·포트 종류는 AV 빌더 기본값(video=HDMI·network=LAN·sdi=SDI).
   // 매트릭스 1대(카드 포트를 "HDMI #1-1 PC"처럼 슬롯·포트·신호명으로) + 04에서 연결한 채널마다 전송기 상자와 연결선. 장비 id는 모델별로 고정해 여러 번 불러와도 AV 빌더 장비 목록이 늘지 않게 한다.
@@ -368,5 +382,9 @@
     right.forEach((chain,i)=>chain.forEach((item,j)=>place(item,chain.length===2?(j===0?560:880):560,i*row)));
     return {nodes,edges,meta:{source:'RTCOM Configurator',format:'av-builder-diagram',model:state.model||'',family:state.family,createdAt:new Date().toISOString()}};
   }
-  scope.RtCore={fillTargets,avBuilder,moveCard,initial,checkState,choices,defaultLink,psePair,slotPlan,syncPorts,slotsFor,requirementSummary,validate,bom,document,parse,csv,completionFor,fillBlanks,catalogVersion,schemaVersion,signalTypes};
+  function csv(input) {
+    const cell=value=>'"'+String(value).replace(/^[=+@-]/,"'$&").replace(/"/g,'""')+'"';
+    return csvRows(input).map(row=>row.map(cell).join(',')).join('\r\n');
+  }
+  scope.RtCore={fillTargets,avBuilder,moveCard,initial,checkState,choices,defaultLink,psePair,slotPlan,syncPorts,slotsFor,requirementSummary,validate,bom,document,parse,csv,csvRows,completionFor,fillBlanks,catalogVersion,schemaVersion,signalTypes};
 })(globalThis);

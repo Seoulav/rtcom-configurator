@@ -34,7 +34,7 @@ const server=http.createServer((req,res)=>{
 });
 const results=[];
 const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${ok?'PASS':'FAIL'} ${name}${detail?` — ${detail}`:''}`)};
-// 0.172 03 카드 슬롯은 ① 카드 장착 → ② 신호 입력 → 04 전송기 순서다(카드가 있을 때). 04로 가는 검사는 이 도우미로 두 화면을 차례로 넘긴다.
+// 0.173 03 카드 슬롯은 ① 카드 장착 → ② 신호 입력 → 04 전송기 순서다(카드가 있을 때). 04로 가는 검사는 이 도우미로 두 화면을 차례로 넘긴다.
 const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.locator('[data-signal-count]').count())await pg.click('[data-action="next"]');await pg.waitForLoadState('networkidle')};
 (async()=>{
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
@@ -1084,7 +1084,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
         check('터치 화면에서는 장착 슬롯의 × 가 늘 보이고(20px 이상) 빈 슬롯에는 없으며, 누르면 카드가 빠지고 팝업은 열리지 않음',media&&shown&&box&&box.width>=19.5&&emptyX===0&&gone===null&&opened===0,JSON.stringify({media,shown,w:box&&box.width,emptyX,gone,opened}));
         await touchCtx.close();
       }
-      // 0.172(사용자 결정 2026-09-29 "추천A대로 진행해줘"): 03 카드 슬롯에서 카드를 꽂고 "다음"을 누르면 같은 03 안의 ② 신호 입력으로 가고,
+      // 0.173(사용자 결정 2026-09-29 "추천A대로 진행해줘"): 03 카드 슬롯에서 카드를 꽂고 "다음"을 누르면 같은 03 안의 ② 신호 입력으로 가고,
       // 포트마다 신호명을 적으면(Enter로 다음 칸) 자동 저장되며, 실행 취소로 되돌릴 수 있고, 한 번 더 "다음"을 누르면 04 전송기로 간다.
       {
         const s=await browser.newPage({viewport:{width:1300,height:1000}});const errs=[];s.on('pageerror',e=>errs.push(e.message));
@@ -1140,6 +1140,28 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       check('휴대폰(터치)에서는 카드 정보 버튼을 끌 수 없고 안내 문구도 기존과 같음',touchChips.chips>0&&touchChips.draggable===0&&!touchChips.palette,JSON.stringify(touchChips));
       await touch.close();
       await p3.close();
+    }
+    // 0.172 06 내보내기 개편(사용자 요청 2026-09-29): 형식은 구성 보고서(PDF)·장비 목록(CSV) 둘이고 구성 파일(JSON)은 "작업 저장" 보조 버튼이다.
+    // 보고서 미리보기와 인쇄물은 같은 내용(후면 그림·장비 목록·슬롯 연결)이고, 인쇄물 글꼴은 사이트와 같은 Pretendard Variable이다.
+    {
+      const ex=await browser.newContext({viewport:{width:1280,height:900},acceptDownloads:true});const ep=await ex.newPage();
+      await ep.goto(home,{waitUntil:'networkidle'});
+      await ep.evaluate(()=>{const s=RtCore.initial();s.family='XDM';s.model='XDM-12';s.placements={'in-1':'XDM-HI100','out-1':'XDM-HOS100','out-2':'BLANK'};s.links={'in-1':{device:RtCore.psePair,count:4,distance:'30'}};s.step=5;s.maxStep=5;s.format='JSON';localStorage.setItem('rtcom.configuration.v1',JSON.stringify(RtCore.document(s)))});
+      await ep.reload({waitUntil:'networkidle'});
+      const view=await ep.evaluate(()=>({formats:[...document.querySelectorAll('.rt-format')].map(b=>b.dataset.format).join(','),pressed:document.querySelector('.rt-format[aria-pressed="true"]')?.dataset.format,backup:!!document.querySelector('.rt-export-save [data-tool="backup"]'),pre:document.querySelectorAll('.rt-export pre').length,rack:document.querySelectorAll('.rt-report-paper .rt-rack-photo .rt-rack-slot-filled').length,buttons:document.querySelectorAll('.rt-report-paper button').length,slots:document.querySelectorAll('.rt-report-paper .rt-rp-page2 tbody tr').length}));
+      check('06 내보내기: 형식은 PDF·CSV 둘(예전 JSON 선택은 PDF로 보임), JSON은 작업 저장 버튼, 코드 미리보기 없음, 보고서 미리보기에 누를 수 없는 후면 그림(카드 2장)과 슬롯 6행',view.formats==='PDF,CSV'&&view.pressed==='PDF'&&view.backup&&view.pre===0&&view.rack===2&&view.buttons===0&&view.slots===6,JSON.stringify(view));
+      await ep.fill('input[data-report-field="project"]','테스트 프로젝트');
+      const meta=await ep.evaluate(()=>({saved:JSON.parse(localStorage.getItem('rtcom.report.v1')).project,shown:document.querySelector('.rt-rp-meta b')?.textContent,focus:document.activeElement?.dataset.reportField,undo:document.querySelector('[data-tool=undo]').disabled}));
+      check('보고서 표지 칸에 입력하면 이 브라우저에 저장되고 미리보기에 바로 보이며 입력 칸 커서가 유지됨(실행 취소 기록에는 쌓이지 않음)',meta.saved==='테스트 프로젝트'&&meta.shown==='테스트 프로젝트'&&meta.focus==='project'&&meta.undo,JSON.stringify(meta));
+      await ep.evaluate(()=>window.dispatchEvent(new Event('beforeprint')));await ep.emulateMedia({media:'print'});
+      const printed=await ep.evaluate(()=>({report:getComputedStyle(document.getElementById('print-report')).display,main:getComputedStyle(document.querySelector('.rt-configurator-view')).display,font:getComputedStyle(document.querySelector('#print-report .rt-rp-title')).fontFamily,loaded:document.fonts.check('700 12px "Pretendard Variable"'),rack:document.querySelectorAll('#print-report .rt-rack-slot-filled').length,codes:/G08|UNVERIFIED_DRAFT|M01/.test(document.getElementById('print-report').textContent)}));
+      check('인쇄하면 구성 보고서만 보이고(구성기 화면 숨김) 글꼴은 Pretendard Variable, 후면 그림 포함, 내부 근거 코드(G08·M01·UNVERIFIED_DRAFT) 없음',printed.report==='block'&&printed.main==='none'&&/^"Pretendard Variable"/.test(printed.font)&&printed.loaded&&printed.rack===2&&!printed.codes,JSON.stringify(printed));
+      await ep.emulateMedia({media:'screen'});
+      await ep.click('[data-format="CSV"]');
+      const [csvFile]=await Promise.all([ep.waitForEvent('download'),ep.click('[data-tool="export"]')]);
+      const csvText=fs.readFileSync(await csvFile.path(),'utf8');
+      check('CSV는 날짜가 붙은 파일 이름으로 받아지고 머리행이 구분·모델·비고·수량·장착 위치이며 영문 상태 코드가 없음',/^RTCOM-XDM-12-draft-\d{8}\.csv$/.test(csvFile.suggestedFilename())&&/"구분","모델","비고","수량","장착 위치"/.test(csvText)&&!/UNVERIFIED_DRAFT/.test(csvText),csvFile.suggestedFilename());
+      await ex.close();
     }
     await phone.close();
   }finally{

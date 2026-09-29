@@ -154,7 +154,9 @@ test('VDM Quad card remains two ports and VDM remote cards link to confirmed ext
 
 test('CSV contains draft status, combined quantities and accessory limitation',()=>{
   const csv=core.csv(configured());
-  assert.match(csv,/UNVERIFIED_DRAFT/);assert.match(csv,/"XDM-CTR100","5"/);assert.match(csv,/"전원 장비"/);assert.match(csv,/기본 포함품 미확정/);
+  // 0.172: 영문 상태 코드는 행마다 반복하지 않고 맨 아래 안내 행에 "검토용 초안"으로 한 번만 둔다.
+  assert.doesNotMatch(csv,/UNVERIFIED_DRAFT/);assert.match(csv,/"안내","검토용 초안"/);assert.match(csv,/"XDM-CTR100","[^"]*","5"/);assert.match(csv,/"전원 장비"/);assert.match(csv,/기본 포함품은 목록에 없습니다/);
+  assert.match(csv.split('\r\n')[0],/"구분","모델","비고","수량","장착 위치"/);
 });
 
 test('HDBaseT and fiber cards default to their catalog paired extenders',()=>{
@@ -293,7 +295,9 @@ test('BOM includes a blank-cover row with quantity and no card row for BLANK pla
 test('CSV and JSON export report completion and blank quantity',()=>{
   const state=core.checkState({...core.initial(),model:'XDM-12',placements:{'in-1':'XDM-CIS100','in-2':'BLANK'}});
   const csv=core.csv(state);
-  assert.match(csv,/"슬롯 완성도"/);
+  assert.match(csv,/슬롯 완성도/);
+  assert.match(csv,/"마감재","블랭크 커버","[^"]*","1","입력 2"/);
+  assert.match(csv,/"입력 카드","XDM-CIS100","[^"]*4ch","1","입력 1"/);
   assert.match(csv,/카드 1 . 블랭크 1 . 빈칸 4 \/ 전체 6/);
   const doc=core.document(state);
   assert.deepEqual(doc.completion,{cards:1,blanks:1,empty:4,total:6});
@@ -336,7 +340,7 @@ test('moveCard moves within the same direction, swaps occupied slots and carries
   assert.equal(core.moveCard(configured(),'in-2','in-3'),null);
 });
 
-// 0.172 03 카드 슬롯 ② 신호 입력(사용자 결정 2026-09-29 "추천A대로 진행해줘"): 신호명은 portAssignments["슬롯:포트"].assignedDevice(schema 3에 원래 있던 칸)에 넣는다.
+// 0.173 03 카드 슬롯 ② 신호 입력(사용자 결정 2026-09-29 "추천A대로 진행해줘"): 신호명은 portAssignments["슬롯:포트"].assignedDevice(schema 3에 원래 있던 칸)에 넣는다.
 test('신호명은 구성 파일 저장·불러오기에 남고, 카드를 옮기면 함께 옮겨지며, 카드를 빼면 사라진다',()=>{
   const state=configured();
   state.portAssignments['in-1:1'].assignedDevice='PC';
@@ -353,7 +357,7 @@ test('신호명은 구성 파일 저장·불러오기에 남고, 카드를 옮�
   assert.throws(()=>core.parse(JSON.stringify(tooLong)));
 });
 
-// 0.172 AV 빌더(seoul-visual-tech.github.io/av-system-builder) "가져오기 → 구성도 JSON" 형식: nodes(type 'equipment', data 장비)·edges(출력 포트 id → 입력 포트 id).
+// 0.173 AV 빌더(seoul-visual-tech.github.io/av-system-builder) "가져오기 → 구성도 JSON" 형식: nodes(type 'equipment', data 장비)·edges(출력 포트 id → 입력 포트 id).
 test('AV 빌더용 구성도는 매트릭스 1대와 04에서 연결한 채널마다 전송기 상자·연결선을 만들고, 포트 이름에 신호명을 넣는다',()=>{
   const state={...core.initial(),model:'XDM-12',slot:'in-1',placements:{'in-1':'XDM-CIS100','in-2':'XDM-HIS100','out-1':'XDM-COS100','out-2':'BLANK'},links:{'in-1':{device:'XDM-CTR100 · TX',count:2,distance:'30'},'in-2':{device:'XDM-CTR100 PSE + XDM-CTR100',count:1,distance:'30'},'out-1':{device:'XDM-CTR100 · RX',count:1,distance:'30'}}};
   state.portAssignments=core.syncPorts(state);
