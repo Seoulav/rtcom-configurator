@@ -59,18 +59,19 @@
       if(item.lead)return md(item.lead);
       return esc(firstSentence(item.overview));
     }
-    // 해상도 칸은 "4K"+"60Hz 4:4:4"처럼 짧게 쓴다(명세 6-B 4장). 원문은 사양 표에 그대로 남는다.
+    // 해상도 칸은 "4K"+"/60 @ 4:4:4"처럼 짧게 쓴다(명세 6-B 4장). 원문은 사양 표에 그대로 남는다.
     // 크로마(4:4:4 등)가 해상도 행 자체에 없으면 overview·korean·english에서도 찾는다(같은 제품이 이미 밝힌 사실이라 새로 만드는 값이 아님).
     function shortResolution(item){
       const spec=(item.specifications||[]).find(s=>/해상도/.test(s.name));
       if(!spec)return null;
       const haystack=[spec.value,spec.condition,item.overview,item.korean,item.english].filter(Boolean).join(' ');
-      const hz=(haystack.match(/(\d+)\s*Hz/i)||[])[1];
+      // 0.184: 해상도 표기 Extron 방식(4K/60 @ 4:4:4). 주사율은 "4K/60"·"@ 60Hz" 어느 쪽에서도 읽는다.
+      const hzm=haystack.match(/\b[48]K\/(\d{2})|(\d{2})\s*Hz/i)||[],hz=hzm[1]||hzm[2];
       const chroma=(haystack.match(/4:4:4|4:2:2|4:2:0/)||[])[0];
       const is8k=/7680|8k/i.test(haystack);
       const is4k=/4096|3840|4k/i.test(haystack);
       const value=is8k?'8K':is4k?'4K':spec.value.split(',')[0].split('(')[0].trim();
-      const unit=[hz&&`${hz}Hz`,chroma].filter(Boolean).join(' ');
+      const unit=(is4k||is8k)?`${hz?`/${hz}`:''}${chroma?`${hz?' @ ':''}${chroma}`:''}`:[hz&&`${hz}Hz`,chroma].filter(Boolean).join(' ');
       return {label:'해상도',value,unit};
     }
     function quickFacts(item){
@@ -124,7 +125,9 @@
       if(!text.includes('\n'))return esc(text);
       return text.split('\n').map(line=>{const m=line.match(/^(.*?)\s*\(([^)]*)\)\s*$/);return m?`<span class="rt-pg-spec-line">${esc(m[1])}<span class="rt-pg-note-line">${esc(m[2])}</span></span>`:`<span class="rt-pg-spec-line">${esc(line)}</span>`}).join('');
     };
-    const specTable=specs=>table(['구분','사양'],specs.map(spec=>[`<span class="rt-pg-spec-dot" style="display:inline-block;width:8px;height:8px;border-radius:999px;margin-right:6px;background:${GROUP_DOT[spec.group]||'#8a94a6'}" title="${esc(spec.group)}"></span>${esc(spec.name)}`,`${specValue(spec.value)}${spec.unit?` ${esc(spec.unit)}`:''}${verification(spec.verification)}${spec.condition?`<span class="rt-pg-note-line">${esc(spec.condition)}</span>`:''}`])).replace('class="rt-pg-tablewrap"','class="rt-pg-tablewrap rt-pg-spec-table"');
+    // 0.184(사용자 결정 2026-09-30 "단위는 붙여 쓰기"): 값과 단위를 붙인다(100m·0.28kg·18Gbps·4포트). hours처럼 영어 낱말 단위만 띄운다.
+    const unitGap=unit=>/^(?!Gbps|Mbps|VAC|VDC)[A-Za-z]{4,}$/.test(unit)?' ':'';
+    const specTable=specs=>table(['구분','사양'],specs.map(spec=>[`<span class="rt-pg-spec-dot" style="display:inline-block;width:8px;height:8px;border-radius:999px;margin-right:6px;background:${GROUP_DOT[spec.group]||'#8a94a6'}" title="${esc(spec.group)}"></span>${esc(spec.name)}`,`${specValue(spec.value)}${spec.unit?`${unitGap(spec.unit)}${esc(spec.unit)}`:''}${verification(spec.verification)}${spec.condition?`<span class="rt-pg-note-line">${esc(spec.condition)}</span>`:''}`])).replace('class="rt-pg-tablewrap"','class="rt-pg-tablewrap rt-pg-spec-table"');
 
     // ---- 연결 다이어그램(신호 흐름, 02 카드). 기존 자동 생성 로직을 새 팔레트로 그대로 재사용한다 ----
     const COLOR_IN='#007AFF',COLOR_OUT='#BF5AF2',COLOR_FIBER='#30B0C7',COLOR_COPPER='#1E9E52';
@@ -226,7 +229,7 @@
       bodyMarkup+=`<rect x="${bandX1}" y="${bandY-7}" width="${bandWidth}" height="14" rx="7" fill="url(#rt-pg-flowband-${esc(item.id)})"/><path d="M${bandX2} ${bandY-9}l14 9-14 9" fill="${P}"/>`;
       const bwSpec=(item.specifications||[]).find(spec=>/대역폭/.test(spec.name));
       const res=shortResolution(item);
-      const topLabel=[bwSpec&&`${bwSpec.value}${bwSpec.unit||''}`,res&&[res.value,res.unit].filter(Boolean).join(' ')].filter(Boolean).join(' · ');
+      const topLabel=[bwSpec&&`${bwSpec.value}${bwSpec.unit||''}`,res&&[res.value,res.unit].filter(Boolean).join('')].filter(Boolean).join(' · ');
       if(topLabel)bodyMarkup+=`<text x="${(bandX1+bandX2)/2}" y="${bandY-24}" text-anchor="middle" font-size="14" font-weight="800" fill="#1C1C1E">${svgEsc(topLabel)}</text>`;
       const hdcp=(item.specifications||[]).find(spec=>/HDCP/.test(spec.name));
       // HDCP 값은 제품마다 "HDCP 2.2 support", "HDCP Compliant v2.2 지원"처럼 달라 앞의 HDCP·Compliant·v를 걷어내고 한 번만 붙인다(0.34 검수: "HDCP HDCP Compliant v2.2").
@@ -444,7 +447,7 @@
         bodyMarkup+=cableSeg2(leftBoxX,cardX,combo2Y);
         bodyMarkup+=deviceBox(cardX,combo2Y-boxH/2,boxW,boxH,'XDM-CTR100','전원 케이블 불필요(PD)');
         bodyMarkup+=arrow(cardX+boxW+6,combo2Y,dstX-24,combo2Y,COLOR_OUT)+monitorIcon(dstX,combo2Y,'디스플레이');
-        bodyMarkup+=`<text x="${width/2}" y="${combo2Y+boxH/2+22}" text-anchor="middle" font-size="10" fill="#687386">TX/RX는 각 기기 DIP 스위치로 선택 · CIS100·COS100 카드에 직결할 때는 이 조합 대신 XDM-PSU로 전원 공급</text>`;
+        bodyMarkup+=`<text x="${width/2}" y="${combo2Y+boxH/2+22}" text-anchor="middle" font-size="10" fill="#687386">TX/RX는 각 기기 딥 스위치로 선택 · CIS100·COS100 카드에 직결할 때는 이 조합 대신 XDM-PSU로 전원 공급</text>`;
         captions=[[COLOR_IN,'입력'],[cableColor,cableName],[COLOR_OUT,'출력']];
       } else {
         width=980;height=220;
@@ -489,7 +492,7 @@
         body+=arrow(rxX+rxW+6,y,dstX-22,y,COLOR_OUT)+monitorIcon(dstX,y-4,i===rows-1?'디스플레이':'',0.8);
       }
       body+=`<text x="${(r6X+r6W+rxX)/2}" y="${rowY(0)-24}" text-anchor="middle" font-size="11" font-weight="700" fill="${COLOR_COPPER}">CATx(CAT5e) · PoC</text>`;
-      const distances=(item.specifications||[]).filter(spec=>/전송거리/.test(spec.name)).map(spec=>`${/1080p/.test(spec.condition)?'1080p':'4K60'} 최대 ${spec.value}${spec.unit||''}`);
+      const distances=(item.specifications||[]).filter(spec=>/전송거리/.test(spec.name)).map(spec=>`${/1080p/.test(spec.condition)?'1080p':'4K/60'} 최대 ${spec.value}${spec.unit||''}`);
       const captions=[[COLOR_IN,'입력(HDMI)'],[COLOR_COPPER,'CATx 전송'],[COLOR_IR,'IR 제어'],[COLOR_POWER,'전원'],[COLOR_OUT,'출력(HDMI)']];
       if(distances.length)captions.push([COLOR_COPPER,`CAT5e 기준 ${distances.join(' · ')}`]);
       return diagramWrap(body,width,height,captions)+`<p class="rt-pg-hint" style="text-align:center">사양서 연결도 기준입니다. PoC로 송·수신기 중 한쪽에만 전원을 연결해도 됩니다. 모듈은 TX(송신)·RX(수신)를 골라 쓸 수 있고(그림은 자주 쓰는 TX 구성), RX 사용과 SPX-RX IR 기능(IR Blaster)은 현장에서는 잘 쓰지 않습니다. IR Blaster 연결은 제조사 원본 다이어그램을 참고하세요.</p>`;

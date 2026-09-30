@@ -109,7 +109,7 @@
       "source": "C"
     },
     {
-      "text": "HDMI 1.4 버전 4K@30Hz 지원",
+      "text": "HDMI 1.4 버전 4K/30 지원",
       "source": "C"
     },
     {
@@ -133,7 +133,7 @@
       "source": "C"
     },
     {
-      "text": "EDID, HDCP 1.X 지원",
+      "text": "EDID, HDCP 1.x 지원",
       "source": "C"
     }
   ],
@@ -150,7 +150,7 @@
     {
       "group": "Video",
       "name": "최대 해상도",
-      "value": "3840×2160@30Hz",
+      "value": "3840x2160 @ 30Hz",
       "unit": "",
       "condition": "4:4:4",
       "source": "J",
@@ -197,7 +197,7 @@
       "name": "파워모듈",
       "value": "110~240",
       "unit": "VAC",
-      "condition": "50/60 Hz, 150W~600W",
+      "condition": "50/60Hz, 150W~600W",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -303,52 +303,52 @@
     {
       "model": "HIS4-U",
       "kind": "입력 보드",
-      "summary": "4K HDMI 입력 4포트 · HDMI 1.4 · 3840×2160@30Hz(4:4:4)·60Hz(4:2:0) · 오디오 병합/추출"
+      "summary": "4K HDMI 입력 4포트 · HDMI 1.4 · 3840x2160 @ 30Hz 4:4:4·60Hz 4:2:0 · 오디오 병합/추출"
     },
     {
       "model": "CIS4-U",
       "kind": "입력 보드",
-      "summary": "4K CATx(HDBaseT) 입력 4포트 · 3840×2160@30Hz(4:4:4)·60Hz(4:2:0) · 오디오 병합/추출"
+      "summary": "4K CATx(HDBaseT) 입력 4포트 · 3840x2160 @ 30Hz 4:4:4·60Hz 4:2:0 · 오디오 병합/추출"
     },
     {
       "model": "FIS4-U",
       "kind": "입력 보드",
-      "summary": "4K 광(1 LC) 입력 4포트 · 멀티모드 500m/싱글모드 10km · 3840×2160@30Hz(4:4:4)·60Hz(4:2:0)"
+      "summary": "4K 광(1 LC) 입력 4포트 · 멀티모드 500m/싱글모드 10km · 3840x2160 @ 30Hz 4:4:4·60Hz 4:2:0"
     },
     {
       "model": "SIS4-U",
       "kind": "입력 보드",
-      "summary": "3G/HD-SDI 입력 4포트 · 1920×1080p60Hz · 오디오 병합/추출"
+      "summary": "3G/HD-SDI 입력 4포트 · 1920x1080 @ 60Hz · 오디오 병합/추출"
     },
     {
       "model": "QOS4S-U",
       "kind": "출력 보드",
-      "summary": "4K 쿼드 뷰어 HDMI 출력 2포트 · 1920×1200, 3840×2160 30Hz · 심리스"
+      "summary": "4K 쿼드 뷰어 HDMI 출력 2포트 · 1920x1200, 3840x2160 @ 30Hz · 심리스"
     },
     {
       "model": "COS4-U",
       "kind": "출력 보드",
-      "summary": "4K CATx(HDBaseT) 출력 4포트 · 3840×2160@30Hz(4:4:4)·60Hz(4:2:0) · 오디오 병합/추출"
+      "summary": "4K CATx(HDBaseT) 출력 4포트 · 3840x2160 @ 30Hz 4:4:4·60Hz 4:2:0 · 오디오 병합/추출"
     },
     {
       "model": "HOS4-U",
       "kind": "출력 보드",
-      "summary": "일반 스위칭 4K HDMI 출력 4포트 · HDMI 1.4 · 3840×2160@30Hz(4:4:4)·60Hz(4:2:0) · 오디오 추출/병합"
+      "summary": "일반 스위칭 4K HDMI 출력 4포트 · HDMI 1.4 · 3840x2160 @ 30Hz 4:4:4·60Hz 4:2:0 · 오디오 추출/병합"
     },
     {
       "model": "HOS4S-UW",
       "kind": "출력 보드",
-      "summary": "심리스 스위칭 스케일링·월 HDMI 출력 4포트 · 1920×1080@60Hz 비디오월"
+      "summary": "심리스 스위칭 스케일링·월 HDMI 출력 4포트 · 1920x1080 @ 60Hz 비디오월"
     },
     {
       "model": "FOS4-U",
       "kind": "출력 보드",
-      "summary": "4K 광(1 LC) 출력 4포트 · 멀티모드 500m/싱글모드 10km · 3840×2160@30Hz(4:4:4)·60Hz(4:2:0)"
+      "summary": "4K 광(1 LC) 출력 4포트 · 멀티모드 500m/싱글모드 10km · 3840x2160 @ 30Hz 4:4:4·60Hz 4:2:0"
     },
     {
       "model": "SOS4",
       "kind": "출력 보드",
-      "summary": "3G/HD-SDI 출력 4포트 · 스테레오 입·출력 4포트 · 1920×1080p60Hz · 심리스·스케일링"
+      "summary": "3G/HD-SDI 출력 4포트 · 스테레오 입·출력 4포트 · 1920x1080 @ 60Hz · 심리스·스케일링"
     },
     {
       "model": "CT101-U / CR101-U",

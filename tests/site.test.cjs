@@ -489,11 +489,11 @@ test('0.166: SPX-TX/RX 04 제품 사양의 전송거리는 "4K60 실효 전송�
   const txrx=JSON.parse(read('data/products/spx-rx-tx.json'));
   const rows=txrx.specifications.filter(spec=>spec.group==='Transmission');
   assert.equal(rows.length,1,'전송거리 행은 하나만 둔다');
-  assert.equal(rows[0].name,'4K60 실효 전송거리');
+  assert.equal(rows[0].name,'4K/60 실효 전송거리'); // 0.184: 해상도 표기 Extron 방식(4K/60)
   assert.equal(rows[0].value,'UTP CAT6 50m (Belden 7814A 케이블 기준)\nS/FTP CAT6A 70m (Belden 10GXE02 케이블 기준)');
   assert.equal(rows[0].source,'U3');
   assert.ok(!JSON.stringify(txrx.specifications).includes('CI6522'),'예전 SF/UTP CI6522 표기는 쓰지 않는다');
-  assert.ok(txrx.features.some(feature=>/4K60 최대 50m, 1080p 최대 60m/.test(feature.text))&&txrx.features.some(feature=>/Long Reach/.test(feature.text)),'매뉴얼 공식 거리는 05 주요 기능에 남긴다');
+  assert.ok(txrx.features.some(feature=>/4K\/60 최대 50m, 1080p 최대 60m/.test(feature.text))&&txrx.features.some(feature=>/Long Reach/.test(feature.text)),'매뉴얼 공식 거리는 05 주요 기능에 남긴다');
   const products=read('src/products.js');
   assert.match(products,/const specValue=value=>\{/,'여러 줄 값은 줄마다 값과 괄호 설명을 나눠 보여 준다');
   assert.match(read('src/styles.css'),/\.rt-pg-spec-table td \.rt-pg-spec-line\{display:block\}/);
@@ -548,8 +548,27 @@ test('0.183: VDM DVI 1.0 표기 삭제, 프레임 팝업 "슬롯 구성기" 버�
     assert.ok(items[3].x2-items[3].x1>=200,`${id} 3번 괄호는 5핀 단자 전체를 덮는다`);
     assert.ok(items[7].x1>items[3].x2,`${id} 7번 괄호는 3번 괄호와 겹치지 않는다`);
     assert.ok(items[5].desc.length<=50&&items[3].desc.length<=30,`${id} 단자 설명은 짧게`);
-    assert.ok(d.features.some(f=>f.text==='TX·RX 겸용 DIP스위치 모드 전환 지원'));
+    assert.ok(d.features.some(f=>f.text==='TX·RX 겸용 딥 스위치 모드 전환 지원'));
   }
   assert.ok(JSON.parse(read('data/products/xdm-ctr100-pse.json')).features.some(f=>f.text==='PoE 전원 공급(PSE) 지원(신호·전원 동시 공급)'));
   assert.equal(JSON.parse(read('data/products/xdm-ctr100.json')).specifications.find(s=>s.name==='전원').condition,'PSE 연결 시 불필요(PD 모드)');
+});
+
+test('0.184: 해상도(Extron 방식)·단위 붙여 쓰기 표기 통일이 사이트 전체에 적용되어 있다',()=>{
+  // 사용자 결정 2026-09-30: 단위 붙여 쓰기, 해상도는 Extron 방식(4K/60 @ 4:4:4 · 3840x2160 @ 60Hz · 1080p/60), XDM 케이블 "S/FTP CAT6A 필수"
+  const {fix}=require('../scripts/tools/unify_notation.cjs');
+  assert.equal(fix('4K60Hz(4:4:4)'),'4K/60 @ 4:4:4');
+  assert.equal(fix('True 4K 3840×2160@60Hz(4:4:4)'),'True 4K 3840x2160 @ 60Hz 4:4:4');
+  assert.equal(fix('3840x2160p@30 PCM 2CH'),'3840x2160 @ 30Hz PCM 2CH');
+  assert.equal(fix('최대 4K 30Hz를 지원'),'최대 4K/30을 지원','받침 있는 숫자 뒤 조사는 "을"');
+  assert.equal(fix('1080p 60m / 4K 50m'),'1080p 60m / 4K 50m','전송거리(m)는 주사율로 보지 않는다');
+  assert.equal(fix('483×402×310.3mm'),'483×402×310.3mm','크기 표기는 바꾸지 않는다');
+  assert.equal(fix('3.4 Gbps/ch, 100-200 VAC'),'3.4Gbps/ch, 100-200VAC');
+  // 모든 제품 데이터와 카드 사양이 이미 통일안대로라서 한 번 더 돌려도 바뀌는 곳이 없다.
+  const out=require('child_process').execFileSync(process.execPath,['scripts/tools/unify_notation.cjs'],{encoding:'utf8'});
+  assert.match(out,/바뀔 곳: 0건/,out);
+  const ct=JSON.parse(read('data/products/xdm-ct103-cr103.json'));
+  assert.ok(ct.specifications.some(s=>s.name==='필수 케이블'&&s.value==='S/FTP CAT6A 필수(UTP 사용 불가)'));
+  assert.match(read('src/card-specs.js'),/\['필수 케이블','S\/FTP CAT6A 필수\(UTP 사용 불가\)'\]/);
+  assert.match(read('src/products.js'),/const unitGap=unit=>/,'04 제품 사양 표는 값과 단위를 붙여 쓴다');
 });

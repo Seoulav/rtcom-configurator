@@ -248,7 +248,7 @@
       if (id==='BLANK') continue;
       const selected=card(state,id), link=state.links[slot];
       if (link?.device===psePair&&link.count) {
-        add('LINK_PSE_PAIR_'+slot,'VALID',`${id} → CTR100 PSE + CTR100 ${link.count}쌍: HDMI 연장. 전원은 PSE 쪽에만 연결하고 CTR100은 전원이 필요 없습니다. 두 제품 모두 DIP 스위치로 TX/RX를 설정합니다.`,'사용자 확인(2026-09-26) · E06');
+        add('LINK_PSE_PAIR_'+slot,'VALID',`${id} → CTR100 PSE + CTR100 ${link.count}쌍: HDMI 연장. 전원은 PSE 쪽에만 연결하고 CTR100은 전원이 필요 없습니다. 두 제품 모두 딥 스위치로 TX/RX를 설정합니다.`,'사용자 확인(2026-09-26) · E06');
         continue;
       }
       if (!['CAT','FIBER'].includes(selected[3])) continue;
