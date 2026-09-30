@@ -997,7 +997,7 @@
         </div>
         <div class="rt-pg-col">
           <section class="rt-pg-card rt-pg-col-mobile-2"><h2><span class="rt-pg-idx">02</span>신호 구성 <span class="rt-pg-note">— 입력 카드 → 메인프레임 → 출력 카드</span></h2>${arch}<ul class="rt-pg-legend">${legendKeys.map(key=>`<li><i style="background:${SIG_COLOR[key]||'#8A8A8E'}"></i>${esc(SIG_NAME[key]||key)}</li>`).join('')}<li><i style="background:transparent;border:1.5px dashed #8A8A8E"></i>전송기(연동)</li></ul></section>
-          <section class="rt-pg-card rt-pg-col-mobile-3"><h2><span class="rt-pg-idx">03</span>메인프레임 <span class="rt-pg-note">— ${frames.length}종 · 막대는 랙 높이 · 누르면 정면·후면</span></h2><div class="rt-pg-frames">${frames.map(frame=>{const slug=frame.model.toLowerCase();const hasPhoto=!NO_FRAME_PHOTO.has(frame.model);return `<button type="button" class="rt-pg-frame rt-pg-framebtn" data-pg-frame="${esc(frame.model)}" data-pg-frame-family="${esc(family)}" data-pg-frame-summary="${esc(frame.summary||'')}" data-pg-frame-ru="${frame.rackUnits}" aria-label="${esc(frame.model)} 정면·후면 보기"><div class="rt-pg-ph">${hasPhoto?`<img src="output/design/assets/frames/${slug}-front-art.webp" alt="">`:'<em>사진 준비 중</em>'}</div><b>${esc(frame.model)}</b><small>${esc((frame.summary||'').split(' · ')[0])} · ${frame.rackUnits}U</small><div class="rt-pg-ru"><i style="width:${Math.max(8,frame.rackUnits/maxRU*100)}%"></i></div></button>`}).join('')}</div></section>
+          <section class="rt-pg-card rt-pg-col-mobile-3"><h2><span class="rt-pg-idx">03</span>메인프레임 <span class="rt-pg-note">— ${frames.length}종 · 막대는 랙 높이 · 누르면 정면·후면</span></h2><div class="rt-pg-frames">${frames.map(frame=>{const slug=frame.model.toLowerCase();const hasPhoto=!NO_FRAME_PHOTO.has(frame.model);return `<button type="button" class="rt-pg-frame rt-pg-framebtn" data-pg-frame="${esc(frame.model)}" data-pg-frame-family="${esc(family)}" data-pg-frame-summary="${esc(frame.summary||'')}" data-pg-frame-ru="${frame.rackUnits}" aria-label="${esc(frame.model)} 정면·후면 보기"><div class="rt-pg-ph">${hasPhoto?`<img src="output/design/assets/frames/${slug}-front-art.webp" alt="">`:'<em>사진 준비 중</em>'}</div><b>${esc(frame.model)}</b><small>${esc((frame.summary||'').split(' · ')[0])} · ${frame.rackUnits}U</small>${frameSlotText(frame.summary)?`<small class="rt-pg-frame-slots">${esc(frameSlotText(frame.summary))}</small>`:''}<div class="rt-pg-ru"><i style="width:${Math.max(8,frame.rackUnits/maxRU*100)}%"></i></div></button>`}).join('')}</div></section>
           <section class="rt-pg-card rt-pg-col-mobile-4"><h2><span class="rt-pg-idx">04</span>카드 라인업 <span class="rt-pg-note">— 입력 ${inCards.length} · 출력 ${outCards.length} · 카드를 누르면 상세 정보</span></h2><div class="rt-pg-cards2"><div class="rt-pg-cardcol"><h3>입력</h3>${inCards.map(card=>cardRow(card,false)).join('')}</div><div class="rt-pg-cardcol"><h3>출력</h3>${outCards.map(card=>cardRow(card,true)).join('')}</div></div></section>
           ${recordSection(item,null,null)}
         </div>
@@ -1086,6 +1086,8 @@
     // 0.151(사용자 요청 2026-09-29 "03 메인프레임에 각 프레임 선택시 팝업이써 정면, 후면이 동시 보이게", "카드랑 같은 방식으로"):
     // 시리즈 상세 03 메인프레임 타일을 누르면 카드 상세 팝업과 같은 대화상자에 정면·후면 그림을 함께 보여 준다.
     // 가로로 긴 프레임(1U~9U 가로 그림)은 위아래로, 세로로 긴 대형 프레임은 좌우로 놓는다(후면 그림을 읽은 뒤 비율로 고름).
+    // 0.180(사용자 요청 2026-09-30 "03 메인 프레임도 수량 … 수정"): 라인업 요약의 "입력 슬롯 N · 출력 슬롯 M"을 타일 둘째 줄에 "입력 N · 출력 M 슬롯"으로 보여 준다(없는 시리즈는 빈 글).
+    const frameSlotText=summary=>{const m=String(summary||'').match(/입력 슬롯\s*(\d+)\s*·\s*출력 슬롯\s*(\d+)/);return m?`입력 ${m[1]} · 출력 ${m[2]} 슬롯`:''};
     function splitSummary(text){
       const parts=[];let depth=0,buf='';
       for(let i=0;i<text.length;i++){const ch=text[i];if(ch==='(')depth++;if(ch===')')depth=Math.max(0,depth-1);if(!depth&&text.startsWith(' · ',i)){parts.push(buf);buf='';i+=2;continue}buf+=ch}
@@ -1094,13 +1096,13 @@
     function openProductFrameInfo(model,family,summary,rackUnits){
       const frame={model,summary,rackUnits:Number(rackUnits)};
       const [io,...rest]=splitSummary(frame.summary||'');
-      const rows=[['구분',`${family} 메인프레임`],['입출력',io||''],...rest.filter(part=>!/^\d+\s*U$/i.test(part)).map(part=>[/mm/.test(part)?'크기':/kg/.test(part)?'무게':'특징',part]),['랙 높이',typeof frame.rackUnits==='number'?`${frame.rackUnits}U`:'']].filter(([,v])=>v);
+      const rows=[['구분',`${family} 메인프레임`],['입출력',io||''],...rest.filter(part=>!/^\d+\s*U$/i.test(part)).map(part=>{const slot=part.match(/^(입력|출력) 슬롯\s*(\d+)$/);return slot?[`${slot[1]} 슬롯`,`${slot[2]}개`]:[/mm/.test(part)?'크기':/kg/.test(part)?'무게':'특징',part]}),['랙 높이',typeof frame.rackUnits==='number'?`${frame.rackUnits}U`:'']].filter(([,v])=>v);
       const slug=model.toLowerCase(),hasPhoto=!NO_FRAME_PHOTO.has(model);
       const face=(side,label)=>`<figure class="rt-frame-info-face"><div class="rt-card-info-plate"><img src="output/design/assets/frames/${slug}-${side}-art.webp" alt="${esc(model)} ${label} 그림" data-frame-face="${side}"></div><figcaption>${label}</figcaption></figure>`;
       const dialog=document.createElement('dialog');
       dialog.className='rt-card-info-modal rt-frame-info-modal';
       dialog.setAttribute('aria-labelledby','rt-pg-frame-info-title');
-      dialog.innerHTML=`<div class="rt-card-modal-head"><div><span class="rt-eyebrow">메인프레임 · ${esc(family)}</span><h3 id="rt-pg-frame-info-title">${esc(model)}</h3>${io?`<p class="rt-card-info-sub">${esc(io)} 매트릭스 프레임</p>`:''}</div><button type="button" class="rt-card-modal-close" data-card-info-close aria-label="프레임 정면·후면 닫기">×</button></div><div class="rt-card-info-body">${hasPhoto?`<div class="rt-frame-info-duo">${face('front','정면')}${face('rear','후면')}</div>`:'<p class="rt-card-info-missing">정면·후면 그림 준비 중</p>'}<table class="rt-card-info-table"><tbody>${rows.map(([k,v])=>`<tr><th scope="row">${esc(k)}</th><td>${esc(v)}</td></tr>`).join('')}</tbody></table></div><div class="rt-card-modal-foot"><button type="button" class="rt-button" data-card-info-close>닫기</button></div>`;
+      dialog.innerHTML=`<div class="rt-card-modal-head"><div><span class="rt-eyebrow">메인프레임 · ${esc(family)}</span><h3 id="rt-pg-frame-info-title">${esc(model)}</h3>${io?`<p class="rt-card-info-sub">${esc(io)} 매트릭스 프레임</p>`:''}</div><button type="button" class="rt-card-modal-close" data-card-info-close aria-label="프레임 정면·후면 닫기">×</button></div><div class="rt-card-info-body">${hasPhoto?`<div class="rt-frame-info-duo">${face('front','정면')}${face('rear','후면')}</div>`:'<p class="rt-card-info-missing">정면·후면 그림 준비 중</p>'}<table class="rt-card-info-table"><tbody>${rows.map(([k,v])=>`<tr><th scope="row">${esc(k)}</th><td>${esc(v)}</td></tr>`).join('')}</tbody></table></div><div class="rt-card-modal-foot"><button type="button" class="rt-button rt-primary" data-frame-configure>슬롯 구성기 <span aria-hidden="true">→</span></button><button type="button" class="rt-button" data-card-info-close>닫기</button></div>`;
       const rear=dialog.querySelector('[data-frame-face="rear"]'),front=dialog.querySelector('[data-frame-face="front"]');
       // 0.178(사용자 요청 2026-09-29 "모듈러 매트릭스 프레임 상하 높이 안맞는문제 일괄 점검 후 수정해"): 좌우 배치에서 두 칸을 1fr 1fr(같은 폭)로 두면
       // 가로:세로 비율이 다른 정면(랙 날개 포함)·후면 그림의 높이가 달라졌다. 두 그림을 모두 읽은 뒤 비율 합을 넘겨 두 그림을 같은 높이로 그린다(src/styles.css 0.178).
@@ -1117,7 +1119,11 @@
       if(rear)pickLayout();
       const opener=document.activeElement;
       const finish=()=>{if(dialog.open)dialog.close();dialog.remove();opener?.focus?.({preventScroll:true})};
-      dialog.addEventListener('click',event=>{if(event.target===dialog||event.target.closest('[data-card-info-close]'))finish()});
+      // 0.183(사용자 요청 2026-09-30 "03 메인프레임 선택시 팝업중 닫기 바로 구성기로 넘어갈 수 있도록 왼쪽에 슬롯구성기 버튼"): 팝업을 닫고 이 프레임을 고른 채 구성기 03 카드 슬롯 단계로 간다(app.js rt-configure-family).
+      dialog.addEventListener('click',event=>{
+        if(event.target.closest('[data-frame-configure]')){finish();location.hash='#matrix-configurator';root.dispatchEvent(new CustomEvent('rt-configure-family',{detail:{family,model}}));return}
+        if(event.target===dialog||event.target.closest('[data-card-info-close]'))finish();
+      });
       dialog.addEventListener('cancel',event=>{event.preventDefault();finish()});
       root.appendChild(dialog);
       if(typeof dialog.showModal==='function'){dialog.showModal();dialog.querySelector('.rt-card-modal-close').focus()}else dialog.setAttribute('open','');
