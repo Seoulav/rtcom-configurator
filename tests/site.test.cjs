@@ -553,3 +553,16 @@ test('0.183: VDM DVI 1.0 표기 삭제, 프레임 팝업 "슬롯 구성기" 버�
   assert.ok(JSON.parse(read('data/products/xdm-ctr100-pse.json')).features.some(f=>f.text==='PoE 전원 공급(PSE) 지원(신호·전원 동시 공급)'));
   assert.equal(JSON.parse(read('data/products/xdm-ctr100.json')).specifications.find(s=>s.name==='전원').condition,'PSE 연결 시 불필요(PD 모드)');
 });
+
+test('0.184: 터치 화면 눌러서 옮기기(카드 타일 선택 → 같은 방향 슬롯 장착, 팝업 이동 버튼)',()=>{
+  // 사용자 요청·선택 2026-09-30 "눌러서 옮기기 권장안으로 해줘"
+  const app=read('src/app.js'),css=read('src/styles.css');
+  assert.match(app,/const tapMode=\(\)=>PALETTE_DRAG&&!paletteDrag\(\);/,'마우스가 없는 화면에서만 켠다');
+  assert.match(app,/data-tap-card="\$\{c\[0\]\}"/,'터치 화면은 타일을 누르면 카드를 고른다');
+  assert.match(app,/const moveButton=tapMode\(\)&&installed\?/,'카드 팝업 이동 버튼은 터치 화면·장착 슬롯에서만');
+  assert.match(app,/if\(dir!==cardDir\(tapCard\)\)\{announce\(/,'다른 방향 슬롯에는 장착하지 않고 안내만 한다');
+  assert.match(app,/RtCore\.moveCard\(state,tapMove,id\)/,'이동은 끌어 옮기기와 같은 RtCore.moveCard를 쓴다');
+  assert.match(app,/if\(state\.step!==2\|\|signalView\)\{tapCard=null;tapMove=null\}/,'03 카드 장착 화면을 떠나면 선택을 지운다');
+  for(const selector of ['.rt-tap-banner','.rt-tap-tile-on','.rt-rack-slot-tapsrc','rt-tap-input'])assert.ok(css.includes(selector),`${selector} 스타일`);
+  assert.match(app,/tapMode\(\)\?\(tapMove\?slotDir\(tapMove\)/,'방향 표시용 루트 클래스를 렌더마다 갱신한다');
+});
