@@ -521,6 +521,16 @@ test('0.180: SPX 04 제품 사양 전송거리는 한 행(1080p 60m / 4K 50m)이
   for(const [model,text] of Object.entries(slots)){
     const entry=spx.lineup.find(item=>item.model===model);
     assert.ok(entry.summary.includes(text),`${model} 요약에 "${text}"`);
-    assert.match(entry.summary.split(' · ')[0],/I\/O$/,'첫 항목은 I/O 표기를 유지한다(타일 부제가 씀)');
+    assert.match(entry.summary.split(' · ')[0],/^최대 \d+x\d+ I\/O$/,'첫 항목은 "최대 NxM I/O"(타일 부제가 씀)');
   }
+});
+
+test('0.180: 03 메인프레임 타일은 슬롯 수 줄을 보여 주고 03 카드 슬롯 화면에 시리즈 제품정보 링크가 있다',()=>{
+  // 사용자 요청 2026-09-30 "03 메인 프레임도 수량 8x10~24x72 이부분 수정", "슬롯 구성이 들어가서 해당 제품 상세 정보 들어갈 수 있는 링크 버튼"
+  const products=read('src/products.js'),app=read('src/app.js');
+  assert.match(products,/const frameSlotText=summary=>/);
+  assert.match(products,/rt-pg-frame-slots/);
+  assert.ok(!read('data/products/spx.json').includes('8x10~'),'"8x10~" 범위 표기는 쓰지 않는다');
+  assert.match(app,/class="rt-button rt-frame-info-link" href="#products\/\$\{state\.family\.toLowerCase\(\)\}" target="_blank" rel="noopener"/);
+  for(const id of ['xdm','spx','vdm'])assert.ok(fs.existsSync(`data/products/${id}.json`),`${id} 시리즈 제품정보가 있어야 링크가 열린다`);
 });

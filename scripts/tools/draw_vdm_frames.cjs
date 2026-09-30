@@ -227,22 +227,26 @@ function handle(x,y,w,h){return rect(x,y,w,h,C.metal,'#6b7482',w*0.14,w*0.5)+rec
 function ear(x,y,w,h,holes){let s=rect(x,y,w,h,'#23262d',C.edge,w*0.06,w*0.12);holes.forEach(fy=>{s+=rect(x+w*0.3,y+h*fy-w*0.2,w*0.4,w*0.4,'#0b0c0f',null,0,w*0.2)});return s}
 const logo=(x,y,size)=>text(x,y,`Digital Extender<tspan font-size="${f(size*0.45)}" dy="${f(-size*0.4)}">®</tspan>`,size,'#F28C28','font-weight="900" font-style="italic"');
 const FRONT={
-  'VDM-8X':{size:[626,193],draw(W,H){
+  // 0.180(사용자 요청 2026-09-30 "VDM 정면 그림도 실제 비율로 맞추기"): 정면은 랙 날개 포함 폭 483mm ÷ 카탈로그 높이로 맞춘다.
+  // 8X는 3U(132.5mm) 기준 가로:세로 3.65라 가로를 626 → 704로 넓히고 화면·전원 스위치를 가운데·오른쪽으로 옮겼다.
+  'VDM-8X':{size:[704,193],draw(W,H){
     let s=chassis(W,H,1.6);
-    s+=logo(24,40,20)+screenUI(205,30,215,130)+rocker(572,78,26,38)+text(585,70,'POWER',9,C.sub,'text-anchor="middle" font-weight="700"');
-    s+=text(24,160,'VDM-8X',14,C.ink,'font-weight="900"')+text(24,180,'Digital Multi-format Modular Matrix Router 8X8',12,C.sub,'font-weight="700"')+text(604,180,'MADE IN KOREA',7,C.sub,'text-anchor="end" font-weight="700"');
+    s+=logo(24,40,20)+screenUI(245,30,215,130)+rocker(650,78,26,38)+text(663,70,'POWER',9,C.sub,'text-anchor="middle" font-weight="700"');
+    s+=text(24,160,'VDM-8X',14,C.ink,'font-weight="900"')+text(24,180,'Digital Multi-format Modular Matrix Router 8X8',12,C.sub,'font-weight="700"')+text(682,180,'MADE IN KOREA',7,C.sub,'text-anchor="end" font-weight="700"');
     return s}},
-  'VDM-32X':{size:[485,473],draw(W,H){return door(W,H,{ear:30,screen:[180,190,160,95],rocker:[393,208,26,46],handles:[[70,182,12,114],[440,182,12,114]],logo:[88,145,22],leds:[360,142,82],model:'VDM-32X',sub:'32X32 Cross-Platform Modular Matrix Router',textY:330})}},
-  'VDM-64X':{size:[500,819],draw(W,H){return door(W,H,{ear:26,screen:[180,365,156,86],rocker:[385,388,24,40],handles:[[72,352,12,108],[432,352,12,108]],logo:[80,335,20],leds:[368,322,82],model:'VDM-64X',sub:'64X64 Cross-Platform Modular Matrix Router',textY:495})}},
-  'VDM-128X':{size:[484,1176],draw(W,H){return door(W,H,{ear:18,screen:[115,190,106,82],rocker:[248,200,20,34],handles:[[78,296,10,60],[262,296,10,60]],logo:[70,160,22],leds:[232,146,42],model:'VDM-128X',sub:'128X128 Cross-Platform Modular Matrix Router',textY:436,bodyW:330})}},
-  'VDM-256X':{size:[485,777],draw(W,H){return door(W,H,{ear:20,screen:[182,185,104,74],rocker:[310,186,18,30],handles:[[150,282,9,56],[320,282,9,56]],logo:[110,142,22],leds:[292,140,40],model:'VDM-256X',sub:'256X256 Cross-Platform Modular Matrix Router',textY:410})}},
+  'VDM-32X':{size:[485,535],draw(W,H){return door(W,H,{ear:30,screen:[180,221,160,95],rocker:[393,239,26,46],handles:[[70,213,12,114],[440,213,12,114]],logo:[88,176,22],leds:[360,173,82],model:'VDM-32X',sub:'32X32 Cross-Platform Modular Matrix Router',textY:361})}},
+  'VDM-64X':{size:[500,1104],draw(W,H){return door(W,H,{ear:26,screen:[180,507,156,86],rocker:[385,530,24,40],handles:[[72,494,12,108],[432,494,12,108]],logo:[80,477,20],leds:[368,464,82],model:'VDM-64X',sub:'64X64 Cross-Platform Modular Matrix Router',textY:637})}},
+  'VDM-128X':{size:[484,1647],draw(W,H){return door(W,H,{ear:18,screen:[115,190,106,82],rocker:[248,200,20,34],handles:[[78,296,10,60],[262,296,10,60]],logo:[70,160,22],leds:[232,146,42],model:'VDM-128X',sub:'128X128 Cross-Platform Modular Matrix Router',textY:436,bodyW:330})}},
+  'VDM-256X':{size:[485,870],draw(W,H){return door(W,H,{ear:20,screen:[182,231,104,74],rocker:[310,232,18,30],handles:[[150,328,9,56],[320,328,9,56]],logo:[110,188,22],leds:[292,186,40],model:'VDM-256X',sub:'256X256 Cross-Platform Modular Matrix Router',textY:456})}},
   // 0.135(사용자 요청 2026-09-29 "프레임 실물 이미지는 사용하지 말자 전부 그래픽이미지로 변경해줘"): 실물 사진(16X·48X 전면)을 같은 스타일의 평면 그림으로 바꾼다. 크기는 카탈로그 mm(483×310.3, 483×843.75).
   'VDM-16X':{size:[483,310],draw(W,H){return door(W,H,{ear:26,screen:[168,92,150,96],rocker:[360,120,24,44],handles:[[68,92,11,112],[404,92,11,112]],logo:[64,52,24],leds:[340,44,80],model:'VDM-16X',sub:'16X16 Cross-Platform Modular Matrix Router',textY:268})}},
   'VDM-48X':{size:[483,844],draw(W,H){return tower(W,H,{module:[26,8,457,262],screen:[236,70,200,120],model:'VDM-48X',sub:'48X48 Cross-Platform Modular Matrix Router',vents:[[40,318,403,190],[40,540,403,190],[40,752,403,72]],bolts:[520,738],logoY:290})}},
-  'VDM-80X':{size:[270,638],draw(W,H){return tower(W,H,{module:[16,6,238,172],screen:[112,70,110,66],model:'VDM-80X',sub:'80X80 Cross-Platform Modular Matrix Router',vents:[[26,232,218,110],[26,444,218,110],[26,562,218,60]],bolts:[410]})}},
-  'VDM-180X':{size:[189,636],draw(W,H){return tower(W,H,{module:[14,4,162,128],screen:[68,24,106,82],model:'VDM-180X',sub:'180X180 Cross-Platform Modular Matrix Router',vents:[[20,550,150,64]],bolts:[357,600],logoY:186})}}
+  'VDM-80X':{size:[270,670],draw(W,H){return tower(W,H,{module:[16,6,238,172],screen:[112,70,110,66],model:'VDM-80X',sub:'80X80 Cross-Platform Modular Matrix Router',vents:[[26,232,218,110],[26,444,218,110],[26,562,218,92]],bolts:[410]})}},
+  'VDM-180X':{size:[189,661],draw(W,H){return tower(W,H,{module:[14,4,162,128],screen:[68,24,106,82],model:'VDM-180X',sub:'180X180 Cross-Platform Modular Matrix Router',vents:[[20,550,150,89]],bolts:[357,625],logoY:186})}}
 };
 // 문형 전면(32X·64X·128X·256X): 랙 귀 + 넓은 판 + 스크린·스위치·핸들.
+// 0.180: 32X(12U)·64X(24U)·256X(랙 2대 39U)는 세로를 실제 비율로 늘리고 부품 묶음을 가운데로 내렸다. 128X(37U)는 위 조작부를 그대로 두고 아래 몸체를 늘렸다.
+// 탑형 80X·180X는 아래 통풍구를 늘려 실제 비율(0.40·0.29)에 맞췄다.
 function door(W,H,o){
   const bw=o.bodyW?Math.min(W-o.ear*2,o.bodyW+o.ear*0):W-o.ear*2;
   let s=ear(0,0,o.ear,H,[0.06,0.5,0.94])+ear(W-o.ear,0,o.ear,H,[0.06,0.5,0.94]);
