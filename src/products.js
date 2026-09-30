@@ -1102,7 +1102,7 @@
       const dialog=document.createElement('dialog');
       dialog.className='rt-card-info-modal rt-frame-info-modal';
       dialog.setAttribute('aria-labelledby','rt-pg-frame-info-title');
-      dialog.innerHTML=`<div class="rt-card-modal-head"><div><span class="rt-eyebrow">메인프레임 · ${esc(family)}</span><h3 id="rt-pg-frame-info-title">${esc(model)}</h3>${io?`<p class="rt-card-info-sub">${esc(io)} 매트릭스 프레임</p>`:''}</div><button type="button" class="rt-card-modal-close" data-card-info-close aria-label="프레임 정면·후면 닫기">×</button></div><div class="rt-card-info-body">${hasPhoto?`<div class="rt-frame-info-duo">${face('front','정면')}${face('rear','후면')}</div>`:'<p class="rt-card-info-missing">정면·후면 그림 준비 중</p>'}<table class="rt-card-info-table"><tbody>${rows.map(([k,v])=>`<tr><th scope="row">${esc(k)}</th><td>${esc(v)}</td></tr>`).join('')}</tbody></table></div><div class="rt-card-modal-foot"><button type="button" class="rt-button" data-card-info-close>닫기</button></div>`;
+      dialog.innerHTML=`<div class="rt-card-modal-head"><div><span class="rt-eyebrow">메인프레임 · ${esc(family)}</span><h3 id="rt-pg-frame-info-title">${esc(model)}</h3>${io?`<p class="rt-card-info-sub">${esc(io)} 매트릭스 프레임</p>`:''}</div><button type="button" class="rt-card-modal-close" data-card-info-close aria-label="프레임 정면·후면 닫기">×</button></div><div class="rt-card-info-body">${hasPhoto?`<div class="rt-frame-info-duo">${face('front','정면')}${face('rear','후면')}</div>`:'<p class="rt-card-info-missing">정면·후면 그림 준비 중</p>'}<table class="rt-card-info-table"><tbody>${rows.map(([k,v])=>`<tr><th scope="row">${esc(k)}</th><td>${esc(v)}</td></tr>`).join('')}</tbody></table></div><div class="rt-card-modal-foot"><button type="button" class="rt-button rt-primary" data-frame-configure>슬롯 구성기 <span aria-hidden="true">→</span></button><button type="button" class="rt-button" data-card-info-close>닫기</button></div>`;
       const rear=dialog.querySelector('[data-frame-face="rear"]'),front=dialog.querySelector('[data-frame-face="front"]');
       // 0.178(사용자 요청 2026-09-29 "모듈러 매트릭스 프레임 상하 높이 안맞는문제 일괄 점검 후 수정해"): 좌우 배치에서 두 칸을 1fr 1fr(같은 폭)로 두면
       // 가로:세로 비율이 다른 정면(랙 날개 포함)·후면 그림의 높이가 달라졌다. 두 그림을 모두 읽은 뒤 비율 합을 넘겨 두 그림을 같은 높이로 그린다(src/styles.css 0.178).
@@ -1119,7 +1119,11 @@
       if(rear)pickLayout();
       const opener=document.activeElement;
       const finish=()=>{if(dialog.open)dialog.close();dialog.remove();opener?.focus?.({preventScroll:true})};
-      dialog.addEventListener('click',event=>{if(event.target===dialog||event.target.closest('[data-card-info-close]'))finish()});
+      // 0.182(사용자 요청 2026-09-30 "03 메인프레임 선택시 팝업중 닫기 바로 구성기로 넘어갈 수 있도록 왼쪽에 슬롯구성기 버튼"): 팝업을 닫고 이 프레임을 고른 채 구성기 03 카드 슬롯 단계로 간다(app.js rt-configure-family).
+      dialog.addEventListener('click',event=>{
+        if(event.target.closest('[data-frame-configure]')){finish();location.hash='#matrix-configurator';root.dispatchEvent(new CustomEvent('rt-configure-family',{detail:{family,model}}));return}
+        if(event.target===dialog||event.target.closest('[data-card-info-close]'))finish();
+      });
       dialog.addEventListener('cancel',event=>{event.preventDefault();finish()});
       root.appendChild(dialog);
       if(typeof dialog.showModal==='function'){dialog.showModal();dialog.querySelector('.rt-card-modal-close').focus()}else dialog.setAttribute('open','');
