@@ -49,7 +49,7 @@ const FRONT={
   'XDM-144':xdm('XDM-144',{size:[482.6,1288.2],ear:22,holes:[0.03,0.3,0.5,0.7,0.97],logoY:84,logoSize:20,screen:[150,190,182,96],textY:372,font:34,handles:[[46,760,12,170],[424,760,12,170]]}),
   'XDM-216':xdm('XDM-216',{size:[482.6,1777.2],ear:22,holes:[0.03,0.25,0.5,0.75,0.97],logoY:84,logoSize:20,screen:[150,220,182,96],textY:412,font:34,handles:[[46,1040,12,190],[424,1040,12,190]]}),
   'SPX-M810':spx('SPX-M810',{size:[483,88.1],logo:[22,30,14],screen:[186,14,112,58],name:[456,50,22],anchor:'end'}),
-  'SPX-M1620':spx('SPX-M1620',{size:[483,177],logo:[24,44,16],screen:[150,30,186,110],name:[459,96,24],anchor:'end'}),
+  'SPX-M1620':spx('SPX-M1620',{size:[483,177],logo:[24,44,16],screen:[150,30,186,110],name:[462,96,19],anchor:'end'}),
   'SPX-M3236':spx('SPX-M3236',{size:[483,310.3],ear:26,holes:[0.1,0.5,0.9],logo:[52,52,17],screen:[150,66,183,120],name:[241.5,250,25],anchor:'middle',handles:[[70,100,12,110],[401,100,12,110]]}),
   'SPX-M2472':spx('SPX-M2472',{size:[483,365],ear:26,holes:[0.06,0.5,0.94],logo:[54,58,18],screen:[176,84,132,74],name:[452,318,17],anchor:'end',sub:'24 input '}),
   'SPX-M24120':spx('SPX-M24120',{size:[483,365],ear:26,holes:[0.06,0.5,0.94],logo:[54,58,18],screen:[176,84,132,74],name:[452,318,17],anchor:'end',sub:'24 input '})

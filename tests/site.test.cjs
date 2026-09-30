@@ -509,3 +509,28 @@ test('0.171: SPX-R6 모듈 칸 단자는 TX·RX 모듈을 모두 꽂을 수 있�
   assert.match(draw,/'HDMI IN\/OUT'/);assert.match(draw,/'CAT IN\/OUT'/);
   assert.doesNotMatch(draw,/'HDMI IN',|'CAT OUT',/,'후면 그림에 한 방향 표기를 남기지 않는다');
 });
+
+test('0.180: SPX 04 제품 사양 전송거리는 한 행(1080p 60m / 4K 50m)이고 라인업 요약에 입력·출력 슬롯 수가 있다',()=>{
+  // 사용자 요청 2026-09-30 "1080P 60M / 4K 50m 이런식으로", "입출력 슬롯이 몇개씩인지 모든 SPX 시리즈 수정"
+  const spx=JSON.parse(read('data/products/spx.json'));
+  const rows=spx.specifications.filter(spec=>spec.name==='CATx 보드 전송 거리');
+  assert.equal(rows.length,1,'CATx 보드 전송 거리는 한 행만 둔다');
+  assert.equal(rows[0].value,'1080p 60m\n4K 50m');
+  assert.equal(rows[0].condition,'CAT 6 기준');
+  const slots={'SPX-M810':'입력 슬롯 1 · 출력 슬롯 1','SPX-M1620':'입력 슬롯 2 · 출력 슬롯 2','SPX-M3236':'입력 슬롯 4 · 출력 슬롯 3','SPX-M2472':'입력 슬롯 3 · 출력 슬롯 6','SPX-M24120':'입력 슬롯 3 · 출력 슬롯 10'};
+  for(const [model,text] of Object.entries(slots)){
+    const entry=spx.lineup.find(item=>item.model===model);
+    assert.ok(entry.summary.includes(text),`${model} 요약에 "${text}"`);
+    assert.match(entry.summary.split(' · ')[0],/^최대 \d+x\d+ I\/O$/,'첫 항목은 "최대 NxM I/O"(타일 부제가 씀)');
+  }
+});
+
+test('0.180: 03 메인프레임 타일은 슬롯 수 줄을 보여 주고 03 카드 슬롯 화면에 시리즈 제품정보 링크가 있다',()=>{
+  // 사용자 요청 2026-09-30 "03 메인 프레임도 수량 8x10~24x72 이부분 수정", "슬롯 구성이 들어가서 해당 제품 상세 정보 들어갈 수 있는 링크 버튼"
+  const products=read('src/products.js'),app=read('src/app.js');
+  assert.match(products,/const frameSlotText=summary=>/);
+  assert.match(products,/rt-pg-frame-slots/);
+  assert.ok(!read('data/products/spx.json').includes('8x10~'),'"8x10~" 범위 표기는 쓰지 않는다');
+  assert.match(app,/class="rt-button rt-frame-info-link" href="#products\/\$\{state\.family\.toLowerCase\(\)\}" target="_blank" rel="noopener"/);
+  for(const id of ['xdm','spx','vdm'])assert.ok(fs.existsSync(`data/products/${id}.json`),`${id} 시리즈 제품정보가 있어야 링크가 열린다`);
+});
