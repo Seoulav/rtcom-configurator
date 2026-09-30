@@ -2,6 +2,14 @@
 
 새 세션은 이 목록을 먼저 확인합니다. 처리한 항목은 지우고, CHANGELOG에 버전과 함께 남깁니다.
 
+## 표기 통일 후속(0.184) — 사용자 결정·자료 대기
+
+`docs/implementation/NOTATION_UNIFICATION_0.184.md` §4. ChatGPT 검수(2026-09-30)에서 기준을 더 정해야 하는 항목입니다.
+- [ ] 용어 통일 기준: 한국어·영어 혼용(입력 카드/Input, 송신기/TX, 오디오 병합/Audio Embedding 등 312행), 한글 띄어쓰기·동의어(비디오 월/비디오월 7:12, 송·수신기/송수신기 44:17 등 184행), 모델명 축약(55행)
+- [ ] 입출력 규모 곱셈 기호: `8×8`(102곳)과 `8x8`(45곳) 중 하나로. 카테고리 이름("1x3 HDMI 18Gbps Splitter")을 함께 바꿀지
+- [ ] HDCP 버전이 없는 "HDCP 지원" 5곳(MR-4S·OBHD-2C·OBUX-1C): 매뉴얼로 버전 확인
+- [ ] 사양값 확인 8그룹(`docs/audit/NOTATION_REVIEW_2026-09-30_spec_check.csv`): VDM 프레임 9종/10종 표기, VDM 입출력 채널 목록에 256 누락, SPX 출력 카드 3종/4종 문구(core.js), FT103-U-H 해상도 근거(매뉴얼 4K30 vs 카탈로그 1080p), XDM-FT101 오디오 단자 5핀/3핀, QMS-88UX 출력 9·10번 "전용" 범위, HD-D102U HDMI 2.0/2.0b, VDM 시리즈 HDCP 1.x/카드 2.0
+
 ## AI 검색 사내 베타(0.142) — 사용자 설정 대기
 
 `docs/implementation/AI_SEARCH_BETA.md` §5 절차를 사용자가 직접 합니다. Claude는 API 키·비밀값을 받지 않습니다.

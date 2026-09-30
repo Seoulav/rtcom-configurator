@@ -12,14 +12,14 @@
     "Video",
     "Extender"
   ],
-  "english": "HDBaseT 3.0 HDMI transceiver (TX/RX selectable by DIP switch) carrying uncompressed 4K60 4:4:4 up to 100m; runs without its own power supply when paired with the XDM-CTR100 PSE.",
-  "korean": "HDBaseT 3.0 기술로 압축하지 않은 4K60Hz 4:4:4 HDMI 신호를 최대 100m 전송하는 송·수신 겸용 전송기다.",
+  "english": "HDBaseT 3.0 HDMI transceiver (TX/RX selectable by DIP switch) carrying uncompressed 4K/60 @ 4:4:4 up to 100m; runs without its own power supply when paired with the XDM-CTR100 PSE.",
+  "korean": "HDBaseT 3.0 기술로 압축하지 않은 4K/60 @ 4:4:4 HDMI 신호를 최대 100m 전송하는 송·수신 겸용 전송기다.",
   "subtitle": "XDM Series Extender · HDBaseT 3.0 송·수신 겸용",
-  "lead": "HDBaseT 3.0 기술로 압축하지 않은 4K60Hz 4:4:4 HDMI 신호를 **최대 100m** 전송하는 송·수신 겸용 전송기입니다. XDM-CTR100 PSE와 연결하면 전원 케이블 없이 씁니다.",
+  "lead": "HDBaseT 3.0 기술로 압축하지 않은 4K/60 @ 4:4:4 HDMI 신호를 **최대 100m** 전송하는 송·수신 겸용 전송기입니다. XDM-CTR100 PSE와 연결하면 전원 케이블 없이 씁니다.",
   "catalogPages": "10",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03, 48쪽판) 10쪽의 XDM-CTR100·XDM-CTR100 PSE 소개와 제품사양 표에서 확인했고, 새 카탈로그(46쪽판) 10쪽과 줄 단위로 재대조했다(차이 없음). 0.47에서 XDM-CTR100 PSE를 별도 제품(xdm-ctr100-pse)으로 나눴다(사용자 요청).",
   "packageStatus": "VERIFIED",
-  "overview": "XDM-CTR100은 HDBaseT 3.0 기술이 적용되어 압축하지 않은 True 4K 3840x2160@60Hz(4:4:4) 해상도의 HDMI 신호를 케이블에 따라 최대 100m까지 전송하는 HDMI 송·수신기다. 하나의 기기에서 설정으로 송신기 또는 수신기 역할을 바꿀 수 있으며, 송신기로 쓰면 XDM-CIS100, 수신기로 쓰면 XDM-COS100과 호환된다. RS-232+ 기능으로 XDM 매트릭스의 커맨드를 통해 XDM-CTR100의 RS-232에 연결된 외부기기를 제어할 수 있다.\n\nXDM-CTR100 PSE(별도 제품)와 함께 쓰면 XDM-CTR100은 PD(Powered Devices) 모드로 동작해 전원 케이블 없이 사용할 수 있다. XDM-CIS100·COS100 카드에 직접 연결할 때는 XDM-PSU(16채널 모듈형 전원 장치)로 전원을 공급해 CTR100에 전원 어댑터를 따로 연결하지 않는다. 케이블별 최대 사용 거리는 제조사 문의 사항으로 적혀 있다.",
+  "overview": "XDM-CTR100은 HDBaseT 3.0 기술이 적용되어 압축하지 않은 True 4K 3840x2160 @ 60Hz 4:4:4 해상도의 HDMI 신호를 케이블에 따라 최대 100m까지 전송하는 HDMI 송·수신기다. 하나의 기기에서 설정으로 송신기 또는 수신기 역할을 바꿀 수 있으며, 송신기로 쓰면 XDM-CIS100, 수신기로 쓰면 XDM-COS100과 호환된다. RS-232+ 기능으로 XDM 매트릭스의 커맨드를 통해 XDM-CTR100의 RS-232에 연결된 외부기기를 제어할 수 있다.\n\nXDM-CTR100 PSE(별도 제품)와 함께 쓰면 XDM-CTR100은 PD(Powered Devices) 모드로 동작해 전원 케이블 없이 사용할 수 있다. XDM-CIS100·COS100 카드에 직접 연결할 때는 XDM-PSU(16채널 모듈형 전원 장치)로 전원을 공급해 CTR100에 전원 어댑터를 따로 연결하지 않는다. 케이블별 최대 사용 거리는 제조사 문의 사항으로 적혀 있다.",
   "images": [
     {
       "role": "Main",
@@ -108,7 +108,7 @@
   ],
   "features": [
     {
-      "text": "HDBaseT 3.0 무압축 True 4K(3840x2160@60Hz 4:4:4) 최대 100m 전송 지원",
+      "text": "HDBaseT 3.0 무압축 True 4K(3840x2160 @ 60Hz 4:4:4) 최대 100m 전송 지원",
       "source": "M1"
     },
     {
@@ -124,7 +124,7 @@
       "source": "U"
     },
     {
-      "text": "TX·RX 겸용 DIP스위치 모드 전환 지원",
+      "text": "TX·RX 겸용 딥 스위치 모드 전환 지원",
       "source": "S1"
     },
     {
@@ -136,7 +136,7 @@
     {
       "group": "Video",
       "name": "최대 해상도",
-      "value": "4K60Hz",
+      "value": "4K/60",
       "unit": "",
       "condition": "4:4:4",
       "source": "M1",
@@ -305,7 +305,7 @@
       {
         "n": 4,
         "label": "HDBaseT",
-        "desc": "RJ45 · CAT 케이블로 XDM 카드 또는 상대 CTR100과 연결",
+        "desc": "RJ45 · CAT 케이블(S/FTP CAT6A 필수)로 XDM 카드 또는 상대 CTR100과 연결",
         "x1": 130,
         "x2": 320,
         "side": "bottom",
@@ -349,7 +349,7 @@
       },
       {
         "n": 5,
-        "label": "TX/RX DIP 스위치",
+        "label": "TX/RX 딥 스위치",
         "desc": "TX·RX·Long Reach 전환 · 내리면 ON · 06 딥 스위치 설정 참고",
         "x1": 400,
         "x2": 545,
@@ -436,7 +436,7 @@
         },
         "on": {
           "name": "Long Reach",
-          "text": "1920x1080p 영상을 최대 150m까지 보낸다."
+          "text": "1920x1080 영상을 최대 150m까지 보낸다."
         }
       }
     ],
