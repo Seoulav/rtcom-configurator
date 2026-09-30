@@ -124,16 +124,12 @@
       "source": "U"
     },
     {
-      "text": "TX·RX 겸용 HDMI 연결 지원(TX: HDMI IN, RX: HDMI OUT)",
+      "text": "TX·RX 겸용 DIP스위치 모드 전환 지원",
       "source": "S1"
     },
     {
       "text": "오디오 추출 지원(후면 5핀 L·R·접지, 스피커 직결)",
       "source": "S1"
-    },
-    {
-      "text": "동작 상태 LED 4개 표시 지원",
-      "source": "M1"
     }
   ],
   "specifications": [
@@ -214,7 +210,7 @@
       "name": "전원",
       "value": "DC +12V 1A 이상",
       "unit": "",
-      "condition": "XDM-CTR100 PSE와 연결되면 PD 모드로 CAT 케이블에서 전원을 받아 연결하지 않음",
+      "condition": "PSE 연결 시 불필요(PD 모드)",
       "source": "M1",
       "verification": "VERIFIED"
     }
@@ -336,25 +332,25 @@
       {
         "n": 3,
         "label": "AUDIO · RS-232",
-        "desc": "5핀(L·R·접지·Tx·Rx) · 아날로그 스테레오 오디오 출력과 RS-232+ 제어",
-        "x1": 880,
-        "x2": 1010,
+        "desc": "5핀 · 스테레오 오디오 출력 + RS-232+",
+        "x1": 878,
+        "x2": 1103,
         "side": "bottom",
         "y": 700
       },
       {
         "n": 7,
         "label": "DC IN",
-        "desc": "DC 12V 1A 이상 · XDM-CTR100 PSE와 연결되거나 XDM-PSU로 급전하면 연결하지 않음",
-        "x1": 1105,
-        "x2": 1255,
+        "desc": "DC 12V 1A 이상 · PSE·XDM-PSU 급전 시 불필요",
+        "x1": 1113,
+        "x2": 1257,
         "side": "bottom",
         "y": 700
       },
       {
         "n": 5,
         "label": "TX/RX DIP 스위치",
-        "desc": "1번 ON = TX · 2번 ON = RX · 3번 ON = Long Reach(1080p 150m) · 스위치를 내리면 ON. 설정 방법은 '06 딥 스위치 설정' 참고",
+        "desc": "TX·RX·Long Reach 전환 · 내리면 ON · 06 딥 스위치 설정 참고",
         "x1": 400,
         "x2": 545,
         "side": "top",
@@ -363,7 +359,7 @@
       {
         "n": 6,
         "label": "상태 LED",
-        "desc": "Rx Signal(RX 모드) · Tx Signal(TX 모드) · Tx/Rx·Link(정상 연결)",
+        "desc": "RX·TX 모드 신호 · 정상 연결 표시",
         "x1": 180,
         "x2": 335,
         "side": "top",

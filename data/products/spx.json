@@ -163,7 +163,7 @@
     {
       "group": "Video",
       "name": "최대 해상도",
-      "value": "4096×2160@60Hz, 3840×2160@60Hz",
+      "value": "3840×2160@60Hz",
       "unit": "",
       "condition": "4:4:4 (최대 4K60Hz)",
       "source": "C",
@@ -271,18 +271,9 @@
     {
       "group": "Transmission",
       "name": "CATx 보드 전송 거리",
-      "value": "50",
-      "unit": "m",
-      "condition": "CAT 6 기준 4K 60Hz",
-      "source": "C",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "Transmission",
-      "name": "CATx 보드 전송 거리",
-      "value": "60",
-      "unit": "m",
-      "condition": "CAT 6 기준 1080p",
+      "value": "1080p 60m\n4K 50m",
+      "unit": "",
+      "condition": "CAT 6 기준",
       "source": "C",
       "verification": "VERIFIED"
     }
@@ -292,31 +283,31 @@
     {
       "model": "SPX-M810",
       "kind": "메인프레임",
-      "summary": "8x10까지의 I/O · 4.3\" Touch Screen · 483×355×88.1mm(2U)",
+      "summary": "최대 8x10 I/O · 입력 슬롯 1 · 출력 슬롯 1 · 4.3\" Touch Screen · 483×355×88.1mm(2U)",
       "rackUnits": 2
     },
     {
       "model": "SPX-M1620",
       "kind": "메인프레임",
-      "summary": "8x10~16x20 I/O · 7\" Touch Screen · 483×355×177mm(4U)",
+      "summary": "최대 16x20 I/O · 입력 슬롯 2 · 출력 슬롯 2 · 7\" Touch Screen · 483×355×177mm(4U)",
       "rackUnits": 4
     },
     {
       "model": "SPX-M3236",
       "kind": "메인프레임",
-      "summary": "8x10~32x36 I/O · 7\" Touch Screen · 483×355×310.3mm(7U)",
+      "summary": "최대 32x36 I/O · 입력 슬롯 4 · 출력 슬롯 3 · 7\" Touch Screen · 483×355×310.3mm(7U)",
       "rackUnits": 7
     },
     {
       "model": "SPX-M2472",
       "kind": "메인프레임",
-      "summary": "8x10~24x72 I/O · 7\" Touch Screen · 483×443.7×365mm(8U)",
+      "summary": "최대 24x72 I/O · 입력 슬롯 3 · 출력 슬롯 6 · 7\" Touch Screen · 483×443.7×365mm(8U)",
       "rackUnits": 8
     },
     {
       "model": "SPX-M24120",
       "kind": "메인프레임",
-      "summary": "8x10~24x120 I/O · 7\" Touch Screen · 483×443.7×365mm(8U)",
+      "summary": "최대 24x120 I/O · 입력 슬롯 3 · 출력 슬롯 10 · 7\" Touch Screen · 483×443.7×365mm(8U)",
       "rackUnits": 8
     },
     {

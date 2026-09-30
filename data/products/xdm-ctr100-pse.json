@@ -124,7 +124,7 @@
       "source": "M1"
     },
     {
-      "text": "PoE 전원 공급(PSE) 지원 — CAT 케이블로 XDM-CTR100·벽부형 XDM-CT103/CR103에 신호·전원 동시 공급(CTR100은 PD 모드로 전원 케이블 불필요, CIS100·COS100 카드 직결은 불가), TX·RX 방향 모두 연결 가능",
+      "text": "PoE 전원 공급(PSE) 지원(신호·전원 동시 공급)",
       "source": "M1"
     },
     {
@@ -136,16 +136,12 @@
       "source": "U"
     },
     {
-      "text": "TX·RX 겸용 HDMI 연결(TX: HDMI IN에 소스, RX: HDMI OUT에 디스플레이)",
+      "text": "TX·RX 겸용 DIP스위치 모드 전환 지원",
       "source": "S1"
     },
     {
       "text": "오디오 추출 지원(후면 5핀 L·R·접지, 스피커 직결)",
       "source": "S1"
-    },
-    {
-      "text": "동작 상태 LED 4개 표시 지원(Rx Signal·Tx Signal·Tx/Rx·Link, 정상 시 TX는 Link·Tx/Rx·Tx Signal, RX는 Link·Tx/Rx·Rx Signal 켜짐)",
-      "source": "M1"
     }
   ],
   "specifications": [
@@ -339,9 +335,9 @@
       {
         "n": 3,
         "label": "AUDIO · RS-232",
-        "desc": "5핀(L·R·접지·Tx·Rx) · 아날로그 스테레오 오디오 출력과 RS-232+ 제어",
-        "x1": 880,
-        "x2": 1010,
+        "desc": "5핀 · 스테레오 오디오 출력 + RS-232+",
+        "x1": 878,
+        "x2": 1103,
         "side": "bottom",
         "y": 700
       },
@@ -349,15 +345,15 @@
         "n": 7,
         "label": "DC IN",
         "desc": "DC 12V 1A · PSE에는 반드시 연결(상대 기기에 전원 공급)",
-        "x1": 1105,
-        "x2": 1255,
+        "x1": 1113,
+        "x2": 1257,
         "side": "bottom",
         "y": 700
       },
       {
         "n": 5,
         "label": "TX/RX DIP 스위치",
-        "desc": "1번 ON = TX · 2번 ON = RX · 3번 ON = Long Reach(1080p 150m) · 스위치를 내리면 ON. 설정 방법은 '06 딥 스위치 설정' 참고",
+        "desc": "TX·RX·Long Reach 전환 · 내리면 ON · 06 딥 스위치 설정 참고",
         "x1": 400,
         "x2": 545,
         "side": "top",
@@ -366,7 +362,7 @@
       {
         "n": 6,
         "label": "상태 LED",
-        "desc": "Rx Signal(RX 모드) · Tx Signal(TX 모드) · Tx/Rx·Link(정상 연결)",
+        "desc": "RX·TX 모드 신호 · 정상 연결 표시",
         "x1": 180,
         "x2": 335,
         "side": "top",

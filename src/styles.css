@@ -96,6 +96,10 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-rack-canvas{min-width:0;padding:20px;border-radius:24px;background:linear-gradient(180deg,#eef2f8,#e2e8f1)}
 #rtcom-design .rt-rack-toolbar{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:14px}
 #rtcom-design .rt-rack-toolbar h3{margin:2px 0 0;font-size:24px}
+/* 0.180 03 카드 슬롯 툴바: 채운 수 칩 옆에 시리즈 제품정보 링크(새 탭). */
+#rtcom-design .rt-rack-toolbar-side{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px}
+#rtcom-design .rt-frame-info-link{display:inline-flex;align-items:center;gap:5px;min-height:34px;padding:0 13px;border-radius:999px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap}
+@media(max-width:480px){#rtcom-design .rt-rack-toolbar-side{justify-content:flex-start}}
 #rtcom-design .rt-rack-scroll{overflow-x:auto;padding:4px 2px 12px}
 #rtcom-design .rt-rack{display:flex;align-items:stretch;margin:0 auto;filter:drop-shadow(0 18px 22px #0f1b3038)}
 #rtcom-design .rt-rack-h{width:100%;min-width:320px}
@@ -545,7 +549,9 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-foot b{color:var(--pg-ink-2)}
 #rtcom-design .rt-pg-svg-wrap{position:relative;width:100%;max-width:900px;margin:0 auto;overflow-x:auto}
 #rtcom-design .rt-pg-svg-wrap svg{width:100%;min-width:560px;height:auto;display:block}
-#rtcom-design .rt-pg-svg-wrap.rt-has-more::after{content:"";position:absolute;top:0;right:0;bottom:0;width:32px;background:linear-gradient(to right,rgba(255,255,255,0),#fff 80%);pointer-events:none}
+/* 0.178: 그러데이션은 스크롤하지 않는 바깥 틀(.rt-pg-svg-frame)에 붙인다. 스크롤 칸 안에 두면 내용과 함께 밀려 가운데 세로 띠가 남았다. */
+#rtcom-design .rt-pg-svg-frame{position:relative;width:100%;max-width:900px;margin:0 auto}
+#rtcom-design .rt-pg-svg-frame.rt-has-more::after{content:"";position:absolute;top:0;right:0;bottom:0;width:32px;background:linear-gradient(to right,rgba(255,255,255,0),#fff 80%);pointer-events:none}
 #rtcom-design .rt-pg-svg-hint{display:none;margin:8px 0 0;color:var(--pg-muted);font-size:11px;text-align:center}
 @media(max-width:720px){#rtcom-design .rt-pg-svg-hint{display:block}}
 #rtcom-design .rt-pg-diagram-photo{border-radius:var(--pg-r-inner);overflow:hidden;background:#fff;box-shadow:inset 0 0 0 1px var(--pg-line)}
@@ -586,7 +592,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-cards2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 #rtcom-design .rt-pg-cardcol h3{margin:0 0 8px;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--pg-muted)}
 #rtcom-design .rt-pg-cardrow{display:grid;grid-template-columns:86px 1fr auto;gap:10px;align-items:center;padding:7px 8px;border-radius:12px;background:var(--pg-field-fill);margin-bottom:6px}
-#rtcom-design .rt-pg-cardrow img{width:86px;height:26px;object-fit:contain;background:#fff;border-radius:6px}
+#rtcom-design .rt-pg-cardrow img{width:86px;height:26px;object-fit:contain;background:#eef1f5;border-radius:6px;padding:2px 4px;box-sizing:border-box}
 #rtcom-design .rt-pg-cardrow b{font-size:13px}
 #rtcom-design .rt-pg-cardrow span{display:block;font-size:11.5px;color:var(--pg-muted);font-weight:600}
 #rtcom-design .rt-pg-cardrow .rt-pg-pc{font-size:12px;font-weight:800;color:var(--pg-accent-2);background:var(--pg-accent-tint);padding:3px 8px;border-radius:980px;white-space:nowrap}
@@ -1094,6 +1100,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-card-info-missing{margin:0;padding:10px 12px;border-radius:12px;background:#fff6e5;color:#8a5a00;font-size:12.5px;line-height:1.55}
 #rtcom-design .rt-card-info-src{margin:0;color:var(--rt-muted);font-size:11.5px}
 #rtcom-design .rt-card-info-modal .rt-card-modal-foot{justify-content:flex-end}
+#rtcom-design .rt-frame-info-modal .rt-card-modal-foot [data-frame-configure]{margin-right:auto}
 @media(max-width:720px){#rtcom-design .rt-card-info-group{grid-template-columns:1fr}#rtcom-design .rt-card-info-group>span{padding-top:0}#rtcom-design .rt-card-info-body{padding:14px}#rtcom-design .rt-card-info-table th{width:88px}}
 /* 0.79 카드 선택창 상세 보기: 카드 아래 줄 왼쪽에 상세 보기, 오른쪽에 수량 */
 #rtcom-design .rt-card-choice-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;margin:0 12px 12px;padding-top:10px;border-top:1px dashed #e0e7f1}
@@ -1265,6 +1272,11 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 
 /* 0.154 프레임 정면·후면 팝업(위아래 배치): 두 그림 가로폭을 같게 맞춤 */
 #rtcom-design .rt-frame-info-stack .rt-frame-info-face img{width:min(100%,560px);max-width:100%;max-height:none;height:auto}
+/* 0.178 프레임 정면·후면 팝업(좌우 배치): 두 그림 높이를 같게 맞춤. 높이 = (칸 전체 폭 − 칸 사이 12px − 판 안쪽 여백 48px) ÷ (정면 비율 + 후면 비율),
+   상한은 56vh·540px(휴대폰 46vh). 비율 합(--rt-duo-ratio)은 두 그림을 읽은 뒤 src/products.js pickLayout이 넣는다. */
+#rtcom-design .rt-frame-info-duo.rt-frame-info-row{container-type:inline-size;display:flex;justify-content:center;align-items:flex-start;gap:12px}
+#rtcom-design .rt-frame-info-row .rt-frame-info-face img{--rt-duo-h:min(540px,56vh,calc((100cqw - 60px) / var(--rt-duo-ratio)));height:var(--rt-duo-h);width:auto;max-width:none;max-height:none}
+@media (max-width:560px){#rtcom-design .rt-frame-info-row .rt-frame-info-face img{--rt-duo-h:min(46vh,calc((100cqw - 60px) / var(--rt-duo-ratio)))}}
 /* 0.166 사양 값이 여러 줄일 때(SPX-TX/RX "4K60 실효 전송거리") 줄마다 한 덩어리로 보이게 간격을 둔다 */
 #rtcom-design .rt-pg-spec-table td .rt-pg-spec-line{display:block}#rtcom-design .rt-pg-spec-table td .rt-pg-spec-line+.rt-pg-spec-line{margin-top:6px}
 
@@ -1361,3 +1373,10 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
   #rtcom-design #print-report .rt-rp-h{margin:12px 0 5px}
   #rtcom-design #print-report .rt-rp-meta{grid-template-columns:repeat(3,1fr)}#rtcom-design #print-report .rt-rp-kpi{grid-template-columns:repeat(4,1fr)}
 }
+
+/* 0.178 휴대폰 브라우저 다크 모드(사용자 요청 2026-09-29 "블랙테마일 경우 슬롯카드 가독성이 떨어짐 해결"):
+   사이트는 밝은 화면(color-scheme:light) 하나지만, 삼성 인터넷·크롬의 "웹 페이지 어둡게"는 흰 판을 검게 바꾼다. 카드 판넬 사진은 검은 몸체라
+   검게 바뀐 판 위에서 거의 보이지 않았다. 카드 사진과 사진을 받치는 판만 color-scheme:only light로 강제 어둡게 하기에서 빼고 옅은 회색 판을 깐다. */
+#rtcom-design img[src*="assets/cards/"]{color-scheme:only light}
+#rtcom-design .rt-card-choice-plate,#rtcom-design .rt-card-info-plate{color-scheme:only light}
+#rtcom-design .rt-palette-tile img,#rtcom-design .rt-link-flow-node img[src*="assets/cards/"]{background:#eef1f5;padding:3px 4px;box-sizing:border-box;border-radius:4px}

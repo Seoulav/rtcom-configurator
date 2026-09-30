@@ -409,6 +409,8 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     // 0.42 전송기 단자 지도: 송신기·수신기 사진 두 장에 번호표를 얹고(입출력 표 카드가 아니라), 사진이 정상으로 열린다.
     const extenderMaps=await page.$$eval('.rt-pg-panel svg[aria-label$="단자 지도"]',svgs=>svgs.map(svg=>svg.getAttribute('aria-label')));
     check('CT104-U/CR104-U 단자 지도가 송신기·수신기 사진 두 장으로 나옴',extenderMaps.length===2&&extenderMaps[0].includes('송신기 CT104-U')&&extenderMaps[1].includes('수신기 CR104-U'),JSON.stringify(extenderMaps));
+    // 0.178 가로 스크롤 그림의 "더 있음" 그러데이션은 스크롤하지 않는 바깥 틀(.rt-pg-svg-frame)에 붙는다(스크롤 칸 안에 두면 밀 때 가운데 세로 띠가 남음).
+    check('가로 스크롤 그림은 모두 바깥 틀(.rt-pg-svg-frame) 안에 있고 스크롤 칸에는 그러데이션 표시가 없음(0.178)',await page.evaluate(()=>{const w=[...document.querySelectorAll('.rt-pg-svg-wrap')];return w.length>0&&w.every(e=>e.parentElement.classList.contains('rt-pg-svg-frame')&&!e.classList.contains('rt-has-more'))}));
     await page.goBack();
     await page.waitForSelector('.rt-pg-gridcard');
     check('제품정보 목록의 첫 카드는 XDM(0.125, 사용자 요청 "XDM이 처음으로 나오게해")',(await page.locator('.rt-pg-gridcard').first().getAttribute('href'))==='#products/xdm');
@@ -420,6 +422,14 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     const faceWidths=await page.$$eval('.rt-frame-info-face img',images=>images.map(image=>Math.round(image.getBoundingClientRect().width)));
     check('SPX-M1620 정면·후면 팝업의 두 그림 가로폭이 같음(0.154)',faceWidths.length===2&&Math.abs(faceWidths[0]-faceWidths[1])<=1,JSON.stringify(faceWidths));
     await page.keyboard.press('Escape');
+    // 0.178 좌우로 놓이는 프레임(SPX-M2472 등)은 정면·후면 그림 높이가 같아야 한다(사용자 요청 2026-09-29 "모듈러 매트릭스 프레임 상하 높이 안맞는문제").
+    await page.click('[data-pg-frame="SPX-M2472"]');
+    await page.waitForFunction(()=>document.querySelector('.rt-frame-info-duo.rt-frame-info-row'),null,{timeout:10000}).catch(()=>{});
+    const faceHeights=await page.$$eval('.rt-frame-info-face img',images=>images.map(image=>Math.round(image.getBoundingClientRect().height)));
+    check('SPX-M2472 정면·후면 팝업(좌우 배치)의 두 그림 높이가 같음(0.178)',faceHeights.length===2&&faceHeights[0]>40&&Math.abs(faceHeights[0]-faceHeights[1])<=1,JSON.stringify(faceHeights));
+    await page.keyboard.press('Escape');
+    // 0.178 카드 라인업 썸네일은 휴대폰 브라우저 다크 모드에서도 어둡게 바뀌지 않는다(color-scheme:only light).
+    check('카드 라인업 썸네일이 강제 다크 모드에서 빠짐(0.178)',await page.$eval('.rt-pg-cardrow img',img=>getComputedStyle(img).colorScheme.includes('only')));
     // 0.121·0.123·0.130 HD-D102U Rack마운트: 02 Port Map은 XDM-PSU 그림 방식의 정면 그래픽 이미지 1장만 두고(윗면·옆면은 삭제, 사용자 요청 2026-09-29) 실도면(치수 도면) 카드는 없다. HD-D102U와 관련 제품 링크.
     await page.goto(`${home}#products/hd-d102u-rack`,{waitUntil:'networkidle'});
     await page.waitForSelector('#rt-pg-title');

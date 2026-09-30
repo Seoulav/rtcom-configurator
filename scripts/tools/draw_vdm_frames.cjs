@@ -101,18 +101,26 @@ const chassis=(w,h,t)=>rect(t*0.5,t*0.5,w-t,h-t,C.body,C.edge,t,t*2);
 const CARD_RATIO=5.7;
 const r2=n=>Math.round(n*100)/100;
 // 세로 카드(16X~64X): 왼쪽 입력 | 가운데 칸 | 오른쪽 출력(입력과 좌우 대칭). 칸 높이 = 칸 너비 × 5.7.
+// 0.179(사용자 요청 2026-09-29 "VDM 후면 그림도 실제 비율로 다시 그려줘"): H(목표 전체 높이)를 주면 슬롯 칸 모양(5.7:1)은 그대로 두고
+// 모자란 높이를 위 통풍구(30%)와 슬롯 아래 통풍 판(70%)에 나눠 채운다. 가운데 칸(오디오·통신·전원)은 아래 통풍 판 끝까지 늘어난다.
 function vsFrame(o){
-  const cw=(o.inX[1]-o.inX[0])/o.cols,zh=cw*CARD_RATIO*o.rows,y1=r2(o.top+zh),H=r2(y1+o.bottom),outX=[r2(o.W-o.inX[1]),r2(o.W-o.inX[0])];
-  return {size:[o.W,H],input:[o.inX[0],o.top,o.inX[1],y1],output:[outX[0],o.top,outX[1],y1],cols:o.cols,slots:o.cols*o.rows,draw(){
-    let s=o.top>=18?vents(10,4,o.W-20,o.top-7,Math.round(o.W/18),2):'';
-    return s+center(o.inX[1],o.top,outX[0],y1,o.blocks,o.audioRows)}};
+  const cw=(o.inX[1]-o.inX[0])/o.cols,zh=cw*CARD_RATIO*o.rows,extra=o.H?Math.max(0,o.H-(o.top+zh+o.bottom)):0;
+  const top=r2(o.top+extra*0.3),y1=r2(top+zh),H=o.H?o.H:r2(y1+o.bottom),outX=[r2(o.W-o.inX[1]),r2(o.W-o.inX[0])],foot=r2(H-y1-o.bottom);
+  return {size:[o.W,H],input:[o.inX[0],top,o.inX[1],y1],output:[outX[0],top,outX[1],y1],cols:o.cols,slots:o.cols*o.rows,draw(){
+    let s=top>=18?vents(10,4,o.W-20,top-7,Math.round(o.W/18),Math.max(2,Math.round((top-7)/10))):'';
+    if(foot>6)for(const [x0,x1] of [o.inX,outX])s+=rect(x0,y1+2,x1-x0,foot-2,C.panel,C.edge,0.8,3)+vents(x0+4,y1+6,x1-x0-8,foot-10,Math.round((x1-x0)/14),Math.max(2,Math.round((foot-10)/9)));
+    return s+center(o.inX[1],top,outX[0],foot>6?r2(H-o.bottom):y1,o.blocks,o.audioRows)}};
 }
 // 가로로 쌓는 대형 프레임(80X 이상): 위 명판 · 입력 · 가운데 띠 · 출력 · 아래 전원. 칸 높이 = 칸 너비 × 5.7.
+// 0.179: H를 주면 모자란 높이를 grow=[위, 가운데 띠, 아래] 비율로 나눈다. 위는 명판 아래 통풍구, 아래는 전원 아래 통풍구로 그린다.
 function vtFrame(o){
   const cw=(o.racks[0][1]-o.racks[0][0])/o.cols,zh=cw*CARD_RATIO*o.rows;
-  const g={in0:o.top,in1:r2(o.top+zh)};g.out0=r2(g.in1+o.mid);g.out1=r2(g.out0+zh);g.H=r2(g.out1+o.bottom);
+  const extra=o.H?Math.max(0,o.H-(o.top+zh*2+o.mid+o.bottom)):0,[gt,gm]=o.grow||[0,1,0];
+  const top=r2(o.top+extra*gt),mid=r2(o.mid+extra*gm);
+  const g={in0:top,in1:r2(top+zh)};g.out0=r2(g.in1+mid);g.out1=r2(g.out0+zh);g.H=o.H?o.H:r2(g.out1+o.bottom);
   const zones=(a,b)=>o.racks.length>1?o.racks.map(([x0,x1])=>[x0,a,x1,b]):[o.racks[0][0],a,o.racks[0][1],b];
-  return {size:[o.W,g.H],input:zones(g.in0,g.in1),output:zones(g.out0,g.out1),cols:o.cols,slots:o.slots,draw(){return o.draw(g)},extraIn:o.extraIn,extraOut:o.extraOut};
+  const ventStrip=(y0,y1)=>y1-y0>6?o.racks.map(([x0,x1])=>rect(x0,y0,x1-x0,y1-y0,C.panel,C.edge,0.8,3)+vents(x0+4,y0+3,x1-x0-8,y1-y0-6,Math.round((x1-x0)/14),Math.max(2,Math.round((y1-y0-6)/9)))).join(''):'';
+  return {size:[o.W,g.H],input:zones(g.in0,g.in1),output:zones(g.out0,g.out1),cols:o.cols,slots:o.slots,draw(){return ventStrip(o.top,top-2)+o.draw(g)+ventStrip(g.out1+o.bottom,g.H-3)},extraIn:o.extraIn,extraOut:o.extraOut};
 }
 const REAR={
   'VDM-8X':{size:[637,195],input:[3,8,318,118],output:[329,8,634,118],cols:1,slots:2,horizontal:true,draw(){
@@ -125,17 +133,18 @@ const REAR={
   // 0.120(사용자 요청 2026-09-28 "VDM카드를 정교하게 맞춰줘"): 슬롯 한 칸의 세로:가로(가로 카드는 가로:세로)를 VDM 카드 판넬 사진 비율 CARD_RATIO(5.7:1)와 똑같이 맞춘다.
   // 그전에는 매뉴얼 도면 좌표를 그대로 써서 칸 비율이 16X 6.2 · 64X 5.1 · 128X 3.9 · 180X 8.2 · 256X 5.2로 달라 카드 사진이 늘어나거나 눌렸다.
   // 칸 너비(열 수·좌우 위치)는 도면 배치를 따르고, 높이는 칸 너비 × 5.7로 계산해 그림 전체 높이를 정한다(vsFrame·vtFrame).
-  'VDM-16X':vsFrame({W:449,inX:[2,165],cols:4,rows:1,top:24,bottom:3,blocks:2,audioRows:4}),
-  'VDM-32X':vsFrame({W:458,inX:[8,165],cols:4,rows:2,top:10,bottom:12,blocks:2,audioRows:8}),
-  'VDM-48X':vsFrame({W:448,inX:[8,165],cols:4,rows:3,top:8,bottom:12,blocks:2,audioRows:12}),
+  'VDM-16X':vsFrame({W:449,H:317,inX:[2,165],cols:4,rows:1,top:24,bottom:3,blocks:2,audioRows:4}),
+  'VDM-32X':vsFrame({W:458,H:554,inX:[8,165],cols:4,rows:2,top:10,bottom:12,blocks:2,audioRows:8}),
+  'VDM-48X':vsFrame({W:448,H:859,inX:[8,165],cols:4,rows:3,top:8,bottom:12,blocks:2,audioRows:12}),
   // 64X는 4단이라 칸 너비를 도면(39)보다 좁혀(35) 전체 높이를 도면과 비슷하게 유지하고, 그만큼 가운데 칸을 넓혔다.
-  'VDM-64X':vsFrame({W:451,inX:[8,147],cols:4,rows:4,top:8,bottom:16,blocks:2,audioRows:16}),
-  'VDM-80X':vtFrame({W:239,racks:[[6,234]],cols:11,rows:2,slots:20,top:20,mid:71,bottom:61,draw(g){
+  // 0.179: H는 실제 후면 비율(몸체 폭 440mm ÷ 카탈로그 높이, 256X는 랙 2대 880mm ÷ 39U)에 맞춘 전체 높이다.
+  'VDM-64X':vsFrame({W:451,H:1093,inX:[8,147],cols:4,rows:4,top:8,bottom:16,blocks:2,audioRows:16}),
+  'VDM-80X':vtFrame({W:239,H:651,grow:[0,1,0],racks:[[6,234]],cols:11,rows:2,slots:20,top:20,mid:71,bottom:61,draw(g){
     let s=plate(50,5,140,12);
     s+=band(6,g.in1+2,234,g.out0-2,2,[],2);
     s+=powerH(6,g.out1+2,228,g.H-g.out1-5,2);
     return s},extraOut:(i)=>i===21?'control':null}),
-  'VDM-128X':vtFrame({W:477,racks:[[3,453]],cols:11,rows:3,slots:32,top:12,mid:93,bottom:115,draw(g){
+  'VDM-128X':vtFrame({W:477,H:1782,grow:[0.3,0.4,0.3],racks:[[3,453]],cols:11,rows:3,slots:32,top:12,mid:93,bottom:115,draw(g){
     let s=plate(120,0.5,236,11);
     s+=band(3,g.in1+2,453,g.out0-2,4,[],4);
     const py=g.out1+2;
@@ -143,7 +152,7 @@ const REAR={
     s+=powerGroup(30,py+37,150,56,3)+powerGroup(296,py+37,150,56,3);
     s+=rect(456,12,18,g.out1-12,C.panel,C.edge,1,3);
     return s},extraIn:(i)=>i===32?'control':null}),
-  'VDM-180X':vtFrame({W:170,racks:[[3,158]],cols:15,rows:3,slots:45,top:17,mid:66,bottom:45,draw(g){
+  'VDM-180X':vtFrame({W:170,H:652,grow:[0.35,0.3,0.35],racks:[[3,158]],cols:15,rows:3,slots:45,top:17,mid:66,bottom:45,draw(g){
     let s=plate(22,3,126,11);
     s+=band(3,g.in1+2,158,g.out0-2,2,[],1);
     const zh=g.in1-g.in0;
@@ -153,7 +162,7 @@ const REAR={
     s+=rect(3,py,164,40,C.panel,C.line,0.8,2)+text(8,py+10,'100-240VAC 50/60Hz',6,C.sub,'font-weight="700"');
     s+=powerGroup(56,py+13,58,24,3)+vents(6,py+14,46,22,3,3)+vents(118,py+14,46,22,3,3);
     return s}}),
-  'VDM-256X':vtFrame({W:472,racks:[[6,228],[235,456]],cols:11,rows:3,slots:32,top:12,mid:63,bottom:77,draw(g){
+  'VDM-256X':vtFrame({W:472,H:930,grow:[0.3,0.4,0.3],racks:[[6,228],[235,456]],cols:11,rows:3,slots:32,top:12,mid:63,bottom:77,draw(g){
     let s='';
     for(const [x0,x1] of [[6,228],[235,456]]){
       s+=plate(x0+30,1,x1-x0-60,10);
@@ -218,22 +227,26 @@ function handle(x,y,w,h){return rect(x,y,w,h,C.metal,'#6b7482',w*0.14,w*0.5)+rec
 function ear(x,y,w,h,holes){let s=rect(x,y,w,h,'#23262d',C.edge,w*0.06,w*0.12);holes.forEach(fy=>{s+=rect(x+w*0.3,y+h*fy-w*0.2,w*0.4,w*0.4,'#0b0c0f',null,0,w*0.2)});return s}
 const logo=(x,y,size)=>text(x,y,`Digital Extender<tspan font-size="${f(size*0.45)}" dy="${f(-size*0.4)}">®</tspan>`,size,'#F28C28','font-weight="900" font-style="italic"');
 const FRONT={
-  'VDM-8X':{size:[626,193],draw(W,H){
+  // 0.180(사용자 요청 2026-09-30 "VDM 정면 그림도 실제 비율로 맞추기"): 정면은 랙 날개 포함 폭 483mm ÷ 카탈로그 높이로 맞춘다.
+  // 8X는 3U(132.5mm) 기준 가로:세로 3.65라 가로를 626 → 704로 넓히고 화면·전원 스위치를 가운데·오른쪽으로 옮겼다.
+  'VDM-8X':{size:[704,193],draw(W,H){
     let s=chassis(W,H,1.6);
-    s+=logo(24,40,20)+screenUI(205,30,215,130)+rocker(572,78,26,38)+text(585,70,'POWER',9,C.sub,'text-anchor="middle" font-weight="700"');
-    s+=text(24,160,'VDM-8X',14,C.ink,'font-weight="900"')+text(24,180,'Digital Multi-format Modular Matrix Router 8X8',12,C.sub,'font-weight="700"')+text(604,180,'MADE IN KOREA',7,C.sub,'text-anchor="end" font-weight="700"');
+    s+=logo(24,40,20)+screenUI(245,30,215,130)+rocker(650,78,26,38)+text(663,70,'POWER',9,C.sub,'text-anchor="middle" font-weight="700"');
+    s+=text(24,160,'VDM-8X',14,C.ink,'font-weight="900"')+text(24,180,'Digital Multi-format Modular Matrix Router 8X8',12,C.sub,'font-weight="700"')+text(682,180,'MADE IN KOREA',7,C.sub,'text-anchor="end" font-weight="700"');
     return s}},
-  'VDM-32X':{size:[485,473],draw(W,H){return door(W,H,{ear:30,screen:[180,190,160,95],rocker:[393,208,26,46],handles:[[70,182,12,114],[440,182,12,114]],logo:[88,145,22],leds:[360,142,82],model:'VDM-32X',sub:'32X32 Cross-Platform Modular Matrix Router',textY:330})}},
-  'VDM-64X':{size:[500,819],draw(W,H){return door(W,H,{ear:26,screen:[180,365,156,86],rocker:[385,388,24,40],handles:[[72,352,12,108],[432,352,12,108]],logo:[80,335,20],leds:[368,322,82],model:'VDM-64X',sub:'64X64 Cross-Platform Modular Matrix Router',textY:495})}},
-  'VDM-128X':{size:[484,1176],draw(W,H){return door(W,H,{ear:18,screen:[115,190,106,82],rocker:[248,200,20,34],handles:[[78,296,10,60],[262,296,10,60]],logo:[70,160,22],leds:[232,146,42],model:'VDM-128X',sub:'128X128 Cross-Platform Modular Matrix Router',textY:436,bodyW:330})}},
-  'VDM-256X':{size:[485,777],draw(W,H){return door(W,H,{ear:20,screen:[182,185,104,74],rocker:[310,186,18,30],handles:[[150,282,9,56],[320,282,9,56]],logo:[110,142,22],leds:[292,140,40],model:'VDM-256X',sub:'256X256 Cross-Platform Modular Matrix Router',textY:410})}},
+  'VDM-32X':{size:[485,535],draw(W,H){return door(W,H,{ear:30,screen:[180,221,160,95],rocker:[393,239,26,46],handles:[[70,213,12,114],[440,213,12,114]],logo:[88,176,22],leds:[360,173,82],model:'VDM-32X',sub:'32X32 Cross-Platform Modular Matrix Router',textY:361})}},
+  'VDM-64X':{size:[500,1104],draw(W,H){return door(W,H,{ear:26,screen:[180,507,156,86],rocker:[385,530,24,40],handles:[[72,494,12,108],[432,494,12,108]],logo:[80,477,20],leds:[368,464,82],model:'VDM-64X',sub:'64X64 Cross-Platform Modular Matrix Router',textY:637})}},
+  'VDM-128X':{size:[484,1647],draw(W,H){return door(W,H,{ear:18,screen:[115,190,106,82],rocker:[248,200,20,34],handles:[[78,296,10,60],[262,296,10,60]],logo:[70,160,22],leds:[232,146,42],model:'VDM-128X',sub:'128X128 Cross-Platform Modular Matrix Router',textY:436,bodyW:330})}},
+  'VDM-256X':{size:[485,870],draw(W,H){return door(W,H,{ear:20,screen:[182,231,104,74],rocker:[310,232,18,30],handles:[[150,328,9,56],[320,328,9,56]],logo:[110,188,22],leds:[292,186,40],model:'VDM-256X',sub:'256X256 Cross-Platform Modular Matrix Router',textY:456})}},
   // 0.135(사용자 요청 2026-09-29 "프레임 실물 이미지는 사용하지 말자 전부 그래픽이미지로 변경해줘"): 실물 사진(16X·48X 전면)을 같은 스타일의 평면 그림으로 바꾼다. 크기는 카탈로그 mm(483×310.3, 483×843.75).
   'VDM-16X':{size:[483,310],draw(W,H){return door(W,H,{ear:26,screen:[168,92,150,96],rocker:[360,120,24,44],handles:[[68,92,11,112],[404,92,11,112]],logo:[64,52,24],leds:[340,44,80],model:'VDM-16X',sub:'16X16 Cross-Platform Modular Matrix Router',textY:268})}},
   'VDM-48X':{size:[483,844],draw(W,H){return tower(W,H,{module:[26,8,457,262],screen:[236,70,200,120],model:'VDM-48X',sub:'48X48 Cross-Platform Modular Matrix Router',vents:[[40,318,403,190],[40,540,403,190],[40,752,403,72]],bolts:[520,738],logoY:290})}},
-  'VDM-80X':{size:[270,638],draw(W,H){return tower(W,H,{module:[16,6,238,172],screen:[112,70,110,66],model:'VDM-80X',sub:'80X80 Cross-Platform Modular Matrix Router',vents:[[26,232,218,110],[26,444,218,110],[26,562,218,60]],bolts:[410]})}},
-  'VDM-180X':{size:[189,636],draw(W,H){return tower(W,H,{module:[14,4,162,128],screen:[68,24,106,82],model:'VDM-180X',sub:'180X180 Cross-Platform Modular Matrix Router',vents:[[20,550,150,64]],bolts:[357,600],logoY:186})}}
+  'VDM-80X':{size:[270,670],draw(W,H){return tower(W,H,{module:[16,6,238,172],screen:[112,70,110,66],model:'VDM-80X',sub:'80X80 Cross-Platform Modular Matrix Router',vents:[[26,232,218,110],[26,444,218,110],[26,562,218,92]],bolts:[410]})}},
+  'VDM-180X':{size:[189,661],draw(W,H){return tower(W,H,{module:[14,4,162,128],screen:[68,24,106,82],model:'VDM-180X',sub:'180X180 Cross-Platform Modular Matrix Router',vents:[[20,550,150,89]],bolts:[357,625],logoY:186})}}
 };
 // 문형 전면(32X·64X·128X·256X): 랙 귀 + 넓은 판 + 스크린·스위치·핸들.
+// 0.180: 32X(12U)·64X(24U)·256X(랙 2대 39U)는 세로를 실제 비율로 늘리고 부품 묶음을 가운데로 내렸다. 128X(37U)는 위 조작부를 그대로 두고 아래 몸체를 늘렸다.
+// 탑형 80X·180X는 아래 통풍구를 늘려 실제 비율(0.40·0.29)에 맞췄다.
 function door(W,H,o){
   const bw=o.bodyW?Math.min(W-o.ear*2,o.bodyW+o.ear*0):W-o.ear*2;
   let s=ear(0,0,o.ear,H,[0.06,0.5,0.94])+ear(W-o.ear,0,o.ear,H,[0.06,0.5,0.94]);
