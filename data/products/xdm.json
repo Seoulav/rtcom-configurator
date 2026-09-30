@@ -178,7 +178,7 @@
     {
       "group": "Video",
       "name": "최대 해상도",
-      "value": "4096×2160@60Hz, 3840×2160@60Hz",
+      "value": "3840×2160@60Hz",
       "unit": "",
       "condition": "4:4:4 (최대 4K60Hz)",
       "source": "C",
