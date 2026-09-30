@@ -1119,7 +1119,7 @@
       if(rear)pickLayout();
       const opener=document.activeElement;
       const finish=()=>{if(dialog.open)dialog.close();dialog.remove();opener?.focus?.({preventScroll:true})};
-      // 0.182(사용자 요청 2026-09-30 "03 메인프레임 선택시 팝업중 닫기 바로 구성기로 넘어갈 수 있도록 왼쪽에 슬롯구성기 버튼"): 팝업을 닫고 이 프레임을 고른 채 구성기 03 카드 슬롯 단계로 간다(app.js rt-configure-family).
+      // 0.183(사용자 요청 2026-09-30 "03 메인프레임 선택시 팝업중 닫기 바로 구성기로 넘어갈 수 있도록 왼쪽에 슬롯구성기 버튼"): 팝업을 닫고 이 프레임을 고른 채 구성기 03 카드 슬롯 단계로 간다(app.js rt-configure-family).
       dialog.addEventListener('click',event=>{
         if(event.target.closest('[data-frame-configure]')){finish();location.hash='#matrix-configurator';root.dispatchEvent(new CustomEvent('rt-configure-family',{detail:{family,model}}));return}
         if(event.target===dialog||event.target.closest('[data-card-info-close]'))finish();

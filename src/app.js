@@ -645,7 +645,7 @@ ${figure?`<h2 class="rt-rp-h"><i>1</i>후면 슬롯 배치</h2><div class="rt-rp
       restoringNav=true;state.step=step;changed();restoringNav=false;
     });
     // 제품정보(0.19) 시리즈 상세의 "구성기에서 구성하기": 해당 제품군을 고르고 프레임 선택 단계로 간다.
-    // 0.182: detail이 {family, model}이면(제품정보 03 메인프레임 팝업의 "슬롯 구성기") 그 프레임까지 고르고 03 카드 슬롯 단계로 간다. 글자면 예전처럼 프레임 선택 단계까지만 간다.
+    // 0.183: detail이 {family, model}이면(제품정보 03 메인프레임 팝업의 "슬롯 구성기") 그 프레임까지 고르고 03 카드 슬롯 단계로 간다. 글자면 예전처럼 프레임 선택 단계까지만 간다.
     root.addEventListener('rt-configure-family',async event=>{
       const detail=event.detail,family=typeof detail==='string'?detail:detail?.family,model=typeof detail==='object'?detail?.model:null;
       if(!families[family])return;
