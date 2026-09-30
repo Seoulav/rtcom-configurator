@@ -1094,7 +1094,7 @@
     function openProductFrameInfo(model,family,summary,rackUnits){
       const frame={model,summary,rackUnits:Number(rackUnits)};
       const [io,...rest]=splitSummary(frame.summary||'');
-      const rows=[['구분',`${family} 메인프레임`],['입출력',io||''],...rest.filter(part=>!/^\d+\s*U$/i.test(part)).map(part=>[/mm/.test(part)?'크기':/kg/.test(part)?'무게':'특징',part]),['랙 높이',typeof frame.rackUnits==='number'?`${frame.rackUnits}U`:'']].filter(([,v])=>v);
+      const rows=[['구분',`${family} 메인프레임`],['입출력',io||''],...rest.filter(part=>!/^\d+\s*U$/i.test(part)).map(part=>{const slot=part.match(/^(입력|출력) 슬롯\s*(\d+)$/);return slot?[`${slot[1]} 슬롯`,`${slot[2]}개`]:[/mm/.test(part)?'크기':/kg/.test(part)?'무게':'특징',part]}),['랙 높이',typeof frame.rackUnits==='number'?`${frame.rackUnits}U`:'']].filter(([,v])=>v);
       const slug=model.toLowerCase(),hasPhoto=!NO_FRAME_PHOTO.has(model);
       const face=(side,label)=>`<figure class="rt-frame-info-face"><div class="rt-card-info-plate"><img src="output/design/assets/frames/${slug}-${side}-art.webp" alt="${esc(model)} ${label} 그림" data-frame-face="${side}"></div><figcaption>${label}</figcaption></figure>`;
       const dialog=document.createElement('dialog');
