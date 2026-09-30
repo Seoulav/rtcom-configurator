@@ -535,7 +535,7 @@ test('0.180: 03 메인프레임 타일은 슬롯 수 줄을 보여 주고 03 카
   for(const id of ['xdm','spx','vdm'])assert.ok(fs.existsSync(`data/products/${id}.json`),`${id} 시리즈 제품정보가 있어야 링크가 열린다`);
 });
 
-test('0.182: VDM DVI 1.0 표기 삭제, 프레임 팝업 "슬롯 구성기" 버튼, CTR100 단자 지도 정리',()=>{
+test('0.183: VDM DVI 1.0 표기 삭제, 프레임 팝업 "슬롯 구성기" 버튼, CTR100 단자 지도 정리',()=>{
   // 사용자 요청 2026-09-30 6·7·8·9번
   assert.ok(!/DVI ?1\.0/.test(read('data/products/vdm.json')+read('src/card-specs.js')),'VDM 데이터에 "DVI 1.0" 표기가 없어야 한다');
   const products=read('src/products.js'),app=read('src/app.js');
