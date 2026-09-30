@@ -177,7 +177,7 @@
     {
       "group": "Video",
       "name": "입력 신호",
-      "value": "HDMI(DVI 1.0 호환), 3G-SDI, HDBaseT, Fiber",
+      "value": "HDMI, 3G-SDI, HDBaseT, Fiber",
       "unit": "",
       "condition": "",
       "source": "J",
@@ -186,7 +186,7 @@
     {
       "group": "Video",
       "name": "출력 신호",
-      "value": "HDMI(DVI 1.0 호환), 3G-SDI, HDBaseT, Fiber",
+      "value": "HDMI, 3G-SDI, HDBaseT, Fiber",
       "unit": "",
       "condition": "",
       "source": "J",
@@ -303,7 +303,7 @@
     {
       "model": "HIS4-U",
       "kind": "입력 보드",
-      "summary": "4K HDMI 입력 4포트 · DVI 1.0/HDMI 1.4 · 3840×2160@30Hz(4:4:4)·60Hz(4:2:0) · 오디오 병합/추출"
+      "summary": "4K HDMI 입력 4포트 · HDMI 1.4 · 3840×2160@30Hz(4:4:4)·60Hz(4:2:0) · 오디오 병합/추출"
     },
     {
       "model": "CIS4-U",
@@ -333,7 +333,7 @@
     {
       "model": "HOS4-U",
       "kind": "출력 보드",
-      "summary": "일반 스위칭 4K HDMI 출력 4포트 · DVI 1.0/HDMI 1.4 · 3840×2160@30Hz(4:4:4)·60Hz(4:2:0) · 오디오 추출/병합"
+      "summary": "일반 스위칭 4K HDMI 출력 4포트 · HDMI 1.4 · 3840×2160@30Hz(4:4:4)·60Hz(4:2:0) · 오디오 추출/병합"
     },
     {
       "model": "HOS4S-UW",

@@ -534,3 +534,22 @@ test('0.180: 03 메인프레임 타일은 슬롯 수 줄을 보여 주고 03 카
   assert.match(app,/class="rt-button rt-frame-info-link" href="#products\/\$\{state\.family\.toLowerCase\(\)\}" target="_blank" rel="noopener"/);
   for(const id of ['xdm','spx','vdm'])assert.ok(fs.existsSync(`data/products/${id}.json`),`${id} 시리즈 제품정보가 있어야 링크가 열린다`);
 });
+
+test('0.183: VDM DVI 1.0 표기 삭제, 프레임 팝업 "슬롯 구성기" 버튼, CTR100 단자 지도 정리',()=>{
+  // 사용자 요청 2026-09-30 6·7·8·9번
+  assert.ok(!/DVI ?1\.0/.test(read('data/products/vdm.json')+read('src/card-specs.js')),'VDM 데이터에 "DVI 1.0" 표기가 없어야 한다');
+  const products=read('src/products.js'),app=read('src/app.js');
+  assert.match(products,/data-frame-configure>슬롯 구성기/);
+  assert.match(products,/CustomEvent\('rt-configure-family',\{detail:\{family,model\}\}\)/);
+  assert.match(app,/const step=target\?2:1;/,'프레임까지 고르면 03 카드 슬롯(step 2)으로 간다');
+  for(const id of ['xdm-ctr100','xdm-ctr100-pse']){
+    const d=JSON.parse(read(`data/products/${id}.json`));
+    const items=Object.fromEntries(d.portMap.items.map(item=>[item.n,item]));
+    assert.ok(items[3].x2-items[3].x1>=200,`${id} 3번 괄호는 5핀 단자 전체를 덮는다`);
+    assert.ok(items[7].x1>items[3].x2,`${id} 7번 괄호는 3번 괄호와 겹치지 않는다`);
+    assert.ok(items[5].desc.length<=50&&items[3].desc.length<=30,`${id} 단자 설명은 짧게`);
+    assert.ok(d.features.some(f=>f.text==='TX·RX 겸용 DIP스위치 모드 전환 지원'));
+  }
+  assert.ok(JSON.parse(read('data/products/xdm-ctr100-pse.json')).features.some(f=>f.text==='PoE 전원 공급(PSE) 지원(신호·전원 동시 공급)'));
+  assert.equal(JSON.parse(read('data/products/xdm-ctr100.json')).specifications.find(s=>s.name==='전원').condition,'PSE 연결 시 불필요(PD 모드)');
+});
