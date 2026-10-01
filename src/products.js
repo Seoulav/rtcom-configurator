@@ -143,6 +143,7 @@
       const p1=[ax-size*Math.cos(angle-0.5),ay-size*Math.sin(angle-0.5)],p2=[ax-size*Math.cos(angle+0.5),ay-size*Math.sin(angle+0.5)];
       return `<path d="M${x1} ${y1}L${x2} ${y2}" stroke="${color}" stroke-width="2.5" fill="none"/><polygon points="${ax},${ay} ${p1[0]},${p1[1]} ${p2[0]},${p2[1]}" fill="${color}"/>`;
     };
+    // 0.195 범례 셋째 값 'none'은 표시 없이 글만 적는다(전송기 "최대 전송 거리" 안내 등).
     // 0.194 opts: label(그림 이름)·steps(펼치는 "그림 설명" 목록, 그림 대체 설명으로도 씀)·minWidth(휴대폰에서 글자가 너무 작아지지 않게 하는 최소 폭).
     // 범례 항목의 셋째 값이 'dash'이면 보조 경로(점선)로 그린다. 그림 칸은 키보드로 초점을 받아 좌우 방향키로 밀 수 있다.
     const diagramWrap=(body,width,height,legendItems,opts={})=>{
@@ -150,7 +151,7 @@
       const ariaLabel=[opts.label||'연결 다이어그램',desc].filter(Boolean).join(': ');
       return `<div class="rt-pg-svg-wrap" tabindex="0" aria-label="${svgEsc(opts.label||'연결 다이어그램')} (좌우 방향키로 이동)"><svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${svgEsc(ariaLabel)}" preserveAspectRatio="xMidYMid meet"${opts.minWidth?` style="--rt-svg-min:${opts.minWidth}px"`:''}>${body}</svg></div>
       <p class="rt-pg-svg-hint">좌우로 밀어서 볼 수 있습니다.</p>
-      ${legendItems.length?`<ul class="rt-pg-legend">${legendItems.map(([color,label,style])=>`<li>${style==='dash'?`<i class="rt-pg-legend-dash" style="border-top-color:${color}"></i>`:`<i style="background:${color}"></i>`}${svgEsc(label)}</li>`).join('')}</ul>`:''}${opts.steps?.length?`<details class="rt-pg-flow-desc"><summary>그림 설명</summary><ul>${opts.steps.map(step=>`<li>${svgEsc(step)}</li>`).join('')}</ul></details>`:''}`;
+      ${legendItems.length?`<ul class="rt-pg-legend">${legendItems.map(([color,label,style])=>`<li>${style==='dash'?`<i class="rt-pg-legend-dash" style="border-top-color:${color}"></i>`:style==='none'?'':`<i style="background:${color}"></i>`}${svgEsc(label)}</li>`).join('')}</ul>`:''}${opts.steps?.length?`<details class="rt-pg-flow-desc"><summary>그림 설명</summary><ul>${opts.steps.map(step=>`<li>${svgEsc(step)}</li>`).join('')}</ul></details>`:''}`;
     };
     // 분배기·일체형(매트릭스) "02 신호 흐름"(명세 6-B 3장, 승인 시안 hd-210u-glass-style.html의 flow SVG를 일반화).
     // 입력 칩(개별 번호) → 선택/매트릭스 노드 → 대역폭·해상도 띠 → 출력 화면 격자. 오디오 입력이 있으면 점선으로 표시한다.
@@ -249,6 +250,34 @@
       const audioBits=audioSelect?[item.audioMux.caption||'오디오 병합 또는 추출 중 선택']:[audioIn&&'오디오 병합'];
       const protoBits=[videoIn.protocol,hdcp&&(hdcpVersion?`HDCP ${hdcpVersion}`:'HDCP'),...audioBits].filter(Boolean);
       if(protoBits.length)bodyMarkup+=`<text x="${(bandX1+bandX2)/2}" y="${bandY+28}" text-anchor="middle" font-size="11" font-weight="600" fill="${M}">${svgEsc(protoBits.join(' · '))}</text>`;
+      // 0.195 동작 모드 줄(사용자 지적 2026-10-01 "qms-44ux는 멀티뷰도 가능한데 그림만 보면 단순 매트릭스 라우팅만 되는것 같아"):
+      // videoModes 가운데 장비 전체(주 출력)에 적용하는 모드를 띠 아래에 작은 그림으로 늘어놓는다. "출력 9·10번에서 사용"처럼 전용 출력이 있는 모드
+      // (QMS-88UX QUAD·DUAL)는 멀티뷰 묶음에 이미 그려지므로 뺀다. 크로스포인트 격자는 MATRIX 모드 예시임을 밝힌다. 원은 쓰지 않는다(e2e가 격자 점 수를 셈).
+      const modeGlyph=(name,x,y,w,h,ink)=>{
+        const frame=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2.5" fill="#fff" stroke="${ink}" stroke-width="1.4"/>`;
+        if(name==='MATRIX')return frame+`<path d="M${x+3} ${y+4}L${x+w-3} ${y+h-4}M${x+3} ${y+h-4}L${x+w-3} ${y+4}M${x+3} ${y+h/2}H${x+w-3}" stroke="${ink}" stroke-width="1.3" fill="none"/>`;
+        if(name==='QUAD')return frame+`<path d="M${x+w/2} ${y+1}V${y+h-1}M${x+1} ${y+h/2}H${x+w-1}" stroke="${ink}" stroke-width="1.2"/>`;
+        if(name==='DUAL')return frame+`<path d="M${x+w/2} ${y+1}V${y+h-1}" stroke="${ink}" stroke-width="1.2"/>`;
+        if(name==='WALL'){const gw=(w-2)/2,gh=(h-2)/2;return [[0,0],[1,0],[0,1],[1,1]].map(([c,r])=>`<rect x="${x+c*(gw+2)}" y="${y+r*(gh+2)}" width="${gw}" height="${gh}" rx="1.2" fill="#fff" stroke="${ink}" stroke-width="1.2"/>`).join('');}
+        return frame;
+      };
+      const modeShort={MATRIX:'라우팅',QUAD:'멀티뷰',WALL:'비디오 월',DUAL:'2분할'};
+      const unitModes=isMatrix?(item.videoModes?.modes||[]).filter(mode=>!/출력\s*[\d·,\s]+번/.test(mode.summary||'')):[];
+      let modeBottom=0;
+      if(unitModes.length>=2){
+        const tileW=54,tileH=50,tileGap=6,stripW=unitModes.length*tileW+(unitModes.length-1)*tileGap;
+        const stripX=(bandX1+bandX2)/2-stripW/2,titleY=bandY+52,tileY=titleY+8;
+        bodyMarkup+=`<text x="${(bandX1+bandX2)/2}" y="${titleY}" text-anchor="middle" font-size="11" font-weight="800" fill="#1C1C1E">동작 모드 선택</text>`;
+        unitModes.forEach((mode,i)=>{
+          const x=stripX+i*(tileW+tileGap),on=mode.name==='MATRIX',ink=on?A:PI;
+          bodyMarkup+=`<rect x="${x}" y="${tileY}" width="${tileW}" height="${tileH}" rx="9" fill="${on?'rgba(0,122,255,.08)':'rgba(137,68,171,.08)'}" stroke="${on?A:'rgba(137,68,171,.35)'}" stroke-width="${on?1.6:1}"/>`;
+          bodyMarkup+=modeGlyph(mode.name,x+tileW/2-12,tileY+6,24,15,ink);
+          bodyMarkup+=`<text x="${x+tileW/2}" y="${tileY+33}" text-anchor="middle" font-size="9.5" font-weight="800" fill="${ink}">${svgEsc(mode.name)}</text>`;
+          if(modeShort[mode.name])bodyMarkup+=`<text x="${x+tileW/2}" y="${tileY+44}" text-anchor="middle" font-size="9" font-weight="600" fill="${M}">${svgEsc(modeShort[mode.name])}</text>`;
+        });
+        bodyMarkup+=`<text x="${(bandX1+bandX2)/2}" y="${tileY+tileH+15}" text-anchor="middle" font-size="9.5" font-weight="600" fill="${M}">격자는 MATRIX 예시 · 레이아웃은 06 화면 구성 모드</text>`;
+        modeBottom=tileY+tileH+22;
+      }
 
       // 0.194 출력 쪽(AV Portal 공통 렌더러 검토안 반영, 사용자 요청 2026-10-01): 출력을 "주 출력 → 멀티뷰 → 오디오 추출" 순서의 제목 달린 묶음으로
       // 한 줄에 세로로 쌓는다. 주 출력은 대역폭 띠에서 실선으로, 멀티뷰·오디오 추출은 보조 경로(점선)로 갈라진다. 모니터 아이콘과 멀티뷰 4분할 표시는 그대로 둔다.
@@ -259,7 +288,9 @@
       const sameSignal=matrixPorts.length===1?'선택한 입력 출력':isMatrix?'출력마다 입력 선택':'같은 영상';
       // 오디오 추출 묶음의 칩 아래 짧은 표기·설명은 제품 데이터(audioOutFlow, 입출력 표 근거)에 있을 때만 쓴다(QMS-88UX QD1·QD2).
       const aoFlow=item.audioOutFlow||null;
-      const groups=[{kind:'main',title:outTitle,caption:sameSignal,ports:matrixPorts}];
+      // 동작 모드가 여럿이면 주 출력 설명에 MATRIX 모드 기준임을 붙이고, 다른 모드 이름을 덧붙인다(같은 출력이 모드에 따라 분할·월로도 쓰인다).
+      const otherModes=unitModes.filter(mode=>mode.name!=='MATRIX').map(mode=>modeShort[mode.name]||mode.name);
+      const groups=[{kind:'main',title:outTitle,caption:unitModes.length>=2&&otherModes.length?`${sameSignal} · ${otherModes.join('·')} 모드`:sameSignal,ports:matrixPorts}];
       if(multiview.length)groups.push({kind:'multiview',title:`멀티뷰 ${multiview.join('·')}`,caption:'각 4분할 또는 8분할',ports:multiview});
       if(audioOut)groups.push({kind:'audio',title:'오디오 추출',caption:aoFlow?.caption||'',tag:aoFlow?.tag||''});
       groups.forEach(group=>{
@@ -302,7 +333,7 @@
       });
 
       const width=Math.ceil(panelX+panelW+16);
-      const height=Math.ceil(Math.max(leftBottom+20,matrixBottom+(audioIn?24:12),colBottom+16,midY+70));
+      const height=Math.ceil(Math.max(leftBottom+20,matrixBottom+(audioIn?24:12),colBottom+16,midY+70,modeBottom+8));
       // 범례: 영상(실선 띠)과, 있을 때만 오디오·멀티뷰 보조 경로(점선).
       const legend=[['linear-gradient(90deg,#0A84FF,#BF5AF2)','영상']];
       if(audioIn||audioOut)legend.push([M,audioIn&&audioOut?'오디오 병합·추출(점선)':audioIn?'오디오 병합(점선)':'오디오 추출(점선)','dash']);
@@ -312,6 +343,7 @@
       const steps=[`입력: ${inLabel}${audioIn?', AUDIO IN(오디오 병합)':''}`];
       if(isMatrix)steps.push('처리: 매트릭스. 출력마다 입력을 따로 고릅니다. 격자의 점은 선택 예시이며 실제 설정이 아닙니다.');
       else if(inN>1)steps.push(`처리: ${inN}개 입력 중 1개를 골라 출력합니다.`);
+      if(unitModes.length>=2)steps.push(`동작 모드: ${unitModes.map(mode=>`${mode.name}(${mode.summary})`).join(' / ')} 중 하나를 골라 씁니다. 그림의 격자는 MATRIX 모드 예시입니다.`);
       if(topLabel||protoBits.length)steps.push(`신호: ${[topLabel,...protoBits].filter(Boolean).join(' · ')}`);
       groups.forEach(group=>steps.push(`${group.kind==='main'?'출력':'보조 경로'}: ${group.title}${group.tag?`(${group.tag})`:''}${group.caption?` · ${group.caption}`:''}`));
       return diagramWrap(bodyMarkup,width,height,legend,{label:`${item.model} Signal Flow`,steps,minWidth:Math.min(width,Math.round(width*.9))});
@@ -486,11 +518,36 @@
         bodyMarkup+=arrow(rxX+boxW+6,midY,dstX-24,midY,COLOR_OUT)+monitorIcon(dstX,midY,'디스플레이');
         captions=[[COLOR_IN,'입력(소스 → TX)'],[cableColor,cableName],[COLOR_OUT,'출력(RX → 디스플레이)']];
       }
-      // 추천 케이블(최대 전송거리)은 캔버스 안이 아니라 범례에서 "출력" 오른쪽에 이어 붙인다(사용자 요청).
-      if(distanceLines.length)captions.push([cableColor,distanceLines.join(' · ')]);
+      // 0.195: 그림의 케이블은 점선이므로 범례도 점선으로 그린다(사용자 요청 2026-10-01 "전송기 그림에도 범례랑 그림 설명 적용해줘").
+      captions=captions.map(([color,label])=>color===cableColor?[color,label,'dash']:[color,label]);
+      // 추천 케이블(최대 전송거리)은 캔버스 안이 아니라 범례에서 "출력" 오른쪽에 이어 붙인다(사용자 요청). 0.195부터 표시 없이 글로만 적는다.
+      const distanceText=distanceLines.map(line=>line.replace(/^최대\s*(?=\d)/,'')).join(' · ');
+      // 사양 이름에 이미 "전송 거리"가 들어 있으면(SPX-TX/RX "4K60 실효 전송 거리: …") 앞말을 붙이지 않는다.
+      const distanceLabel=/전송\s?거리/.test(distanceText)?distanceText:`최대 전송 거리 ${distanceText}`;
+      if(distanceLines.length)captions.push([cableColor,distanceLabel,'none']);
       const extras=io.filter(port=>port!==txVideo&&port!==rxVideo&&port!==transmission&&!/Transmission/.test(port.group||'')).map(port=>port.signal||shortConnector(port.connector));
       const note=extras.length?`<p class="rt-pg-hint" style="text-align:center">그 외 신호(${[...new Set(extras)].map(esc).join(', ')})는 아래 자료 기록의 입출력 표를 확인하세요.</p>`:'';
-      return diagramWrap(bodyMarkup,width,height,captions)+note;
+      // 그림 설명(펼침): 소스 → 송신 → 케이블 → 수신 → 디스플레이 순서로 적는다. 값은 io·specifications에 있는 것만 쓴다.
+      const res=shortResolution(item),resText=res&&[res.value,res.unit].filter(Boolean).join('');
+      const videoSpec=[txVideo.protocol,resText].filter(Boolean).join(' · ');
+      const steps=[];
+      if(pseOnly){
+        steps.push(`입력: 소스 기기 → XDM-CTR100 PSE HDMI IN${videoSpec?`(${videoSpec})`:''}`);
+        steps.push(`전송: ${cableName}로 신호와 전원을 함께 보냅니다. 전원은 PSE에만 연결하고 상대 기기(XDM-CTR100·XDM-CT103/CR103)는 케이블로 전원을 받습니다.`);
+        steps.push('출력: 상대 기기 HDMI OUT → 디스플레이. TX/RX는 각 기기 딥 스위치로 고릅니다.');
+        steps.push('주의: XDM-CIS100·COS100 카드에는 PSE가 아닌 XDM-CTR100을 연결합니다.');
+      }else if(pseCombo){
+        steps.push(`조합 1: 소스 → XDM-CTR100(TX) → ${cableName} → XDM-CIS100 입력 카드, XDM-COS100 출력 카드 → ${cableName} → XDM-CTR100(RX) → 디스플레이. 전원은 XDM-PSU가 공급합니다.`);
+        steps.push(`조합 2: 소스 → XDM-CTR100 PSE → ${cableName} 케이블로 신호+전원 → XDM-CTR100 → 디스플레이. 매트릭스 카드 없이 1:1로 연장할 때 씁니다.`);
+        if(videoSpec)steps.push(`신호: ${videoSpec}`);
+      }else{
+        steps.push(`입력: 소스 기기 → ${txLabel} HDMI IN${isTransceiver?'(송신 모드)':''}${videoSpec?` · ${videoSpec}`:''}`);
+        steps.push(`전송: ${cableName}${transmission.connector?` · ${shortConnector(transmission.connector)}`:''}`);
+        steps.push(`출력: ${rxLabel} HDMI OUT${isTransceiver?'(수신 모드)':''} → 디스플레이`);
+      }
+      if(distanceLines.length)steps.push(/전송\s?거리/.test(distanceText)?distanceText:`최대 전송 거리: ${distanceText}`);
+      if(extras.length)steps.push(`그 외 신호: ${[...new Set(extras)].join(', ')}(입출력 표 참고)`);
+      return diagramWrap(bodyMarkup,width,height,captions,{label:`${item.model} Signal Flow`,steps})+note;
     }
     // SPX-R6 "03 Signal Flow"(0.157). 송·수신기 한 쌍이 아니라 모듈 6개를 품은 섀시라 extenderDiagram이 그리지 못한다.
     // 사양서 연결도(1쪽)에 있는 연결만 그린다: 소스 6대 → 모듈 칸 HDMI IN → CAT OUT → SPX-RX 6대 → 디스플레이,
@@ -520,9 +577,16 @@
       body+=`<text x="${(r6X+r6W+rxX)/2}" y="${rowY(0)-24}" text-anchor="middle" font-size="11" font-weight="700" fill="${COLOR_COPPER}">CATx(CAT5e) · PoC</text>`;
       // 0.193: 전송 거리를 한 행에 줄 나눔("4K/60 @ 4:4:4 50m\n1080p/60 60m")으로 적으면 줄마다 범례 한 토막으로 쓴다.
       const distances=(item.specifications||[]).filter(spec=>/전송\s?거리/.test(spec.name)).flatMap(spec=>String(spec.value).includes('\n')?String(spec.value).split('\n').map(line=>line.replace(/\s*\([^)]*\)/g,'').replace(/\s*@\s*4:4:4/,'').trim()):[`${/1080p/.test(spec.condition)?'1080p':'4K/60'} 최대 ${spec.value}${spec.unit||''}`]);
-      const captions=[[COLOR_IN,'입력(HDMI)'],[COLOR_COPPER,'CATx 전송'],[COLOR_IR,'IR 제어'],[COLOR_POWER,'전원'],[COLOR_OUT,'출력(HDMI)']];
-      if(distances.length)captions.push([COLOR_COPPER,`CAT5e 기준 ${distances.join(' · ')}`]);
-      return diagramWrap(body,width,height,captions)+`<p class="rt-pg-hint" style="text-align:center">사양서 연결도 기준입니다. PoC로 송·수신기 중 한쪽에만 전원을 연결해도 됩니다. 모듈은 TX(송신)·RX(수신)를 골라 쓸 수 있고(그림은 자주 쓰는 TX 구성), RX 사용과 SPX-RX IR 기능(IR Blaster)은 현장에서는 잘 쓰지 않습니다. IR Blaster 연결은 제조사 원본 다이어그램을 참고하세요.</p>`;
+      const captions=[[COLOR_IN,'입력(HDMI)'],[COLOR_COPPER,'CATx 전송','dash'],[COLOR_IR,'IR 제어'],[COLOR_POWER,'전원'],[COLOR_OUT,'출력(HDMI)']];
+      if(distances.length)captions.push([COLOR_COPPER,`최대 전송 거리 CAT5e 기준 ${distances.join(' · ')}`,'none']);
+      const steps=[
+        `구성: ${item.model} 1대에 모듈 6개. 모듈마다 소스 1대 → 모듈 HDMI IN → CAT OUT → SPX-RX 1대 → 디스플레이 1대로 연결합니다.`,
+        '전송: CATx(CAT5e) 케이블, PoC로 송·수신기 중 한쪽에만 전원을 연결해도 됩니다.',
+        '제어: IR 리시버(리모컨) → IR IN, 제어 컨트롤러 → IR Ctrl',
+        '전원: 외부 전원 어댑터 1개로 모듈 6개에 공급합니다.'
+      ];
+      if(distances.length)steps.push(`최대 전송 거리(CAT5e 기준): ${distances.join(' · ')}`);
+      return diagramWrap(body,width,height,captions,{label:`${item.model} Signal Flow`,steps})+`<p class="rt-pg-hint" style="text-align:center">사양서 연결도 기준입니다. PoC로 송·수신기 중 한쪽에만 전원을 연결해도 됩니다. 모듈은 TX(송신)·RX(수신)를 골라 쓸 수 있고(그림은 자주 쓰는 TX 구성), RX 사용과 SPX-RX IR 기능(IR Blaster)은 현장에서는 잘 쓰지 않습니다. IR Blaster 연결은 제조사 원본 다이어그램을 참고하세요.</p>`;
     }
     function connectionDiagram(item){
       if(item.group==='cable')return cableDiagram(item);
