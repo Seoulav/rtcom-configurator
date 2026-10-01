@@ -99,7 +99,7 @@
     {
       "group": "Transmission",
       "name": "인터페이스",
-      "value": "1 leads LC Single Mode Fiber, CATx",
+      "value": "LC 광(싱글모드·멀티모드), CATx",
       "unit": "",
       "condition": "",
       "source": "C",

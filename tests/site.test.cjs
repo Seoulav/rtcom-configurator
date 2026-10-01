@@ -602,3 +602,13 @@ test('0.188: MR-4S는 프레임 사양만 적고 영상 사양은 장착 모듈 
   assert.ok(!mr.specifications.some(s=>['비디오 대역폭','최대 해상도'].includes(s.name)));
   assert.ok(mr.features.some(f=>f.text==='영상 사양(해상도·HDCP·EDID)은 장착 모듈 기준'));
 });
+
+test('0.190: OBUX-1C만 멀티모드(OM3) 전용이고 나머지 광 제품은 싱글모드·멀티모드를 함께 적는다',()=>{
+  const obux=read('data/products/obux-1c.json');
+  assert.doesNotMatch(obux,/싱글모드|Single ?Mode/i,'OBUX-1C는 싱글모드를 지원하지 않는다');
+  assert.match(obux,/OM3/);
+  for(const id of ['obhd-2c','ft101-u-fr101-u','ft103-u-h-fr103-u','xdm-ft101-fr101','mr-4s']){
+    const s=read(`data/products/${id}.json`);
+    assert.match(s,/싱글모드/,`${id} 싱글모드`);assert.match(s,/멀티모드/,`${id} 멀티모드`);
+  }
+});
