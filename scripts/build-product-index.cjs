@@ -199,6 +199,14 @@ function validate(product,file,ids){
       }
     }
   }
+  // 0.194 audioOutFlow: Signal Flow "오디오 추출" 묶음의 짧은 표기(tag)·설명(caption). 입출력 표의 오디오 출력 조건을 줄인 것이며 근거(source)가 있어야 한다(QMS-88UX QD1·QD2).
+  if('audioOutFlow' in product){
+    const ao=product.audioOutFlow;
+    if(!ao||typeof ao.caption!=='string'||!ao.caption)fail('audioOutFlow.caption은 비어 있지 않은 문자열이어야 함');
+    else if(!codes.has(ao.source))fail(`audioOutFlow.source(${ao&&ao.source})가 sources에 없음`);
+    if(ao&&'tag' in ao&&(typeof ao.tag!=='string'||!ao.tag))fail('audioOutFlow.tag는 비어 있지 않은 문자열이어야 함');
+    if(ao&&!(product.io||[]).some(port=>port.direction==='OUT'&&port.group==='Audio'))fail('audioOutFlow는 입출력 표에 오디오 출력(OUT·Audio)이 있는 제품에만 씀');
+  }
   if('videoModes' in product){
     const vm=product.videoModes;
     if(!vm||!Array.isArray(vm.modes)||!vm.modes.length)fail('videoModes.modes는 비어 있지 않은 배열이어야 함');
