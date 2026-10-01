@@ -568,7 +568,7 @@
 
     // ---- 목록 화면 ----
     // 제조사 문서 PDF(사용자 결정 2026-09-28, docs/implementation/PRODUCT_DOCUMENT_DOWNLOADS.md): documents[].file이 있는 문서만 "제품 목록" 옆에 버튼을 만든다.
-    // 이름 부분은 새 탭에서 보기(브라우저 PDF 뷰어), 화살표 부분은 바로 내려받기. 파일이 없는 종류는 버튼을 숨긴다(케이블은 카탈로그만).
+    // 이름 부분("카탈로그 보기")은 팝업·새 탭에서 보기, 오른쪽("↓ 다운로드")은 바로 받기(0.192, 휴대폰은 화살표만). 파일이 없는 종류는 버튼을 숨긴다(케이블은 카탈로그만).
     const DOC_LABEL={Catalog:'카탈로그',Manual:'매뉴얼',ProductSheet:'제품 안내서'};
     const docFile=file=>`output/design/assets/docs/${encodeURIComponent(file)}`;
     const DOWNLOAD_ICON='<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M8 2v8m0 0L4.8 6.8M8 10l3.2-3.2M3 13h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -582,9 +582,9 @@
         const popup=doc.preview==='image'||doc.preview==='pdfjs';
         const images=doc.preview==='image'?(doc.previewImages||[]).map(name=>image(name)).join('|'):'';
         const openEl=popup
-          ?`<button type="button" class="rt-pg-doc-open" data-doc-preview="${href}" data-doc-kind="${doc.preview}"${images?` data-doc-images="${images}"`:''} data-doc-title="${title}" title="${title} · 미리보기">${esc(label)} PDF</button>`
-          :`<a class="rt-pg-doc-open" href="${href}${doc.page?`#page=${doc.page}`:''}" target="_blank" rel="noopener" title="${title} · 새 탭에서 보기">${esc(label)} PDF${doc.page?` <small>${doc.page}쪽</small>`:''}</a>`;
-        return `<span class="rt-pg-doc" data-doc="${esc(doc.type)}">${openEl}<a class="rt-pg-doc-save" href="${href}" download="${esc(doc.file)}" title="${title} · 내려받기(전체 파일)" aria-label="${esc(label)} 내려받기">${DOWNLOAD_ICON}</a></span>`;
+          ?`<button type="button" class="rt-pg-doc-open" data-doc-preview="${href}" data-doc-kind="${doc.preview}"${images?` data-doc-images="${images}"`:''} data-doc-title="${title}" title="${title} · 미리보기">${esc(label)} 보기</button>`
+          :`<a class="rt-pg-doc-open" href="${href}${doc.page?`#page=${doc.page}`:''}" target="_blank" rel="noopener" title="${title} · 새 탭에서 보기">${esc(label)} 보기${doc.page?` <small>${doc.page}쪽</small>`:''}</a>`;
+        return `<span class="rt-pg-doc" data-doc="${esc(doc.type)}">${openEl}<a class="rt-pg-doc-save" href="${href}" download="${esc(doc.file)}" title="${title} · 다운로드(전체 파일)" aria-label="${esc(label)} 다운로드">${DOWNLOAD_ICON}<span class="rt-pg-doc-save-text">다운로드</span></a></span>`;
       }).join('');
     }
     // 제품 목록 화면의 "전체 카탈로그" 버튼(0.95): 링크 하나로 카탈로그 전체를 공유한다.
@@ -1351,7 +1351,7 @@
         body.appendChild(dlg);
       }
       const file=href.split('/').pop();
-      dlg.innerHTML=`<div class="rt-flow-zoom-head"><b>${esc(title)}</b><div class="rt-flow-zoom-tools"><button type="button" data-doc-zoom-step="-1" aria-label="축소" disabled>−</button><span data-doc-zoom-level aria-live="polite">100%</span><button type="button" data-doc-zoom-step="1" aria-label="확대" disabled>+</button><a class="rt-doc-zoom-link" href="${href}" target="_blank" rel="noopener" title="PDF 원본을 새 탭에서 열기">원본</a><a class="rt-doc-zoom-link" href="${href}" download="${esc(file)}" title="PDF 내려받기" aria-label="PDF 내려받기">${DOWNLOAD_ICON}</a><button type="button" class="rt-doc-wide" data-doc-wide aria-pressed="false" title="창을 화면 폭에 맞게 넓히기(다시 누르면 기본 폭)" aria-label="창 넓게">${DOC_WIDE_ICON}</button><button type="button" class="rt-flow-zoom-close" data-zoom-close aria-label="닫기">×</button></div></div><div class="rt-doc-zoom-body" data-doc-kind="${kind==='image'?'image':'pdfjs'}"><p class="rt-doc-status" role="status">${kind==='image'?'카탈로그':'문서'}를 불러오는 중입니다…</p><div class="rt-doc-pages"></div></div><div class="rt-doc-resize" data-doc-resize="left" title="끌어서 창 폭 조절 · 두 번 누르면 기본 폭" aria-hidden="true"></div><div class="rt-doc-resize" data-doc-resize="right" title="끌어서 창 폭 조절 · 두 번 누르면 기본 폭" aria-hidden="true"></div>`;
+      dlg.innerHTML=`<div class="rt-flow-zoom-head"><b>${esc(title)}</b><div class="rt-flow-zoom-tools"><button type="button" data-doc-zoom-step="-1" aria-label="축소" disabled>−</button><span data-doc-zoom-level aria-live="polite">100%</span><button type="button" data-doc-zoom-step="1" aria-label="확대" disabled>+</button><a class="rt-doc-zoom-link" href="${href}" target="_blank" rel="noopener" title="PDF 원본을 새 탭에서 열기">새 탭</a><a class="rt-doc-zoom-link" href="${href}" download="${esc(file)}" title="PDF 다운로드" aria-label="PDF 다운로드">${DOWNLOAD_ICON}<span class="rt-doc-save-text">다운로드</span></a><button type="button" class="rt-doc-wide" data-doc-wide aria-pressed="false" title="창을 화면 폭에 맞게 넓히기(다시 누르면 기본 폭)" aria-label="창 넓게">${DOC_WIDE_ICON}</button><button type="button" class="rt-flow-zoom-close" data-zoom-close aria-label="닫기">×</button></div></div><div class="rt-doc-zoom-body" data-doc-kind="${kind==='image'?'image':'pdfjs'}"><p class="rt-doc-status" role="status">${kind==='image'?'카탈로그':'문서'}를 불러오는 중입니다…</p><div class="rt-doc-pages"></div></div><div class="rt-doc-resize" data-doc-resize="left" title="끌어서 창 폭 조절 · 두 번 누르면 기본 폭" aria-hidden="true"></div><div class="rt-doc-resize" data-doc-resize="right" title="끌어서 창 폭 조절 · 두 번 누르면 기본 폭" aria-hidden="true"></div>`;
       applyDocWidth(dlg,readDocWidth());
       const state=dlg.rtDoc={title,href,kind:kind==='image'?'image':'pdfjs',zoom:0,ready:false};
       if(typeof dlg.showModal==='function')dlg.showModal();else dlg.setAttribute('open','');
