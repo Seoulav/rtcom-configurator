@@ -532,6 +532,21 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       const xp=await page.evaluate(()=>{const svg=[...document.querySelectorAll('.rt-pg-svg-wrap svg')].find(s=>s.textContent.includes('매트릭스')&&s.textContent.includes('선택 예시'));if(!svg)return null;return {picked:svg.querySelectorAll('circle[r="5"]').length,dots:svg.querySelectorAll('circle').length,caption:svg.textContent.includes('출력마다 입력 선택'),old:svg.textContent.includes('독립 출력')}});
       check(`${id} 신호 흐름이 크로스포인트(${ins}×${outs})와 출력별 선택 예시 점 ${outs}개로 그려짐`,!!xp&&xp.picked===outs&&xp.dots===ins*outs&&xp.caption&&!xp.old,JSON.stringify(xp));
     }
+    // 0.195 동작 모드 줄: QMS-44UX는 MATRIX·QUAD·WALL·DUAL 네 모드를 모두, QMS-88UX는 주 출력 모드(MATRIX·WALL)만 보여 주고
+    // 출력 9·10번 전용 모드(QUAD·DUAL)는 멀티뷰 묶음에만 둔다. HDS-42MU처럼 videoModes가 없으면 모드 줄이 없다(사용자 지적 2026-10-01).
+    for(const [id,modes] of [['qms-44ux','MATRIX,QUAD,WALL,DUAL'],['qms-88ux','MATRIX,WALL'],['hds-42mu','']]){
+      await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
+      await page.waitForSelector('#rt-pg-title');
+      const mode=await page.evaluate(()=>{const svg=[...document.querySelectorAll('.rt-pg-svg-wrap svg')].find(s=>s.textContent.includes('선택 예시'));const texts=[...(svg?.querySelectorAll('text')||[])].map(t=>t.textContent);const i=texts.indexOf('동작 모드 선택');return {strip:i>=0,modes:i<0?'':texts.filter(t=>/^(MATRIX|QUAD|WALL|DUAL)$/.test(t)).join(','),desc:!!document.querySelector('.rt-pg-flow-desc')}});
+      check(`${id} 신호 흐름 동작 모드 줄이 ${modes||'없음'}으로 나오고 그림 설명이 있음`,mode.strip===!!modes&&mode.modes===modes&&mode.desc,JSON.stringify(mode));
+    }
+    // 0.195 전송기 그림: 케이블 범례는 점선, 펼치는 그림 설명에 입력·전송·출력이 들어간다(사용자 요청 2026-10-01).
+    for(const id of ['ct104-u-cr104-u','xdm-ctr100','spx-r6']){
+      await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
+      await page.waitForSelector('#rt-pg-title');
+      const ext=await page.evaluate(()=>({dash:document.querySelectorAll('.rt-pg-legend .rt-pg-legend-dash').length,desc:document.querySelector('.rt-pg-flow-desc')?.textContent||''}));
+      check(`${id} 전송기 신호 흐름에 점선 케이블 범례와 그림 설명이 있음`,ext.dash>=1&&/전송/.test(ext.desc)&&/디스플레이/.test(ext.desc),JSON.stringify(ext).slice(0,200));
+    }
     // 0.59 EDID 로터리 대표 설정: 기본값과 자주 쓰는 코드(highlight)를 파란 16단 로터리 그림으로 보여준다(사용자 요청 2026-09-27).
     for(const [id,codes] of [['hd-13u','0,1,7'],['hds-42mu','0,3,9'],['ft103-u-h-fr103-u','0,3,6']]){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});

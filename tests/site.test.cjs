@@ -640,7 +640,7 @@ test('0.193: 전송기 최대 전송 거리는 제품마다 한 행(값 칸 줄 
   assert.equal(r6.value,'4K/60 @ 4:4:4 50m\n1080p/60 60m');
 });
 
-test('0.195: 터치 화면 눌러서 옮기기(카드 타일 선택 → 같은 방향 슬롯 장착, 팝업 이동 버튼)',()=>{
+test('0.196: 터치 화면 눌러서 옮기기(카드 타일 선택 → 같은 방향 슬롯 장착, 팝업 이동 버튼)',()=>{
   // 사용자 요청·선택 2026-09-30 "눌러서 옮기기 권장안으로 해줘"
   const app=read('src/app.js'),css=read('src/styles.css');
   assert.match(app,/const tapMode=\(\)=>PALETTE_DRAG&&!paletteDrag\(\);/,'마우스가 없는 화면에서만 켠다');
