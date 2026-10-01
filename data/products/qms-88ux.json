@@ -182,7 +182,7 @@
     {
       "group": "General",
       "name": "연결 단자",
-      "value": "RS-232, LAN(RJ45), 3.5mm stereo, 3-pin phoenix, HDMI 19-Pin Female",
+      "value": "RS-232, LAN(RJ45), 3.5mm 스테레오, 피닉스 3핀, HDMI",
       "unit": "",
       "condition": "",
       "source": "U2",
@@ -246,7 +246,7 @@
   "io": [
     {
       "group": "Video",
-      "connector": "HDMI 19-Pin Female",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "IN",
       "quantity": "8",
@@ -257,7 +257,7 @@
     },
     {
       "group": "Video",
-      "connector": "HDMI 19-Pin Female",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "OUT",
       "quantity": "10",
@@ -268,7 +268,7 @@
     },
     {
       "group": "Audio",
-      "connector": "3-pin Phoenix (female)",
+      "connector": "피닉스 3핀",
       "signal": "Analog Stereo Audio",
       "direction": "OUT",
       "quantity": "2",

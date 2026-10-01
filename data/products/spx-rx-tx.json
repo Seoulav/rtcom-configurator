@@ -232,7 +232,7 @@
   "io": [
     {
       "group": "TX · Video",
-      "connector": "HDMI 19 Pin Female",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "IN",
       "quantity": "1",
@@ -287,7 +287,7 @@
     },
     {
       "group": "RX · Video",
-      "connector": "HDMI 19 Pin Female",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "OUT",
       "quantity": "1",

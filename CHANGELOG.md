@@ -45,6 +45,15 @@
 - **0.145.0 배포 기록**: `docs/qa/DEPLOYMENT_0.145_2026-09-29.md`(PR #194 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.144.0 배포 기록**: `docs/qa/DEPLOYMENT_0.144_2026-09-29.md`(PR #192 → main 병합, Pages 배포 run 162, 공개 파일 337/338 일치, `.nojekyll` 제외)
 
+## 0.191.0
+
+사용자 요청 2026-10-01("female같은 표기는 전부 지워죠 qms-44ux와 비슷한 표기가 되야하지 않을까?"):
+
+- **커넥터 표기 간소화**: 제품 상세 "제조사 자료" 입출력 단자 표(QMS-88UX·OBHD-2C·OBUX-1C·SPX-R6·SPX-TX/RX·XDM-CTR100·CTR100 PSE·XDM-CT103/CR103·XDM-FT101/FR101 등)의 `HDMI 19-Pin Female`·`Female HDMI connector`·`HDMI (female)`·`Female RJ45`·`Female Phoenix connector 5p`·`LC/SC connector (female)`을 QMS-44UX처럼 `HDMI`·`RJ45`·`피닉스 5핀`·`LC`·`SC`로 바꿨습니다(핀 수·괄호 용도 설명은 유지).
+- **QMS-88UX 04 제품 사양 연결 단자**: `RS-232, LAN(RJ45), 3.5mm 스테레오, 피닉스 3핀, HDMI`.
+- **매트릭스 카드 상세(XDM·VDM 16종)**: `HDMI 암(Female), 피닉스 5핀 암` → `HDMI, 피닉스 5핀`.
+- 0.184 "제조사 커넥터 원문 유지" 기준을 이 결정으로 바꿨습니다.
+
 ## 0.190.0
 
 사용자 확인 2026-10-01("obux는 멀티모드 OM3만 지원하고 나머지는 싱글, 멀티 모두 다 가능해"):

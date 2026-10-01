@@ -239,7 +239,7 @@
   "io": [
     {
       "group": "TX · Video",
-      "connector": "HDMI (female)",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "IN",
       "quantity": "1",
@@ -250,7 +250,7 @@
     },
     {
       "group": "TX · Transmission",
-      "connector": "LC connector (female)",
+      "connector": "LC",
       "signal": "Fiber",
       "direction": "OUT",
       "quantity": "1",
@@ -261,7 +261,7 @@
     },
     {
       "group": "RX · Video",
-      "connector": "HDMI (female)",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "OUT",
       "quantity": "1",
@@ -272,7 +272,7 @@
     },
     {
       "group": "RX · Transmission",
-      "connector": "LC connector (female)",
+      "connector": "LC",
       "signal": "Fiber",
       "direction": "IN",
       "quantity": "1",

@@ -319,7 +319,7 @@
   "io": [
     {
       "group": "TX · Video",
-      "connector": "Female HDMI connector",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "IN",
       "quantity": "1",
@@ -330,7 +330,7 @@
     },
     {
       "group": "TX · Transmission",
-      "connector": "Female RJ45",
+      "connector": "RJ45",
       "signal": "HDBaseT",
       "direction": "OUT",
       "quantity": "1",
@@ -341,7 +341,7 @@
     },
     {
       "group": "TX · Audio",
-      "connector": "Female Phoenix connector 3p",
+      "connector": "피닉스 3핀",
       "signal": "Audio",
       "direction": "IN",
       "quantity": "1",
@@ -352,7 +352,7 @@
     },
     {
       "group": "RX · Video",
-      "connector": "Female HDMI connector",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "OUT",
       "quantity": "1",
@@ -363,7 +363,7 @@
     },
     {
       "group": "RX · Transmission",
-      "connector": "Female RJ45",
+      "connector": "RJ45",
       "signal": "HDBaseT",
       "direction": "IN",
       "quantity": "1",
