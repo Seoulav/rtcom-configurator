@@ -143,9 +143,15 @@
       const p1=[ax-size*Math.cos(angle-0.5),ay-size*Math.sin(angle-0.5)],p2=[ax-size*Math.cos(angle+0.5),ay-size*Math.sin(angle+0.5)];
       return `<path d="M${x1} ${y1}L${x2} ${y2}" stroke="${color}" stroke-width="2.5" fill="none"/><polygon points="${ax},${ay} ${p1[0]},${p1[1]} ${p2[0]},${p2[1]}" fill="${color}"/>`;
     };
-    const diagramWrap=(body,width,height,legendItems)=>`<div class="rt-pg-svg-wrap"><svg viewBox="0 0 ${width} ${height}" role="img" aria-label="연결 다이어그램" preserveAspectRatio="xMidYMid meet">${body}</svg></div>
+    // 0.194 opts: label(그림 이름)·steps(펼치는 "그림 설명" 목록, 그림 대체 설명으로도 씀)·minWidth(휴대폰에서 글자가 너무 작아지지 않게 하는 최소 폭).
+    // 범례 항목의 셋째 값이 'dash'이면 보조 경로(점선)로 그린다. 그림 칸은 키보드로 초점을 받아 좌우 방향키로 밀 수 있다.
+    const diagramWrap=(body,width,height,legendItems,opts={})=>{
+      const desc=opts.steps?.length?opts.steps.join(' / '):'';
+      const ariaLabel=[opts.label||'연결 다이어그램',desc].filter(Boolean).join(': ');
+      return `<div class="rt-pg-svg-wrap" tabindex="0" aria-label="${svgEsc(opts.label||'연결 다이어그램')} (좌우 방향키로 이동)"><svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${svgEsc(ariaLabel)}" preserveAspectRatio="xMidYMid meet"${opts.minWidth?` style="--rt-svg-min:${opts.minWidth}px"`:''}>${body}</svg></div>
       <p class="rt-pg-svg-hint">좌우로 밀어서 볼 수 있습니다.</p>
-      <ul class="rt-pg-legend">${legendItems.map(([color,label])=>`<li><i style="background:${color}"></i>${svgEsc(label)}</li>`).join('')}</ul>`;
+      ${legendItems.length?`<ul class="rt-pg-legend">${legendItems.map(([color,label,style])=>`<li>${style==='dash'?`<i class="rt-pg-legend-dash" style="border-top-color:${color}"></i>`:`<i style="background:${color}"></i>`}${svgEsc(label)}</li>`).join('')}</ul>`:''}${opts.steps?.length?`<details class="rt-pg-flow-desc"><summary>그림 설명</summary><ul>${opts.steps.map(step=>`<li>${svgEsc(step)}</li>`).join('')}</ul></details>`:''}`;
+    };
     // 분배기·일체형(매트릭스) "02 신호 흐름"(명세 6-B 3장, 승인 시안 hd-210u-glass-style.html의 flow SVG를 일반화).
     // 입력 칩(개별 번호) → 선택/매트릭스 노드 → 대역폭·해상도 띠 → 출력 화면 격자. 오디오 입력이 있으면 점선으로 표시한다.
     // 입력 수·출력 수·오디오는 io 데이터에서 뽑는다(새 사실을 만들지 않음). 분배기(1입력)는 노드 없이 바로 띠로 잇고,
@@ -191,19 +197,22 @@
       // 매트릭스는 입력들이 한 점으로 모였다가 하나의 띠로 나가면 "여러 입력 중 1개 선택 → 분배"로 읽힌다(사용자 지적 2026-09-27, QMS-44UX).
       // 그래서 상자 안에 입력(가로줄) × 출력(세로줄) 크로스포인트를 그리고, 출력마다 다른 입력을 고른 예시 점을 찍는다(마지막 출력은 첫 출력과 같은 입력 = 한 입력을 여러 출력으로).
       const xpSx=15,xpPad=16,xpTop=22;
-      const matrixBoxW=Math.max(68,matrixPorts.length*xpSx+xpPad*2-xpSx+8);
-      const nodeX=isMatrix?leftX+chipW+30+matrixBoxW/2:leftX+chipW+70;
-      let nodeRight;
+      const matrixBoxW=Math.max(110,matrixPorts.length*xpSx+xpPad*2-xpSx+8);
+      const nodeX=isMatrix?leftX+chipW+38+matrixBoxW/2:leftX+chipW+70;
+      let nodeRight,matrixBottom=0;
       if(inN>1||isMatrix){
         if(!isMatrix)chipYs.forEach(y=>{
           const cy=y+chipH/2;
           bodyMarkup+=`<path d="M${leftX+chipW} ${cy}C${leftX+chipW+32} ${cy} ${leftX+chipW+32} ${midY} ${nodeX-22} ${midY}" fill="none" stroke="${A}" stroke-width="3"/>`;
         });
         if(isMatrix){
-          const boxW=matrixBoxW,boxX=nodeX-boxW/2,boxY=chipYs[0]-xpTop,boxH=chipsBottom-chipYs[0]+xpTop+12;
-          const colX=j=>boxX+xpPad+4+j*xpSx,rowY=i=>chipYs[i]+chipH/2;
+          const boxW=matrixBoxW,boxX=nodeX-boxW/2,boxY=chipYs[0]-xpTop,boxH=chipsBottom-chipYs[0]+xpTop+30;
+          const colX=j=>boxX+(boxW-(matrixPorts.length-1)*xpSx)/2+j*xpSx,rowY=i=>chipYs[i]+chipH/2;
+          matrixBottom=boxY+boxH;
           bodyMarkup+=`<rect x="${boxX}" y="${boxY}" width="${boxW}" height="${boxH}" rx="14" fill="#fff" stroke="${A}" stroke-width="3"/>`;
-          chipYs.forEach((y,i)=>{bodyMarkup+=`<path d="M${leftX+chipW} ${rowY(i)}H${boxX}" stroke="${A}" stroke-width="3"/><path d="M${boxX+6} ${rowY(i)}H${boxX+boxW-6}" stroke="${A}" stroke-width="1.2" opacity=".35"/>`;});
+          // 0.194: 입력선 끝에 화살촉을 달아 "입력 → 매트릭스" 방향을 보이고, 상자 아래쪽 안에 "출력마다 입력 선택"을 적는다(AV Portal 검토안).
+          chipYs.forEach((y,i)=>{bodyMarkup+=`<path d="M${leftX+chipW} ${rowY(i)}H${boxX-7}" stroke="${A}" stroke-width="3"/><path d="M${boxX-9} ${rowY(i)-5}L${boxX} ${rowY(i)}L${boxX-9} ${rowY(i)+5}z" fill="${A}"/><path d="M${boxX+6} ${rowY(i)}H${boxX+boxW-6}" stroke="${A}" stroke-width="1.2" opacity=".35"/>`;});
+          bodyMarkup+=`<text x="${nodeX}" y="${boxY+boxH-9}" text-anchor="middle" font-size="10.5" font-weight="700" fill="${M}">출력마다 입력 선택</text>`;
           const sel=matrixPorts.map((_,j)=>(j*5+1)%inN);
           if(sel.length>2)sel[sel.length-1]=sel[0];
           matrixPorts.forEach((n,j)=>{
@@ -225,7 +234,8 @@
         if(audioIn)bodyMarkup+=`<path d="M${leftX+chipW} ${audioY+audioH/2}C${leftX+chipW+30} ${audioY+audioH/2} ${leftX+chipW+30} ${midY} ${nodeRight+18} ${midY}" fill="none" stroke="${M}" stroke-width="1.8" stroke-dasharray="4 3"/><rect x="${leftX+chipW+8}" y="${audioY+audioH+2}" width="30" height="15" rx="7" fill="#fff"/><text x="${leftX+chipW+23}" y="${audioY+audioH+13}" text-anchor="middle" font-size="10" font-weight="700" fill="${M}">병합</text>`;
       }
 
-      const bandX1=nodeRight+22,bandWidth=280,bandX2=bandX1+bandWidth,bandY=midY;
+      const bandX1=nodeRight+22,bandWidth=isMatrix?220:280,bandX2=bandX1+bandWidth,bandY=midY;
+      if(isMatrix)bodyMarkup+=`<path d="M${nodeRight} ${bandY}H${bandX1+4}" stroke="${A}" stroke-width="3"/>`;
       bodyMarkup+=`<rect x="${bandX1}" y="${bandY-7}" width="${bandWidth}" height="14" rx="7" fill="url(#rt-pg-flowband-${esc(item.id)})"/><path d="M${bandX2} ${bandY-9}l14 9-14 9" fill="${P}"/>`;
       const bwSpec=(item.specifications||[]).find(spec=>/대역폭/.test(spec.name));
       const res=shortResolution(item);
@@ -236,59 +246,75 @@
       const hdcpVersion=hdcp&&hdcp.value.replace(/지원|support/ig,'').replace(/^\s*HDCP\s*/i,'').replace(/Compliant\s*/i,'').replace(/^v(?=\d)/i,'').trim();
       // 병합(MUX)과 추출(DEMUX)을 하나만 골라 쓰는 제품(audioMux.mode "select", HD-13U)은 "또는"으로 이어 동시에 되는 것처럼 보이지 않게 한다.
       const audioSelect=audioIn&&audioOut&&item.audioMux?.mode==='select';
-      const audioBits=audioSelect?[item.audioMux.caption||'오디오 병합 또는 추출 중 선택']:[audioIn&&'오디오 병합',audioOut&&'오디오 추출'];
+      const audioBits=audioSelect?[item.audioMux.caption||'오디오 병합 또는 추출 중 선택']:[audioIn&&'오디오 병합'];
       const protoBits=[videoIn.protocol,hdcp&&(hdcpVersion?`HDCP ${hdcpVersion}`:'HDCP'),...audioBits].filter(Boolean);
       if(protoBits.length)bodyMarkup+=`<text x="${(bandX1+bandX2)/2}" y="${bandY+28}" text-anchor="middle" font-size="11" font-weight="600" fill="${M}">${svgEsc(protoBits.join(' · '))}</text>`;
 
-      const cellW=32,cellH=23,cellGap=8,panelPad=14;
-      const cols=Math.min(matrixPorts.length,5),rows=Math.ceil(matrixPorts.length/cols);
-      const gridW=cols*cellW+(cols-1)*cellGap,gridH=rows*(cellH+13)+(rows-1)*cellGap;
-      const panelX=bandX2+20,panelW=gridW+panelPad*2,panelH=gridH+panelPad*2+10;
-      const panelY=Math.max(10,bandY-panelH/2);
-      bodyMarkup+=`<rect x="${panelX}" y="${panelY}" width="${panelW}" height="${panelH}" rx="16" fill="rgba(137,68,171,.09)"/>`;
-      matrixPorts.forEach((n,i)=>{
-        const c=i%cols,r=Math.floor(i/cols);
-        const x=panelX+panelPad+c*(cellW+cellGap),y=panelY+panelPad+r*(cellH+13+cellGap)+8;
-        bodyMarkup+=`<rect x="${x}" y="${y}" width="${cellW}" height="${cellH}" rx="4" fill="#fff" stroke="${P}" stroke-width="1.8"/><path d="M${x+cellW/2} ${y+cellH}v5M${x+cellW/2-7} ${y+cellH+6}h14" stroke="${P}" stroke-width="1.6"/><text x="${x+cellW/2}" y="${y+cellH/2+3.5}" text-anchor="middle" font-size="9" font-weight="700" fill="${PI}">${n}</text>`;
-      });
-      const outCaption=outTotal>outN?`OUT 1–${outN} 외 ${outTotal-outN}개`:matrixPorts.length===1?'OUT':`OUT ${matrixPorts[0]}–${matrixPorts[matrixPorts.length-1]}`;
+      // 0.194 출력 쪽(AV Portal 공통 렌더러 검토안 반영, 사용자 요청 2026-10-01): 출력을 "주 출력 → 멀티뷰 → 오디오 추출" 순서의 제목 달린 묶음으로
+      // 한 줄에 세로로 쌓는다. 주 출력은 대역폭 띠에서 실선으로, 멀티뷰·오디오 추출은 보조 경로(점선)로 갈라진다. 모니터 아이콘과 멀티뷰 4분할 표시는 그대로 둔다.
+      const cellW=32,cellH=23,cellGap=8,panelPad=14,titleH=24,capH=18,groupGap=16;
+      const textW=(text,size)=>[...text].reduce((sum,ch)=>sum+(/[ㄱ-힣]/.test(ch)?size*.98:/[ ·.,:/()]/.test(ch)?size*.36:size*.62),0);
+      const gridOf=ports=>{const cols=Math.min(ports.length,5),rows=Math.ceil(ports.length/cols);return {cols,w:cols*cellW+(cols-1)*cellGap,h:rows*(cellH+13)+(rows-1)*cellGap}};
+      const outTitle=outTotal>outN?`OUT 1–${outN} 외 ${outTotal-outN}개`:matrixPorts.length===1?'OUT':`OUT ${matrixPorts[0]}–${matrixPorts[matrixPorts.length-1]}`;
       const sameSignal=matrixPorts.length===1?'선택한 입력 출력':isMatrix?'출력마다 입력 선택':'같은 영상';
-      const captionText=`${outCaption} · ${sameSignal}${multiview.length&&!isMatrix?' 매트릭스':''}`;
-      bodyMarkup+=`<text x="${panelX+panelW/2}" y="${panelY+panelH+16}" text-anchor="middle" font-size="11.5" font-weight="700" fill="${PI}">${svgEsc(captionText)}</text>`;
+      // 오디오 추출 묶음의 칩 아래 짧은 표기·설명은 제품 데이터(audioOutFlow, 입출력 표 근거)에 있을 때만 쓴다(QMS-88UX QD1·QD2).
+      const aoFlow=item.audioOutFlow||null;
+      const groups=[{kind:'main',title:outTitle,caption:sameSignal,ports:matrixPorts}];
+      if(multiview.length)groups.push({kind:'multiview',title:`멀티뷰 ${multiview.join('·')}`,caption:'각 4분할 또는 8분할',ports:multiview});
+      if(audioOut)groups.push({kind:'audio',title:'오디오 추출',caption:aoFlow?.caption||'',tag:aoFlow?.tag||''});
+      groups.forEach(group=>{
+        const contentW=group.kind==='audio'?Math.max(116,textW(group.tag,10)+24):gridOf(group.ports).w;
+        const contentH=group.kind==='audio'?(group.tag?40:30):gridOf(group.ports).h+6;
+        group.contentW=contentW;group.contentH=contentH;
+        group.h=panelPad+titleH+contentH+(group.caption?capH+4:0)+panelPad-6;
+        group.needW=Math.max(contentW,textW(group.title,12.5),group.caption?textW(group.caption,11):0)+panelPad*2;
+      });
+      const panelW=Math.ceil(Math.max(...groups.map(group=>group.needW)));
+      const colH=groups.reduce((sum,group)=>sum+group.h,0)+groupGap*(groups.length-1);
+      const panelX=bandX2+(groups.length>1?44:20);
+      let groupY=Math.max(10,bandY-colH/2);
+      let colBottom=groupY;
+      groups.forEach((group,index)=>{
+        const y=groupY,midGroup=y+group.h/2,aux=group.kind!=='main';
+        const fill=group.kind==='multiview'?'rgba(137,68,171,.14)':group.kind==='audio'?'rgba(118,118,128,.08)':'rgba(137,68,171,.09)';
+        const ink=group.kind==='audio'?M:PI,lineColor=group.kind==='audio'?M:group.kind==='multiview'?PI:P;
+        // 띠 끝에서 묶음 왼쪽 가운데로 잇는다(주 출력: 실선, 보조 경로: 점선). 띠와 높이가 같으면 곧은 선, 다르면 부드러운 곡선.
+        const fromX=bandX2+14,toX=panelX-2;
+        const path=Math.abs(midGroup-bandY)<2?`M${fromX} ${bandY}H${toX}`:`M${fromX} ${bandY}C${fromX+18} ${bandY} ${fromX+10} ${midGroup} ${toX} ${midGroup}`;
+        if(groups.length>1||bandY<y+14||bandY>y+group.h-14)bodyMarkup+=`<path d="${path}" fill="none" stroke="${lineColor}" stroke-width="${aux?1.8:2.4}"${aux?' stroke-dasharray="4 3"':''}/>`;
+        bodyMarkup+=`<rect x="${panelX}" y="${y}" width="${panelW}" height="${group.h}" rx="16" fill="${fill}"/>`;
+        bodyMarkup+=`<text x="${panelX+panelW/2}" y="${y+panelPad+9}" text-anchor="middle" font-size="12.5" font-weight="800" fill="${ink}">${svgEsc(group.title)}</text>`;
+        const contentY=y+panelPad+titleH,contentX=panelX+(panelW-group.contentW)/2;
+        if(group.kind==='audio'){
+          bodyMarkup+=`<rect x="${contentX}" y="${contentY}" width="${group.contentW}" height="${group.contentH}" rx="${group.tag?12:15}" fill="#fff" stroke="rgba(118,118,128,.35)" stroke-width="1.2"/><text x="${contentX+group.contentW/2}" y="${contentY+(group.tag?17:19)}" text-anchor="middle" font-size="11.5" font-weight="700" fill="${M}">AUDIO OUT</text>`;
+          if(group.tag)bodyMarkup+=`<text x="${contentX+group.contentW/2}" y="${contentY+32}" text-anchor="middle" font-size="10" font-weight="600" fill="${M}">${svgEsc(group.tag)}</text>`;
+        }else{
+          const grid=gridOf(group.ports);
+          group.ports.forEach((n,i)=>{
+            const c=i%grid.cols,r=Math.floor(i/grid.cols);
+            const x=contentX+c*(cellW+cellGap),cy=contentY+r*(cellH+13+cellGap);
+            const quad=group.kind==='multiview'?`<path d="M${x+cellW/2} ${cy+2}V${cy+cellH-2}M${x+2} ${cy+cellH/2}H${x+cellW-2}" stroke="${P}" stroke-width="1" opacity=".55"/>`:'';
+            bodyMarkup+=`<rect x="${x}" y="${cy}" width="${cellW}" height="${cellH}" rx="4" fill="${group.kind==='multiview'?'#F3EEFF':'#fff'}" stroke="${P}" stroke-width="1.8"/>${quad}<path d="M${x+cellW/2} ${cy+cellH}v5M${x+cellW/2-7} ${cy+cellH+6}h14" stroke="${P}" stroke-width="1.6"/><text x="${x+cellW/2}" y="${cy+cellH/2+3.5}" text-anchor="middle" font-size="9" font-weight="700" fill="${PI}">${n}</text>`;
+          });
+        }
+        if(group.caption)bodyMarkup+=`<text x="${panelX+panelW/2}" y="${contentY+group.contentH+capH}" text-anchor="middle" font-size="11" font-weight="600" fill="${ink}">${svgEsc(group.caption)}</text>`;
+        groupY+=group.h+groupGap;colBottom=y+group.h;
+      });
 
-      // 멀티뷰 전용 출력: 매트릭스 출력과 같은 대역폭 띠에서 갈라져 나오는 별도 갈래로, 위쪽에 자체 패널과 캡션을 둔다.
-      if(multiview.length){
-        const mvCols=Math.min(multiview.length,5),mvRows=Math.ceil(multiview.length/mvCols);
-        const mvGridW=mvCols*cellW+(mvCols-1)*cellGap,mvGridH=mvRows*(cellH+13)+(mvRows-1)*cellGap;
-        const mvPanelW=mvGridW+panelPad*2,mvPanelH=mvGridH+panelPad*2+10;
-        const mvPanelX=panelX,mvPanelY=Math.max(10,panelY-mvPanelH-46);
-        bodyMarkup+=`<path d="M${bandX2} ${bandY-7}C${bandX2} ${mvPanelY+mvPanelH/2} ${mvPanelX-20} ${mvPanelY+mvPanelH/2} ${mvPanelX} ${mvPanelY+mvPanelH/2}" fill="none" stroke="${PI}" stroke-width="1.8" stroke-dasharray="4 3"/>`;
-        bodyMarkup+=`<rect x="${mvPanelX}" y="${mvPanelY}" width="${mvPanelW}" height="${mvPanelH}" rx="16" fill="rgba(137,68,171,.16)"/>`;
-        multiview.forEach((n,i)=>{
-          const c=i%mvCols,r=Math.floor(i/mvCols);
-          const x=mvPanelX+panelPad+c*(cellW+cellGap),y=mvPanelY+panelPad+r*(cellH+13+cellGap)+8;
-          bodyMarkup+=`<rect x="${x}" y="${y}" width="${cellW}" height="${cellH}" rx="4" fill="#F3EEFF" stroke="${P}" stroke-width="1.8"/><path d="M${x+cellW/2} ${y+2}V${y+cellH-2}M${x+2} ${y+cellH/2}H${x+cellW-2}" stroke="${P}" stroke-width="1" opacity=".55"/><path d="M${x+cellW/2} ${y+cellH}v5M${x+cellW/2-7} ${y+cellH+6}h14" stroke="${P}" stroke-width="1.6"/><text x="${x+cellW/2}" y="${y+cellH/2+3.5}" text-anchor="middle" font-size="9" font-weight="700" fill="${PI}">${n}</text>`;
-        });
-        const mvCaption=`${multiview.join('·')}번 각 4분할 또는 8분할`;
-        bodyMarkup+=`<text x="${mvPanelX+mvPanelW/2}" y="${mvPanelY+mvPanelH+16}" text-anchor="middle" font-size="11.5" font-weight="700" fill="${PI}">${svgEsc(mvCaption)}</text>`;
-      }
-
-      // 오디오 추출(디먹스): 캡션 아래에 AUDIO OUT 칩을 두고 대역폭 띠에서 점선으로 이어 "병합"과 대칭으로 보이게 한다.
-      // 멀티뷰 갈래(위쪽)와 같은 모양으로 그려서(대역폭 띠 오른쪽 끝 → 짧게 왼쪽으로 들어가는 곡선) 점선이 패널을 가로지르지 않게 한다.
-      let audioOutBottom=panelY+panelH+16,audioOutRight=0;
-      if(audioOut){
-        const audioOutW=104,audioOutH=30,aoX=panelX,aoY=panelY+panelH+34,aoMidY=aoY+audioOutH/2;
-        bodyMarkup+=`<path d="M${bandX2} ${bandY+7}C${bandX2} ${aoMidY} ${aoX-20} ${aoMidY} ${aoX} ${aoMidY}" fill="none" stroke="${M}" stroke-width="1.8" stroke-dasharray="4 3"/><rect x="${aoX}" y="${aoY}" width="${audioOutW}" height="${audioOutH}" rx="15" fill="rgba(118,118,128,.10)"/><text x="${aoX+audioOutW/2}" y="${aoMidY+4}" text-anchor="middle" font-size="11.5" font-weight="600" fill="${M}">AUDIO OUT</text><rect x="${aoX+audioOutW+6}" y="${aoY+7}" width="30" height="15" rx="7" fill="#fff"/><text x="${aoX+audioOutW+21}" y="${aoY+18}" text-anchor="middle" font-size="10" font-weight="700" fill="${M}">추출</text>`;
-        audioOutBottom=aoY+audioOutH;
-        audioOutRight=aoX+audioOutW+36;
-      }
-
-      // 캡션 글자가 출력 격자보다 넓을 수 있어(예: 매트릭스 전환 문구) SVG 너비에 여유를 둔다.
-      const captionHalfWidth=Math.max(captionText.length,multiview.length?`${multiview.join('·')}번 각 4분할 또는 8분할`.length:0)*3.6+20;
-      // AUDIO OUT 칩과 "추출" 표시도 너비에 넣는다(출력이 1개인 HDS-21U는 출력 패널이 좁아 "추출"이 잘렸다, 사용자 지적 2026-09-27).
-      const width=Math.max(panelX+panelW+20,panelX+panelW/2+captionHalfWidth+20,audioOutRight+16);
-      const height=Math.max(leftBottom+20,panelY+panelH+38,midY+70,audioOutBottom+16);
-      return diagramWrap(bodyMarkup,width,height,[]);
+      const width=Math.ceil(panelX+panelW+16);
+      const height=Math.ceil(Math.max(leftBottom+20,matrixBottom+(audioIn?24:12),colBottom+16,midY+70));
+      // 범례: 영상(실선 띠)과, 있을 때만 오디오·멀티뷰 보조 경로(점선).
+      const legend=[['linear-gradient(90deg,#0A84FF,#BF5AF2)','영상']];
+      if(audioIn||audioOut)legend.push([M,audioIn&&audioOut?'오디오 병합·추출(점선)':audioIn?'오디오 병합(점선)':'오디오 추출(점선)','dash']);
+      if(multiview.length)legend.push([PI,'멀티뷰 분기(점선)','dash']);
+      // 그림 설명(펼침): 화면 낭독기와 그림을 글로 확인하려는 사람을 위해 입력 → 처리 → 출력 순서로 적는다.
+      const inLabel=inN===1?`${sigName} IN 1개`:`${sigName} IN 1–${inN}${inTotal>inN?` 외 ${inTotal-inN}개`:''}`;
+      const steps=[`입력: ${inLabel}${audioIn?', AUDIO IN(오디오 병합)':''}`];
+      if(isMatrix)steps.push('처리: 매트릭스. 출력마다 입력을 따로 고릅니다. 격자의 점은 선택 예시이며 실제 설정이 아닙니다.');
+      else if(inN>1)steps.push(`처리: ${inN}개 입력 중 1개를 골라 출력합니다.`);
+      if(topLabel||protoBits.length)steps.push(`신호: ${[topLabel,...protoBits].filter(Boolean).join(' · ')}`);
+      groups.forEach(group=>steps.push(`${group.kind==='main'?'출력':'보조 경로'}: ${group.title}${group.tag?`(${group.tag})`:''}${group.caption?` · ${group.caption}`:''}`));
+      return diagramWrap(bodyMarkup,width,height,legend,{label:`${item.model} Signal Flow`,steps,minWidth:Math.min(width,Math.round(width*.9))});
     }
     function cableDiagram(item){
       const specs=item.specifications||[];

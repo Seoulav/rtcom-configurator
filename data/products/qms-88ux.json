@@ -333,6 +333,11 @@
       }
     ]
   },
+  "audioOutFlow": {
+    "tag": "QD1 · QD2",
+    "caption": "QD1: IN 1–4 / QD2: IN 5–8 중 선택",
+    "source": "M1"
+  },
   "portMap": {
     "image": "Rear",
     "items": [
