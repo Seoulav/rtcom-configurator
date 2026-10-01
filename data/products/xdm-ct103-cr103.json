@@ -201,19 +201,10 @@
     {
       "group": "Transmission",
       "name": "최대 전송 거리",
-      "value": "100",
-      "unit": "m",
-      "condition": "4K/60 @ 4:4:4, S/FTP CAT6A 필수(BELDEN 10GXE02 기준), 케이블별 상이",
+      "value": "4K/60 @ 4:4:4 100m\n1080p 150m (Long Reach, CT103 딥 스위치 2번 ON)",
+      "unit": "",
+      "condition": "S/FTP CAT6A 필수 (BELDEN 10GXE02 기준)",
       "source": "C",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "Transmission",
-      "name": "최대 전송 거리",
-      "value": "150",
-      "unit": "m",
-      "condition": "Long Reach 모드(딥 스위치 2번 ON), 1920x1080 · XDM-CT103",
-      "source": "M1",
       "verification": "VERIFIED"
     },
     {
@@ -266,7 +257,7 @@
       "name": "전원(어댑터)",
       "value": "DC +12V 1A 이상",
       "unit": "",
-      "condition": "전용 카드(CIS100/COS100)나 XDM-CTR100 PSE와 연결하면 PoE로 전원을 받아 연결하지 않음 · 그 밖에는 어댑터 연결",
+      "condition": "전용 카드(CIS100/COS100)+XDM-PSU 또는 XDM-CTR100 PSE와 연결하면 PoE로 전원을 받아 연결하지 않음 · 그 밖에는 어댑터 연결",
       "source": "U",
       "verification": "VERIFIED"
     },
@@ -451,7 +442,7 @@
         {
           "n": 6,
           "label": "DC IN",
-          "desc": "DC 12V 1A 이상 · XDM-CIS100이나 XDM-CTR100 PSE와 쓰면 연결하지 않음",
+          "desc": "DC 12V 1A 이상 · XDM-CIS100+XDM-PSU 또는 XDM-CTR100 PSE와 쓰면 연결하지 않음",
           "x1": 555,
           "x2": 637,
           "side": "bottom",
@@ -512,7 +503,7 @@
         {
           "n": 5,
           "label": "DC IN",
-          "desc": "DC 12V 1A 이상 · XDM-COS100이나 XDM-CTR100 PSE와 쓰면 연결하지 않음",
+          "desc": "DC 12V 1A 이상 · XDM-COS100+XDM-PSU 또는 XDM-CTR100 PSE와 쓰면 연결하지 않음",
           "x1": 305,
           "x2": 345,
           "side": "bottom",
