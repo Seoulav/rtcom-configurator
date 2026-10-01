@@ -144,8 +144,8 @@
       const allowed=choices(value.cardId);
       if (value.assignedDevice.length>120) fail('연결 대상 장비 이름이 너무 깁니다.');
       if ((value.tx&&!allowed.includes(value.tx))||(value.rx&&!allowed.includes(value.rx))) fail('포트의 TX/RX와 카드 허용 관계가 일치하지 않습니다.');
-      if (value.direction==='input'&&value.rx) fail('입력 포트에는 RX를 배정할 수 없습니다.');
-      if (value.direction==='output'&&value.tx) fail('출력 포트에는 TX를 배정할 수 없습니다.');
+      if (value.direction==='input'&&value.rx) fail('입력 포트에는 수신기를 배정할 수 없습니다.');
+      if (value.direction==='output'&&value.tx) fail('출력 포트에는 송신기를 배정할 수 없습니다.');
       result.portAssignments[key]=value;
     }
     for (const field of ['step','maxStep']) {

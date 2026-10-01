@@ -5,7 +5,7 @@
   "productName": "HDS-42MU",
   "model": "HDS-42MU",
   "series": "HDMI 4K Switcher",
-  "seriesNote": "카탈로그 분류는 HDMI 4K Switcher이며 4x2 Matrix Switcher 기능을 지원한다.",
+  "seriesNote": "카탈로그 분류는 HDMI 4K Switcher이며 4×2 Matrix Switcher 기능을 지원한다.",
   "itemType": "PRODUCT",
   "categories": [
     "영상",
@@ -13,8 +13,8 @@
     "Switcher"
   ],
   "english": "4x2 HDMI 2.0 4K/60 matrix switcher with audio extraction/insertion, priority and EDID minder",
-  "korean": "4입력 2출력 매트릭스 스위칭과 오디오 추출·삽입, EDID 마인더 기능을 갖춘 HDMI 2.0 4K 선택기다.",
-  "subtitle": "4×2 HDMI 2.0 Matrix Switcher · 오디오 추출·삽입",
+  "korean": "4입력 2출력 매트릭스 스위칭과 오디오 병합·추출, EDID 마인더 기능을 갖춘 HDMI 2.0 4K 선택기다.",
+  "subtitle": "4×2 HDMI 2.0 Matrix Switcher · 오디오 병합·추출",
   "lead": "네 개의 HDMI 입력 중 원하는 신호를 **두 개의 출력으로 매트릭스 전환**합니다. Priority 오토셀렉팅과 아날로그 오디오 병합·추출을 지원합니다.",
   "catalogPages": "33",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 35쪽의 소개·주요기능·제품사양·크기 및 무게·제품 이미지에서 확인했다.",
@@ -123,7 +123,7 @@
   ],
   "features": [
     {
-      "text": "4x2 Matrix Switcher 기능 지원",
+      "text": "4×2 Matrix Switcher 기능 지원",
       "source": "C"
     },
     {
@@ -365,7 +365,7 @@
     "x2": 507,
     "y2": 119,
     "label": "EDID 로터리 스위치",
-    "desc": "전면 파란색 EDID 로터리 스위치로 디스플레이 EDID를 선택한다. HD-13U와 달리 별도 SET 버튼이 없어, 로터리를 돌린 뒤 전원 케이블을 1회 탈착해야 적용된다.",
+    "desc": "전면 파란색 EDID 로터리 스위치로 디스플레이 EDID를 선택한다. HD-13U와 달리 별도 SET 버튼이 없어, 로터리 스위치를 돌린 뒤 전원 케이블을 1회 탈착해야 적용된다.",
     "default": "0 = Throughpass(외부 EDID 저장: OUTPUT에 연결된 디스플레이의 EDID를 저장해 사용)",
     "steps": [
       {

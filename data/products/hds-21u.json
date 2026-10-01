@@ -12,8 +12,8 @@
     "Switcher"
   ],
   "english": "2x1 HDMI 2.0 4K/60 switcher with audio extraction/insertion, priority and EDID minder",
-  "korean": "오디오 추출·삽입, Priority, EDID 마인더 기능을 갖춘 2입력 1출력 HDMI 2.0 4K 선택기다.",
-  "subtitle": "2×1 HDMI 2.0 Switcher · 오디오 추출·삽입",
+  "korean": "오디오 병합·추출, Priority, EDID 마인더 기능을 갖춘 2입력 1출력 HDMI 2.0 4K 선택기다.",
+  "subtitle": "2×1 HDMI 2.0 Switcher · 오디오 병합·추출",
   "lead": "두 개의 HDMI 입력 중 **하나를 선택해 출력**합니다. Priority 오토셀렉팅과 아날로그 오디오 병합·추출을 지원합니다.",
   "catalogPages": "32",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 34쪽의 소개·주요기능·제품사양·크기 및 무게·제품 이미지에서 확인했다.",
@@ -356,7 +356,7 @@
     "x2": 1228,
     "y2": 180,
     "label": "EDID 로터리 스위치",
-    "desc": "전면 파란색 EDID 로터리 스위치로 디스플레이 EDID를 선택한다. HD-13U와 달리 별도 SET 버튼이 없어, 로터리를 돌린 뒤 전원 케이블을 1회 탈착해야 적용된다.",
+    "desc": "전면 파란색 EDID 로터리 스위치로 디스플레이 EDID를 선택한다. HD-13U와 달리 별도 SET 버튼이 없어, 로터리 스위치를 돌린 뒤 전원 케이블을 1회 탈착해야 적용된다.",
     "default": "0 = Throughpass(외부 EDID 저장: OUTPUT에 연결된 디스플레이의 EDID를 저장해 사용)",
     "steps": [
       {

@@ -441,7 +441,7 @@ test('0.157: SPX-R6는 사양서 근거로 등록하고, 로고 없는 평면 �
   for(const name of ['spx-r6-catalog.pdf','spx-rx-tx-manual.pdf','spx-manual.pdf'])assert.ok(fs.existsSync(`output/design/assets/docs/${name}`),name);
   for(const model of ['SPX-M2472','SPX-M24120'])assert.match(spx.lineup.find(entry=>entry.model===model).summary,/483×443\.7×365mm/);
   assert.ok(!JSON.stringify(spx.lineup).includes('433.7'),'라인업에 종합 카탈로그 2026의 433.7mm 표기를 남기지 않는다');
-  assert.ok(spx.features.some(feature=>feature.text.includes('2x2, 3x3, 3x4')),'비디오 월 표기는 그대로 둔다(사용자 결정 "지금 표기 유지")');
+  assert.ok(spx.features.some(feature=>feature.text.includes('2×2, 3×3, 3×4')),'비디오 월 표기는 그대로 둔다(사용자 결정 "지금 표기 유지")');
   assert.match(read('src/products.js'),/if\(item\.id==='spx-r6'\)return rackExtenderDiagram\(item\);/);
   const order=JSON.parse(read('data/products/index.json')).products.map(product=>product.id);
   assert.equal(order.indexOf('spx-r6')+1,order.indexOf('spx-rx-tx'),'전송기 목록에서 SPX-TX / SPX-RX 바로 앞에 보인다');
@@ -489,7 +489,7 @@ test('0.166: SPX-TX/RX 04 제품 사양의 전송거리는 "4K60 실효 전송�
   const txrx=JSON.parse(read('data/products/spx-rx-tx.json'));
   const rows=txrx.specifications.filter(spec=>spec.group==='Transmission');
   assert.equal(rows.length,1,'전송거리 행은 하나만 둔다');
-  assert.equal(rows[0].name,'4K/60 실효 전송거리'); // 0.184: 해상도 표기 Extron 방식(4K/60)
+  assert.equal(rows[0].name,'4K/60 실효 전송 거리'); // 0.184: 해상도 표기 Extron 방식(4K/60)
   assert.equal(rows[0].value,'UTP CAT6 50m (Belden 7814A 케이블 기준)\nS/FTP CAT6A 70m (Belden 10GXE02 케이블 기준)');
   assert.equal(rows[0].source,'U3');
   assert.ok(!JSON.stringify(txrx.specifications).includes('CI6522'),'예전 SF/UTP CI6522 표기는 쓰지 않는다');
@@ -513,15 +513,15 @@ test('0.171: SPX-R6 모듈 칸 단자는 TX·RX 모듈을 모두 꽂을 수 있�
 test('0.180: SPX 04 제품 사양 전송거리는 한 행(1080p 60m / 4K 50m)이고 라인업 요약에 입력·출력 슬롯 수가 있다',()=>{
   // 사용자 요청 2026-09-30 "1080P 60M / 4K 50m 이런식으로", "입출력 슬롯이 몇개씩인지 모든 SPX 시리즈 수정"
   const spx=JSON.parse(read('data/products/spx.json'));
-  const rows=spx.specifications.filter(spec=>spec.name==='CATx 보드 전송 거리');
-  assert.equal(rows.length,1,'CATx 보드 전송 거리는 한 행만 둔다');
+  const rows=spx.specifications.filter(spec=>spec.name==='CATx 카드 전송 거리');
+  assert.equal(rows.length,1,'CATx 카드 전송 거리는 한 행만 둔다');
   assert.equal(rows[0].value,'1080p 60m\n4K 50m');
   assert.equal(rows[0].condition,'CAT 6 기준');
   const slots={'SPX-M810':'입력 슬롯 1 · 출력 슬롯 1','SPX-M1620':'입력 슬롯 2 · 출력 슬롯 2','SPX-M3236':'입력 슬롯 4 · 출력 슬롯 3','SPX-M2472':'입력 슬롯 3 · 출력 슬롯 6','SPX-M24120':'입력 슬롯 3 · 출력 슬롯 10'};
   for(const [model,text] of Object.entries(slots)){
     const entry=spx.lineup.find(item=>item.model===model);
     assert.ok(entry.summary.includes(text),`${model} 요약에 "${text}"`);
-    assert.match(entry.summary.split(' · ')[0],/^최대 \d+x\d+ I\/O$/,'첫 항목은 "최대 NxM I/O"(타일 부제가 씀)');
+    assert.match(entry.summary.split(' · ')[0],/^최대 \d+[x×]\d+ I\/O$/,'첫 항목은 "최대 NxM I/O"(타일 부제가 씀)');
   }
 });
 

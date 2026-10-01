@@ -20,7 +20,7 @@
   "catalogPages": "",
   "verificationSummary": "사용자 제공 XDM-POE ASSY 도면(2024.07.23)의 정면·후면·크기와 사용자 제공 구성도·모듈 사진(MAX2 표기)으로 정리했다. 모델명(XDM-PSU·XDM-POH·XDM-PHX)과 모듈 수량 기준은 사용자 결정(2026-09-28)이다.",
   "packageStatus": "VERIFIED",
-  "overview": "XDM-PSU는 XDM 전송기용 16채널 모듈형 전원 공급 장치다. 후면 16칸에 두 종류 모듈을 필요한 만큼 섞어 꽂는다.\n\nXDM-POH(CIS용) 모듈은 RJ45 단자 2개(CIS Card·Extender)로 XDM-CIS100 포트와 XDM-CTR100(Tx) 사이의 CAT 케이블에 전원을 실어 보낸다. XDM-POH 1개가 XDM-CTR100(Tx) 1대를 맡는다.\n\nXDM-PHX(COS용) 모듈은 2핀(+/−) 전원 단자로 XDM-COS100 카드에 전원을 넣고, COS100이 CAT 케이블로 XDM-CTR100(Rx)에 전원을 함께 보낸다. XDM-PHX 1개가 XDM-COS100 카드 1장을 맡는다.\n\nXDM-PSU로 전원을 공급하면 XDM-CTR100에 전원 어댑터를 따로 연결하지 않는다. 정면에는 채널 LED 16개가 있고, 전원은 AC 100~240V 50/60Hz다.",
+  "overview": "XDM-PSU는 XDM 전송기용 16채널 모듈형 전원 공급 장치다. 후면 16칸에 두 종류 모듈을 필요한 만큼 섞어 꽂는다.\n\nXDM-POH(CIS용) 모듈은 RJ45 단자 2개(CIS Card·Extender)로 XDM-CIS100 포트와 XDM-CTR100(TX) 사이의 CAT 케이블에 전원을 실어 보낸다. XDM-POH 1개가 XDM-CTR100(TX) 1대를 맡는다.\n\nXDM-PHX(COS용) 모듈은 2핀(+/−) 전원 단자로 XDM-COS100 카드에 전원을 넣고, COS100이 CAT 케이블로 XDM-CTR100(RX)에 전원을 함께 보낸다. XDM-PHX 1개가 XDM-COS100 카드 1장을 맡는다.\n\nXDM-PSU로 전원을 공급하면 XDM-CTR100에 전원 어댑터를 따로 연결하지 않는다. 정면에는 채널 LED 16개가 있고, 전원은 AC 100~240V 50/60Hz다.",
   "images": [
     {
       "role": "Front",
@@ -132,11 +132,11 @@
       "source": "D1"
     },
     {
-      "text": "XDM-POH 모듈: XDM-CIS100 ↔ XDM-CTR100(Tx) CAT 케이블에 전원 공급(CTR100 Tx 1대당 1개)",
+      "text": "XDM-POH 모듈: XDM-CIS100 ↔ XDM-CTR100(TX) CAT 케이블에 전원 공급(CTR100 TX 1대당 1개)",
       "source": "U"
     },
     {
-      "text": "XDM-PHX 모듈: 2핀 전원선으로 XDM-COS100 카드에 급전, CTR100(Rx)은 CAT로 전원 수신(COS100 1장당 1개)",
+      "text": "XDM-PHX 모듈: 2핀 전원선으로 XDM-COS100 카드에 급전, CTR100(RX)은 CAT로 전원 수신(COS100 1장당 1개)",
       "source": "U"
     },
     {
@@ -163,7 +163,7 @@
       "name": "XDM-POH",
       "value": "CIS용 모듈 · RJ45 2(CIS Card·Extender)",
       "unit": "",
-      "condition": "XDM-CTR100(Tx) 1대당 1개",
+      "condition": "XDM-CTR100(TX) 1대당 1개",
       "source": "U",
       "verification": "VERIFIED"
     },
@@ -260,7 +260,7 @@
       {
         "n": 1,
         "label": "XDM-POH × 8",
-        "desc": "CIS용 모듈(예시 8칸) · 위 RJ45 'CIS Card'는 XDM-CIS100 포트, 아래 'Extender'는 XDM-CTR100(Tx)과 연결",
+        "desc": "CIS용 모듈(예시 8칸) · 위 RJ45 'CIS Card'는 XDM-CIS100 포트, 아래 'Extender'는 XDM-CTR100(TX)과 연결",
         "x1": 43,
         "x2": 597
       },

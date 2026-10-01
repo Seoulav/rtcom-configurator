@@ -2,11 +2,11 @@
 
 새 세션은 이 목록을 먼저 확인합니다. 처리한 항목은 지우고, CHANGELOG에 버전과 함께 남깁니다.
 
-## 표기 통일 후속(0.184) — 사용자 결정·자료 대기
+## 용어 통일 후속(0.189) — 사용자 결정 대기
 
-`docs/implementation/NOTATION_UNIFICATION_0.184.md` §4. ChatGPT 검수(2026-09-30)에서 기준을 더 정해야 하는 항목입니다.
-- [ ] 용어 통일 기준: 한국어·영어 혼용(입력 카드/Input, 송신기/TX, 오디오 병합/Audio Embedding 등 312행), 한글 띄어쓰기·동의어(비디오 월/비디오월 7:12, 송·수신기/송수신기 44:17 등 184행), 모델명 축약(55행)
-- [ ] 입출력 규모 곱셈 기호: `8×8`(102곳)과 `8x8`(45곳) 중 하나로. 카테고리 이름("1x3 HDMI 18Gbps Splitter")을 함께 바꿀지
+`docs/audit/TERMS_REVIEW_2026-10-01_decisions.md`의 검토 40행은 자동 적용하지 않았습니다(`docs/implementation/TERMS_UNIFICATION_0.189.md` §3).
+- [ ] 검토 행 판단: HD-13U·HD-210U 오디오 문구(믹스 표현 병존), QMS-88UX 쿼드 명칭(최대 8분할 설명 병존), SPX "Touch Screen" → 터치 패널/터치스크린, 짧은 영문 사양 값(Fiber Optical Input 등) 원문 여부
+- [ ] 영문 분류명(1x4 HDMI 18Gbps Splitter 등)과 모델명 축약(CTR100 등)은 사용자 "pass"로 그대로 둠. 다시 정할 때 이 항목에서 시작
 
 ## AI 검색 사내 베타(0.142) — 사용자 설정 대기
 

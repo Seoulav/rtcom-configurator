@@ -106,7 +106,7 @@
         const chroma=((resSpec.condition||'').match(/\d:\d:\d/)||[])[0];
         resText=[hz&&`${hz}Hz`,chroma].filter(Boolean).join(' ');
       }
-      const cardWord=(item.lineup||[]).some(entry=>/카드/.test(entry.kind))?'카드당':'보드당';
+      const cardWord=(item.lineup||[]).some(entry=>/카드/.test(entry.kind))?'카드당':'카드당';
       return [
         scale&&{label:'최대 규모',value:scale[0],unit:`×${scale[1]}`},
         resText&&{label:'해상도',value:'4K',unit:resText},
@@ -367,8 +367,8 @@
         g+=`<text x="${noteX}" y="622" font-size="9.5" fill="${SUB}">${svgEsc(sub)}</text>`;
         return g;
       };
-      body+=ctr(110,'Tx · 송신기','전원 어댑터 불필요 · POH가 CAT로 전원 공급',txRj[0],160,270,182);
-      body+=ctr(710,'Rx · 수신기','전원 어댑터 불필요 · COS100이 CAT로 전원 공급',rxRj[0],744,724,766);
+      body+=ctr(110,'TX · 송신기','전원 어댑터 불필요 · POH가 CAT로 전원 공급',txRj[0],160,270,182);
+      body+=ctr(710,'RX · 수신기','전원 어댑터 불필요 · COS100이 CAT로 전원 공급',rxRj[0],744,724,766);
       body+=monitorIcon(60,648,'소스 기기')+monitorIcon(940,648,'디스플레이');
       // ---- 케이블 이름표 ----
       body+=pill(250,196,'CAT · 신호',COLOR_COPPER);
@@ -377,7 +377,7 @@
       body+=pill(610,262,'2핀 전원선',COLOR_POWER);
       body+=pill(128,670,'HDMI',COLOR_IN)+pill(848,670,'HDMI',COLOR_OUT);
       const ac=(item.specifications||[]).find(spec=>spec.name==='전원');
-      body+=`<text x="${width/2}" y="470" text-anchor="middle" font-size="10" fill="${SUB}">XDM-PSU 1대 = 모듈 16칸(POH·PHX를 섞어 장착) · POH 1개 = CTR100 Tx 1대 · PHX 1개 = COS100 1장${ac?` · 본체 전원 ${svgEsc(ac.value)}`:''}</text>`;
+      body+=`<text x="${width/2}" y="470" text-anchor="middle" font-size="10" fill="${SUB}">XDM-PSU 1대 = 모듈 16칸(POH·PHX를 섞어 장착) · POH 1개 = CTR100 TX 1대 · PHX 1개 = COS100 1장${ac?` · 본체 전원 ${svgEsc(ac.value)}`:''}</text>`;
       body+=`<text x="${width/2}" y="486" text-anchor="middle" font-size="10" fill="${SUB}">XDM-CIS100·COS100 카드 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다</text>`;
       // 0.99: XDM-PSU만 그림이 커서 "크게 보기"(전체 화면 확대 창)를 둔다(사용자 요청 2026-09-28 "xdm-psu만 03 Singal flow 확대해서 볼 수 있게해줘"). 그림을 눌러도 열린다.
       return `<div class="rt-flow-zoom-bar"><button type="button" class="rt-pg-btn" data-flow-zoom>⤢ 크게 보기</button></div>`+diagramWrap(`<g class="rt-psu-anim">${body}</g>`,width,height,[[COLOR_IN,'입력(HDMI)'],[COLOR_COPPER,'HDBaseT 신호(CATx)'],[COLOR_POWER,'전원'],[COLOR_OUT,'출력(HDMI)']]);
@@ -392,7 +392,7 @@
       if(!txVideo||!rxVideo||!transmission)return null;
       const isFiber=/광|Fiber|SC|LC/i.test(`${transmission.connector} ${transmission.signal} ${transmission.protocol}`);
       const cableColor=isFiber?COLOR_FIBER:COLOR_COPPER;
-      const distanceSpecs=(item.specifications||[]).filter(spec=>/전송거리/.test(spec.name));
+      const distanceSpecs=(item.specifications||[]).filter(spec=>/전송\s?거리/.test(spec.name));
       // HDBaseT를 쓰지 않는 CATx 전송기(SPX-TX/RX)는 "CATx"로만 적고, 거리 조건의 해상도 부분(4K 60Hz·1080p·Long Reach)을 표시에 쓴다(0.64).
       const isHDBaseT=/HDBaseT/i.test(JSON.stringify([item.english,item.korean,item.overview,item.features]));
       const cableName=isFiber?'광케이블':isHDBaseT?'HDBaseT(CATx)':'CATx';
@@ -492,7 +492,7 @@
         body+=arrow(rxX+rxW+6,y,dstX-22,y,COLOR_OUT)+monitorIcon(dstX,y-4,i===rows-1?'디스플레이':'',0.8);
       }
       body+=`<text x="${(r6X+r6W+rxX)/2}" y="${rowY(0)-24}" text-anchor="middle" font-size="11" font-weight="700" fill="${COLOR_COPPER}">CATx(CAT5e) · PoC</text>`;
-      const distances=(item.specifications||[]).filter(spec=>/전송거리/.test(spec.name)).map(spec=>`${/1080p/.test(spec.condition)?'1080p':'4K/60'} 최대 ${spec.value}${spec.unit||''}`);
+      const distances=(item.specifications||[]).filter(spec=>/전송\s?거리/.test(spec.name)).map(spec=>`${/1080p/.test(spec.condition)?'1080p':'4K/60'} 최대 ${spec.value}${spec.unit||''}`);
       const captions=[[COLOR_IN,'입력(HDMI)'],[COLOR_COPPER,'CATx 전송'],[COLOR_IR,'IR 제어'],[COLOR_POWER,'전원'],[COLOR_OUT,'출력(HDMI)']];
       if(distances.length)captions.push([COLOR_COPPER,`CAT5e 기준 ${distances.join(' · ')}`]);
       return diagramWrap(body,width,height,captions)+`<p class="rt-pg-hint" style="text-align:center">사양서 연결도 기준입니다. PoC로 송·수신기 중 한쪽에만 전원을 연결해도 됩니다. 모듈은 TX(송신)·RX(수신)를 골라 쓸 수 있고(그림은 자주 쓰는 TX 구성), RX 사용과 SPX-RX IR 기능(IR Blaster)은 현장에서는 잘 쓰지 않습니다. IR Blaster 연결은 제조사 원본 다이어그램을 참고하세요.</p>`;

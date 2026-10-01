@@ -19,7 +19,7 @@
   "catalogPages": "12",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03, 48쪽판) 12쪽의 XDM-FT101·XDM-FR101 소개와 제품사양 표에서 확인했고, 새 카탈로그(46쪽판) 12쪽과 줄 단위로 재대조했다(차이 없음). XDM-FT101/FR101 사용자 매뉴얼 Ver.1.3(4~11쪽)으로 전원·LED·S/P 단자·EDID/오디오 로터리 스위치를 보완했다.",
   "packageStatus": "VERIFIED",
-  "overview": "XDM-FT101/XDM-FR101은 True 4K 3840x2160 @ 60Hz 4:4:4 해상도의 HDMI v2.0 신호를 싱글모드 광케이블 사용 시 최대 2km, 멀티모드 광케이블 사용 시 최대 300m까지 전송하는 광 송·수신기다.\n\nXDM-FT101은 XDM-FIS100과, XDM-FR101은 XDM-FOS100과 호환된다. RS-232+ 기능으로 XDM 매트릭스의 커맨드를 통해 광 송·수신기의 RS-232 단자에 연결된 외부기기를 제어할 수 있다. 송신기는 Phoenix 5p 단자(오디오 L·R·⏚ 3핀 + RS-232 Tx·Rx, 접지 공용)로 스테레오 오디오를 삽입하고, 수신기는 같은 방식으로 스테레오 오디오를 추출한다.",
+  "overview": "XDM-FT101/XDM-FR101은 True 4K 3840x2160 @ 60Hz 4:4:4 해상도의 HDMI v2.0 신호를 싱글모드 광케이블 사용 시 최대 2km, 멀티모드 광케이블 사용 시 최대 300m까지 전송하는 광 송·수신기다.\n\nXDM-FT101은 XDM-FIS100과, XDM-FR101은 XDM-FOS100과 호환된다. RS-232+ 기능으로 XDM 매트릭스의 커맨드를 통해 광 송·수신기의 RS-232 단자에 연결된 외부기기를 제어할 수 있다. 송신기는 피닉스 5p 단자(오디오 L·R·⏚ 3핀 + RS-232 Tx·Rx, 접지 공용)로 스테레오 오디오를 병합하고, 수신기는 같은 방식으로 스테레오 오디오를 추출한다.",
   "images": [
     {
       "role": "Main",
@@ -193,7 +193,7 @@
       "source": "U"
     },
     {
-      "text": "EDID 마인더 기능 지원(내장 EDID 선택, XDM-FT101 MODE 로터리)",
+      "text": "EDID 마인더 기능 지원(내장 EDID 선택, XDM-FT101 MODE 로터리 스위치)",
       "source": "M1"
     },
     {
@@ -213,19 +213,19 @@
     },
     {
       "group": "Transmission",
-      "name": "최대 전송거리",
+      "name": "최대 전송 거리",
       "value": "2",
       "unit": "km",
-      "condition": "Singlemode",
+      "condition": "싱글모드",
       "source": "C",
       "verification": "VERIFIED"
     },
     {
       "group": "Transmission",
-      "name": "최대 전송거리",
+      "name": "최대 전송 거리",
       "value": "300",
       "unit": "m",
-      "condition": "Multimode",
+      "condition": "멀티모드",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -332,7 +332,7 @@
       "direction": "IN",
       "quantity": "1",
       "protocol": "",
-      "condition": "XDM-FT101 · 오디오 삽입, RS-232와 같은 5p 단자",
+      "condition": "XDM-FT101 · 오디오 병합, RS-232와 같은 5p 단자",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -454,7 +454,7 @@
         {
           "n": 2,
           "label": "AUDIO · RS-232",
-          "desc": "오디오 삽입 + RS-232, 같은 5핀 Phoenix 단자",
+          "desc": "오디오 병합 + RS-232, 같은 5핀 피닉스 단자",
           "x1": 462,
           "x2": 620,
           "side": "top",
@@ -515,7 +515,7 @@
         {
           "n": 2,
           "label": "AUDIO · RS-232",
-          "desc": "오디오 추출 + RS-232, 같은 5핀 Phoenix 단자",
+          "desc": "오디오 추출 + RS-232, 같은 5핀 피닉스 단자",
           "x1": 810,
           "x2": 1090,
           "side": "top",
@@ -607,7 +607,7 @@
         "title": "설정 방법",
         "items": [
           "제품 하단 스티커를 참조해 전면 로터리 스위치를 원하는 번호에 맞춘다(10번=A, 11번=B).",
-          "오디오 병합은 8·9·10·11번 중 하나에 맞추고 전원을 연결한 뒤, 후면 5핀 Phoenix 단자의 L·R·⏚ 3핀에 오디오 선을 연결한다(나머지 Tx·Rx는 RS-232)."
+          "오디오 병합은 8·9·10·11번 중 하나에 맞추고 전원을 연결한 뒤, 후면 5핀 피닉스 단자의 L·R·⏚ 3핀에 오디오 선을 연결한다(나머지 Tx·Rx는 RS-232)."
         ]
       }
     ],

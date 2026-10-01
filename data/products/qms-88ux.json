@@ -12,13 +12,13 @@
     "Matrix Switcher"
   ],
   "english": "True-4K 8x8 HDMI 2.0 scaling matrix switcher with 8-channel multi-view, video wall and dual mode",
-  "korean": "8CH 멀티뷰·비디오 월·듀얼 모드를 지원하는 True-4K 8x8 HDMI 2.0 매트릭스 스위처다.",
+  "korean": "8CH 멀티뷰·비디오 월·듀얼 모드를 지원하는 True-4K 8×8 HDMI 2.0 매트릭스 스위처다.",
   "subtitle": "8×8 HDMI 2.0 Matrix Switcher · 8CH 멀티뷰",
   "lead": "8개의 HDMI 입력을 **임의의 출력 포트로 자유롭게 전환**하는 True-4K 매트릭스입니다. 8CH 멀티뷰·비디오 월·듀얼 모드를 지원합니다.",
   "catalogPages": "28",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 30쪽의 소개·주요기능·제품사양·크기 및 무게·제품 이미지에서 확인했다.",
   "packageStatus": "VERIFIED",
-  "overview": "QMS-88UX는 HDMI Ver. 2.0을 지원하는 True-4K HDMI 8x8 고성능 매트릭스 스위처다. 최대 3840x2160 @ 60Hz 4:4:4 해상도를 지원하며 Seamless Switching, 8CH Multi-view, Video Wall, Dual 모드 등 다양한 용도로 사용할 수 있다. 서로 다른 임의의 HDMI 입력을 서로 다른 임의의 HDMI 출력 포트로 출력하거나 분배할 수 있다.\n\n전면 LCD 터치 패널, RS-232, LAN(이더넷·웹 브라우저)의 3가지 제어방식으로 동작한다. 출력 9번과 10번은 쿼드 뷰 모드로, 한 화면에 최대 8개의 분할 화면을 구성할 수 있다. HDCP v2.2를 지원한다.",
+  "overview": "QMS-88UX는 HDMI Ver. 2.0을 지원하는 True-4K HDMI 8×8 고성능 매트릭스 스위처다. 최대 3840x2160 @ 60Hz 4:4:4 해상도를 지원하며 심리스 스위칭, 8CH 멀티뷰, 비디오 월, Dual 모드 등 다양한 용도로 사용할 수 있다. 서로 다른 임의의 HDMI 입력을 서로 다른 임의의 HDMI 출력 포트로 출력하거나 분배할 수 있다.\n\n전면 LCD 터치 패널, RS-232, LAN(이더넷·웹 브라우저)의 3가지 제어방식으로 동작한다. 출력 9번과 10번은 쿼드 뷰 모드로, 한 화면에 최대 8개의 분할 화면을 구성할 수 있다. HDCP v2.2를 지원한다.",
   "images": [
     {
       "role": "Front",
@@ -127,7 +127,7 @@
       "source": "C"
     },
     {
-      "text": "매트릭스, 최대 3X3 비디오 월, 쿼드 뷰, 듀얼 모드의 4가지 모드 지원",
+      "text": "매트릭스, 최대 3×3 비디오 월, 쿼드 뷰, 듀얼 모드의 4가지 모드 지원",
       "source": "C"
     },
     {
@@ -273,7 +273,7 @@
       "direction": "OUT",
       "quantity": "2",
       "protocol": "",
-      "condition": "후면 초록 3핀 Phoenix 단자 2개(QD1·QD2, 멀티뷰 출력 9·10번과 짝). 단자 1(QD1)은 입력 1~4번 중, 단자 2(QD2)는 입력 5~8번 중 원하는 포트 하나를 골라 그 오디오를 추출한다 — 전면 터치 패널의 [Function] → [QD Audio] 메뉴나 RS-232 IS 명령으로 선택",
+      "condition": "후면 초록 3핀 피닉스 단자 2개(QD1·QD2, 멀티뷰 출력 9·10번과 짝). 단자 1(QD1)은 입력 1~4번 중, 단자 2(QD2)는 입력 5~8번 중 원하는 포트 하나를 골라 그 오디오를 추출한다 — 전면 터치 패널의 [Function] → [QD Audio] 메뉴나 RS-232 IS 명령으로 선택",
       "source": "M1",
       "verification": "VERIFIED"
     }
@@ -300,7 +300,7 @@
       },
       {
         "name": "QUAD",
-        "summary": "출력 9·10번에서 사용, 한 화면 최대 8분할(8CH Multi-view)",
+        "summary": "출력 9·10번에서 사용, 한 화면 최대 8분할(8CH 멀티뷰)",
         "detail": "Q1(입력 1~4)·Q2(입력 5~8) 그룹별 4분할, 합쳐서 8분할(비율무시·16:9)도 가능",
         "page": "22–23",
         "layouts": [
@@ -362,7 +362,7 @@
       {
         "n": 4,
         "label": "AUDIO OUT ×2(QD1·QD2)",
-        "desc": "초록 3핀 Phoenix · 단자 1(QD1)=입력 1~4번, 단자 2(QD2)=입력 5~8번 중 원하는 포트 하나를 골라 추출",
+        "desc": "초록 3핀 피닉스 · 단자 1(QD1)=입력 1~4번, 단자 2(QD2)=입력 5~8번 중 원하는 포트 하나를 골라 추출",
         "x1": 845,
         "x2": 940,
         "side": "bottom"
