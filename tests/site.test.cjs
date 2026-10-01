@@ -595,3 +595,10 @@ test('0.187: HDCP 버전 표기를 자료와 사용자 결정대로 채웠다',(
   assert.ok(obux.features.some(f=>f.text==='HDCP 1.x, 2.2 지원'));
   assert.ok(!obux.features.some(f=>f.text==='HDCP 지원'));
 });
+
+test('0.188: MR-4S는 프레임 사양만 적고 영상 사양은 장착 모듈 기준으로 안내한다',()=>{
+  const mr=JSON.parse(read('data/products/mr-4s.json'));
+  assert.ok(!mr.features.some(f=>/^(4K\/30|HDCP|EDID) 지원$/.test(f.text)));
+  assert.ok(!mr.specifications.some(s=>['비디오 대역폭','최대 해상도'].includes(s.name)));
+  assert.ok(mr.features.some(f=>f.text==='영상 사양(해상도·HDCP·EDID)은 장착 모듈 기준'));
+});
