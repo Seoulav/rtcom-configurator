@@ -572,3 +572,17 @@ test('0.184: 해상도(Extron 방식)·단위 붙여 쓰기 표기 통일이 사
   assert.match(read('src/card-specs.js'),/\['필수 케이블','S\/FTP CAT6A 필수\(UTP 사용 불가\)'\]/);
   assert.match(read('src/products.js'),/const unitGap=unit=>/,'04 제품 사양 표는 값과 단위를 붙여 쓴다');
 });
+
+test('0.186: 사양값 확인 8그룹을 사용자 답변대로 정리했다',()=>{
+  const vdm=read('data/products/vdm.json');
+  assert.doesNotMatch(vdm,/9종|9가지/,'VDM 프레임은 라인업과 같은 10종');
+  assert.match(vdm,/128, 180, 256, 288/);
+  assert.match(vdm,/HDCP 1\.x·2\.0 지원/);
+  assert.match(read('src/core.js'),/SPX 출력 카드는 3종\(HOS10·HOS12·COS12\)/);
+  assert.doesNotMatch(read('data/products/hd-d102u.json'),/2\.0b/);
+  const qms=read('data/products/qms-88ux.json');
+  assert.doesNotMatch(qms,/전용/,'QMS-88UX 출력 9·10번은 멀티뷰·일반 라우팅 겸용');
+  assert.match(JSON.parse(qms).videoModes.modes.find(m=>m.name==='QUAD').summary,/출력 9·10번에서/,'신호 흐름 그림이 9·10번을 읽는 문구');
+  assert.match(read('data/products/ft103-u-h-fr103-u.json'),/1080p\/60, 최대 Ultra 4K/);
+  assert.doesNotMatch(read('data/products/xdm-ft101-fr101.json'),/3핀 Phoenix 오디오 케이블/);
+});
