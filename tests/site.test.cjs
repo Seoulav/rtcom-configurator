@@ -586,3 +586,12 @@ test('0.186: 사양값 확인 8그룹을 사용자 답변대로 정리했다',()
   assert.match(read('data/products/ft103-u-h-fr103-u.json'),/1080p\/60, 최대 Ultra 4K/);
   assert.doesNotMatch(read('data/products/xdm-ft101-fr101.json'),/3핀 Phoenix 오디오 케이블/);
 });
+
+test('0.187: HDCP 버전 표기를 자료와 사용자 결정대로 채웠다',()=>{
+  const obhd=JSON.parse(read('data/products/obhd-2c.json'));
+  assert.equal(obhd.features.filter(f=>/HDCP/.test(f.text)).map(f=>f.text).join(),'HDCP 1.x 지원');
+  assert.equal(obhd.specifications.find(s=>s.name==='HDCP').value,'HDCP 1.x 지원');
+  const obux=JSON.parse(read('data/products/obux-1c.json'));
+  assert.ok(obux.features.some(f=>f.text==='HDCP 1.x, 2.2 지원'));
+  assert.ok(!obux.features.some(f=>f.text==='HDCP 지원'));
+});

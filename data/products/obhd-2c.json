@@ -19,7 +19,7 @@
   "catalogPages": "39",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 41쪽의 OBHD-2C 소개·주요기능·크기 및 무게·제품사양에서 확인했다.",
   "packageStatus": "VERIFIED",
-  "overview": "OBHD-2C는 HDMI 영상 신호를 광케이블을 통해 장거리 전송하기 위한 한 쌍의 송신기와 수신기다. 송신기는 HDMI 신호를 광신호로 변환하고, 수신기는 광신호를 HDMI 신호로 복원한다.\n\nHDMI 영상 신호를 광케이블 2가닥으로 Single Mode 사용 시 최대 2km, Multi Mode 사용 시 최대 500m까지 전송할 수 있다. Full HD(1920x1080 @ 60Hz)와 HDCP를 지원하며 Plug & Play로 쉽게 설치할 수 있다.",
+  "overview": "OBHD-2C는 HDMI 영상 신호를 광케이블을 통해 장거리 전송하기 위한 한 쌍의 송신기와 수신기다. 송신기는 HDMI 신호를 광신호로 변환하고, 수신기는 광신호를 HDMI 신호로 복원한다.\n\nHDMI 영상 신호를 광케이블 2가닥으로 Single Mode 사용 시 최대 2km, Multi Mode 사용 시 최대 500m까지 전송할 수 있다. Full HD(1920x1080 @ 60Hz)와 HDCP 1.x를 지원하며 Plug & Play로 쉽게 설치할 수 있다.",
   "images": [
     {
       "role": "Main",
@@ -141,7 +141,7 @@
       "source": "C"
     },
     {
-      "text": "HDCP 지원",
+      "text": "HDCP 1.x 지원",
       "source": "C"
     },
     {
@@ -202,7 +202,7 @@
     {
       "group": "Video",
       "name": "HDCP",
-      "value": "HDCP 지원",
+      "value": "HDCP 1.x 지원",
       "unit": "",
       "condition": "",
       "source": "C",
