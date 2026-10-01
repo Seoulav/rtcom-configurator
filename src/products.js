@@ -492,7 +492,8 @@
         body+=arrow(rxX+rxW+6,y,dstX-22,y,COLOR_OUT)+monitorIcon(dstX,y-4,i===rows-1?'디스플레이':'',0.8);
       }
       body+=`<text x="${(r6X+r6W+rxX)/2}" y="${rowY(0)-24}" text-anchor="middle" font-size="11" font-weight="700" fill="${COLOR_COPPER}">CATx(CAT5e) · PoC</text>`;
-      const distances=(item.specifications||[]).filter(spec=>/전송\s?거리/.test(spec.name)).map(spec=>`${/1080p/.test(spec.condition)?'1080p':'4K/60'} 최대 ${spec.value}${spec.unit||''}`);
+      // 0.193: 전송 거리를 한 행에 줄 나눔("4K/60 @ 4:4:4 50m\n1080p/60 60m")으로 적으면 줄마다 범례 한 토막으로 쓴다.
+      const distances=(item.specifications||[]).filter(spec=>/전송\s?거리/.test(spec.name)).flatMap(spec=>String(spec.value).includes('\n')?String(spec.value).split('\n').map(line=>line.replace(/\s*\([^)]*\)/g,'').replace(/\s*@\s*4:4:4/,'').trim()):[`${/1080p/.test(spec.condition)?'1080p':'4K/60'} 최대 ${spec.value}${spec.unit||''}`]);
       const captions=[[COLOR_IN,'입력(HDMI)'],[COLOR_COPPER,'CATx 전송'],[COLOR_IR,'IR 제어'],[COLOR_POWER,'전원'],[COLOR_OUT,'출력(HDMI)']];
       if(distances.length)captions.push([COLOR_COPPER,`CAT5e 기준 ${distances.join(' · ')}`]);
       return diagramWrap(body,width,height,captions)+`<p class="rt-pg-hint" style="text-align:center">사양서 연결도 기준입니다. PoC로 송·수신기 중 한쪽에만 전원을 연결해도 됩니다. 모듈은 TX(송신)·RX(수신)를 골라 쓸 수 있고(그림은 자주 쓰는 TX 구성), RX 사용과 SPX-RX IR 기능(IR Blaster)은 현장에서는 잘 쓰지 않습니다. IR Blaster 연결은 제조사 원본 다이어그램을 참고하세요.</p>`;

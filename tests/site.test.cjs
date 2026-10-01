@@ -627,3 +627,15 @@ test('0.192: 문서 버튼은 "카탈로그 보기 | ↓ 다운로드", 화면 �
   assert.doesNotMatch(p.replace(/\/\/.*$/gm,''),/내려받기/);assert.doesNotMatch(a.replace(/\/\/.*$/gm,''),/내려받/);
   assert.match(c,/max-width:480px\)\{#rtcom-design \.rt-pg-doc-save-text/);
 });
+
+test('0.193: 전송기 최대 전송 거리는 제품마다 한 행(값 칸 줄 나눔)',()=>{
+  const files=fs.readdirSync('data/products').filter(f=>f.endsWith('.json')&&f!=='index.json');
+  for(const f of files){
+    const j=JSON.parse(read(`data/products/${f}`));
+    assert.ok((j.specifications||[]).filter(s=>/^최대 전송 거리$/.test(s.name)).length<=1,f);
+  }
+  const ft=JSON.parse(read('data/products/ft101-u-fr101-u.json')).specifications.find(s=>s.name==='최대 전송 거리');
+  assert.equal(ft.value,'싱글모드 2km\n멀티모드 500m');
+  const r6=JSON.parse(read('data/products/spx-r6.json')).specifications.find(s=>s.name==='최대 전송 거리');
+  assert.equal(r6.value,'4K/60 @ 4:4:4 50m\n1080p/60 60m');
+});

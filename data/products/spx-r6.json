@@ -197,18 +197,9 @@
     {
       "group": "Transmission",
       "name": "최대 전송 거리",
-      "value": "50",
-      "unit": "m",
-      "condition": "CAT5e 기준 · 4K/60 @ 4:4:4",
-      "source": "S1",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "Transmission",
-      "name": "최대 전송 거리",
-      "value": "60",
-      "unit": "m",
-      "condition": "CAT5e 기준 · 1080p/60",
+      "value": "4K/60 @ 4:4:4 50m\n1080p/60 60m",
+      "unit": "",
+      "condition": "CAT5e 기준",
       "source": "S1",
       "verification": "VERIFIED"
     },
