@@ -305,7 +305,7 @@
   "io": [
     {
       "group": "TX · Video",
-      "connector": "Female HDMI connector",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "IN",
       "quantity": "1",
@@ -316,7 +316,7 @@
     },
     {
       "group": "TX · Transmission",
-      "connector": "Female 1LC connector",
+      "connector": "LC",
       "signal": "Fiber",
       "direction": "OUT",
       "quantity": "1",
@@ -327,7 +327,7 @@
     },
     {
       "group": "TX · Audio",
-      "connector": "Female Phoenix connector 5p",
+      "connector": "피닉스 5핀",
       "signal": "Stereo Audio",
       "direction": "IN",
       "quantity": "1",
@@ -338,7 +338,7 @@
     },
     {
       "group": "TX · Control",
-      "connector": "Female Phoenix connector 5p",
+      "connector": "피닉스 5핀",
       "signal": "RS-232",
       "direction": "BIDIR",
       "quantity": "1",
@@ -371,7 +371,7 @@
     },
     {
       "group": "RX · Video",
-      "connector": "Female HDMI connector",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "OUT",
       "quantity": "1",
@@ -382,7 +382,7 @@
     },
     {
       "group": "RX · Transmission",
-      "connector": "Female 1LC connector",
+      "connector": "LC",
       "signal": "Fiber",
       "direction": "IN",
       "quantity": "1",
@@ -393,7 +393,7 @@
     },
     {
       "group": "RX · Audio",
-      "connector": "Female Phoenix connector 5p",
+      "connector": "피닉스 5핀",
       "signal": "Stereo Audio",
       "direction": "OUT",
       "quantity": "1",
@@ -404,7 +404,7 @@
     },
     {
       "group": "RX · Control",
-      "connector": "Female Phoenix connector 5p",
+      "connector": "피닉스 5핀",
       "signal": "RS-232",
       "direction": "BIDIR",
       "quantity": "1",

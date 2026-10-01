@@ -612,3 +612,11 @@ test('0.190: OBUX-1C만 멀티모드(OM3) 전용이고 나머지 광 제품은 �
     assert.match(s,/싱글모드/,`${id} 싱글모드`);assert.match(s,/멀티모드/,`${id} 멀티모드`);
   }
 });
+
+test('0.191: 커넥터는 암수(Female) 표기 없이 QMS-44UX처럼 이름만 쓴다',()=>{
+  const files=fs.readdirSync('data/products').filter(f=>f.endsWith('.json')&&f!=='index.json');
+  for(const f of files)assert.doesNotMatch(read(`data/products/${f}`),/female|\(female\)|암\(/i,f);
+  assert.doesNotMatch(read('src/card-specs.js'),/Female|암\(/,'카드 상세 커넥터');
+  const q=JSON.parse(read('data/products/qms-88ux.json'));
+  assert.equal(q.io[0].connector,'HDMI');
+});

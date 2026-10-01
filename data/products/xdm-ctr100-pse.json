@@ -230,7 +230,7 @@
   "io": [
     {
       "group": "Video",
-      "connector": "Female HDMI connector",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "IN",
       "quantity": "1",
@@ -241,7 +241,7 @@
     },
     {
       "group": "Video",
-      "connector": "Female HDMI connector",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "OUT",
       "quantity": "1",
@@ -252,7 +252,7 @@
     },
     {
       "group": "Transmission",
-      "connector": "Female RJ45",
+      "connector": "RJ45",
       "signal": "HDBaseT",
       "direction": "BIDIR",
       "quantity": "1",
@@ -263,7 +263,7 @@
     },
     {
       "group": "Control",
-      "connector": "Female Phoenix connector 5p",
+      "connector": "피닉스 5핀",
       "signal": "RS-232 / Audio",
       "direction": "BIDIR",
       "quantity": "1",
@@ -274,7 +274,7 @@
     },
     {
       "group": "Audio",
-      "connector": "Female Phoenix connector 5p(RS-232와 공용, L·R·접지)",
+      "connector": "피닉스 5핀(RS-232와 공용, L·R·접지)",
       "signal": "Analog Stereo Audio",
       "direction": "OUT",
       "quantity": "1",

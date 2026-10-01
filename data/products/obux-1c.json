@@ -257,7 +257,7 @@
   "io": [
     {
       "group": "TX · Video",
-      "connector": "HDMI (female)",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "IN",
       "quantity": "1",
@@ -279,7 +279,7 @@
     },
     {
       "group": "TX · Transmission",
-      "connector": "SC connector (female)",
+      "connector": "SC",
       "signal": "Fiber (OM3 Multi Mode)",
       "direction": "OUT",
       "quantity": "1",
@@ -301,7 +301,7 @@
     },
     {
       "group": "RX · Transmission",
-      "connector": "SC connector (female)",
+      "connector": "SC",
       "signal": "Fiber (OM3 Multi Mode)",
       "direction": "IN",
       "quantity": "1",
@@ -312,7 +312,7 @@
     },
     {
       "group": "RX · Video",
-      "connector": "HDMI (female)",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "OUT",
       "quantity": "1",

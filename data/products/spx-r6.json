@@ -270,7 +270,7 @@
   "io": [
     {
       "group": "Video",
-      "connector": "HDMI Type A (19-pin Female)",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "BIDIR",
       "quantity": "6",

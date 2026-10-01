@@ -277,7 +277,7 @@
     },
     {
       "group": "TX · Control",
-      "connector": "Phoenix connector(녹색, 핀 수 미기재)",
+      "connector": "피닉스(녹색, 핀 수 미기재)",
       "signal": "RS-232",
       "direction": "BIDIR",
       "quantity": "1",
@@ -321,7 +321,7 @@
     },
     {
       "group": "RX · Control",
-      "connector": "Phoenix connector(녹색, 핀 수 미기재)",
+      "connector": "피닉스(녹색, 핀 수 미기재)",
       "signal": "RS-232",
       "direction": "BIDIR",
       "quantity": "1",
