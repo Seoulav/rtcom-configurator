@@ -11,14 +11,14 @@
     "Video",
     "Splitter"
   ],
-  "english": "1x2 HDMI 2.0 18Gbps splitter supporting 4K60 4:4:4",
-  "korean": "4K 60Hz 4:4:4를 지원하는 1입력 2출력 HDMI 2.0 18Gbps 분배기다.",
+  "english": "1x2 HDMI 2.0 18Gbps splitter supporting 4K/60 @ 4:4:4",
+  "korean": "4K/60 @ 4:4:4를 지원하는 1입력 2출력 HDMI 2.0 18Gbps 분배기다.",
   "subtitle": "1×2 HDMI 2.0 Splitter",
-  "lead": "하나의 HDMI 입력을 **손실 없이 2개의 동일한 출력**으로 분배합니다. 4K 60Hz 4:4:4를 지원합니다.",
+  "lead": "하나의 HDMI 입력을 **손실 없이 2개의 동일한 출력**으로 분배합니다. 4K/60 @ 4:4:4를 지원합니다.",
   "catalogPages": "29",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 31쪽의 소개·주요기능·제품사양·크기 및 무게·제품 이미지에서 확인했다.",
   "packageStatus": "VERIFIED",
-  "overview": "HD-D102U는 HDMI 신호용 고성능 분배기다. True HDMI 버전 2.0인 3840x2160p 60Hz 크로마샘플링 4:4:4 해상도를 지원한다.\n\n하나의 HDMI 입력신호를 신호의 손실 없이 2개의 동일한 출력으로 분배한다. HDCP(고대역 디지털 콘텐츠 보호)와 EDID(디스플레이 식별 정보)를 완벽 지원하여 호환 이슈 없이 사용할 수 있다.",
+  "overview": "HD-D102U는 HDMI 신호용 고성능 분배기다. True HDMI 버전 2.0인 3840x2160 @ 60Hz 크로마샘플링 4:4:4 해상도를 지원한다.\n\n하나의 HDMI 입력신호를 신호의 손실 없이 2개의 동일한 출력으로 분배한다. HDCP(고대역 디지털 콘텐츠 보호)와 EDID(디스플레이 식별 정보)를 완벽 지원하여 호환 이슈 없이 사용할 수 있다.",
   "images": [
     {
       "role": "Perspective",
@@ -89,7 +89,7 @@
   ],
   "features": [
     {
-      "text": "HDMI 2.0b, HDCP 2.2 지원",
+      "text": "HDMI 2.0, HDCP 2.2 지원",
       "source": "C"
     },
     {
@@ -130,7 +130,7 @@
     {
       "group": "Video",
       "name": "비디오 해상도",
-      "value": "최대 3840x2160p@60Hz",
+      "value": "최대 3840x2160 @ 60Hz",
       "unit": "",
       "condition": "",
       "source": "C",
@@ -246,7 +246,7 @@
       {
         "n": 3,
         "label": "STD/TV 스위치",
-        "desc": "STD: 4K 60Hz 기본 EDID · TV: OUT 1 디스플레이 EDID 복사",
+        "desc": "STD: 4K/60 기본 EDID · TV: OUT 1 디스플레이 EDID 복사",
         "x1": 348,
         "x2": 370,
         "side": "top",

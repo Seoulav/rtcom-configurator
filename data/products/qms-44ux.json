@@ -11,14 +11,14 @@
     "Video",
     "Matrix Switcher"
   ],
-  "english": "4x4 4K60 HDMI matrix switcher with seamless switching, video wall, quad view and PIP",
-  "korean": "심리스 스위칭·2x2 비디오 월·쿼드 뷰·PIP 기능을 갖춘 4K 60Hz 4x4 HDMI 매트릭스 스위처다.",
+  "english": "4x4 4K/60 HDMI matrix switcher with seamless switching, video wall, quad view and PIP",
+  "korean": "심리스 스위칭·2×2 비디오 월·쿼드뷰·PIP 기능을 갖춘 4K/60 4×4 HDMI 매트릭스 스위처다.",
   "subtitle": "4×4 HDMI Matrix Switcher · 심리스 스위칭",
-  "lead": "4개의 HDMI 입력을 **어떤 출력으로도 자유롭게 전환**하는 4K 60Hz 매트릭스입니다. 2×2 비디오 월·쿼드 뷰·PIP 기능을 지원합니다.",
+  "lead": "4개의 HDMI 입력을 **어떤 출력으로도 자유롭게 전환**하는 4K/60 매트릭스입니다. 2×2 비디오 월·쿼드뷰·PIP 기능을 지원합니다.",
   "catalogPages": "27",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 29쪽의 소개·주요기능·제품사양·크기 및 무게·제품 이미지에서 확인했다.",
   "packageStatus": "VERIFIED",
-  "overview": "QMS-44UX는 다재다능한 4K 60Hz Matrix Switcher다. 4x4 HDMI Matrix로서 Seamless Switching, 2x2 Video Wall, 2x2 Quad Viewer, PIP 기능을 갖추고 있다.\n\nRS-232C, LAN(TCP/IP), 전면 버튼으로 제어할 수 있다.",
+  "overview": "QMS-44UX는 다재다능한 4K/60 Matrix Switcher다. 4×4 HDMI Matrix로서 심리스 스위칭, 2×2 비디오 월, 2×2 쿼드뷰, PIP 기능을 갖추고 있다.\n\nRS-232C, LAN(TCP/IP), 전면 버튼으로 제어할 수 있다.",
   "images": [
     {
       "role": "Front",
@@ -183,7 +183,7 @@
     {
       "group": "Video",
       "name": "스케일링 해상도",
-      "value": "3840x2160p 60Hz, 3840x2160p 30Hz, 1920x1080p 60Hz, 1920x1080p 59.94Hz, 1920x1200p 60Hz, 1280x1024p 60Hz, 1280x720p 60Hz, 1280x720p 59.94Hz, 720x480p 60Hz, 1366x768p 60Hz, 1024x768p 60Hz",
+      "value": "3840x2160 @ 60Hz, 3840x2160 @ 30Hz, 1920x1080 @ 60Hz, 1920x1080 @ 59.94Hz, 1920x1200 @ 60Hz, 1280x1024 @ 60Hz, 1280x720 @ 60Hz, 1280x720 @ 59.94Hz, 720x480 @ 60Hz, 1366x768 @ 60Hz, 1024x768 @ 60Hz",
       "unit": "",
       "condition": "",
       "source": "C",
@@ -304,7 +304,7 @@
       },
       {
         "name": "WALL",
-        "summary": "2×2 비디오월, 1프레임 단위 베젤 보정",
+        "summary": "2×2 비디오 월, 1프레임 단위 베젤 보정",
         "layouts": [
           "2×2",
           "2×1",

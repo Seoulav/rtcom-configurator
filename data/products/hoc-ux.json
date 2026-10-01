@@ -11,10 +11,10 @@
     "Video",
     "Active Optical Cable"
   ],
-  "english": "High speed HDMI 2.0b active optical cable, 4K60 4:4:4, 18Gbps, up to 100m",
-  "korean": "4K 60Hz 4:4:4·18Gbps를 최대 100m까지 전송하는 HDMI 2.0b 액티브 광케이블이다.",
+  "english": "High speed HDMI 2.0b active optical cable, 4K/60 @ 4:4:4, 18Gbps, up to 100m",
+  "korean": "4K/60 @ 4:4:4·18Gbps를 최대 100m까지 전송하는 HDMI 2.0b 액티브 광케이블이다.",
   "subtitle": "High Speed HDMI Active Optical Cable",
-  "lead": "**4K 60Hz 4:4:4 신호를 최대 100m**까지 손실 없이 전송하는 HDMI 2.0b 액티브 광케이블입니다. 18Gbps 대역폭을 지원합니다.",
+  "lead": "**4K/60 @ 4:4:4 신호를 최대 100m**까지 손실 없이 전송하는 HDMI 2.0b 액티브 광케이블입니다. 18Gbps 대역폭을 지원합니다.",
   "catalogPages": "41",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 43쪽의 소개·주요기능·제품사양·제품 이미지에서 확인했다.",
   "packageStatus": "VERIFIED",
@@ -71,7 +71,7 @@
       "source": "C"
     },
     {
-      "text": "지원 해상도: 4K60@Hz 4:4:4 UHD HDR, Dolby Vision, 3D Deep Color",
+      "text": "지원 해상도: 4K/60 @ 4:4:4 UHD HDR, Dolby Vision, 3D Deep Color",
       "source": "C"
     },
     {
@@ -107,7 +107,7 @@
     {
       "group": "Video",
       "name": "지원 해상도",
-      "value": "최대 4K 60Hz",
+      "value": "최대 4K/60",
       "unit": "",
       "condition": "4:4:4",
       "source": "C",

@@ -14,14 +14,14 @@
     "Video",
     "Splitter"
   ],
-  "english": "1x8 HDMI 2.0 18Gbps splitter supporting 4K60 4:4:4 with EDID minder",
-  "korean": "4K 60Hz 4:4:4와 EDID 마인더를 지원하는 1입력 8출력 HDMI 2.0 18Gbps 분배기다.",
+  "english": "1x8 HDMI 2.0 18Gbps splitter supporting 4K/60 @ 4:4:4 with EDID minder",
+  "korean": "4K/60 @ 4:4:4와 EDID 마인더를 지원하는 1입력 8출력 HDMI 2.0 18Gbps 분배기다.",
   "subtitle": "1×8 HDMI 2.0 Splitter · EDID 마인더",
-  "lead": "하나의 HDMI 입력을 **손실 없이 8개의 동일한 출력**으로 분배합니다. 4K 60Hz 4:4:4를 지원합니다.",
+  "lead": "하나의 HDMI 입력을 **손실 없이 8개의 동일한 출력**으로 분배합니다. 4K/60 @ 4:4:4를 지원합니다.",
   "catalogPages": "36",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 38쪽의 소개·주요기능·제품사양·크기 및 무게·제품 이미지에서 확인했다.",
   "packageStatus": "VERIFIED",
-  "overview": "HD-108U는 HDMI 신호용 고성능 분배기다. True HDMI 2.0 3840x2160p 60Hz 크로마샘플링 4:4:4 해상도를 지원한다.\n\n하나의 HDMI 입력신호를 신호의 손실 없이 8개의 동일한 출력으로 분배하며 HDCP(고대역 디지털 콘텐츠 보호)와 EDID(디스플레이 식별 정보)를 완벽 지원하여 호환 이슈 없이 사용할 수 있다. 외부 EDID와 내부에 저장된 EDID를 사용할 수 있어 EDID 마인더 기능도 수행한다.",
+  "overview": "HD-108U는 HDMI 신호용 고성능 분배기다. True HDMI 2.0 3840x2160 @ 60Hz 크로마샘플링 4:4:4 해상도를 지원한다.\n\n하나의 HDMI 입력신호를 신호의 손실 없이 8개의 동일한 출력으로 분배하며 HDCP(고대역 디지털 콘텐츠 보호)와 EDID(디스플레이 식별 정보)를 완벽 지원하여 호환 이슈 없이 사용할 수 있다. 외부 EDID와 내부에 저장된 EDID를 사용할 수 있어 EDID 마인더 기능도 수행한다.",
   "images": [
     {
       "role": "Front",
@@ -150,7 +150,7 @@
     {
       "group": "Video",
       "name": "비디오 해상도",
-      "value": "최대 3840x2160p@60Hz",
+      "value": "최대 3840x2160 @ 60Hz",
       "unit": "",
       "condition": "",
       "source": "C",
@@ -276,8 +276,8 @@
     "x2": 1595,
     "y2": 187,
     "label": "EDID 로터리 스위치",
-    "desc": "전면 파란색 EDID 로터리 스위치로 디스플레이 EDID를 선택한다. HD-13U와 달리 별도 SET 버튼이 없어, 로터리를 'F'로 돌리기만 하면 OUTPUT 1에 연결된 디스플레이의 EDID를 바로 읽어 FLASH에 저장한다.",
-    "default": "1 = 3840x2160p@60 PCM 2CH(기본값)",
+    "desc": "전면 파란색 EDID 로터리 스위치로 디스플레이 EDID를 선택한다. HD-13U와 달리 별도 SET 버튼이 없어, 로터리 스위치를 'F'로 돌리기만 하면 OUTPUT 1에 연결된 디스플레이의 EDID를 바로 읽어 FLASH에 저장한다.",
+    "default": "1 = 3840x2160 @ 60Hz PCM 2CH(기본값)",
     "steps": [
       {
         "title": "외부 EDID 저장(External EDID Setting)",
@@ -303,49 +303,49 @@
       },
       {
         "code": "1",
-        "function": "3840x2160p@60 PCM 2CH(기본값)",
+        "function": "3840x2160 @ 60Hz PCM 2CH(기본값)",
         "highlight": true
       },
       {
         "code": "2",
-        "function": "3840x2160p@60 Multi"
+        "function": "3840x2160 @ 60Hz Multi"
       },
       {
         "code": "3",
-        "function": "3840x2160p@60 Dolby"
+        "function": "3840x2160 @ 60Hz Dolby"
       },
       {
         "code": "4",
-        "function": "3840x2160p@30 PCM 2CH"
+        "function": "3840x2160 @ 30Hz PCM 2CH"
       },
       {
         "code": "5",
-        "function": "3840x2160p@30 Multi"
+        "function": "3840x2160 @ 30Hz Multi"
       },
       {
         "code": "6",
-        "function": "3840x2160p@30 Dolby"
+        "function": "3840x2160 @ 30Hz Dolby"
       },
       {
         "code": "7",
-        "function": "1920x1080p@60 PCM 2CH",
+        "function": "1920x1080 @ 60Hz PCM 2CH",
         "highlight": true
       },
       {
         "code": "8",
-        "function": "1920x1080p@60 Multi"
+        "function": "1920x1080 @ 60Hz Multi"
       },
       {
         "code": "9",
-        "function": "1920x1080p@60 Dolby"
+        "function": "1920x1080 @ 60Hz Dolby"
       },
       {
         "code": "A",
-        "function": "1920x1080p@60 DVI"
+        "function": "1920x1080 @ 60Hz DVI"
       },
       {
         "code": "B",
-        "function": "1920x1200@60 DVI"
+        "function": "1920x1200 @ 60Hz DVI"
       },
       {
         "code": "C",

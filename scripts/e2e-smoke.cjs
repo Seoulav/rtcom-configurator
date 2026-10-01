@@ -662,7 +662,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     // 0.98 XDM-PSU 03 Signal Flow: 제조사 연결도처럼 프레임(CIS100·COS100) · PSU(POH·PHX) · CTR100 Tx/Rx를 장비 그림으로 그리고 케이블 위 점선이 흐른다. 움직임 줄이기 설정에서는 멈춘다.
     await page.goto(`${home}#products/xdm-psu`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-psu-anim');
-    const psuFlow=await page.evaluate(()=>{const svg=document.querySelector('.rt-psu-anim').closest('svg'),t=svg.textContent;return {flows:svg.querySelectorAll('.rt-psu-flow').length,rev:svg.querySelectorAll('.rt-psu-flow.rt-psu-rev').length,anim:getComputedStyle(svg.querySelector('.rt-psu-flow')).animationName,labels:['XDM-CIS100','XDM-COS100','XDM-PSU · POH','XDM-PSU · PHX','Tx · 송신기','Rx · 수신기','2핀 전원선'].every(s=>t.includes(s))}});
+    const psuFlow=await page.evaluate(()=>{const svg=document.querySelector('.rt-psu-anim').closest('svg'),t=svg.textContent;return {flows:svg.querySelectorAll('.rt-psu-flow').length,rev:svg.querySelectorAll('.rt-psu-flow.rt-psu-rev').length,anim:getComputedStyle(svg.querySelector('.rt-psu-flow')).animationName,labels:['XDM-CIS100','XDM-COS100','XDM-PSU · POH','XDM-PSU · PHX','TX · 송신기','RX · 수신기','2핀 전원선'].every(s=>t.includes(s))}});
     await page.emulateMedia({reducedMotion:'reduce'});
     const psuStill=await page.$eval('.rt-psu-flow',el=>getComputedStyle(el).animationName);
     await page.emulateMedia({reducedMotion:'no-preference'});
@@ -873,8 +873,8 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     check('PC 04 연결 흐름: 사진은 상자 안, 케이블 점선 위는 "최대 100m"만(상자 안), 케이블 문장은 아래 한 줄에 "S/FTP CAT6A 필수", 이름은 한 줄, 옛 "CAT6a/CAT7" 표기 없음',flowFit.imgs.length>0&&flowFit.imgs.every(Boolean)&&flowFit.cable==='최대 100m'&&flowFit.cableFit&&/S\/FTP CAT6A 필수/.test(flowFit.spec)&&flowFit.names.every(h=>h<=22)&&!flowFit.old,JSON.stringify(flowFit));
     // 0.177(사용자 결정 2026-09-29 "둘 다 진행"): 04 왼쪽 목록은 카드마다 제목·연결 채널 한 줄 + [전송기 | 연결하지 않음] 선택 막대 한 줄이다.
     // 선택지는 한 줄(같은 top)에 놓이고, 설명 목록은 숨고, 카드 묶음 하나가 120px을 넘지 않는다. XDM-CT103/CR103 단자 설명도 "CAT6A S/FTP"로 통일했다.
-    const compact=await pc.evaluate(async()=>{const groups=[...document.querySelectorAll('.rt-cg-link-group')];const res=await fetch('data/products/xdm-ct103-cr103.json').then(r=>r.text());return {groups:groups.length,maxHeight:Math.max(...groups.map(g=>Math.round(g.getBoundingClientRect().height))),oneLine:groups.every(g=>{const tops=[...g.querySelectorAll('.rt-cg-row')].map(b=>Math.round(b.getBoundingClientRect().top));return tops.length>1&&Math.max(...tops)-Math.min(...tops)<=1}),specsHidden:[...document.querySelectorAll('.rt-cg-link-group .rt-cg-row-specs')].every(el=>getComputedStyle(el).display==='none'),titled:[...document.querySelectorAll('.rt-cg-link-group .rt-cg-row')].every(b=>b.title),ctUftp:/U\/FTP로 연결/.test(res),ctSftp:(res.match(/CAT6A S\/FTP로 연결/g)||[]).length}});
-    check('PC 04 왼쪽 목록이 카드마다 한 줄 선택 막대(선택지 한 줄·설명 숨김·마우스 설명 title·묶음 높이 120px 이하)이고, XDM-CT103/CR103 단자 설명은 "CAT6A S/FTP"',compact.groups===18&&compact.maxHeight<=120&&compact.oneLine&&compact.specsHidden&&compact.titled&&!compact.ctUftp&&compact.ctSftp===2,JSON.stringify(compact));
+    const compact=await pc.evaluate(async()=>{const groups=[...document.querySelectorAll('.rt-cg-link-group')];const res=await fetch('data/products/xdm-ct103-cr103.json').then(r=>r.text());return {groups:groups.length,maxHeight:Math.max(...groups.map(g=>Math.round(g.getBoundingClientRect().height))),oneLine:groups.every(g=>{const tops=[...g.querySelectorAll('.rt-cg-row')].map(b=>Math.round(b.getBoundingClientRect().top));return tops.length>1&&Math.max(...tops)-Math.min(...tops)<=1}),specsHidden:[...document.querySelectorAll('.rt-cg-link-group .rt-cg-row-specs')].every(el=>getComputedStyle(el).display==='none'),titled:[...document.querySelectorAll('.rt-cg-link-group .rt-cg-row')].every(b=>b.title),ctUftp:/U\/FTP로 연결/.test(res),ctSftp:(res.match(/S\/FTP CAT6A 케이블로 연결/g)||[]).length}});
+    check('PC 04 왼쪽 목록이 카드마다 한 줄 선택 막대(선택지 한 줄·설명 숨김·마우스 설명 title·묶음 높이 120px 이하)이고, XDM-CT103/CR103 단자 설명은 "S/FTP CAT6A"(0.184 표기 통일)',compact.groups===18&&compact.maxHeight<=120&&compact.oneLine&&compact.specsHidden&&compact.titled&&!compact.ctUftp&&compact.ctSftp===2,JSON.stringify(compact));
     const [listHeight,previewHeight]=await pc.evaluate(()=>[document.querySelector('.rt-cg-list').getBoundingClientRect().height,document.querySelector('.rt-cg-preview.rt-link-preview').getBoundingClientRect().height]);
     if(listHeight>previewHeight){
       // sticky는 부모 컨테이너(.rt-cg-split, 높이 = 목록 높이)를 벗어나는 순간 풀린다. 문서 맨 아래(document.body.scrollHeight)까지
@@ -1142,7 +1142,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
         const [oldPop,fallback]=await Promise.all([s.waitForEvent('popup'),s.waitForEvent('download',{timeout:16000}),s.click('[data-action="av-builder-open"]')]);
         const fallbackText=await s.evaluate(()=>document.querySelector('#save-status')?.textContent||'');
         await oldPop.close();await s.context().unroute('https://seoul-visual-tech.github.io/**');
-        check('03 ② "AV 빌더에서 바로 열기": 새 탭(?import=rtcom)에 준비 신호가 오면 구성도(version 1, 첫 포트 "HDMI #1-1 PC")를 보내고 완료를 표시하며, 준비 신호가 없으면 10초 뒤 같은 파일을 내려받음',got.search==='?import=rtcom'&&got.got&&got.got.version===1&&got.got.first==='HDMI #1-1 PC'&&got.got.nodes>0&&/AV 빌더에 구성을 넣었습니다 · 장비 \d+대/.test(doneText)&&fallback.suggestedFilename()==='RTCOM-XDM-12-av-builder.json'&&/자동 받기를 지원하지 않아 파일로 내려받았습니다/.test(fallbackText),JSON.stringify({got,doneText,fallback:fallback.suggestedFilename(),fallbackText}));
+        check('03 ② "AV 빌더에서 바로 열기": 새 탭(?import=rtcom)에 준비 신호가 오면 구성도(version 1, 첫 포트 "HDMI #1-1 PC")를 보내고 완료를 표시하며, 준비 신호가 없으면 10초 뒤 같은 파일을 내려받음',got.search==='?import=rtcom'&&got.got&&got.got.version===1&&got.got.first==='HDMI #1-1 PC'&&got.got.nodes>0&&/AV 빌더에 구성을 넣었습니다 · 장비 \d+대/.test(doneText)&&fallback.suggestedFilename()==='RTCOM-XDM-12-av-builder.json'&&/자동 받기를 지원하지 않아 파일로 다운로드했습니다/.test(fallbackText),JSON.stringify({got,doneText,fallback:fallback.suggestedFilename(),fallbackText}));
         await s.click('[data-tool="undo"]');
         const afterUndo=await s.evaluate(()=>[...document.querySelectorAll('.rt-signal-input')].slice(0,2).map(i=>i.value));
         await s.click('[data-action="back"]');const backToSlots=await s.locator('.rt-rack-slot').count()>0&&await s.locator('.rt-signal-input').count()===0;
@@ -1174,8 +1174,19 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       const touch=await browser.newContext({viewport:{width:416,height:900},isMobile:true,hasTouch:true});const tp=await touch.newPage();
       await tp.goto(home,{waitUntil:'networkidle'});await tp.locator('button[data-family="XDM"]').first().click();await tp.locator('.rt-cg-preview [data-action="preview-next"]').first().click();
       await tp.click('button[data-model="XDM-12"]');await tp.locator('.rt-cg-preview [data-action="preview-next"]').first().click();
-      const touchChips=await tp.evaluate(()=>({chips:document.querySelectorAll('.rt-card-info-chip').length,draggable:document.querySelectorAll('.rt-card-info-chip[draggable]').length,palette:!!document.querySelector('.rt-card-palette')}));
-      check('휴대폰(터치)에서는 카드 정보 버튼을 끌 수 없고 안내 문구도 기존과 같음',touchChips.chips>0&&touchChips.draggable===0&&!touchChips.palette,JSON.stringify(touchChips));
+      const touchChips=await tp.evaluate(()=>({chips:document.querySelectorAll('.rt-card-info-chip').length,draggable:document.querySelectorAll('.rt-card-info-chip[draggable]').length,tap:document.querySelectorAll('.rt-card-info-chip[data-tap-card]').length}));
+      check('휴대폰(터치)에서는 카드 타일을 끌 수 없고 눌러서 고르는 타일로 바뀜(0.193 눌러서 옮기기)',touchChips.chips>0&&touchChips.draggable===0&&touchChips.tap===touchChips.chips,JSON.stringify(touchChips));
+      // 0.193 눌러서 옮기기(사용자 결정 2026-09-30): 타일 선택 → 다른 방향 슬롯은 안내만 → 같은 방향 슬롯에 장착 → 취소 → 팝업 "이동"으로 다른 슬롯으로 옮김.
+      const filled=()=>tp.evaluate(()=>[...document.querySelectorAll('.rt-rack-slot-filled')].map(b=>b.dataset.slot));
+      await tp.locator('button[data-tap-card="XDM-HIS100"]').click();
+      const picked=await tp.evaluate(()=>({on:document.querySelector('.rt-tap-tile-on')?.dataset.tapCard,banner:document.querySelector('.rt-tap-banner')?.innerText||''}));
+      await tp.locator('button[data-slot="out-1"]').click();const wrong=await filled();
+      await tp.locator('button[data-slot="in-1"]').click();const placed=await filled();
+      await tp.locator('[data-tap-cancel]').click();const bannerGone=await tp.locator('.rt-tap-banner').count();
+      await tp.locator('button[data-slot="in-1"]').click();await tp.locator('.rt-card-modal [data-tap-move]').click();
+      const movingBanner=await tp.evaluate(()=>document.querySelector('.rt-tap-banner')?.innerText||'');
+      await tp.locator('button[data-slot="in-3"]').click();const moved=await filled();
+      check('휴대폰(터치) 눌러서 옮기기: 카드 타일을 고른 뒤 같은 방향 슬롯을 누르면 장착되고(다른 방향은 안 됨), 끝내기로 선택을 풀고, 장착한 카드는 팝업 "이동"으로 다른 슬롯에 옮겨짐',picked.on==='XDM-HIS100'&&/선택됨/.test(picked.banner)&&wrong.length===0&&placed.join()==='in-1'&&bannerGone===0&&/이동 중/.test(movingBanner)&&moved.join()==='in-3',JSON.stringify({picked,wrong,placed,bannerGone,movingBanner,moved}));
       await touch.close();
       await p3.close();
     }

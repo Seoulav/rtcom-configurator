@@ -29,19 +29,19 @@
     let changedSlot=null;
     // XDM 연동 전송기 정보(RTCom 종합 카탈로그 p.10~12). 키는 저장 파일·BOM에 쓰이는 전송기 이름과 같다.
     const extenderInfo={
-      'XDM-CTR100 · TX':{model:'XDM-CTR100',role:'HDBaseT 3.0 송·수신기 · DIP 스위치 TX 설정',image:'output/design/assets/extenders/xdm-ctr100.webp',specs:['4K60 4:4:4 · 최대 100m (S/FTP CAT6A 필수)','HDMI 입력·출력 각 1 · RS-232+ · 오디오 출력','전원: XDM-PSU로 공급 · CTR100 개별 전원 불필요 (매트릭스 카드 구성에서는 PSE 사용 불가)'],pair:'XDM-CIS100',page:10,recommended:true},
-      'XDM-CTR100 · RX':{model:'XDM-CTR100',role:'HDBaseT 3.0 송·수신기 · DIP 스위치 RX 설정',image:'output/design/assets/extenders/xdm-ctr100.webp',specs:['4K60 4:4:4 · 최대 100m (S/FTP CAT6A 필수)','HDMI 입력·출력 각 1 · RS-232+ · 오디오 출력','전원: XDM-PSU로 공급 · CTR100 개별 전원 불필요 (매트릭스 카드 구성에서는 PSE 사용 불가)'],pair:'XDM-COS100',page:10,recommended:true},
-      'XDM-CT103':{model:'XDM-CT103',role:'HDBaseT 3.0 1 Gang 벽부형 송신기',image:'output/design/assets/extenders/xdm-ct103.webp',specs:['4K60 4:4:4 · 최대 100m (S/FTP CAT6A 필수)','HDMI 1 · 오디오 입력 1','XDM 슬롯 POE로 별도 전원 없이 사용'],pair:'XDM-CIS100',page:11},
-      'XDM-CR103':{model:'XDM-CR103',role:'HDBaseT 3.0 1 Gang 벽부형 수신기',image:'output/design/assets/extenders/xdm-cr103.webp',specs:['4K60 4:4:4 · 최대 100m (S/FTP CAT6A 필수)','HDMI 1 · 오디오 1','XDM 슬롯 POE로 별도 전원 없이 사용'],pair:'XDM-COS100',page:11},
-      'XDM-FT101':{model:'XDM-FT101',role:'4K 광 송신기',image:'output/design/assets/extenders/xdm-ft101.webp',specs:['4K60 4:4:4 · HDMI 2.0','싱글모드 2km · 멀티모드 300m (LC 1)','오디오 삽입 · RS-232+'],pair:'XDM-FIS100',page:12,recommended:true},
-      [RtCore.psePair]:{model:'CTR100 PSE + CTR100',role:'HDMI 연장 한 쌍 (HDBaseT 3.0)',images:['output/design/assets/extenders/xdm-ctr100-pse.webp','output/design/assets/extenders/xdm-ctr100.webp'],specs:['4K60 4:4:4 · 최대 100m (S/FTP CAT6A 필수)','전원: PSE 쪽에만 연결 · CTR100은 전원 불필요','두 제품 모두 DIP 스위치로 TX/RX 설정'],page:10},
-      'SPX-RX':{model:'SPX-RX',role:'CATx 수신기 (HDMI 2.0 · CEC)',specs:['4K60 4:4:4 · 18Gbps · HDCP 2.2','CATx 4K60 최대 50m · 1080p 최대 60m','전원: 메인프레임이 CAT으로 공급(POC)'],recommended:true},
+      'XDM-CTR100 · TX':{model:'XDM-CTR100',role:'HDBaseT 3.0 송수신기 · 딥 스위치 TX 설정',image:'output/design/assets/extenders/xdm-ctr100.webp',specs:['4K/60 @ 4:4:4 · 최대 100m (S/FTP CAT6A 필수)','HDMI 입력·출력 각 1 · RS-232+ · 오디오 출력','전원: XDM-PSU로 공급 · CTR100 개별 전원 불필요 (매트릭스 카드 구성에서는 PSE 사용 불가)'],pair:'XDM-CIS100',page:10,recommended:true},
+      'XDM-CTR100 · RX':{model:'XDM-CTR100',role:'HDBaseT 3.0 송수신기 · 딥 스위치 RX 설정',image:'output/design/assets/extenders/xdm-ctr100.webp',specs:['4K/60 @ 4:4:4 · 최대 100m (S/FTP CAT6A 필수)','HDMI 입력·출력 각 1 · RS-232+ · 오디오 출력','전원: XDM-PSU로 공급 · CTR100 개별 전원 불필요 (매트릭스 카드 구성에서는 PSE 사용 불가)'],pair:'XDM-COS100',page:10,recommended:true},
+      'XDM-CT103':{model:'XDM-CT103',role:'HDBaseT 3.0 1 Gang 벽부형 송신기',image:'output/design/assets/extenders/xdm-ct103.webp',specs:['4K/60 @ 4:4:4 · 최대 100m (S/FTP CAT6A 필수)','HDMI 1 · 오디오 입력 1','XDM 슬롯 POE로 별도 전원 없이 사용'],pair:'XDM-CIS100',page:11},
+      'XDM-CR103':{model:'XDM-CR103',role:'HDBaseT 3.0 1 Gang 벽부형 수신기',image:'output/design/assets/extenders/xdm-cr103.webp',specs:['4K/60 @ 4:4:4 · 최대 100m (S/FTP CAT6A 필수)','HDMI 1 · 오디오 1','XDM 슬롯 POE로 별도 전원 없이 사용'],pair:'XDM-COS100',page:11},
+      'XDM-FT101':{model:'XDM-FT101',role:'4K 광 송신기',image:'output/design/assets/extenders/xdm-ft101.webp',specs:['4K/60 @ 4:4:4 · HDMI 2.0','싱글모드 2km · 멀티모드 300m (LC 1)','오디오 병합 · RS-232+'],pair:'XDM-FIS100',page:12,recommended:true},
+      [RtCore.psePair]:{model:'CTR100 PSE + CTR100',role:'HDMI 연장 한 쌍 (HDBaseT 3.0)',images:['output/design/assets/extenders/xdm-ctr100-pse.webp','output/design/assets/extenders/xdm-ctr100.webp'],specs:['4K/60 @ 4:4:4 · 최대 100m (S/FTP CAT6A 필수)','전원: PSE 쪽에만 연결 · CTR100은 전원 불필요','두 제품 모두 딥 스위치로 TX/RX 설정'],page:10},
+      'SPX-RX':{model:'SPX-RX',role:'CATx 수신기 (HDMI 2.0 · CEC)',specs:['4K/60 @ 4:4:4 · 18Gbps · HDCP 2.2','CATx 4K/60 최대 50m · 1080p 최대 60m','전원: 메인프레임이 CAT으로 공급(POC)'],recommended:true},
       // VDM 연동 전송기(사용자 확인 2026-09-26, 사양·사진: 알티컴 홈페이지 VDM EXTENDER 게시판)
-      'CT104-U':{model:'CT104-U',role:'HDBaseT 4K 송신기 (HDMI + RS-232)',image:'output/design/assets/extenders/vdm-ct104-u.webp',specs:['4K30 · 1080p60 최대 100m (CAT5e/6)','HDMI 1.4 · RS-232 · HDCP','전원: DC 12V 2A'],pair:'CIS4-U',recommended:true},
-      'CR104-U':{model:'CR104-U',role:'HDBaseT 4K 수신기 (HDMI + RS-232)',image:'output/design/assets/extenders/vdm-cr104-u.webp',specs:['4K30 · 1080p60 최대 100m (CAT5e/6)','HDMI 1.4 · RS-232 · HDCP','전원: DC 12V 2A'],pair:'COS4-U',recommended:true},
-      'FT101-U':{model:'FT101-U',role:'HDMI 광 송신기 (오디오 · RS-232)',image:'output/design/assets/extenders/vdm-ft101-u.webp',specs:['4K30 · 싱글모드 2km · 멀티모드 500m','HDMI 1.4b · 3.5mm 오디오 입력 · RS-232','전원: DC 12V 2A'],pair:'FIS4-U',recommended:true},
-      'FR101-U':{model:'FR101-U',role:'HDMI 광 수신기 (RS-232)',image:'output/design/assets/extenders/vdm-fr101-u.webp',specs:['4K30 · 싱글모드 2km · 멀티모드 500m','HDMI 1.4b · 오디오 출력 · RS-232','전원: DC 12V 2A'],pair:'FOS4-U',recommended:true},
-      'XDM-FR101':{model:'XDM-FR101',role:'4K 광 수신기',image:'output/design/assets/extenders/xdm-fr101.webp',specs:['4K60 4:4:4 · HDMI 2.0','싱글모드 2km · 멀티모드 300m (LC 1)','오디오 추출 · RS-232+'],pair:'XDM-FOS100',page:12,recommended:true}
+      'CT104-U':{model:'CT104-U',role:'HDBaseT 4K 송신기 (HDMI + RS-232)',image:'output/design/assets/extenders/vdm-ct104-u.webp',specs:['4K/30 · 1080p/60 최대 100m (CAT5e/6)','HDMI 1.4 · RS-232 · HDCP','전원: DC 12V 2A'],pair:'CIS4-U',recommended:true},
+      'CR104-U':{model:'CR104-U',role:'HDBaseT 4K 수신기 (HDMI + RS-232)',image:'output/design/assets/extenders/vdm-cr104-u.webp',specs:['4K/30 · 1080p/60 최대 100m (CAT5e/6)','HDMI 1.4 · RS-232 · HDCP','전원: DC 12V 2A'],pair:'COS4-U',recommended:true},
+      'FT101-U':{model:'FT101-U',role:'HDMI 광 송신기 (오디오 · RS-232)',image:'output/design/assets/extenders/vdm-ft101-u.webp',specs:['4K/30 · 싱글모드 2km · 멀티모드 500m','HDMI 1.4b · 3.5mm 오디오 입력 · RS-232','전원: DC 12V 2A'],pair:'FIS4-U',recommended:true},
+      'FR101-U':{model:'FR101-U',role:'HDMI 광 수신기 (RS-232)',image:'output/design/assets/extenders/vdm-fr101-u.webp',specs:['4K/30 · 싱글모드 2km · 멀티모드 500m','HDMI 1.4b · 오디오 출력 · RS-232','전원: DC 12V 2A'],pair:'FOS4-U',recommended:true},
+      'XDM-FR101':{model:'XDM-FR101',role:'4K 광 수신기',image:'output/design/assets/extenders/xdm-fr101.webp',specs:['4K/60 @ 4:4:4 · HDMI 2.0','싱글모드 2km · 멀티모드 300m (LC 1)','오디오 추출 · RS-232+'],pair:'XDM-FOS100',page:12,recommended:true}
     };
     const vdmExtenderLineup=[
       {model:'CT104-U',role:'HDBaseT 4K 송신기',image:'output/design/assets/extenders/vdm-ct104-u.webp',pair:'CIS4-U',note:'CAT5e/6 최대 100m · DC 12V'},
@@ -50,9 +50,9 @@
       {model:'FR101-U',role:'HDMI 광 수신기',image:'output/design/assets/extenders/vdm-fr101-u.webp',pair:'FOS4-U',note:'싱글모드 2km · 멀티모드 500m · DC 12V'}
     ];
     const extenderLineup=[
-      {model:'XDM-CTR100',role:'HDBaseT 3.0 송·수신기 (DIP 스위치 TX/RX)',image:'output/design/assets/extenders/xdm-ctr100.webp',pair:'XDM-CIS100 · XDM-COS100',note:'DIP 스위치로 TX/RX를 설정합니다. TX는 CIS100, RX는 COS100과 연동하며 이때는 XDM-PSU로 전원을 공급해 CTR100에 전원 어댑터가 필요 없습니다. PSE와 한 쌍이어도 전원 불필요',page:10},
-      {model:'XDM-CTR100 PSE',role:'POE 전원 공급형 송·수신기 (DIP 스위치 TX/RX)',image:'output/design/assets/extenders/xdm-ctr100-pse.webp',pair:'XDM-CTR100 (HDMI 카드 연장 · 1:1 연장)',note:'CTR100과 한 쌍으로 쓰면 PSE 쪽에만 전원을 연결하고 CTR100은 전원이 필요 없습니다. HDMI 입력·출력 카드 연장에 사용하며, HDBaseT 카드(CIS100·COS100) 구성에는 사용할 수 없습니다.',page:10},
-      {model:'XDM-PSU',role:'16채널 모듈형 전원 장치 (19인치 2U)',image:'output/design/assets/products/xdm-psu-front.webp',pair:'XDM-CIS100 · XDM-COS100 + XDM-CTR100',note:'CIS100·COS100에 연결한 CTR100에 전원을 공급합니다. CIS용 XDM-POH(Tx 1대당 1개)와 COS용 XDM-PHX(COS100 1장당 1개) 모듈을 16칸에 꽂습니다.',source:'제조사 도면·구성도'},
+      {model:'XDM-CTR100',role:'HDBaseT 3.0 송수신기 (딥 스위치 TX/RX)',image:'output/design/assets/extenders/xdm-ctr100.webp',pair:'XDM-CIS100 · XDM-COS100',note:'딥 스위치로 TX/RX를 설정합니다. TX는 CIS100, RX는 COS100과 연동하며 이때는 XDM-PSU로 전원을 공급해 CTR100에 전원 어댑터가 필요 없습니다. PSE와 한 쌍이어도 전원 불필요',page:10},
+      {model:'XDM-CTR100 PSE',role:'POE 전원 공급형 송수신기 (딥 스위치 TX/RX)',image:'output/design/assets/extenders/xdm-ctr100-pse.webp',pair:'XDM-CTR100 (HDMI 카드 연장 · 1:1 연장)',note:'CTR100과 한 쌍으로 쓰면 PSE 쪽에만 전원을 연결하고 CTR100은 전원이 필요 없습니다. HDMI 입력·출력 카드 연장에 사용하며, HDBaseT 카드(CIS100·COS100) 구성에는 사용할 수 없습니다.',page:10},
+      {model:'XDM-PSU',role:'16채널 모듈형 전원 장치 (19인치 2U)',image:'output/design/assets/products/xdm-psu-front.webp',pair:'XDM-CIS100 · XDM-COS100 + XDM-CTR100',note:'CIS100·COS100에 연결한 CTR100에 전원을 공급합니다. CIS용 XDM-POH(TX 1대당 1개)와 COS용 XDM-PHX(COS100 1장당 1개) 모듈을 16칸에 꽂습니다.',source:'제조사 도면·구성도'},
       {model:'XDM-CT103',role:'1 Gang 벽부형 송신기',image:'output/design/assets/extenders/xdm-ct103.webp',pair:'XDM-CIS100',note:'XDM 슬롯 POE로 전원 공급',page:11},
       {model:'XDM-CR103',role:'1 Gang 벽부형 수신기',image:'output/design/assets/extenders/xdm-cr103.webp',pair:'XDM-COS100',note:'XDM 슬롯 POE로 전원 공급',page:11},
       {model:'XDM-FT101',role:'4K 광 송신기',image:'output/design/assets/extenders/xdm-ft101.webp',pair:'XDM-FIS100',note:'싱글모드 2km · 멀티모드 300m',page:12},
@@ -111,11 +111,11 @@
     function cardAsset(id){return photoCardFamilies.has(state.family)&&id?`output/design/assets/cards/${id}.webp`:assets[state.family]}
     const cardTips={
       'XDM-HI100':'HDMI 소스 4채널을 입력하는 기본 카드입니다.','XDM-HIS100':'HDMI 입력을 스케일링해야 하는 구성에 검토합니다.','XDM-DPI100':'DisplayPort 소스 4채널 입력용입니다.','XDM-CIS100':'HDBaseT 3.0 기반 원격 신호 4채널 입력용입니다.','XDM-FIS100':'광 전송 기반의 원거리 신호 4채널 입력용입니다.','XDM-SIS100':'12G-SDI 방송 신호 4채널 입력용입니다.',
-      'XDM-HOS100':'HDMI 4채널 출력 또는 최대 4분할(Quad View) 화면 구성에 활용할 수 있습니다.','XDM-DPOS100':'DisplayPort 디스플레이 4채널 출력용입니다.','XDM-COS100':'HDBaseT 3.0 기반 원격 출력 4채널용입니다.','XDM-FOS100':'광 전송 기반의 원거리 출력 4채널용입니다.','XDM-SOS100':'12G-SDI 방송 신호 4채널 출력용입니다.','XDM-WOS100':'4개 레이어를 조합해 월 프로세서처럼 화면 연출에 활용할 수 있습니다.'
+      'XDM-HOS100':'HDMI 4채널 출력 또는 최대 4분할(쿼드뷰) 화면 구성에 활용할 수 있습니다.','XDM-DPOS100':'DisplayPort 디스플레이 4채널 출력용입니다.','XDM-COS100':'HDBaseT 3.0 기반 원격 출력 4채널용입니다.','XDM-FOS100':'광 전송 기반의 원거리 출력 4채널용입니다.','XDM-SOS100':'12G-SDI 방송 신호 4채널 출력용입니다.','XDM-WOS100':'4개 레이어를 조합해 월 프로세서처럼 화면 연출에 활용할 수 있습니다.'
     };
     function cardTip(id){return cardTips[id]||'카드 용도와 설치 조건을 검토한 뒤 선택하세요.'}
     globalThis.RtCardTips=cardTips; // 0.143: 제품정보 04 카드 라인업 상세 팝업(src/products.js)이 같은 카드 설명을 읽는다.
-    function cardBadge(id){return id==='XDM-WOS100'?'<em>4레이어</em>':id==='XDM-HOS100'?'<em>쿼드 뷰</em>':''}
+    function cardBadge(id){return id==='XDM-WOS100'?'<em>4레이어</em>':id==='XDM-HOS100'?'<em>쿼드뷰</em>':''}
     function choices(s,c){return RtCore.choices(c[0])}
     // 카드 팝업에서 고른 전송기 → 없으면 이 슬롯에 이미 연결된 전송기(같은 카드일 때) → 없으면 카드 기본 연동(RtCore.defaultLink). ''는 연결 안 함.
     // 0.118(사용자 요청 2026-09-28 "전송기 부분도 수량을 선택할 수 있게 해 줘. 그리고 그게 물량 산출서가 나올 수도 있도록"): 카드 1장당 연결할 전송기 수량(1~카드 채널 수).
@@ -215,7 +215,7 @@
       const slot=currentSlots().find(item=>item.id===modalSlot);
       if(!slot)return '';
       const installed=state.placements[slot.id];
-      const tips=slot.dir==='output'&&state.family==='XDM'?'<div class="rt-output-tips"><div class="rt-pro-tip rt-quad-tip"><span>최대 4분할</span><div><strong>XDM-HOS100 · 쿼드 뷰(최대 4분할)</strong><p>일반 HDMI 4채널 출력 또는 최대 4분할 화면 구성에 활용할 수 있습니다.</p></div></div><div class="rt-pro-tip"><span>활용 TIP</span><div><strong>XDM-WOS100 · 4레이어</strong><p>4개 레이어를 조합해 월 프로세서처럼 화면을 연출할 수 있습니다.</p></div></div></div>':'';
+      const tips=slot.dir==='output'&&state.family==='XDM'?'<div class="rt-output-tips"><div class="rt-pro-tip rt-quad-tip"><span>최대 4분할</span><div><strong>XDM-HOS100 · 쿼드뷰(최대 4분할)</strong><p>일반 HDMI 4채널 출력 또는 최대 4분할 화면 구성에 활용할 수 있습니다.</p></div></div><div class="rt-pro-tip"><span>활용 TIP</span><div><strong>XDM-WOS100 · 4레이어</strong><p>4개 레이어를 조합해 월 프로세서처럼 화면을 연출할 수 있습니다.</p></div></div></div>':'';
       const dirWord=slot.dir==='input'?'입력':'출력';
       // 0.94 수량 UI가 사라지는 버그 수정(사용자 지적 "입력카드 다시 조정하려고 누르면 수량이 안보이고 장착됨이 보임", "출력카드는 수량선택이 안되는 버그"):
       // 같은 방향 슬롯이 이미 다 채워지면 fillTargets가 채울 수 있는 칸(qtyMax)을 1로 돌려주는데, 그 값 하나로 "카드별 수량" UI 노출 여부까지 정했다.
@@ -369,8 +369,8 @@
       const diagram=RtCore.avBuilder(state);
       if(avbSession?.timer)clearTimeout(avbSession.timer);
       const win=window.open(`${AV_BUILDER_URL}?import=rtcom`,'rtcom-av-builder');
-      if(!win){announce('팝업이 막혀 AV 빌더를 열지 못했습니다. 브라우저에서 팝업을 허용하거나 "파일로 내려받기"를 쓰세요.');return}
-      avbSession={win,diagram,sent:false,timer:setTimeout(()=>{if(!avbSession||avbSession.sent)return;download(JSON.stringify(diagram,null,2),'application/json;charset=utf-8','json','av-builder');announce('AV 빌더가 아직 자동 받기를 지원하지 않아 파일로 내려받았습니다. 열린 AV 빌더의 Share → 가져오기 → 구성도 JSON에서 그 파일을 고르세요.')},10000)};
+      if(!win){announce('팝업이 막혀 AV 빌더를 열지 못했습니다. 브라우저에서 팝업을 허용하거나 "파일로 다운로드"를 쓰세요.');return}
+      avbSession={win,diagram,sent:false,timer:setTimeout(()=>{if(!avbSession||avbSession.sent)return;download(JSON.stringify(diagram,null,2),'application/json;charset=utf-8','json','av-builder');announce('AV 빌더가 아직 자동 받기를 지원하지 않아 파일로 다운로드했습니다. 열린 AV 빌더의 Share → 가져오기 → 구성도 JSON에서 그 파일을 고르세요.')},10000)};
       announce(`AV 빌더를 여는 중입니다 · 장비 ${diagram.nodes.length}대 · 연결 ${diagram.edges.length}개`);
     }
     window.addEventListener('message',event=>{
@@ -379,7 +379,7 @@
       if(message.type==='av-builder:ready'){avbSession.sent=true;clearTimeout(avbSession.timer);avbSession.win.postMessage({type:'rtcom:diagram',version:1,source:'RTCOM Configurator',diagram:avbSession.diagram},AV_BUILDER_ORIGIN)}
       else if(message.type==='av-builder:imported'){announce(`AV 빌더에 구성을 넣었습니다 · 장비 ${Number(message.nodes)||0}대 · 연결 ${Number(message.edges)||0}개`);avbSession=null}
     });
-    function avBuilderPanel(){const hasCards=Object.values(state.placements).some(value=>value!=='BLANK');if(!hasCards)return '';return `<div class="rt-avb"><div><strong>AV 빌더로 보내기</strong><p>매트릭스와 04에서 연결한 전송기가 같은 구성으로 들어가고, 포트 이름은 "HDMI #1-1 PC"처럼 신호명과 함께 들어갑니다.</p><ol><li><b>AV 빌더에서 바로 열기</b>를 누르면 새 탭에 같은 구성이 그려집니다.</li><li>자동으로 열리지 않으면 <b>파일로 내려받기</b> 후 <a href="${AV_BUILDER_URL}" target="_blank" rel="noopener">AV 빌더</a>의 <b>Share → 가져오기 → 구성도 JSON</b>에서 그 파일을 고릅니다.</li></ol></div><div class="rt-avb-actions"><button type="button" class="rt-button rt-primary" data-action="av-builder-open">AV 빌더에서 바로 열기 ↗</button><button type="button" class="rt-button" data-action="av-builder">파일로 내려받기</button></div></div>`}
+    function avBuilderPanel(){const hasCards=Object.values(state.placements).some(value=>value!=='BLANK');if(!hasCards)return '';return `<div class="rt-avb"><div><strong>AV 빌더로 보내기</strong><p>매트릭스와 04에서 연결한 전송기가 같은 구성으로 들어가고, 포트 이름은 "HDMI #1-1 PC"처럼 신호명과 함께 들어갑니다.</p><ol><li><b>AV 빌더에서 바로 열기</b>를 누르면 새 탭에 같은 구성이 그려집니다.</li><li>자동으로 열리지 않으면 <b>파일로 다운로드</b> 후 <a href="${AV_BUILDER_URL}" target="_blank" rel="noopener">AV 빌더</a>의 <b>Share → 가져오기 → 구성도 JSON</b>에서 그 파일을 고릅니다.</li></ol></div><div class="rt-avb-actions"><button type="button" class="rt-button rt-primary" data-action="av-builder-open">AV 빌더에서 바로 열기 ↗</button><button type="button" class="rt-button" data-action="av-builder">파일로 다운로드</button></div></div>`}
     function signalsView(){
       const slotList=currentSlots(),ports=state.portAssignments||{};
       const side=dir=>{
@@ -397,7 +397,7 @@
       const count=Object.values(state.links).filter(link=>link.device?.startsWith('XDM-CTR100 · ')).reduce((sum,link)=>sum+link.count,0);
       // 0.72 XDM-PSU(사용자 결정 2026-09-28): CIS100·COS100에 연결한 CTR100은 XDM-PSU가 전원을 공급한다(POH는 Tx 1대당, PHX는 COS100 1장당).
       const power=count?RtCore.bom(state).filter(row=>row.category==='전원 장비'):[],qty=model=>power.find(row=>row.model.startsWith(model))?.quantity||0;
-      return count?`<div class="rt-power-notice"><span>전원 공급</span><div><strong>XDM-CTR100 ${count}대 · XDM-PSU로 전원 공급(개별 어댑터 불필요)</strong><p>XDM-PSU ${qty('XDM-PSU')}대 · XDM-POH ${qty('XDM-POH')}개(CIS100 → POH → CTR100 Tx, Tx 1대당 1개) · XDM-PHX ${qty('XDM-PHX')}개(PSU → 2핀 전원선 → COS100 → CAT → CTR100 Rx, COS100 1장당 1개)를 BOM에 자동 추가했습니다. 매트릭스 카드 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다.</p></div></div>`:'';
+      return count?`<div class="rt-power-notice"><span>전원 공급</span><div><strong>XDM-CTR100 ${count}대 · XDM-PSU로 전원 공급(개별 어댑터 불필요)</strong><p>XDM-PSU ${qty('XDM-PSU')}대 · XDM-POH ${qty('XDM-POH')}개(CIS100 → POH → CTR100 TX, TX 1대당 1개) · XDM-PHX ${qty('XDM-PHX')}개(PSU → 2핀 전원선 → COS100 → CAT → CTR100 RX, COS100 1장당 1개)를 BOM에 자동 추가했습니다. 매트릭스 카드 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다.</p></div></div>`:'';
     }
     // 04 전송기(2-2, Analog Way 구조 — 시안 configurator-aw-style.html?step=4): 왼쪽 목록(카드별 묶음 제목+선택 행) | 오른쪽 고정 미리보기(세그먼트로 고른 슬롯의 연결 흐름).
     // 01/02와 같은 rt-cg-split/rt-cg-list/rt-cg-row/rt-cg-preview/rt-cg-dot/rt-cg-seg 틀을 그대로 쓰고, 이 화면에만 있는 모양(묶음 제목+채널 선택, 흐름 그림, 접이식 라인업)만 새로 더한다.
@@ -433,7 +433,7 @@
       const empty=`<div class="rt-empty rt-link-empty"><strong>현재 구성에는 ${remoteName}가 없습니다.</strong><p>${state.family==='SPX'?'SPX-COS12(CATx 출력) 카드를 장착하면 SPX-RX가 자동으로 연결되고 여기서 채널 수를 바꿀 수 있습니다.':state.family==='VDM'?'CIS4-U·COS4-U(HDBaseT) 또는 FIS4-U·FOS4-U(광) 카드를 장착하면 CT104-U·CR104-U·FT101-U·FR101-U가 자동으로 연결되고 여기서 채널 수를 바꿀 수 있습니다.':'XDM-CIS100·COS100(HDBaseT) 또는 XDM-FIS100·FOS100(광) 카드를 장착하면 CTR100·FT101·FR101이 자동으로 연결되고 여기서 바꿀 수 있습니다.'}</p><button type="button" class="rt-button" data-jump="2">카드 슬롯으로 돌아가기</button></div>`;
       // 왼쪽 목록: 원격(CAT·광) 카드 묶음 → (있으면) HDMI 카드 연장 묶음(우산 아래). "현재 구성에는 HDBaseT·광 카드가 없습니다" 안내는
       // remote가 없을 때만 뜨고(명세 5번), HDMI 연장 슬롯만 있으면 그 묶음은 그대로 함께 보여준다(옛 화면도 두 안내가 함께 있을 수 있었다).
-      const hdmiGroup=hdmiExtend.length?`<div class="rt-cg-link-umbrella"><div class="rt-cg-link-umbrella-head"><span class="rt-eyebrow">HDMI 연장 · 선택</span><h4>HDMI 카드 연장(선택)</h4><p>HDMI 입력·출력 포트를 멀리 연결해야 하면 CTR100 PSE와 CTR100을 한 쌍으로 씁니다. 전원은 PSE 쪽에만 연결하고, 두 제품 모두 DIP 스위치로 TX/RX를 설정합니다.</p></div>${hdmiExtend.map(group).join('')}</div>`:'';
+      const hdmiGroup=hdmiExtend.length?`<div class="rt-cg-link-umbrella"><div class="rt-cg-link-umbrella-head"><span class="rt-eyebrow">HDMI 연장 · 선택</span><h4>HDMI 카드 연장(선택)</h4><p>HDMI 입력·출력 포트를 멀리 연결해야 하면 CTR100 PSE와 CTR100을 한 쌍으로 씁니다. 전원은 PSE 쪽에만 연결하고, 두 제품 모두 딥 스위치로 TX/RX를 설정합니다.</p></div>${hdmiExtend.map(group).join('')}</div>`:'';
       const listBody=`${remote.length?remote.map(group).join(''):empty}${hdmiGroup}`;
       // 오른쪽 미리보기: 세그먼트(01/02의 rt-cg-seg와 같은 틀, 슬롯이 여러 개일 수 있어 줄바꿈만 허용) + 연결 흐름 + 채널 수.
       const segLabel=slot=>`${shortLabel(slot)}${hdmiExtend.includes(slot)?' (HDMI)':''}`;
@@ -734,7 +734,7 @@ ${figure?`<h2 class="rt-rp-h"><i>1</i>후면 슬롯 배치</h2><div class="rt-rp
       // "남은 N칸 블랭크로 채우기"(2-3): 빈 슬롯만 BLANK로 바꾸고, 이미 넣은 카드는 그대로 둔다. 실행 취소 1단계.
       if(b.dataset.action==='fill-blanks'){const filled=RtCore.fillBlanks(state);state.placements=filled.placements;syncPorts();changed();return}
       if(b.dataset.action==='av-builder-open'){openInAvBuilder();return}
-      if(b.dataset.action==='av-builder'){const data=RtCore.avBuilder(state);download(JSON.stringify(data,null,2),'application/json;charset=utf-8','json','av-builder');announce(`AV 빌더용 파일(장비 ${data.nodes.length}대 · 연결 ${data.edges.length}개)을 내려받았습니다. AV 빌더의 Share → 가져오기 → 구성도 JSON에서 여세요.`);return}
+      if(b.dataset.action==='av-builder'){const data=RtCore.avBuilder(state);download(JSON.stringify(data,null,2),'application/json;charset=utf-8','json','av-builder');announce(`AV 빌더용 파일(장비 ${data.nodes.length}대 · 연결 ${data.edges.length}개)을 다운로드했습니다. AV 빌더의 Share → 가져오기 → 구성도 JSON에서 여세요.`);return}
       if(state.step===2&&b.dataset.action==='back'&&signalView){signalView=false;render();return}
       if(state.step===2&&b.dataset.action==='next'&&!signalView&&Object.values(state.placements).some(value=>value!=='BLANK')){signalView=true;render();root.scrollIntoView?.({block:'start'});return}
       if(b.dataset.action==='back'){state.step=Math.max(0,state.step-1);changed();return}if(b.dataset.action==='next'||b.dataset.action==='preview-next'){state.step=state.step===5?0:state.step+1;state.maxStep=Math.max(state.maxStep,state.step);changed()}});

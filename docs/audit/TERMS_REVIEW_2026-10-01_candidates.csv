@@ -1,0 +1,580 @@
+﻿CSV 번호,제품ID/파일,화면 위치,항목 경로,현재 문구,바꿀 표기 → 채택 표기,판정(확정/검토)
+121,ct101-u-cr101-u,04 제품 사양,specifications[8].name,최대 전송거리,T21 [확정] 전송거리 → 전송 거리,확정
+284,ct103-u-h-cr103-u,04 제품 사양,specifications[7].name,최대 전송거리,T21 [확정] 전송거리 → 전송 거리,확정
+396,ct104-u-cr104-u,05 주요 기능,features[3].text,EDID Pass-Through 지원,T15 [확정] Pass-Through → 패스스루,확정
+421,ct104-u-cr104-u,04 제품 사양,specifications[7].name,최대 전송거리,T21 [확정] 전송거리 → 전송 거리,확정
+433,ct104-u-cr104-u,04 제품 사양,specifications[10].value,Pass-Through,T15 [검토] Pass-Through → 패스스루,검토
+534,ft101-u-fr101-u,04 제품 사양,specifications[2].value,Fiber Optical Output (> -10dbm after 2km transmission),T07 [검토] Fiber Optical → 광,검토
+538,ft101-u-fr101-u,04 제품 사양,specifications[3].value,Fiber Optical Input,T07 [검토] Fiber Optical → 광,검토
+552,ft101-u-fr101-u,04 제품 사양,specifications[7].name,최대 전송거리,T21 [확정] 전송거리 → 전송 거리,확정
+555,ft101-u-fr101-u,04 제품 사양,specifications[7].condition,"Single Mode Fiber · 1920x1200 @ 60Hz 또는 1080p, Ultra HD 4K","T07 [확정] Fiber → 광케이블
+T08 [확정] Single Mode → 싱글모드",확정
+557,ft101-u-fr101-u,04 제품 사양,specifications[8].name,최대 전송거리,T21 [확정] 전송거리 → 전송 거리,확정
+560,ft101-u-fr101-u,04 제품 사양,specifications[8].condition,"Multi Mode Fiber · 1920x1200 @ 60Hz 또는 1080p, Ultra HD 4K","T07 [확정] Fiber → 광케이블
+T09 [확정] Multi Mode → 멀티모드",확정
+685,ft103-u-h-fr103-u,05 주요 기능,features[5].text,"송신기는 3.5mm 아날로그 오디오 병합, 수신기는 오디오 추출 지원",T05 [확정] 병합 → 삽입,확정
+695,ft103-u-h-fr103-u,04 제품 사양,specifications[2].value,Fiber Optical Output (> -10dbm after 2km transmission),T07 [검토] Fiber Optical → 광,검토
+699,ft103-u-h-fr103-u,04 제품 사양,specifications[3].value,Fiber Optical Input (> -10dbm after 2km transmission),T07 [검토] Fiber Optical → 광,검토
+713,ft103-u-h-fr103-u,04 제품 사양,specifications[7].name,최대 전송거리,T21 [확정] 전송거리 → 전송 거리,확정
+716,ft103-u-h-fr103-u,04 제품 사양,specifications[7].condition,Single Mode Fiber · 4K/30,"T07 [확정] Fiber → 광케이블
+T08 [확정] Single Mode → 싱글모드",확정
+718,ft103-u-h-fr103-u,04 제품 사양,specifications[8].name,최대 전송거리,T21 [확정] 전송거리 → 전송 거리,확정
+721,ft103-u-h-fr103-u,04 제품 사양,specifications[8].condition,Multi Mode Fiber · 4K/30,"T07 [확정] Fiber → 광케이블
+T09 [확정] Multi Mode → 멀티모드",확정
+729,ft103-u-h-fr103-u,04 제품 사양,specifications[10].condition,FT103-U-H 앞면 MODE 로터리,T17 [확정] 로터리 → 로터리 스위치,확정
+772,ft103-u-h-fr103-u,제조사 자료(입출력 단자),io[4].condition,FT103-U-H · 3p Phoenix(RS-232),T16 [확정] Phoenix → 피닉스,확정
+797,ft103-u-h-fr103-u,제조사 자료(입출력 단자),io[8].condition,FR103-U · 3p Phoenix(RS-232),T16 [확정] Phoenix → 피닉스,확정
+806,ft103-u-h-fr103-u,02 Port Map,portMap[1].items[3].desc,3.5mm · 로터리 E + SET으로 HDMI에 병합,"T05 [확정] 병합 → 삽입
+T17 [확정] 로터리 → 로터리 스위치",확정
+812,ft103-u-h-fr103-u,02 Port Map,portMap[1].items[6].desc,MODE 로터리 설정 실행(EDID·외부 오디오·자동 스위칭),T17 [확정] 로터리 → 로터리 스위치,확정
+813,ft103-u-h-fr103-u,02 Port Map,portMap[1].items[7].label,MODE 로터리,T17 [확정] 로터리 → 로터리 스위치,확정
+832,ft103-u-h-fr103-u,06 EDID 설정,edidSwitch.steps[2].title,외부 오디오 병합,T05 [확정] 병합 → 삽입,확정
+834,ft103-u-h-fr103-u,06 EDID 설정,edidSwitch.steps[2].items[2],"SET 토글 스위치를 누른 뒤, 병합할 오디오를 3.5mm AUDIO 단자에 연결한다.",T05 [확정] 병합 → 삽입,확정
+835,ft103-u-h-fr103-u,06 EDID 설정,edidSwitch.steps[2].items[3],병합된 오디오는 FR103-U의 HDMI 출력으로 나온다.,T05 [확정] 병합 → 삽입,확정
+871,hd-104u,머리글,series,1x4 HDMI 18Gbps Splitter,"T10 [확정] Splitter → 분배기
+T25 [확정] 1x4 → 1×4",확정
+874,hd-104u,분류 태그,categories[3],Splitter,T10 [확정] Splitter → 분배기,확정
+877,hd-104u,머리글,subtitle,1×4 HDMI 2.0 Splitter · EDID 마인더,T10 [확정] Splitter → 분배기,확정
+930,hd-104u,06 EDID 설정,edidSwitch.desc,"전면 파란색 EDID 로터리 스위치로 디스플레이 EDID를 선택한다. HD-13U와 달리 별도 SET 버튼이 없어, 로터리를 'F'로 돌리기만 하면 OUTPUT 1에 연결된 디스플레이의 EDID를 바로 읽어 FLASH에 저장한다.",T17 [확정] 로터리 → 로터리 스위치,확정
+976,hd-108u,머리글,series,1x8 HDMI 18Gbps Splitter,"T10 [확정] Splitter → 분배기
+T25 [확정] 1x8 → 1×8",확정
+979,hd-108u,분류 태그,categories[3],Splitter,T10 [확정] Splitter → 분배기,확정
+982,hd-108u,머리글,subtitle,1×8 HDMI 2.0 Splitter · EDID 마인더,T10 [확정] Splitter → 분배기,확정
+1035,hd-108u,06 EDID 설정,edidSwitch.desc,"전면 파란색 EDID 로터리 스위치로 디스플레이 EDID를 선택한다. HD-13U와 달리 별도 SET 버튼이 없어, 로터리를 'F'로 돌리기만 하면 OUTPUT 1에 연결된 디스플레이의 EDID를 바로 읽어 FLASH에 저장한다.",T17 [확정] 로터리 → 로터리 스위치,확정
+1080,hd-13u,머리글,series,1x3 HDMI 18Gbps Splitter,"T10 [확정] Splitter → 분배기
+T25 [확정] 1x3 → 1×3",확정
+1083,hd-13u,분류 태그,categories[3],Splitter,T10 [확정] Splitter → 분배기,확정
+1086,hd-13u,머리글,subtitle,1×3 HDMI 2.0 Splitter · EDID 마인더,T10 [확정] Splitter → 분배기,확정
+1088,hd-13u,01 개요,overview,"HD-13U는 HDMI 신호용 고성능 분배기다. True HDMI 2.0 3840x2160 @ 60Hz 크로마샘플링 4:4:4 해상도를 지원한다.
+
+하나의 HDMI 입력신호를 신호의 손실 없이 3개의 동일한 출력으로 분배한다. HDCP(고대역 디지털 콘텐츠 보호)와 EDID(디스플레이 식별 정보)를 완벽 지원하여 호환 이슈 없이 사용할 수 있으며, 아날로그 오디오 병합 및 추출 기능을 지원한다.",T05 [검토] 병합 → 삽입,검토
+1094,hd-13u,05 주요 기능,features[2].text,오디오 병합·추출 선택 지원(둘 중 하나만 사용),T05 [검토] 병합 → 삽입,검토
+1136,hd-13u,제조사 자료(입출력 단자),io[3].condition,병합(MUX) 선택 시 HDMI OUTPUT 1번에 믹스(전면 로터리 0 + SET으로 Stereo Audio),"T05 [검토] 병합 → 삽입
+T17 [확정] 로터리 → 로터리 스위치",검토
+1147,hd-13u,02 Port Map,portMap.items[2].desc,3.5mm 아날로그 오디오 병합(MUX 선택 시 OUT 1번),T05 [검토] 병합 → 삽입,검토
+1155,hd-13u,02 Port Map,portMap.items[6].desc,"전면 파란색 MODE 로터리 스위치. EDID 선택은 '06 EDID 설정', 오디오 병합·추출 선택은 '07 오디오 설정' 참고",T05 [검토] 병합 → 삽입,검토
+1157,hd-13u,02 Port Map,portMap.items[7].desc,외부 EDID 저장·오디오 병합/추출 선택 때 누르는 버튼('06 EDID 설정'·'07 오디오 설정' 참고),T05 [검토] 병합 → 삽입,검토
+1202,hd-13u,07 오디오 설정,audioMux.caption,오디오 병합(OUT 1) 또는 추출 중 선택,T05 [검토] 병합 → 삽입,검토
+1203,hd-13u,07 오디오 설정,audioMux.howTo,전면 파란색 로터리 스위치를 '0'에 맞추고 SET 버튼을 누를 때마다 병합과 추출이 번갈아 바뀐다. 두 가지를 동시에 쓸 수는 없다.,T05 [검토] 병합 → 삽입,검토
+1213,hd-13u,07 오디오 설정,audioMux.modes[1].title,병합,T05 [검토] 병합 → 삽입,검토
+1236,hd-210u,머리글,series,2x10 HDMI 18Gbps Splitter,"T10 [확정] Splitter → 분배기
+T25 [확정] 2x10 → 2×10",확정
+1239,hd-210u,분류 태그,categories[3],Splitter,T10 [확정] Splitter → 분배기,확정
+1242,hd-210u,머리글,subtitle,2×10 HDMI 2.0 Splitter · 입력 선택형,T10 [확정] Splitter → 분배기,확정
+1244,hd-210u,01 개요,overview,"HD-210U는 HDMI 신호용 고성능 분배기다. True HDMI 2.0 3840x2160 @ 60Hz 크로마샘플링 4:4:4 해상도를 지원한다.
+
+입력된 두 개의 입력 신호 중 하나의 HDMI 입력신호를 선택하여 신호의 손실 없이 10개의 동일한 출력으로 분배하며 HDCP(고대역 디지털 콘텐츠 보호)와 EDID(디스플레이 식별 정보)를 완벽 지원하여 호환 이슈 없이 사용할 수 있다. 외부 EDID와 내부에 저장된 EDID를 사용할 수 있어 EDID 마인더 기능도 수행하며, 아날로그 오디오를 병합하는 기능을 지원한다.",T05 [검토] 병합 → 삽입,검토
+1249,hd-210u,05 주요 기능,features[2].text,오디오 병합 지원(3.5mm Stereo Audio를 모든 출력에 믹스),T05 [검토] 병합 → 삽입,검토
+1293,hd-210u,제조사 자료(입출력 단자),io[3].condition,HDMI 신호에 병합(전면 딥 스위치 1번 ON),T05 [검토] 병합 → 삽입,검토
+1298,hd-210u,02 Port Map,portMap.items[2].desc,3.5mm 아날로그 오디오 병합,T05 [검토] 병합 → 삽입,검토
+1306,hd-210u,02 Port Map,portMap.items[6].desc,"전면 빨간색 딥 스위치 3개(1번 오디오 병합, 2번 DDC). 설정 방법은 '07 딥 스위치 설정' 참고",T05 [검토] 병합 → 삽입,검토
+1352,hd-210u,06/07 딥 스위치 설정,dipSwitch.rows[1].title,오디오 병합,T05 [검토] 병합 → 삽입,검토
+1355,hd-210u,06/07 딥 스위치 설정,dipSwitch.rows[1].on.name,병합,T05 [검토] 병합 → 삽입,검토
+1357,hd-210u,06/07 딥 스위치 설정,dipSwitch.rows[1].note,"HD-210U는 병합만 되고, 소리를 따로 빼내는 추출(AUDIO OUT)은 없다.",T05 [검토] 병합 → 삽입,검토
+1367,hd-d102u-rack,머리글,series,1x2 HDMI 18Gbps Splitter,"T10 [검토] Splitter → 분배기
+T25 [검토] 1x2 → 1×2",검토
+1368,hd-d102u-rack,시리즈 안내,seriesNote,HD-D102U(1x2 HDMI 분배기)를 19인치 랙에 최대 12대까지 세워 꽂는 전용 랙 마운트 프레임이다.,T25 [확정] 1x2 → 1×2,확정
+1371,hd-d102u-rack,분류 태그,categories[3],Splitter,T10 [검토] Splitter → 분배기,검토
+1374,hd-d102u-rack,목록 카드,korean,HD-D102U 1x2 HDMI 분배기를 최대 12대까지 장착하는 19인치 랙 마운트 프레임이다.,T25 [확정] 1x2 → 1×2,확정
+1376,hd-d102u-rack,01 한눈에 보기,lead,HD-D102U 1x2 HDMI 분배기를 **19인치 랙에 최대 12대까지** 정리해 장착하는 전용 랙 마운트 프레임입니다.,T25 [확정] 1x2 → 1×2,확정
+1377,hd-d102u-rack,01 개요,overview,"HD-D102U Rack마운트는 HD-D102U 1x2 HDMI 분배기 전용 19인치 랙 마운트 프레임이다. 정면 12칸에 HD-D102U를 세워 꽂아 최대 12대까지 장착한다.
+
+좌우 랙 날개의 긴 구멍 2개씩으로 19인치 랙에 고정하고, 칸마다 위아래 고정 구멍(줄 간격 147mm)으로 HD-D102U를 고정한다.
+
+크기는 폭 483mm · 깊이 282mm · 높이 177mm다.",T25 [확정] 1x2 → 1×2,확정
+1409,hd-d102u,머리글,series,1x2 HDMI 18Gbps Splitter,"T10 [확정] Splitter → 분배기
+T25 [확정] 1x2 → 1×2",확정
+1412,hd-d102u,분류 태그,categories[3],Splitter,T10 [확정] Splitter → 분배기,확정
+1415,hd-d102u,머리글,subtitle,1×2 HDMI 2.0 Splitter,T10 [확정] Splitter → 분배기,확정
+1474,hds-21u,머리글,series,HDMI 4K Switcher,T11 [확정] Switcher → 스위처,확정
+1477,hds-21u,분류 태그,categories[3],Switcher,T11 [확정] Switcher → 스위처,확정
+1479,hds-21u,목록 카드,korean,"오디오 추출·삽입, Priority, EDID 마인더 기능을 갖춘 2입력 1출력 HDMI 2.0 4K 선택기다.",T11 [확정] 선택기 → 스위처,확정
+1480,hds-21u,머리글,subtitle,2×1 HDMI 2.0 Switcher · 오디오 추출·삽입,T11 [확정] Switcher → 스위처,확정
+1481,hds-21u,01 한눈에 보기,lead,두 개의 HDMI 입력 중 **하나를 선택해 출력**합니다. Priority 오토셀렉팅과 아날로그 오디오 병합·추출을 지원합니다.,T05 [확정] 병합 → 삽입,확정
+1482,hds-21u,01 개요,overview,"HDS-21U는 True HDMI 2.0 3840x2160 @ 60Hz 크로마샘플링 4:4:4 해상도를 지원하는 고성능 HDMI 선택기다. 두 개의 HDMI 입력신호를 선택하여 하나의 HDMI 신호로 출력한다. HDCP(고대역 디지털 콘텐츠 보호)와 EDID(디스플레이 식별 정보)를 완벽 지원하며 외부 EDID와 내부에 저장된 EDID를 사용할 수 있어 EDID 마인더 기능도 수행한다.
+
+아날로그 오디오를 병합·추출할 수 있으며 오디오 볼륨 조절 및 뮤트 기능을 지원한다. Priority(우선순위) 기능으로 오토셀렉팅(마지막에 입력된 신호를 출력)하거나 지정된 입력신호를 우선 출력하도록 선택할 수 있다. 버튼, RS-232, IR 리모콘의 3가지 제어방식을 지원한다.
+
+알티컴의 Fast Switching 기술을 적용하여 일반적인 스위처보다 빠르게 스위칭한다.","T05 [확정] 병합 → 삽입
+T11 [확정] 선택기 → 스위처",확정
+1490,hds-21u,05 주요 기능,features[5].text,오디오 병합·추출 중 하나 선택 지원,T05 [확정] 병합 → 삽입,확정
+1537,hds-21u,제조사 자료(입출력 단자),io[3].condition,병합(MUX) 선택 시 HDMI 출력에 실림 · 딥 스위치 1번 ON,T05 [확정] 병합 → 삽입,확정
+1550,hds-21u,02 Port Map,portMap.items[3].desc,3.5mm 아날로그 오디오 병합(MUX 선택 시),T05 [확정] 병합 → 삽입,확정
+1558,hds-21u,02 Port Map,portMap.items[7].desc,"전면 빨간색 딥 스위치 3개(1번 오디오 병합·추출, 2번 Priority, 3번 기능 없음). 설정 방법은 '07 딥 스위치 설정' 참고",T05 [확정] 병합 → 삽입,확정
+1562,hds-21u,06 EDID 설정,edidSwitch.desc,"전면 파란색 EDID 로터리 스위치로 디스플레이 EDID를 선택한다. HD-13U와 달리 별도 SET 버튼이 없어, 로터리를 돌린 뒤 전원 케이블을 1회 탈착해야 적용된다.",T17 [확정] 로터리 → 로터리 스위치,확정
+1597,hds-21u,06/07 딥 스위치 설정,dipSwitch.rows[1].title,오디오 병합·추출,T05 [확정] 병합 → 삽입,확정
+1600,hds-21u,06/07 딥 스위치 설정,dipSwitch.rows[1].on.name,병합,T05 [확정] 병합 → 삽입,확정
+1602,hds-21u,06/07 딥 스위치 설정,dipSwitch.rows[1].note,"병합과 추출은 동시에 쓸 수 없고, 둘 중 하나를 골라 쓴다.",T05 [확정] 병합 → 삽입,확정
+1613,hds-42mu,머리글,series,HDMI 4K Switcher,T11 [확정] Switcher → 스위처,확정
+1614,hds-42mu,시리즈 안내,seriesNote,카탈로그 분류는 HDMI 4K Switcher이며 4x2 Matrix Switcher 기능을 지원한다.,"T11 [확정] Matrix Switcher → 매트릭스 스위처
+T25 [확정] 4x2 → 4×2",확정
+1617,hds-42mu,분류 태그,categories[3],Switcher,T11 [확정] Switcher → 스위처,확정
+1619,hds-42mu,목록 카드,korean,"4입력 2출력 매트릭스 스위칭과 오디오 추출·삽입, EDID 마인더 기능을 갖춘 HDMI 2.0 4K 선택기다.",T11 [확정] 선택기 → 스위처,확정
+1620,hds-42mu,머리글,subtitle,4×2 HDMI 2.0 Matrix Switcher · 오디오 추출·삽입,T11 [확정] Matrix Switcher → 매트릭스 스위처,확정
+1621,hds-42mu,01 한눈에 보기,lead,네 개의 HDMI 입력 중 원하는 신호를 **두 개의 출력으로 매트릭스 전환**합니다. Priority 오토셀렉팅과 아날로그 오디오 병합·추출을 지원합니다.,T05 [확정] 병합 → 삽입,확정
+1622,hds-42mu,01 개요,overview,"HDS-42MU는 True HDMI 2.0 3840x2160 @ 60Hz 크로마샘플링 4:4:4 해상도를 지원하는 고성능 HDMI 선택기다. 네 개의 HDMI 입력신호를 선택하여 두 개의 HDMI 신호로 출력하는 매트릭스 스위처 기능을 갖고 있다. HDCP(고대역 디지털 콘텐츠 보호)와 EDID(디스플레이 식별 정보)를 완벽 지원하며 외부 EDID와 내부에 저장된 EDID를 사용할 수 있어 EDID 마인더 기능도 수행한다.
+
+아날로그 오디오를 병합·추출할 수 있으며 오디오 볼륨 조절 및 뮤트 기능을 지원한다. Priority(우선순위) 기능으로 오토셀렉팅(마지막에 입력된 신호를 출력)하거나 지정된 입력신호를 우선 출력하도록 선택할 수 있다. 버튼, RS-232, IR 리모콘의 3가지 제어방식을 지원한다.
+
+알티컴의 Fast Switching 기술을 적용하여 일반적인 스위처보다 빠르게 스위칭한다.","T05 [확정] 병합 → 삽입
+T11 [확정] 선택기 → 스위처",확정
+1626,hds-42mu,05 주요 기능,features[1].text,4x2 Matrix Switcher 기능 지원,"T11 [확정] Matrix Switcher → 매트릭스 스위처
+T25 [확정] 4x2 → 4×2",확정
+1632,hds-42mu,05 주요 기능,features[7].text,오디오 병합·추출 중 하나 선택 지원,T05 [확정] 병합 → 삽입,확정
+1679,hds-42mu,제조사 자료(입출력 단자),io[3].condition,병합(MUX) 선택 시 HDMI 출력에 실림 · 딥 스위치 1번 ON,T05 [확정] 병합 → 삽입,확정
+1692,hds-42mu,02 Port Map,portMap.items[3].desc,3.5mm 아날로그 오디오 병합(MUX 선택 시),T05 [확정] 병합 → 삽입,확정
+1700,hds-42mu,02 Port Map,portMap.items[7].desc,"전면 빨간색 딥 스위치 3개(1번 오디오 병합·추출, 2번 Priority, 3번 출력 1·2번 분배). 설정 방법은 '07 딥 스위치 설정' 참고",T05 [확정] 병합 → 삽입,확정
+1704,hds-42mu,06 EDID 설정,edidSwitch.desc,"전면 파란색 EDID 로터리 스위치로 디스플레이 EDID를 선택한다. HD-13U와 달리 별도 SET 버튼이 없어, 로터리를 돌린 뒤 전원 케이블을 1회 탈착해야 적용된다.",T17 [확정] 로터리 → 로터리 스위치,확정
+1739,hds-42mu,06/07 딥 스위치 설정,dipSwitch.rows[1].title,오디오 병합·추출,T05 [확정] 병합 → 삽입,확정
+1742,hds-42mu,06/07 딥 스위치 설정,dipSwitch.rows[1].on.name,병합,T05 [확정] 병합 → 삽입,확정
+1744,hds-42mu,06/07 딥 스위치 설정,dipSwitch.rows[1].note,"병합과 추출은 동시에 쓸 수 없고, 둘 중 하나를 골라 쓴다.",T05 [확정] 병합 → 삽입,확정
+1890,mr-4s,목록 카드,korean,CATx·광 송수신기 모듈을 최대 4개까지 장착하고 하나의 전원 어댑터로 전원을 공급하는 랙 장착형 집합 프레임이다.,T03 [확정] 송수신기 → 송·수신기,확정
+1892,mr-4s,01 한눈에 보기,lead,CATx·광 송수신기 모듈을 **최대 4개까지 장착**하고 하나의 전원 어댑터로 전원을 공급하는 랙 장착형 집합 프레임입니다.,T03 [확정] 송수신기 → 송·수신기,확정
+1893,mr-4s,01 개요,overview,"MR-4S는 CATx/광 송수신기 슬롯을 4개까지 장착할 수 있는 집합형 CATx/광 송수신기 프레임이다. 한 개의 파워 어댑터로 최대 4개의 CATx/광 송수신기 슬롯에 전원을 공급하며, CATx/광 송신 슬롯과 수신 슬롯을 구분 없이 자유롭게 구성할 수 있다.
+
+프레임은 모듈 장착과 전원 공급만 담당하며, 해상도·HDCP·EDID 등 영상 사양은 장착하는 HDBaseT(CATx)·광 송수신기 모듈을 따른다. 카탈로그는 비디오 월 시스템, 대형 LED 스크린, 공항 이착륙 스크린, 홈시어터, TV 방송 시스템, 공연장 방송 시스템, 회의실 비디오 시스템, 교회 비디오 시스템을 활용사례로 든다.",T03 [확정] 송수신기 → 송·수신기,확정
+1901,mr-4s,04 제품 사양,specifications[1].value,"1 leads LC Single Mode Fiber, CATx","T07 [검토] Fiber → 광케이블
+T08 [검토] Single Mode → 싱글모드",검토
+1926,mr-4s,02 Port Map,portMap.items[2].desc,CATx·광 송수신기 모듈 최대 4개 장착(HDMI·RS-232·RJ45),T03 [확정] 송수신기 → 송·수신기,확정
+1939,obhd-2c,01 개요,overview,"OBHD-2C는 HDMI 영상 신호를 광케이블을 통해 장거리 전송하기 위한 한 쌍의 송신기와 수신기다. 송신기는 HDMI 신호를 광신호로 변환하고, 수신기는 광신호를 HDMI 신호로 복원한다.
+
+HDMI 영상 신호를 광케이블 2가닥으로 Single Mode 사용 시 최대 2km, Multi Mode 사용 시 최대 500m까지 전송할 수 있다. Full HD(1920x1080 @ 60Hz)와 HDCP 1.x를 지원하며 Plug & Play로 쉽게 설치할 수 있다.","T08 [확정] Single Mode → 싱글모드
+T09 [확정] Multi Mode → 멀티모드",확정
+1956,obhd-2c,04 제품 사양,specifications[3].name,최대 전송거리,T21 [확정] 전송거리 → 전송 거리,확정
+1959,obhd-2c,04 제품 사양,specifications[3].condition,Single Mode,T08 [확정] Single Mode → 싱글모드,확정
+1961,obhd-2c,04 제품 사양,specifications[4].name,최대 전송거리,T21 [확정] 전송거리 → 전송 거리,확정
+1964,obhd-2c,04 제품 사양,specifications[4].condition,Multi Mode,T09 [확정] Multi Mode → 멀티모드,확정
+2007,obhd-2c,02 Port Map,portMap[1].title,송신기 OBHD-2C Tx,T02 [확정] Tx → TX,확정
+2013,obhd-2c,02 Port Map,portMap[1].items[3].desc,MODE 로터리를 0번(EXTERNAL)에 두고 누르면 연결한 디스플레이 EDID를 저장. '06 EDID 설정' 참고,T17 [확정] 로터리 → 로터리 스위치,확정
+2020,obhd-2c,02 Port Map,portMap[2].title,수신기 OBHD-2C Rx,T02 [확정] Rx → RX,확정
+2030,obhd-2c,06 EDID 설정,edidSwitch.desc,"송신기(Tx) 전면 파란 MODE 로터리 스위치로 EDID를 고른다. 1~E번은 내장 EDID Library, 0번(EXTERNAL)은 EDID S/W 버튼으로 저장한 디스플레이 EDID를 쓴다(EDID Emulation). Default EDID는 1920x1080 @ 60Hz다.",T02 [확정] Tx → TX,확정
+2084,obhd-2c,06 EDID 설정,edidSwitch.rotaryName,MODE 로터리,T17 [확정] 로터리 → 로터리 스위치,확정
+2089,obux-1c,시리즈 안내,seriesNote,송신기(Tx)와 수신기(Rx)로 구성된다.,"T02 [확정] Tx → TX
+T02 [확정] Rx → RX",확정
+2094,obux-1c,목록 카드,korean,"4K/60 @ 4:4:4 HDMI 신호를 OM3 멀티모드(SC) 광케이블로 최대 300m 전송하고, 아날로그 오디오 병합·추출을 지원하는 광 송·수신기다.",T05 [확정] 병합 → 삽입,확정
+2096,obux-1c,01 한눈에 보기,lead,"4K/60 @ 4:4:4 HDMI 신호를 **OM3 멀티모드 광케이블로 최대 300m** 전송하고, 아날로그 오디오 병합·추출을 지원합니다.",T05 [확정] 병합 → 삽입,확정
+2097,obux-1c,01 개요,overview,"OBUX-1C는 최대 4K/60 @ 4:4:4 해상도를 지원하는 광 송·수신기로, 멀티모드(SC Type, OM3) 전용 광케이블을 통해 영상 신호를 최대 300m까지 전송한다. 아날로그 오디오 신호의 병합(Embedded)과 추출(De-embedded) 기능을 갖추었다.
+
+압축 없이 원본 영상 신호를 그대로 전송하며, 컬러 딥(Color Depth)과 선명한 화질이 필요한 방송·전시·회의실·컨트롤룸 환경을 대상으로 한다.","T05 [확정] 병합 → 삽입
+T05 [확정] Embedded → 임베딩
+T06 [확정] De-embedded → 디임베딩",확정
+2102,obux-1c,05 주요 기능,features[3].text,최대 300m 전송거리 지원,T21 [확정] 전송거리 → 전송 거리,확정
+2105,obux-1c,05 주요 기능,features[6].text,내장 EDID 지원(Tx Mode 딥 스위치),T02 [확정] Tx → TX,확정
+2107,obux-1c,05 주요 기능,features[8].text,아날로그 오디오 병합·추출 지원,T05 [확정] 병합 → 삽입,확정
+2114,obux-1c,04 제품 사양,specifications[2].name,최대 전송거리,T21 [확정] 전송거리 → 전송 거리,확정
+2117,obux-1c,04 제품 사양,specifications[2].condition,"Multi Mode (OM3, SC Type) 전용",T09 [확정] Multi Mode → 멀티모드,확정
+2146,obux-1c,제조사 자료(입출력 단자),io[2].condition,TX · 오디오 병합,T05 [확정] 병합 → 삽입,확정
+2183,obux-1c,02 Port Map,portMap[1].title,송신기 OBUX-1C Tx · 전면 / 뒷면,T02 [확정] Tx → TX,확정
+2187,obux-1c,02 Port Map,portMap[1].items[2].desc,3핀 터미널(L·접지·R) · 아날로그 오디오 병합,T05 [확정] 병합 → 삽입,확정
+2196,obux-1c,02 Port Map,portMap[2].title,수신기 OBUX-1C Rx · 전면 / 뒷면,T02 [확정] Rx → RX,확정
+2207,obux-1c,06/07 딥 스위치 설정,dipSwitch.label,Mode 딥 스위치(Tx),T02 [확정] Tx → TX,확정
+2212,obux-1c,06/07 딥 스위치 설정,dipSwitch.rows[1].on.text,후면 Audio IN(L·⏚·R) 소리를 HDMI에 병합한다. 병합한 소리는 Rx HDMI 출력과 Audio OUT으로 나간다.,"T01 [확정] Rx → 수신기
+T05 [확정] 병합 → 삽입",확정
+2239,obux-1c,06/07 딥 스위치 설정,dipSwitch.note,"Through-pass EDID Fix: 2·3·4번을 모두 OFF(Through-pass)로 두고 디스플레이 EDID를 Tx에 읽힌 뒤, PC가 연결되어 있으면 그래픽 카드 설정에서 디스플레이 정보를 확인하고(연결되어 있지 않으면 약 5초 뒤) Tx 전원을 끄고 2·3·4번을 모두 ON으로 바꿔 전원을 켜면 그 EDID로 고정된다. 스위치 몸체 아래쪽에 ON 표시가 있어 레버를 아래로 내리면 ON이다(출고 시 모두 OFF, 레버가 위).",T01 [확정] Tx → 송신기,확정
+2243,qms-44ux,머리글,series,HDMI Matrix Switcher,T11 [확정] Matrix Switcher → 매트릭스 스위처,확정
+2246,qms-44ux,분류 태그,categories[3],Matrix Switcher,T11 [확정] Matrix Switcher → 매트릭스 스위처,확정
+2248,qms-44ux,목록 카드,korean,심리스 스위칭·2x2 비디오 월·쿼드 뷰·PIP 기능을 갖춘 4K/60 4x4 HDMI 매트릭스 스위처다.,"T20 [확정] 쿼드 뷰 → 쿼드뷰
+T25 [확정] 4x4 → 4×4
+T26 [확정] 2x2 → 2×2",확정
+2249,qms-44ux,머리글,subtitle,4×4 HDMI Matrix Switcher · 심리스 스위칭,T11 [확정] Matrix Switcher → 매트릭스 스위처,확정
+2250,qms-44ux,01 한눈에 보기,lead,4개의 HDMI 입력을 **어떤 출력으로도 자유롭게 전환**하는 4K/60 매트릭스입니다. 2×2 비디오 월·쿼드 뷰·PIP 기능을 지원합니다.,T20 [확정] 쿼드 뷰 → 쿼드뷰,확정
+2251,qms-44ux,01 개요,overview,"QMS-44UX는 다재다능한 4K/60 Matrix Switcher다. 4x4 HDMI Matrix로서 Seamless Switching, 2x2 Video Wall, 2x2 Quad Viewer, PIP 기능을 갖추고 있다.
+
+RS-232C, LAN(TCP/IP), 전면 버튼으로 제어할 수 있다.","T11 [확정] Matrix Switcher → 매트릭스 스위처
+T12 [확정] Seamless Switching → 심리스 스위칭
+T18 [확정] Video Wall → 비디오 월
+T20 [확정] Quad Viewer → 쿼드뷰
+T25 [확정] 4x4 → 4×4
+T26 [확정] 2x2 → 2×2",확정
+2275,qms-44ux,04 제품 사양,specifications[5].value,Up scaling and Down scaling,T13 [검토] Up scaling and Down scaling → 업스케일링·다운스케일링,검토
+2334,qms-44ux,06 화면 구성 모드,videoModes.modes[3].summary,"2×2 비디오월, 1프레임 단위 베젤 보정",T18 [확정] 비디오월 → 비디오 월,확정
+2364,qms-88ux,머리글,series,HDMI Matrix Switcher,T11 [확정] Matrix Switcher → 매트릭스 스위처,확정
+2367,qms-88ux,분류 태그,categories[3],Matrix Switcher,T11 [확정] Matrix Switcher → 매트릭스 스위처,확정
+2369,qms-88ux,목록 카드,korean,8CH 멀티뷰·비디오 월·듀얼 모드를 지원하는 True-4K 8x8 HDMI 2.0 매트릭스 스위처다.,T25 [확정] 8x8 → 8×8,확정
+2370,qms-88ux,머리글,subtitle,8×8 HDMI 2.0 Matrix Switcher · 8CH 멀티뷰,T11 [확정] Matrix Switcher → 매트릭스 스위처,확정
+2372,qms-88ux,01 개요,overview,"QMS-88UX는 HDMI Ver. 2.0을 지원하는 True-4K HDMI 8x8 고성능 매트릭스 스위처다. 최대 3840x2160 @ 60Hz 4:4:4 해상도를 지원하며 Seamless Switching, 8CH Multi-view, Video Wall, Dual 모드 등 다양한 용도로 사용할 수 있다. 서로 다른 임의의 HDMI 입력을 서로 다른 임의의 HDMI 출력 포트로 출력하거나 분배할 수 있다.
+
+전면 LCD 터치 패널, RS-232, LAN(이더넷·웹 브라우저)의 3가지 제어방식으로 동작한다. 출력 9번과 10번은 쿼드 뷰 모드로, 한 화면에 최대 8개의 분할 화면을 구성할 수 있다. HDCP v2.2를 지원한다.","T12 [확정] Seamless Switching → 심리스 스위칭
+T18 [확정] Video Wall → 비디오 월
+T19 [확정] Multi-view → 멀티뷰
+T20 [검토] 쿼드 뷰 → 쿼드뷰
+T25 [확정] 8x8 → 8×8",검토
+2380,qms-88ux,05 주요 기능,features[5].text,"매트릭스, 최대 3X3 비디오 월, 쿼드 뷰, 듀얼 모드의 4가지 모드 지원","T20 [검토] 쿼드 뷰 → 쿼드뷰
+T26 [확정] 3X3 → 3×3",검토
+2397,qms-88ux,04 제품 사양,specifications[4].value,"RS-232, LAN(RJ45), 3.5mm stereo, 3-pin phoenix, HDMI 19-Pin Female",T16 [검토] phoenix → 피닉스,검토
+2431,qms-88ux,제조사 자료(입출력 단자),io[2].condition,매트릭스 출력 1~8 + 9·10번 Quad-view(멀티뷰) 또는 일반 라우팅,T20 [검토] Quad-view → 쿼드뷰,검토
+2437,qms-88ux,제조사 자료(입출력 단자),io[3].condition,"후면 초록 3핀 Phoenix 단자 2개(QD1·QD2, 멀티뷰 출력 9·10번과 짝). 단자 1(QD1)은 입력 1~4번 중, 단자 2(QD2)는 입력 5~8번 중 원하는 포트 하나를 골라 그 오디오를 추출한다 — 전면 터치 패널의 [Function] → [QD Audio] 메뉴나 RS-232 IS 명령으로 선택",T16 [확정] Phoenix → 피닉스,확정
+2448,qms-88ux,06 화면 구성 모드,videoModes.modes[3].summary,"출력 9·10번에서 사용, 한 화면 최대 8분할(8CH Multi-view)",T19 [확정] Multi-view → 멀티뷰,확정
+2475,qms-88ux,02 Port Map,portMap.items[3].desc,멀티뷰(쿼드 뷰) 또는 일반 라우팅 출력 · 멀티뷰 시 한 화면에 최대 8분할,T20 [검토] 쿼드 뷰 → 쿼드뷰,검토
+2477,qms-88ux,02 Port Map,portMap.items[4].desc,"초록 3핀 Phoenix · 단자 1(QD1)=입력 1~4번, 단자 2(QD2)=입력 5~8번 중 원하는 포트 하나를 골라 추출",T16 [확정] Phoenix → 피닉스,확정
+2499,spx-r6,01 개요,overview,"SPX-R6는 SPX Extender 제품의 랙 모듈형 제품이다. SPX-Extender 모듈을 최대 6개 장착하고 단일 전원으로 모듈 전체에 전원을 공급한다. 모듈은 핫스왑을 지원해 장애가 생겨도 전원을 끄지 않고 교체할 수 있다.
+
+전면 LCD와 버튼(방향 버튼·MENU·CANCEL)으로 Extender의 신호 유무를 확인하고 EDID를 설정한다. 본체 내장 EDID와 EDID Pass-through를 고를 수 있고, IR 포트 2개(IR IN·IR Ctrl)로 IR 원격 제어와 제어 컨트롤러 연동을 지원한다.
+
+사양서 연결도는 후면 모듈 칸마다 HDMI IN으로 소스를 받아 CAT OUT으로 SPX-RX에 보내는 구성을 보여 준다. HDMI 2.0·HDCP 1.4/2.2·18Gbps·HDR을 지원하고, CAT5e 기준 4K/60 @ 4:4:4 최대 50m, 1080p 최대 60m까지 전송한다. PoC(Power over Cable)로 송·수신기 중 한쪽에만 전원을 연결해도 된다.
+
+모듈은 TX(송신)·RX(수신)를 골라 쓸 수 있고, 연결도의 SPX-RX IR 기능(IR Blaster)도 지원한다. 다만 RX 사용과 IR 기능은 현장에서는 잘 쓰지 않는다(서울영상테크 SI사업본부 확인).",T15 [확정] Pass-through → 패스스루,확정
+2511,spx-r6,05 주요 기능,features[10].text,내장 EDID · EDID Pass-through 지원,T15 [확정] Pass-through → 패스스루,확정
+2530,spx-r6,04 제품 사양,specifications[6].value,내장 EDID · EDID Pass-through,T15 [확정] Pass-through → 패스스루,확정
+2533,spx-r6,04 제품 사양,specifications[7].name,최대 전송거리,T21 [확정] 전송거리 → 전송 거리,확정
+2538,spx-r6,04 제품 사양,specifications[8].name,최대 전송거리,T21 [확정] 전송거리 → 전송 거리,확정
+2561,spx-r6,04 제품 사양,specifications[13].value,Transmitter 3W / Receiver 3W,"T01 [검토] Transmitter → 송신기
+T01 [검토] Receiver → 수신기",검토
+2615,spx-r6,02 Port Map,portMap[2].items[1].desc,"모듈 칸마다 1개 · TX 모듈은 소스 입력, RX 모듈은 디스플레이 출력","T01 [확정] TX → 송신기
+T01 [확정] RX → 수신기",확정
+2617,spx-r6,02 Port Map,portMap[2].items[2].desc,"모듈 칸마다 1개 · TX 모듈은 SPX-RX로 출력, RX 모듈은 SPX-TX에서 입력(CAT5e)","T01 [확정] TX → 송신기
+T01 [확정] RX → 수신기",확정
+2634,spx-rx-tx,01 개요,overview,"SPX-TX/SPX-RX는 4K/60 HDMI 신호를 CAT5e/6 케이블로 장거리 전송하는 SPX 시리즈용 송·수신기다. SPX-RX는 True HDMI 2.0 4K/60 @ 4:4:4를 지원하는 SPX 시리즈 매트릭스와 호환된다.
+
+SPX-TX는 딥 스위치로 오디오 병합(3.5mm Stereo)·장거리 모드·내장 EDID를 설정하고, SPX-RX는 후면 3.5mm 단자로 오디오를 추출한다. PoC(Power over Cable) 기능으로 송·수신기 중 한쪽에만 전원 케이블을 연결해도 되고, SPX-COS12 카드에 연결한 SPX-RX는 매트릭스 전원이 켜져 있으면 별도 전원 없이 동작한다. CAT5e/6 기준 4K/60 최대 50m, 1080p 최대 60m, Long Reach 모드에서 1080p 최대 100m까지 전송한다.",T05 [확정] 병합 → 삽입,확정
+2642,spx-rx-tx,05 주요 기능,features[6].text,오디오 병합(TX)·추출(RX) 지원,"T01 [확정] TX → 송신기
+T01 [확정] RX → 수신기
+T05 [확정] 병합 → 삽입",확정
+2644,spx-rx-tx,05 주요 기능,features[8].text,SPX-COS12(CATx 출력 보드)와 SPX-RX 연동 지원,T04 [확정] 보드 → 카드,확정
+2659,spx-rx-tx,04 제품 사양,specifications[5].name,4K/60 실효 전송거리,T21 [확정] 전송거리 → 전송 거리,확정
+2702,spx-rx-tx,제조사 자료(입출력 단자),io[3].condition,SPX-TX · 오디오 병합(딥 스위치 1번 ON),T05 [확정] 병합 → 삽입,확정
+2747,spx-rx-tx,관련 제품,related[2].note,SPX-COS12(CATx 출력 보드) ↔ SPX-RX,T04 [확정] 보드 → 카드,확정
+2755,spx-rx-tx,02 Port Map,portMap[1].items[3].desc,3.5mm 스테레오 오디오 입력(병합),T05 [확정] 병합 → 삽입,확정
+2782,spx-rx-tx,06/07 딥 스위치 설정,dipSwitch.rows[1].on.text,3.5mm AUDIO IN 소리를 HDMI에 병합해 보낸다(SPX-RX HDMI 출력·AUDIO OUT으로 나감).,T05 [확정] 병합 → 삽입,확정
+2810,spx,시리즈 안내,seriesNote,"메인프레임 5종과 8포트 입력·10~12포트 출력 보드, SPX-RX/TX 전송기로 구성한다.",T04 [확정] 보드 → 카드,확정
+2815,spx,목록 카드,korean,8포트 입력 보드와 10~12포트 출력 보드로 4K/60 @ 4:4:4 신호를 분배하고 출력별 독립 스케일링을 지원하는 모듈형 매트릭스 스위처다.,T04 [확정] 보드 → 카드,확정
+2817,spx,01 한눈에 보기,lead,8포트 입력 보드와 10~12포트 출력 보드로 **출력마다 독립 스케일링**을 하는 4K/60 분배형 매트릭스입니다. 입력보다 출력이 많은 스포츠 바·레스토랑·회의실·통제실에 맞춰 설계됐습니다.,T04 [확정] 보드 → 카드,확정
+2818,spx,01 개요,overview,"SPX(Signal Processing eXpert) 매트릭스 시리즈는 4K/60 @ 4:4:4 18Gbps 고해상도 신호를 분배하거나 다양한 해상도를 선택할 수 있는 매트릭스 스위처다. 8포트 입력 카드와 10~12포트 출력 카드를 갖추고, 심리스 스위칭과 비디오월 기능을 적용했으며, 5가지로 세분화한 메인프레임으로 Sports Bar, 레스토랑, 회의실, 보안 통제실 등 다양한 현장에 대응한다.
+
+전면 터치패널, 웹 UI, RS-232, LAN 등 제어 방식을 환경에 맞게 선택할 수 있다. 디스플레이마다 독립적인 Scaling 출력과 CEC 컨트롤 기능을 제공하고, Hot-swap 기능으로 전원을 끄지 않고 슬롯 카드를 장착·교체할 수 있다.
+
+카탈로그는 SPX 시리즈를 심플하지만 강력한 미디어 분산 솔루션으로 소개한다. 13쪽 제품 구상도는 SPX-M810(HDMI SLOT)에 셋톱박스 최대 8대와 4개 존의 비디오·오디오를 연결하는 예를 보여 준다.","T13 [확정] Scaling → 스케일링
+T14 [확정] Hot-swap → 핫스왑
+T18 [확정] 비디오월 → 비디오 월
+T22 [확정] 터치패널 → 터치 패널",확정
+2823,spx,05 주요 기능,features[2].text,"최대 12개의 디스플레이로 구현 가능한 비디오월 기능(2x2, 3x3, 3x4) 지원","T18 [확정] 비디오월 → 비디오 월
+T26 [확정] 2x2 → 2×2
+T26 [확정] 3x3 → 3×3
+T26 [확정] 3x4 → 3×4",확정
+2824,spx,05 주요 기능,features[3].text,멀티 뷰(쿼드 뷰) 기능 지원,"T19 [확정] 멀티 뷰 → 멀티뷰
+T20 [확정] 쿼드 뷰 → 쿼드뷰",확정
+2827,spx,05 주요 기능,features[6].text,Hot-Swap 지원(슬롯·FAN 모듈 교체),T14 [확정] Hot-Swap → 핫스왑,확정
+2828,spx,05 주요 기능,features[7].text,전면 Touch Screen으로 쉽게 제어,T22 [검토] Touch Screen → 터치 패널,검토
+2841,spx,04 제품 사양,specifications[3].value,"8x10, 16x20, 32x36, 24x72, 24x120","T25 [확정] 8x10 → 8×10
+T25 [확정] 16x20 → 16×20
+T25 [확정] 32x36 → 32×36
+T25 [확정] 24x72 → 24×72
+T25 [확정] 24x120 → 24×120",확정
+2845,spx,04 제품 사양,specifications[4].condition,입력 보드는 SPX-HIS8(HDMI),T04 [확정] 보드 → 카드,확정
+2870,spx,04 제품 사양,specifications[11].name,HDMI 인터페이스 보드 규격,T04 [확정] 보드 → 카드,확정
+2872,spx,04 제품 사양,specifications[11].condition,I/O 보드 공통 기능,T04 [확정] 보드 → 카드,확정
+2877,spx,04 제품 사양,specifications[12].condition,최대 · I/O 보드 공통 기능,T04 [확정] 보드 → 카드,확정
+2881,spx,04 제품 사양,specifications[13].condition,I/O 보드 공통 기능,T04 [확정] 보드 → 카드,확정
+2883,spx,04 제품 사양,specifications[14].name,CATx 보드 전송 거리,T04 [확정] 보드 → 카드,확정
+2888,spx,시리즈 라인업,lineup[1].summary,"최대 8x10 I/O · 입력 슬롯 1 · 출력 슬롯 1 · 4.3"" Touch Screen · 483×355×88.1mm(2U)","T22 [검토] Touch Screen → 터치 패널
+T25 [확정] 8x10 → 8×10",검토
+2891,spx,시리즈 라인업,lineup[2].summary,"최대 16x20 I/O · 입력 슬롯 2 · 출력 슬롯 2 · 7"" Touch Screen · 483×355×177mm(4U)","T22 [검토] Touch Screen → 터치 패널
+T25 [확정] 16x20 → 16×20",검토
+2894,spx,시리즈 라인업,lineup[3].summary,"최대 32x36 I/O · 입력 슬롯 4 · 출력 슬롯 3 · 7"" Touch Screen · 483×355×310.3mm(7U)","T22 [검토] Touch Screen → 터치 패널
+T25 [확정] 32x36 → 32×36",검토
+2897,spx,시리즈 라인업,lineup[4].summary,"최대 24x72 I/O · 입력 슬롯 3 · 출력 슬롯 6 · 7"" Touch Screen · 483×443.7×365mm(8U)","T22 [검토] Touch Screen → 터치 패널
+T25 [확정] 24x72 → 24×72",검토
+2900,spx,시리즈 라인업,lineup[5].summary,"최대 24x120 I/O · 입력 슬롯 3 · 출력 슬롯 10 · 7"" Touch Screen · 483×443.7×365mm(8U)","T22 [검토] Touch Screen → 터치 패널
+T25 [확정] 24x120 → 24×120",검토
+2902,spx,시리즈 라인업,lineup[6].kind,입력 보드,T04 [확정] 보드 → 카드,확정
+2905,spx,시리즈 라인업,lineup[7].kind,출력 보드,T04 [확정] 보드 → 카드,확정
+2906,spx,시리즈 라인업,lineup[7].summary,HDMI 2.0b 출력 10포트 · 3-pin phoenix 오디오 2포트 · 3840x2160 @ 60Hz,T16 [확정] phoenix → 피닉스,확정
+2908,spx,시리즈 라인업,lineup[8].kind,출력 보드,T04 [확정] 보드 → 카드,확정
+2911,spx,시리즈 라인업,lineup[9].kind,출력 보드,T04 [확정] 보드 → 카드,확정
+2916,spx,관련 제품,related[1].note,"SPX-COS12(CATx 출력 보드) ↔ SPX-RX, 전송기 SPX-TX/RX",T04 [확정] 보드 → 카드,확정
+2978,vdm,시리즈 안내,seriesNote,"메인프레임 10종과 4포트 입출력 보드, HDBaseT·광 전송기로 구성한다.",T04 [확정] 보드 → 카드,확정
+2983,vdm,목록 카드,korean,HDMI·HDBaseT·광·3G-SDI·DVI·VGA 신호를 8x8부터 288x288까지 자유롭게 입출력하는 모듈형 크로스 플랫폼 매트릭스 스위처다.,"T25 [확정] 8x8 → 8×8
+T25 [확정] 288x288 → 288×288",확정
+2986,vdm,01 개요,overview,"VDM(Variety Digital Matrix Switcher) 시리즈는 디지털 인터페이스인 HDMI, CATx, Fiber, 3G/6G-SDI, DVI와 아날로그 인터페이스인 VGA까지 다양한 입출력 신호를 지원하는 모듈형 크로스 플랫폼 매트릭스 스위처다. 어떤 인터페이스로 입력해도 원하는 인터페이스로 출력할 수 있어 별도의 신호변환기가 필요 없고, 입출력 슬롯을 통해 영상·음성·제어신호를 장거리 전송할 수 있다.
+
+입출력 슬롯의 오디오 단자로 임베디드 오디오를 추출하거나 외부 오디오를 병합할 수 있으며, 후면에 별도 장착하는 오디오 매트릭스를 쓰면 오디오 병합·추출·입출력을 더 자유롭게 구성할 수 있다. 내장 패턴 제너레이터로 설치·운용 중 입력 채널 모니터링과 출력 채널 이상 유무를 확인할 수 있다.
+
+메인프레임은 8x8부터 288x288까지 10가지다. 전면 LCD 터치패널, RS-232, LAN으로 제어하며, 터치패널에서 파워모듈과 CPU 상태, 입력 소스 해상도, 출력 디스플레이 정보와 설정을 확인할 수 있다. 모든 메인프레임에 듀얼 리던던트 파워와 파워 핫스왑이 기본 적용된다.","T05 [확정] 병합 → 삽입
+T07 [확정] Fiber → 광
+T22 [확정] 터치패널 → 터치 패널
+T23 [확정] 리던던트 파워 → 이중화 전원
+T25 [확정] 8x8 → 8×8
+T25 [확정] 288x288 → 288×288",확정
+2989,vdm,05 주요 기능,features[1].text,8x8부터 288x288까지 메인프레임 10종,"T25 [확정] 8x8 → 8×8
+T25 [확정] 288x288 → 288×288",확정
+2990,vdm,05 주요 기능,features[2].text,"HDMI, DVI, 3G-SDI, HDBaseT, Fiber Optical, VGA 등 다양한 인터페이스 지원",T07 [확정] Fiber Optical → 광,확정
+2995,vdm,05 주요 기능,features[7].text,"오디오 병합, 추출 기능 지원",T05 [확정] 병합 → 삽입,확정
+2997,vdm,05 주요 기능,features[9].text,비디오월 기능 지원,T18 [확정] 비디오월 → 비디오 월,확정
+3017,vdm,04 제품 사양,specifications[5].value,"HDMI, 3G-SDI, HDBaseT, Fiber",T07 [확정] Fiber → 광,확정
+3020,vdm,04 제품 사양,specifications[6].value,"HDMI, 3G-SDI, HDBaseT, Fiber",T07 [확정] Fiber → 광,확정
+3072,vdm,시리즈 라인업,lineup[11].kind,입력 보드,T04 [확정] 보드 → 카드,확정
+3073,vdm,시리즈 라인업,lineup[11].summary,4K HDMI 입력 4포트 · HDMI 1.4 · 3840x2160 @ 30Hz 4:4:4·60Hz 4:2:0 · 오디오 병합/추출,T05 [확정] 병합 → 삽입,확정
+3075,vdm,시리즈 라인업,lineup[12].kind,입력 보드,T04 [확정] 보드 → 카드,확정
+3076,vdm,시리즈 라인업,lineup[12].summary,4K CATx(HDBaseT) 입력 4포트 · 3840x2160 @ 30Hz 4:4:4·60Hz 4:2:0 · 오디오 병합/추출,T05 [확정] 병합 → 삽입,확정
+3078,vdm,시리즈 라인업,lineup[13].kind,입력 보드,T04 [확정] 보드 → 카드,확정
+3081,vdm,시리즈 라인업,lineup[14].kind,입력 보드,T04 [확정] 보드 → 카드,확정
+3082,vdm,시리즈 라인업,lineup[14].summary,3G/HD-SDI 입력 4포트 · 1920x1080 @ 60Hz · 오디오 병합/추출,T05 [확정] 병합 → 삽입,확정
+3084,vdm,시리즈 라인업,lineup[15].kind,출력 보드,T04 [확정] 보드 → 카드,확정
+3085,vdm,시리즈 라인업,lineup[15].summary,"4K 쿼드 뷰어 HDMI 출력 2포트 · 1920x1200, 3840x2160 @ 30Hz · 심리스",T20 [확정] 쿼드 뷰어 → 쿼드뷰어,확정
+3087,vdm,시리즈 라인업,lineup[16].kind,출력 보드,T04 [확정] 보드 → 카드,확정
+3088,vdm,시리즈 라인업,lineup[16].summary,4K CATx(HDBaseT) 출력 4포트 · 3840x2160 @ 30Hz 4:4:4·60Hz 4:2:0 · 오디오 병합/추출,T05 [확정] 병합 → 삽입,확정
+3090,vdm,시리즈 라인업,lineup[17].kind,출력 보드,T04 [확정] 보드 → 카드,확정
+3091,vdm,시리즈 라인업,lineup[17].summary,일반 스위칭 4K HDMI 출력 4포트 · HDMI 1.4 · 3840x2160 @ 30Hz 4:4:4·60Hz 4:2:0 · 오디오 추출/병합,T05 [확정] 병합 → 삽입,확정
+3093,vdm,시리즈 라인업,lineup[18].kind,출력 보드,T04 [확정] 보드 → 카드,확정
+3094,vdm,시리즈 라인업,lineup[18].summary,심리스 스위칭 스케일링·월 HDMI 출력 4포트 · 1920x1080 @ 60Hz 비디오월,T18 [확정] 비디오월 → 비디오 월,확정
+3096,vdm,시리즈 라인업,lineup[19].kind,출력 보드,T04 [확정] 보드 → 카드,확정
+3099,vdm,시리즈 라인업,lineup[20].kind,출력 보드,T04 [확정] 보드 → 카드,확정
+3103,vdm,시리즈 라인업,lineup[21].summary,HDBaseT DVI/HDMI·오디오·RS-232 송수신기 · 100m,T03 [확정] 송수신기 → 송·수신기,확정
+3106,vdm,시리즈 라인업,lineup[22].summary,HDBaseT 벽부형 송수신기 · 100m,T03 [확정] 송수신기 → 송·수신기,확정
+3109,vdm,시리즈 라인업,lineup[23].summary,HDBaseT 4K HDMI·RS-232 송수신기 · CAT5e/CAT6 100m,T03 [확정] 송수신기 → 송·수신기,확정
+3112,vdm,시리즈 라인업,lineup[24].summary,광 DVI/HDMI·오디오·RS-232 송수신기 · 싱글모드 2km/멀티모드 500m,T03 [확정] 송수신기 → 송·수신기,확정
+3115,vdm,시리즈 라인업,lineup[25].summary,광 벽부형 DVI/HDMI 송수신기 · 최대 2km,T03 [확정] 송수신기 → 송·수신기,확정
+3116,vdm,관련 제품,related[1].note,VDM 시리즈 HDBaseT 송수신기,T03 [확정] 송수신기 → 송·수신기,확정
+3117,vdm,관련 제품,related[2].note,VDM 시리즈 벽부형 HDBaseT 송수신기,T03 [확정] 송수신기 → 송·수신기,확정
+3118,vdm,관련 제품,related[3].note,"VDM 시리즈 HDBaseT 송수신기 · 구성기에서 CIS4-U↔CT104-U, COS4-U↔CR104-U 연동(U09)",T03 [확정] 송수신기 → 송·수신기,확정
+3119,vdm,관련 제품,related[4].note,"VDM 시리즈 광 송수신기 · 구성기에서 FIS4-U↔FT101-U, FOS4-U↔FR101-U 연동(U09)",T03 [확정] 송수신기 → 송·수신기,확정
+3120,vdm,관련 제품,related[5].note,VDM 시리즈 벽부형 광 송수신기,T03 [확정] 송수신기 → 송·수신기,확정
+3125,xdm-ct103-cr103,시리즈 안내,seriesNote,XDM 시리즈 전용 1 Gang 벽부형 HDBaseT 3.0 송신기(CT103)와 수신기(CR103) 짝이다.,"T24 [확정] CT103 → XDM-CT103
+T24 [확정] CR103 → XDM-CR103",확정
+3136,xdm-ct103-cr103,문서 버튼,documents[2].label,CT103 매뉴얼,T24 [확정] CT103 → XDM-CT103,확정
+3138,xdm-ct103-cr103,문서 버튼,documents[3].label,CR103 매뉴얼,T24 [확정] CR103 → XDM-CR103,확정
+3141,xdm-ct103-cr103,05 주요 기능,features[3].text,"XDM-CIS100(CT103)·COS100(CR103) 카드, XDM-CTR100과 연동 지원","T24 [확정] CT103 → XDM-CT103
+T24 [확정] COS100 → XDM-COS100
+T24 [확정] CR103 → XDM-CR103",확정
+3142,xdm-ct103-cr103,05 주요 기능,features[4].text,PoE 전원 수신 지원(COS100 카드·CTR100 PSE와 연결 시 전원 케이블 불필요),"T24 [확정] COS100 → XDM-COS100
+T24 [확정] CTR100 → XDM-CTR100",확정
+3143,xdm-ct103-cr103,05 주요 기능,features[5].text,"오디오 병합(CT103, 3핀)·추출(CR103, 3.5mm) 지원","T05 [확정] 병합 → 삽입
+T24 [확정] CT103 → XDM-CT103
+T24 [확정] CR103 → XDM-CR103",확정
+3166,xdm-ct103-cr103,04 제품 사양,specifications[6].name,최대 전송거리,T21 [확정] 전송거리 → 전송 거리,확정
+3171,xdm-ct103-cr103,04 제품 사양,specifications[7].name,최대 전송거리,T21 [확정] 전송거리 → 전송 거리,확정
+3194,xdm-ct103-cr103,04 제품 사양,specifications[13].condition,전용 카드(CIS100/COS100)나 XDM-CTR100 PSE와 연결하면 PoE로 전원을 받아 연결하지 않음 · 그 밖에는 어댑터 연결,"T24 [확정] CIS100 → XDM-CIS100
+T24 [확정] COS100 → XDM-COS100",확정
+3211,xdm-ct103-cr103,04 제품 사양,specifications[17].value,ON: 3-pin Stereo Audio 병합 / OFF: Source Audio(HDMI),T05 [확정] 병합 → 삽입,확정
+3236,xdm-ct103-cr103,제조사 자료(입출력 단자),io[3].condition,"XDM-CT103 · L·접지·R 3핀, 딥 스위치 1번 ON일 때 HDMI에 병합",T05 [확정] 병합 → 삽입,확정
+3258,xdm-ct103-cr103,관련 제품,related[2].note,XDM-CIS100(CT103)·XDM-COS100(CR103) 카드,"T24 [확정] CT103 → XDM-CT103
+T24 [확정] CR103 → XDM-CR103",확정
+3260,xdm-ct103-cr103,관련 제품,related[4].note,"XDM-CTR100(CT103은 RX 모드, CR103은 TX 모드)과 연결","T24 [확정] CT103 → XDM-CT103
+T24 [확정] CR103 → XDM-CR103",확정
+3265,xdm-ct103-cr103,02 Port Map,portMap[1].items[2].desc,3핀(L·접지·R) · 딥 스위치 1번 ON이면 HDMI에 병합,T05 [확정] 병합 → 삽입,확정
+3273,xdm-ct103-cr103,02 Port Map,portMap[1].items[6].desc,1번 오디오 병합 · 2번 Long Reach(1080p 150m),T05 [확정] 병합 → 삽입,확정
+3297,xdm-ctr100-pse,01 개요,overview,"XDM-CTR100 PSE는 PoE 기능의 PSE(Power Sourcing Equipment) 장비로, CAT 케이블을 통해 PD 장비(XDM-CTR100)에 신호와 전원을 동시에 공급한다. XDM-CTR100 및 벽부형 XDM-CT103/CR103과 함께 사용할 수 있다.
+
+XDM-CTR100 PSE와 XDM-CTR100을 함께 쓰면 XDM-CTR100은 PD(Powered Devices) 모드로 동작해 전원 케이블 없이 사용할 수 있고, 이때 PSE 쪽에는 전원 케이블을 연결해야 한다. PSE 모델도 XDM-CTR100과 같이 설정으로 송신기 또는 수신기 역할을 바꿀 수 있다. 케이블별 최대 사용 거리는 제조사 문의 사항으로 적혀 있다.
+
+XDM-CIS100·COS100 카드에는 PSE를 직결할 수 없고, 카드에는 XDM-CTR100을 연결한다.",T24 [확정] COS100 → XDM-COS100,확정
+3312,xdm-ctr100-pse,04 제품 사양,specifications[2].name,최대 전송거리,T21 [확정] 전송거리 → 전송 거리,확정
+3420,xdm-ctr100,01 개요,overview,"XDM-CTR100은 HDBaseT 3.0 기술이 적용되어 압축하지 않은 True 4K 3840x2160 @ 60Hz 4:4:4 해상도의 HDMI 신호를 케이블에 따라 최대 100m까지 전송하는 HDMI 송·수신기다. 하나의 기기에서 설정으로 송신기 또는 수신기 역할을 바꿀 수 있으며, 송신기로 쓰면 XDM-CIS100, 수신기로 쓰면 XDM-COS100과 호환된다. RS-232+ 기능으로 XDM 매트릭스의 커맨드를 통해 XDM-CTR100의 RS-232에 연결된 외부기기를 제어할 수 있다.
+
+XDM-CTR100 PSE(별도 제품)와 함께 쓰면 XDM-CTR100은 PD(Powered Devices) 모드로 동작해 전원 케이블 없이 사용할 수 있다. XDM-CIS100·COS100 카드에 직접 연결할 때는 XDM-PSU(16채널 모듈형 전원 장치)로 전원을 공급해 CTR100에 전원 어댑터를 따로 연결하지 않는다. 케이블별 최대 사용 거리는 제조사 문의 사항으로 적혀 있다.","T03 [확정] 송·수신기 → 송수신기
+T24 [확정] COS100 → XDM-COS100
+T24 [확정] CTR100 → XDM-CTR100",확정
+3425,xdm-ctr100,05 주요 기능,features[2].text,"TX/RX 겸용 지원(XDM-CIS100·COS100 카드 연동, Long Reach 1080p 최대 150m)",T24 [확정] COS100 → XDM-COS100,확정
+3435,xdm-ctr100,04 제품 사양,specifications[2].name,최대 전송거리,T21 [확정] 전송거리 → 전송 거리,확정
+3501,xdm-ctr100,관련 제품,related[5].note,CIS100·COS100에 직결할 때 XDM-PSU로 전원 공급(개별 어댑터 불필요),"T24 [확정] CIS100 → XDM-CIS100
+T24 [확정] COS100 → XDM-COS100",확정
+3503,xdm-ctr100,02 Port Map,portMap.items[1].desc,RJ45 · CAT 케이블(S/FTP CAT6A 필수)로 XDM 카드 또는 상대 CTR100과 연결,T24 [확정] CTR100 → XDM-CTR100,확정
+3537,xdm-ft101-fr101,시리즈 안내,seriesNote,XDM 시리즈 전용 광 송신기(FT101)와 수신기(FR101) 짝이다.,"T24 [확정] FT101 → XDM-FT101
+T24 [확정] FR101 → XDM-FR101",확정
+3545,xdm-ft101-fr101,01 개요,overview,"XDM-FT101/XDM-FR101은 True 4K 3840x2160 @ 60Hz 4:4:4 해상도의 HDMI v2.0 신호를 싱글모드 광케이블 사용 시 최대 2km, 멀티모드 광케이블 사용 시 최대 300m까지 전송하는 광 송·수신기다.
+
+XDM-FT101은 XDM-FIS100과, XDM-FR101은 XDM-FOS100과 호환된다. RS-232+ 기능으로 XDM 매트릭스의 커맨드를 통해 광 송·수신기의 RS-232 단자에 연결된 외부기기를 제어할 수 있다. 송신기는 Phoenix 5p 단자(오디오 L·R·⏚ 3핀 + RS-232 Tx·Rx, 접지 공용)로 스테레오 오디오를 삽입하고, 수신기는 같은 방식으로 스테레오 오디오를 추출한다.",T16 [확정] Phoenix → 피닉스,확정
+3550,xdm-ft101-fr101,05 주요 기능,features[3].text,XDM-FIS100(FT101)·FOS100(FR101) 카드 호환,"T24 [확정] FT101 → XDM-FT101
+T24 [확정] FOS100 → XDM-FOS100
+T24 [확정] FR101 → XDM-FR101",확정
+3552,xdm-ft101-fr101,05 주요 기능,features[5].text,"EDID 마인더 기능 지원(내장 EDID 선택, XDM-FT101 MODE 로터리)",T17 [확정] 로터리 → 로터리 스위치,확정
+3553,xdm-ft101-fr101,05 주요 기능,features[6].text,오디오 병합(FT101)·추출(FR101) 지원,"T05 [확정] 병합 → 삽입
+T24 [확정] FT101 → XDM-FT101
+T24 [확정] FR101 → XDM-FR101",확정
+3559,xdm-ft101-fr101,04 제품 사양,specifications[2].name,최대 전송거리,T21 [확정] 전송거리 → 전송 거리,확정
+3562,xdm-ft101-fr101,04 제품 사양,specifications[2].condition,Singlemode,T08 [확정] Singlemode → 싱글모드,확정
+3564,xdm-ft101-fr101,04 제품 사양,specifications[3].name,최대 전송거리,T21 [확정] 전송거리 → 전송 거리,확정
+3567,xdm-ft101-fr101,04 제품 사양,specifications[3].condition,Multimode,T09 [확정] Multimode → 멀티모드,확정
+3680,xdm-ft101-fr101,02 Port Map,portMap[1].items[2].desc,"오디오 삽입 + RS-232, 같은 5핀 Phoenix 단자",T16 [확정] Phoenix → 피닉스,확정
+3693,xdm-ft101-fr101,02 Port Map,portMap[2].items[2].desc,"오디오 추출 + RS-232, 같은 5핀 Phoenix 단자",T16 [확정] Phoenix → 피닉스,확정
+3699,xdm-ft101-fr101,관련 제품,related[2].note,XDM-FIS100(FT101)·XDM-FOS100(FR101) 카드,"T24 [확정] FT101 → XDM-FT101
+T24 [확정] FR101 → XDM-FR101",확정
+3701,xdm-ft101-fr101,06 EDID 설정,edidSwitch.desc,"XDM-FT101 전면 MODE 로터리 스위치 하나로 EDID와 오디오를 함께 고른다. 0~3번은 HDMI에 실린 원래 소리(Source), 8~11번은 5핀 단자 중 L·R·⏚ 3핀에 넣은 아날로그 오디오를 HDMI에 병합한다(Analog). 병합한 소리는 XDM-FR101 HDMI 출력과 L·R 오디오 출력으로 나간다.",T05 [확정] 병합 → 삽입,확정
+3705,xdm-ft101-fr101,06 EDID 설정,edidSwitch.steps[1].items[2],"오디오 병합은 8·9·10·11번 중 하나에 맞추고 전원을 연결한 뒤, 후면 5핀 Phoenix 단자의 L·R·⏚ 3핀에 오디오 선을 연결한다(나머지 Tx·Rx는 RS-232).","T05 [확정] 병합 → 삽입
+T16 [확정] Phoenix → 피닉스",확정
+3723,xdm-ft101-fr101,06 EDID 설정,edidSwitch.table[5].function,Through pass · Analog 오디오(병합),T05 [확정] 병합 → 삽입,확정
+3724,xdm-ft101-fr101,06 EDID 설정,edidSwitch.table[5].group,"Analog 오디오 병합(5핀 단자의 L·R 입력) · 8~11번(10=A, 11=B)",T05 [확정] 병합 → 삽입,확정
+3727,xdm-ft101-fr101,06 EDID 설정,edidSwitch.table[6].function,1920x1080 @ 60Hz · Analog 오디오(병합),T05 [확정] 병합 → 삽입,확정
+3728,xdm-ft101-fr101,06 EDID 설정,edidSwitch.table[6].group,"Analog 오디오 병합(5핀 단자의 L·R 입력) · 8~11번(10=A, 11=B)",T05 [확정] 병합 → 삽입,확정
+3731,xdm-ft101-fr101,06 EDID 설정,edidSwitch.table[7].function,"3840x2160 @ 30Hz · Analog 오디오(병합, 10번)",T05 [확정] 병합 → 삽입,확정
+3732,xdm-ft101-fr101,06 EDID 설정,edidSwitch.table[7].group,"Analog 오디오 병합(5핀 단자의 L·R 입력) · 8~11번(10=A, 11=B)",T05 [확정] 병합 → 삽입,확정
+3735,xdm-ft101-fr101,06 EDID 설정,edidSwitch.table[8].function,"3840x2160 @ 60Hz · Analog 오디오(병합, 11번)",T05 [확정] 병합 → 삽입,확정
+3736,xdm-ft101-fr101,06 EDID 설정,edidSwitch.table[8].group,"Analog 오디오 병합(5핀 단자의 L·R 입력) · 8~11번(10=A, 11=B)",T05 [확정] 병합 → 삽입,확정
+3739,xdm-ft101-fr101,06 EDID 설정,edidSwitch.rotaryName,MODE 로터리,T17 [확정] 로터리 → 로터리 스위치,확정
+3744,xdm-psu,시리즈 안내,seriesNote,XDM 매트릭스 HDBaseT 카드(CIS100·COS100)에 연결한 XDM-CTR100에 전원을 공급하는 16채널 모듈형 전원 장치다.,"T24 [확정] CIS100 → XDM-CIS100
+T24 [확정] COS100 → XDM-COS100",확정
+3750,xdm-psu,목록 카드,korean,XDM-CIS100·COS100 카드에 연결한 XDM-CTR100에 전원을 공급하는 19인치 2U 16채널 모듈형 전원 장치다. CIS용 POH 모듈과 COS용 PHX 모듈을 필요한 만큼 꽂아 쓴다.,"T24 [확정] COS100 → XDM-COS100
+T24 [확정] POH → XDM-POH
+T24 [확정] PHX → XDM-PHX",확정
+3752,xdm-psu,01 한눈에 보기,lead,XDM 매트릭스 HDBaseT 카드(CIS100·COS100)에 연결한 XDM-CTR100에 **전원을 한곳에서 공급**하는 16채널 모듈형 전원 장치입니다. 이때 CTR100에는 전원 어댑터를 따로 연결하지 않습니다.,"T24 [확정] CIS100 → XDM-CIS100
+T24 [확정] COS100 → XDM-COS100
+T24 [확정] CTR100 → XDM-CTR100",확정
+3753,xdm-psu,01 개요,overview,"XDM-PSU는 XDM 전송기용 16채널 모듈형 전원 공급 장치다. 후면 16칸에 두 종류 모듈을 필요한 만큼 섞어 꽂는다.
+
+XDM-POH(CIS용) 모듈은 RJ45 단자 2개(CIS Card·Extender)로 XDM-CIS100 포트와 XDM-CTR100(Tx) 사이의 CAT 케이블에 전원을 실어 보낸다. XDM-POH 1개가 XDM-CTR100(Tx) 1대를 맡는다.
+
+XDM-PHX(COS용) 모듈은 2핀(+/−) 전원 단자로 XDM-COS100 카드에 전원을 넣고, COS100이 CAT 케이블로 XDM-CTR100(Rx)에 전원을 함께 보낸다. XDM-PHX 1개가 XDM-COS100 카드 1장을 맡는다.
+
+XDM-PSU로 전원을 공급하면 XDM-CTR100에 전원 어댑터를 따로 연결하지 않는다. 정면에는 채널 LED 16개가 있고, 전원은 AC 100~240V 50/60Hz다.","T02 [확정] Tx → TX
+T02 [확정] Rx → RX
+T24 [확정] COS100 → XDM-COS100",확정
+3755,xdm-psu,05 주요 기능,features[1].text,16채널 모듈형 전원 공급 지원(후면 16칸에 POH·PHX 모듈 선택 장착),"T24 [확정] POH → XDM-POH
+T24 [확정] PHX → XDM-PHX",확정
+3756,xdm-psu,05 주요 기능,features[2].text,XDM-POH 모듈: XDM-CIS100 ↔ XDM-CTR100(Tx) CAT 케이블에 전원 공급(CTR100 Tx 1대당 1개),"T02 [확정] Tx → TX
+T24 [확정] CTR100 → XDM-CTR100",확정
+3757,xdm-psu,05 주요 기능,features[3].text,"XDM-PHX 모듈: 2핀 전원선으로 XDM-COS100 카드에 급전, CTR100(Rx)은 CAT로 전원 수신(COS100 1장당 1개)","T02 [확정] Rx → RX
+T24 [확정] CTR100 → XDM-CTR100
+T24 [확정] COS100 → XDM-COS100",확정
+3763,xdm-psu,04 제품 사양,specifications[1].condition,모듈 16칸(POH·PHX 선택),"T24 [확정] POH → XDM-POH
+T24 [확정] PHX → XDM-PHX",확정
+3767,xdm-psu,04 제품 사양,specifications[2].condition,XDM-CTR100(Tx) 1대당 1개,T02 [확정] Tx → TX,확정
+3784,xdm-psu,제조사 자료(입출력 단자),io[1].quantity,POH 모듈당 1,T24 [확정] POH → XDM-POH,확정
+3790,xdm-psu,제조사 자료(입출력 단자),io[2].quantity,POH 모듈당 1,T24 [확정] POH → XDM-POH,확정
+3796,xdm-psu,제조사 자료(입출력 단자),io[3].quantity,PHX 모듈당 1,T24 [확정] PHX → XDM-PHX,확정
+3803,xdm-psu,관련 제품,related[1].note,XDM 매트릭스 HDBaseT 카드(CIS100·COS100)용 전원 장치,"T24 [확정] CIS100 → XDM-CIS100
+T24 [확정] COS100 → XDM-COS100",확정
+3804,xdm-psu,관련 제품,related[2].note,CIS100·COS100에 연결한 XDM-CTR100에 전원 공급(개별 어댑터 불필요),"T24 [확정] CIS100 → XDM-CIS100
+T24 [확정] COS100 → XDM-COS100",확정
+3807,xdm-psu,02 Port Map,portMap.items[1].desc,"CIS용 모듈(예시 8칸) · 위 RJ45 'CIS Card'는 XDM-CIS100 포트, 아래 'Extender'는 XDM-CTR100(Tx)과 연결",T02 [확정] Tx → TX,확정
+3812,xdm-psu,02 Port Map,portMap.note,모듈 구성은 도면 예시(POH 8 · PHX 8)입니다. 구성에 맞춰 16칸에 필요한 모듈을 꽂습니다.,"T24 [확정] POH → XDM-POH
+T24 [확정] PHX → XDM-PHX",확정
+3825,xdm,01 개요,overview,"XDM(eXtreme Digital Matrix) 시리즈는 HDMI v2.0, DisplayPort v1.2, 12G-SDI, HDBaseT 3.0, DANTE 등 상용화 또는 표준화된 고대역폭 디지털 인터페이스의 입력과 출력을 제어해 자유로운 입출력 선택과 분배를 수행하는 고성능 크로스 플랫폼 매트릭스 스위처다. 심리스 스위칭으로 화상회의처럼 끊김 없는 전환이 필요한 곳에 딜레이 없는 빠른 전환을 제공하고, 비디오월 기능으로 화면을 원하는 크기로 확대·축소할 수 있다.
+
+전면 LCD 패널에서 파워와 쿨링 상태를 실시간으로 확인하고, 입력 포트에 저장된 EDID와 입력 소스 해상도, 출력 포트에 연결된 디스플레이의 EDID와 출력 상태를 확인해 최적 해상도로 출력할 수 있다.
+
+듀얼 리던던트 파워를 적용해 한 파워모듈에 장애가 생겨도 다른 모듈로 전원을 공급하며, 파워 핫스왑으로 전원을 끄지 않고 장애 모듈을 교체할 수 있다. 메인프레임은 XDM-12부터 XDM-288까지 LINE-UP에 올라 있다.","T18 [확정] 비디오월 → 비디오 월
+T23 [확정] 리던던트 파워 → 이중화 전원",확정
+3829,xdm,05 주요 기능,features[2].text,"HDMI, DisplayPort, SDI, HDBaseT 3.0, Fiber Optic 신호 등 다양한 신호변환 기능 지원",T07 [확정] Fiber Optic → 광,확정
+3831,xdm,05 주요 기능,features[4].text,화면 확대/축소를 위한 비디오월 기능 지원,T18 [확정] 비디오월 → 비디오 월,확정
+3834,xdm,05 주요 기능,features[7].text,"전면 LCD 터치패널, RS-232, LAN(TCP/IP) 3가지 제어방식 지원",T22 [확정] 터치패널 → 터치 패널,확정
+3835,xdm,05 주요 기능,features[8].text,전면 LCD 터치패널로 장비 상태를 파악하고 영상신호 감지 후 자동알림 기능 지원,T22 [확정] 터치패널 → 터치 패널,확정
+3837,xdm,05 주요 기능,features[10].text,오디오 병합·추출 지원,T05 [확정] 병합 → 삽입,확정
+3838,xdm,05 주요 기능,features[11].text,전원 이중화 및 Hot-Swap 지원,T14 [확정] Hot-Swap → 핫스왑,확정
+3839,xdm,05 주요 기능,features[12].text,입출력 슬롯 및 팬모듈 Hot-Swap 지원,T14 [확정] Hot-Swap → 핫스왑,확정
+3840,xdm,05 주요 기능,features[13].text,매트릭스에서 송수신기 전원을 공급하는 Power over Ethernet(POE) 기능 지원,T03 [확정] 송수신기 → 송·수신기,확정
+3841,xdm,05 주요 기능,features[14].text,"RS-232+ 지원: CIS100·COS100 카드(XDM-CTR100)와 FIS100·FOS100 카드(XDM-FT101·FR101)에 연결한 전송기로 외부기기를 매트릭스 커맨드로 제어하거나, AMX 등 통합 제어 신호를 그대로 전달(패스스루)","T24 [확정] CIS100 → XDM-CIS100
+T24 [확정] COS100 → XDM-COS100
+T24 [확정] FIS100 → XDM-FIS100
+T24 [확정] FOS100 → XDM-FOS100
+T24 [확정] FR101 → XDM-FR101",확정
+3863,xdm,04 제품 사양,specifications[5].value,"HDMI2.0, DisplayPort, 12G-SDI, HDBaseT 3.0, Fiber, DANTE",T07 [확정] Fiber → 광,확정
+3866,xdm,04 제품 사양,specifications[6].value,"HDMI2.0, DisplayPort, 12G-SDI, HDBaseT 3.0, Fiber, DANTE",T07 [확정] Fiber → 광,확정
+3909,xdm,시리즈 라인업,lineup[8].summary,HDMI v2.0 입력 4포트 · 오디오 병합/추출 4 · 4K/60 @ 4:4:4,T05 [확정] 병합 → 삽입,확정
+3912,xdm,시리즈 라인업,lineup[9].summary,HDMI v2.0 입력 4포트(Non-Scaler) · 오디오 병합/추출 4 · 4K/60 @ 4:4:4,T05 [확정] 병합 → 삽입,확정
+3915,xdm,시리즈 라인업,lineup[10].summary,DisplayPort v1.2 입력 4포트 · 오디오 병합/추출 4 · 4K/60 @ 4:4:4,T05 [확정] 병합 → 삽입,확정
+3927,xdm,시리즈 라인업,lineup[14].summary,"HDMI v2.0 출력 4포트 · 오디오 추출 4 · Video Wall, Quad-Viewer 전환 가능","T18 [확정] Video Wall → 비디오 월
+T20 [확정] Quad-Viewer → 쿼드뷰",확정
+3942,xdm,시리즈 라인업,lineup[19].summary,"HDMI(Wall Overlay) 출력 4포트 · Video Wall, 커맨드 중첩 기능",T18 [확정] Video Wall → 비디오 월,확정
+3945,xdm,시리즈 라인업,lineup[20].summary,HDBaseT 3.0 HDMI 송·수신 겸용 · 설정으로 역할 전환 · XDM-CIS100/COS100 호환 · 100m,T24 [확정] COS100 → XDM-COS100,확정
+3948,xdm,시리즈 라인업,lineup[21].summary,"XDM-CTR100의 PSE(POE 전원 공급) 모델 · XDM-CTR100, XDM-CT/CR103과 사용",T24 [검토] XDM-CT/CR103 → XDM-CT103/XDM-CR103,검토
+3951,xdm,시리즈 라인업,lineup[22].summary,CIS100·COS100에 연결한 XDM-CTR100용 16채널 모듈형 전원 장치 · XDM-POH(CIS용)·XDM-PHX(COS용) 모듈,"T24 [확정] CIS100 → XDM-CIS100
+T24 [확정] COS100 → XDM-COS100",확정
+3964,xdm,관련 제품,related[1].note,XDM 전용 HDBaseT 송·수신기 · XDM-CIS100/COS100 호환,T24 [확정] COS100 → XDM-COS100,확정
+3965,xdm,관련 제품,related[2].note,"XDM-CTR100의 PoE 전원 공급(PSE) 모델 · XDM-CTR100, XDM-CT/CR103과 사용",T24 [검토] XDM-CT/CR103 → XDM-CT103/XDM-CR103,검토
+3966,xdm,관련 제품,related[3].note,XDM 전용 벽부형 HDBaseT 송·수신기 · XDM-CIS100/COS100 호환,T24 [확정] COS100 → XDM-COS100,확정
+3967,xdm,관련 제품,related[4].note,XDM 전용 광 송·수신기 · XDM-FIS100/FOS100 호환,T24 [확정] FOS100 → XDM-FOS100,확정
+3968,xdm,관련 제품,related[5].note,CIS100·COS100에 연결한 XDM-CTR100에 전원을 공급하는 16채널 모듈형 전원 장치(XDM-POH·XDM-PHX 모듈),"T24 [확정] CIS100 → XDM-CIS100
+T24 [확정] COS100 → XDM-COS100",확정
+3999,XDM,구성기 제품군·프레임·카드 목록,input[5][4],FIBER,T07 [확정] FIBER → 광,확정
+4014,XDM,구성기 제품군·프레임·카드 목록,output[4][4],FIBER,T07 [확정] FIBER → 광,확정
+4030,SPX,구성기 제품군·프레임·카드 목록,modelNotes[1],8 × 10 · 2U,T25 [확정] 8 × 10 → 8×10,확정
+4031,SPX,구성기 제품군·프레임·카드 목록,modelNotes[2],16 × 20 · 4U,T25 [확정] 16 × 20 → 16×20,확정
+4032,SPX,구성기 제품군·프레임·카드 목록,modelNotes[3],32 × 36 · 7U,T25 [확정] 32 × 36 → 32×36,확정
+4033,SPX,구성기 제품군·프레임·카드 목록,modelNotes[4],24 × 72 · 8U,T25 [확정] 24 × 72 → 24×72,확정
+4034,SPX,구성기 제품군·프레임·카드 목록,modelNotes[5],24 × 120 · 8U,T25 [확정] 24 × 120 → 24×120,확정
+4079,VDM,구성기 제품군·프레임·카드 목록,input[3][4],FIBER,T07 [확정] FIBER → 광,확정
+4090,VDM,구성기 제품군·프레임·카드 목록,output[3][2],HDMI · Quad View,T20 [확정] Quad View → 쿼드뷰,확정
+4097,VDM,구성기 제품군·프레임·카드 목록,output[5][4],FIBER,T07 [확정] FIBER → 광,확정
+4103,XDM-HIS100,카드 상세 정보 팝업,specs[1][2],"HDMI 4포트, 오디오 입·출력 4포트(병합 및 추출)",T05 [확정] 병합 → 삽입,확정
+4112,XDM-HI100,카드 상세 정보 팝업,specs[1][2],"HDMI 4포트, 오디오 입·출력 4포트(병합 및 추출)",T05 [확정] 병합 → 삽입,확정
+4121,XDM-DPI100,카드 상세 정보 팝업,specs[1][2],"DisplayPort 4포트, 오디오 입·출력 4포트(병합 및 추출)",T05 [확정] 병합 → 삽입,확정
+4130,XDM-FIS100,카드 상세 정보 팝업,specs[1][2],"광 4포트, 오디오 입·출력 4포트(병합 및 추출)",T05 [확정] 병합 → 삽입,확정
+4135,XDM-FIS100,카드 상세 정보 팝업,specs[4][1],최대 전송거리,T21 [확정] 전송거리 → 전송 거리,확정
+4139,XDM-SIS100,카드 상세 정보 팝업,specs[1][2],"12G-SDI 4포트, 오디오 입·출력 4포트(병합 및 추출)",T05 [확정] 병합 → 삽입,확정
+4148,XDM-CIS100,카드 상세 정보 팝업,specs[1][2],"HDBaseT 4포트, 오디오 입·출력 4포트(병합 및 추출)",T05 [확정] 병합 → 삽입,확정
+4155,XDM-CIS100,카드 상세 정보 팝업,specs[5][1],최대 전송거리,T21 [확정] 전송거리 → 전송 거리,확정
+4169,XDM-HOS100,카드 상세 정보 팝업,specs[5][2],"비디오월 지원, 쿼드 뷰 슬롯으로 전환 가능","T18 [확정] 비디오월 → 비디오 월
+T20 [확정] 쿼드 뷰 → 쿼드뷰",확정
+4188,XDM-COS100,카드 상세 정보 팝업,specs[5][1],최대 전송거리,T21 [확정] 전송거리 → 전송 거리,확정
+4199,XDM-FOS100,카드 상세 정보 팝업,specs[4][1],최대 전송거리,T21 [확정] 전송거리 → 전송 거리,확정
+4220,XDM-WOS100,카드 상세 정보 팝업,specs[5][2],"비디오월 지원, 커맨드로 영상 중첩(오버레이) 기능 사용 가능",T18 [확정] 비디오월 → 비디오 월,확정
+4221,XDM-WOS100,카드 상세 정보 팝업,note,심리스·비디오월 기능을 지원하며 스위칭 모드 또는 비디오월 모드로 사용합니다. 중첩 기능 커맨드는 별도 커맨드 매뉴얼을 확인해야 합니다.,T18 [확정] 비디오월 → 비디오 월,확정
+4259,HIS4-U,카드 상세 정보 팝업,specs[3][2],오디오 병합 및 추출,T05 [확정] 병합 → 삽입,확정
+4266,CIS4-U,카드 상세 정보 팝업,specs[2][2],오디오 병합 및 추출,T05 [확정] 병합 → 삽입,확정
+4273,CIS4-U,카드 상세 정보 팝업,specs[6][1],최대 전송거리,T21 [확정] 전송거리 → 전송 거리,확정
+4278,CIS4-U,카드 상세 정보 팝업,specs[8][2],0.45kg (보드 1장),T04 [확정] 보드 → 카드,확정
+4282,FIS4-U,카드 상세 정보 팝업,specs[2][1],최대 전송거리,T21 [확정] 전송거리 → 전송 거리,확정
+4285,FIS4-U,카드 상세 정보 팝업,specs[3][2],오디오 병합 및 추출,T05 [확정] 병합 → 삽입,확정
+4294,SIS4-U,카드 상세 정보 팝업,specs[3][2],"최대 1920x1080 @ 60Hz, 오디오 병합 및 추출",T05 [확정] 병합 → 삽입,확정
+4307,HOS4-U,카드 상세 정보 팝업,specs[6][2],3.5mm 스테레오 포트로 오디오 병합 및 추출,T05 [확정] 병합 → 삽입,확정
+4315,HOS4-U,카드 상세 정보 팝업,specs[10][2],0.23kg (보드 1장),T04 [확정] 보드 → 카드,확정
+4326,HOS4S-UW,카드 상세 정보 팝업,specs[5][2],"비디오월, 심리스 & 스케일링 지원",T18 [확정] 비디오월 → 비디오 월,확정
+4330,HOS4S-UW,카드 상세 정보 팝업,specs[7][2],0.45kg (보드 1장),T04 [확정] 보드 → 카드,확정
+4343,QOS4S-U,카드 상세 정보 팝업,specs[6][2],0.45kg (보드 1장),T04 [확정] 보드 → 카드,확정
+4348,COS4-U,카드 상세 정보 팝업,specs[2][2],오디오 병합 및 추출,T05 [확정] 병합 → 삽입,확정
+4355,COS4-U,카드 상세 정보 팝업,specs[6][1],최대 전송거리,T21 [확정] 전송거리 → 전송 거리,확정
+4360,COS4-U,카드 상세 정보 팝업,specs[8][2],0.45kg (보드 1장),T04 [확정] 보드 → 카드,확정
+4364,FOS4-U,카드 상세 정보 팝업,specs[2][1],최대 전송거리,T21 [확정] 전송거리 → 전송 거리,확정
+4367,FOS4-U,카드 상세 정보 팝업,specs[3][2],오디오 병합 및 추출,T05 [확정] 병합 → 삽입,확정
+4383,app.js,src/app.js 28행,line 28,HDBaseT 3.0 송·수신기 · 딥 스위치 TX 설정,T03 [확정] 송·수신기 → 송수신기,확정
+4386,app.js,src/app.js 28행,line 28,전원: XDM-PSU로 공급 · CTR100 개별 전원 불필요 (매트릭스 카드 구성에서는 PSE 사용 불가),T24 [확정] CTR100 → XDM-CTR100,확정
+4387,app.js,src/app.js 29행,line 29,HDBaseT 3.0 송·수신기 · 딥 스위치 RX 설정,T03 [확정] 송·수신기 → 송수신기,확정
+4390,app.js,src/app.js 29행,line 29,전원: XDM-PSU로 공급 · CTR100 개별 전원 불필요 (매트릭스 카드 구성에서는 PSE 사용 불가),T24 [확정] CTR100 → XDM-CTR100,확정
+4404,app.js,src/app.js 33행,line 33,전원: PSE 쪽에만 연결 · CTR100은 전원 불필요,T24 [확정] CTR100 → XDM-CTR100,확정
+4434,app.js,src/app.js 49행,line 49,HDBaseT 3.0 송·수신기 (딥 스위치 TX/RX),T03 [확정] 송·수신기 → 송수신기,확정
+4435,app.js,src/app.js 49행,line 49,"딥 스위치로 TX/RX를 설정합니다. TX는 CIS100, RX는 COS100과 연동하며 이때는 XDM-PSU로 전원을 공급해 CTR100에 전원 어댑터가 필요 없습니다. PSE와 한 쌍이어도 전원 불필요","T24 [확정] CIS100 → XDM-CIS100
+T24 [확정] COS100 → XDM-COS100
+T24 [확정] CTR100 → XDM-CTR100",확정
+4436,app.js,src/app.js 50행,line 50,POE 전원 공급형 송·수신기 (딥 스위치 TX/RX),T03 [확정] 송·수신기 → 송수신기,확정
+4438,app.js,src/app.js 50행,line 50,"CTR100과 한 쌍으로 쓰면 PSE 쪽에만 전원을 연결하고 CTR100은 전원이 필요 없습니다. HDMI 입력·출력 카드 연장에 사용하며, HDBaseT 카드(CIS100·COS100) 구성에는 사용할 수 없습니다.","T24 [확정] CTR100 → XDM-CTR100
+T24 [확정] CIS100 → XDM-CIS100
+T24 [확정] COS100 → XDM-COS100",확정
+4440,app.js,src/app.js 51행,line 51,CIS100·COS100에 연결한 CTR100에 전원을 공급합니다. CIS용 XDM-POH(Tx 1대당 1개)와 COS용 XDM-PHX(COS100 1장당 1개) 모듈을 16칸에 꽂습니다.,"T02 [확정] Tx → TX
+T24 [확정] CIS100 → XDM-CIS100
+T24 [확정] COS100 → XDM-COS100
+T24 [확정] CTR100 → XDM-CTR100",확정
+4479,app.js,src/app.js 110행,line 110,HDMI 4채널 출력 또는 최대 4분할(Quad View) 화면 구성에 활용할 수 있습니다.,T20 [확정] Quad View → 쿼드뷰,확정
+4487,app.js,src/app.js 114행,line 114,쿼드 뷰,T20 [확정] 쿼드 뷰 → 쿼드뷰,확정
+4513,app.js,src/app.js 214행,line 214,최대 4분할 XDM-HOS100 · 쿼드 뷰(최대 4분할) 일반 HDMI 4채널 출력 또는 최대 4분할 화면 구성에 활용할 수 있습니다. 활용 TIP XDM-WOS100 · 4레이어 4개 레이어를 조합해 월 프로세서처럼 화면을 연출할 수 있습니다.,T20 [확정] 쿼드 뷰 → 쿼드뷰,확정
+4592,app.js,src/app.js 384행,line 384,"전원 공급 XDM-CTR100 〔값〕 대 · XDM-PSU로 전원 공급(개별 어댑터 불필요) XDM-PSU 〔값〕 대 · XDM-POH 〔값〕 개(CIS100 → POH → CTR100 Tx, Tx 1대당 1개) · XDM-PHX 〔값〕 개(PSU → 2핀 전원선 → COS100 → CAT → CTR100 Rx, COS100 1장당 1개)를 BOM에 자동 추가했습니다. 매트릭스 카드 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다.","T02 [확정] Tx → TX
+T02 [확정] Rx → RX
+T24 [확정] CIS100 → XDM-CIS100
+T24 [확정] POH → XDM-POH
+T24 [확정] CTR100 → XDM-CTR100
+T24 [확정] COS100 → XDM-COS100",확정
+4603,app.js,src/app.js 412행,line 412,HDBaseT 카드(CIS100·COS100)와 광 카드(FIS100·FOS100)에 연결하는 전송기입니다. 근거: RTCom 종합 카탈로그 p.10~12,"T24 [확정] CIS100 → XDM-CIS100
+T24 [확정] COS100 → XDM-COS100
+T24 [확정] FIS100 → XDM-FIS100
+T24 [확정] FOS100 → XDM-FOS100",확정
+4610,app.js,src/app.js 420행,line 420,"HDMI 연장 · 선택 HDMI 카드 연장(선택) HDMI 입력·출력 포트를 멀리 연결해야 하면 CTR100 PSE와 CTR100을 한 쌍으로 씁니다. 전원은 PSE 쪽에만 연결하고, 두 제품 모두 딥 스위치로 TX/RX를 설정합니다. 〔값〕",T24 [확정] CTR100 → XDM-CTR100,확정
+4747,products.js,src/products.js 11행,line 11,분배기·선택기,T11 [확정] 선택기 → 스위처,확정
+4771,products.js,src/products.js 109행,line 109,보드당,T04 [확정] 보드 → 카드,확정
+4779,products.js,src/products.js 216행,line 216,병합,T05 [확정] 병합 → 삽입,확정
+4780,products.js,src/products.js 218행,line 218,병합,T05 [확정] 병합 → 삽입,확정
+4782,products.js,src/products.js 225행,line 225,병합,T05 [확정] 병합 → 삽입,확정
+4783,products.js,src/products.js 239행,line 239,오디오 병합 또는 추출 중 선택,T05 [확정] 병합 → 삽입,확정
+4784,products.js,src/products.js 239행,line 239,오디오 병합,T05 [확정] 병합 → 삽입,확정
+4805,products.js,src/products.js 370행,line 370,Tx · 송신기,T02 [확정] Tx → TX,확정
+4806,products.js,src/products.js 370행,line 370,전원 어댑터 불필요 · POH가 CAT로 전원 공급,T24 [확정] POH → XDM-POH,확정
+4807,products.js,src/products.js 371행,line 371,Rx · 수신기,T02 [확정] Rx → RX,확정
+4808,products.js,src/products.js 371행,line 371,전원 어댑터 불필요 · COS100이 CAT로 전원 공급,T24 [확정] COS100 → XDM-COS100,확정
+4816,products.js,src/products.js 380행,line 380,XDM-PSU 1대 = 모듈 16칸(POH·PHX를 섞어 장착) · POH 1개 = CTR100 Tx 1대 · PHX 1개 = COS100 1장〔값〕,"T02 [확정] Tx → TX
+T24 [확정] POH → XDM-POH
+T24 [확정] PHX → XDM-PHX
+T24 [확정] CTR100 → XDM-CTR100
+T24 [확정] COS100 → XDM-COS100",확정
+4817,products.js,src/products.js 381행,line 381,XDM-CIS100·COS100 카드 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다,T24 [확정] COS100 → XDM-COS100,확정
+4834,products.js,src/products.js 425행,line 425,TX/RX는 각 기기 딥 스위치로 선택 · XDM-CIS100·COS100 카드에는 PSE가 아닌 XDM-CTR100을 직결,T24 [확정] COS100 → XDM-COS100,확정
+4838,products.js,src/products.js 435행,line 435,"조합 1 · XDM-CIS100·COS100 카드에 직결(XDM-PSU로 전원 공급, PSE 사용 불가)",T24 [확정] COS100 → XDM-COS100,확정
+4850,products.js,src/products.js 450행,line 450,TX/RX는 각 기기 딥 스위치로 선택 · CIS100·COS100 카드에 직결할 때는 이 조합 대신 XDM-PSU로 전원 공급,"T24 [확정] CIS100 → XDM-CIS100
+T24 [확정] COS100 → XDM-COS100",확정
+4932,core.js,src/core.js 147행,line 147,입력 포트에는 RX를 배정할 수 없습니다.,T01 [확정] RX → 수신기,확정
+4933,core.js,src/core.js 148행,line 148,출력 포트에는 TX를 배정할 수 없습니다.,T01 [확정] TX → 송신기,확정
+4948,core.js,src/core.js 240행,line 240,"SPX 출력 카드는 3종(HOS10·HOS12·COS12)이며, HOS10은 SPX-M810·M1620에만 장착할 수 있습니다(매뉴얼 p.3). 카드 혼합 조건과 전송기 판매 SKU는 확인해야 합니다.","T24 [확정] HOS10 → SPX-HOS10
+T24 [확정] HOS12 → SPX-HOS12
+T24 [확정] COS12 → SPX-COS12
+T24 [확정] M1620 → SPX-M1620",확정
+4954,core.js,src/core.js 251행,line 251,〔값〕 → CTR100 PSE + CTR100 〔값〕 쌍: HDMI 연장. 전원은 PSE 쪽에만 연결하고 CTR100은 전원이 필요 없습니다. 두 제품 모두 딥 스위치로 TX/RX를 설정합니다.,T24 [확정] CTR100 → XDM-CTR100,확정
+4964,core.js,src/core.js 266행,line 266,XDM-CTR100 〔값〕 대는 XDM-PSU로 전원을 공급하므로 CTR100에 전원 어댑터를 따로 연결하지 않습니다. XDM-PSU 〔값〕 대(XDM-POH 〔값〕 개 · XDM-PHX 〔값〕 개)를 BOM에 추가했습니다. 매트릭스 카드(CIS100·COS100)에 연결하는 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다.,"T24 [확정] CTR100 → XDM-CTR100
+T24 [확정] CIS100 → XDM-CIS100
+T24 [확정] COS100 → XDM-COS100",확정

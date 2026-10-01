@@ -11,14 +11,14 @@
     "Video",
     "Splitter"
   ],
-  "english": "1x3 HDMI 2.0 18Gbps splitter supporting 4K60 4:4:4 with EDID minder",
-  "korean": "4K 60Hz 4:4:4와 EDID 마인더를 지원하는 1입력 3출력 HDMI 2.0 18Gbps 분배기다.",
+  "english": "1x3 HDMI 2.0 18Gbps splitter supporting 4K/60 @ 4:4:4 with EDID minder",
+  "korean": "4K/60 @ 4:4:4와 EDID 마인더를 지원하는 1입력 3출력 HDMI 2.0 18Gbps 분배기다.",
   "subtitle": "1×3 HDMI 2.0 Splitter · EDID 마인더",
-  "lead": "하나의 HDMI 입력을 **손실 없이 3개의 동일한 출력**으로 분배합니다. 4K 60Hz 4:4:4를 지원합니다.",
+  "lead": "하나의 HDMI 입력을 **손실 없이 3개의 동일한 출력**으로 분배합니다. 4K/60 @ 4:4:4를 지원합니다.",
   "catalogPages": "34",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 36쪽의 소개·주요기능·제품사양·크기 및 무게·제품 이미지에서 확인했다.",
   "packageStatus": "VERIFIED",
-  "overview": "HD-13U는 HDMI 신호용 고성능 분배기다. True HDMI 2.0 3840x2160p 60Hz 크로마샘플링 4:4:4 해상도를 지원한다.\n\n하나의 HDMI 입력신호를 신호의 손실 없이 3개의 동일한 출력으로 분배한다. HDCP(고대역 디지털 콘텐츠 보호)와 EDID(디스플레이 식별 정보)를 완벽 지원하여 호환 이슈 없이 사용할 수 있으며, 아날로그 오디오 병합 및 추출 기능을 지원한다.",
+  "overview": "HD-13U는 HDMI 신호용 고성능 분배기다. True HDMI 2.0 3840x2160 @ 60Hz 크로마샘플링 4:4:4 해상도를 지원한다.\n\n하나의 HDMI 입력신호를 신호의 손실 없이 3개의 동일한 출력으로 분배한다. HDCP(고대역 디지털 콘텐츠 보호)와 EDID(디스플레이 식별 정보)를 완벽 지원하여 호환 이슈 없이 사용할 수 있으며, 아날로그 오디오 병합 및 추출 기능을 지원한다.",
   "images": [
     {
       "role": "Front",
@@ -158,7 +158,7 @@
     {
       "group": "Video",
       "name": "비디오 해상도",
-      "value": "최대 3840x2160p@60Hz",
+      "value": "최대 3840x2160 @ 60Hz",
       "unit": "",
       "condition": "",
       "source": "C",
@@ -240,7 +240,7 @@
       "direction": "IN",
       "quantity": "1",
       "protocol": "",
-      "condition": "병합(MUX) 선택 시 HDMI OUTPUT 1번에 믹스(전면 로터리 0 + SET으로 Stereo Audio)",
+      "condition": "병합(MUX) 선택 시 HDMI OUTPUT 1번에 믹스(전면 로터리 스위치 0 + SET으로 Stereo Audio)",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -334,7 +334,7 @@
     "y2": 150,
     "label": "MODE 로터리 스위치",
     "desc": "전면 파란색 로터리 스위치로 EDID를 선택한다. SET 버튼과 함께 쓰면 OUTPUT 1에 연결된 디스플레이의 EDID를 FLASH에 저장할 수도 있다(EDID 마인더).",
-    "default": "0 = FLASH에 저장된 외부 EDID(기본값 3840x2160p@60 PCM 2CH)",
+    "default": "0 = FLASH에 저장된 외부 EDID(기본값 3840x2160 @ 60Hz PCM 2CH)",
     "steps": [
       {
         "title": "외부 EDID 저장(External EDID Setting)",
@@ -360,49 +360,49 @@
       },
       {
         "code": "1",
-        "function": "3840x2160p@60 PCM 2CH",
+        "function": "3840x2160 @ 60Hz PCM 2CH",
         "highlight": true
       },
       {
         "code": "2",
-        "function": "3840x2160p@60 Multi"
+        "function": "3840x2160 @ 60Hz Multi"
       },
       {
         "code": "3",
-        "function": "3840x2160p@60 Dolby"
+        "function": "3840x2160 @ 60Hz Dolby"
       },
       {
         "code": "4",
-        "function": "3840x2160p@30 PCM 2CH"
+        "function": "3840x2160 @ 30Hz PCM 2CH"
       },
       {
         "code": "5",
-        "function": "3840x2160p@30 Multi"
+        "function": "3840x2160 @ 30Hz Multi"
       },
       {
         "code": "6",
-        "function": "3840x2160p@30 Dolby"
+        "function": "3840x2160 @ 30Hz Dolby"
       },
       {
         "code": "7",
-        "function": "1920x1080p@60 PCM 2CH",
+        "function": "1920x1080 @ 60Hz PCM 2CH",
         "highlight": true
       },
       {
         "code": "8",
-        "function": "1920x1080p@60 Multi"
+        "function": "1920x1080 @ 60Hz Multi"
       },
       {
         "code": "9",
-        "function": "1920x1080p@60 Dolby"
+        "function": "1920x1080 @ 60Hz Dolby"
       },
       {
         "code": "A",
-        "function": "1920x1080p@60 DVI"
+        "function": "1920x1080 @ 60Hz DVI"
       },
       {
         "code": "B",
-        "function": "1920x1200@60 DVI"
+        "function": "1920x1200 @ 60Hz DVI"
       },
       {
         "code": "C",
