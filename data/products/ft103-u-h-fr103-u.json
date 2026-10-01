@@ -180,18 +180,9 @@
     {
       "group": "Transmission",
       "name": "최대 전송 거리",
-      "value": "2",
-      "unit": "km",
-      "condition": "싱글모드 광케이블 · 4K/30",
-      "source": "M1",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "Transmission",
-      "name": "최대 전송 거리",
-      "value": "500",
-      "unit": "m",
-      "condition": "멀티모드 광케이블 · 4K/30",
+      "value": "싱글모드 2km\n멀티모드 500m",
+      "unit": "",
+      "condition": "4K/30",
       "source": "M1",
       "verification": "VERIFIED"
     },

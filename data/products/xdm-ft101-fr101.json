@@ -214,18 +214,9 @@
     {
       "group": "Transmission",
       "name": "최대 전송 거리",
-      "value": "2",
-      "unit": "km",
-      "condition": "싱글모드",
-      "source": "C",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "Transmission",
-      "name": "최대 전송 거리",
-      "value": "300",
-      "unit": "m",
-      "condition": "멀티모드",
+      "value": "싱글모드 2km\n멀티모드 300m",
+      "unit": "",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },

@@ -628,7 +628,19 @@ test('0.192: 문서 버튼은 "카탈로그 보기 | ↓ 다운로드", 화면 �
   assert.match(c,/max-width:480px\)\{#rtcom-design \.rt-pg-doc-save-text/);
 });
 
-test('0.193: 터치 화면 눌러서 옮기기(카드 타일 선택 → 같은 방향 슬롯 장착, 팝업 이동 버튼)',()=>{
+test('0.193: 전송기 최대 전송 거리는 제품마다 한 행(값 칸 줄 나눔)',()=>{
+  const files=fs.readdirSync('data/products').filter(f=>f.endsWith('.json')&&f!=='index.json');
+  for(const f of files){
+    const j=JSON.parse(read(`data/products/${f}`));
+    assert.ok((j.specifications||[]).filter(s=>/^최대 전송 거리$/.test(s.name)).length<=1,f);
+  }
+  const ft=JSON.parse(read('data/products/ft101-u-fr101-u.json')).specifications.find(s=>s.name==='최대 전송 거리');
+  assert.equal(ft.value,'싱글모드 2km\n멀티모드 500m');
+  const r6=JSON.parse(read('data/products/spx-r6.json')).specifications.find(s=>s.name==='최대 전송 거리');
+  assert.equal(r6.value,'4K/60 @ 4:4:4 50m\n1080p/60 60m');
+});
+
+test('0.194: 터치 화면 눌러서 옮기기(카드 타일 선택 → 같은 방향 슬롯 장착, 팝업 이동 버튼)',()=>{
   // 사용자 요청·선택 2026-09-30 "눌러서 옮기기 권장안으로 해줘"
   const app=read('src/app.js'),css=read('src/styles.css');
   assert.match(app,/const tapMode=\(\)=>PALETTE_DRAG&&!paletteDrag\(\);/,'마우스가 없는 화면에서만 켠다');
