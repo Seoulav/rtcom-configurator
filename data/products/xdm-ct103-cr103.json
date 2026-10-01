@@ -200,7 +200,7 @@
     },
     {
       "group": "Transmission",
-      "name": "최대 전송거리",
+      "name": "최대 전송 거리",
       "value": "100",
       "unit": "m",
       "condition": "4K/60 @ 4:4:4, S/FTP CAT6A 필수(BELDEN 10GXE02 기준), 케이블별 상이",
@@ -209,7 +209,7 @@
     },
     {
       "group": "Transmission",
-      "name": "최대 전송거리",
+      "name": "최대 전송 거리",
       "value": "150",
       "unit": "m",
       "condition": "Long Reach 모드(딥 스위치 2번 ON), 1920x1080 · XDM-CT103",

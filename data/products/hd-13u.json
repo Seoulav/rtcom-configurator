@@ -240,7 +240,7 @@
       "direction": "IN",
       "quantity": "1",
       "protocol": "",
-      "condition": "병합(MUX) 선택 시 HDMI OUTPUT 1번에 믹스(전면 로터리 0 + SET으로 Stereo Audio)",
+      "condition": "병합(MUX) 선택 시 HDMI OUTPUT 1번에 믹스(전면 로터리 스위치 0 + SET으로 Stereo Audio)",
       "source": "M1",
       "verification": "VERIFIED"
     },

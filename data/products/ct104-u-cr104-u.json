@@ -92,7 +92,7 @@
       "source": "C"
     },
     {
-      "text": "EDID Pass-Through 지원",
+      "text": "EDID 패스스루 지원",
       "source": "C"
     }
   ],
@@ -153,7 +153,7 @@
     },
     {
       "group": "Transmission",
-      "name": "최대 전송거리",
+      "name": "최대 전송 거리",
       "value": "100",
       "unit": "m",
       "condition": "1920x1200 @ 60Hz 또는 1080p, 4Kx2K@30Hz · BELDEN CI 6522",

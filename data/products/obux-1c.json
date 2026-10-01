@@ -5,7 +5,7 @@
   "productName": "OBUX-1C",
   "model": "OBUX-1C",
   "series": "Optical Extender",
-  "seriesNote": "송신기(Tx)와 수신기(Rx)로 구성된다.",
+  "seriesNote": "송신기(TX)와 수신기(RX)로 구성된다.",
   "itemType": "PRODUCT",
   "categories": [
     "영상",
@@ -161,7 +161,7 @@
       "source": "C"
     },
     {
-      "text": "최대 300m 전송거리 지원",
+      "text": "최대 300m 전송 거리 지원",
       "source": "C"
     },
     {
@@ -173,7 +173,7 @@
       "source": "M1"
     },
     {
-      "text": "내장 EDID 지원(Tx Mode 딥 스위치)",
+      "text": "내장 EDID 지원(TX Mode 딥 스위치)",
       "source": "M1"
     },
     {
@@ -201,10 +201,10 @@
     },
     {
       "group": "Transmission",
-      "name": "최대 전송거리",
+      "name": "최대 전송 거리",
       "value": "300",
       "unit": "m",
-      "condition": "Multi Mode (OM3, SC Type) 전용",
+      "condition": "멀티모드 (OM3, SC Type) 전용",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -349,7 +349,7 @@
     {
       "image": "Other",
       "file": "obux-1c-tx-front-rear.webp",
-      "title": "송신기 OBUX-1C Tx · 전면 / 뒷면",
+      "title": "송신기 OBUX-1C TX · 전면 / 뒷면",
       "items": [
         {
           "n": 1,
@@ -410,7 +410,7 @@
     {
       "image": "Other",
       "file": "obux-1c-rx-front-rear.webp",
-      "title": "수신기 OBUX-1C Rx · 전면 / 뒷면",
+      "title": "수신기 OBUX-1C RX · 전면 / 뒷면",
       "items": [
         {
           "n": 1,
@@ -495,7 +495,7 @@
   "issues": [],
   "dipSwitch": {
     "place": "전면",
-    "label": "Mode 딥 스위치(Tx)",
+    "label": "Mode 딥 스위치(TX)",
     "count": 4,
     "onUp": false,
     "color": "black",
@@ -510,7 +510,7 @@
         },
         "on": {
           "name": "Analog",
-          "text": "후면 Audio IN(L·⏚·R) 소리를 HDMI에 병합한다. 병합한 소리는 Rx HDMI 출력과 Audio OUT으로 나간다."
+          "text": "후면 Audio IN(L·⏚·R) 소리를 HDMI에 병합한다. 병합한 소리는 수신기 HDMI 출력과 Audio OUT으로 나간다."
         }
       }
     ],
@@ -572,6 +572,6 @@
         ]
       }
     ],
-    "note": "Through-pass EDID Fix: 2·3·4번을 모두 OFF(Through-pass)로 두고 디스플레이 EDID를 Tx에 읽힌 뒤, PC가 연결되어 있으면 그래픽 카드 설정에서 디스플레이 정보를 확인하고(연결되어 있지 않으면 약 5초 뒤) Tx 전원을 끄고 2·3·4번을 모두 ON으로 바꿔 전원을 켜면 그 EDID로 고정된다. 스위치 몸체 아래쪽에 ON 표시가 있어 레버를 아래로 내리면 ON이다(출고 시 모두 OFF, 레버가 위)."
+    "note": "Through-pass EDID Fix: 2·3·4번을 모두 OFF(Through-pass)로 두고 디스플레이 EDID를 송신기에 읽힌 뒤, PC가 연결되어 있으면 그래픽 카드 설정에서 디스플레이 정보를 확인하고(연결되어 있지 않으면 약 5초 뒤) 송신기 전원을 끄고 2·3·4번을 모두 ON으로 바꿔 전원을 켜면 그 EDID로 고정된다. 스위치 몸체 아래쪽에 ON 표시가 있어 레버를 아래로 내리면 ON이다(출고 시 모두 OFF, 레버가 위)."
   }
 }

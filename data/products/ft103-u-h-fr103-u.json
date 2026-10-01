@@ -179,19 +179,19 @@
     },
     {
       "group": "Transmission",
-      "name": "최대 전송거리",
+      "name": "최대 전송 거리",
       "value": "2",
       "unit": "km",
-      "condition": "Single Mode Fiber · 4K/30",
+      "condition": "싱글모드 광케이블 · 4K/30",
       "source": "M1",
       "verification": "VERIFIED"
     },
     {
       "group": "Transmission",
-      "name": "최대 전송거리",
+      "name": "최대 전송 거리",
       "value": "500",
       "unit": "m",
-      "condition": "Multi Mode Fiber · 4K/30",
+      "condition": "멀티모드 광케이블 · 4K/30",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -209,7 +209,7 @@
       "name": "EDID",
       "value": "EDID 마인더(외부 EDID 저장·내장 EDID 선택)",
       "unit": "",
-      "condition": "FT103-U-H 앞면 MODE 로터리",
+      "condition": "FT103-U-H 앞면 MODE 로터리 스위치",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -300,7 +300,7 @@
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
-      "condition": "FT103-U-H · 3p Phoenix(RS-232)",
+      "condition": "FT103-U-H · 3p 피닉스(RS-232)",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -344,7 +344,7 @@
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
-      "condition": "FR103-U · 3p Phoenix(RS-232)",
+      "condition": "FR103-U · 3p 피닉스(RS-232)",
       "source": "M1",
       "verification": "VERIFIED"
     }
@@ -384,7 +384,7 @@
         {
           "n": 2,
           "label": "AUDIO IN",
-          "desc": "3.5mm · 로터리 E + SET으로 HDMI에 병합",
+          "desc": "3.5mm · 로터리 스위치 E + SET으로 HDMI에 병합",
           "side": "right",
           "x": 648,
           "y1": 312,
@@ -411,7 +411,7 @@
         {
           "n": 6,
           "label": "SET 토글",
-          "desc": "MODE 로터리 설정 실행(EDID·외부 오디오·자동 스위칭)",
+          "desc": "MODE 로터리 스위치 설정 실행(EDID·외부 오디오·자동 스위칭)",
           "x1": 330,
           "x2": 372,
           "side": "top",

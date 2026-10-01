@@ -19,7 +19,7 @@
   "catalogPages": "39",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 41쪽의 OBHD-2C 소개·주요기능·크기 및 무게·제품사양에서 확인했다.",
   "packageStatus": "VERIFIED",
-  "overview": "OBHD-2C는 HDMI 영상 신호를 광케이블을 통해 장거리 전송하기 위한 한 쌍의 송신기와 수신기다. 송신기는 HDMI 신호를 광신호로 변환하고, 수신기는 광신호를 HDMI 신호로 복원한다.\n\nHDMI 영상 신호를 광케이블 2가닥으로 Single Mode 사용 시 최대 2km, Multi Mode 사용 시 최대 500m까지 전송할 수 있다. Full HD(1920x1080 @ 60Hz)와 HDCP 1.x를 지원하며 Plug & Play로 쉽게 설치할 수 있다.",
+  "overview": "OBHD-2C는 HDMI 영상 신호를 광케이블을 통해 장거리 전송하기 위한 한 쌍의 송신기와 수신기다. 송신기는 HDMI 신호를 광신호로 변환하고, 수신기는 광신호를 HDMI 신호로 복원한다.\n\nHDMI 영상 신호를 광케이블 2가닥으로 싱글모드 사용 시 최대 2km, 멀티모드 사용 시 최대 500m까지 전송할 수 있다. Full HD(1920x1080 @ 60Hz)와 HDCP 1.x를 지원하며 Plug & Play로 쉽게 설치할 수 있다.",
   "images": [
     {
       "role": "Main",
@@ -174,19 +174,19 @@
     },
     {
       "group": "Transmission",
-      "name": "최대 전송거리",
+      "name": "최대 전송 거리",
       "value": "2",
       "unit": "km",
-      "condition": "Single Mode",
+      "condition": "싱글모드",
       "source": "C",
       "verification": "VERIFIED"
     },
     {
       "group": "Transmission",
-      "name": "최대 전송거리",
+      "name": "최대 전송 거리",
       "value": "500",
       "unit": "m",
-      "condition": "Multi Mode",
+      "condition": "멀티모드",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -287,7 +287,7 @@
     {
       "image": "Other",
       "file": "obhd-2c-tx-front-rear.webp",
-      "title": "송신기 OBHD-2C Tx",
+      "title": "송신기 OBHD-2C TX",
       "items": [
         {
           "n": 1,
@@ -310,7 +310,7 @@
         {
           "n": 3,
           "label": "EDID S/W",
-          "desc": "MODE 로터리를 0번(EXTERNAL)에 두고 누르면 연결한 디스플레이 EDID를 저장. '06 EDID 설정' 참고",
+          "desc": "MODE 로터리 스위치를 0번(EXTERNAL)에 두고 누르면 연결한 디스플레이 EDID를 저장. '06 EDID 설정' 참고",
           "x1": 230,
           "x2": 258,
           "side": "top",
@@ -348,7 +348,7 @@
     {
       "image": "Other",
       "file": "obhd-2c-rx-front-rear.webp",
-      "title": "수신기 OBHD-2C Rx",
+      "title": "수신기 OBHD-2C RX",
       "items": [
         {
           "n": 1,
@@ -423,7 +423,7 @@
     "x2": 617,
     "y2": 112,
     "label": "MODE 로터리 스위치",
-    "desc": "송신기(Tx) 전면 파란 MODE 로터리 스위치로 EDID를 고른다. 1~E번은 내장 EDID Library, 0번(EXTERNAL)은 EDID S/W 버튼으로 저장한 디스플레이 EDID를 쓴다(EDID Emulation). Default EDID는 1920x1080 @ 60Hz다.",
+    "desc": "송신기(TX) 전면 파란 MODE 로터리 스위치로 EDID를 고른다. 1~E번은 내장 EDID Library, 0번(EXTERNAL)은 EDID S/W 버튼으로 저장한 디스플레이 EDID를 쓴다(EDID Emulation). Default EDID는 1920x1080 @ 60Hz다.",
     "default": "D = 1080p(2CH Audio) · 1920x1080 @ 60Hz(Default EDID)",
     "steps": [
       {
