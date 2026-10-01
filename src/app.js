@@ -353,8 +353,8 @@
       const diagram=RtCore.avBuilder(state);
       if(avbSession?.timer)clearTimeout(avbSession.timer);
       const win=window.open(`${AV_BUILDER_URL}?import=rtcom`,'rtcom-av-builder');
-      if(!win){announce('팝업이 막혀 AV 빌더를 열지 못했습니다. 브라우저에서 팝업을 허용하거나 "파일로 내려받기"를 쓰세요.');return}
-      avbSession={win,diagram,sent:false,timer:setTimeout(()=>{if(!avbSession||avbSession.sent)return;download(JSON.stringify(diagram,null,2),'application/json;charset=utf-8','json','av-builder');announce('AV 빌더가 아직 자동 받기를 지원하지 않아 파일로 내려받았습니다. 열린 AV 빌더의 Share → 가져오기 → 구성도 JSON에서 그 파일을 고르세요.')},10000)};
+      if(!win){announce('팝업이 막혀 AV 빌더를 열지 못했습니다. 브라우저에서 팝업을 허용하거나 "파일로 다운로드"를 쓰세요.');return}
+      avbSession={win,diagram,sent:false,timer:setTimeout(()=>{if(!avbSession||avbSession.sent)return;download(JSON.stringify(diagram,null,2),'application/json;charset=utf-8','json','av-builder');announce('AV 빌더가 아직 자동 받기를 지원하지 않아 파일로 다운로드했습니다. 열린 AV 빌더의 Share → 가져오기 → 구성도 JSON에서 그 파일을 고르세요.')},10000)};
       announce(`AV 빌더를 여는 중입니다 · 장비 ${diagram.nodes.length}대 · 연결 ${diagram.edges.length}개`);
     }
     window.addEventListener('message',event=>{
@@ -363,7 +363,7 @@
       if(message.type==='av-builder:ready'){avbSession.sent=true;clearTimeout(avbSession.timer);avbSession.win.postMessage({type:'rtcom:diagram',version:1,source:'RTCOM Configurator',diagram:avbSession.diagram},AV_BUILDER_ORIGIN)}
       else if(message.type==='av-builder:imported'){announce(`AV 빌더에 구성을 넣었습니다 · 장비 ${Number(message.nodes)||0}대 · 연결 ${Number(message.edges)||0}개`);avbSession=null}
     });
-    function avBuilderPanel(){const hasCards=Object.values(state.placements).some(value=>value!=='BLANK');if(!hasCards)return '';return `<div class="rt-avb"><div><strong>AV 빌더로 보내기</strong><p>매트릭스와 04에서 연결한 전송기가 같은 구성으로 들어가고, 포트 이름은 "HDMI #1-1 PC"처럼 신호명과 함께 들어갑니다.</p><ol><li><b>AV 빌더에서 바로 열기</b>를 누르면 새 탭에 같은 구성이 그려집니다.</li><li>자동으로 열리지 않으면 <b>파일로 내려받기</b> 후 <a href="${AV_BUILDER_URL}" target="_blank" rel="noopener">AV 빌더</a>의 <b>Share → 가져오기 → 구성도 JSON</b>에서 그 파일을 고릅니다.</li></ol></div><div class="rt-avb-actions"><button type="button" class="rt-button rt-primary" data-action="av-builder-open">AV 빌더에서 바로 열기 ↗</button><button type="button" class="rt-button" data-action="av-builder">파일로 내려받기</button></div></div>`}
+    function avBuilderPanel(){const hasCards=Object.values(state.placements).some(value=>value!=='BLANK');if(!hasCards)return '';return `<div class="rt-avb"><div><strong>AV 빌더로 보내기</strong><p>매트릭스와 04에서 연결한 전송기가 같은 구성으로 들어가고, 포트 이름은 "HDMI #1-1 PC"처럼 신호명과 함께 들어갑니다.</p><ol><li><b>AV 빌더에서 바로 열기</b>를 누르면 새 탭에 같은 구성이 그려집니다.</li><li>자동으로 열리지 않으면 <b>파일로 다운로드</b> 후 <a href="${AV_BUILDER_URL}" target="_blank" rel="noopener">AV 빌더</a>의 <b>Share → 가져오기 → 구성도 JSON</b>에서 그 파일을 고릅니다.</li></ol></div><div class="rt-avb-actions"><button type="button" class="rt-button rt-primary" data-action="av-builder-open">AV 빌더에서 바로 열기 ↗</button><button type="button" class="rt-button" data-action="av-builder">파일로 다운로드</button></div></div>`}
     function signalsView(){
       const slotList=currentSlots(),ports=state.portAssignments||{};
       const side=dir=>{
@@ -687,7 +687,7 @@ ${figure?`<h2 class="rt-rp-h"><i>1</i>후면 슬롯 배치</h2><div class="rt-rp
       // "남은 N칸 블랭크로 채우기"(2-3): 빈 슬롯만 BLANK로 바꾸고, 이미 넣은 카드는 그대로 둔다. 실행 취소 1단계.
       if(b.dataset.action==='fill-blanks'){const filled=RtCore.fillBlanks(state);state.placements=filled.placements;syncPorts();changed();return}
       if(b.dataset.action==='av-builder-open'){openInAvBuilder();return}
-      if(b.dataset.action==='av-builder'){const data=RtCore.avBuilder(state);download(JSON.stringify(data,null,2),'application/json;charset=utf-8','json','av-builder');announce(`AV 빌더용 파일(장비 ${data.nodes.length}대 · 연결 ${data.edges.length}개)을 내려받았습니다. AV 빌더의 Share → 가져오기 → 구성도 JSON에서 여세요.`);return}
+      if(b.dataset.action==='av-builder'){const data=RtCore.avBuilder(state);download(JSON.stringify(data,null,2),'application/json;charset=utf-8','json','av-builder');announce(`AV 빌더용 파일(장비 ${data.nodes.length}대 · 연결 ${data.edges.length}개)을 다운로드했습니다. AV 빌더의 Share → 가져오기 → 구성도 JSON에서 여세요.`);return}
       if(state.step===2&&b.dataset.action==='back'&&signalView){signalView=false;render();return}
       if(state.step===2&&b.dataset.action==='next'&&!signalView&&Object.values(state.placements).some(value=>value!=='BLANK')){signalView=true;render();root.scrollIntoView?.({block:'start'});return}
       if(b.dataset.action==='back'){state.step=Math.max(0,state.step-1);changed();return}if(b.dataset.action==='next'||b.dataset.action==='preview-next'){state.step=state.step===5?0:state.step+1;state.maxStep=Math.max(state.maxStep,state.step);changed()}});

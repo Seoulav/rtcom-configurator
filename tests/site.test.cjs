@@ -620,3 +620,10 @@ test('0.191: 커넥터는 암수(Female) 표기 없이 QMS-44UX처럼 이름만 
   const q=JSON.parse(read('data/products/qms-88ux.json'));
   assert.equal(q.io[0].connector,'HDMI');
 });
+
+test('0.192: 문서 버튼은 "카탈로그 보기 | ↓ 다운로드", 화면 문구는 "다운로드"로 통일',()=>{
+  const p=read('src/products.js'),a=read('src/app.js'),c=read('src/styles.css');
+  assert.match(p,/\$\{esc\(label\)\} 보기/);assert.match(p,/rt-pg-doc-save-text">다운로드</);assert.match(p,/>새 탭<\/a>/);
+  assert.doesNotMatch(p.replace(/\/\/.*$/gm,''),/내려받기/);assert.doesNotMatch(a.replace(/\/\/.*$/gm,''),/내려받/);
+  assert.match(c,/max-width:480px\)\{#rtcom-design \.rt-pg-doc-save-text/);
+});
