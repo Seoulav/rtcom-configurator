@@ -237,7 +237,7 @@
     else if (plan) add('SLOT_LAYOUT','VALID',`입력 카드 ${plan[0]}장과 출력 카드 ${plan[1]}장을 장착할 수 있습니다.`,state.family==='VDM'?'VDM 국문 매뉴얼 KV07 PDF pp.12–20':'SPX 국문 사용자 매뉴얼(250805) pp.7–9');
     else add('PHYSICAL_LAYOUT_UNVERIFIED','UNVERIFIED','화면의 입력·출력 위치는 논리 구성입니다. 실제 슬롯 수와 카드 설치 허용표가 필요합니다.','G01 · G02');
     add('ACCESSORIES_UNVERIFIED','UNVERIFIED','기본 포함품, 케이블, 전원 및 필러 수량은 구매 목록에 포함되지 않았습니다.','G08 · G09 · G12');
-    if (state.family==='SPX') add('SPX_CARD_ALLOWLIST','UNVERIFIED','SPX 출력 카드 4종은 모든 프레임에 장착할 수 있습니다(매뉴얼 p.11). 카드 혼합 조건과 전송기 판매 SKU는 확인해야 합니다.','SPX 국문 사용자 매뉴얼(250805) pp.10–11 · G03 · G05');
+    if (state.family==='SPX') add('SPX_CARD_ALLOWLIST','UNVERIFIED','SPX 출력 카드는 3종(HOS10·HOS12·COS12)이며, HOS10은 SPX-M810·M1620에만 장착할 수 있습니다(매뉴얼 p.3). 카드 혼합 조건과 전송기 판매 SKU는 확인해야 합니다.','SPX 국문 사용자 매뉴얼(250805) pp.10–11 · G03 · G05');
     // SPX-M810·M1620에 12포트 출력 카드를 꽂으면 11·12번 포트는 출력 10번의 분배(같은 영상)로 동작한다(매뉴얼 p.11).
     if (['SPX-M810','SPX-M1620'].includes(state.model)) {
       const split=Object.entries(state.placements).filter(([slot,id])=>slotDirections[slot]==='output'&&spxSplitCards.includes(id));

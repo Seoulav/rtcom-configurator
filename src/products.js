@@ -183,9 +183,9 @@
       });
       if(audioIn)bodyMarkup+=`<rect x="${leftX}" y="${audioY}" width="${chipW}" height="${audioH}" rx="15" fill="rgba(118,118,128,.10)"/><text x="${leftX+chipW/2}" y="${audioY+audioH/2+4}" text-anchor="middle" font-size="11.5" font-weight="600" fill="${M}">AUDIO IN</text>`;
 
-      // 멀티뷰 전용 출력(QMS-88UX의 9·10번 등): videoModes의 QUAD 요약 "출력 9·10번 전용"에서 번호를 읽어 매트릭스 출력과 분리된 별도 갈래로 그린다.
+      // 멀티뷰 전용 출력(QMS-88UX의 9·10번 등): videoModes의 QUAD 요약 "출력 9·10번에서 사용"(0.186 이전 "전용")에서 번호를 읽어 매트릭스 출력과 분리된 별도 갈래로 그린다.
       const quadMode=(item.videoModes?.modes||[]).find(mode=>mode.name==='QUAD');
-      const multiview=((quadMode?.summary||'').match(/출력\s*([\d·,\s]+)번\s*전용/)||[])[1]?.split(/[·,\s]+/).map(Number).filter(n=>n>=1&&n<=outN)||[];
+      const multiview=((quadMode?.summary||'').match(/출력\s*([\d·,\s]+)번\s*(?:전용|에서)/)||[])[1]?.split(/[·,\s]+/).map(Number).filter(n=>n>=1&&n<=outN)||[];
       const matrixPorts=Array.from({length:outN},(_,i)=>i+1).filter(n=>!multiview.includes(n));
 
       // 매트릭스는 입력들이 한 점으로 모였다가 하나의 띠로 나가면 "여러 입력 중 1개 선택 → 분배"로 읽힌다(사용자 지적 2026-09-27, QMS-44UX).
