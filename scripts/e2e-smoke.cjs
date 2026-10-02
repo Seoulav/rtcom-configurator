@@ -696,7 +696,16 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await page.goto(`${home}#products/xdm-ctr100`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-toolbar');
     const otherZoom=await page.$$eval('[data-flow-zoom]',els=>els.length);
-    check('XDM-PSU Signal Flow: COS100 피닉스에 전원선 연결, "크게 보기" 창이 150%로 커지고 Esc로 닫힘, 다른 제품에는 확대 버튼 없음',cosPin===1&&zoom.level==='150%'&&zoom.svg&&zoom.wider&&zoomClosed&&otherZoom===0,JSON.stringify({cosPin,zoom,zoomClosed,otherZoom}));
+    check('XDM-PSU Signal Flow: COS100 피닉스에 전원선 연결, "크게 보기" 창이 150%로 커지고 Esc로 닫힘, XDM-CTR100에는 확대 버튼 없음(0.196부터 PSE에는 있음)',cosPin===1&&zoom.level==='150%'&&zoom.svg&&zoom.wider&&zoomClosed&&otherZoom===0,JSON.stringify({cosPin,zoom,zoomClosed,otherZoom}));
+    // 0.196 XDM-CTR100 PSE 03 Signal Flow: XDM-PSU와 같은 장비 그림·흐르는 케이블(조합 1·2, 조합 2의 전원은 역방향)·크게 보기, PSU 05 주요 기능 첫 줄은 "개별 전원 어댑터 불필요"(사용자 요청 2026-10-02).
+    await page.goto(`${home}#products/xdm-ctr100-pse`,{waitUntil:'networkidle'});
+    await page.waitForSelector('.rt-psu-anim');
+    const pseFlow=await page.evaluate(()=>{const svg=document.querySelector('.rt-psu-anim').closest('svg'),t=svg.textContent;return {flows:svg.querySelectorAll('.rt-psu-flow').length,rev:svg.querySelectorAll('.rt-psu-flow.rt-psu-rev').length,zoom:document.querySelectorAll('[data-flow-zoom]').length,labels:['조합 1','조합 2','TX · 송신기 (PSE)','RX · 수신기 (PD)','RX · 수신기 (PSE)','TX · 송신기 (PD)','CAT · 신호+전원(PoE)'].every(s=>t.includes(s)),desc:/XDM-PSU/.test(document.querySelector('.rt-pg-flow-desc')?.textContent||'')}});
+    check('XDM-CTR100 PSE Signal Flow가 XDM-PSU와 같은 장비 그림(조합 1·2)·흐르는 케이블 10가닥(조합 2 전원 역방향)·크게 보기·그림 설명으로 나옴',pseFlow.flows===10&&pseFlow.rev===1&&pseFlow.zoom===1&&pseFlow.labels&&pseFlow.desc,JSON.stringify(pseFlow));
+    await page.goto(`${home}#products/xdm-psu`,{waitUntil:'networkidle'});
+    await page.waitForSelector('#rt-pg-title');
+    const psuFirst=await page.evaluate(()=>{const s=[...document.querySelectorAll('section')].find(x=>/주요 기능/.test(x.querySelector('h2')?.textContent||''));return s?.querySelector('li')?.textContent.trim()});
+    check('XDM-PSU 05 주요 기능 첫 줄이 "XDM-CTR100 개별 전원 어댑터 불필요"',/XDM-CTR100 개별 전원 어댑터 불필요/.test(psuFirst||''),psuFirst);
     // 0.95 전체 카탈로그 공유(사용자 결정 2026-09-28 "전체 카탈로그 공개해도 돼"): 제품 상세 카탈로그 버튼은 공용 파일을 제품 쪽(#page=N)에서 열고, 내려받기는 파일 전체. 제품 목록에는 "전체 카탈로그" 버튼 하나.
     await page.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-toolbar [data-doc="Catalog"]');

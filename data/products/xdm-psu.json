@@ -128,6 +128,10 @@
   ],
   "features": [
     {
+      "text": "XDM-CTR100 개별 전원 어댑터 불필요",
+      "source": "U"
+    },
+    {
       "text": "16채널 모듈형 전원 공급 지원(후면 16칸에 POH·PHX 모듈 선택 장착)",
       "source": "D1"
     },
@@ -137,10 +141,6 @@
     },
     {
       "text": "XDM-PHX 모듈: 2핀 전원선으로 XDM-COS100 카드에 급전, CTR100(RX)은 CAT로 전원 수신(COS100 1장당 1개)",
-      "source": "U"
-    },
-    {
-      "text": "XDM-CTR100 개별 전원 어댑터 불필요",
       "source": "U"
     },
     {
