@@ -1,4 +1,4 @@
-# MR-4S 전원 이중화 명시 (0.198)
+# MR-4S 전원 이중화 명시 (0.199)
 
 ## 요청
 
@@ -25,10 +25,10 @@
 
 ## 검증
 
-화면 확인: `docs/qa/mr4s-power-0.198/mr-4s-1280.png`·`mr-4s-375.png`(04 사양 "전원 이중화" 행, 05 주요 기능, 02 Port Map "DC 전원 1·2" 표시, 375px 폭 가로 스크롤 없음). 개요(`overview`)는 제품 상세 화면에 직접 나오지 않고 데이터·AI 검색 근거로 쓰입니다.
+화면 확인: `docs/qa/mr4s-power-0.199/mr-4s-1280.png`·`mr-4s-375.png`(04 사양 "전원 이중화" 행, 05 주요 기능, 02 Port Map "DC 전원 1·2" 표시, 375px 폭 가로 스크롤 없음). 개요(`overview`)는 제품 상세 화면에 직접 나오지 않고 데이터·AI 검색 근거로 쓰입니다.
 
 기본 검증 명령(`node --test tests/*.test.cjs`, `build-product-index.cjs --check`, `package-site.cjs`, `check-version.cjs --against origin/main`, `git diff --check`)과 GitHub `RTCOM checks / verify` 결과는 PR 설명에 적습니다.
 
 ## 되돌리기
 
-이 PR의 squash 커밋을 `git revert`하면 MR-4S 데이터와 버전 표기가 0.197 상태로 돌아갑니다.
+이 PR의 squash 커밋을 `git revert`하면 MR-4S 데이터와 버전 표기가 0.198 상태로 돌아갑니다.

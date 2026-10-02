@@ -127,6 +127,12 @@
       "preview": "pdfjs"
     }
   ],
+  "officialLinks": [
+    {
+      "label": "OBHD-2C",
+      "url": "http://rtcomav.com/kor/bbs/board.php?bo_table=pro03_01_1&wr_id=1"
+    }
+  ],
   "features": [
     {
       "text": "싱글모드로 2km까지 전송",

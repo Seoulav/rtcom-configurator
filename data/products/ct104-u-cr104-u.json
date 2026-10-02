@@ -82,6 +82,16 @@
       ]
     }
   ],
+  "officialLinks": [
+    {
+      "label": "CT104-U",
+      "url": "http://rtcomav.com/kor/bbs/board.php?bo_table=pro03_01_2&wr_id=7"
+    },
+    {
+      "label": "CR104-U",
+      "url": "http://rtcomav.com/kor/bbs/board.php?bo_table=pro03_01_2&wr_id=8"
+    }
+  ],
   "features": [
     {
       "text": "4K HDMI·RS-232 신호 CAT5e/CAT6(UTP/STP) 장거리 전송 지원",
@@ -145,7 +155,7 @@
     {
       "group": "Video",
       "name": "지원 해상도",
-      "value": "최대 Ultra HD 4K 3840x2160 @ 24/25/30Hz",
+      "value": "최대 4K/30 (3840x2160 @ 24/25/30Hz)",
       "unit": "",
       "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0",
       "source": "C",

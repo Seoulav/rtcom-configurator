@@ -592,7 +592,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       const expected=(JSON.parse(fs.readFileSync(`data/products/${id}.json`,'utf8')).documents||[]).filter(doc=>doc.file).length;
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
       await page.waitForSelector('.rt-pg-toolbar');
-      const docs=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-toolbar .rt-pg-doc')].map(el=>{
+      const docs=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-toolbar .rt-pg-doc:not([data-doc="official"])')].map(el=>{
         const open=el.querySelector('.rt-pg-doc-open');
         const popup=open?.tagName==='BUTTON'?open.getAttribute('data-doc-preview'):null;
         return {open:popup?true:open?.getAttribute('target')==='_blank'&&open?.relList.contains('noopener'),save:el.querySelector('.rt-pg-doc-save')?.hasAttribute('download'),href:popup?new URL(popup,document.baseURI).href:open?.href};
@@ -712,11 +712,15 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     const cat=await page.$eval('.rt-pg-toolbar [data-doc="Catalog"]',el=>{const open=el.querySelector('.rt-pg-doc-open');return {open:open.getAttribute('href')||open.getAttribute('data-doc-preview'),save:el.querySelector('.rt-pg-doc-save').getAttribute('href'),text:el.textContent.trim()}});
     await page.goto(`${home}#products`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-grid');
-    const listCat=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-toolbar .rt-pg-doc')].map(el=>({text:el.textContent.trim(),href:el.querySelector('.rt-pg-doc-open').getAttribute('href')})));
+    const listCat=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-toolbar .rt-pg-doc:not([data-doc="official"])')].map(el=>({text:el.textContent.trim(),href:el.querySelector('.rt-pg-doc-open').getAttribute('href')})));
     const catRes=await page.request.get(new URL(cat.save,home).href);
     // 0.97 제품별 카탈로그(사용자 결정 2026-09-28 "제품별로 잘라 공개"): 제품 상세 버튼은 해당 쪽만 담은 hd-13u-catalog.pdf를 열고 받는다. 제품 목록의 전체 카탈로그 버튼은 46쪽 공용 파일 그대로다.
     const listRes=await page.request.get(new URL(listCat[0]?.href||'',home).href);
     check('HD-13U 카탈로그 버튼이 제품별 카탈로그(hd-13u-catalog.pdf)를 열고 받으며, 제품 목록 전체 카탈로그 버튼 1개는 46쪽 공용 파일(PDF)',cat.open==='output/design/assets/docs/hd-13u-catalog.pdf'&&cat.save==='output/design/assets/docs/hd-13u-catalog.pdf'&&!/쪽/.test(cat.text)&&catRes.status()===200&&String(catRes.headers()['content-type']).includes('pdf')&&listCat.length===1&&/전체 카탈로그/.test(listCat[0].text)&&listCat[0].href==='output/design/assets/docs/rtcom-catalog-2026.pdf'&&listRes.status()===200,JSON.stringify({cat,listCat,status:catRes.status(),list:listRes.status()}));
+    // 0.198 공식 홈페이지 버튼: 공식 글이 있는 제품은 새 탭(rtcomav.com) 링크, 송·수신기는 두 글, 공식 글이 없는 제품은 버튼 없음.
+    const official=async id=>{await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});await page.waitForSelector('.rt-pg-toolbar');await page.waitForTimeout(200);return page.evaluate(()=>[...document.querySelectorAll('.rt-pg-toolbar [data-doc="official"] a')].map(a=>({text:a.textContent.trim(),href:a.href,blank:a.target==='_blank'&&a.relList.contains('noopener')})))};
+    const offHd=await official('hd-13u'),offFt=await official('ft101-u-fr101-u'),offR6=await official('spx-r6');
+    check('0.198 공식 홈페이지 버튼: HD-13U 1개, FT101-U/FR101-U 2개(새 탭 rtcomav.com), SPX-R6 없음',offHd.length===1&&offHd[0].text==='공식 홈페이지'&&offFt.length===2&&offFt[1].text==='FR101-U'&&[...offHd,...offFt].every(l=>l.blank&&l.href.startsWith('http://rtcomav.com/kor/bbs/board.php?bo_table='))&&offR6.length===0,JSON.stringify({offHd,offFt,offR6}));
     // 0.64 XDM-FT101/FR101 EDID·오디오 로터리(매뉴얼 Ver.1.3): 0(기본값)·3·8번 대표 설정 그림.
     await page.goto(`${home}#products/xdm-ft101-fr101`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-edid');

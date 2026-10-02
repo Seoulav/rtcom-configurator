@@ -469,6 +469,10 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-doc-save{gap:5px}
 #rtcom-design .rt-doc-zoom-link .rt-doc-save-text{margin-left:4px}
 @media(max-width:480px){#rtcom-design .rt-pg-doc-save-text,#rtcom-design .rt-doc-save-text{display:none}}
+/* 0.198 공식 홈페이지 버튼: 문서 버튼과 같은 알약 모양, 링크 2개면 오른쪽 칸에 수신기 */
+#rtcom-design .rt-pg-official-one{padding-right:16px}
+#rtcom-design .rt-pg-official-more{padding-left:10px;padding-right:14px}
+@media(max-width:480px){#rtcom-design .rt-pg-official-word{display:none}}
 #rtcom-design .rt-pg-doc-open small{font-weight:500;font-size:12px;margin-left:5px;opacity:.72}
 #rtcom-design .rt-pg-doc a:hover,#rtcom-design .rt-pg-doc button:hover{background:var(--pg-seg-track)}
 #rtcom-design .rt-pg-doc a:focus-visible,#rtcom-design .rt-pg-doc button:focus-visible{outline:2px solid var(--pg-accent);outline-offset:-2px}
