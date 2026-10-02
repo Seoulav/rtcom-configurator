@@ -41,6 +41,14 @@ function validate(product,file,ids){
   if(forbidden)fail(`내부 정보로 보이는 단어: ${forbidden[0]}`);
   for(const image of product.images||[])if(!fs.existsSync(path.join(IMAGE_DIR,image.file||'')))fail(`이미지 없음: ${image.file}`);
   for(const link of product.related||[])if(!ids.has(link.target))fail(`related 대상 없음: ${link.target}`);
+  // 0.198 알티컴 공식 홈페이지 제품 글 링크: 이름이 있고 주소는 rtcomav.com 한국어 게시판 글만 허용한다.
+  if('officialLinks' in product){
+    if(!Array.isArray(product.officialLinks)||!product.officialLinks.length)fail('officialLinks는 1개 이상 배열이어야 함');
+    for(const link of product.officialLinks||[]){
+      if(!link||!String(link.label||'').trim())fail('officialLinks.label 없음');
+      if(!/^http:\/\/rtcomav\.com\/kor\/bbs\/board\.php\?bo_table=[a-z0-9_]+&wr_id=\d+$/.test(link&&link.url||''))fail(`officialLinks.url 형식(rtcomav.com 게시판 글): ${link&&link.url}`);
+    }
+  }
   // 제조사 문서 PDF(사용자 결정 2026-09-28): file이 있으면 공개 배포되므로 형식·존재·크기·표기를 확인한다.
   const published=(product.documents||[]).filter(doc=>'file' in doc);
   const files=new Set();

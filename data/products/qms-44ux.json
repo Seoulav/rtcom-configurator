@@ -108,6 +108,12 @@
       "preview": "pdfjs"
     }
   ],
+  "officialLinks": [
+    {
+      "label": "QMS-44UX",
+      "url": "http://rtcomav.com/kor/bbs/board.php?bo_table=pro01_03_1&wr_id=1"
+    }
+  ],
   "features": [
     {
       "text": "각 포트별 스케일 업다운 기능 지원",

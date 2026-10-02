@@ -112,6 +112,12 @@
       "preview": "pdfjs"
     }
   ],
+  "officialLinks": [
+    {
+      "label": "SPX",
+      "url": "http://rtcomav.com/kor/bbs/board.php?bo_table=pro_01_01_3&wr_id=1"
+    }
+  ],
   "features": [
     {
       "text": "모든 출력 포트 독립 스케일링 지원",

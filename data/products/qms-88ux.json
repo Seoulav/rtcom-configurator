@@ -109,6 +109,12 @@
       "preview": "pdfjs"
     }
   ],
+  "officialLinks": [
+    {
+      "label": "QMS-88UX",
+      "url": "http://rtcomav.com/kor/bbs/board.php?bo_table=pro01_all_in_one&wr_id=7"
+    }
+  ],
   "features": [
     {
       "text": "HDMI 신호의 스위칭과 스케일링 지원",

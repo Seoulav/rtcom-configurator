@@ -175,6 +175,16 @@
       "preview": "pdfjs"
     }
   ],
+  "officialLinks": [
+    {
+      "label": "XDM-FT101",
+      "url": "http://rtcomav.com/kor/bbs/board.php?bo_table=pro03_01_1&wr_id=14"
+    },
+    {
+      "label": "XDM-FR101",
+      "url": "http://rtcomav.com/kor/bbs/board.php?bo_table=pro03_01_1&wr_id=15"
+    }
+  ],
   "features": [
     {
       "text": "True 4K/60 @ 4:4:4 HDMI v2.0 전송 지원",
