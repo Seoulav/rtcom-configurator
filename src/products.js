@@ -367,8 +367,9 @@
     // 0.98: 제조사 연결도(MAX2-POE-PSU 구성도)처럼 매트릭스 프레임(위) · XDM-PSU(가운데) · XDM-CTR100 Tx/Rx(아래)를 장비 모양 그림으로 그리고,
     // 케이블을 따라 신호(초록)·전원(주황)이 흐르는 애니메이션을 넣는다(사용자 요청 2026-09-28 "딥스위치를 이미지화 했던 것처럼 … 애니메이션 이미지화해서 실제 연결처럼").
     // 움직임을 줄이는 설정(prefers-reduced-motion)에서는 흐름 점선이 멈춘 채로 보인다.
-    function psuDiagram(item){
-      const width=1000,height=710,INK='#1f2532',SUB='#687386',BODY='#eceff4',EDGE='#8e97a6',HI='#007AFF',TAG='#1f3b8f';
+    // 0.196: XDM-PSU 그림의 부품(RJ45·2핀·피닉스·HDMI·이름표·흐르는 케이블)을 XDM-CTR100 PSE 그림과 함께 쓴다.
+    const psuParts=(()=>{
+      const INK='#1f2532',SUB='#687386',BODY='#eceff4',EDGE='#8e97a6',HI='#007AFF',TAG='#1f3b8f';
       const rj45=(x,y,on)=>`<g><rect x="${x}" y="${y}" width="16" height="13" rx="1.5" fill="${on?'#e3edff':'#fff'}" stroke="${on?HI:'#3a4150'}" stroke-width="${on?2:1.3}"/><rect x="${x+5}" y="${y+8}" width="6" height="3.5" fill="${on?HI:'#3a4150'}"/></g>`;
       const pin2=(x,y,on)=>`<g><rect x="${x}" y="${y}" width="14" height="10" rx="1.5" fill="${on?'#34C759':'#8fd6a0'}" stroke="${on?'#1c7a36':'#5da873'}" stroke-width="${on?1.8:1}"/><rect x="${x+2.5}" y="${y+3}" width="3.5" height="4" fill="#0f3d1c"/><rect x="${x+8}" y="${y+3}" width="3.5" height="4" fill="#0f3d1c"/></g>`;
       const phoenix5=(x,y,on)=>`<g${on?' class="rt-psu-cos-pin"':''}><rect x="${x}" y="${y}" width="16" height="8" rx="1.2" fill="${on?'#34C759':'#8fd6a0'}" stroke="${on?'#1c7a36':'#5da873'}" stroke-width="${on?1.6:1}"/>${[0,1,2,3,4].map(i=>`<rect x="${x+1.6+i*2.7}" y="${y+2.5}" width="1.8" height="3" fill="#0f3d1c"/>`).join('')}</g>`;
@@ -377,6 +378,10 @@
       // 케이블 한 가닥: 회색 피복 위에 흐름 점선을 겹친다. flows=[[색, 방향(1 정방향·-1 역방향), 시작 어긋남]]
       const cable=(d,flows,bodyColor='#aeb6c3')=>`<path d="${d}" fill="none" stroke="${bodyColor}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>${flows.map(([color,dir,offset=0])=>`<path class="rt-psu-flow${dir<0?' rt-psu-rev':''}" d="${d}" fill="none" stroke="${color}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="7 11" stroke-dashoffset="${offset}"/>`).join('')}`;
       const twoPin=d=>`<path d="${d}" fill="none" stroke="#e0463c" stroke-width="3" stroke-linejoin="round" transform="translate(-2.2 0)"/><path d="${d}" fill="none" stroke="#2c2c2e" stroke-width="3" stroke-linejoin="round" transform="translate(2.2 0)"/><path class="rt-psu-flow" d="${d}" fill="none" stroke="${COLOR_POWER}" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="4 10"/>`;
+      return {INK,SUB,BODY,EDGE,HI,TAG,rj45,pin2,phoenix5,hdmi,pill,cable,twoPin};
+    })();
+    function psuDiagram(item){
+      const width=1000,height=710,{INK,SUB,BODY,EDGE,HI,TAG,rj45,pin2,phoenix5,hdmi,pill,cable,twoPin}=psuParts;
       let body='';
       // ---- 케이블(장비보다 먼저 그려 장비 몸체 아래로 들어가게 한다) ----
       // 0.101(사용자 요청 "XDM-PSU 전원과 PHX가 조금 거리가 멀었으면 해", "XDM COS카드 전원 연결을 조금 만 더 길게해줘"): PSU 후면 모듈 행과 그 아래 CTR100 Tx/Rx를 30px 아래로,
@@ -440,9 +445,78 @@
       // 0.99: XDM-PSU만 그림이 커서 "크게 보기"(전체 화면 확대 창)를 둔다(사용자 요청 2026-09-28 "xdm-psu만 03 Singal flow 확대해서 볼 수 있게해줘"). 그림을 눌러도 열린다.
       return `<div class="rt-flow-zoom-bar"><button type="button" class="rt-pg-btn" data-flow-zoom>⤢ 크게 보기</button></div>`+diagramWrap(`<g class="rt-psu-anim">${body}</g>`,width,height,[[COLOR_IN,'입력(HDMI)'],[COLOR_COPPER,'HDBaseT 신호(CATx)'],[COLOR_POWER,'전원'],[COLOR_OUT,'출력(HDMI)']]);
     }
+    // 0.196 XDM-CTR100 PSE "03 Signal Flow"(사용자 요청 2026-10-02 "XDM-PSU 페이지 03 SIGNAL FLOW와 동일한 개념도로 개선해줘"):
+    // XDM-PSU 그림과 같은 부품(psuParts)으로 장비 뒷면·케이블을 그리고 신호(초록)·전원(주황)이 흐르게 한다. 내용은 제품 데이터(개요·사양) 그대로:
+    // 조합 1 PSE[TX] → CTR100[RX], 조합 2 CTR100[TX] → PSE[RX]. 전원 어댑터는 PSE에만, 상대 기기는 CAT로 전원을 받는 PD. 카드(CIS100·COS100)에는 직결 불가.
+    function pseDiagram(item){
+      const width=1000,height=560,{INK,SUB,BODY,EDGE,TAG,rj45,hdmi,pill,cable,twoPin}=psuParts;
+      const power=(item.specifications||[]).find(spec=>spec.name==='전원');
+      const powerText=power?String(power.value).trim():'DC 전원';
+      const dist=(item.specifications||[]).find(spec=>/전송\s?거리/.test(spec.name));
+      const distText=dist?`최대 ${String(dist.value).trim()}${dist.unit||''}${dist.condition?` ${dist.condition.replace(/^\*/,'')}`:''}`:'';
+      const W=180,H=54;
+      // 장비 뒷면: RJ45가 상대 기기 쪽(rjRight면 오른쪽)에 오도록 좌우를 뒤집는다. 반환값은 단자 위치.
+      const rear=(x,y,title,label,sub,{rjRight,dc})=>{
+        const at=(dx,w)=>rjRight?x+dx:x+W-dx-w;
+        const pos={rj:[at(150,16),y+18],hin:[at(14,22),y+20],hout:[at(40,22),y+20],dc:[at(116,18),y+18]};
+        let g=`<text x="${x+W/2}" y="${y-26}" text-anchor="middle" font-size="14" font-weight="800" fill="${TAG}">${svgEsc(title)}</text><text x="${x+W/2}" y="${y-10}" text-anchor="middle" font-size="11" font-weight="700" fill="${INK}">${svgEsc(label)}</text>`;
+        g+=`<rect x="${x}" y="${y}" width="${W}" height="${H}" rx="6" fill="${BODY}" stroke="${EDGE}" stroke-width="2"/>`;
+        g+=rj45(pos.rj[0],pos.rj[1],true)+hdmi(pos.hin[0],pos.hin[1],rjRight)+hdmi(pos.hout[0],pos.hout[1],!rjRight);
+        g+=`<rect x="${at(70,30)}" y="${y+21}" width="30" height="10" rx="1.5" fill="#8fd6a0" stroke="#5da873"/>`;
+        // DC 잭: PSE에만 어댑터를 꽂는다. 상대 기기(PD)는 잭을 비워 두고 "PD" 표시만 한다.
+        g+=dc?`<rect x="${pos.dc[0]}" y="${pos.dc[1]}" width="18" height="16" rx="3" fill="#fff" stroke="#3a4150" stroke-width="1.3"/><circle cx="${pos.dc[0]+9}" cy="${pos.dc[1]+8}" r="3.6" fill="#3a4150"/>`
+              :`<rect x="${pos.dc[0]-2}" y="${pos.dc[1]+2}" width="22" height="12" rx="6" fill="#fff4e5" stroke="${COLOR_POWER}"/><text x="${pos.dc[0]+9}" y="${pos.dc[1]+11}" text-anchor="middle" font-size="7.5" font-weight="800" fill="#b25e00">PD</text>`;
+        const ledX=rjRight?x+12:x+W-22;
+        g+=`<circle class="rt-psu-led" cx="${ledX}" cy="${y+10}" r="3.4" fill="#34C759"/><circle class="rt-psu-led" cx="${ledX+10}" cy="${y+10}" r="3.4" fill="#34C759" style="animation-delay:.6s"/>`;
+        // 케이블이 설명 글자 뒤를 지나가므로 흰 테두리(paint-order)로 글자를 띄운다.
+        g+=`<text x="${x+W/2}" y="${y+H+16}" text-anchor="middle" font-size="9.5" fill="${SUB}" stroke="#fff" stroke-width="4" paint-order="stroke">${svgEsc(sub)}</text>`;
+        return {g,pos};
+      };
+      // 한 줄(조합): 소스 → 왼쪽 장비 → CAT → 오른쪽 장비 → 디스플레이. pseLeft면 왼쪽이 PSE(전원이 오른쪽으로), 아니면 오른쪽이 PSE(전원이 왼쪽으로).
+      const row=(y,heading,pseLeft)=>{
+        const xL=190,xR=630;
+        const pse={title:'XDM-CTR100 PSE',sub:`${powerText} 어댑터 연결`};
+        const pd=(role,wall)=>({title:'XDM-CTR100',sub:`전원 어댑터 불필요 · 벽부형 ${wall}도 가능`,role});
+        const left=pseLeft?{...pse,label:'TX · 송신기 (PSE)'}:{...pd(),title:'XDM-CTR100',label:'TX · 송신기 (PD)',sub:'전원 어댑터 불필요 · 벽부형 XDM-CT103도 가능'};
+        const right=pseLeft?{title:'XDM-CTR100',label:'RX · 수신기 (PD)',sub:'전원 어댑터 불필요 · 벽부형 XDM-CR103도 가능'}:{...pse,label:'RX · 수신기 (PSE)'};
+        const L=rear(xL,y,left.title,left.label,left.sub,{rjRight:true,dc:pseLeft});
+        const R=rear(xR,y,right.title,right.label,right.sub,{rjRight:false,dc:!pseLeft});
+        let g=`<text x="${width/2}" y="${y-58}" text-anchor="middle" font-size="12" font-weight="800" fill="${INK}">${svgEsc(heading)}</text>`;
+        // 케이블을 먼저 그려 장비 몸체 아래로 들어가게 한다.
+        const catY=L.pos.rj[1]+6;
+        g+=cable(`M${L.pos.rj[0]+8} ${catY}H${R.pos.rj[0]+8}`,[[COLOR_COPPER,1],[COLOR_POWER,pseLeft?1:-1,9]]);
+        g+=cable(`M84 ${y+108}H${L.pos.hin[0]+11}V${y+H}`,[[COLOR_IN,1]]);
+        g+=cable(`M${R.pos.hout[0]+11} ${y+H}V${y+108}H916`,[[COLOR_OUT,1]]);
+        // 전원 어댑터: PSE 아래에 두고 2핀 선으로 DC 잭에 꽂는다(XDM-PSU 그림의 2핀 전원선과 같은 모양).
+        const pseX=pseLeft?xL:xR,dc=(pseLeft?L:R).pos.dc,adX=pseX+(pseLeft?104:46),adY=y+96;
+        g+=twoPin(`M${dc[0]+9} ${dc[1]+16}V${adY}`);
+        g+=L.g+R.g;
+        g+=`<rect x="${adX-26}" y="${adY}" width="52" height="26" rx="5" fill="#3a4150"/><rect x="${adX-6}" y="${adY+26}" width="12" height="6" rx="1" fill="#3a4150"/><text x="${adX}" y="${adY+17}" text-anchor="middle" font-size="9" font-weight="800" fill="#fff">ADAPTER</text>`;
+        g+=pill(adX+(pseLeft?78:-78),adY+13,`${powerText} 어댑터`,COLOR_POWER);
+        g+=pill((xL+W+xR)/2,catY-24,'CAT · 신호+전원(PoE)',COLOR_COPPER);
+        g+=`<text x="${(xL+W+xR)/2}" y="${catY+30}" text-anchor="middle" font-size="9.5" fill="${SUB}">전원 → ${pseLeft?'RX':'TX'}(PD) · 신호 TX → RX</text>`;
+        g+=monitorIcon(60,y+102,'소스 기기')+monitorIcon(940,y+102,'디스플레이');
+        g+=pill(130,y+124,'HDMI',COLOR_IN)+pill(870,y+124,'HDMI',COLOR_OUT);
+        return g;
+      };
+      let body=row(110,'조합 1 · PSE를 송신기(TX)로 쓸 때',true)+row(360,'조합 2 · PSE를 수신기(RX)로 쓸 때',false);
+      body+=`<text x="${width/2}" y="${height-36}" text-anchor="middle" font-size="10" fill="${SUB}">TX/RX는 각 기기 딥 스위치로 선택${distText?` · ${svgEsc(distText)}`:''} · 전원은 PSE 한쪽에만 연결</text>`;
+      body+=`<text x="${width/2}" y="${height-20}" text-anchor="middle" font-size="10" fill="${SUB}">XDM-CIS100·COS100 카드에는 PSE를 직결할 수 없습니다 · 카드 구성은 XDM-CTR100 + XDM-PSU로 전원 공급</text>`;
+      const legend=[[COLOR_IN,'입력(HDMI)'],[COLOR_COPPER,'HDBaseT 신호(CATx)'],[COLOR_POWER,'전원'],[COLOR_OUT,'출력(HDMI)']];
+      if(distText)legend.push([COLOR_COPPER,`최대 전송 거리 ${distText.replace(/^최대\s*/,'')}`,'none']);
+      const steps=[
+        `조합 1: 소스 → XDM-CTR100 PSE(TX, ${powerText} 어댑터 연결) → CAT 케이블로 신호+전원 → XDM-CTR100(RX, PD, 어댑터 없음) → 디스플레이. 벽부형 XDM-CR103도 가능합니다.`,
+        `조합 2: 소스 → XDM-CTR100(TX, PD, 어댑터 없음) → CAT 케이블로 신호(→)·전원(←) → XDM-CTR100 PSE(RX, ${powerText} 어댑터 연결) → 디스플레이. 벽부형 XDM-CT103도 가능합니다.`,
+        'TX/RX는 각 기기 딥 스위치로 고르고, 전원은 PSE 한쪽에만 연결합니다.',
+        'XDM-CIS100·COS100 카드에는 PSE를 직결할 수 없습니다. 카드 구성은 XDM-CTR100과 XDM-PSU를 씁니다.'
+      ];
+      if(distText)steps.push(`최대 전송 거리: ${distText.replace(/^최대\s*/,'')}`);
+      return `<div class="rt-flow-zoom-bar"><button type="button" class="rt-pg-btn" data-flow-zoom>⤢ 크게 보기</button></div>`+diagramWrap(`<g class="rt-psu-anim">${body}</g>`,width,height,legend,{label:`${item.model} Signal Flow`,steps});
+    }
     function extenderDiagram(item){
       const io=item.io||[];
       if(!io.length)return null;
+      if(item.id==='xdm-ctr100-pse')return pseDiagram(item);
       const isTransceiver=io.every(port=>!/^(TX|RX)\s*·/.test(port.group||''));
       const side=(prefix,direction)=>io.find(port=>(isTransceiver?port.group==='Video':port.group.startsWith(prefix))&&port.direction===direction&&/HDMI/i.test(port.connector||''));
       const txVideo=side('TX','IN'),rxVideo=side('RX','OUT');
