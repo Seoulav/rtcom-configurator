@@ -754,9 +754,20 @@
     }
     // 제품 목록 화면의 "전체 카탈로그" 버튼(0.95): 링크 하나로 카탈로그 전체를 공유한다.
     const FULL_CATALOG={type:'Catalog',title:'알티컴 종합 카탈로그 2026 (국문 46쪽)',label:'전체 카탈로그',file:'rtcom-catalog-2026.pdf'};
-    function headerBlock({icon,title,subtitle,back,diagram,cta,docs='',print=true}){
+    // 0.198 알티컴 공식 홈페이지 제품 글 링크(사용자 결정 2026-10-02 B안: 공식 글이 있는 제품만, docs/implementation/OFFICIAL_LINKS_0.198.md).
+    // officialLinks가 1개면 "공식 홈페이지 ↗", 송·수신기처럼 2개면 "공식 홈페이지 · FT101-U ↗ | FR101-U ↗". 휴대폰(480px 이하)은 "공식"을 숨긴다.
+    const EXTERNAL_ICON='<svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true" style="margin-left:5px"><path d="M6 3H3v10h10v-3M9 3h4v4M13 3L7.5 8.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    function officialButton(item){
+      const links=(item.officialLinks||[]).filter(link=>link&&link.url);
+      if(!links.length)return '';
+      const a=(link,cls,text)=>`<a class="${cls}" href="${esc(link.url)}" target="_blank" rel="noopener" title="알티컴 공식 홈페이지 · ${esc(link.label)} (새 탭)"><span>${text}</span>${EXTERNAL_ICON}</a>`;
+      const word='<span class="rt-pg-official-word">공식 </span>홈페이지';
+      if(links.length===1)return `<span class="rt-pg-doc" data-doc="official">${a(links[0],'rt-pg-doc-open rt-pg-official-one',word)}</span>`;
+      return `<span class="rt-pg-doc" data-doc="official">${a(links[0],'rt-pg-doc-open',`${word} · ${esc(links[0].label)}`)}${links.slice(1).map(link=>a(link,'rt-pg-doc-save rt-pg-official-more',esc(link.label))).join('')}</span>`;
+    }
+    function headerBlock({icon,title,subtitle,back,diagram,cta,docs='',official='',print=true}){
       return `<header class="rt-pg-top"><div class="rt-pg-brandmark"><div class="rt-pg-swatch">${icon}</div><div class="rt-pg-title"><h1 id="rt-pg-title">${title}</h1><p class="rt-pg-sub">${subtitle}</p></div></div>
-      <div class="rt-pg-toolbar">${back?`<a class="rt-pg-btn" href="#products">← 제품 목록</a>`:''}${docs}${diagram?`<button type="button" class="rt-pg-btn" data-open-diagram>제조사 원본 다이어그램</button>`:''}${print?`<button type="button" class="rt-pg-btn" data-print>인쇄 / PDF</button>`:''}${cta||''}</div></header>`;
+      <div class="rt-pg-toolbar">${back?`<a class="rt-pg-btn" href="#products">← 제품 목록</a>`:''}${docs}${diagram?`<button type="button" class="rt-pg-btn" data-open-diagram>제조사 원본 다이어그램</button>`:''}${official}${print?`<button type="button" class="rt-pg-btn" data-print>인쇄 / PDF</button>`:''}${cta||''}</div></header>`;
     }
     function listView(){
       const items=index.products.filter(matches);
@@ -1113,7 +1124,7 @@
       belowCards+=dipSwitchSection(item);
       // 휴대폰(1000px 이하)에서는 .rt-pg-col이 사라지고 rt-pg-col-mobile-N 순서로만 쌓이므로, sideCard도 순서 클래스가 있어야 05 다음(01~05, 06, 07 기록)으로 나온다(없으면 order:0이라 맨 앞으로 감).
       if(sideCard)sideCard=sideCard.replace('class="rt-pg-card', 'class="rt-pg-card rt-pg-col-mobile-6');
-      return `${headerBlock({icon:PRODUCT_ICON[item.id]||GROUP_ICON[item.group],title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,docs:docButtons(item),diagram:!!photo})}
+      return `${headerBlock({icon:PRODUCT_ICON[item.id]||GROUP_ICON[item.group],title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,docs:docButtons(item),official:officialButton(item),diagram:!!photo})}
       <div class="rt-pg-cols">
         <div class="rt-pg-col">
           <section class="rt-pg-card rt-pg-col-mobile-1"><h2><span class="rt-pg-idx">01</span>한눈에 보기</h2>
@@ -1156,7 +1167,7 @@
       const SIG_NAME={HDMI:'HDMI',DP:'DisplayPort',SDI:'SDI',CAT:family==='SPX'?'CATx':'HDBaseT·CATx',FIBER:'광'};
       const legendKeys=[...new Set([...inCards,...outCards].map(card=>card[3]))];
       const arch=seriesSignalSvg(item.name||family,inCards,outCards,SIG_COLOR);
-      return `${headerBlock({icon:GROUP_ICON.series,title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,docs:docButtons(item),cta:`<a class="rt-pg-btn rt-pg-primary" href="#matrix-configurator" data-configure-family="${esc(family)}">${esc(family)} 구성기에서 구성하기 →</a>`})}
+      return `${headerBlock({icon:GROUP_ICON.series,title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,docs:docButtons(item),official:officialButton(item),cta:`<a class="rt-pg-btn rt-pg-primary" href="#matrix-configurator" data-configure-family="${esc(family)}">${esc(family)} 구성기에서 구성하기 →</a>`})}
       <div class="rt-pg-cols">
         <div class="rt-pg-col">
           <section class="rt-pg-card rt-pg-col-mobile-1"><h2><span class="rt-pg-idx">01</span>한눈에 보기</h2><p class="rt-pg-lead">${leadFor(item)}</p>${factsList(facts)}</section>

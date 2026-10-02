@@ -652,3 +652,14 @@ test('0.197: 터치 화면 눌러서 옮기기(카드 타일 선택 → 같은 �
   for(const selector of ['.rt-tap-banner','.rt-tap-tile-on','.rt-rack-slot-tapsrc','rt-tap-input'])assert.ok(css.includes(selector),`${selector} 스타일`);
   assert.match(app,/tapMode\(\)\?\(tapMove\?slotDir\(tapMove\)/,'방향 표시용 루트 클래스를 렌더마다 갱신한다');
 });
+
+test('0.198: 공식 홈페이지 링크는 공식 글이 있는 26종만, 4K/30 표기',()=>{
+  const files=fs.readdirSync('data/products').filter(f=>f.endsWith('.json')&&f!=='index.json');
+  const withLinks=files.filter(f=>JSON.parse(read(`data/products/${f}`)).officialLinks);
+  assert.equal(withLinks.length,26);
+  for(const id of ['hd-d102u-rack','mr-4s','spx-r6','spx-rx-tx','xdm-ctr100-pse','xdm-psu'])assert.ok(!JSON.parse(read(`data/products/${id}.json`)).officialLinks,id);
+  const ft=JSON.parse(read('data/products/ft101-u-fr101-u.json'));
+  assert.deepEqual(ft.officialLinks.map(l=>l.label),['FT101-U','FR101-U']);
+  const p=read('src/products.js');assert.match(p,/function officialButton/);assert.match(p,/official:officialButton\(item\)/);
+  for(const id of ['ct101-u-cr101-u','ct103-u-h-cr103-u','ct104-u-cr104-u','ft101-u-fr101-u'])assert.doesNotMatch(read(`data/products/${id}.json`),/Ultra HD 4K/,id);
+});

@@ -121,6 +121,12 @@
       "preview": "pdfjs"
     }
   ],
+  "officialLinks": [
+    {
+      "label": "HDS-42MU",
+      "url": "http://rtcomav.com/kor/bbs/board.php?bo_table=pro02_01_2&wr_id=4"
+    }
+  ],
   "features": [
     {
       "text": "4×2 Matrix Switcher 기능 지원",

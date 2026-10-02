@@ -151,6 +151,12 @@
       "preview": "pdfjs"
     }
   ],
+  "officialLinks": [
+    {
+      "label": "OBUX-1C",
+      "url": "http://rtcomav.com/kor/bbs/board.php?bo_table=pro03_01_1&wr_id=16"
+    }
+  ],
   "features": [
     {
       "text": "4K/60 @ 4:4:4 고해상도 영상 전송 지원",

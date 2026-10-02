@@ -88,6 +88,16 @@
       "note": "CR-103-U 사양·사진 · 사용자 제공, 배포 제외"
     }
   ],
+  "officialLinks": [
+    {
+      "label": "CT103-U-H",
+      "url": "http://rtcomav.com/kor/bbs/board.php?bo_table=pro03_01_2&wr_id=5"
+    },
+    {
+      "label": "CR103-U",
+      "url": "http://rtcomav.com/kor/bbs/board.php?bo_table=pro03_01_2&wr_id=6"
+    }
+  ],
   "features": [
     {
       "text": "벽부형 송·수신기로 비디오·오디오·RS-232 신호 CATx(UTP/STP) 장거리 전송 지원",
@@ -155,7 +165,7 @@
     {
       "group": "Video",
       "name": "지원 해상도",
-      "value": "최대 Ultra HD 4K 3840x2160 @ 24/25/30Hz",
+      "value": "최대 4K/30 (3840x2160 @ 24/25/30Hz)",
       "unit": "",
       "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0",
       "source": "C",
@@ -166,7 +176,7 @@
       "name": "최대 전송 거리",
       "value": "100",
       "unit": "m",
-      "condition": "1920x1200 @ 60Hz·1080p·Ultra HD 4K, BELDEN CI6522 기준",
+      "condition": "1920x1200 @ 60Hz·1080p·4K/30, BELDEN CI6522 기준",
       "source": "C",
       "verification": "VERIFIED"
     },

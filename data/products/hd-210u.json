@@ -120,6 +120,12 @@
       "preview": "pdfjs"
     }
   ],
+  "officialLinks": [
+    {
+      "label": "HD-210U",
+      "url": "http://rtcomav.com/kor/bbs/board.php?bo_table=pro02_01_1&wr_id=10"
+    }
+  ],
   "features": [
     {
       "text": "HDMI 2.0, HDCP 2.2 지원",

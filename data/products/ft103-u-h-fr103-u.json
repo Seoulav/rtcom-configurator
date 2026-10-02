@@ -88,6 +88,16 @@
       "note": "4–11쪽 · 사용자 제공, 배포 제외"
     }
   ],
+  "officialLinks": [
+    {
+      "label": "FT103-U-H",
+      "url": "http://rtcomav.com/kor/bbs/board.php?bo_table=pro03_01_1&wr_id=5"
+    },
+    {
+      "label": "FR103-U",
+      "url": "http://rtcomav.com/kor/bbs/board.php?bo_table=pro03_01_1&wr_id=6"
+    }
+  ],
   "features": [
     {
       "text": "벽부형 송·수신기로 비디오·오디오·RS-232 신호 광케이블 장거리 전송 지원",
