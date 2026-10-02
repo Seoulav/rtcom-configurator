@@ -639,3 +639,16 @@ test('0.193: 전송기 최대 전송 거리는 제품마다 한 행(값 칸 줄 
   const r6=JSON.parse(read('data/products/spx-r6.json')).specifications.find(s=>s.name==='최대 전송 거리');
   assert.equal(r6.value,'4K/60 @ 4:4:4 50m\n1080p/60 60m');
 });
+
+test('0.197: 터치 화면 눌러서 옮기기(카드 타일 선택 → 같은 방향 슬롯 장착, 팝업 이동 버튼)',()=>{
+  // 사용자 요청·선택 2026-09-30 "눌러서 옮기기 권장안으로 해줘"
+  const app=read('src/app.js'),css=read('src/styles.css');
+  assert.match(app,/const tapMode=\(\)=>PALETTE_DRAG&&!paletteDrag\(\);/,'마우스가 없는 화면에서만 켠다');
+  assert.match(app,/data-tap-card="\$\{c\[0\]\}"/,'터치 화면은 타일을 누르면 카드를 고른다');
+  assert.match(app,/const moveButton=tapMode\(\)&&installed\?/,'카드 팝업 이동 버튼은 터치 화면·장착 슬롯에서만');
+  assert.match(app,/if\(dir!==cardDir\(tapCard\)\)\{announce\(/,'다른 방향 슬롯에는 장착하지 않고 안내만 한다');
+  assert.match(app,/RtCore\.moveCard\(state,tapMove,id\)/,'이동은 끌어 옮기기와 같은 RtCore.moveCard를 쓴다');
+  assert.match(app,/if\(state\.step!==2\|\|signalView\)\{tapCard=null;tapMove=null\}/,'03 카드 장착 화면을 떠나면 선택을 지운다');
+  for(const selector of ['.rt-tap-banner','.rt-tap-tile-on','.rt-rack-slot-tapsrc','rt-tap-input'])assert.ok(css.includes(selector),`${selector} 스타일`);
+  assert.match(app,/tapMode\(\)\?\(tapMove\?slotDir\(tapMove\)/,'방향 표시용 루트 클래스를 렌더마다 갱신한다');
+});

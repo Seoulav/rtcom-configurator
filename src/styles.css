@@ -1390,3 +1390,15 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design img[src*="assets/cards/"]{color-scheme:only light}
 #rtcom-design .rt-card-choice-plate,#rtcom-design .rt-card-info-plate{color-scheme:only light}
 #rtcom-design .rt-palette-tile img,#rtcom-design .rt-link-flow-node img[src*="assets/cards/"]{background:#eef1f5;padding:3px 4px;box-sizing:border-box;border-radius:4px}
+
+/* 0.184 눌러서 옮기기(터치 화면): 고른 카드 타일 강조, 장착·이동 가능한 슬롯 점선, 다른 방향 흐리게, 화면 아래에 붙는 안내 줄. */
+#rtcom-design .rt-tap-tile{touch-action:manipulation}
+#rtcom-design .rt-tap-tile.rt-tap-tile-on{outline:3px solid #007AFF;outline-offset:-3px;background:#eaf2ff}
+#rtcom-design.rt-tap-input .rt-rack-slot[data-slot^="in-"],#rtcom-design.rt-tap-output .rt-rack-slot[data-slot^="out-"]{outline:2px dashed rgba(57,120,238,.85);outline-offset:-2px}
+#rtcom-design.rt-tap-input .rt-rack-slot[data-slot^="out-"],#rtcom-design.rt-tap-output .rt-rack-slot[data-slot^="in-"]{opacity:.35}
+#rtcom-design .rt-rack-slot.rt-rack-slot-tapsrc{outline:3px solid #FF9500;outline-offset:-3px}
+#rtcom-design .rt-tap-banner{position:sticky;bottom:10px;z-index:30;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px;padding:10px 12px 10px 16px;border-radius:16px;background:#1f2532;color:#fff;box-shadow:0 10px 30px #1f253240;font-size:13px}
+#rtcom-design .rt-tap-banner span{flex:1 1 100%;line-height:1.45;word-break:keep-all}
+#rtcom-design .rt-tap-banner b{color:#9cc4ff}
+#rtcom-design .rt-tap-banner .rt-button{flex:1 1 0;min-height:36px;padding:0 14px;font-size:13px;background:#ffffff1f;border:1px solid #ffffff59;color:#fff}
+#rtcom-design .rt-tap-banner .rt-button[data-tap-cancel]{background:#fff;border-color:#fff;color:#1f2532}
