@@ -5,21 +5,21 @@
   "productName": "OBUX-1C",
   "model": "OBUX-1C",
   "series": "Optical Extender",
-  "seriesNote": "송신기(Tx)와 수신기(Rx)로 구성된다.",
+  "seriesNote": "송신기(TX)와 수신기(RX)로 구성된다.",
   "itemType": "PRODUCT",
   "categories": [
     "영상",
     "Video",
     "Extender"
   ],
-  "english": "4K60 4:4:4 HDMI fiber optic extender over OM3 multi-mode SC fiber up to 300m, with analog audio embedding and de-embedding.",
-  "korean": "4K60Hz 4:4:4 HDMI 신호를 OM3 멀티모드(SC) 광케이블로 최대 300m 전송하고, 아날로그 오디오 병합·추출을 지원하는 광 송·수신기다.",
-  "subtitle": "Optical Extender · 4K60 4:4:4 광 송·수신기",
-  "lead": "4K60Hz 4:4:4 HDMI 신호를 **OM3 멀티모드 광케이블로 최대 300m** 전송하고, 아날로그 오디오 병합·추출을 지원합니다.",
+  "english": "4K/60 @ 4:4:4 HDMI fiber optic extender over OM3 multi-mode SC fiber up to 300m, with analog audio embedding and de-embedding.",
+  "korean": "4K/60 @ 4:4:4 HDMI 신호를 OM3 멀티모드(SC) 광케이블로 최대 300m 전송하고, 아날로그 오디오 병합·추출을 지원하는 광 송·수신기다.",
+  "subtitle": "Optical Extender · 4K/60 @ 4:4:4 광 송·수신기",
+  "lead": "4K/60 @ 4:4:4 HDMI 신호를 **OM3 멀티모드 광케이블로 최대 300m** 전송하고, 아날로그 오디오 병합·추출을 지원합니다.",
   "catalogPages": "40",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 42쪽의 OBUX-1C 소개·주요기능·크기 및 무게·제품사양에서 확인했다. OBUX-1C 사용자 매뉴얼 Ver.2.2(4~10쪽)로 Tx 전면 Mode 딥 스위치(오디오·EDID), 지원 사양(HDMI 2.0b·HDR·Dolby Atmos·HDCP 1.x/2.2), S/P 단자를 보완했다.",
   "packageStatus": "VERIFIED",
-  "overview": "OBUX-1C는 최대 4K 60Hz(4:4:4) 해상도를 지원하는 광 송·수신기로, 멀티모드(SC Type, OM3) 전용 광케이블을 통해 영상 신호를 최대 300m까지 전송한다. 아날로그 오디오 신호의 병합(Embedded)과 추출(De-embedded) 기능을 갖추었다.\n\n압축 없이 원본 영상 신호를 그대로 전송하며, 컬러 딥(Color Depth)과 선명한 화질이 필요한 방송·전시·회의실·컨트롤룸 환경을 대상으로 한다.",
+  "overview": "OBUX-1C는 최대 4K/60 @ 4:4:4 해상도를 지원하는 광 송·수신기로, 멀티모드(SC Type, OM3) 전용 광케이블을 통해 영상 신호를 최대 300m까지 전송한다. 아날로그 오디오 신호의 병합(Embedded)과 추출(De-embedded) 기능을 갖추었다.\n\n압축 없이 원본 영상 신호를 그대로 전송하며, 컬러 딥(Color Depth)과 선명한 화질이 필요한 방송·전시·회의실·컨트롤룸 환경을 대상으로 한다.",
   "images": [
     {
       "role": "Main",
@@ -153,7 +153,7 @@
   ],
   "features": [
     {
-      "text": "4K@60Hz(4:4:4) 고해상도 영상 전송 지원",
+      "text": "4K/60 @ 4:4:4 고해상도 영상 전송 지원",
       "source": "C"
     },
     {
@@ -161,11 +161,11 @@
       "source": "C"
     },
     {
-      "text": "최대 300m 전송거리 지원",
+      "text": "최대 300m 전송 거리 지원",
       "source": "C"
     },
     {
-      "text": "HDCP 지원",
+      "text": "HDCP 1.x, 2.2 지원",
       "source": "C"
     },
     {
@@ -173,7 +173,7 @@
       "source": "M1"
     },
     {
-      "text": "내장 EDID 지원(Tx Mode 딥 스위치)",
+      "text": "내장 EDID 지원(TX Mode 딥 스위치)",
       "source": "M1"
     },
     {
@@ -193,7 +193,7 @@
     {
       "group": "Video",
       "name": "최대 해상도",
-      "value": "4K@60Hz",
+      "value": "4K/60",
       "unit": "",
       "condition": "4:4:4",
       "source": "C",
@@ -201,10 +201,10 @@
     },
     {
       "group": "Transmission",
-      "name": "최대 전송거리",
+      "name": "최대 전송 거리",
       "value": "300",
       "unit": "m",
-      "condition": "Multi Mode (OM3, SC Type) 전용",
+      "condition": "멀티모드 (OM3, SC Type) 전용",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -257,7 +257,7 @@
   "io": [
     {
       "group": "TX · Video",
-      "connector": "HDMI (female)",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "IN",
       "quantity": "1",
@@ -279,7 +279,7 @@
     },
     {
       "group": "TX · Transmission",
-      "connector": "SC connector (female)",
+      "connector": "SC",
       "signal": "Fiber (OM3 Multi Mode)",
       "direction": "OUT",
       "quantity": "1",
@@ -301,7 +301,7 @@
     },
     {
       "group": "RX · Transmission",
-      "connector": "SC connector (female)",
+      "connector": "SC",
       "signal": "Fiber (OM3 Multi Mode)",
       "direction": "IN",
       "quantity": "1",
@@ -312,7 +312,7 @@
     },
     {
       "group": "RX · Video",
-      "connector": "HDMI (female)",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "OUT",
       "quantity": "1",
@@ -349,7 +349,7 @@
     {
       "image": "Other",
       "file": "obux-1c-tx-front-rear.webp",
-      "title": "송신기 OBUX-1C Tx · 전면 / 뒷면",
+      "title": "송신기 OBUX-1C TX · 전면 / 뒷면",
       "items": [
         {
           "n": 1,
@@ -410,7 +410,7 @@
     {
       "image": "Other",
       "file": "obux-1c-rx-front-rear.webp",
-      "title": "수신기 OBUX-1C Rx · 전면 / 뒷면",
+      "title": "수신기 OBUX-1C RX · 전면 / 뒷면",
       "items": [
         {
           "n": 1,
@@ -495,7 +495,7 @@
   "issues": [],
   "dipSwitch": {
     "place": "전면",
-    "label": "Mode 딥 스위치(Tx)",
+    "label": "Mode 딥 스위치(TX)",
     "count": 4,
     "onUp": false,
     "color": "black",
@@ -510,7 +510,7 @@
         },
         "on": {
           "name": "Analog",
-          "text": "후면 Audio IN(L·⏚·R) 소리를 HDMI에 병합한다. 병합한 소리는 Rx HDMI 출력과 Audio OUT으로 나간다."
+          "text": "후면 Audio IN(L·⏚·R) 소리를 HDMI에 병합한다. 병합한 소리는 수신기 HDMI 출력과 Audio OUT으로 나간다."
         }
       }
     ],
@@ -539,7 +539,7 @@
               "off",
               "off"
             ],
-            "name": "1920x1080p @60Hz",
+            "name": "1920x1080 @ 60Hz",
             "text": "내장 EDID"
           },
           {
@@ -548,7 +548,7 @@
               "on",
               "off"
             ],
-            "name": "3840x2160p @30Hz",
+            "name": "3840x2160 @ 30Hz",
             "text": "내장 EDID"
           },
           {
@@ -557,7 +557,7 @@
               "on",
               "off"
             ],
-            "name": "3840x2160p @60Hz",
+            "name": "3840x2160 @ 60Hz",
             "text": "내장 EDID"
           },
           {
@@ -572,6 +572,6 @@
         ]
       }
     ],
-    "note": "Through-pass EDID Fix: 2·3·4번을 모두 OFF(Through-pass)로 두고 디스플레이 EDID를 Tx에 읽힌 뒤, PC가 연결되어 있으면 그래픽 카드 설정에서 디스플레이 정보를 확인하고(연결되어 있지 않으면 약 5초 뒤) Tx 전원을 끄고 2·3·4번을 모두 ON으로 바꿔 전원을 켜면 그 EDID로 고정된다. 스위치 몸체 아래쪽에 ON 표시가 있어 레버를 아래로 내리면 ON이다(출고 시 모두 OFF, 레버가 위)."
+    "note": "Through-pass EDID Fix: 2·3·4번을 모두 OFF(Through-pass)로 두고 디스플레이 EDID를 송신기에 읽힌 뒤, PC가 연결되어 있으면 그래픽 카드 설정에서 디스플레이 정보를 확인하고(연결되어 있지 않으면 약 5초 뒤) 송신기 전원을 끄고 2·3·4번을 모두 ON으로 바꿔 전원을 켜면 그 EDID로 고정된다. 스위치 몸체 아래쪽에 ON 표시가 있어 레버를 아래로 내리면 ON이다(출고 시 모두 OFF, 레버가 위)."
   }
 }

@@ -223,11 +223,18 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     const saved=()=>page.evaluate(()=>JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.placements);
     let moveState=await saved();
     check('카드 팝업에서 XDM-HI100 수량 3을 넣고 장착하면 선택한 슬롯부터 입력 슬롯 3칸이 채워짐',qtyShown==='3'&&moveState['in-1']==='XDM-HI100'&&moveState['in-2']==='XDM-HI100'&&moveState['in-3']==='XDM-HI100'&&!moveState['in-4'],JSON.stringify(moveState));
-    // 0.137(사용자 요청 2026-09-29 "입출력 선택 후 다시 들어갈때 기존 선택된 카드 수량이 보일 수 있게"): 이미 장착한 카드는 팝업을 다시 열면 "현재 N장 장착"으로 보인다.
+    // 0.137 → 0.175(사용자 결정 2026-09-29 안 A "현재 N장 장착 대신 수량 칸에 N"): 팝업을 다시 열면 수량 칸이 장착된 장수(3)에서 시작하고 − 로 그 아래로 줄지 않는다.
+    // + 로 4를 만들고 장착하면 연 슬롯(IN 2)을 덮어쓰지 않고 다음 빈 슬롯(IN 4)에 1장만 더 들어간다.
     await page.locator('button[data-slot="in-2"]').click();
-    const haveText=await page.locator('.rt-card-modal [data-have-qty="XDM-HI100"]').textContent().catch(()=>null);
-    check('카드 팝업을 다시 열면 이미 장착한 XDM-HI100이 "현재 3장 장착"으로 보임',haveText==='현재 3장 장착',String(haveText));
-    await page.keyboard.press('Escape');
+    const haveQty=await page.evaluate(()=>{const out=document.querySelector('.rt-card-modal [data-qty-out="XDM-HI100"]');return {n:out?.textContent,minus:out?.parentElement.querySelector('[data-card-qty-step="-1"]').disabled,note:!!document.querySelector('.rt-card-modal .rt-card-have')}});
+    await page.locator('.rt-card-modal [data-card-qty-step="1"][data-qty-card="XDM-HI100"]').click();
+    const haveQty2=await page.locator('.rt-card-modal [data-qty-out="XDM-HI100"]').textContent();
+    await page.locator('.rt-card-modal [data-action="fill-qty"]').click();
+    const addState=await saved();
+    check('카드 팝업을 다시 열면 XDM-HI100 수량 칸이 장착된 3에서 시작하고(− 잠김, 따로 쓴 "현재 N장 장착" 없음) 4로 늘려 장착하면 IN 4에만 1장이 더 들어감',haveQty.n==='3'&&haveQty.minus===true&&!haveQty.note&&haveQty2==='4'&&['in-1','in-2','in-3','in-4'].every(id=>addState[id]==='XDM-HI100')&&!addState['in-5'],JSON.stringify({haveQty,haveQty2,addState}));
+    await page.locator('button[data-slot="in-4"]').click();
+    await page.locator('.rt-card-modal [data-action="remove"]').click();
+    moveState=await saved();
     // 0.55: XDM 세로 슬롯 카드 글자가 바로 읽히도록 90도(기존 -90도에서 180도) 회전, 작업 단계 표기는 한글.
     const xdmFace=await page.evaluate(()=>{const img=document.querySelector('button[data-slot="in-1"] img.rt-faceplate');const m=new DOMMatrix(getComputedStyle(img).transform);return {b:Math.round(m.b),eyebrow:document.querySelector('.rt-main .rt-eyebrow')?.textContent||'',bank:document.querySelector('.rt-rack-bank-title strong, .rt-frame-count')?.textContent||''}});
     check('XDM 세로 슬롯 카드는 90도로 돌아가 글자가 바로 보이고, 단계 제목·입출력 표기가 한글',xdmFace.b===1&&xdmFace.eyebrow.includes('03 / 카드 슬롯')&&!/INPUT|OUTPUT/.test(xdmFace.bank),JSON.stringify(xdmFace));
@@ -402,6 +409,8 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     // 0.42 전송기 단자 지도: 송신기·수신기 사진 두 장에 번호표를 얹고(입출력 표 카드가 아니라), 사진이 정상으로 열린다.
     const extenderMaps=await page.$$eval('.rt-pg-panel svg[aria-label$="단자 지도"]',svgs=>svgs.map(svg=>svg.getAttribute('aria-label')));
     check('CT104-U/CR104-U 단자 지도가 송신기·수신기 사진 두 장으로 나옴',extenderMaps.length===2&&extenderMaps[0].includes('송신기 CT104-U')&&extenderMaps[1].includes('수신기 CR104-U'),JSON.stringify(extenderMaps));
+    // 0.178 가로 스크롤 그림의 "더 있음" 그러데이션은 스크롤하지 않는 바깥 틀(.rt-pg-svg-frame)에 붙는다(스크롤 칸 안에 두면 밀 때 가운데 세로 띠가 남음).
+    check('가로 스크롤 그림은 모두 바깥 틀(.rt-pg-svg-frame) 안에 있고 스크롤 칸에는 그러데이션 표시가 없음(0.178)',await page.evaluate(()=>{const w=[...document.querySelectorAll('.rt-pg-svg-wrap')];return w.length>0&&w.every(e=>e.parentElement.classList.contains('rt-pg-svg-frame')&&!e.classList.contains('rt-has-more'))}));
     await page.goBack();
     await page.waitForSelector('.rt-pg-gridcard');
     check('제품정보 목록의 첫 카드는 XDM(0.125, 사용자 요청 "XDM이 처음으로 나오게해")',(await page.locator('.rt-pg-gridcard').first().getAttribute('href'))==='#products/xdm');
@@ -413,6 +422,14 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     const faceWidths=await page.$$eval('.rt-frame-info-face img',images=>images.map(image=>Math.round(image.getBoundingClientRect().width)));
     check('SPX-M1620 정면·후면 팝업의 두 그림 가로폭이 같음(0.154)',faceWidths.length===2&&Math.abs(faceWidths[0]-faceWidths[1])<=1,JSON.stringify(faceWidths));
     await page.keyboard.press('Escape');
+    // 0.178 좌우로 놓이는 프레임(SPX-M2472 등)은 정면·후면 그림 높이가 같아야 한다(사용자 요청 2026-09-29 "모듈러 매트릭스 프레임 상하 높이 안맞는문제").
+    await page.click('[data-pg-frame="SPX-M2472"]');
+    await page.waitForFunction(()=>document.querySelector('.rt-frame-info-duo.rt-frame-info-row'),null,{timeout:10000}).catch(()=>{});
+    const faceHeights=await page.$$eval('.rt-frame-info-face img',images=>images.map(image=>Math.round(image.getBoundingClientRect().height)));
+    check('SPX-M2472 정면·후면 팝업(좌우 배치)의 두 그림 높이가 같음(0.178)',faceHeights.length===2&&faceHeights[0]>40&&Math.abs(faceHeights[0]-faceHeights[1])<=1,JSON.stringify(faceHeights));
+    await page.keyboard.press('Escape');
+    // 0.178 카드 라인업 썸네일은 휴대폰 브라우저 다크 모드에서도 어둡게 바뀌지 않는다(color-scheme:only light).
+    check('카드 라인업 썸네일이 강제 다크 모드에서 빠짐(0.178)',await page.$eval('.rt-pg-cardrow img',img=>getComputedStyle(img).colorScheme.includes('only')));
     // 0.121·0.123·0.130 HD-D102U Rack마운트: 02 Port Map은 XDM-PSU 그림 방식의 정면 그래픽 이미지 1장만 두고(윗면·옆면은 삭제, 사용자 요청 2026-09-29) 실도면(치수 도면) 카드는 없다. HD-D102U와 관련 제품 링크.
     await page.goto(`${home}#products/hd-d102u-rack`,{waitUntil:'networkidle'});
     await page.waitForSelector('#rt-pg-title');
@@ -514,6 +531,21 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       await page.waitForSelector('#rt-pg-title');
       const xp=await page.evaluate(()=>{const svg=[...document.querySelectorAll('.rt-pg-svg-wrap svg')].find(s=>s.textContent.includes('매트릭스')&&s.textContent.includes('선택 예시'));if(!svg)return null;return {picked:svg.querySelectorAll('circle[r="5"]').length,dots:svg.querySelectorAll('circle').length,caption:svg.textContent.includes('출력마다 입력 선택'),old:svg.textContent.includes('독립 출력')}});
       check(`${id} 신호 흐름이 크로스포인트(${ins}×${outs})와 출력별 선택 예시 점 ${outs}개로 그려짐`,!!xp&&xp.picked===outs&&xp.dots===ins*outs&&xp.caption&&!xp.old,JSON.stringify(xp));
+    }
+    // 0.195 동작 모드 줄: QMS-44UX는 MATRIX·QUAD·WALL·DUAL 네 모드를 모두, QMS-88UX는 주 출력 모드(MATRIX·WALL)만 보여 주고
+    // 출력 9·10번 전용 모드(QUAD·DUAL)는 멀티뷰 묶음에만 둔다. HDS-42MU처럼 videoModes가 없으면 모드 줄이 없다(사용자 지적 2026-10-01).
+    for(const [id,modes] of [['qms-44ux','MATRIX,QUAD,WALL,DUAL'],['qms-88ux','MATRIX,WALL'],['hds-42mu','']]){
+      await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
+      await page.waitForSelector('#rt-pg-title');
+      const mode=await page.evaluate(()=>{const svg=[...document.querySelectorAll('.rt-pg-svg-wrap svg')].find(s=>s.textContent.includes('선택 예시'));const texts=[...(svg?.querySelectorAll('text')||[])].map(t=>t.textContent);const i=texts.indexOf('동작 모드 선택');return {strip:i>=0,modes:i<0?'':texts.filter(t=>/^(MATRIX|QUAD|WALL|DUAL)$/.test(t)).join(','),desc:!!document.querySelector('.rt-pg-flow-desc')}});
+      check(`${id} 신호 흐름 동작 모드 줄이 ${modes||'없음'}으로 나오고 그림 설명이 있음`,mode.strip===!!modes&&mode.modes===modes&&mode.desc,JSON.stringify(mode));
+    }
+    // 0.195 전송기 그림: 케이블 범례는 점선, 펼치는 그림 설명에 입력·전송·출력이 들어간다(사용자 요청 2026-10-01).
+    for(const id of ['ct104-u-cr104-u','xdm-ctr100','spx-r6']){
+      await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
+      await page.waitForSelector('#rt-pg-title');
+      const ext=await page.evaluate(()=>({dash:document.querySelectorAll('.rt-pg-legend .rt-pg-legend-dash').length,desc:document.querySelector('.rt-pg-flow-desc')?.textContent||''}));
+      check(`${id} 전송기 신호 흐름에 점선 케이블 범례와 그림 설명이 있음`,ext.dash>=1&&/전송/.test(ext.desc)&&/디스플레이/.test(ext.desc),JSON.stringify(ext).slice(0,200));
     }
     // 0.59 EDID 로터리 대표 설정: 기본값과 자주 쓰는 코드(highlight)를 파란 16단 로터리 그림으로 보여준다(사용자 요청 2026-09-27).
     for(const [id,codes] of [['hd-13u','0,1,7'],['hds-42mu','0,3,9'],['ft103-u-h-fr103-u','0,3,6']]){
@@ -645,7 +677,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     // 0.98 XDM-PSU 03 Signal Flow: 제조사 연결도처럼 프레임(CIS100·COS100) · PSU(POH·PHX) · CTR100 Tx/Rx를 장비 그림으로 그리고 케이블 위 점선이 흐른다. 움직임 줄이기 설정에서는 멈춘다.
     await page.goto(`${home}#products/xdm-psu`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-psu-anim');
-    const psuFlow=await page.evaluate(()=>{const svg=document.querySelector('.rt-psu-anim').closest('svg'),t=svg.textContent;return {flows:svg.querySelectorAll('.rt-psu-flow').length,rev:svg.querySelectorAll('.rt-psu-flow.rt-psu-rev').length,anim:getComputedStyle(svg.querySelector('.rt-psu-flow')).animationName,labels:['XDM-CIS100','XDM-COS100','XDM-PSU · POH','XDM-PSU · PHX','Tx · 송신기','Rx · 수신기','2핀 전원선'].every(s=>t.includes(s))}});
+    const psuFlow=await page.evaluate(()=>{const svg=document.querySelector('.rt-psu-anim').closest('svg'),t=svg.textContent;return {flows:svg.querySelectorAll('.rt-psu-flow').length,rev:svg.querySelectorAll('.rt-psu-flow.rt-psu-rev').length,anim:getComputedStyle(svg.querySelector('.rt-psu-flow')).animationName,labels:['XDM-CIS100','XDM-COS100','XDM-PSU · POH','XDM-PSU · PHX','TX · 송신기','RX · 수신기','2핀 전원선'].every(s=>t.includes(s))}});
     await page.emulateMedia({reducedMotion:'reduce'});
     const psuStill=await page.$eval('.rt-psu-flow',el=>getComputedStyle(el).animationName);
     await page.emulateMedia({reducedMotion:'no-preference'});
@@ -664,7 +696,16 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await page.goto(`${home}#products/xdm-ctr100`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-toolbar');
     const otherZoom=await page.$$eval('[data-flow-zoom]',els=>els.length);
-    check('XDM-PSU Signal Flow: COS100 피닉스에 전원선 연결, "크게 보기" 창이 150%로 커지고 Esc로 닫힘, 다른 제품에는 확대 버튼 없음',cosPin===1&&zoom.level==='150%'&&zoom.svg&&zoom.wider&&zoomClosed&&otherZoom===0,JSON.stringify({cosPin,zoom,zoomClosed,otherZoom}));
+    check('XDM-PSU Signal Flow: COS100 피닉스에 전원선 연결, "크게 보기" 창이 150%로 커지고 Esc로 닫힘, XDM-CTR100에는 확대 버튼 없음(0.196부터 PSE에는 있음)',cosPin===1&&zoom.level==='150%'&&zoom.svg&&zoom.wider&&zoomClosed&&otherZoom===0,JSON.stringify({cosPin,zoom,zoomClosed,otherZoom}));
+    // 0.196 XDM-CTR100 PSE 03 Signal Flow: XDM-PSU와 같은 장비 그림·흐르는 케이블(조합 1·2, 조합 2의 전원은 역방향)·크게 보기, PSU 05 주요 기능 첫 줄은 "개별 전원 어댑터 불필요"(사용자 요청 2026-10-02).
+    await page.goto(`${home}#products/xdm-ctr100-pse`,{waitUntil:'networkidle'});
+    await page.waitForSelector('.rt-psu-anim');
+    const pseFlow=await page.evaluate(()=>{const svg=document.querySelector('.rt-psu-anim').closest('svg'),t=svg.textContent;return {flows:svg.querySelectorAll('.rt-psu-flow').length,rev:svg.querySelectorAll('.rt-psu-flow.rt-psu-rev').length,zoom:document.querySelectorAll('[data-flow-zoom]').length,labels:['조합 1','조합 2','TX · 송신기 (PSE)','RX · 수신기 (PD)','RX · 수신기 (PSE)','TX · 송신기 (PD)','CAT · 신호+전원(PoE)'].every(s=>t.includes(s)),desc:/XDM-PSU/.test(document.querySelector('.rt-pg-flow-desc')?.textContent||'')}});
+    check('XDM-CTR100 PSE Signal Flow가 XDM-PSU와 같은 장비 그림(조합 1·2)·흐르는 케이블 10가닥(조합 2 전원 역방향)·크게 보기·그림 설명으로 나옴',pseFlow.flows===10&&pseFlow.rev===1&&pseFlow.zoom===1&&pseFlow.labels&&pseFlow.desc,JSON.stringify(pseFlow));
+    await page.goto(`${home}#products/xdm-psu`,{waitUntil:'networkidle'});
+    await page.waitForSelector('#rt-pg-title');
+    const psuFirst=await page.evaluate(()=>{const s=[...document.querySelectorAll('section')].find(x=>/주요 기능/.test(x.querySelector('h2')?.textContent||''));return s?.querySelector('li')?.textContent.trim()});
+    check('XDM-PSU 05 주요 기능 첫 줄이 "XDM-CTR100 개별 전원 어댑터 불필요"',/XDM-CTR100 개별 전원 어댑터 불필요/.test(psuFirst||''),psuFirst);
     // 0.95 전체 카탈로그 공유(사용자 결정 2026-09-28 "전체 카탈로그 공개해도 돼"): 제품 상세 카탈로그 버튼은 공용 파일을 제품 쪽(#page=N)에서 열고, 내려받기는 파일 전체. 제품 목록에는 "전체 카탈로그" 버튼 하나.
     await page.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-toolbar [data-doc="Catalog"]');
@@ -851,6 +892,13 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     const centers=flowNodes.map(node=>node.center);
     const flowSpread=centers.length?Math.max(...centers)-Math.min(...centers):Infinity;
     check('PC(1280px) 04 연결 흐름 노드가 한 줄로 나옴(세로 중심 차이 2px 이하)',flowSpread<=2,`노드 ${flowNodes.length}개, 세로 중심 차이 ${flowSpread.toFixed(1)}px, top 목록 ${JSON.stringify(flowNodes.map(node=>Math.round(node.top)))}`);
+    // 0.175(사용자 지적 2026-09-29 "이 부분 개선이 필요해보여"): 케이블 점선 위에는 거리만 두고 긴 문장은 흐름 아래 한 줄로 옮겨, 전송기 사진과 겹치거나 잘리지 않는다.
+    const flowFit=await pc.evaluate(()=>{const inside=(a,b)=>a.left>=b.left-1&&a.right<=b.right+1&&a.top>=b.top-1&&a.bottom<=b.bottom+1;const imgs=[...document.querySelectorAll('.rt-link-flow-node img')].map(img=>inside(img.getBoundingClientRect(),img.closest('.rt-link-flow-node').getBoundingClientRect()));const cable=document.querySelector('.rt-link-flow-cable'),label=cable?.querySelector('small');const names=[...document.querySelectorAll('.rt-link-flow-node strong')].map(el=>Math.round(el.getBoundingClientRect().height));return {imgs,cable:label?.textContent,cableFit:cable&&label?inside(label.getBoundingClientRect(),cable.getBoundingClientRect()):false,spec:document.querySelector('.rt-link-flow-spec')?.textContent||'',names,old:/CAT6a\/CAT7/.test(document.querySelector('#matrix-configurator').innerText)}});
+    check('PC 04 연결 흐름: 사진은 상자 안, 케이블 점선 위는 "최대 100m"만(상자 안), 케이블 문장은 아래 한 줄에 "S/FTP CAT6A 필수", 이름은 한 줄, 옛 "CAT6a/CAT7" 표기 없음',flowFit.imgs.length>0&&flowFit.imgs.every(Boolean)&&flowFit.cable==='최대 100m'&&flowFit.cableFit&&/S\/FTP CAT6A 필수/.test(flowFit.spec)&&flowFit.names.every(h=>h<=22)&&!flowFit.old,JSON.stringify(flowFit));
+    // 0.177(사용자 결정 2026-09-29 "둘 다 진행"): 04 왼쪽 목록은 카드마다 제목·연결 채널 한 줄 + [전송기 | 연결하지 않음] 선택 막대 한 줄이다.
+    // 선택지는 한 줄(같은 top)에 놓이고, 설명 목록은 숨고, 카드 묶음 하나가 120px을 넘지 않는다. XDM-CT103/CR103 단자 설명도 "CAT6A S/FTP"로 통일했다.
+    const compact=await pc.evaluate(async()=>{const groups=[...document.querySelectorAll('.rt-cg-link-group')];const res=await fetch('data/products/xdm-ct103-cr103.json').then(r=>r.text());return {groups:groups.length,maxHeight:Math.max(...groups.map(g=>Math.round(g.getBoundingClientRect().height))),oneLine:groups.every(g=>{const tops=[...g.querySelectorAll('.rt-cg-row')].map(b=>Math.round(b.getBoundingClientRect().top));return tops.length>1&&Math.max(...tops)-Math.min(...tops)<=1}),specsHidden:[...document.querySelectorAll('.rt-cg-link-group .rt-cg-row-specs')].every(el=>getComputedStyle(el).display==='none'),titled:[...document.querySelectorAll('.rt-cg-link-group .rt-cg-row')].every(b=>b.title),ctUftp:/U\/FTP로 연결/.test(res),ctSftp:(res.match(/S\/FTP CAT6A 케이블로 연결/g)||[]).length}});
+    check('PC 04 왼쪽 목록이 카드마다 한 줄 선택 막대(선택지 한 줄·설명 숨김·마우스 설명 title·묶음 높이 120px 이하)이고, XDM-CT103/CR103 단자 설명은 "S/FTP CAT6A"(0.184 표기 통일)',compact.groups===18&&compact.maxHeight<=120&&compact.oneLine&&compact.specsHidden&&compact.titled&&!compact.ctUftp&&compact.ctSftp===2,JSON.stringify(compact));
     const [listHeight,previewHeight]=await pc.evaluate(()=>[document.querySelector('.rt-cg-list').getBoundingClientRect().height,document.querySelector('.rt-cg-preview.rt-link-preview').getBoundingClientRect().height]);
     if(listHeight>previewHeight){
       // sticky는 부모 컨테이너(.rt-cg-split, 높이 = 목록 높이)를 벗어나는 순간 풀린다. 문서 맨 아래(document.body.scrollHeight)까지
@@ -1118,7 +1166,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
         const [oldPop,fallback]=await Promise.all([s.waitForEvent('popup'),s.waitForEvent('download',{timeout:16000}),s.click('[data-action="av-builder-open"]')]);
         const fallbackText=await s.evaluate(()=>document.querySelector('#save-status')?.textContent||'');
         await oldPop.close();await s.context().unroute('https://seoul-visual-tech.github.io/**');
-        check('03 ② "AV 빌더에서 바로 열기": 새 탭(?import=rtcom)에 준비 신호가 오면 구성도(version 1, 첫 포트 "HDMI #1-1 PC")를 보내고 완료를 표시하며, 준비 신호가 없으면 10초 뒤 같은 파일을 내려받음',got.search==='?import=rtcom'&&got.got&&got.got.version===1&&got.got.first==='HDMI #1-1 PC'&&got.got.nodes>0&&/AV 빌더에 구성을 넣었습니다 · 장비 \d+대/.test(doneText)&&fallback.suggestedFilename()==='RTCOM-XDM-12-av-builder.json'&&/자동 받기를 지원하지 않아 파일로 내려받았습니다/.test(fallbackText),JSON.stringify({got,doneText,fallback:fallback.suggestedFilename(),fallbackText}));
+        check('03 ② "AV 빌더에서 바로 열기": 새 탭(?import=rtcom)에 준비 신호가 오면 구성도(version 1, 첫 포트 "HDMI #1-1 PC")를 보내고 완료를 표시하며, 준비 신호가 없으면 10초 뒤 같은 파일을 내려받음',got.search==='?import=rtcom'&&got.got&&got.got.version===1&&got.got.first==='HDMI #1-1 PC'&&got.got.nodes>0&&/AV 빌더에 구성을 넣었습니다 · 장비 \d+대/.test(doneText)&&fallback.suggestedFilename()==='RTCOM-XDM-12-av-builder.json'&&/자동 받기를 지원하지 않아 파일로 다운로드했습니다/.test(fallbackText),JSON.stringify({got,doneText,fallback:fallback.suggestedFilename(),fallbackText}));
         await s.click('[data-tool="undo"]');
         const afterUndo=await s.evaluate(()=>[...document.querySelectorAll('.rt-signal-input')].slice(0,2).map(i=>i.value));
         await s.click('[data-action="back"]');const backToSlots=await s.locator('.rt-rack-slot').count()>0&&await s.locator('.rt-signal-input').count()===0;
@@ -1150,8 +1198,19 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       const touch=await browser.newContext({viewport:{width:416,height:900},isMobile:true,hasTouch:true});const tp=await touch.newPage();
       await tp.goto(home,{waitUntil:'networkidle'});await tp.locator('button[data-family="XDM"]').first().click();await tp.locator('.rt-cg-preview [data-action="preview-next"]').first().click();
       await tp.click('button[data-model="XDM-12"]');await tp.locator('.rt-cg-preview [data-action="preview-next"]').first().click();
-      const touchChips=await tp.evaluate(()=>({chips:document.querySelectorAll('.rt-card-info-chip').length,draggable:document.querySelectorAll('.rt-card-info-chip[draggable]').length,palette:!!document.querySelector('.rt-card-palette')}));
-      check('휴대폰(터치)에서는 카드 정보 버튼을 끌 수 없고 안내 문구도 기존과 같음',touchChips.chips>0&&touchChips.draggable===0&&!touchChips.palette,JSON.stringify(touchChips));
+      const touchChips=await tp.evaluate(()=>({chips:document.querySelectorAll('.rt-card-info-chip').length,draggable:document.querySelectorAll('.rt-card-info-chip[draggable]').length,tap:document.querySelectorAll('.rt-card-info-chip[data-tap-card]').length}));
+      check('휴대폰(터치)에서는 카드 타일을 끌 수 없고 눌러서 고르는 타일로 바뀜(0.193 눌러서 옮기기)',touchChips.chips>0&&touchChips.draggable===0&&touchChips.tap===touchChips.chips,JSON.stringify(touchChips));
+      // 0.193 눌러서 옮기기(사용자 결정 2026-09-30): 타일 선택 → 다른 방향 슬롯은 안내만 → 같은 방향 슬롯에 장착 → 취소 → 팝업 "이동"으로 다른 슬롯으로 옮김.
+      const filled=()=>tp.evaluate(()=>[...document.querySelectorAll('.rt-rack-slot-filled')].map(b=>b.dataset.slot));
+      await tp.locator('button[data-tap-card="XDM-HIS100"]').click();
+      const picked=await tp.evaluate(()=>({on:document.querySelector('.rt-tap-tile-on')?.dataset.tapCard,banner:document.querySelector('.rt-tap-banner')?.innerText||''}));
+      await tp.locator('button[data-slot="out-1"]').click();const wrong=await filled();
+      await tp.locator('button[data-slot="in-1"]').click();const placed=await filled();
+      await tp.locator('[data-tap-cancel]').click();const bannerGone=await tp.locator('.rt-tap-banner').count();
+      await tp.locator('button[data-slot="in-1"]').click();await tp.locator('.rt-card-modal [data-tap-move]').click();
+      const movingBanner=await tp.evaluate(()=>document.querySelector('.rt-tap-banner')?.innerText||'');
+      await tp.locator('button[data-slot="in-3"]').click();const moved=await filled();
+      check('휴대폰(터치) 눌러서 옮기기: 카드 타일을 고른 뒤 같은 방향 슬롯을 누르면 장착되고(다른 방향은 안 됨), 끝내기로 선택을 풀고, 장착한 카드는 팝업 "이동"으로 다른 슬롯에 옮겨짐',picked.on==='XDM-HIS100'&&/선택됨/.test(picked.banner)&&wrong.length===0&&placed.join()==='in-1'&&bannerGone===0&&/이동 중/.test(movingBanner)&&moved.join()==='in-3',JSON.stringify({picked,wrong,placed,bannerGone,movingBanner,moved}));
       await touch.close();
       await p3.close();
     }

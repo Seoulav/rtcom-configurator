@@ -20,24 +20,28 @@
     // 04 전송기 미리보기가 지금 보여주는 슬롯 id(2-2). previewSide와 같은 성격의 순수 화면 상태 — state에 없고 저장·실행 취소 대상이 아니다.
     // 가족·모델이 바뀌면 previewSide와 함께 null로 되돌리고, linksViewV4가 렌더링 때마다 현재 remote/hdmiExtend 목록에 없으면 첫 슬롯으로 다시 잡는다.
     let linkPreviewSlot=null;
+    // 0.184 눌러서 옮기기(사용자 결정 2026-09-30 "눌러서 옮기기 권장안으로 해줘"): 터치 화면(마우스 없음)에서는 끌어 놓기가 안 되므로
+    // 아래 카드 타일을 눌러 고른 뒤(tapCard) 같은 방향 슬롯을 누르면 장착하고, 장착한 카드의 팝업에서 "이동"을 누르면(tapMove) 옮길 슬롯을 눌러 이동한다.
+    // previewSide처럼 순수 화면 상태라 저장·실행 취소 대상이 아니다. 마우스 화면은 그대로 끌어 놓기를 쓴다.
+    let tapCard=null,tapMove=null;
     // 0.173(사용자 결정 2026-09-29 "추천A대로 진행해줘"): 03 카드 슬롯 안의 두 화면(① 카드 장착 / ② 신호 입력) 중 지금 보이는 쪽. previewSide와 같은 순수 화면 상태라 저장·실행 취소 대상이 아니다.
     let signalView=false;
     let changedSlot=null;
     // XDM 연동 전송기 정보(RTCom 종합 카탈로그 p.10~12). 키는 저장 파일·BOM에 쓰이는 전송기 이름과 같다.
     const extenderInfo={
-      'XDM-CTR100 · TX':{model:'XDM-CTR100',role:'HDBaseT 3.0 송·수신기 · DIP 스위치 TX 설정',image:'output/design/assets/extenders/xdm-ctr100.webp',specs:['4K60 4:4:4 · 최대 100m (CAT6a/CAT7)','HDMI 입력·출력 각 1 · RS-232+ · 오디오 출력','전원: XDM-PSU로 공급 · CTR100 개별 전원 불필요 (매트릭스 카드 구성에서는 PSE 사용 불가)'],pair:'XDM-CIS100',page:10,recommended:true},
-      'XDM-CTR100 · RX':{model:'XDM-CTR100',role:'HDBaseT 3.0 송·수신기 · DIP 스위치 RX 설정',image:'output/design/assets/extenders/xdm-ctr100.webp',specs:['4K60 4:4:4 · 최대 100m (CAT6a/CAT7)','HDMI 입력·출력 각 1 · RS-232+ · 오디오 출력','전원: XDM-PSU로 공급 · CTR100 개별 전원 불필요 (매트릭스 카드 구성에서는 PSE 사용 불가)'],pair:'XDM-COS100',page:10,recommended:true},
-      'XDM-CT103':{model:'XDM-CT103',role:'HDBaseT 3.0 1 Gang 벽부형 송신기',image:'output/design/assets/extenders/xdm-ct103.webp',specs:['4K60 4:4:4 · 최대 100m (CAT6a/CAT7)','HDMI 1 · 오디오 입력 1','XDM 슬롯 POE로 별도 전원 없이 사용'],pair:'XDM-CIS100',page:11},
-      'XDM-CR103':{model:'XDM-CR103',role:'HDBaseT 3.0 1 Gang 벽부형 수신기',image:'output/design/assets/extenders/xdm-cr103.webp',specs:['4K60 4:4:4 · 최대 100m (CAT6a/CAT7)','HDMI 1 · 오디오 1','XDM 슬롯 POE로 별도 전원 없이 사용'],pair:'XDM-COS100',page:11},
-      'XDM-FT101':{model:'XDM-FT101',role:'4K 광 송신기',image:'output/design/assets/extenders/xdm-ft101.webp',specs:['4K60 4:4:4 · HDMI 2.0','싱글모드 2km · 멀티모드 300m (LC 1)','오디오 삽입 · RS-232+'],pair:'XDM-FIS100',page:12,recommended:true},
-      [RtCore.psePair]:{model:'CTR100 PSE + CTR100',role:'HDMI 연장 한 쌍 (HDBaseT 3.0)',images:['output/design/assets/extenders/xdm-ctr100-pse.webp','output/design/assets/extenders/xdm-ctr100.webp'],specs:['4K60 4:4:4 · 최대 100m (CAT6a/CAT7)','전원: PSE 쪽에만 연결 · CTR100은 전원 불필요','두 제품 모두 DIP 스위치로 TX/RX 설정'],page:10},
-      'SPX-RX':{model:'SPX-RX',role:'CATx 수신기 (HDMI 2.0 · CEC)',specs:['4K60 4:4:4 · 18Gbps · HDCP 2.2','CATx 4K60 최대 50m · 1080p 최대 60m','전원: 메인프레임이 CAT으로 공급(POC)'],recommended:true},
+      'XDM-CTR100 · TX':{model:'XDM-CTR100',role:'HDBaseT 3.0 송수신기 · 딥 스위치 TX 설정',image:'output/design/assets/extenders/xdm-ctr100.webp',specs:['4K/60 @ 4:4:4 · 최대 100m (S/FTP CAT6A 필수)','HDMI 입력·출력 각 1 · RS-232+ · 오디오 출력','전원: XDM-PSU로 공급 · CTR100 개별 전원 불필요 (매트릭스 카드 구성에서는 PSE 사용 불가)'],pair:'XDM-CIS100',page:10,recommended:true},
+      'XDM-CTR100 · RX':{model:'XDM-CTR100',role:'HDBaseT 3.0 송수신기 · 딥 스위치 RX 설정',image:'output/design/assets/extenders/xdm-ctr100.webp',specs:['4K/60 @ 4:4:4 · 최대 100m (S/FTP CAT6A 필수)','HDMI 입력·출력 각 1 · RS-232+ · 오디오 출력','전원: XDM-PSU로 공급 · CTR100 개별 전원 불필요 (매트릭스 카드 구성에서는 PSE 사용 불가)'],pair:'XDM-COS100',page:10,recommended:true},
+      'XDM-CT103':{model:'XDM-CT103',role:'HDBaseT 3.0 1 Gang 벽부형 송신기',image:'output/design/assets/extenders/xdm-ct103.webp',specs:['4K/60 @ 4:4:4 · 최대 100m (S/FTP CAT6A 필수)','HDMI 1 · 오디오 입력 1','XDM 슬롯 POE로 별도 전원 없이 사용'],pair:'XDM-CIS100',page:11},
+      'XDM-CR103':{model:'XDM-CR103',role:'HDBaseT 3.0 1 Gang 벽부형 수신기',image:'output/design/assets/extenders/xdm-cr103.webp',specs:['4K/60 @ 4:4:4 · 최대 100m (S/FTP CAT6A 필수)','HDMI 1 · 오디오 1','XDM 슬롯 POE로 별도 전원 없이 사용'],pair:'XDM-COS100',page:11},
+      'XDM-FT101':{model:'XDM-FT101',role:'4K 광 송신기',image:'output/design/assets/extenders/xdm-ft101.webp',specs:['4K/60 @ 4:4:4 · HDMI 2.0','싱글모드 2km · 멀티모드 300m (LC 1)','오디오 병합 · RS-232+'],pair:'XDM-FIS100',page:12,recommended:true},
+      [RtCore.psePair]:{model:'CTR100 PSE + CTR100',role:'HDMI 연장 한 쌍 (HDBaseT 3.0)',images:['output/design/assets/extenders/xdm-ctr100-pse.webp','output/design/assets/extenders/xdm-ctr100.webp'],specs:['4K/60 @ 4:4:4 · 최대 100m (S/FTP CAT6A 필수)','전원: PSE 쪽에만 연결 · CTR100은 전원 불필요','두 제품 모두 딥 스위치로 TX/RX 설정'],page:10},
+      'SPX-RX':{model:'SPX-RX',role:'CATx 수신기 (HDMI 2.0 · CEC)',specs:['4K/60 @ 4:4:4 · 18Gbps · HDCP 2.2','CATx 4K/60 최대 50m · 1080p 최대 60m','전원: 메인프레임이 CAT으로 공급(POC)'],recommended:true},
       // VDM 연동 전송기(사용자 확인 2026-09-26, 사양·사진: 알티컴 홈페이지 VDM EXTENDER 게시판)
-      'CT104-U':{model:'CT104-U',role:'HDBaseT 4K 송신기 (HDMI + RS-232)',image:'output/design/assets/extenders/vdm-ct104-u.webp',specs:['4K30 · 1080p60 최대 100m (CAT5e/6)','HDMI 1.4 · RS-232 · HDCP','전원: DC 12V 2A'],pair:'CIS4-U',recommended:true},
-      'CR104-U':{model:'CR104-U',role:'HDBaseT 4K 수신기 (HDMI + RS-232)',image:'output/design/assets/extenders/vdm-cr104-u.webp',specs:['4K30 · 1080p60 최대 100m (CAT5e/6)','HDMI 1.4 · RS-232 · HDCP','전원: DC 12V 2A'],pair:'COS4-U',recommended:true},
-      'FT101-U':{model:'FT101-U',role:'HDMI 광 송신기 (오디오 · RS-232)',image:'output/design/assets/extenders/vdm-ft101-u.webp',specs:['4K30 · 싱글모드 2km · 멀티모드 500m','HDMI 1.4b · 3.5mm 오디오 입력 · RS-232','전원: DC 12V 2A'],pair:'FIS4-U',recommended:true},
-      'FR101-U':{model:'FR101-U',role:'HDMI 광 수신기 (RS-232)',image:'output/design/assets/extenders/vdm-fr101-u.webp',specs:['4K30 · 싱글모드 2km · 멀티모드 500m','HDMI 1.4b · 오디오 출력 · RS-232','전원: DC 12V 2A'],pair:'FOS4-U',recommended:true},
-      'XDM-FR101':{model:'XDM-FR101',role:'4K 광 수신기',image:'output/design/assets/extenders/xdm-fr101.webp',specs:['4K60 4:4:4 · HDMI 2.0','싱글모드 2km · 멀티모드 300m (LC 1)','오디오 추출 · RS-232+'],pair:'XDM-FOS100',page:12,recommended:true}
+      'CT104-U':{model:'CT104-U',role:'HDBaseT 4K 송신기 (HDMI + RS-232)',image:'output/design/assets/extenders/vdm-ct104-u.webp',specs:['4K/30 · 1080p/60 최대 100m (CAT5e/6)','HDMI 1.4 · RS-232 · HDCP','전원: DC 12V 2A'],pair:'CIS4-U',recommended:true},
+      'CR104-U':{model:'CR104-U',role:'HDBaseT 4K 수신기 (HDMI + RS-232)',image:'output/design/assets/extenders/vdm-cr104-u.webp',specs:['4K/30 · 1080p/60 최대 100m (CAT5e/6)','HDMI 1.4 · RS-232 · HDCP','전원: DC 12V 2A'],pair:'COS4-U',recommended:true},
+      'FT101-U':{model:'FT101-U',role:'HDMI 광 송신기 (오디오 · RS-232)',image:'output/design/assets/extenders/vdm-ft101-u.webp',specs:['4K/30 · 싱글모드 2km · 멀티모드 500m','HDMI 1.4b · 3.5mm 오디오 입력 · RS-232','전원: DC 12V 2A'],pair:'FIS4-U',recommended:true},
+      'FR101-U':{model:'FR101-U',role:'HDMI 광 수신기 (RS-232)',image:'output/design/assets/extenders/vdm-fr101-u.webp',specs:['4K/30 · 싱글모드 2km · 멀티모드 500m','HDMI 1.4b · 오디오 출력 · RS-232','전원: DC 12V 2A'],pair:'FOS4-U',recommended:true},
+      'XDM-FR101':{model:'XDM-FR101',role:'4K 광 수신기',image:'output/design/assets/extenders/xdm-fr101.webp',specs:['4K/60 @ 4:4:4 · HDMI 2.0','싱글모드 2km · 멀티모드 300m (LC 1)','오디오 추출 · RS-232+'],pair:'XDM-FOS100',page:12,recommended:true}
     };
     const vdmExtenderLineup=[
       {model:'CT104-U',role:'HDBaseT 4K 송신기',image:'output/design/assets/extenders/vdm-ct104-u.webp',pair:'CIS4-U',note:'CAT5e/6 최대 100m · DC 12V'},
@@ -46,9 +50,9 @@
       {model:'FR101-U',role:'HDMI 광 수신기',image:'output/design/assets/extenders/vdm-fr101-u.webp',pair:'FOS4-U',note:'싱글모드 2km · 멀티모드 500m · DC 12V'}
     ];
     const extenderLineup=[
-      {model:'XDM-CTR100',role:'HDBaseT 3.0 송·수신기 (DIP 스위치 TX/RX)',image:'output/design/assets/extenders/xdm-ctr100.webp',pair:'XDM-CIS100 · XDM-COS100',note:'DIP 스위치로 TX/RX를 설정합니다. TX는 CIS100, RX는 COS100과 연동하며 이때는 XDM-PSU로 전원을 공급해 CTR100에 전원 어댑터가 필요 없습니다. PSE와 한 쌍이어도 전원 불필요',page:10},
-      {model:'XDM-CTR100 PSE',role:'POE 전원 공급형 송·수신기 (DIP 스위치 TX/RX)',image:'output/design/assets/extenders/xdm-ctr100-pse.webp',pair:'XDM-CTR100 (HDMI 카드 연장 · 1:1 연장)',note:'CTR100과 한 쌍으로 쓰면 PSE 쪽에만 전원을 연결하고 CTR100은 전원이 필요 없습니다. HDMI 입력·출력 카드 연장에 사용하며, HDBaseT 카드(CIS100·COS100) 구성에는 사용할 수 없습니다.',page:10},
-      {model:'XDM-PSU',role:'16채널 모듈형 전원 장치 (19인치 2U)',image:'output/design/assets/products/xdm-psu-front.webp',pair:'XDM-CIS100 · XDM-COS100 + XDM-CTR100',note:'CIS100·COS100에 연결한 CTR100에 전원을 공급합니다. CIS용 XDM-POH(Tx 1대당 1개)와 COS용 XDM-PHX(COS100 1장당 1개) 모듈을 16칸에 꽂습니다.',source:'제조사 도면·구성도'},
+      {model:'XDM-CTR100',role:'HDBaseT 3.0 송수신기 (딥 스위치 TX/RX)',image:'output/design/assets/extenders/xdm-ctr100.webp',pair:'XDM-CIS100 · XDM-COS100',note:'딥 스위치로 TX/RX를 설정합니다. TX는 CIS100, RX는 COS100과 연동하며 이때는 XDM-PSU로 전원을 공급해 CTR100에 전원 어댑터가 필요 없습니다. PSE와 한 쌍이어도 전원 불필요',page:10},
+      {model:'XDM-CTR100 PSE',role:'POE 전원 공급형 송수신기 (딥 스위치 TX/RX)',image:'output/design/assets/extenders/xdm-ctr100-pse.webp',pair:'XDM-CTR100 (HDMI 카드 연장 · 1:1 연장)',note:'CTR100과 한 쌍으로 쓰면 PSE 쪽에만 전원을 연결하고 CTR100은 전원이 필요 없습니다. HDMI 입력·출력 카드 연장에 사용하며, HDBaseT 카드(CIS100·COS100) 구성에는 사용할 수 없습니다.',page:10},
+      {model:'XDM-PSU',role:'16채널 모듈형 전원 장치 (19인치 2U)',image:'output/design/assets/products/xdm-psu-front.webp',pair:'XDM-CIS100 · XDM-COS100 + XDM-CTR100',note:'CIS100·COS100에 연결한 CTR100에 전원을 공급합니다. CIS용 XDM-POH(TX 1대당 1개)와 COS용 XDM-PHX(COS100 1장당 1개) 모듈을 16칸에 꽂습니다.',source:'제조사 도면·구성도'},
       {model:'XDM-CT103',role:'1 Gang 벽부형 송신기',image:'output/design/assets/extenders/xdm-ct103.webp',pair:'XDM-CIS100',note:'XDM 슬롯 POE로 전원 공급',page:11},
       {model:'XDM-CR103',role:'1 Gang 벽부형 수신기',image:'output/design/assets/extenders/xdm-cr103.webp',pair:'XDM-COS100',note:'XDM 슬롯 POE로 전원 공급',page:11},
       {model:'XDM-FT101',role:'4K 광 송신기',image:'output/design/assets/extenders/xdm-ft101.webp',pair:'XDM-FIS100',note:'싱글모드 2km · 멀티모드 300m',page:12},
@@ -80,24 +84,24 @@
       'XDM-144':{src:'output/design/assets/frames/xdm-144-rear-art.webp',page:11,kind:'그림',size:[707,2000],input:[15,85,649,757],output:[15,955,649,1633]},
       // XDM-216은 후면 사진이 없어 XDM-144 후면에 슬롯 줄(18칸)을 하나씩 더한 그림으로 표시한다(scripts/tools/draw_xdm_spx_rear_frames.cjs).
       'XDM-216':{src:'output/design/assets/frames/xdm-216-rear-art.webp',manual:'XDM-144 후면 기준',kind:'그림',size:[530,2000],input:[12,64,487,820],output:[12,968,487,1725]},
-      'VDM-16X':{src:'output/design/assets/frames/vdm-16x-rear-art.webp',page:7,manual:VDM_MANUAL,kind:'그림',size:[2000,1155],input:[9,107,735,1142],output:[1265,107,1991,1142]},
+      'VDM-16X':{src:'output/design/assets/frames/vdm-16x-rear-art.webp',page:7,manual:VDM_MANUAL,kind:'그림',size:[2000,1412],input:[9,184,735,1219],output:[1265,184,1991,1219]},
       // VDM 국문 매뉴얼 KV07 2.2 Router Frame Specifications의 후면 선 도면(PDF 쪽)을 따라 그린 평면 그림(scripts/tools/draw_vdm_frames.cjs).
       // 0.120부터 슬롯 칸 비율을 VDM 카드 사진 비율(5.7:1)과 똑같이 그렸다(칸 너비는 도면 배치, 높이 = 너비 × 5.7). 좌표는 스크립트를 실행하면 출력된다.
       // 입력·출력 영역이 여러 곳이면 배열로 두고 슬롯을 순서대로 똑같이 나눈다(256X: 왼쪽 랙 1–32, 오른쪽 랙 33–64).
       'VDM-8X':{src:'output/design/assets/frames/vdm-8x-rear-art.webp',page:12,manual:VDM_MANUAL,kind:'그림',size:[2000,612],input:[9,25,998,370],output:[1033,25,1991,370]},
-      'VDM-32X':{src:'output/design/assets/frames/vdm-32x-rear-art.webp',page:14,manual:VDM_MANUAL,kind:'그림',size:[1951,2000],input:[34,43,703,1949],output:[1248,43,1917,1949]},
-      'VDM-48X':{src:'output/design/assets/frames/vdm-48x-rear-art.webp',page:15,manual:VDM_MANUAL,kind:'그림',size:[1296,2000],input:[23,23,477,1965],output:[819,23,1273,1965]},
-      'VDM-64X':{src:'output/design/assets/frames/vdm-64x-rear-art.webp',page:16,manual:VDM_MANUAL,kind:'그림',size:[1105,2000],input:[20,20,360,1961],output:[745,20,1085,1961]},
-      'VDM-80X':{src:'output/design/assets/frames/vdm-80x-rear-art.webp',page:17,manual:VDM_MANUAL,kind:'그림',size:[765,2000],input:[19,64,749,821],output:[19,1048,749,1805]},
-      'VDM-128X':{src:'output/design/assets/frames/vdm-128x-rear-art.webp',page:18,manual:VDM_MANUAL,kind:'그림',size:[589,2000],input:[4,15,560,879],output:[4,994,560,1858]},
-      'VDM-180X':{src:'output/design/assets/frames/vdm-180x-rear-art.webp',page:19,manual:VDM_MANUAL,kind:'그림',size:[706,2000],input:[12,71,656,805],output:[12,1079,656,1813]},
-      'VDM-256X':{src:'output/design/assets/frames/vdm-256x-rear-art.webp',page:20,manual:VDM_MANUAL,kind:'그림',size:[1121,2000],input:[[14,28,541,848],[558,28,1083,848]],output:[[14,998,541,1817],[558,998,1083,1817]]},
+      'VDM-32X':{src:'output/design/assets/frames/vdm-32x-rear-art.webp',page:14,manual:VDM_MANUAL,kind:'그림',size:[1653,2000],input:[29,128,596,1743],output:[1058,128,1625,1743]},
+      'VDM-48X':{src:'output/design/assets/frames/vdm-48x-rear-art.webp',page:15,manual:VDM_MANUAL,kind:'그림',size:[1043,2000],input:[19,136,384,1699],output:[659,136,1024,1699]},
+      'VDM-64X':{src:'output/design/assets/frames/vdm-64x-rear-art.webp',page:16,manual:VDM_MANUAL,kind:'그림',size:[825,2000],input:[15,167,269,1616],output:[556,167,811,1616]},
+      'VDM-80X':{src:'output/design/assets/frames/vdm-80x-rear-art.webp',page:17,manual:VDM_MANUAL,kind:'그림',size:[734,2000],input:[18,61,719,787],output:[18,1087,719,1813]},
+      'VDM-128X':{src:'output/design/assets/frames/vdm-128x-rear-art.webp',page:18,manual:VDM_MANUAL,kind:'그림',size:[535,2000],input:[3,68,508,853],output:[3,1031,508,1816]},
+      'VDM-180X':{src:'output/design/assets/frames/vdm-180x-rear-art.webp',page:19,manual:VDM_MANUAL,kind:'그림',size:[521,2000],input:[9,235,485,777],output:[9,1137,485,1679]},
+      'VDM-256X':{src:'output/design/assets/frames/vdm-256x-rear-art.webp',page:20,manual:VDM_MANUAL,kind:'그림',size:[1015,2000],input:[[13,82,490,825],[505,82,981,825]],output:[[13,1036,490,1778],[505,1036,981,1778]]},
       // SPX 국문 사용자 매뉴얼(250805) 후면 사진. M810·M1620·M3236은 가로 카드(입력 위·출력 아래), M2472·M24120은 세로 카드(입력 왼쪽·출력 오른쪽).
-      'SPX-M810':{src:'output/design/assets/frames/spx-m810-rear-art.webp',page:7,manual:SPX_MANUAL,kind:'그림',size:[2000,451],input:[246,70,1758,182],output:[246,182,1758,293]},
-      'SPX-M1620':{src:'output/design/assets/frames/spx-m1620-rear-art.webp',page:8,manual:SPX_MANUAL,kind:'그림',size:[2000,1263],input:[202,350,1795,677],output:[202,677,1795,1003]},
+      'SPX-M810':{src:'output/design/assets/frames/spx-m810-rear-art.webp',page:7,manual:SPX_MANUAL,kind:'그림',size:[2000,400],input:[331,62,1672,161],output:[331,161,1672,260]},
+      'SPX-M1620':{src:'output/design/assets/frames/spx-m1620-rear-art.webp',page:8,manual:SPX_MANUAL,kind:'그림',size:[2000,804],input:[202,223,1794,431],output:[202,431,1794,638]},
       'SPX-M3236':{src:'output/design/assets/frames/spx-m3236-rear-art.webp',page:6,manual:SPX_MANUAL,kind:'그림',size:[2000,1360],input:[219,28,1642,416],output:[219,900,1642,1193]},
-      'SPX-M2472':{src:'output/design/assets/frames/spx-m2472-rear-art.webp',page:9,manual:SPX_MANUAL,kind:'그림',size:[2000,1995],input:[16,208,328,1682],output:[844,208,1458,1682]},
-      'SPX-M24120':{src:'output/design/assets/frames/spx-m24120-rear-art.webp',page:9,manual:SPX_MANUAL,kind:'그림',size:[1990,2000],input:[10,209,324,1681],output:[836,209,1869,1681]}
+      'SPX-M2472':{src:'output/design/assets/frames/spx-m2472-rear-art.webp',page:9,manual:SPX_MANUAL,kind:'그림',size:[2000,1658],input:[13,173,273,1398],output:[1039,173,1550,1398]},
+      'SPX-M24120':{src:'output/design/assets/frames/spx-m24120-rear-art.webp',page:9,manual:SPX_MANUAL,kind:'그림',size:[2000,1669],input:[9,174,270,1403],output:[1037,174,1900,1403]}
     };
     const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     function card(id){return [...families[state.family].input,...families[state.family].output].find(c=>c[0]===id)}
@@ -107,11 +111,11 @@
     function cardAsset(id){return photoCardFamilies.has(state.family)&&id?`output/design/assets/cards/${id}.webp`:assets[state.family]}
     const cardTips={
       'XDM-HI100':'HDMI 소스 4채널을 입력하는 기본 카드입니다.','XDM-HIS100':'HDMI 입력을 스케일링해야 하는 구성에 검토합니다.','XDM-DPI100':'DisplayPort 소스 4채널 입력용입니다.','XDM-CIS100':'HDBaseT 3.0 기반 원격 신호 4채널 입력용입니다.','XDM-FIS100':'광 전송 기반의 원거리 신호 4채널 입력용입니다.','XDM-SIS100':'12G-SDI 방송 신호 4채널 입력용입니다.',
-      'XDM-HOS100':'HDMI 4채널 출력 또는 최대 4분할(Quad View) 화면 구성에 활용할 수 있습니다.','XDM-DPOS100':'DisplayPort 디스플레이 4채널 출력용입니다.','XDM-COS100':'HDBaseT 3.0 기반 원격 출력 4채널용입니다.','XDM-FOS100':'광 전송 기반의 원거리 출력 4채널용입니다.','XDM-SOS100':'12G-SDI 방송 신호 4채널 출력용입니다.','XDM-WOS100':'4개 레이어를 조합해 월 프로세서처럼 화면 연출에 활용할 수 있습니다.'
+      'XDM-HOS100':'HDMI 4채널 출력 또는 최대 4분할(쿼드뷰) 화면 구성에 활용할 수 있습니다.','XDM-DPOS100':'DisplayPort 디스플레이 4채널 출력용입니다.','XDM-COS100':'HDBaseT 3.0 기반 원격 출력 4채널용입니다.','XDM-FOS100':'광 전송 기반의 원거리 출력 4채널용입니다.','XDM-SOS100':'12G-SDI 방송 신호 4채널 출력용입니다.','XDM-WOS100':'4개 레이어를 조합해 월 프로세서처럼 화면 연출에 활용할 수 있습니다.'
     };
     function cardTip(id){return cardTips[id]||'카드 용도와 설치 조건을 검토한 뒤 선택하세요.'}
     globalThis.RtCardTips=cardTips; // 0.143: 제품정보 04 카드 라인업 상세 팝업(src/products.js)이 같은 카드 설명을 읽는다.
-    function cardBadge(id){return id==='XDM-WOS100'?'<em>4레이어</em>':id==='XDM-HOS100'?'<em>쿼드 뷰</em>':''}
+    function cardBadge(id){return id==='XDM-WOS100'?'<em>4레이어</em>':id==='XDM-HOS100'?'<em>쿼드뷰</em>':''}
     function choices(s,c){return RtCore.choices(c[0])}
     // 카드 팝업에서 고른 전송기 → 없으면 이 슬롯에 이미 연결된 전송기(같은 카드일 때) → 없으면 카드 기본 연동(RtCore.defaultLink). ''는 연결 안 함.
     // 0.118(사용자 요청 2026-09-28 "전송기 부분도 수량을 선택할 수 있게 해 줘. 그리고 그게 물량 산출서가 나올 수도 있도록"): 카드 1장당 연결할 전송기 수량(1~카드 채널 수).
@@ -211,7 +215,7 @@
       const slot=currentSlots().find(item=>item.id===modalSlot);
       if(!slot)return '';
       const installed=state.placements[slot.id];
-      const tips=slot.dir==='output'&&state.family==='XDM'?'<div class="rt-output-tips"><div class="rt-pro-tip rt-quad-tip"><span>최대 4분할</span><div><strong>XDM-HOS100 · 쿼드 뷰(최대 4분할)</strong><p>일반 HDMI 4채널 출력 또는 최대 4분할 화면 구성에 활용할 수 있습니다.</p></div></div><div class="rt-pro-tip"><span>활용 TIP</span><div><strong>XDM-WOS100 · 4레이어</strong><p>4개 레이어를 조합해 월 프로세서처럼 화면을 연출할 수 있습니다.</p></div></div></div>':'';
+      const tips=slot.dir==='output'&&state.family==='XDM'?'<div class="rt-output-tips"><div class="rt-pro-tip rt-quad-tip"><span>최대 4분할</span><div><strong>XDM-HOS100 · 쿼드뷰(최대 4분할)</strong><p>일반 HDMI 4채널 출력 또는 최대 4분할 화면 구성에 활용할 수 있습니다.</p></div></div><div class="rt-pro-tip"><span>활용 TIP</span><div><strong>XDM-WOS100 · 4레이어</strong><p>4개 레이어를 조합해 월 프로세서처럼 화면을 연출할 수 있습니다.</p></div></div></div>':'';
       const dirWord=slot.dir==='input'?'입력':'출력';
       // 0.94 수량 UI가 사라지는 버그 수정(사용자 지적 "입력카드 다시 조정하려고 누르면 수량이 안보이고 장착됨이 보임", "출력카드는 수량선택이 안되는 버그"):
       // 같은 방향 슬롯이 이미 다 채워지면 fillTargets가 채울 수 있는 칸(qtyMax)을 1로 돌려주는데, 그 값 하나로 "카드별 수량" UI 노출 여부까지 정했다.
@@ -219,12 +223,13 @@
       // qtyMax는 그대로 두어(다른 슬롯에 이미 있는 카드를 덮어쓰지 않음) 실제 채울 수 있는 칸 수를 제한하는 데만 쓴다.
       const others=currentSlots().filter(item=>item.dir===slot.dir&&item.id!==slot.id);
       const sameDirTotal=others.length+1;
-      const qtyMax=RtCore.fillTargets(state,slot.id,999).length;
+      const qtyMax=RtCore.addTargets(state,slot.id,999).length;
       const choiceButton=c=>`<button type="button" class="rt-card-choice" data-card="${c[0]}" aria-pressed="${installed===c[0]}"><span class="rt-card-choice-plate"><img src="${cardAsset(c[0])}" alt="${c[0]} 카드 후면 판넬"></span><span class="rt-card-choice-copy"><strong>${c[0]}${cardBadge(c[0])}</strong><small>${esc(c[1])} · ${c[2]}채널</small><span>${esc(cardTip(c[0]))}</span></span><span class="rt-card-choice-state" aria-hidden="true">${installed===c[0]?'장착됨':'선택'}</span></button>`;
       // 0.70 카드별 수량: 카드 버튼 아래에 −/+ 수량 칸을 둔다(버튼 안에 버튼을 넣지 않도록 형제로 둔다). 합계는 채울 수 있는 칸 수(qtyMax)를 넘지 않는다.
       // 0.137(사용자 요청 2026-09-29 "입출력 선택 후 다시 들어갈때 기존 선택된 카드 수량이 보일 수 있게"): 스테퍼는 빈 슬롯에 새로 채울 수량이라 다시 열면 0이다. 이 방향 슬롯에 이미 장착된 같은 카드 장수를 "현재 N장 장착"으로 함께 보여 준다.
+      // 0.175(사용자 결정 2026-09-29 안 A "현재 N장 장착 대신 수량 칸에 N"): 따로 띄우던 "현재 N장 장착" 글을 없애고, 수량 칸이 장착된 장수에서 시작한다. − 는 그보다 줄이지 못하고(빼기는 슬롯의 ×·Del), 더한 만큼만 RtCore.addTargets로 빈 슬롯에 채운다.
       const haveQty=id=>others.filter(item=>state.placements[item.id]===id).length+(installed===id?1:0);
-      const cardQty=c=>{const n=modalQtys[c[0]]||0,full=qtySum()>=qtyMax,have=haveQty(c[0]);return sameDirTotal>1?`<div class="rt-card-choice-qty">${have?`<em class="rt-card-have" data-have-qty="${c[0]}">현재 ${have}장 장착</em>`:''}<span>${esc(c[0])} 수량</span><div class="rt-card-qty-stepper"><button type="button" data-card-qty-step="-1" data-qty-card="${c[0]}" aria-label="${c[0]} 수량 줄이기" ${n<=0?'disabled':''}>−</button><output data-qty-out="${c[0]}" aria-live="polite">${n}</output><button type="button" data-card-qty-step="1" data-qty-card="${c[0]}" aria-label="${c[0]} 수량 늘리기" ${full?'disabled':''}>+</button></div></div>`:''};
+      const cardQty=c=>{const n=modalQtys[c[0]]||0,full=qtySum()>=qtyMax,have=haveQty(c[0]);return sameDirTotal>1?`<div class="rt-card-choice-qty"><span>${esc(c[0])} 수량</span><div class="rt-card-qty-stepper"><button type="button" data-card-qty-step="-1" data-qty-card="${c[0]}" aria-label="${c[0]} 수량 줄이기" ${n<=0?'disabled':''}>−</button><output data-qty-out="${c[0]}" data-have-qty="${have}" aria-live="polite" ${have?`title="현재 ${have}장 장착 · 줄이려면 슬롯에서 빼 주세요"`:''}>${have+n}</output><button type="button" data-card-qty-step="1" data-qty-card="${c[0]}" aria-label="${c[0]} 수량 늘리기" ${full?'disabled':''}>+</button></div></div>`:''};
       // 0.79 상세 보기(사용자 요청 2026-09-28 "카드 선택창에도 상세보기 추가해"): 장착 버튼과 형제로 두어 누르면 카드 사양 창(openCardInfo)이 선택창 위에 뜬다.
       // 0.117 연동 전송기: 전송기와 짝을 이루는 카드(CIS·COS·FIS·FOS·HDMI 카드·SPX-COS12·VDM CAT/광 카드)는 카드 아래에서 전송기를 함께 고른다.
       // 고른 전송기는 카드를 장착할 때(선택·장착 버튼) 슬롯에 연결되고, 04 전송기에서 채널 수·거리를 다시 조정할 수 있다.
@@ -237,12 +242,13 @@
       // 2-4: 팝업 맨 위에 블랭크 커버(커넥터 없음 · 0포트)를 두고, 그 아래 구분 제목 뒤에 실제 카드 목록이 온다.
       const blankChoice=`<button type="button" class="rt-card-choice rt-card-choice-blank" data-card="BLANK" aria-pressed="${installed==='BLANK'}"><span class="rt-card-choice-copy"><strong>블랭크 커버</strong><small>커넥터 없음 · 빈 슬롯 마감</small><span>카드를 더 넣지 않을 슬롯을 막아 구성을 완성합니다.</span></span><span class="rt-card-choice-state rt-card-choice-zero" aria-hidden="true">0포트</span></button>`;
       // 0.55 수량: 선택한 슬롯부터 같은 방향 빈 슬롯까지 몇 칸을 한 번에 채울지 고른다(최대 = 채울 수 있는 칸 수).
-      const qtyBar=sameDirTotal>1?`<div class="rt-card-qty" data-qty-max="${qtyMax}"><span class="rt-card-qty-label">카드별 수량</span><small>카드마다 수량을 넣고 ‘장착’을 누르면 ${esc(slot.label)}부터 빈 ${dirWord} 슬롯에 목록 순서대로 들어갑니다 · 최대 ${qtyMax}칸</small></div>`:'';
+      const qtyBar=sameDirTotal>1?`<div class="rt-card-qty" data-qty-max="${qtyMax}"><span class="rt-card-qty-label">카드별 수량</span><small>${qtyMax?`수량은 지금 장착된 장수에서 시작합니다. 늘리고 ‘장착’을 누르면 늘린 만큼 ${installed?'':`${esc(slot.label)}부터 `}빈 ${dirWord} 슬롯에 목록 순서대로 들어갑니다 · 빈 칸 ${qtyMax}개`:`빈 ${dirWord} 슬롯이 없습니다. 카드를 바꾸려면 카드를 누르고, 빼려면 슬롯 비우기를 누르세요.`}</small></div>`:'';
       // 0.106(사용자 요청 "순서 대로 장착과 닫기 버튼을 장착으로 통합해줘"): 수량을 채우는 버튼이 곧 팝업을 닫으므로(fill-qty가 modalSlot을 비움) 따로 "닫기"를 두지 않는다. 수량 버튼이 없을 때만(같은 방향 슬롯이 하나뿐) "닫기"를 남긴다.
-      const fillQtyButton=sameDirTotal>1?`<button type="button" class="rt-button rt-primary" data-action="fill-qty" ${qtySum()?'':'disabled'}><span data-qty-total>장착${qtySum()?` · ${qtySum()}장`:''}</span></button>`:'';
+      const fillQtyButton=sameDirTotal>1?`<button type="button" class="rt-button rt-primary" data-action="fill-qty" ${qtySum()?'':'disabled'}><span data-qty-total>장착${qtySum()?` · +${qtySum()}장`:''}</span></button>`:'';
       const closeButton=fillQtyButton?'':'<button type="button" class="rt-button" data-modal-close>닫기</button>';
+      const moveButton=tapMode()&&installed?`<button type="button" class="rt-button" data-tap-move="${slot.id}" title="이 카드를 같은 방향의 다른 슬롯으로 옮깁니다">이동</button>`:'';
       const sep=`<p class="rt-card-choice-sep">${slot.dir==='input'?'입력':'출력'} 카드 ${list.length}종 · ${list[0]?.[2]||4}채널</p>`;
-      return `<dialog class="rt-card-modal" aria-labelledby="rt-card-modal-title"><div class="rt-card-modal-head"><div><span class="rt-eyebrow">${slot.dir==='input'?'입력':'출력'} 카드 · ${esc(state.model)}</span><h3 id="rt-card-modal-title">${esc(slot.label)} 카드 선택</h3></div><button type="button" class="rt-card-modal-close" data-modal-close aria-label="카드 선택 닫기">×</button></div>${tips}${qtyBar}<div class="rt-card-choice-list">${blankChoice}${sep}${list.map(choice).join('')}</div><div class="rt-card-modal-foot"><button type="button" class="rt-button rt-quiet" data-action="remove" ${installed?'':'disabled'} title="키보드 Delete 키로도 비울 수 있습니다">슬롯 비우기 <kbd class="rt-kbd">Del</kbd></button>${fillQtyButton}${closeButton}</div></dialog>`;
+      return `<dialog class="rt-card-modal" aria-labelledby="rt-card-modal-title"><div class="rt-card-modal-head"><div><span class="rt-eyebrow">${slot.dir==='input'?'입력':'출력'} 카드 · ${esc(state.model)}</span><h3 id="rt-card-modal-title">${esc(slot.label)} 카드 선택</h3></div><button type="button" class="rt-card-modal-close" data-modal-close aria-label="카드 선택 닫기">×</button></div>${tips}${qtyBar}<div class="rt-card-choice-list">${blankChoice}${sep}${list.map(choice).join('')}</div><div class="rt-card-modal-foot"><button type="button" class="rt-button rt-quiet" data-action="remove" ${installed?'':'disabled'} title="키보드 Delete 키로도 비울 수 있습니다">슬롯 비우기 <kbd class="rt-kbd">Del</kbd></button>${moveButton}${fillQtyButton}${closeButton}</div></dialog>`;
     }
     // 카드 상세 정보(사용자 요청 2026-09-28 "입력 출력카드 버튼을 만들어 해당 카드 상세정보가 나와야해"): 03 카드 슬롯 아래 입력·출력 카드 버튼과
     // 내 구성의 카드 행을 누르면 card-specs.js(카탈로그 46쪽판 근거) 사양을 대화상자로 보여준다. 화면 상태가 아니라서 실행 취소·자동 저장 대상이 아니다.
@@ -264,14 +270,25 @@
     // 되돌리기: PALETTE_DRAG를 false로 바꾸면 버튼·안내 문구·끌어 놓기 처리가 모두 이 기능을 넣기 전과 같아진다.
     const PALETTE_DRAG=true;
     const paletteDrag=()=>PALETTE_DRAG&&!!globalThis.matchMedia?.('(hover: hover) and (pointer: fine)').matches;
+    const tapMode=()=>PALETTE_DRAG&&!paletteDrag();
+    const cardDir=id=>families[state.family].input.some(c=>c[0]===id)?'input':'output';
+    const dirWord=dir=>dir==='input'?'입력':'출력';
     function cardInfoBar(){
-      const f=families[state.family],drag=paletteDrag();
+      const f=families[state.family],drag=paletteDrag(),tap=tapMode();
       // 0.163(사용자 요청 2026-09-29 "하단에 이걸 배치해서 드래그하는 형태로"): 끌어 놓기가 켜지면 버튼을 내 구성 카드 행처럼 판넬 사진 타일로 보여 주고, 장착 수량을 표시한다.
       const installed=id=>Object.values(state.placements).filter(value=>value===id).length;
       const tile=(c,dir)=>{const n=installed(c[0]);return `<button type="button" class="rt-card-info-chip rt-palette-tile" data-card-info="${c[0]}" draggable="true" data-palette-card="${c[0]}" data-palette-dir="${dir}" title="누르면 상세 정보 · 후면 ${dir==='input'?'입력':'출력'} 슬롯으로 끌어 놓으면 장착"><img draggable="false" src="${cardAsset(c[0])}" alt=""><span><strong>${sigBadge(c[1])}${c[0]}</strong><small>${esc(c[1])}</small></span>${n?`<b aria-label="장착 ${n}장">× ${n}</b>`:''}</button>`};
+      // 0.184 터치 화면: 같은 판넬 사진 타일인데, 누르면 상세 정보 대신 "장착할 카드"로 고른다(다시 누르면 해제). 상세 정보는 아래 안내 줄의 "정보"에서 본다.
+      const tapTile=(c,dir)=>{const n=installed(c[0]),on=tapCard===c[0];return `<button type="button" class="rt-card-info-chip rt-palette-tile rt-tap-tile${on?' rt-tap-tile-on':''}" data-tap-card="${c[0]}" data-palette-dir="${dir}" aria-pressed="${on}" title="누른 뒤 후면 ${dirWord(dir)} 슬롯을 누르면 장착"><img draggable="false" src="${cardAsset(c[0])}" alt=""><span><strong>${sigBadge(c[1])}${c[0]}</strong><small>${esc(c[1])}</small></span>${n?`<b aria-label="장착 ${n}장">× ${n}</b>`:''}</button>`};
       const chip=c=>`<button type="button" class="rt-card-info-chip" data-card-info="${c[0]}"><strong>${sigBadge(c[1])}${c[0]}</strong><small>${esc(c[1])}</small></button>`;
-      const group=dir=>`<div class="rt-card-info-group rt-card-info-group-${dir}"><span>${dir==='input'?'입력':'출력'} 카드</span><div>${f[dir].map(c=>drag?tile(c,dir):chip(c)).join('')}</div></div>`;
-      return `<section class="rt-card-info-bar${drag?' rt-card-palette':''}" aria-label="카드 상세 정보"><div class="rt-card-info-head"><strong>카드 정보</strong><small>${drag?'버튼을 누르면 상세 정보, 후면 슬롯으로 끌어 놓으면 카드가 장착됩니다(입력 카드는 입력 슬롯, 출력 카드는 출력 슬롯)':'버튼을 누르면 카드별 포트·해상도·규격을 볼 수 있습니다'}</small></div>${group('input')}${group('output')}</section>`;
+      const group=dir=>`<div class="rt-card-info-group rt-card-info-group-${dir}"><span>${dir==='input'?'입력':'출력'} 카드</span><div>${f[dir].map(c=>drag?tile(c,dir):tap?tapTile(c,dir):chip(c)).join('')}</div></div>`;
+      return `<section class="rt-card-info-bar${drag||tap?' rt-card-palette':''}" aria-label="카드 상세 정보"><div class="rt-card-info-head"><strong>카드 정보</strong><small>${drag?'버튼을 누르면 상세 정보, 후면 슬롯으로 끌어 놓으면 카드가 장착됩니다(입력 카드는 입력 슬롯, 출력 카드는 출력 슬롯)':tap?'카드를 누른 뒤 후면의 같은 방향 슬롯을 누르면 장착됩니다(입력 카드는 입력 슬롯, 출력 카드는 출력 슬롯)':'버튼을 누르면 카드별 포트·해상도·규격을 볼 수 있습니다'}</small></div>${group('input')}${group('output')}</section>`;
+    }
+    // 0.184 눌러서 옮기기 안내 줄: 화면 아래에 붙어 따라다니며(sticky) 지금 고른 카드·이동 중인 카드와 할 일을 알려 준다.
+    function tapBanner(){
+      if(!tapMode()||(!tapCard&&!tapMove))return '';
+      if(tapMove){const id=state.placements[tapMove],label=id==='BLANK'?'블랭크 커버':id;return `<div class="rt-tap-banner" role="status"><span><b>${esc(label)}</b> 이동 중 · 옮길 ${dirWord(slotDir(tapMove))} 슬롯을 누르세요</span><button type="button" class="rt-button" data-tap-cancel>취소</button></div>`}
+      return `<div class="rt-tap-banner" role="status"><span><b>${esc(tapCard)}</b> 선택됨 · ${dirWord(cardDir(tapCard))} 슬롯을 누르면 장착</span><button type="button" class="rt-button rt-quiet" data-tap-info>정보</button><button type="button" class="rt-button" data-tap-cancel>끝내기</button></div>`;
     }
     function openCardInfo(id){
       const c=card(id);if(!c)return;
@@ -316,7 +333,7 @@
       // 슬롯 상태(2-3, 사용자 결정 2026-09-27): 빈칸=흰색(+는 호버·포커스에만), 카드=실제 사진, 블랭크=blankPlates(사용자가 고른 슬롯에만), 선택 중=파란 테두리.
       const slotButton=slot=>{
         const rawValue=state.placements[slot.id],isBlank=rawValue==='BLANK',c=isBlank?null:slotCard(slot.id),selecting=modalSlot===slot.id;
-        const stateClass=c?'rt-rack-slot-filled':isBlank?'rt-rack-slot-blank':'rt-rack-slot-empty';
+        const stateClass=(c?'rt-rack-slot-filled':isBlank?'rt-rack-slot-blank':'rt-rack-slot-empty')+(!opts.figureOnly&&tapMove===slot.id?' rt-rack-slot-tapsrc':'');
         if(opts.figureOnly)return `<span class="rt-rack-slot ${stateClass}">${c?`<span class="rt-rack-slot-no rt-rack-slot-no-${slot.dir} rt-slot-tag"><span class="rt-slot-tag-n">${shortLabel(slot)}</span>${sigBadge(c[1],'rt-slot-tag-s',slotModel(c[0]))}</span><img class="rt-faceplate" src="${cardAsset(c[0])}" alt="">`:isBlank?`<img class="rt-faceplate rt-blank-plate" src="${blankPlates[state.family]}" alt="">`:''}</span>`;
         const label=c?`${c[0]} 장착됨 · 눌러서 변경`:isBlank?'블랭크 커버 · 눌러서 변경':'비어 있음 · 눌러서 카드 선택';
         return `<button type="button" class="rt-rack-slot ${stateClass} ${selecting?'rt-rack-slot-selecting':''} ${changed===slot.id?'rt-rack-slot-changed':''}" data-slot="${slot.id}"${rawValue?' draggable="true"':''} aria-label="${esc(slot.label)}, ${label}" title="${esc(slot.label)}${c?` · ${c[0]}`:isBlank?' · 블랭크 커버':''}">${c?`<span class="rt-rack-slot-no rt-rack-slot-no-${slot.dir} rt-slot-tag" aria-hidden="true"><span class="rt-slot-tag-n">${shortLabel(slot)}</span>${sigBadge(c[1],'rt-slot-tag-s',slotModel(c[0]))}</span>`:`<span class="rt-rack-slot-no rt-rack-slot-no-${slot.dir}" aria-hidden="true">${shortLabel(slot)}</span>`}${rawValue?`<span class="rt-rack-slot-x" role="button" tabindex="-1" data-slot-clear="${slot.id}" aria-label="${esc(slot.label)} ${c?c[0]:'블랭크 커버'} 빼기" title="카드 빼기">×</span>`:''}${c?`<img draggable="false" class="rt-faceplate" src="${cardAsset(c[0])}" alt="">`:isBlank?`<img draggable="false" class="rt-faceplate rt-blank-plate" src="${blankPlates[state.family]}" alt="">`:'<span class="rt-rack-slot-add" aria-hidden="true">+</span>'}</button>`;
@@ -333,7 +350,7 @@
       const doneBanner=completion.total&&!completion.empty?`<div class="rt-slot-done-banner">✓ ${completion.total}개 슬롯을 모두 채웠습니다 · 구성 완성</div>`:'';
       const legend=`<div class="rt-slot-legend"><span><i class="rt-slot-legend-dot rt-slot-legend-empty"></i>빈 슬롯</span><span><i class="rt-slot-legend-dot rt-slot-legend-installed"></i>장착한 카드</span><span><i class="rt-slot-legend-dot rt-slot-legend-blank"></i>블랭크 커버</span><span><i class="rt-slot-legend-dot rt-slot-legend-selecting"></i>선택 중</span></div>${signalLegend()}`;
       const fillBar=completion.empty?`<div class="rt-slot-fillbar"><span>비어 있는 슬롯 <b>${completion.empty}개</b> — 카드를 더 넣지 않을 슬롯은 블랭크 커버로 막아 구성을 완성하세요.</span><button type="button" class="rt-button rt-primary" data-action="fill-blanks">남은 ${completion.empty}칸 블랭크로 채우기</button></div>`:'';
-      return doneBanner+heading('03 / 카드 슬롯','후면의 빈 슬롯을 눌러 카드를 장착하세요.',`${esc(model)} · ${layoutText}`)+(Object.values(state.placements).some(value=>value!=='BLANK')?cardsSubTabs():'')+`<div class="rt-config-stage"><section class="rt-rack-canvas"><div class="rt-rack-toolbar"><div><span class="rt-eyebrow">후면</span><h3>${esc(model)}</h3></div><div class="rt-frame-count"><span><b>${inputCards}</b> / ${inputSlots.length} 입력</span><span><b>${outputCards}</b> / ${outputSlots.length} 출력</span></div></div><div class="rt-rack-scroll">${photoRack||`<div class="rt-rack rt-rack-${layout}" style="--rt-rack-columns:${columns};--rt-rack-rows:${Math.max(1,Math.ceil(inputSlots.length/columns))*2};--rt-bank-slots:${columns};--rt-slot-ratio:${slotRatios[state.family]||9.7}"><span class="rt-rack-ear" aria-hidden="true"></span><div class="rt-rack-body">${bank('input',inputSlots)}${bank('output',outputSlots)}<div class="rt-rack-psu" aria-hidden="true"><strong>RTCOM</strong><span>${esc(model)}</span><i></i><small>제어</small><i></i><small>전원</small></div></div><span class="rt-rack-ear" aria-hidden="true"></span></div>`}</div>${photo||layout!=='h'?'<p class="rt-rack-scroll-hint">좌우로 밀어서 후면 전체를 볼 수 있습니다.</p>':''}${count?'':'<p class="rt-stage-warning">이 프레임은 제조사 후면 도면과 카드 허용표를 확보하기 전까지 논리 도식으로 표시합니다. 물리 설치 위치로 사용하지 마세요.</p>'}${count&&!photo?`<p class="rt-rack-note">${state.family==='VDM'?'VDM 매뉴얼에는 이 프레임의 선 도면만 있어, 슬롯 수는 매뉴얼 기준으로 하고 배치는 도면을 단순화한 그림으로 표시합니다.':'이 프레임은 매뉴얼에 후면 사진이 없어 슬롯 배치를 그림으로 표시합니다.'}</p>`:''}${legend}${cardInfoBar()}${fillBar}</section>${configurationSummary()}</div>${cardChoiceModal()}`;
+      return doneBanner+heading('03 / 카드 슬롯','후면의 빈 슬롯을 눌러 카드를 장착하세요.',`${esc(model)} · ${layoutText}`)+(Object.values(state.placements).some(value=>value!=='BLANK')?cardsSubTabs():'')+`<div class="rt-config-stage"><section class="rt-rack-canvas"><div class="rt-rack-toolbar"><div><span class="rt-eyebrow">후면</span><h3>${esc(model)}</h3></div><div class="rt-rack-toolbar-side"><div class="rt-frame-count"><span><b>${inputCards}</b> / ${inputSlots.length} 입력</span><span><b>${outputCards}</b> / ${outputSlots.length} 출력</span></div><a class="rt-button rt-frame-info-link" href="#products/${state.family.toLowerCase()}" target="_blank" rel="noopener" title="새 탭에서 ${esc(state.family)} 시리즈 제품정보를 엽니다(구성은 그대로 저장됩니다)">${esc(state.family)} 제품정보 <span aria-hidden="true">↗</span></a></div></div><div class="rt-rack-scroll">${photoRack||`<div class="rt-rack rt-rack-${layout}" style="--rt-rack-columns:${columns};--rt-rack-rows:${Math.max(1,Math.ceil(inputSlots.length/columns))*2};--rt-bank-slots:${columns};--rt-slot-ratio:${slotRatios[state.family]||9.7}"><span class="rt-rack-ear" aria-hidden="true"></span><div class="rt-rack-body">${bank('input',inputSlots)}${bank('output',outputSlots)}<div class="rt-rack-psu" aria-hidden="true"><strong>RTCOM</strong><span>${esc(model)}</span><i></i><small>제어</small><i></i><small>전원</small></div></div><span class="rt-rack-ear" aria-hidden="true"></span></div>`}</div>${photo||layout!=='h'?'<p class="rt-rack-scroll-hint">좌우로 밀어서 후면 전체를 볼 수 있습니다.</p>':''}${count?'':'<p class="rt-stage-warning">이 프레임은 제조사 후면 도면과 카드 허용표를 확보하기 전까지 논리 도식으로 표시합니다. 물리 설치 위치로 사용하지 마세요.</p>'}${count&&!photo?`<p class="rt-rack-note">${state.family==='VDM'?'VDM 매뉴얼에는 이 프레임의 선 도면만 있어, 슬롯 수는 매뉴얼 기준으로 하고 배치는 도면을 단순화한 그림으로 표시합니다.':'이 프레임은 매뉴얼에 후면 사진이 없어 슬롯 배치를 그림으로 표시합니다.'}</p>`:''}${legend}${cardInfoBar()}${fillBar}</section>${configurationSummary()}</div>${cardChoiceModal()}${tapBanner()}`;
     }
     // 0.173 03 카드 슬롯 ② 신호 입력(사용자 결정 2026-09-29 "추천A대로 진행해줘", 사용자 제공 표 형식: 입력슬롯·슬롯내·신호명 / 신호명·출력슬롯·슬롯내).
     // 카드를 다 꽂은 뒤 포트마다 실제 신호명(PC·CAM1 …)을 적는다. 값은 portAssignments["슬롯:포트"].assignedDevice(JSON schema 3에 원래 있던 빈 칸)에 넣으므로
@@ -352,8 +369,8 @@
       const diagram=RtCore.avBuilder(state);
       if(avbSession?.timer)clearTimeout(avbSession.timer);
       const win=window.open(`${AV_BUILDER_URL}?import=rtcom`,'rtcom-av-builder');
-      if(!win){announce('팝업이 막혀 AV 빌더를 열지 못했습니다. 브라우저에서 팝업을 허용하거나 "파일로 내려받기"를 쓰세요.');return}
-      avbSession={win,diagram,sent:false,timer:setTimeout(()=>{if(!avbSession||avbSession.sent)return;download(JSON.stringify(diagram,null,2),'application/json;charset=utf-8','json','av-builder');announce('AV 빌더가 아직 자동 받기를 지원하지 않아 파일로 내려받았습니다. 열린 AV 빌더의 Share → 가져오기 → 구성도 JSON에서 그 파일을 고르세요.')},10000)};
+      if(!win){announce('팝업이 막혀 AV 빌더를 열지 못했습니다. 브라우저에서 팝업을 허용하거나 "파일로 다운로드"를 쓰세요.');return}
+      avbSession={win,diagram,sent:false,timer:setTimeout(()=>{if(!avbSession||avbSession.sent)return;download(JSON.stringify(diagram,null,2),'application/json;charset=utf-8','json','av-builder');announce('AV 빌더가 아직 자동 받기를 지원하지 않아 파일로 다운로드했습니다. 열린 AV 빌더의 Share → 가져오기 → 구성도 JSON에서 그 파일을 고르세요.')},10000)};
       announce(`AV 빌더를 여는 중입니다 · 장비 ${diagram.nodes.length}대 · 연결 ${diagram.edges.length}개`);
     }
     window.addEventListener('message',event=>{
@@ -362,7 +379,7 @@
       if(message.type==='av-builder:ready'){avbSession.sent=true;clearTimeout(avbSession.timer);avbSession.win.postMessage({type:'rtcom:diagram',version:1,source:'RTCOM Configurator',diagram:avbSession.diagram},AV_BUILDER_ORIGIN)}
       else if(message.type==='av-builder:imported'){announce(`AV 빌더에 구성을 넣었습니다 · 장비 ${Number(message.nodes)||0}대 · 연결 ${Number(message.edges)||0}개`);avbSession=null}
     });
-    function avBuilderPanel(){const hasCards=Object.values(state.placements).some(value=>value!=='BLANK');if(!hasCards)return '';return `<div class="rt-avb"><div><strong>AV 빌더로 보내기</strong><p>매트릭스와 04에서 연결한 전송기가 같은 구성으로 들어가고, 포트 이름은 "HDMI #1-1 PC"처럼 신호명과 함께 들어갑니다.</p><ol><li><b>AV 빌더에서 바로 열기</b>를 누르면 새 탭에 같은 구성이 그려집니다.</li><li>자동으로 열리지 않으면 <b>파일로 내려받기</b> 후 <a href="${AV_BUILDER_URL}" target="_blank" rel="noopener">AV 빌더</a>의 <b>Share → 가져오기 → 구성도 JSON</b>에서 그 파일을 고릅니다.</li></ol></div><div class="rt-avb-actions"><button type="button" class="rt-button rt-primary" data-action="av-builder-open">AV 빌더에서 바로 열기 ↗</button><button type="button" class="rt-button" data-action="av-builder">파일로 내려받기</button></div></div>`}
+    function avBuilderPanel(){const hasCards=Object.values(state.placements).some(value=>value!=='BLANK');if(!hasCards)return '';return `<div class="rt-avb"><div><strong>AV 빌더로 보내기</strong><p>매트릭스와 04에서 연결한 전송기가 같은 구성으로 들어가고, 포트 이름은 "HDMI #1-1 PC"처럼 신호명과 함께 들어갑니다.</p><ol><li><b>AV 빌더에서 바로 열기</b>를 누르면 새 탭에 같은 구성이 그려집니다.</li><li>자동으로 열리지 않으면 <b>파일로 다운로드</b> 후 <a href="${AV_BUILDER_URL}" target="_blank" rel="noopener">AV 빌더</a>의 <b>Share → 가져오기 → 구성도 JSON</b>에서 그 파일을 고릅니다.</li></ol></div><div class="rt-avb-actions"><button type="button" class="rt-button rt-primary" data-action="av-builder-open">AV 빌더에서 바로 열기 ↗</button><button type="button" class="rt-button" data-action="av-builder">파일로 다운로드</button></div></div>`}
     function signalsView(){
       const slotList=currentSlots(),ports=state.portAssignments||{};
       const side=dir=>{
@@ -380,7 +397,7 @@
       const count=Object.values(state.links).filter(link=>link.device?.startsWith('XDM-CTR100 · ')).reduce((sum,link)=>sum+link.count,0);
       // 0.72 XDM-PSU(사용자 결정 2026-09-28): CIS100·COS100에 연결한 CTR100은 XDM-PSU가 전원을 공급한다(POH는 Tx 1대당, PHX는 COS100 1장당).
       const power=count?RtCore.bom(state).filter(row=>row.category==='전원 장비'):[],qty=model=>power.find(row=>row.model.startsWith(model))?.quantity||0;
-      return count?`<div class="rt-power-notice"><span>전원 공급</span><div><strong>XDM-CTR100 ${count}대 · XDM-PSU로 전원 공급(개별 어댑터 불필요)</strong><p>XDM-PSU ${qty('XDM-PSU')}대 · XDM-POH ${qty('XDM-POH')}개(CIS100 → POH → CTR100 Tx, Tx 1대당 1개) · XDM-PHX ${qty('XDM-PHX')}개(PSU → 2핀 전원선 → COS100 → CAT → CTR100 Rx, COS100 1장당 1개)를 BOM에 자동 추가했습니다. 매트릭스 카드 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다.</p></div></div>`:'';
+      return count?`<div class="rt-power-notice"><span>전원 공급</span><div><strong>XDM-CTR100 ${count}대 · XDM-PSU로 전원 공급(개별 어댑터 불필요)</strong><p>XDM-PSU ${qty('XDM-PSU')}대 · XDM-POH ${qty('XDM-POH')}개(CIS100 → POH → CTR100 TX, TX 1대당 1개) · XDM-PHX ${qty('XDM-PHX')}개(PSU → 2핀 전원선 → COS100 → CAT → CTR100 RX, COS100 1장당 1개)를 BOM에 자동 추가했습니다. 매트릭스 카드 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다.</p></div></div>`:'';
     }
     // 04 전송기(2-2, Analog Way 구조 — 시안 configurator-aw-style.html?step=4): 왼쪽 목록(카드별 묶음 제목+선택 행) | 오른쪽 고정 미리보기(세그먼트로 고른 슬롯의 연결 흐름).
     // 01/02와 같은 rt-cg-split/rt-cg-list/rt-cg-row/rt-cg-preview/rt-cg-dot/rt-cg-seg 틀을 그대로 쓰고, 이 화면에만 있는 모양(묶음 제목+채널 선택, 흐름 그림, 접이식 라인업)만 새로 더한다.
@@ -395,9 +412,11 @@
       const dirWord=slot=>slot.dir==='input'?'입력':'출력';
       const row=(slot,option,link)=>{
         const info=extenderInfo[option],selected=link.device===option;
-        return `<button type="button" class="rt-cg-row" data-link-device="${esc(option)}" data-owner="${slot.id}" aria-pressed="${selected}"><span class="rt-cg-row-head"><strong>${esc(info?.model||option)}${info?.recommended?'<em>기본 연동</em>':''}<small>${esc(info?.role||'호환 전송 장비')}</small></strong><span class="rt-cg-dot" aria-hidden="true"></span></span>${info?`<ul class="rt-cg-row-specs">${info.specs.slice(0,2).map(s=>`<li>${esc(s)}</li>`).join('')}</ul>`:''}</button>`;
+        return `<button type="button" class="rt-cg-row" data-link-device="${esc(option)}" data-owner="${slot.id}" aria-pressed="${selected}" title="${esc([info?.role,...(info?.specs||[]).slice(0,2)].filter(Boolean).join(' · '))}"><span class="rt-cg-row-head"><strong>${esc(info?.model||option)}${info?.recommended?'<em>기본 연동</em>':''}<small>${esc(info?.role||'호환 전송 장비')}</small></strong><span class="rt-cg-dot" aria-hidden="true"></span></span>${info?`<ul class="rt-cg-row-specs">${info.specs.slice(0,2).map(s=>`<li>${esc(s)}</li>`).join('')}</ul>`:''}</button>`;
       };
-      const none=(slot,link)=>`<button type="button" class="rt-cg-row" data-link-device="" data-owner="${slot.id}" aria-pressed="${!link.device}"><span class="rt-cg-row-head"><strong>연결하지 않음</strong><span class="rt-cg-dot" aria-hidden="true"></span></span><ul class="rt-cg-row-specs"><li>이 카드의 포트를 다른 장비와 직접 연결</li></ul></button>`;
+      // 0.177(사용자 결정 2026-09-29 "둘 다 진행", 시안 docs/qa/link-step-0.175/mock-compact-list-pc.png): 카드마다 큰 상자 2개를 한 줄 선택 막대로 줄였다.
+      // 상자에 쓰던 역할·케이블 설명은 화면에서 숨기고(오른쪽 미리보기·전원 안내에 같은 내용이 있음) 마우스를 올리면 보이는 title로 남긴다.
+      const none=(slot,link)=>`<button type="button" class="rt-cg-row" data-link-device="" data-owner="${slot.id}" aria-pressed="${!link.device}" title="이 카드의 포트를 다른 장비와 직접 연결"><span class="rt-cg-row-head"><strong>연결하지 않음</strong><span class="rt-cg-dot" aria-hidden="true"></span></span><ul class="rt-cg-row-specs"><li>이 카드의 포트를 다른 장비와 직접 연결</li></ul></button>`;
       const countSelect=slot=>{const c=slotCard(slot.id),link=state.links[slot.id]||{device:'',count:0,distance:'30'};return `<select data-link="count" data-owner="${slot.id}" ${link.device?'':'disabled'}>${Array.from({length:c[2]+1},(_,i)=>`<option value="${i}" ${link.count===i?'selected':''}>${i} / ${c[2]}채널</option>`).join('')}</select>`};
       const group=slot=>{
         const c=slotCard(slot.id),opts=choices(slot,c),link=state.links[slot.id]||{device:'',count:0,distance:'30'};
@@ -414,7 +433,7 @@
       const empty=`<div class="rt-empty rt-link-empty"><strong>현재 구성에는 ${remoteName}가 없습니다.</strong><p>${state.family==='SPX'?'SPX-COS12(CATx 출력) 카드를 장착하면 SPX-RX가 자동으로 연결되고 여기서 채널 수를 바꿀 수 있습니다.':state.family==='VDM'?'CIS4-U·COS4-U(HDBaseT) 또는 FIS4-U·FOS4-U(광) 카드를 장착하면 CT104-U·CR104-U·FT101-U·FR101-U가 자동으로 연결되고 여기서 채널 수를 바꿀 수 있습니다.':'XDM-CIS100·COS100(HDBaseT) 또는 XDM-FIS100·FOS100(광) 카드를 장착하면 CTR100·FT101·FR101이 자동으로 연결되고 여기서 바꿀 수 있습니다.'}</p><button type="button" class="rt-button" data-jump="2">카드 슬롯으로 돌아가기</button></div>`;
       // 왼쪽 목록: 원격(CAT·광) 카드 묶음 → (있으면) HDMI 카드 연장 묶음(우산 아래). "현재 구성에는 HDBaseT·광 카드가 없습니다" 안내는
       // remote가 없을 때만 뜨고(명세 5번), HDMI 연장 슬롯만 있으면 그 묶음은 그대로 함께 보여준다(옛 화면도 두 안내가 함께 있을 수 있었다).
-      const hdmiGroup=hdmiExtend.length?`<div class="rt-cg-link-umbrella"><div class="rt-cg-link-umbrella-head"><span class="rt-eyebrow">HDMI 연장 · 선택</span><h4>HDMI 카드 연장(선택)</h4><p>HDMI 입력·출력 포트를 멀리 연결해야 하면 CTR100 PSE와 CTR100을 한 쌍으로 씁니다. 전원은 PSE 쪽에만 연결하고, 두 제품 모두 DIP 스위치로 TX/RX를 설정합니다.</p></div>${hdmiExtend.map(group).join('')}</div>`:'';
+      const hdmiGroup=hdmiExtend.length?`<div class="rt-cg-link-umbrella"><div class="rt-cg-link-umbrella-head"><span class="rt-eyebrow">HDMI 연장 · 선택</span><h4>HDMI 카드 연장(선택)</h4><p>HDMI 입력·출력 포트를 멀리 연결해야 하면 CTR100 PSE와 CTR100을 한 쌍으로 씁니다. 전원은 PSE 쪽에만 연결하고, 두 제품 모두 딥 스위치로 TX/RX를 설정합니다.</p></div>${hdmiExtend.map(group).join('')}</div>`:'';
       const listBody=`${remote.length?remote.map(group).join(''):empty}${hdmiGroup}`;
       // 오른쪽 미리보기: 세그먼트(01/02의 rt-cg-seg와 같은 틀, 슬롯이 여러 개일 수 있어 줄바꿈만 허용) + 연결 흐름 + 채널 수.
       const segLabel=slot=>`${shortLabel(slot)}${hdmiExtend.includes(slot)?' (HDMI)':''}`;
@@ -430,8 +449,12 @@
         const extNode=`<div class="rt-link-flow-node rt-link-flow-ext">${imgs.length?`<span class="rt-link-flow-ext-imgs">${imgs.map(src=>`<img src="${src}" alt="">`).join('')}</span>`:''}<strong>${esc(info.model)}</strong><small>${esc(info.role)}</small></div>`;
         // 케이블·거리 표기는 extenderInfo[device].specs에 이미 있는 문장에서 그대로 뽑는다(새 숫자를 만들지 않는다).
         const cableLabel=(info.specs||[]).find(s=>/\d+\s*(?:cm|mm|km|m)\b/.test(s))||info.specs?.[0]||'';
-        const cableNode=`<div class="rt-link-flow-cable"><small>${esc(cableLabel)}</small></div>`;
-        return `<div class="rt-link-flow">${slot.dir==='input'?[endpointNode,arrow,extNode,cableNode,cardNode].join(''):[cardNode,cableNode,extNode,arrow,endpointNode].join('')}</div>`;
+        // 0.175(사용자 지적 2026-09-29 "이 부분 개선이 필요해보여"): 긴 문장을 좁은 케이블 점선 위에 올리면 전송기 사진과 겹쳐 잘렸다.
+        // 점선 위에는 첫 거리 값("최대 100m", 광은 "최대 2km")만 두고, 문장 전체는 흐름 아래 한 줄(rt-link-flow-spec)로 옮긴다.
+        const dist=cableLabel.match(/[\d.]+\s*(?:km|m)\b/)?.[0]||'';
+        const cableNode=`<div class="rt-link-flow-cable"><small>${dist?`최대 ${esc(dist)}`:'케이블'}</small></div>`;
+        const flow=slot.dir==='input'?[endpointNode,arrow,extNode,cableNode,cardNode]:[cardNode,cableNode,extNode,arrow,endpointNode];
+        return `<div class="rt-link-flow${imgs.length>1?' rt-link-flow-pair':''}">${flow.join('')}</div>${cableLabel?`<p class="rt-link-flow-spec"><span aria-hidden="true">케이블</span>${esc(cableLabel)}</p>`:''}`;
       };
       const previewBody=()=>{
         const slot=allSlots.find(s=>s.id===linkPreviewSlot);
@@ -510,9 +533,14 @@ ${figure?`<h2 class="rt-rp-h"><i>1</i>후면 슬롯 배치</h2><div class="rt-rp
     function render(){
       nav.innerHTML=labels.map((label,i)=>`<button type="button" class="rt-step ${i<state.step?'rt-step-done':''} ${i===state.step?'rt-step-current':''}" data-jump="${i}" aria-label="${i+1}단계 ${label}" ${i===state.step?'aria-current="step"':''} ${i>state.maxStep?'disabled':''}><i aria-hidden="true">${i<state.step?'✓':String(i+1).padStart(2,'0')}</i><span class="rt-full-label">${label}</span><span class="rt-short-label" aria-hidden="true">${shortLabels[i]}</span></button>`).join('');
       if(state.step!==2){modalSlot=null;signalView=false}
+      if(state.step!==2||signalView){tapCard=null;tapMove=null}
+      if(tapCard&&!card(tapCard))tapCard=null;
+      if(tapMove&&!Object.prototype.hasOwnProperty.call(state.placements,tapMove))tapMove=null;
       if(signalView&&!Object.values(state.placements).some(value=>value!=='BLANK'))signalView=false;
       main.innerHTML=state.step===2&&signalView?signalsView():[familyView,chassisViewV2,cardsViewV4,linksViewV4,reviewViewV2,exportView][state.step]();
       openCardModal();
+      const tapDir=tapMode()?(tapMove?slotDir(tapMove):tapCard?cardDir(tapCard):null):null;
+      root.classList.toggle('rt-tap-input',tapDir==='input');root.classList.toggle('rt-tap-output',tapDir==='output');
       // 0.129 아래 바의 제품군·모델·카테고리 요약 글을 없앤다(사용자 요청 2026-09-29 "이거 삭제해줘"). 01 제품군은 버튼도 없어 바 전체를 숨긴다.
       root.querySelector('.rt-footer').hidden=state.step===0;
       const next=root.querySelector('[data-action=next]');
@@ -602,6 +630,32 @@ ${figure?`<h2 class="rt-rp-h"><i>1</i>후면 슬롯 배치</h2><div class="rt-rp
       const id=clear.dataset.slotClear;
       if(state.step===2&&Object.prototype.hasOwnProperty.call(state.placements,id))removeSlotCard(id);
     },true);
+    // 0.184 눌러서 옮기기(터치 화면): 카드 타일 선택, 같은 방향 슬롯에 장착, 카드 팝업의 "이동", 안내 줄의 정보·취소. 슬롯 누름은 카드를 고른 동안
+    // 팝업을 열지 않고 장착·이동으로 쓴다(다른 방향 슬롯은 안내만 하고 아무것도 바꾸지 않는다). 마우스 화면에서는 이 처리가 꺼져 있다.
+    root.addEventListener('click',event=>{
+      if(!tapMode()||state.step!==2)return;
+      const t=event.target;if(!t.closest)return;
+      const stop=()=>{event.preventDefault();event.stopImmediatePropagation()};
+      const pick=t.closest('button[data-tap-card]');
+      if(pick){stop();tapMove=null;tapCard=tapCard===pick.dataset.tapCard?null:pick.dataset.tapCard;if(tapCard)announce(`${tapCard}를 골랐습니다. 후면의 ${dirWord(cardDir(tapCard))} 슬롯을 누르면 장착합니다.`);render();return}
+      if(t.closest('[data-tap-cancel]')){stop();tapCard=null;tapMove=null;render();return}
+      if(t.closest('[data-tap-info]')){stop();if(tapCard)openCardInfo(tapCard);return}
+      const mv=t.closest('[data-tap-move]');
+      if(mv){stop();const id=mv.dataset.tapMove;if(modalSlot)closeCardModal(id);tapCard=null;tapMove=id;render();announce(`${dirWord(slotDir(id))} 슬롯을 눌러 옮기세요.`);return}
+      const slotBtn=t.closest('button[data-slot]');
+      if(!slotBtn||(!tapCard&&!tapMove))return;
+      stop();
+      const id=slotBtn.dataset.slot,dir=slotDir(id);
+      if(tapCard){
+        if(dir!==cardDir(tapCard)){announce(`${tapCard}는 ${dirWord(cardDir(tapCard))} 카드라 ${dirWord(dir)} 슬롯에는 장착할 수 없습니다.`);return}
+        placeFromPalette(id,tapCard);return;
+      }
+      if(id===tapMove){tapMove=null;render();return}
+      if(dir!==slotDir(tapMove)){announce(`${dirWord(slotDir(tapMove))} 슬롯으로만 옮길 수 있습니다.`);return}
+      const moved=RtCore.moveCard(state,tapMove,id);tapMove=null;
+      if(!moved){render();return}
+      state=moved;changedSlot=id;changed();announce(`${id.replace(/^in-/,'입력 슬롯 ').replace(/^out-/,'출력 슬롯 ')}(으)로 옮겼습니다. 실행 취소로 되돌릴 수 있습니다.`);
+    },true);
     function openCardModal(){
       const dialog=main.querySelector('.rt-card-modal');
       if(!dialog){if(focusSlotAfterRender){const id=focusSlotAfterRender;focusSlotAfterRender=null;requestAnimationFrame(()=>focusSlot(id))}return}
@@ -638,11 +692,16 @@ ${figure?`<h2 class="rt-rp-h"><i>1</i>후면 슬롯 배치</h2><div class="rt-rp
       restoringNav=true;state.step=step;changed();restoringNav=false;
     });
     // 제품정보(0.19) 시리즈 상세의 "구성기에서 구성하기": 해당 제품군을 고르고 프레임 선택 단계로 간다.
+    // 0.183: detail이 {family, model}이면(제품정보 03 메인프레임 팝업의 "슬롯 구성기") 그 프레임까지 고르고 03 카드 슬롯 단계로 간다. 글자면 예전처럼 프레임 선택 단계까지만 간다.
     root.addEventListener('rt-configure-family',async event=>{
-      const family=event.detail;
+      const detail=event.detail,family=typeof detail==='string'?detail:detail?.family,model=typeof detail==='object'?detail?.model:null;
       if(!families[family])return;
-      if(state.family!==family){if(!await confirmReset())return;state.family=family;state.model=null;state.placements={};state.portAssignments={};state.links={};state.slot='in-a'}
-      modalSlot=null;state.maxStep=Math.max(state.maxStep,1);state.step=1;changed();window.scrollTo({top:0});
+      const target=model&&(families[family].models||[]).includes(model)?model:null;
+      if((state.family!==family||(target&&state.model!==target))&&!await confirmReset())return;
+      if(state.family!==family){state.family=family;state.model=null;state.placements={};state.portAssignments={};state.links={};state.slot='in-a'}
+      if(target&&state.model!==target){state.model=target;state.placements={};state.portAssignments={};state.links={};state.slot=currentSlots()[0].id}
+      modalSlot=null;previewSide='front';linkPreviewSlot=null;
+      const step=target?2:1;state.maxStep=Math.max(state.maxStep,step);state.step=step;changed();window.scrollTo({top:0});
     });
     root.addEventListener('click',event=>{
       const button=event.target.closest('button');
@@ -665,9 +724,9 @@ ${figure?`<h2 class="rt-rp-h"><i>1</i>후면 슬롯 배치</h2><div class="rt-rp
       const syncExtQty=id=>{const box=root.querySelector(`.rt-card-modal [data-ext-qty-box="${id}"]`);if(!box)return;const c=card(id),dev=extChoice(id,modalSlot),n=extQty(id,modalSlot),off=!dev,unit=dev===RtCore.psePair?'쌍':'대';box.toggleAttribute('data-off',off);box.querySelector('output').textContent=off?0:n;box.querySelector('[data-ext-qty-step="-1"]').disabled=off||n<=1;box.querySelector('[data-ext-qty-step="1"]').disabled=off||n>=c[2];box.querySelector('small').textContent=`카드 1장당 · 최대 ${c[2]}${unit}`};
       if(b.dataset.extCard){modalExt[b.dataset.extCard]=b.dataset.extDevice;root.querySelectorAll(`.rt-card-modal [data-ext-card="${b.dataset.extCard}"]`).forEach(chip=>chip.setAttribute('aria-pressed',String(chip.dataset.extDevice===b.dataset.extDevice)));syncExtQty(b.dataset.extCard);return}
       if(b.dataset.extQtyStep){const id=b.dataset.extQtyCard,c=card(id);modalExtQty[id]=Math.min(c[2],Math.max(1,extQty(id,modalSlot)+Number(b.dataset.extQtyStep)));syncExtQty(id);return}
-      if(b.dataset.cardQtyStep){const bar=root.querySelector('.rt-card-qty'),max=Number(bar?.dataset.qtyMax)||1,id=b.dataset.qtyCard,others=qtySum()-(modalQtys[id]||0);modalQtys[id]=Math.min(max-others,Math.max(0,(modalQtys[id]||0)+Number(b.dataset.cardQtyStep)));if(!modalQtys[id])delete modalQtys[id];const total=qtySum();root.querySelectorAll('[data-qty-out]').forEach(out=>{const n=modalQtys[out.dataset.qtyOut]||0;out.textContent=n;const box=out.parentElement;box.querySelector('[data-card-qty-step="-1"]').disabled=n<=0;box.querySelector('[data-card-qty-step="1"]').disabled=total>=max});root.querySelectorAll('[data-qty-total]').forEach(el=>{el.textContent=`장착${total?` · ${total}장`:''}`});root.querySelectorAll('[data-action="fill-qty"]').forEach(el=>{el.disabled=!total});return}
+      if(b.dataset.cardQtyStep){const bar=root.querySelector('.rt-card-qty'),max=Number(bar?.dataset.qtyMax)||1,id=b.dataset.qtyCard,others=qtySum()-(modalQtys[id]||0);modalQtys[id]=Math.min(max-others,Math.max(0,(modalQtys[id]||0)+Number(b.dataset.cardQtyStep)));if(!modalQtys[id])delete modalQtys[id];const total=qtySum();root.querySelectorAll('[data-qty-out]').forEach(out=>{const n=modalQtys[out.dataset.qtyOut]||0;out.textContent=(Number(out.dataset.haveQty)||0)+n;const box=out.parentElement;box.querySelector('[data-card-qty-step="-1"]').disabled=n<=0;box.querySelector('[data-card-qty-step="1"]').disabled=total>=max});root.querySelectorAll('[data-qty-total]').forEach(el=>{el.textContent=`장착${total?` · +${total}장`:''}`});root.querySelectorAll('[data-action="fill-qty"]').forEach(el=>{el.disabled=!total});return}
       // 0.70 순서대로 장착: 목록 순서로 카드별 수량만큼 이어 붙인 순서를, 선택한 슬롯부터 같은 방향 빈 슬롯에 차례로 넣는다.
-      if(b.dataset.action==='fill-qty'){const order=[...root.querySelectorAll('.rt-card-modal [data-qty-out]')].map(out=>out.dataset.qtyOut),seq=order.flatMap(id=>Array(modalQtys[id]||0).fill(id));if(!seq.length)return;const reopen=modalSlot;modalSlot=null;modalQtys={};focusSlotAfterRender=reopen;changedSlot=state.slot;const devices=Object.fromEntries([...new Set(seq)].map(id=>[id,extChoice(id,state.slot)])),qtys=Object.fromEntries([...new Set(seq)].map(id=>[id,extQty(id,state.slot)]));modalExt={};modalExtQty={};const targets=RtCore.fillTargets(state,state.slot,seq.length);targets.forEach((id,i)=>{const value=seq[i],selectedCard=card(value);state.placements[id]=value;const link=selectedCard?linkFor(id,value,devices[value],qtys[value]):null;if(link)state.links[id]=link;else delete state.links[id]});syncPorts();changed();announce(`${[...new Set(seq)].map(id=>`${id} ${seq.filter(x=>x===id).length}장`).join(', ')}을 순서대로 넣었습니다.`);return}
+      if(b.dataset.action==='fill-qty'){const order=[...root.querySelectorAll('.rt-card-modal [data-qty-out]')].map(out=>out.dataset.qtyOut),seq=order.flatMap(id=>Array(modalQtys[id]||0).fill(id));if(!seq.length)return;const reopen=modalSlot;modalSlot=null;modalQtys={};focusSlotAfterRender=reopen;changedSlot=state.slot;const devices=Object.fromEntries([...new Set(seq)].map(id=>[id,extChoice(id,state.slot)])),qtys=Object.fromEntries([...new Set(seq)].map(id=>[id,extQty(id,state.slot)]));modalExt={};modalExtQty={};const targets=RtCore.addTargets(state,state.slot,seq.length);targets.forEach((id,i)=>{const value=seq[i],selectedCard=card(value);state.placements[id]=value;const link=selectedCard?linkFor(id,value,devices[value],qtys[value]):null;if(link)state.links[id]=link;else delete state.links[id]});syncPorts();changed();announce(`${[...new Set(seq)].map(id=>`${id} ${seq.filter(x=>x===id).length}장`).join(', ')}을 순서대로 넣었습니다.`);return}
       if(b.dataset.cgSide){previewSide=b.dataset.cgSide;render();return}
       // 04 전송기 오른쪽 미리보기 세그먼트(왼쪽 묶음 제목 버튼도 같은 속성을 쓴다): previewSide와 같은 순수 화면 토글이다.
       if(b.dataset.linkPreview){linkPreviewSlot=b.dataset.linkPreview;render();return}
@@ -675,7 +734,7 @@ ${figure?`<h2 class="rt-rp-h"><i>1</i>후면 슬롯 배치</h2><div class="rt-rp
       // "남은 N칸 블랭크로 채우기"(2-3): 빈 슬롯만 BLANK로 바꾸고, 이미 넣은 카드는 그대로 둔다. 실행 취소 1단계.
       if(b.dataset.action==='fill-blanks'){const filled=RtCore.fillBlanks(state);state.placements=filled.placements;syncPorts();changed();return}
       if(b.dataset.action==='av-builder-open'){openInAvBuilder();return}
-      if(b.dataset.action==='av-builder'){const data=RtCore.avBuilder(state);download(JSON.stringify(data,null,2),'application/json;charset=utf-8','json','av-builder');announce(`AV 빌더용 파일(장비 ${data.nodes.length}대 · 연결 ${data.edges.length}개)을 내려받았습니다. AV 빌더의 Share → 가져오기 → 구성도 JSON에서 여세요.`);return}
+      if(b.dataset.action==='av-builder'){const data=RtCore.avBuilder(state);download(JSON.stringify(data,null,2),'application/json;charset=utf-8','json','av-builder');announce(`AV 빌더용 파일(장비 ${data.nodes.length}대 · 연결 ${data.edges.length}개)을 다운로드했습니다. AV 빌더의 Share → 가져오기 → 구성도 JSON에서 여세요.`);return}
       if(state.step===2&&b.dataset.action==='back'&&signalView){signalView=false;render();return}
       if(state.step===2&&b.dataset.action==='next'&&!signalView&&Object.values(state.placements).some(value=>value!=='BLANK')){signalView=true;render();root.scrollIntoView?.({block:'start'});return}
       if(b.dataset.action==='back'){state.step=Math.max(0,state.step-1);changed();return}if(b.dataset.action==='next'||b.dataset.action==='preview-next'){state.step=state.step===5?0:state.step+1;state.maxStep=Math.max(state.maxStep,state.step);changed()}});

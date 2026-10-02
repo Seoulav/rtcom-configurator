@@ -12,14 +12,14 @@
     "Video",
     "Extender"
   ],
-  "english": "CATx (RJ45) HDMI 2.0 transmitter/receiver for the SPX Series, 4K60 4:4:4, 18Gbps, HDCP 2.2.",
-  "korean": "4K 60Hz 4:4:4 HDMI 2.0 신호를 CATx(RJ45) 케이블로 보내고 받는 SPX 시리즈용 송·수신기다.",
+  "english": "CATx (RJ45) HDMI 2.0 transmitter/receiver for the SPX Series, 4K/60 @ 4:4:4, 18Gbps, HDCP 2.2.",
+  "korean": "4K/60 @ 4:4:4 HDMI 2.0 신호를 CATx(RJ45) 케이블로 보내고 받는 SPX 시리즈용 송·수신기다.",
   "subtitle": "SPX Series Extender · CATx 송·수신기",
-  "lead": "4K 60Hz 4:4:4 HDMI 2.0 신호를 **CAT5e/6 케이블로 4K60 최대 50m, 1080p 최대 60m** 전송합니다. PoC로 송·수신기 중 한쪽에만 전원을 연결해도 되며, SPX-COS12 카드에 연결한 SPX-RX는 매트릭스에서 전원을 받습니다.",
+  "lead": "4K/60 @ 4:4:4 HDMI 2.0 신호를 **CAT5e/6 케이블로 4K/60 최대 50m, 1080p 최대 60m** 전송합니다. PoC로 송·수신기 중 한쪽에만 전원을 연결해도 되며, SPX-COS12 카드에 연결한 SPX-RX는 매트릭스에서 전원을 받습니다.",
   "catalogPages": "15–16",
-  "verificationSummary": "SPX-TX/RX 사용자 매뉴얼 Ver.2.0(4~11쪽: 사양 표·전면 패널·딥 스위치·주요 특징·사용 방법)과 알티컴 종합 카탈로그(46쪽판) 15~16쪽에서 확인했다. 04 제품 사양의 전송거리는 서울영상테크 SI사업본부 실측 4K60 실효 전송거리 한 행(UTP CAT6 50m·S/FTP CAT6A 70m)으로 정리했고(사용자 요청 2026-09-29), 매뉴얼 공식 거리는 05 주요 기능과 개요에 둔다.",
+  "verificationSummary": "SPX-TX/RX 사용자 매뉴얼 Ver.2.0(4~11쪽: 사양 표·전면 패널·딥 스위치·주요 특징·사용 방법)과 알티컴 종합 카탈로그(46쪽판) 15~16쪽에서 확인했다. 04 제품 사양의 전송 거리는 서울영상테크 SI사업본부 실측 4K60 실효 전송 거리 한 행(UTP CAT6 50m·S/FTP CAT6A 70m)으로 정리했고(사용자 요청 2026-09-29), 매뉴얼 공식 거리는 05 주요 기능과 개요에 둔다.",
   "packageStatus": "VERIFIED",
-  "overview": "SPX-TX/SPX-RX는 4K 60Hz HDMI 신호를 CAT5e/6 케이블로 장거리 전송하는 SPX 시리즈용 송·수신기다. SPX-RX는 True HDMI 2.0 4K 60Hz 4:4:4를 지원하는 SPX 시리즈 매트릭스와 호환된다.\n\nSPX-TX는 딥 스위치로 오디오 병합(3.5mm Stereo)·장거리 모드·내장 EDID를 설정하고, SPX-RX는 후면 3.5mm 단자로 오디오를 추출한다. PoC(Power over Cable) 기능으로 송·수신기 중 한쪽에만 전원 케이블을 연결해도 되고, SPX-COS12 카드에 연결한 SPX-RX는 매트릭스 전원이 켜져 있으면 별도 전원 없이 동작한다. CAT5e/6 기준 4K 60Hz 최대 50m, 1080p 최대 60m, Long Reach 모드에서 1080p 최대 100m까지 전송한다.",
+  "overview": "SPX-TX/SPX-RX는 4K/60 HDMI 신호를 CAT5e/6 케이블로 장거리 전송하는 SPX 시리즈용 송·수신기다. SPX-RX는 True HDMI 2.0 4K/60 @ 4:4:4를 지원하는 SPX 시리즈 매트릭스와 호환된다.\n\nSPX-TX는 딥 스위치로 오디오 병합(3.5mm Stereo)·장거리 모드·내장 EDID를 설정하고, SPX-RX는 후면 3.5mm 단자로 오디오를 추출한다. PoC(Power over Cable) 기능으로 송·수신기 중 한쪽에만 전원 케이블을 연결해도 되고, SPX-COS12 카드에 연결한 SPX-RX는 매트릭스 전원이 켜져 있으면 별도 전원 없이 동작한다. CAT5e/6 기준 4K/60 최대 50m, 1080p 최대 60m, Long Reach 모드에서 1080p 최대 100m까지 전송한다.",
   "images": [
     {
       "role": "Main",
@@ -105,7 +105,7 @@
   ],
   "features": [
     {
-      "text": "4K 60Hz 4:4:4 · 18Gbps · HDCP 2.2 지원",
+      "text": "4K/60 @ 4:4:4 · 18Gbps · HDCP 2.2 지원",
       "source": "C2"
     },
     {
@@ -113,7 +113,7 @@
       "source": "M1"
     },
     {
-      "text": "CAT5e/6 전송 지원(4K60 최대 50m, 1080p 최대 60m)",
+      "text": "CAT5e/6 전송 지원(4K/60 최대 50m, 1080p 최대 60m)",
       "source": "M1"
     },
     {
@@ -125,7 +125,7 @@
       "source": "M1"
     },
     {
-      "text": "오디오 병합(TX)·추출(RX) 지원",
+      "text": "오디오 병합(송신기)·추출(수신기) 지원",
       "source": "M1"
     },
     {
@@ -133,7 +133,7 @@
       "source": "M1"
     },
     {
-      "text": "SPX-COS12(CATx 출력 보드)와 SPX-RX 연동 지원",
+      "text": "SPX-COS12(CATx 출력 카드)와 SPX-RX 연동 지원",
       "source": "M1"
     }
   ],
@@ -141,7 +141,7 @@
     {
       "group": "Video",
       "name": "최대 해상도",
-      "value": "3840x2160p 60Hz 4:4:4(8-bit)",
+      "value": "3840x2160 @ 60Hz 4:4:4(8-bit)",
       "unit": "",
       "condition": "",
       "source": "M1",
@@ -176,7 +176,7 @@
     },
     {
       "group": "Transmission",
-      "name": "4K60 실효 전송거리",
+      "name": "4K/60 실효 전송 거리",
       "value": "UTP CAT6 50m (Belden 7814A 케이블 기준)\nS/FTP CAT6A 70m (Belden 10GXE02 케이블 기준)",
       "unit": "",
       "condition": "서울영상테크 SI사업본부 실측",
@@ -232,7 +232,7 @@
   "io": [
     {
       "group": "TX · Video",
-      "connector": "HDMI 19 Pin Female",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "IN",
       "quantity": "1",
@@ -287,7 +287,7 @@
     },
     {
       "group": "RX · Video",
-      "connector": "HDMI 19 Pin Female",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "OUT",
       "quantity": "1",
@@ -350,7 +350,7 @@
     {
       "relation": "WORKS_WITH",
       "target": "spx",
-      "note": "SPX-COS12(CATx 출력 보드) ↔ SPX-RX"
+      "note": "SPX-COS12(CATx 출력 카드) ↔ SPX-RX"
     },
     {
       "relation": "WORKS_WITH",
@@ -379,9 +379,9 @@
     },
     {
       "code": "U3",
-      "name": "서울영상테크 SI사업본부 케이블 전송거리 실측 테스트",
+      "name": "서울영상테크 SI사업본부 케이블 전송 거리 실측 테스트",
       "page": "",
-      "scope": "사용자 결정(2026-09-29) — 실제 현장에서 쓰는 케이블로 SPX 전송기 4K60 전송거리를 직접 테스트한 결과. UTP CAT6(Belden 7814A) 50m, S/FTP CAT6A(Belden 10GXE02) 70m. 0.166에서 사용자 요청(\"최대 전송거리부분에 너무 나열되어 있어\")으로 04 제품 사양의 전송거리 5행(매뉴얼 공식 3행·자사 실측 2행)을 이 한 행으로 합쳤고, 두 번째 케이블 표기를 SF/UTP(Belden CI6522)에서 사용자가 준 S/FTP CAT6A(Belden 10GXE02)로 바꿈. 매뉴얼 공식 거리(CAT5e/6 4K60 50m·1080p 60m·Long Reach 100m)는 05 주요 기능과 개요에 남김"
+      "scope": "사용자 결정(2026-09-29) — 실제 현장에서 쓰는 케이블로 SPX 전송기 4K60 전송 거리를 직접 테스트한 결과. UTP CAT6(Belden 7814A) 50m, S/FTP CAT6A(Belden 10GXE02) 70m. 0.166에서 사용자 요청(\"최대 전송거리부분에 너무 나열되어 있어\")으로 04 제품 사양의 전송 거리 5행(매뉴얼 공식 3행·자사 실측 2행)을 이 한 행으로 합쳤고, 두 번째 케이블 표기를 SF/UTP(Belden CI6522)에서 사용자가 준 S/FTP CAT6A(Belden 10GXE02)로 바꿈. 매뉴얼 공식 거리(CAT5e/6 4K60 50m·1080p 60m·Long Reach 100m)는 05 주요 기능과 개요에 남김"
     }
   ],
   "issues": [],
@@ -540,11 +540,11 @@
         "title": "전송 거리",
         "off": {
           "name": "Normal",
-          "text": "일반 모드(4K60 최대 50m, 1080p 최대 60m)."
+          "text": "일반 모드(4K/60 최대 50m, 1080p 최대 60m)."
         },
         "on": {
           "name": "Long reach",
-          "text": "1920x1080p 영상을 최대 100m까지 보낸다."
+          "text": "1920x1080 영상을 최대 100m까지 보낸다."
         }
       }
     ],
@@ -570,7 +570,7 @@
               "on",
               "off"
             ],
-            "name": "1920x1080p 60Hz",
+            "name": "1920x1080 @ 60Hz",
             "text": "내장 EDID"
           },
           {
@@ -578,7 +578,7 @@
               "off",
               "on"
             ],
-            "name": "4K 30Hz",
+            "name": "4K/30",
             "text": "내장 EDID"
           },
           {
@@ -586,7 +586,7 @@
               "on",
               "on"
             ],
-            "name": "4K 60Hz",
+            "name": "4K/60",
             "text": "내장 EDID"
           }
         ]

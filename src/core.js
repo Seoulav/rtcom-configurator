@@ -144,8 +144,8 @@
       const allowed=choices(value.cardId);
       if (value.assignedDevice.length>120) fail('연결 대상 장비 이름이 너무 깁니다.');
       if ((value.tx&&!allowed.includes(value.tx))||(value.rx&&!allowed.includes(value.rx))) fail('포트의 TX/RX와 카드 허용 관계가 일치하지 않습니다.');
-      if (value.direction==='input'&&value.rx) fail('입력 포트에는 RX를 배정할 수 없습니다.');
-      if (value.direction==='output'&&value.tx) fail('출력 포트에는 TX를 배정할 수 없습니다.');
+      if (value.direction==='input'&&value.rx) fail('입력 포트에는 수신기를 배정할 수 없습니다.');
+      if (value.direction==='output'&&value.tx) fail('출력 포트에는 송신기를 배정할 수 없습니다.');
       result.portAssignments[key]=value;
     }
     for (const field of ['step','maxStep']) {
@@ -181,6 +181,16 @@
     const empty=[...same.slice(at+1),...same.slice(0,at)].filter(slot=>!own(state.placements||{},slot.id)).map(slot=>slot.id);
     const count=Math.max(1,Math.min(Math.floor(Number(quantity))||1,empty.length+1));
     return [startId,...empty.slice(0,count-1)];
+  }
+  // 0.175 카드 팝업 수량 칸(사용자 결정 2026-09-29, 안 A): 수량 칸은 "이 방향에 장착된 장수"에서 시작하고, 더한 만큼만 빈 슬롯에 채운다.
+  // 그래서 지금 연 슬롯에 카드가 있으면 그 칸은 덮어쓰지 않고(덮어쓰면 늘린 수만큼 늘지 않는다) 그 다음 빈 슬롯부터 채운다. 연 슬롯이 비어 있으면 fillTargets와 같다.
+  function addTargets(state, startId, quantity) {
+    const slots=slotsFor(state),start=slots.find(slot=>slot.id===startId);
+    if (!start) return [];
+    if (!own(state.placements||{},startId)) return fillTargets(state,startId,quantity);
+    const same=slots.filter(slot=>slot.dir===start.dir),at=same.indexOf(start);
+    const empty=[...same.slice(at+1),...same.slice(0,at)].filter(slot=>!own(state.placements||{},slot.id)).map(slot=>slot.id);
+    return empty.slice(0,Math.max(0,Math.floor(Number(quantity))||0));
   }
   // 0.55 슬롯 이동(사용자 요청 "입력은 입력끼리, 출력도 마찬가지로 이동"): 같은 방향 슬롯끼리만 카드를 옮긴다.
   // 옮길 곳이 비어 있으면 이동, 카드(또는 블랭크)가 있으면 서로 맞바꾼다. 전송기 연결과 포트 지정도 함께 옮긴다.
@@ -227,7 +237,7 @@
     else if (plan) add('SLOT_LAYOUT','VALID',`입력 카드 ${plan[0]}장과 출력 카드 ${plan[1]}장을 장착할 수 있습니다.`,state.family==='VDM'?'VDM 국문 매뉴얼 KV07 PDF pp.12–20':'SPX 국문 사용자 매뉴얼(250805) pp.7–9');
     else add('PHYSICAL_LAYOUT_UNVERIFIED','UNVERIFIED','화면의 입력·출력 위치는 논리 구성입니다. 실제 슬롯 수와 카드 설치 허용표가 필요합니다.','G01 · G02');
     add('ACCESSORIES_UNVERIFIED','UNVERIFIED','기본 포함품, 케이블, 전원 및 필러 수량은 구매 목록에 포함되지 않았습니다.','G08 · G09 · G12');
-    if (state.family==='SPX') add('SPX_CARD_ALLOWLIST','UNVERIFIED','SPX 출력 카드 4종은 모든 프레임에 장착할 수 있습니다(매뉴얼 p.11). 카드 혼합 조건과 전송기 판매 SKU는 확인해야 합니다.','SPX 국문 사용자 매뉴얼(250805) pp.10–11 · G03 · G05');
+    if (state.family==='SPX') add('SPX_CARD_ALLOWLIST','UNVERIFIED','SPX 출력 카드는 3종(HOS10·HOS12·COS12)이며, HOS10은 SPX-M810·M1620에만 장착할 수 있습니다(매뉴얼 p.3). 카드 혼합 조건과 전송기 판매 SKU는 확인해야 합니다.','SPX 국문 사용자 매뉴얼(250805) pp.10–11 · G03 · G05');
     // SPX-M810·M1620에 12포트 출력 카드를 꽂으면 11·12번 포트는 출력 10번의 분배(같은 영상)로 동작한다(매뉴얼 p.11).
     if (['SPX-M810','SPX-M1620'].includes(state.model)) {
       const split=Object.entries(state.placements).filter(([slot,id])=>slotDirections[slot]==='output'&&spxSplitCards.includes(id));
@@ -238,7 +248,7 @@
       if (id==='BLANK') continue;
       const selected=card(state,id), link=state.links[slot];
       if (link?.device===psePair&&link.count) {
-        add('LINK_PSE_PAIR_'+slot,'VALID',`${id} → CTR100 PSE + CTR100 ${link.count}쌍: HDMI 연장. 전원은 PSE 쪽에만 연결하고 CTR100은 전원이 필요 없습니다. 두 제품 모두 DIP 스위치로 TX/RX를 설정합니다.`,'사용자 확인(2026-09-26) · E06');
+        add('LINK_PSE_PAIR_'+slot,'VALID',`${id} → CTR100 PSE + CTR100 ${link.count}쌍: HDMI 연장. 전원은 PSE 쪽에만 연결하고 CTR100은 전원이 필요 없습니다. 두 제품 모두 딥 스위치로 TX/RX를 설정합니다.`,'사용자 확인(2026-09-26) · E06');
         continue;
       }
       if (!['CAT','FIBER'].includes(selected[3])) continue;
@@ -386,5 +396,5 @@
     const cell=value=>'"'+String(value).replace(/^[=+@-]/,"'$&").replace(/"/g,'""')+'"';
     return csvRows(input).map(row=>row.map(cell).join(',')).join('\r\n');
   }
-  scope.RtCore={fillTargets,avBuilder,moveCard,initial,checkState,choices,defaultLink,psePair,slotPlan,syncPorts,slotsFor,requirementSummary,validate,bom,document,parse,csv,csvRows,completionFor,fillBlanks,catalogVersion,schemaVersion,signalTypes};
+  scope.RtCore={fillTargets,addTargets,avBuilder,moveCard,initial,checkState,choices,defaultLink,psePair,slotPlan,syncPorts,slotsFor,requirementSummary,validate,bom,document,parse,csv,csvRows,completionFor,fillBlanks,catalogVersion,schemaVersion,signalTypes};
 })(globalThis);

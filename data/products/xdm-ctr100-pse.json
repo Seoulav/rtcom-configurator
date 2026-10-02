@@ -12,10 +12,10 @@
     "Video",
     "Extender"
   ],
-  "english": "PoE PSE model of the XDM-CTR100 HDBaseT 3.0 transceiver: carries uncompressed 4K60 4:4:4 up to 100m and powers the paired XDM-CTR100 or XDM-CT103/CR103 over the CAT cable.",
-  "korean": "HDBaseT 3.0 기술로 4K60Hz 4:4:4 HDMI 신호를 최대 100m 전송하면서, CAT 케이블로 상대 XDM-CTR100·XDM-CT103/CR103에 전원을 함께 공급하는 PSE 모델이다.",
+  "english": "PoE PSE model of the XDM-CTR100 HDBaseT 3.0 transceiver: carries uncompressed 4K/60 @ 4:4:4 up to 100m and powers the paired XDM-CTR100 or XDM-CT103/CR103 over the CAT cable.",
+  "korean": "HDBaseT 3.0 기술로 4K/60 @ 4:4:4 HDMI 신호를 최대 100m 전송하면서, CAT 케이블로 상대 XDM-CTR100·XDM-CT103/CR103에 전원을 함께 공급하는 PSE 모델이다.",
   "subtitle": "XDM Series Extender · HDBaseT 3.0 송·수신 겸용 · PoE 전원 공급(PSE)",
-  "lead": "HDBaseT 3.0으로 4K60Hz 4:4:4 HDMI 신호를 최대 100m 전송하면서, **CAT 케이블로 상대 기기에 전원을 함께 공급**하는 PSE 모델입니다. PSE에만 전원을 연결합니다.",
+  "lead": "HDBaseT 3.0으로 4K/60 @ 4:4:4 HDMI 신호를 최대 100m 전송하면서, **CAT 케이블로 상대 기기에 전원을 함께 공급**하는 PSE 모델입니다. PSE에만 전원을 연결합니다.",
   "catalogPages": "10",
   "verificationSummary": "알티컴 종합 카탈로그(46쪽판) 10쪽의 XDM-CTR100 PSE 소개와 제품사양 표, 사용자 제공 XDM-CTR100 PSE 제품 안내서(1–2쪽)와 XDM-CTR100 매뉴얼 Ver.1.4(PSE 동일 사양)로 확인했다. 0.47에서 XDM-CTR100과 별도 제품으로 나눴다(사용자 요청).",
   "packageStatus": "VERIFIED",
@@ -120,11 +120,11 @@
   ],
   "features": [
     {
-      "text": "HDBaseT 3.0 무압축 True 4K(3840x2160@60Hz 4:4:4) 최대 100m 전송 지원",
+      "text": "HDBaseT 3.0 무압축 True 4K(3840x2160 @ 60Hz 4:4:4) 최대 100m 전송 지원",
       "source": "M1"
     },
     {
-      "text": "PoE 전원 공급(PSE) 지원 — CAT 케이블로 XDM-CTR100·벽부형 XDM-CT103/CR103에 신호·전원 동시 공급(CTR100은 PD 모드로 전원 케이블 불필요, CIS100·COS100 카드 직결은 불가), TX·RX 방향 모두 연결 가능",
+      "text": "PoE 전원 공급(PSE) 지원(신호·전원 동시 공급)",
       "source": "M1"
     },
     {
@@ -136,23 +136,19 @@
       "source": "U"
     },
     {
-      "text": "TX·RX 겸용 HDMI 연결(TX: HDMI IN에 소스, RX: HDMI OUT에 디스플레이)",
+      "text": "TX·RX 겸용 딥 스위치 모드 전환 지원",
       "source": "S1"
     },
     {
       "text": "오디오 추출 지원(후면 5핀 L·R·접지, 스피커 직결)",
       "source": "S1"
-    },
-    {
-      "text": "동작 상태 LED 4개 표시 지원(Rx Signal·Tx Signal·Tx/Rx·Link, 정상 시 TX는 Link·Tx/Rx·Tx Signal, RX는 Link·Tx/Rx·Rx Signal 켜짐)",
-      "source": "M1"
     }
   ],
   "specifications": [
     {
       "group": "Video",
       "name": "최대 해상도",
-      "value": "4K60Hz",
+      "value": "4K/60",
       "unit": "",
       "condition": "4:4:4",
       "source": "M1",
@@ -160,7 +156,7 @@
     },
     {
       "group": "Transmission",
-      "name": "최대 전송거리",
+      "name": "최대 전송 거리",
       "value": "100",
       "unit": "m",
       "condition": "*S/FTP CAT6A 필수",
@@ -234,7 +230,7 @@
   "io": [
     {
       "group": "Video",
-      "connector": "Female HDMI connector",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "IN",
       "quantity": "1",
@@ -245,7 +241,7 @@
     },
     {
       "group": "Video",
-      "connector": "Female HDMI connector",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "OUT",
       "quantity": "1",
@@ -256,7 +252,7 @@
     },
     {
       "group": "Transmission",
-      "connector": "Female RJ45",
+      "connector": "RJ45",
       "signal": "HDBaseT",
       "direction": "BIDIR",
       "quantity": "1",
@@ -267,7 +263,7 @@
     },
     {
       "group": "Control",
-      "connector": "Female Phoenix connector 5p",
+      "connector": "피닉스 5핀",
       "signal": "RS-232 / Audio",
       "direction": "BIDIR",
       "quantity": "1",
@@ -278,7 +274,7 @@
     },
     {
       "group": "Audio",
-      "connector": "Female Phoenix connector 5p(RS-232와 공용, L·R·접지)",
+      "connector": "피닉스 5핀(RS-232와 공용, L·R·접지)",
       "signal": "Analog Stereo Audio",
       "direction": "OUT",
       "quantity": "1",
@@ -312,7 +308,7 @@
       {
         "n": 4,
         "label": "HDBaseT",
-        "desc": "RJ45 · CAT 케이블로 XDM-CTR100이나 XDM-CT103/CR103과 연결, 신호와 전원을 함께 공급",
+        "desc": "RJ45 · CAT 케이블(S/FTP CAT6A 필수)로 XDM-CTR100이나 XDM-CT103/CR103과 연결, 신호와 전원을 함께 공급",
         "x1": 130,
         "x2": 320,
         "side": "bottom",
@@ -339,9 +335,9 @@
       {
         "n": 3,
         "label": "AUDIO · RS-232",
-        "desc": "5핀(L·R·접지·Tx·Rx) · 아날로그 스테레오 오디오 출력과 RS-232+ 제어",
-        "x1": 880,
-        "x2": 1010,
+        "desc": "5핀 · 스테레오 오디오 출력 + RS-232+",
+        "x1": 878,
+        "x2": 1103,
         "side": "bottom",
         "y": 700
       },
@@ -349,15 +345,15 @@
         "n": 7,
         "label": "DC IN",
         "desc": "DC 12V 1A · PSE에는 반드시 연결(상대 기기에 전원 공급)",
-        "x1": 1105,
-        "x2": 1255,
+        "x1": 1113,
+        "x2": 1257,
         "side": "bottom",
         "y": 700
       },
       {
         "n": 5,
-        "label": "TX/RX DIP 스위치",
-        "desc": "1번 ON = TX · 2번 ON = RX · 3번 ON = Long Reach(1080p 150m) · 스위치를 내리면 ON. 설정 방법은 '06 딥 스위치 설정' 참고",
+        "label": "TX/RX 딥 스위치",
+        "desc": "TX·RX·Long Reach 전환 · 내리면 ON · 06 딥 스위치 설정 참고",
         "x1": 400,
         "x2": 545,
         "side": "top",
@@ -366,7 +362,7 @@
       {
         "n": 6,
         "label": "상태 LED",
-        "desc": "Rx Signal(RX 모드) · Tx Signal(TX 모드) · Tx/Rx·Link(정상 연결)",
+        "desc": "RX·TX 모드 신호 · 정상 연결 표시",
         "x1": 180,
         "x2": 335,
         "side": "top",
@@ -403,7 +399,7 @@
       "code": "U2",
       "name": "서울영상테크 SI사업본부 확인",
       "page": "",
-      "scope": "사용자 결정(2026-09-28) — \"최대 전송거리100 m ... ==> 최대 전송거리100 m (*S/FTP CAT6A필수) 변경해줘\": 4K60Hz 조건·케이블별 상이 범위·Long Reach 모드 설명을 줄이고 100m 달성 조건(S/FTP CAT6A 케이블 필수)만 남김"
+      "scope": "사용자 결정(2026-09-28) — \"최대 전송 거리100 m ... ==> 최대 전송 거리100 m (*S/FTP CAT6A필수) 변경해줘\": 4K60Hz 조건·케이블별 상이 범위·Long Reach 모드 설명을 줄이고 100m 달성 조건(S/FTP CAT6A 케이블 필수)만 남김"
     },
     {
       "code": "S1",
@@ -442,7 +438,7 @@
         },
         "on": {
           "name": "Long Reach",
-          "text": "1920x1080p 영상을 최대 150m까지 보낸다."
+          "text": "1920x1080 영상을 최대 150m까지 보낸다."
         }
       }
     ],

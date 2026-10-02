@@ -12,14 +12,14 @@
     "Video",
     "Modular Matrix"
   ],
-  "english": "eXtreme Digital Matrix — modular cross-platform 4K60 4:4:4 matrix switcher with HDMI 2.0, DisplayPort 1.2, 12G-SDI, HDBaseT 3.0 and fiber slots.",
-  "korean": "HDMI 2.0·DisplayPort 1.2·12G-SDI·HDBaseT 3.0·광 신호를 4K60Hz 4:4:4로 입출력하는 모듈형 크로스 플랫폼 매트릭스 스위처다.",
-  "subtitle": "eXtreme Digital Matrix · 4K60 4:4:4 모듈형 매트릭스",
-  "lead": "HDMI·DisplayPort·12G-SDI·HDBaseT 3.0·광 신호를 **어떤 입력이든 원하는 출력으로** 바꿔 보내는 4K60 4:4:4 모듈형 매트릭스입니다. 카드를 꽂는 만큼 12×12부터 216×216까지 확장합니다.",
+  "english": "eXtreme Digital Matrix — modular cross-platform 4K/60 @ 4:4:4 matrix switcher with HDMI 2.0, DisplayPort 1.2, 12G-SDI, HDBaseT 3.0 and fiber slots.",
+  "korean": "HDMI 2.0·DisplayPort 1.2·12G-SDI·HDBaseT 3.0·광 신호를 4K/60 @ 4:4:4로 입출력하는 모듈형 크로스 플랫폼 매트릭스 스위처다.",
+  "subtitle": "eXtreme Digital Matrix · 4K/60 @ 4:4:4 모듈형 매트릭스",
+  "lead": "HDMI·DisplayPort·12G-SDI·HDBaseT 3.0·광 신호를 **어떤 입력이든 원하는 출력으로** 바꿔 보내는 4K/60 @ 4:4:4 모듈형 매트릭스입니다. 카드를 꽂는 만큼 12×12부터 216×216까지 확장합니다.",
   "catalogPages": "4–12",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03, 48쪽판) 4~12쪽의 소개·LINE-UP·주요기능·제품사양·크기 및 무게·입출력 슬롯·전송기 사양에서 확인했고, 새 카탈로그(46쪽판) 4~12쪽과 줄 단위로 재대조해 메인프레임 범위 표기·HDBaseT 3.0 표기·카드 라인업을 재검증했다.",
   "packageStatus": "VERIFIED",
-  "overview": "XDM(eXtreme Digital Matrix) 시리즈는 HDMI v2.0, DisplayPort v1.2, 12G-SDI, HDBaseT 3.0, DANTE 등 상용화 또는 표준화된 고대역폭 디지털 인터페이스의 입력과 출력을 제어해 자유로운 입출력 선택과 분배를 수행하는 고성능 크로스 플랫폼 매트릭스 스위처다. 심리스 스위칭으로 화상회의처럼 끊김 없는 전환이 필요한 곳에 딜레이 없는 빠른 전환을 제공하고, 비디오월 기능으로 화면을 원하는 크기로 확대·축소할 수 있다.\n\n전면 LCD 패널에서 파워와 쿨링 상태를 실시간으로 확인하고, 입력 포트에 저장된 EDID와 입력 소스 해상도, 출력 포트에 연결된 디스플레이의 EDID와 출력 상태를 확인해 최적 해상도로 출력할 수 있다.\n\n듀얼 리던던트 파워를 적용해 한 파워모듈에 장애가 생겨도 다른 모듈로 전원을 공급하며, 파워 핫스왑으로 전원을 끄지 않고 장애 모듈을 교체할 수 있다. 메인프레임은 XDM-12부터 XDM-288까지 LINE-UP에 올라 있다.",
+  "overview": "XDM(eXtreme Digital Matrix) 시리즈는 HDMI v2.0, DisplayPort v1.2, 12G-SDI, HDBaseT 3.0, DANTE 등 상용화 또는 표준화된 고대역폭 디지털 인터페이스의 입력과 출력을 제어해 자유로운 입출력 선택과 분배를 수행하는 고성능 크로스 플랫폼 매트릭스 스위처다. 심리스 스위칭으로 화상회의처럼 끊김 없는 전환이 필요한 곳에 딜레이 없는 빠른 전환을 제공하고, 비디오 월 기능으로 화면을 원하는 크기로 확대·축소할 수 있다.\n\n전면 LCD 패널에서 파워와 쿨링 상태를 실시간으로 확인하고, 입력 포트에 저장된 EDID와 입력 소스 해상도, 출력 포트에 연결된 디스플레이의 EDID와 출력 상태를 확인해 최적 해상도로 출력할 수 있다.\n\n듀얼 이중화 전원를 적용해 한 파워모듈에 장애가 생겨도 다른 모듈로 전원을 공급하며, 파워 핫스왑으로 전원을 끄지 않고 장애 모듈을 교체할 수 있다. 메인프레임은 XDM-12부터 XDM-288까지 LINE-UP에 올라 있다.",
   "images": [
     {
       "role": "Main",
@@ -97,11 +97,11 @@
   ],
   "features": [
     {
-      "text": "HDMI v2.0, DisplayPort v1.2, 12G-SDI, HDBaseT 3.0 등 초고화질 True 4K60Hz 4:4:4 지원",
+      "text": "HDMI v2.0, DisplayPort v1.2, 12G-SDI, HDBaseT 3.0 등 초고화질 True 4K/60 @ 4:4:4 지원",
       "source": "C"
     },
     {
-      "text": "HDMI, DisplayPort, SDI, HDBaseT 3.0, Fiber Optic 신호 등 다양한 신호변환 기능 지원",
+      "text": "HDMI, DisplayPort, SDI, HDBaseT 3.0, 광 신호 등 다양한 신호변환 기능 지원",
       "source": "C2"
     },
     {
@@ -109,7 +109,7 @@
       "source": "C"
     },
     {
-      "text": "화면 확대/축소를 위한 비디오월 기능 지원",
+      "text": "화면 확대/축소를 위한 비디오 월 기능 지원",
       "source": "C"
     },
     {
@@ -121,11 +121,11 @@
       "source": "C"
     },
     {
-      "text": "전면 LCD 터치패널, RS-232, LAN(TCP/IP) 3가지 제어방식 지원",
+      "text": "전면 LCD 터치 패널, RS-232, LAN(TCP/IP) 3가지 제어방식 지원",
       "source": "C"
     },
     {
-      "text": "전면 LCD 터치패널로 장비 상태를 파악하고 영상신호 감지 후 자동알림 기능 지원",
+      "text": "전면 LCD 터치 패널로 장비 상태를 파악하고 영상신호 감지 후 자동알림 기능 지원",
       "source": "C"
     },
     {
@@ -137,15 +137,15 @@
       "source": "C"
     },
     {
-      "text": "전원 이중화 및 Hot-Swap 지원",
+      "text": "전원 이중화 및 핫스왑 지원",
       "source": "C"
     },
     {
-      "text": "입출력 슬롯 및 팬모듈 Hot-Swap 지원",
+      "text": "입출력 슬롯 및 팬모듈 핫스왑 지원",
       "source": "C"
     },
     {
-      "text": "매트릭스에서 송수신기 전원을 공급하는 Power over Ethernet(POE) 기능 지원",
+      "text": "매트릭스에서 송·수신기 전원을 공급하는 Power over Ethernet(POE) 기능 지원",
       "source": "C"
     },
     {
@@ -178,9 +178,9 @@
     {
       "group": "Video",
       "name": "최대 해상도",
-      "value": "4096×2160@60Hz, 3840×2160@60Hz",
+      "value": "3840x2160 @ 60Hz",
       "unit": "",
-      "condition": "4:4:4 (최대 4K60Hz)",
+      "condition": "4:4:4 (최대 4K/60)",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -205,7 +205,7 @@
     {
       "group": "Video",
       "name": "입력 신호",
-      "value": "HDMI2.0, DisplayPort, 12G-SDI, HDBaseT 3.0, Fiber, DANTE",
+      "value": "HDMI2.0, DisplayPort, 12G-SDI, HDBaseT 3.0, 광, DANTE",
       "unit": "",
       "condition": "",
       "source": "C",
@@ -214,7 +214,7 @@
     {
       "group": "Video",
       "name": "출력 신호",
-      "value": "HDMI2.0, DisplayPort, 12G-SDI, HDBaseT 3.0, Fiber, DANTE",
+      "value": "HDMI2.0, DisplayPort, 12G-SDI, HDBaseT 3.0, 광, DANTE",
       "unit": "",
       "condition": "",
       "source": "C",
@@ -312,62 +312,62 @@
     {
       "model": "XDM-HIS100",
       "kind": "입력 카드",
-      "summary": "HDMI v2.0 입력 4포트 · 오디오 병합/추출 4 · 4K60Hz 4:4:4"
+      "summary": "HDMI v2.0 입력 4포트 · 오디오 병합/추출 4 · 4K/60 @ 4:4:4"
     },
     {
       "model": "XDM-HI100",
       "kind": "입력 카드",
-      "summary": "HDMI v2.0 입력 4포트(Non-Scaler) · 오디오 병합/추출 4 · 4K60Hz 4:4:4"
+      "summary": "HDMI v2.0 입력 4포트(Non-Scaler) · 오디오 병합/추출 4 · 4K/60 @ 4:4:4"
     },
     {
       "model": "XDM-DPI100",
       "kind": "입력 카드",
-      "summary": "DisplayPort v1.2 입력 4포트 · 오디오 병합/추출 4 · 4K60Hz 4:4:4"
+      "summary": "DisplayPort v1.2 입력 4포트 · 오디오 병합/추출 4 · 4K/60 @ 4:4:4"
     },
     {
       "model": "XDM-FIS100",
       "kind": "입력 카드",
-      "summary": "광(1 LC) 입력 4포트 · 싱글모드 2km/멀티모드 300m · 4K60Hz 4:4:4 · RS-232+ 제어·패스스루(XDM-FT101)"
+      "summary": "광(1 LC) 입력 4포트 · 싱글모드 2km/멀티모드 300m · 4K/60 @ 4:4:4 · RS-232+ 제어·패스스루(XDM-FT101)"
     },
     {
       "model": "XDM-SIS100",
       "kind": "입력 카드",
-      "summary": "12G-SDI(BNC) 입력 4포트 · 4K60Hz 4:2:2"
+      "summary": "12G-SDI(BNC) 입력 4포트 · 4K/60 @ 4:2:2"
     },
     {
       "model": "XDM-CIS100",
       "kind": "입력 카드",
-      "summary": "HDBaseT 3.0(RJ45) 입력 4포트 · CAT6A S/FTP 100m · 4K60Hz 4:4:4 · RS-232+ 제어·패스스루(XDM-CTR100)"
+      "summary": "HDBaseT 3.0(RJ45) 입력 4포트 · 100m(S/FTP CAT6A 필수) · 4K/60 @ 4:4:4 · RS-232+ 제어·패스스루(XDM-CTR100)"
     },
     {
       "model": "XDM-HOS100",
       "kind": "출력 카드",
-      "summary": "HDMI v2.0 출력 4포트 · 오디오 추출 4 · Video Wall, Quad-Viewer 전환 가능"
+      "summary": "HDMI v2.0 출력 4포트 · 오디오 추출 4 · 비디오 월, 쿼드뷰 전환 가능"
     },
     {
       "model": "XDM-DPOS100",
       "kind": "출력 카드",
-      "summary": "DisplayPort v1.2 출력 4포트 · 오디오 추출 4 · 4K60Hz 4:4:4"
+      "summary": "DisplayPort v1.2 출력 4포트 · 오디오 추출 4 · 4K/60 @ 4:4:4"
     },
     {
       "model": "XDM-COS100",
       "kind": "출력 카드",
-      "summary": "HDBaseT 3.0(RJ45) 출력 4포트 · 오디오 추출·POE · CAT6A S/FTP 100m · RS-232+ 제어·패스스루(XDM-CTR100)"
+      "summary": "HDBaseT 3.0(RJ45) 출력 4포트 · 오디오 추출·POE · 100m(S/FTP CAT6A 필수) · RS-232+ 제어·패스스루(XDM-CTR100)"
     },
     {
       "model": "XDM-FOS100",
       "kind": "출력 카드",
-      "summary": "광(1 LC) 출력 4포트 · 싱글모드 2km/멀티모드 300m · 4K60Hz 4:4:4 · RS-232+ 제어·패스스루(XDM-FR101)"
+      "summary": "광(1 LC) 출력 4포트 · 싱글모드 2km/멀티모드 300m · 4K/60 @ 4:4:4 · RS-232+ 제어·패스스루(XDM-FR101)"
     },
     {
       "model": "XDM-SOS100",
       "kind": "출력 카드",
-      "summary": "12G-SDI(BNC) 출력 4포트 · 오디오 추출 4 · 4K60Hz 4:2:2"
+      "summary": "12G-SDI(BNC) 출력 4포트 · 오디오 추출 4 · 4K/60 @ 4:2:2"
     },
     {
       "model": "XDM-WOS100",
       "kind": "출력 카드",
-      "summary": "HDMI(Wall Overlay) 출력 4포트 · Video Wall, 커맨드 중첩 기능"
+      "summary": "HDMI(Wall Overlay) 출력 4포트 · 비디오 월, 커맨드 중첩 기능"
     },
     {
       "model": "XDM-CTR100",

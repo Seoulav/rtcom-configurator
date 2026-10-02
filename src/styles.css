@@ -96,6 +96,10 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-rack-canvas{min-width:0;padding:20px;border-radius:24px;background:linear-gradient(180deg,#eef2f8,#e2e8f1)}
 #rtcom-design .rt-rack-toolbar{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:14px}
 #rtcom-design .rt-rack-toolbar h3{margin:2px 0 0;font-size:24px}
+/* 0.180 03 카드 슬롯 툴바: 채운 수 칩 옆에 시리즈 제품정보 링크(새 탭). */
+#rtcom-design .rt-rack-toolbar-side{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px}
+#rtcom-design .rt-frame-info-link{display:inline-flex;align-items:center;gap:5px;min-height:34px;padding:0 13px;border-radius:999px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap}
+@media(max-width:480px){#rtcom-design .rt-rack-toolbar-side{justify-content:flex-start}}
 #rtcom-design .rt-rack-scroll{overflow-x:auto;padding:4px 2px 12px}
 #rtcom-design .rt-rack{display:flex;align-items:stretch;margin:0 auto;filter:drop-shadow(0 18px 22px #0f1b3038)}
 #rtcom-design .rt-rack-h{width:100%;min-width:320px}
@@ -457,11 +461,14 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-title .rt-pg-sub{font-size:11px;color:var(--pg-muted);letter-spacing:.02em;text-transform:uppercase;margin:3px 0 0}
 #rtcom-design .rt-pg-toolbar{display:flex;gap:9px;flex-wrap:wrap}
 #rtcom-design .rt-pg-btn{font:600 13px/1 var(--pg-sans);border:1px solid transparent;background:var(--pg-field-fill);color:var(--pg-accent);padding:9px 16px;border-radius:var(--pg-r-pill);white-space:nowrap;text-decoration:none;display:inline-block}
-/* 제조사 문서 PDF 버튼(2026-09-28): 왼쪽 이름 = 새 탭에서 보기, 오른쪽 화살표 = 내려받기 */
+/* 제조사 문서 PDF 버튼(2026-09-28): 왼쪽 "카탈로그 보기" = 팝업·새 탭, 오른쪽 "↓ 다운로드" = 파일 받기(0.192, 480px 이하는 화살표만) */
 #rtcom-design .rt-pg-doc{display:inline-flex;align-items:stretch;background:var(--pg-field-fill);border-radius:var(--pg-r-pill);overflow:hidden}
 #rtcom-design .rt-pg-doc a,#rtcom-design .rt-pg-doc button{font:600 13px/1 var(--pg-sans);color:var(--pg-accent);text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap;border:0;background:none;cursor:pointer}
 #rtcom-design .rt-pg-doc-open{padding:9px 11px 9px 16px}
 #rtcom-design .rt-pg-doc-save{padding:9px 13px 9px 10px;border-left:1px solid var(--pg-line-2)}
+#rtcom-design .rt-pg-doc-save{gap:5px}
+#rtcom-design .rt-doc-zoom-link .rt-doc-save-text{margin-left:4px}
+@media(max-width:480px){#rtcom-design .rt-pg-doc-save-text,#rtcom-design .rt-doc-save-text{display:none}}
 #rtcom-design .rt-pg-doc-open small{font-weight:500;font-size:12px;margin-left:5px;opacity:.72}
 #rtcom-design .rt-pg-doc a:hover,#rtcom-design .rt-pg-doc button:hover{background:var(--pg-seg-track)}
 #rtcom-design .rt-pg-doc a:focus-visible,#rtcom-design .rt-pg-doc button:focus-visible{outline:2px solid var(--pg-accent);outline-offset:-2px}
@@ -545,7 +552,16 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-foot b{color:var(--pg-ink-2)}
 #rtcom-design .rt-pg-svg-wrap{position:relative;width:100%;max-width:900px;margin:0 auto;overflow-x:auto}
 #rtcom-design .rt-pg-svg-wrap svg{width:100%;min-width:560px;height:auto;display:block}
-#rtcom-design .rt-pg-svg-wrap.rt-has-more::after{content:"";position:absolute;top:0;right:0;bottom:0;width:32px;background:linear-gradient(to right,rgba(255,255,255,0),#fff 80%);pointer-events:none}
+/* 0.178: 그러데이션은 스크롤하지 않는 바깥 틀(.rt-pg-svg-frame)에 붙인다. 스크롤 칸 안에 두면 내용과 함께 밀려 가운데 세로 띠가 남았다. */
+#rtcom-design .rt-pg-svg-frame{position:relative;width:100%;max-width:900px;margin:0 auto}
+#rtcom-design .rt-pg-svg-frame.rt-has-more::after{content:"";position:absolute;top:0;right:0;bottom:0;width:32px;background:linear-gradient(to right,rgba(255,255,255,0),#fff 80%);pointer-events:none}
+/* 0.194 Signal Flow: 그림 칸 키보드 초점, 휴대폰 최소 폭(글자가 너무 작아지지 않게 그림 안에서 가로 스크롤), 점선 범례, 펼치는 그림 설명 */
+#rtcom-design .rt-pg-svg-wrap:focus-visible{outline:2px solid #007AFF;outline-offset:3px;border-radius:12px}
+@media(max-width:720px){#rtcom-design .rt-pg-svg-wrap svg[style*="--rt-svg-min"]{min-width:var(--rt-svg-min)}}
+#rtcom-design .rt-pg-legend .rt-pg-legend-dash{width:16px;height:0;border-radius:0;background:none;border-top:2px dashed;vertical-align:3px}
+#rtcom-design .rt-pg-flow-desc{margin-top:10px;padding-top:10px;border-top:1px solid rgba(60,60,67,.12);font-size:12px;color:var(--pg-muted)}
+#rtcom-design .rt-pg-flow-desc summary{cursor:pointer;font-weight:700;color:#0057D8;width:max-content}
+#rtcom-design .rt-pg-flow-desc ul{margin:8px 0 0;padding-left:18px;line-height:1.6}
 #rtcom-design .rt-pg-svg-hint{display:none;margin:8px 0 0;color:var(--pg-muted);font-size:11px;text-align:center}
 @media(max-width:720px){#rtcom-design .rt-pg-svg-hint{display:block}}
 #rtcom-design .rt-pg-diagram-photo{border-radius:var(--pg-r-inner);overflow:hidden;background:#fff;box-shadow:inset 0 0 0 1px var(--pg-line)}
@@ -586,7 +602,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-cards2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 #rtcom-design .rt-pg-cardcol h3{margin:0 0 8px;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--pg-muted)}
 #rtcom-design .rt-pg-cardrow{display:grid;grid-template-columns:86px 1fr auto;gap:10px;align-items:center;padding:7px 8px;border-radius:12px;background:var(--pg-field-fill);margin-bottom:6px}
-#rtcom-design .rt-pg-cardrow img{width:86px;height:26px;object-fit:contain;background:#fff;border-radius:6px}
+#rtcom-design .rt-pg-cardrow img{width:86px;height:26px;object-fit:contain;background:#eef1f5;border-radius:6px;padding:2px 4px;box-sizing:border-box}
 #rtcom-design .rt-pg-cardrow b{font-size:13px}
 #rtcom-design .rt-pg-cardrow span{display:block;font-size:11.5px;color:var(--pg-muted);font-weight:600}
 #rtcom-design .rt-pg-cardrow .rt-pg-pc{font-size:12px;font-weight:800;color:var(--pg-accent-2);background:var(--pg-accent-tint);padding:3px 8px;border-radius:980px;white-space:nowrap}
@@ -866,10 +882,59 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
   #rtcom-design .rt-link-flow-node{flex:0 1 132px;width:auto;min-width:0}
   #rtcom-design .rt-link-flow-cable{flex:0 1 96px;width:auto;min-width:64px}
 }
+/* 0.177 04 전송기 왼쪽 목록 한 줄 정리(사용자 결정 2026-09-29 "둘 다 진행", 시안 docs/qa/link-step-0.175/mock-compact-list-pc.png):
+   카드마다 "전송기"·"연결하지 않음" 큰 상자 2개(설명 2줄씩)를 제목·연결 채널 한 줄 + [전송기 | 연결하지 않음] 선택 막대 한 줄로 줄인다.
+   역할·케이블 설명은 오른쪽 미리보기("케이블" 줄)와 아래 전원 안내에 있으므로 여기서는 숨기고 버튼 title로만 남긴다.
+   "현재 구성에는 … 카드가 없습니다" 안내도 한 줄 + 돌아가기 버튼으로 줄인다. */
+#rtcom-design .rt-cg-link-group{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px;align-items:center;padding:10px 12px;border:1px solid #e3e9f3;border-radius:12px;background:#fff}
+#rtcom-design .rt-cg-link-group+.rt-cg-link-group,#rtcom-design .rt-cg-link-umbrella .rt-cg-link-group+.rt-cg-link-group{border-top:1px solid #e3e9f3;padding-top:10px;margin-top:8px}
+#rtcom-design .rt-cg-link-group-head{display:contents}
+#rtcom-design .rt-cg-link-group-title{grid-column:1;padding:0;min-width:0}
+#rtcom-design .rt-cg-link-group-title strong{font-size:13px}
+#rtcom-design .rt-cg-link-group .rt-link-count{grid-column:2;flex-direction:row;align-items:center;gap:6px;white-space:nowrap}
+#rtcom-design .rt-cg-link-group .rt-link-count select{min-width:0;padding:4px 8px;font-size:12px}
+#rtcom-design .rt-cg-link-group-rows{grid-column:1/-1;flex-direction:row;gap:4px;padding:3px;background:#eef2f8;border-radius:10px}
+#rtcom-design .rt-cg-link-group-rows .rt-cg-row{flex:1 1 0;min-width:0;flex-direction:row;align-items:center;justify-content:center;gap:0;padding:7px 10px;border:0;border-radius:8px;background:transparent;box-shadow:none}
+#rtcom-design .rt-cg-link-group-rows .rt-cg-row:hover{background:#ffffffa6}
+#rtcom-design .rt-cg-link-group-rows .rt-cg-row[aria-pressed=true]{background:#fff;box-shadow:0 1px 4px #0002}
+#rtcom-design .rt-cg-link-group-rows .rt-cg-row[aria-pressed=true] .rt-cg-row-head strong{color:var(--pg-accent-2,#0057d8)}
+#rtcom-design .rt-cg-link-group-rows .rt-cg-row-specs,#rtcom-design .rt-cg-link-group-rows .rt-cg-dot,#rtcom-design .rt-cg-link-group-rows .rt-cg-row-head strong small,#rtcom-design .rt-cg-link-group-rows .rt-cg-row-head strong em{display:none}
+#rtcom-design .rt-cg-link-group-rows .rt-cg-row-head{justify-content:center;text-align:center}
+#rtcom-design .rt-cg-link-group-rows .rt-cg-row-head strong{font-size:12.5px;line-height:1.3}
+#rtcom-design .rt-cg-link-group-rows>.rt-notice{flex:1}
+#rtcom-design .rt-link-empty{display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:10px 14px;text-align:left;min-height:0;margin-bottom:12px}
+#rtcom-design .rt-link-empty p{display:none}
+#rtcom-design .rt-link-empty strong{font-size:12.5px;margin:0 auto 0 0}
+#rtcom-design .rt-link-empty .rt-button{padding:6px 12px;min-height:0;font-size:12px;flex:none}
+#rtcom-design .rt-cg-link-umbrella-head p{font-size:11.5px;margin:2px 0 10px}
+@media(max-width:560px){
+  #rtcom-design .rt-cg-link-group-title strong{font-size:12.5px}
+  #rtcom-design .rt-cg-link-group-rows .rt-cg-row{padding:7px 6px}
+}
+/* 0.175 04 전송기 미리보기 정리(사용자 지적 2026-09-29 "이 부분 개선이 필요해보여"):
+   ① 케이블 점선 위에는 "최대 100m"만 두고 문장 전체는 흐름 아래 한 줄(rt-link-flow-spec)로 옮겨 전송기 사진과 겹치지 않게 한다.
+   ② PSE + CTR100처럼 사진이 두 장이면 두 장이 상자 폭을 나눠 가져 상자 밖으로 넘치지 않게 하고, 그 상자만 조금 넓힌다.
+   ③ 카드 이름(XDM-WOS100)이 하이픈에서 두 줄로 꺾이지 않게 한 줄로 두고 카드 상자 최소 폭을 둔다. */
+#rtcom-design .rt-link-flow-ext-imgs{gap:4px;width:100%}
+#rtcom-design .rt-link-flow-ext-imgs img{flex:1 1 0;min-width:0;width:0;height:48px;max-height:none;object-fit:contain;margin:0 0 6px}
+#rtcom-design .rt-link-flow-pair .rt-link-flow-ext{width:168px}
+#rtcom-design .rt-link-flow-card strong,#rtcom-design .rt-link-flow-endpoint strong{white-space:nowrap}
+#rtcom-design .rt-link-flow-node small{word-break:keep-all}
+#rtcom-design .rt-link-flow-card{min-width:112px}
+#rtcom-design .rt-link-flow-cable{width:72px}
+#rtcom-design .rt-link-flow-cable small{white-space:nowrap}
+#rtcom-design .rt-link-flow-spec{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px;margin:12px auto 0;font-size:12px;font-weight:700;color:#1b6e3d;text-align:center}
+#rtcom-design .rt-link-flow-spec span{font-size:10px;font-weight:800;letter-spacing:.04em;color:#fff;background:#1E9E52;border-radius:999px;padding:2px 8px}
+@media(min-width:821px){
+  #rtcom-design .rt-link-flow-card{flex:0 0 auto;width:auto;min-width:112px;max-width:140px}
+  #rtcom-design .rt-link-flow-pair .rt-link-flow-ext{flex:0 1 168px}
+  #rtcom-design .rt-link-flow-cable{flex:0 1 72px;min-width:56px}
+  #rtcom-design .rt-link-flow-endpoint{flex:0 1 104px}
+}
 /* 휴대폰에서는 가로 한 줄이 들어가지 않으므로 위에서 아래로 세운다(→는 ↓로, 케이블 점선은 세로로). */
 @media(max-width:560px){
   #rtcom-design .rt-link-flow{flex-direction:column;flex-wrap:nowrap;gap:6px}
-  #rtcom-design .rt-link-flow-node{width:180px}
+  #rtcom-design .rt-link-flow-node,#rtcom-design .rt-link-flow-pair .rt-link-flow-ext{width:180px}
   #rtcom-design .rt-link-flow-arrow{transform:rotate(90deg)}
   #rtcom-design .rt-link-flow-cable{width:auto;border-bottom:0;border-left:2px dashed #1E9E52;padding:6px 0 6px 10px;text-align:left}
   #rtcom-design .rt-link-flow-cable::after{right:auto;left:-7px;bottom:-8px;border:5px solid transparent;border-top-color:#1E9E52;border-left-color:transparent}
@@ -1045,6 +1110,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-card-info-missing{margin:0;padding:10px 12px;border-radius:12px;background:#fff6e5;color:#8a5a00;font-size:12.5px;line-height:1.55}
 #rtcom-design .rt-card-info-src{margin:0;color:var(--rt-muted);font-size:11.5px}
 #rtcom-design .rt-card-info-modal .rt-card-modal-foot{justify-content:flex-end}
+#rtcom-design .rt-frame-info-modal .rt-card-modal-foot [data-frame-configure]{margin-right:auto}
 @media(max-width:720px){#rtcom-design .rt-card-info-group{grid-template-columns:1fr}#rtcom-design .rt-card-info-group>span{padding-top:0}#rtcom-design .rt-card-info-body{padding:14px}#rtcom-design .rt-card-info-table th{width:88px}}
 /* 0.79 카드 선택창 상세 보기: 카드 아래 줄 왼쪽에 상세 보기, 오른쪽에 수량 */
 #rtcom-design .rt-card-choice-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;margin:0 12px 12px;padding-top:10px;border-top:1px dashed #e0e7f1}
@@ -1114,7 +1180,6 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 }
 
 /* 0.137 카드 팝업: 이미 장착된 같은 카드 장수 표시(스테퍼는 새로 채울 수량) */
-#rtcom-design .rt-card-choice-qty .rt-card-have{margin-right:auto;font-style:normal;font-size:12px;font-weight:800;color:#0a66d6;background:#e8f1ff;border-radius:999px;padding:4px 10px}
 
 /* 0.137 정면·후면을 위아래로 겹쳐 보이는 프레임(stack): 실제 랙 폭은 같으므로 후면 그림 폭을 정면 그림 폭에 맞춘다(사용자 요청 2026-09-29 "프레임앞뒤면 좌우 크기차이 있는 제품 SPX-M1620·M810·M2472·M24120").
    그리드 한 칸의 폭은 정면 그림이 정하고, 후면 그림은 폭 0 + min-width:100%로 칸 폭을 그대로 받는다(높이는 자기 비율대로 자동). */
@@ -1217,6 +1282,11 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 
 /* 0.154 프레임 정면·후면 팝업(위아래 배치): 두 그림 가로폭을 같게 맞춤 */
 #rtcom-design .rt-frame-info-stack .rt-frame-info-face img{width:min(100%,560px);max-width:100%;max-height:none;height:auto}
+/* 0.178 프레임 정면·후면 팝업(좌우 배치): 두 그림 높이를 같게 맞춤. 높이 = (칸 전체 폭 − 칸 사이 12px − 판 안쪽 여백 48px) ÷ (정면 비율 + 후면 비율),
+   상한은 56vh·540px(휴대폰 46vh). 비율 합(--rt-duo-ratio)은 두 그림을 읽은 뒤 src/products.js pickLayout이 넣는다. */
+#rtcom-design .rt-frame-info-duo.rt-frame-info-row{container-type:inline-size;display:flex;justify-content:center;align-items:flex-start;gap:12px}
+#rtcom-design .rt-frame-info-row .rt-frame-info-face img{--rt-duo-h:min(540px,56vh,calc((100cqw - 60px) / var(--rt-duo-ratio)));height:var(--rt-duo-h);width:auto;max-width:none;max-height:none}
+@media (max-width:560px){#rtcom-design .rt-frame-info-row .rt-frame-info-face img{--rt-duo-h:min(46vh,calc((100cqw - 60px) / var(--rt-duo-ratio)))}}
 /* 0.166 사양 값이 여러 줄일 때(SPX-TX/RX "4K60 실효 전송거리") 줄마다 한 덩어리로 보이게 간격을 둔다 */
 #rtcom-design .rt-pg-spec-table td .rt-pg-spec-line{display:block}#rtcom-design .rt-pg-spec-table td .rt-pg-spec-line+.rt-pg-spec-line{margin-top:6px}
 
@@ -1313,3 +1383,22 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
   #rtcom-design #print-report .rt-rp-h{margin:12px 0 5px}
   #rtcom-design #print-report .rt-rp-meta{grid-template-columns:repeat(3,1fr)}#rtcom-design #print-report .rt-rp-kpi{grid-template-columns:repeat(4,1fr)}
 }
+
+/* 0.178 휴대폰 브라우저 다크 모드(사용자 요청 2026-09-29 "블랙테마일 경우 슬롯카드 가독성이 떨어짐 해결"):
+   사이트는 밝은 화면(color-scheme:light) 하나지만, 삼성 인터넷·크롬의 "웹 페이지 어둡게"는 흰 판을 검게 바꾼다. 카드 판넬 사진은 검은 몸체라
+   검게 바뀐 판 위에서 거의 보이지 않았다. 카드 사진과 사진을 받치는 판만 color-scheme:only light로 강제 어둡게 하기에서 빼고 옅은 회색 판을 깐다. */
+#rtcom-design img[src*="assets/cards/"]{color-scheme:only light}
+#rtcom-design .rt-card-choice-plate,#rtcom-design .rt-card-info-plate{color-scheme:only light}
+#rtcom-design .rt-palette-tile img,#rtcom-design .rt-link-flow-node img[src*="assets/cards/"]{background:#eef1f5;padding:3px 4px;box-sizing:border-box;border-radius:4px}
+
+/* 0.184 눌러서 옮기기(터치 화면): 고른 카드 타일 강조, 장착·이동 가능한 슬롯 점선, 다른 방향 흐리게, 화면 아래에 붙는 안내 줄. */
+#rtcom-design .rt-tap-tile{touch-action:manipulation}
+#rtcom-design .rt-tap-tile.rt-tap-tile-on{outline:3px solid #007AFF;outline-offset:-3px;background:#eaf2ff}
+#rtcom-design.rt-tap-input .rt-rack-slot[data-slot^="in-"],#rtcom-design.rt-tap-output .rt-rack-slot[data-slot^="out-"]{outline:2px dashed rgba(57,120,238,.85);outline-offset:-2px}
+#rtcom-design.rt-tap-input .rt-rack-slot[data-slot^="out-"],#rtcom-design.rt-tap-output .rt-rack-slot[data-slot^="in-"]{opacity:.35}
+#rtcom-design .rt-rack-slot.rt-rack-slot-tapsrc{outline:3px solid #FF9500;outline-offset:-3px}
+#rtcom-design .rt-tap-banner{position:sticky;bottom:10px;z-index:30;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px;padding:10px 12px 10px 16px;border-radius:16px;background:#1f2532;color:#fff;box-shadow:0 10px 30px #1f253240;font-size:13px}
+#rtcom-design .rt-tap-banner span{flex:1 1 100%;line-height:1.45;word-break:keep-all}
+#rtcom-design .rt-tap-banner b{color:#9cc4ff}
+#rtcom-design .rt-tap-banner .rt-button{flex:1 1 0;min-height:36px;padding:0 14px;font-size:13px;background:#ffffff1f;border:1px solid #ffffff59;color:#fff}
+#rtcom-design .rt-tap-banner .rt-button[data-tap-cancel]{background:#fff;border-color:#fff;color:#1f2532}

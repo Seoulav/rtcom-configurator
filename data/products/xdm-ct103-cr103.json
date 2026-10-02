@@ -12,14 +12,14 @@
     "Video",
     "Extender"
   ],
-  "english": "1-gang wall-plate HDBaseT 3.0 HDMI transmitter/receiver pair for uncompressed 4K60 4:4:4 up to 100m, PoE-powered from XDM slots or XDM-CTR100 PSE.",
-  "korean": "HDBaseT 3.0 기술로 압축하지 않은 4K60Hz 4:4:4 HDMI 신호를 최대 100m 전송하는 1 Gang 벽부형 송·수신기다.",
+  "english": "1-gang wall-plate HDBaseT 3.0 HDMI transmitter/receiver pair for uncompressed 4K/60 @ 4:4:4 up to 100m, PoE-powered from XDM slots or XDM-CTR100 PSE.",
+  "korean": "HDBaseT 3.0 기술로 압축하지 않은 4K/60 @ 4:4:4 HDMI 신호를 최대 100m 전송하는 1 Gang 벽부형 송·수신기다.",
   "subtitle": "XDM Series Extender · 1 Gang 벽부형 송·수신기",
-  "lead": "HDBaseT 3.0 기술로 압축하지 않은 4K60Hz 4:4:4 HDMI 신호를 **최대 100m** 전송하는 1 Gang 벽부형 송·수신기입니다. XDM 슬롯 또는 XDM-CTR100 PSE로 전원을 공급받습니다.",
+  "lead": "HDBaseT 3.0 기술로 압축하지 않은 4K/60 @ 4:4:4 HDMI 신호를 **최대 100m** 전송하는 1 Gang 벽부형 송·수신기입니다. XDM 슬롯 또는 XDM-CTR100 PSE로 전원을 공급받습니다.",
   "catalogPages": "11",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03, 48쪽판) 11쪽의 XDM-CT103·XDM-CR103 소개와 제품사양 표에서 확인했고, 새 카탈로그(46쪽판) 11쪽과 줄 단위로 재대조했다(차이 없음). XDM-CR103은 사용자 매뉴얼 Ver.1.1(4–9쪽)로 단자·오디오 출력·연결 상대를 확인했다.",
   "packageStatus": "VERIFIED",
-  "overview": "XDM-CT103은 HDBaseT 3.0 기술이 적용되어 압축하지 않은 True 4K 3840x2160@60Hz(4:4:4) 해상도의 HDMI 신호를 케이블에 따라 최대 100m까지 전송하는 HDMI 1 Gang 벽부형 송신기이며 XDM-CIS100과 호환된다. XDM-CR103은 같은 신호를 최대 100m까지 받는 1 Gang 벽부형 수신기이며 XDM-COS100과 사용할 수 있다.\n\n벽부형 제품은 슬롯과 함께 쓰면 PoE 기능으로 별도 전원 케이블 없이 Cat 케이블을 통해 신호와 전원을 공급받는다. XDM-CTR100 PSE와도 사용할 수 있으며, 이때도 XDM-CT103/CR103에 별도 전원 케이블을 연결하지 않아도 된다. 케이블별 최대 사용 거리는 제조사 문의 사항으로 적혀 있다.",
+  "overview": "XDM-CT103은 HDBaseT 3.0 기술이 적용되어 압축하지 않은 True 4K 3840x2160 @ 60Hz 4:4:4 해상도의 HDMI 신호를 케이블에 따라 최대 100m까지 전송하는 HDMI 1 Gang 벽부형 송신기이며 XDM-CIS100과 호환된다. XDM-CR103은 같은 신호를 최대 100m까지 받는 1 Gang 벽부형 수신기이며 XDM-COS100과 사용할 수 있다.\n\n벽부형 제품은 슬롯과 함께 쓰면 PoE 기능으로 별도 전원 케이블 없이 Cat 케이블을 통해 신호와 전원을 공급받는다. XDM-CTR100 PSE와도 사용할 수 있으며, 이때도 XDM-CT103/CR103에 별도 전원 케이블을 연결하지 않아도 된다. 케이블별 최대 사용 거리는 제조사 문의 사항으로 적혀 있다.",
   "images": [
     {
       "role": "Main",
@@ -128,7 +128,7 @@
   ],
   "features": [
     {
-      "text": "HDBaseT 3.0 무압축 True 4K(3840x2160@60Hz 4:4:4) 최대 100m 전송 지원",
+      "text": "HDBaseT 3.0 무압축 True 4K(3840x2160 @ 60Hz 4:4:4) 최대 100m 전송 지원",
       "source": "M1"
     },
     {
@@ -192,7 +192,7 @@
     {
       "group": "Video",
       "name": "최대 해상도",
-      "value": "4K60Hz",
+      "value": "4K/60",
       "unit": "",
       "condition": "4:4:4",
       "source": "M1",
@@ -200,26 +200,17 @@
     },
     {
       "group": "Transmission",
-      "name": "최대 전송거리",
-      "value": "100",
-      "unit": "m",
-      "condition": "4K60Hz 4:4:4, CAT6a BELDEN10GXE02(S/FTP) 기준, 케이블별 상이",
+      "name": "최대 전송 거리",
+      "value": "4K/60 @ 4:4:4 100m\n1080p 150m (Long Reach, CT103 딥 스위치 2번 ON)",
+      "unit": "",
+      "condition": "S/FTP CAT6A 필수 (BELDEN 10GXE02 기준)",
       "source": "C",
       "verification": "VERIFIED"
     },
     {
       "group": "Transmission",
-      "name": "최대 전송거리",
-      "value": "150",
-      "unit": "m",
-      "condition": "Long Reach 모드(딥 스위치 2번 ON), 1920x1080p · XDM-CT103",
-      "source": "M1",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "Transmission",
-      "name": "권장 케이블",
-      "value": "CAT6A S/FTP 이상(UTP 사용 불가)",
+      "name": "필수 케이블",
+      "value": "S/FTP CAT6A 필수(UTP 사용 불가)",
       "unit": "",
       "condition": "",
       "source": "U2",
@@ -266,7 +257,7 @@
       "name": "전원(어댑터)",
       "value": "DC +12V 1A 이상",
       "unit": "",
-      "condition": "전용 카드(CIS100/COS100)나 XDM-CTR100 PSE와 연결하면 PoE로 전원을 받아 연결하지 않음 · 그 밖에는 어댑터 연결",
+      "condition": "전용 카드(CIS100/COS100)+XDM-PSU 또는 XDM-CTR100 PSE와 연결하면 PoE로 전원을 받아 연결하지 않음 · 그 밖에는 어댑터 연결",
       "source": "U",
       "verification": "VERIFIED"
     },
@@ -319,7 +310,7 @@
   "io": [
     {
       "group": "TX · Video",
-      "connector": "Female HDMI connector",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "IN",
       "quantity": "1",
@@ -330,7 +321,7 @@
     },
     {
       "group": "TX · Transmission",
-      "connector": "Female RJ45",
+      "connector": "RJ45",
       "signal": "HDBaseT",
       "direction": "OUT",
       "quantity": "1",
@@ -341,7 +332,7 @@
     },
     {
       "group": "TX · Audio",
-      "connector": "Female Phoenix connector 3p",
+      "connector": "피닉스 3핀",
       "signal": "Audio",
       "direction": "IN",
       "quantity": "1",
@@ -352,7 +343,7 @@
     },
     {
       "group": "RX · Video",
-      "connector": "Female HDMI connector",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "OUT",
       "quantity": "1",
@@ -363,7 +354,7 @@
     },
     {
       "group": "RX · Transmission",
-      "connector": "Female RJ45",
+      "connector": "RJ45",
       "signal": "HDBaseT",
       "direction": "IN",
       "quantity": "1",
@@ -416,7 +407,7 @@
         {
           "n": 1,
           "label": "HDMI IN",
-          "desc": "소스 연결(HDMI 2.0, 4K 60Hz 4:4:4)",
+          "desc": "소스 연결(HDMI 2.0, 4K/60 @ 4:4:4)",
           "x1": 250,
           "x2": 306,
           "side": "top",
@@ -443,7 +434,7 @@
         {
           "n": 3,
           "label": "HDBaseT OUT",
-          "desc": "RJ45 · XDM-CIS100, XDM-CTR100(RX 모드), XDM-CR103과 CAT6a U/FTP로 연결",
+          "desc": "RJ45 · XDM-CIS100, XDM-CTR100(RX 모드), XDM-CR103과 S/FTP CAT6A 케이블로 연결",
           "side": "right",
           "y1": 172,
           "y2": 550
@@ -451,7 +442,7 @@
         {
           "n": 6,
           "label": "DC IN",
-          "desc": "DC 12V 1A 이상 · XDM-CIS100이나 XDM-CTR100 PSE와 쓰면 연결하지 않음",
+          "desc": "DC 12V 1A 이상 · XDM-CIS100+XDM-PSU 또는 XDM-CTR100 PSE와 쓰면 연결하지 않음",
           "x1": 555,
           "x2": 637,
           "side": "bottom",
@@ -477,7 +468,7 @@
         {
           "n": 1,
           "label": "HDMI OUT",
-          "desc": "디스플레이 연결(HDMI 2.0, 4K 60Hz 4:4:4)",
+          "desc": "디스플레이 연결(HDMI 2.0, 4K/60 @ 4:4:4)",
           "side": "left",
           "x": 30,
           "y1": 248,
@@ -504,7 +495,7 @@
         {
           "n": 3,
           "label": "HDBaseT IN",
-          "desc": "RJ45 · XDM-COS100, XDM-CTR100(TX 모드), XDM-CT103과 CAT6a U/FTP로 연결",
+          "desc": "RJ45 · XDM-COS100, XDM-CTR100(TX 모드), XDM-CT103과 S/FTP CAT6A 케이블로 연결",
           "side": "right",
           "y1": 100,
           "y2": 298
@@ -512,7 +503,7 @@
         {
           "n": 5,
           "label": "DC IN",
-          "desc": "DC 12V 1A 이상 · XDM-COS100이나 XDM-CTR100 PSE와 쓰면 연결하지 않음",
+          "desc": "DC 12V 1A 이상 · XDM-COS100+XDM-PSU 또는 XDM-CTR100 PSE와 쓰면 연결하지 않음",
           "x1": 305,
           "x2": 345,
           "side": "bottom",
@@ -562,7 +553,7 @@
       "code": "U2",
       "name": "서울영상테크 SI사업본부 확인",
       "page": "",
-      "scope": "사용자 확인(2026-09-28) — HDBaseT 3.0 4K60 100m 전송 안정성을 위해 권장 케이블을 CAT6A S/FTP(차폐) 이상으로 정정, UTP(비차폐)는 사용하지 않음. XDM-CTR100·XDM-CTR100 PSE와 동등 사양"
+      "scope": "사용자 확인(2026-09-28) — HDBaseT 3.0 4K60 100m 전송 안정성을 위해 권장 케이블을 CAT6A S/FTP(차폐) 이상으로 정정, UTP(비차폐)는 사용하지 않음. XDM-CTR100·XDM-CTR100 PSE와 동등 사양. 단자 지도 RJ45 설명의 \"CAT6a U/FTP\"도 사용자 결정(2026-09-29 \"둘 다 진행\")으로 \"CAT6A S/FTP\"로 통일"
     },
     {
       "code": "M2",

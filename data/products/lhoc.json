@@ -12,14 +12,14 @@
     "Video",
     "Active Optical Cable"
   ],
-  "english": "Locking pluggable HDMI 2.0b active optical cable, 4K60 4:4:4 HDR, 18Gbps, up to 100m",
-  "korean": "잠금형 분리 커넥터를 갖춘 최대 100m 4K 60Hz 4:4:4 HDR HDMI 2.0b 액티브 광케이블이다.",
+  "english": "Locking pluggable HDMI 2.0b active optical cable, 4K/60 @ 4:4:4 HDR, 18Gbps, up to 100m",
+  "korean": "잠금형 분리 커넥터를 갖춘 최대 100m 4K/60 @ 4:4:4 HDR HDMI 2.0b 액티브 광케이블이다.",
   "subtitle": "Locking High Speed HDMI Active Optical Pluggable Cable",
-  "lead": "잠금형 분리 커넥터를 갖춘 액티브 광케이블로 **4K 60Hz 4:4:4 HDR 신호를 최대 100m** 전송합니다. 커넥터를 분리해 배관 지름 20mm까지 통과시킬 수 있습니다.",
+  "lead": "잠금형 분리 커넥터를 갖춘 액티브 광케이블로 **4K/60 @ 4:4:4 HDR 신호를 최대 100m** 전송합니다. 커넥터를 분리해 배관 지름 20mm까지 통과시킬 수 있습니다.",
   "catalogPages": "42",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 44쪽의 소개·주요기능·제품사양·제품 이미지에서 확인했다.",
   "packageStatus": "VERIFIED",
-  "overview": "LHOC 시리즈는 Ultra HD 4K 60Hz 4:4:4 HDR과 Dolby Vision을 지원하며 최대 100m를 전송할 수 있는 Active Optical Cable이다. 광통신 기술로 강화된 LHOC는 18Gbps의 대역폭과 HDMI 2.0b 기능을 완벽하게 지원한다.\n\nUltimate High Retention Locking HDMI라고 하는 특허 기술로 약 9kg(86.59 N)의 인장력을 가지고 있어 HDMI 케이블 사용 시의 불안 요소를 해소한다. 또한 커넥터를 분리하여 배관 사이즈 최소 20mm까지 적용할 수 있어 쉽게 포설할 수 있다.",
+  "overview": "LHOC 시리즈는 Ultra HD 4K/60 @ 4:4:4 HDR과 Dolby Vision을 지원하며 최대 100m를 전송할 수 있는 Active Optical Cable이다. 광통신 기술로 강화된 LHOC는 18Gbps의 대역폭과 HDMI 2.0b 기능을 완벽하게 지원한다.\n\nUltimate High Retention Locking HDMI라고 하는 특허 기술로 약 9kg(86.59 N)의 인장력을 가지고 있어 HDMI 케이블 사용 시의 불안 요소를 해소한다. 또한 커넥터를 분리하여 배관 사이즈 최소 20mm까지 적용할 수 있어 쉽게 포설할 수 있다.",
   "images": [
     {
       "role": "Main",
@@ -72,7 +72,7 @@
       "source": "C"
     },
     {
-      "text": "지원 해상도: 4K60@Hz 4:4:4 UHD HDR, Dolby Vision, 3D Deep Color",
+      "text": "지원 해상도: 4K/60 @ 4:4:4 UHD HDR, Dolby Vision, 3D Deep Color",
       "source": "C"
     },
     {
@@ -112,7 +112,7 @@
     {
       "group": "Video",
       "name": "지원 해상도",
-      "value": "최대 4K 60Hz",
+      "value": "최대 4K/60",
       "unit": "",
       "condition": "4:4:4",
       "source": "C",

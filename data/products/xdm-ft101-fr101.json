@@ -12,14 +12,14 @@
     "Video",
     "Extender"
   ],
-  "english": "Fiber optic HDMI 2.0 transmitter/receiver pair for 4K60 4:4:4 up to 2km single-mode or 300m multi-mode, with audio and RS-232+.",
-  "korean": "True 4K60Hz 4:4:4 HDMI v2.0 신호를 싱글모드 광케이블로 최대 2km, 멀티모드로 최대 300m 전송하는 광 송·수신기다.",
+  "english": "Fiber optic HDMI 2.0 transmitter/receiver pair for 4K/60 @ 4:4:4 up to 2km single-mode or 300m multi-mode, with audio and RS-232+.",
+  "korean": "True 4K/60 @ 4:4:4 HDMI v2.0 신호를 싱글모드 광케이블로 최대 2km, 멀티모드로 최대 300m 전송하는 광 송·수신기다.",
   "subtitle": "XDM Series Extender · 광 송·수신기",
-  "lead": "True 4K60Hz 4:4:4 HDMI v2.0 신호를 **광케이블로 싱글모드 최대 2km, 멀티모드 최대 300m** 전송합니다. 오디오·RS-232+ 기능을 지원합니다.",
+  "lead": "True 4K/60 @ 4:4:4 HDMI v2.0 신호를 **광케이블로 싱글모드 최대 2km, 멀티모드 최대 300m** 전송합니다. 오디오·RS-232+ 기능을 지원합니다.",
   "catalogPages": "12",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03, 48쪽판) 12쪽의 XDM-FT101·XDM-FR101 소개와 제품사양 표에서 확인했고, 새 카탈로그(46쪽판) 12쪽과 줄 단위로 재대조했다(차이 없음). XDM-FT101/FR101 사용자 매뉴얼 Ver.1.3(4~11쪽)으로 전원·LED·S/P 단자·EDID/오디오 로터리 스위치를 보완했다.",
   "packageStatus": "VERIFIED",
-  "overview": "XDM-FT101/XDM-FR101은 True 4K 3840x2160@60Hz(4:4:4) 해상도의 HDMI v2.0 신호를 싱글모드 광케이블 사용 시 최대 2km, 멀티모드 광케이블 사용 시 최대 300m까지 전송하는 광 송·수신기다.\n\nXDM-FT101은 XDM-FIS100과, XDM-FR101은 XDM-FOS100과 호환된다. RS-232+ 기능으로 XDM 매트릭스의 커맨드를 통해 광 송·수신기의 RS-232 단자에 연결된 외부기기를 제어할 수 있다. 송신기는 Phoenix 5p 단자로 스테레오 오디오를 삽입하고, 수신기는 같은 방식으로 스테레오 오디오를 추출한다.",
+  "overview": "XDM-FT101/XDM-FR101은 True 4K 3840x2160 @ 60Hz 4:4:4 해상도의 HDMI v2.0 신호를 싱글모드 광케이블 사용 시 최대 2km, 멀티모드 광케이블 사용 시 최대 300m까지 전송하는 광 송·수신기다.\n\nXDM-FT101은 XDM-FIS100과, XDM-FR101은 XDM-FOS100과 호환된다. RS-232+ 기능으로 XDM 매트릭스의 커맨드를 통해 광 송·수신기의 RS-232 단자에 연결된 외부기기를 제어할 수 있다. 송신기는 피닉스 5p 단자(오디오 L·R·⏚ 3핀 + RS-232 Tx·Rx, 접지 공용)로 스테레오 오디오를 병합하고, 수신기는 같은 방식으로 스테레오 오디오를 추출한다.",
   "images": [
     {
       "role": "Main",
@@ -177,7 +177,7 @@
   ],
   "features": [
     {
-      "text": "True 4K60Hz(4:4:4) HDMI v2.0 전송 지원",
+      "text": "True 4K/60 @ 4:4:4 HDMI v2.0 전송 지원",
       "source": "C"
     },
     {
@@ -193,7 +193,7 @@
       "source": "U"
     },
     {
-      "text": "EDID 마인더 기능 지원(내장 EDID 선택, XDM-FT101 MODE 로터리)",
+      "text": "EDID 마인더 기능 지원(내장 EDID 선택, XDM-FT101 MODE 로터리 스위치)",
       "source": "M1"
     },
     {
@@ -205,7 +205,7 @@
     {
       "group": "Video",
       "name": "최대 해상도",
-      "value": "4K60Hz",
+      "value": "4K/60",
       "unit": "",
       "condition": "4:4:4",
       "source": "C",
@@ -213,19 +213,10 @@
     },
     {
       "group": "Transmission",
-      "name": "최대 전송거리",
-      "value": "2",
-      "unit": "km",
-      "condition": "Singlemode",
-      "source": "C",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "Transmission",
-      "name": "최대 전송거리",
-      "value": "300",
-      "unit": "m",
-      "condition": "Multimode",
+      "name": "최대 전송 거리",
+      "value": "싱글모드 2km\n멀티모드 300m",
+      "unit": "",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -288,7 +279,7 @@
       "name": "무게",
       "value": "0.7",
       "unit": "kg",
-      "condition": "XDM-FT101 (1.6lb.)",
+      "condition": "XDM-FT101",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -297,7 +288,7 @@
       "name": "무게",
       "value": "0.7",
       "unit": "kg",
-      "condition": "XDM-FR101 (1.6lb.)",
+      "condition": "XDM-FR101",
       "source": "C",
       "verification": "VERIFIED"
     }
@@ -305,7 +296,7 @@
   "io": [
     {
       "group": "TX · Video",
-      "connector": "Female HDMI connector",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "IN",
       "quantity": "1",
@@ -316,7 +307,7 @@
     },
     {
       "group": "TX · Transmission",
-      "connector": "Female 1LC connector",
+      "connector": "LC",
       "signal": "Fiber",
       "direction": "OUT",
       "quantity": "1",
@@ -327,18 +318,18 @@
     },
     {
       "group": "TX · Audio",
-      "connector": "Female Phoenix connector 5p",
+      "connector": "피닉스 5핀",
       "signal": "Stereo Audio",
       "direction": "IN",
       "quantity": "1",
       "protocol": "",
-      "condition": "XDM-FT101 · 오디오 삽입, RS-232와 같은 5p 단자",
+      "condition": "XDM-FT101 · 오디오 병합, RS-232와 같은 5p 단자",
       "source": "C",
       "verification": "VERIFIED"
     },
     {
       "group": "TX · Control",
-      "connector": "Female Phoenix connector 5p",
+      "connector": "피닉스 5핀",
       "signal": "RS-232",
       "direction": "BIDIR",
       "quantity": "1",
@@ -371,7 +362,7 @@
     },
     {
       "group": "RX · Video",
-      "connector": "Female HDMI connector",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "OUT",
       "quantity": "1",
@@ -382,7 +373,7 @@
     },
     {
       "group": "RX · Transmission",
-      "connector": "Female 1LC connector",
+      "connector": "LC",
       "signal": "Fiber",
       "direction": "IN",
       "quantity": "1",
@@ -393,7 +384,7 @@
     },
     {
       "group": "RX · Audio",
-      "connector": "Female Phoenix connector 5p",
+      "connector": "피닉스 5핀",
       "signal": "Stereo Audio",
       "direction": "OUT",
       "quantity": "1",
@@ -404,7 +395,7 @@
     },
     {
       "group": "RX · Control",
-      "connector": "Female Phoenix connector 5p",
+      "connector": "피닉스 5핀",
       "signal": "RS-232",
       "direction": "BIDIR",
       "quantity": "1",
@@ -454,7 +445,7 @@
         {
           "n": 2,
           "label": "AUDIO · RS-232",
-          "desc": "오디오 삽입 + RS-232, 같은 5핀 Phoenix 단자",
+          "desc": "오디오 병합 + RS-232, 같은 5핀 피닉스 단자",
           "x1": 462,
           "x2": 620,
           "side": "top",
@@ -515,7 +506,7 @@
         {
           "n": 2,
           "label": "AUDIO · RS-232",
-          "desc": "오디오 추출 + RS-232, 같은 5핀 Phoenix 단자",
+          "desc": "오디오 추출 + RS-232, 같은 5핀 피닉스 단자",
           "x1": 810,
           "x2": 1090,
           "side": "top",
@@ -600,14 +591,14 @@
     "x2": 309,
     "y2": 333,
     "label": "MODE 로터리 스위치",
-    "desc": "XDM-FT101 전면 MODE 로터리 스위치 하나로 EDID와 오디오를 함께 고른다. 0~3번은 HDMI에 실린 원래 소리(Source), 8~11번은 3핀 L·R 단자의 아날로그 오디오를 HDMI에 병합한다(Analog). 병합한 소리는 XDM-FR101 HDMI 출력과 L·R 오디오 출력으로 나간다.",
+    "desc": "XDM-FT101 전면 MODE 로터리 스위치 하나로 EDID와 오디오를 함께 고른다. 0~3번은 HDMI에 실린 원래 소리(Source), 8~11번은 5핀 단자 중 L·R·⏚ 3핀에 넣은 아날로그 오디오를 HDMI에 병합한다(Analog). 병합한 소리는 XDM-FR101 HDMI 출력과 L·R 오디오 출력으로 나간다.",
     "default": "0 = Through pass · Source 오디오",
     "steps": [
       {
         "title": "설정 방법",
         "items": [
           "제품 하단 스티커를 참조해 전면 로터리 스위치를 원하는 번호에 맞춘다(10번=A, 11번=B).",
-          "오디오 병합은 8·9·10·11번 중 하나에 맞추고 전원을 연결한 뒤, 후면 L·R·⏚ 단자에 3핀 Phoenix 오디오 케이블을 연결한다."
+          "오디오 병합은 8·9·10·11번 중 하나에 맞추고 전원을 연결한 뒤, 후면 5핀 피닉스 단자의 L·R·⏚ 3핀에 오디오 선을 연결한다(나머지 Tx·Rx는 RS-232)."
         ]
       }
     ],
@@ -620,47 +611,47 @@
       },
       {
         "code": "1",
-        "function": "1920x1080@60 · Source 오디오",
+        "function": "1920x1080 @ 60Hz · Source 오디오",
         "group": "Source 오디오(HDMI 원래 소리) · 0~3번",
-        "caption": "1920×1080@60"
+        "caption": "1920x1080 @ 60Hz"
       },
       {
         "code": "2",
-        "function": "3840x2160@30 · Source 오디오",
+        "function": "3840x2160 @ 30Hz · Source 오디오",
         "group": "Source 오디오(HDMI 원래 소리) · 0~3번",
-        "caption": "3840×2160@30"
+        "caption": "3840x2160 @ 30Hz"
       },
       {
         "code": "3",
-        "function": "3840x2160@60 · Source 오디오",
+        "function": "3840x2160 @ 60Hz · Source 오디오",
         "highlight": true,
         "group": "Source 오디오(HDMI 원래 소리) · 0~3번",
-        "caption": "3840×2160@60"
+        "caption": "3840x2160 @ 60Hz"
       },
       {
         "code": "8",
         "function": "Through pass · Analog 오디오(병합)",
         "highlight": true,
-        "group": "Analog 오디오 병합(3핀 L·R 입력) · 8~11번(10=A, 11=B)",
+        "group": "Analog 오디오 병합(5핀 단자의 L·R 입력) · 8~11번(10=A, 11=B)",
         "caption": "Through pass"
       },
       {
         "code": "9",
-        "function": "1920x1080@60 · Analog 오디오(병합)",
-        "group": "Analog 오디오 병합(3핀 L·R 입력) · 8~11번(10=A, 11=B)",
-        "caption": "1920×1080@60"
+        "function": "1920x1080 @ 60Hz · Analog 오디오(병합)",
+        "group": "Analog 오디오 병합(5핀 단자의 L·R 입력) · 8~11번(10=A, 11=B)",
+        "caption": "1920x1080 @ 60Hz"
       },
       {
         "code": "A",
-        "function": "3840x2160@30 · Analog 오디오(병합, 10번)",
-        "group": "Analog 오디오 병합(3핀 L·R 입력) · 8~11번(10=A, 11=B)",
-        "caption": "3840×2160@30"
+        "function": "3840x2160 @ 30Hz · Analog 오디오(병합, 10번)",
+        "group": "Analog 오디오 병합(5핀 단자의 L·R 입력) · 8~11번(10=A, 11=B)",
+        "caption": "3840x2160 @ 30Hz"
       },
       {
         "code": "B",
-        "function": "3840x2160@60 · Analog 오디오(병합, 11번)",
-        "group": "Analog 오디오 병합(3핀 L·R 입력) · 8~11번(10=A, 11=B)",
-        "caption": "3840×2160@60"
+        "function": "3840x2160 @ 60Hz · Analog 오디오(병합, 11번)",
+        "group": "Analog 오디오 병합(5핀 단자의 L·R 입력) · 8~11번(10=A, 11=B)",
+        "caption": "3840x2160 @ 60Hz"
       }
     ],
     "source": "M1",

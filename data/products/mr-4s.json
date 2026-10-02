@@ -11,14 +11,14 @@
     "Video",
     "Extension Frame"
   ],
-  "english": "Rack-mountable modular extension frame holding up to four CATx/fiber transmitter or receiver modules powered from a single adapter, up to 4K30.",
-  "korean": "CATx·광 송수신기 모듈을 최대 4개까지 장착하고 하나의 전원 어댑터로 전원을 공급하는 랙 장착형 집합 프레임이다.",
+  "english": "Rack-mountable modular extension frame holding up to four CATx/fiber transmitter or receiver modules powered from a single adapter.",
+  "korean": "CATx·광 송·수신기 모듈을 최대 4개까지 장착하고 하나의 전원 어댑터로 전원을 공급하는 랙 장착형 집합 프레임이다.",
   "subtitle": "Rack Mountable Modular Extension System",
-  "lead": "CATx·광 송수신기 모듈을 **최대 4개까지 장착**하고 하나의 전원 어댑터로 전원을 공급하는 랙 장착형 집합 프레임입니다.",
+  "lead": "CATx·광 송·수신기 모듈을 **최대 4개까지 장착**하고 하나의 전원 어댑터로 전원을 공급하는 랙 장착형 집합 프레임입니다.",
   "catalogPages": "38",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 40쪽의 MR-4S 소개·주요기능·활용사례·크기 및 무게·제품사양에서 확인했다.",
   "packageStatus": "VERIFIED",
-  "overview": "MR-4S는 CATx/광 송수신기 슬롯을 4개까지 장착할 수 있는 집합형 CATx/광 송수신기 프레임이다. 한 개의 파워 어댑터로 최대 4개의 CATx/광 송수신기 슬롯에 전원을 공급하며, CATx/광 송신 슬롯과 수신 슬롯을 구분 없이 자유롭게 구성할 수 있다.\n\n4K 30Hz, HDCP, EDID를 지원한다. 카탈로그는 비디오 월 시스템, 대형 LED 스크린, 공항 이착륙 스크린, 홈시어터, TV 방송 시스템, 공연장 방송 시스템, 회의실 비디오 시스템, 교회 비디오 시스템을 활용사례로 든다.",
+  "overview": "MR-4S는 CATx/광 송·수신기 슬롯을 4개까지 장착할 수 있는 집합형 CATx/광 송·수신기 프레임이다. 한 개의 파워 어댑터로 최대 4개의 CATx/광 송·수신기 슬롯에 전원을 공급하며, CATx/광 송신 슬롯과 수신 슬롯을 구분 없이 자유롭게 구성할 수 있다.\n\n프레임은 모듈 장착과 전원 공급만 담당하며, 해상도·HDCP·EDID 등 영상 사양은 장착하는 HDBaseT(CATx)·광 송·수신기 모듈을 따른다. 카탈로그는 비디오 월 시스템, 대형 LED 스크린, 공항 이착륙 스크린, 홈시어터, TV 방송 시스템, 공연장 방송 시스템, 회의실 비디오 시스템, 교회 비디오 시스템을 활용사례로 든다.",
   "images": [
     {
       "role": "Front",
@@ -79,10 +79,6 @@
   ],
   "features": [
     {
-      "text": "4K 30Hz 지원",
-      "source": "C"
-    },
-    {
       "text": "최대 4개 모듈 장착",
       "source": "C"
     },
@@ -91,41 +87,19 @@
       "source": "C"
     },
     {
-      "text": "HDCP 지원",
-      "source": "C"
-    },
-    {
-      "text": "EDID 지원",
-      "source": "C"
-    },
-    {
       "text": "CATx/광 송신 슬롯과 수신 슬롯을 구분 없이 자유롭게 구성",
+      "source": "C"
+    },
+    {
+      "text": "영상 사양(해상도·HDCP·EDID)은 장착 모듈 기준",
       "source": "C"
     }
   ],
   "specifications": [
     {
-      "group": "Video",
-      "name": "비디오 대역폭",
-      "value": "10.2",
-      "unit": "Gbps",
-      "condition": "",
-      "source": "C",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "Video",
-      "name": "최대 해상도",
-      "value": "최대 4K 30Hz",
-      "unit": "",
-      "condition": "",
-      "source": "C",
-      "verification": "VERIFIED"
-    },
-    {
       "group": "Transmission",
       "name": "인터페이스",
-      "value": "1 leads LC Single Mode Fiber, CATx",
+      "value": "LC 광(싱글모드·멀티모드), CATx",
       "unit": "",
       "condition": "",
       "source": "C",
@@ -192,7 +166,7 @@
       {
         "n": 1,
         "label": "모듈 슬롯 1–4",
-        "desc": "CATx·광 송수신기 모듈 최대 4개 장착(HDMI·RS-232·RJ45)",
+        "desc": "CATx·광 송·수신기 모듈 최대 4개 장착(HDMI·RS-232·RJ45)",
         "x1": 104,
         "x2": 1119
       }

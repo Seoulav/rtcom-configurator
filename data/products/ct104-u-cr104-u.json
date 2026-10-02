@@ -92,7 +92,7 @@
       "source": "C"
     },
     {
-      "text": "EDID Pass-Through 지원",
+      "text": "EDID 패스스루 지원",
       "source": "C"
     }
   ],
@@ -136,7 +136,7 @@
     {
       "group": "Transmission",
       "name": "데이터 전송 속도",
-      "value": "3.4 Gbps/ch, Total 10.2 Gbps Max",
+      "value": "3.4Gbps/ch, Total 10.2Gbps Max",
       "unit": "",
       "condition": "",
       "source": "C",
@@ -145,7 +145,7 @@
     {
       "group": "Video",
       "name": "지원 해상도",
-      "value": "최대 Ultra HD 4K 4096x2160@24/25/30Hz",
+      "value": "최대 Ultra HD 4K 3840x2160 @ 24/25/30Hz",
       "unit": "",
       "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0",
       "source": "C",
@@ -153,10 +153,10 @@
     },
     {
       "group": "Transmission",
-      "name": "최대 전송거리",
+      "name": "최대 전송 거리",
       "value": "100",
       "unit": "m",
-      "condition": "1920x1200@60Hz 또는 1080p, 4Kx2K@30Hz · BELDEN CI 6522",
+      "condition": "1920x1200 @ 60Hz·1080p·4K/30, BELDEN CI6522 기준",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -254,7 +254,7 @@
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
-      "condition": "CT104-U · RS232C",
+      "condition": "CT104-U · RS-232C",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -287,7 +287,7 @@
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
-      "condition": "CR104-U · RS232C",
+      "condition": "CR104-U · RS-232C",
       "source": "C",
       "verification": "VERIFIED"
     }

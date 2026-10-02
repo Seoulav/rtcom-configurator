@@ -91,10 +91,10 @@ test('rear photo slot zones stay inside each photo and match the card faceplate 
     'VDM-8X':[2,2,[1,1],true],'VDM-32X':[8,8,[4,4]],'VDM-48X':[12,12,[4,4]],'VDM-64X':[16,16,[4,4]],'VDM-80X':[20,20,[11,11]],'VDM-128X':[32,32,[11,11]],'VDM-180X':[45,45,[15,15]],'VDM-256X':[64,64,[11,11]],
     'SPX-M810':[1,1,[1,1],true],'SPX-M1620':[2,2,[1,1],true],'SPX-M3236':[4,3,[1,1],true],'SPX-M2472':[3,6,[3,6]],'SPX-M24120':[3,10,[3,10]]};
   const faceplateRatio={XDM:9.7,VDM:5.7,SPX:13.8};
-  // SPX-M1620 매뉴얼 후면 사진은 가로로 눌려 있다(사진 662×418, 실제 483×177mm). 사진 속 판넬 비율(약 9.8:1)로 확인한다.
+  // 0.178: SPX-M1620 후면 그림을 실제 비율(몸체 약 440×177mm)로 넓혀 다시 그렸으므로, 예전 사진 비율 예외(9.8:1)를 없애고 SPX 판넬 비율(13.8:1)로 확인한다.
   // VDM 후면 선 도면은 모델마다 보드 비율이 다르게 그려져 있어 도면 속 비율로 확인한다.
   // 0.120: VDM 그림은 슬롯 칸을 카드 사진 비율(5.7:1)과 똑같이 그려 도면 비율 예외(128X 3.9, 180X 8.2)를 없앴고, VDM은 ±3% 안에 들어야 한다.
-  const photoRatio={'SPX-M1620':9.8};
+  const photoRatio={};
   for(const [model,photo] of Object.entries(rearPhotos)){
     const family=model.split('-')[0];
     assert.ok(catalog[family].models.includes(model));
@@ -441,7 +441,7 @@ test('0.157: SPX-R6는 사양서 근거로 등록하고, 로고 없는 평면 �
   for(const name of ['spx-r6-catalog.pdf','spx-rx-tx-manual.pdf','spx-manual.pdf'])assert.ok(fs.existsSync(`output/design/assets/docs/${name}`),name);
   for(const model of ['SPX-M2472','SPX-M24120'])assert.match(spx.lineup.find(entry=>entry.model===model).summary,/483×443\.7×365mm/);
   assert.ok(!JSON.stringify(spx.lineup).includes('433.7'),'라인업에 종합 카탈로그 2026의 433.7mm 표기를 남기지 않는다');
-  assert.ok(spx.features.some(feature=>feature.text.includes('2x2, 3x3, 3x4')),'비디오 월 표기는 그대로 둔다(사용자 결정 "지금 표기 유지")');
+  assert.ok(spx.features.some(feature=>feature.text.includes('2×2, 3×3, 3×4')),'비디오 월 표기는 그대로 둔다(사용자 결정 "지금 표기 유지")');
   assert.match(read('src/products.js'),/if\(item\.id==='spx-r6'\)return rackExtenderDiagram\(item\);/);
   const order=JSON.parse(read('data/products/index.json')).products.map(product=>product.id);
   assert.equal(order.indexOf('spx-r6')+1,order.indexOf('spx-rx-tx'),'전송기 목록에서 SPX-TX / SPX-RX 바로 앞에 보인다');
@@ -489,11 +489,11 @@ test('0.166: SPX-TX/RX 04 제품 사양의 전송거리는 "4K60 실효 전송�
   const txrx=JSON.parse(read('data/products/spx-rx-tx.json'));
   const rows=txrx.specifications.filter(spec=>spec.group==='Transmission');
   assert.equal(rows.length,1,'전송거리 행은 하나만 둔다');
-  assert.equal(rows[0].name,'4K60 실효 전송거리');
+  assert.equal(rows[0].name,'4K/60 실효 전송 거리'); // 0.184: 해상도 표기 Extron 방식(4K/60)
   assert.equal(rows[0].value,'UTP CAT6 50m (Belden 7814A 케이블 기준)\nS/FTP CAT6A 70m (Belden 10GXE02 케이블 기준)');
   assert.equal(rows[0].source,'U3');
   assert.ok(!JSON.stringify(txrx.specifications).includes('CI6522'),'예전 SF/UTP CI6522 표기는 쓰지 않는다');
-  assert.ok(txrx.features.some(feature=>/4K60 최대 50m, 1080p 최대 60m/.test(feature.text))&&txrx.features.some(feature=>/Long Reach/.test(feature.text)),'매뉴얼 공식 거리는 05 주요 기능에 남긴다');
+  assert.ok(txrx.features.some(feature=>/4K\/60 최대 50m, 1080p 최대 60m/.test(feature.text))&&txrx.features.some(feature=>/Long Reach/.test(feature.text)),'매뉴얼 공식 거리는 05 주요 기능에 남긴다');
   const products=read('src/products.js');
   assert.match(products,/const specValue=value=>\{/,'여러 줄 값은 줄마다 값과 괄호 설명을 나눠 보여 준다');
   assert.match(read('src/styles.css'),/\.rt-pg-spec-table td \.rt-pg-spec-line\{display:block\}/);
@@ -508,4 +508,147 @@ test('0.171: SPX-R6 모듈 칸 단자는 TX·RX 모듈을 모두 꽂을 수 있�
   const draw=read('scripts/tools/draw_spx_r6_panels.cjs');
   assert.match(draw,/'HDMI IN\/OUT'/);assert.match(draw,/'CAT IN\/OUT'/);
   assert.doesNotMatch(draw,/'HDMI IN',|'CAT OUT',/,'후면 그림에 한 방향 표기를 남기지 않는다');
+});
+
+test('0.180: SPX 04 제품 사양 전송거리는 한 행(1080p 60m / 4K 50m)이고 라인업 요약에 입력·출력 슬롯 수가 있다',()=>{
+  // 사용자 요청 2026-09-30 "1080P 60M / 4K 50m 이런식으로", "입출력 슬롯이 몇개씩인지 모든 SPX 시리즈 수정"
+  const spx=JSON.parse(read('data/products/spx.json'));
+  const rows=spx.specifications.filter(spec=>spec.name==='CATx 카드 전송 거리');
+  assert.equal(rows.length,1,'CATx 카드 전송 거리는 한 행만 둔다');
+  assert.equal(rows[0].value,'1080p 60m\n4K 50m');
+  assert.equal(rows[0].condition,'CAT 6 기준');
+  const slots={'SPX-M810':'입력 슬롯 1 · 출력 슬롯 1','SPX-M1620':'입력 슬롯 2 · 출력 슬롯 2','SPX-M3236':'입력 슬롯 4 · 출력 슬롯 3','SPX-M2472':'입력 슬롯 3 · 출력 슬롯 6','SPX-M24120':'입력 슬롯 3 · 출력 슬롯 10'};
+  for(const [model,text] of Object.entries(slots)){
+    const entry=spx.lineup.find(item=>item.model===model);
+    assert.ok(entry.summary.includes(text),`${model} 요약에 "${text}"`);
+    assert.match(entry.summary.split(' · ')[0],/^최대 \d+[x×]\d+ I\/O$/,'첫 항목은 "최대 NxM I/O"(타일 부제가 씀)');
+  }
+});
+
+test('0.180: 03 메인프레임 타일은 슬롯 수 줄을 보여 주고 03 카드 슬롯 화면에 시리즈 제품정보 링크가 있다',()=>{
+  // 사용자 요청 2026-09-30 "03 메인 프레임도 수량 8x10~24x72 이부분 수정", "슬롯 구성이 들어가서 해당 제품 상세 정보 들어갈 수 있는 링크 버튼"
+  const products=read('src/products.js'),app=read('src/app.js');
+  assert.match(products,/const frameSlotText=summary=>/);
+  assert.match(products,/rt-pg-frame-slots/);
+  assert.ok(!read('data/products/spx.json').includes('8x10~'),'"8x10~" 범위 표기는 쓰지 않는다');
+  assert.match(app,/class="rt-button rt-frame-info-link" href="#products\/\$\{state\.family\.toLowerCase\(\)\}" target="_blank" rel="noopener"/);
+  for(const id of ['xdm','spx','vdm'])assert.ok(fs.existsSync(`data/products/${id}.json`),`${id} 시리즈 제품정보가 있어야 링크가 열린다`);
+});
+
+test('0.183: VDM DVI 1.0 표기 삭제, 프레임 팝업 "슬롯 구성기" 버튼, CTR100 단자 지도 정리',()=>{
+  // 사용자 요청 2026-09-30 6·7·8·9번
+  assert.ok(!/DVI ?1\.0/.test(read('data/products/vdm.json')+read('src/card-specs.js')),'VDM 데이터에 "DVI 1.0" 표기가 없어야 한다');
+  const products=read('src/products.js'),app=read('src/app.js');
+  assert.match(products,/data-frame-configure>슬롯 구성기/);
+  assert.match(products,/CustomEvent\('rt-configure-family',\{detail:\{family,model\}\}\)/);
+  assert.match(app,/const step=target\?2:1;/,'프레임까지 고르면 03 카드 슬롯(step 2)으로 간다');
+  for(const id of ['xdm-ctr100','xdm-ctr100-pse']){
+    const d=JSON.parse(read(`data/products/${id}.json`));
+    const items=Object.fromEntries(d.portMap.items.map(item=>[item.n,item]));
+    assert.ok(items[3].x2-items[3].x1>=200,`${id} 3번 괄호는 5핀 단자 전체를 덮는다`);
+    assert.ok(items[7].x1>items[3].x2,`${id} 7번 괄호는 3번 괄호와 겹치지 않는다`);
+    assert.ok(items[5].desc.length<=50&&items[3].desc.length<=30,`${id} 단자 설명은 짧게`);
+    assert.ok(d.features.some(f=>f.text==='TX·RX 겸용 딥 스위치 모드 전환 지원'));
+  }
+  assert.ok(JSON.parse(read('data/products/xdm-ctr100-pse.json')).features.some(f=>f.text==='PoE 전원 공급(PSE) 지원(신호·전원 동시 공급)'));
+  assert.equal(JSON.parse(read('data/products/xdm-ctr100.json')).specifications.find(s=>s.name==='전원').condition,'PSE 연결 시 불필요(PD 모드)');
+});
+
+test('0.184: 해상도(Extron 방식)·단위 붙여 쓰기 표기 통일이 사이트 전체에 적용되어 있다',()=>{
+  // 사용자 결정 2026-09-30: 단위 붙여 쓰기, 해상도는 Extron 방식(4K/60 @ 4:4:4 · 3840x2160 @ 60Hz · 1080p/60), XDM 케이블 "S/FTP CAT6A 필수"
+  const {fix}=require('../scripts/tools/unify_notation.cjs');
+  assert.equal(fix('4K60Hz(4:4:4)'),'4K/60 @ 4:4:4');
+  assert.equal(fix('True 4K 3840×2160@60Hz(4:4:4)'),'True 4K 3840x2160 @ 60Hz 4:4:4');
+  assert.equal(fix('3840x2160p@30 PCM 2CH'),'3840x2160 @ 30Hz PCM 2CH');
+  assert.equal(fix('최대 4K 30Hz를 지원'),'최대 4K/30을 지원','받침 있는 숫자 뒤 조사는 "을"');
+  assert.equal(fix('1080p 60m / 4K 50m'),'1080p 60m / 4K 50m','전송거리(m)는 주사율로 보지 않는다');
+  assert.equal(fix('483×402×310.3mm'),'483×402×310.3mm','크기 표기는 바꾸지 않는다');
+  assert.equal(fix('3.4 Gbps/ch, 100-200 VAC'),'3.4Gbps/ch, 100-200VAC');
+  // 모든 제품 데이터와 카드 사양이 이미 통일안대로라서 한 번 더 돌려도 바뀌는 곳이 없다.
+  const out=require('child_process').execFileSync(process.execPath,['scripts/tools/unify_notation.cjs'],{encoding:'utf8'});
+  assert.match(out,/바뀔 곳: 0건/,out);
+  const ct=JSON.parse(read('data/products/xdm-ct103-cr103.json'));
+  assert.ok(ct.specifications.some(s=>s.name==='필수 케이블'&&s.value==='S/FTP CAT6A 필수(UTP 사용 불가)'));
+  assert.match(read('src/card-specs.js'),/\['필수 케이블','S\/FTP CAT6A 필수\(UTP 사용 불가\)'\]/);
+  assert.match(read('src/products.js'),/const unitGap=unit=>/,'04 제품 사양 표는 값과 단위를 붙여 쓴다');
+});
+
+test('0.186: 사양값 확인 8그룹을 사용자 답변대로 정리했다',()=>{
+  const vdm=read('data/products/vdm.json');
+  assert.doesNotMatch(vdm,/9종|9가지/,'VDM 프레임은 라인업과 같은 10종');
+  assert.match(vdm,/128, 180, 256, 288/);
+  assert.match(vdm,/HDCP 1\.x·2\.0 지원/);
+  assert.match(read('src/core.js'),/SPX 출력 카드는 3종\(HOS10·HOS12·COS12\)/);
+  assert.doesNotMatch(read('data/products/hd-d102u.json'),/2\.0b/);
+  const qms=read('data/products/qms-88ux.json');
+  assert.doesNotMatch(qms,/전용/,'QMS-88UX 출력 9·10번은 멀티뷰·일반 라우팅 겸용');
+  assert.match(JSON.parse(qms).videoModes.modes.find(m=>m.name==='QUAD').summary,/출력 9·10번에서/,'신호 흐름 그림이 9·10번을 읽는 문구');
+  assert.match(read('data/products/ft103-u-h-fr103-u.json'),/1080p\/60, 최대 Ultra 4K/);
+  assert.doesNotMatch(read('data/products/xdm-ft101-fr101.json'),/3핀 Phoenix 오디오 케이블/);
+});
+
+test('0.187: HDCP 버전 표기를 자료와 사용자 결정대로 채웠다',()=>{
+  const obhd=JSON.parse(read('data/products/obhd-2c.json'));
+  assert.equal(obhd.features.filter(f=>/HDCP/.test(f.text)).map(f=>f.text).join(),'HDCP 1.x 지원');
+  assert.equal(obhd.specifications.find(s=>s.name==='HDCP').value,'HDCP 1.x 지원');
+  const obux=JSON.parse(read('data/products/obux-1c.json'));
+  assert.ok(obux.features.some(f=>f.text==='HDCP 1.x, 2.2 지원'));
+  assert.ok(!obux.features.some(f=>f.text==='HDCP 지원'));
+});
+
+test('0.188: MR-4S는 프레임 사양만 적고 영상 사양은 장착 모듈 기준으로 안내한다',()=>{
+  const mr=JSON.parse(read('data/products/mr-4s.json'));
+  assert.ok(!mr.features.some(f=>/^(4K\/30|HDCP|EDID) 지원$/.test(f.text)));
+  assert.ok(!mr.specifications.some(s=>['비디오 대역폭','최대 해상도'].includes(s.name)));
+  assert.ok(mr.features.some(f=>f.text==='영상 사양(해상도·HDCP·EDID)은 장착 모듈 기준'));
+});
+
+test('0.190: OBUX-1C만 멀티모드(OM3) 전용이고 나머지 광 제품은 싱글모드·멀티모드를 함께 적는다',()=>{
+  const obux=read('data/products/obux-1c.json');
+  assert.doesNotMatch(obux,/싱글모드|Single ?Mode/i,'OBUX-1C는 싱글모드를 지원하지 않는다');
+  assert.match(obux,/OM3/);
+  for(const id of ['obhd-2c','ft101-u-fr101-u','ft103-u-h-fr103-u','xdm-ft101-fr101','mr-4s']){
+    const s=read(`data/products/${id}.json`);
+    assert.match(s,/싱글모드/,`${id} 싱글모드`);assert.match(s,/멀티모드/,`${id} 멀티모드`);
+  }
+});
+
+test('0.191: 커넥터는 암수(Female) 표기 없이 QMS-44UX처럼 이름만 쓴다',()=>{
+  const files=fs.readdirSync('data/products').filter(f=>f.endsWith('.json')&&f!=='index.json');
+  for(const f of files)assert.doesNotMatch(read(`data/products/${f}`),/female|\(female\)|암\(/i,f);
+  assert.doesNotMatch(read('src/card-specs.js'),/Female|암\(/,'카드 상세 커넥터');
+  const q=JSON.parse(read('data/products/qms-88ux.json'));
+  assert.equal(q.io[0].connector,'HDMI');
+});
+
+test('0.192: 문서 버튼은 "카탈로그 보기 | ↓ 다운로드", 화면 문구는 "다운로드"로 통일',()=>{
+  const p=read('src/products.js'),a=read('src/app.js'),c=read('src/styles.css');
+  assert.match(p,/\$\{esc\(label\)\} 보기/);assert.match(p,/rt-pg-doc-save-text">다운로드</);assert.match(p,/>새 탭<\/a>/);
+  assert.doesNotMatch(p.replace(/\/\/.*$/gm,''),/내려받기/);assert.doesNotMatch(a.replace(/\/\/.*$/gm,''),/내려받/);
+  assert.match(c,/max-width:480px\)\{#rtcom-design \.rt-pg-doc-save-text/);
+});
+
+test('0.193: 전송기 최대 전송 거리는 제품마다 한 행(값 칸 줄 나눔)',()=>{
+  const files=fs.readdirSync('data/products').filter(f=>f.endsWith('.json')&&f!=='index.json');
+  for(const f of files){
+    const j=JSON.parse(read(`data/products/${f}`));
+    assert.ok((j.specifications||[]).filter(s=>/^최대 전송 거리$/.test(s.name)).length<=1,f);
+  }
+  const ft=JSON.parse(read('data/products/ft101-u-fr101-u.json')).specifications.find(s=>s.name==='최대 전송 거리');
+  assert.equal(ft.value,'싱글모드 2km\n멀티모드 500m');
+  const r6=JSON.parse(read('data/products/spx-r6.json')).specifications.find(s=>s.name==='최대 전송 거리');
+  assert.equal(r6.value,'4K/60 @ 4:4:4 50m\n1080p/60 60m');
+});
+
+test('0.197: 터치 화면 눌러서 옮기기(카드 타일 선택 → 같은 방향 슬롯 장착, 팝업 이동 버튼)',()=>{
+  // 사용자 요청·선택 2026-09-30 "눌러서 옮기기 권장안으로 해줘"
+  const app=read('src/app.js'),css=read('src/styles.css');
+  assert.match(app,/const tapMode=\(\)=>PALETTE_DRAG&&!paletteDrag\(\);/,'마우스가 없는 화면에서만 켠다');
+  assert.match(app,/data-tap-card="\$\{c\[0\]\}"/,'터치 화면은 타일을 누르면 카드를 고른다');
+  assert.match(app,/const moveButton=tapMode\(\)&&installed\?/,'카드 팝업 이동 버튼은 터치 화면·장착 슬롯에서만');
+  assert.match(app,/if\(dir!==cardDir\(tapCard\)\)\{announce\(/,'다른 방향 슬롯에는 장착하지 않고 안내만 한다');
+  assert.match(app,/RtCore\.moveCard\(state,tapMove,id\)/,'이동은 끌어 옮기기와 같은 RtCore.moveCard를 쓴다');
+  assert.match(app,/if\(state\.step!==2\|\|signalView\)\{tapCard=null;tapMove=null\}/,'03 카드 장착 화면을 떠나면 선택을 지운다');
+  for(const selector of ['.rt-tap-banner','.rt-tap-tile-on','.rt-rack-slot-tapsrc','rt-tap-input'])assert.ok(css.includes(selector),`${selector} 스타일`);
+  assert.match(app,/tapMode\(\)\?\(tapMove\?slotDir\(tapMove\)/,'방향 표시용 루트 클래스를 렌더마다 갱신한다');
 });

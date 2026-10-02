@@ -11,14 +11,14 @@
     "Video",
     "Extender"
   ],
-  "english": "Wall-plate fiber optic transmitter/receiver pair for HDMI (2 inputs on TX), audio and RS-232 up to 2km single-mode or 500m multi-mode, up to 4K 24/25/30Hz.",
-  "korean": "HDMI(송신기 입력 2개)와 오디오·RS-232를 광케이블로 싱글모드 최대 2km, 멀티모드 최대 500m 전송하는 벽부형 광 송·수신기이며, 최대 4K 30Hz를 지원한다.",
+  "english": "Wall-plate fiber optic transmitter/receiver pair for HDMI (2 inputs on TX), audio and RS-232 up to 2km single-mode or 500m multi-mode, up to 4K/24/25/30.",
+  "korean": "HDMI(송신기 입력 2개)와 오디오·RS-232를 광케이블로 싱글모드 최대 2km, 멀티모드 최대 500m 전송하는 벽부형 광 송·수신기이며, 최대 4K/30을 지원한다.",
   "subtitle": "VDM Series Extender · 벽부형 광 송·수신기",
-  "lead": "DVI·HDMI와 오디오·RS-232 신호를 **광케이블로 싱글모드 최대 2km, 멀티모드 최대 500m** 전송하는 벽부형 송·수신기입니다. 최대 4K 24/25/30Hz를 지원하고, 송신기는 HDMI 입력 2개를 앞면 버튼으로 전환합니다.",
+  "lead": "DVI·HDMI와 오디오·RS-232 신호를 **광케이블로 싱글모드 최대 2km, 멀티모드 최대 500m** 전송하는 벽부형 송·수신기입니다. 최대 4K/24/25/30을 지원하고, 송신기는 HDMI 입력 2개를 앞면 버튼으로 전환합니다.",
   "catalogPages": "25",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 27쪽의 FT103-U-H/FR103-U 소개와 FT103-U-H·FR103-U 제품사양 표에서 확인했다. 사용자 매뉴얼 Ver.1.4(4–11쪽)로 입력 수·해상도·광 커넥터·EDID 설정을 보완했다.",
   "packageStatus": "VERIFIED",
-  "overview": "FT103-U-H와 FR103-U는 비디오와 오디오, RS-232 신호를 광케이블을 통해 장거리 전송하기 위한 벽부형 송신기와 수신기다. FT103-U-H는 비디오·오디오·RS-232 신호를 광신호로 변환하고, FR103-U는 광신호를 다시 비디오·오디오·RS-232 신호로 복원한다. 두 제품 모두 디지털 신호인 DVI 또는 HDMI를 지원한다.\n\n광신호를 사용해 최대 2km까지 전송할 수 있으며, 외부 신호의 영향으로부터 안전하게 신호를 전송할 수 있어 보안이 필요한 기업이나 군부대, 정부기관 등에 적합한 전송장비다. 사용자 매뉴얼 기준 지원 해상도는 최대 Ultra 4K 4096x2160 24/25/30Hz다(카탈로그 해상도 표는 1080p까지만 적음).",
+  "overview": "FT103-U-H와 FR103-U는 비디오와 오디오, RS-232 신호를 광케이블을 통해 장거리 전송하기 위한 벽부형 송신기와 수신기다. FT103-U-H는 비디오·오디오·RS-232 신호를 광신호로 변환하고, FR103-U는 광신호를 다시 비디오·오디오·RS-232 신호로 복원한다. 두 제품 모두 디지털 신호인 DVI 또는 HDMI를 지원한다.\n\n광신호를 사용해 최대 2km까지 전송할 수 있으며, 외부 신호의 영향으로부터 안전하게 신호를 전송할 수 있어 보안이 필요한 기업이나 군부대, 정부기관 등에 적합한 전송장비다. 1080p/60과 최대 Ultra 4K 3840x2160 @ 24/25/30Hz를 지원한다.",
   "images": [
     {
       "role": "Main",
@@ -102,7 +102,7 @@
       "source": "M1"
     },
     {
-      "text": "최대 Ultra 4K 4096x2160 30Hz 지원",
+      "text": "1080p/60, 최대 Ultra 4K 3840x2160 @ 30Hz 지원",
       "source": "M1"
     },
     {
@@ -162,7 +162,7 @@
     {
       "group": "Transmission",
       "name": "데이터 전송 속도",
-      "value": "3.4 Gbps/ch, Total 10.2 Gbps Max",
+      "value": "3.4Gbps/ch, Total 10.2Gbps Max",
       "unit": "",
       "condition": "",
       "source": "C",
@@ -171,7 +171,7 @@
     {
       "group": "Video",
       "name": "지원 해상도",
-      "value": "최대 Ultra 4K 4096x2160p 24/25/30Hz 4:4:4",
+      "value": "1080p/60, 최대 Ultra 4K 3840x2160 @ 24/25/30Hz 4:4:4",
       "unit": "",
       "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0",
       "source": "M1",
@@ -179,19 +179,10 @@
     },
     {
       "group": "Transmission",
-      "name": "최대 전송거리",
-      "value": "2",
-      "unit": "km",
-      "condition": "Single Mode Fiber · 4K 30Hz",
-      "source": "M1",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "Transmission",
-      "name": "최대 전송거리",
-      "value": "500",
-      "unit": "m",
-      "condition": "Multi Mode Fiber · 4K 30Hz",
+      "name": "최대 전송 거리",
+      "value": "싱글모드 2km\n멀티모드 500m",
+      "unit": "",
+      "condition": "4K/30",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -209,7 +200,7 @@
       "name": "EDID",
       "value": "EDID 마인더(외부 EDID 저장·내장 EDID 선택)",
       "unit": "",
-      "condition": "FT103-U-H 앞면 MODE 로터리",
+      "condition": "FT103-U-H 앞면 MODE 로터리 스위치",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -300,7 +291,7 @@
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
-      "condition": "FT103-U-H · 3p Phoenix(RS-232)",
+      "condition": "FT103-U-H · 3p 피닉스(RS-232)",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -344,7 +335,7 @@
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
-      "condition": "FR103-U · 3p Phoenix(RS-232)",
+      "condition": "FR103-U · 3p 피닉스(RS-232)",
       "source": "M1",
       "verification": "VERIFIED"
     }
@@ -384,7 +375,7 @@
         {
           "n": 2,
           "label": "AUDIO IN",
-          "desc": "3.5mm · 로터리 E + SET으로 HDMI에 병합",
+          "desc": "3.5mm · 로터리 스위치 E + SET으로 HDMI에 병합",
           "side": "right",
           "x": 648,
           "y1": 312,
@@ -411,7 +402,7 @@
         {
           "n": 6,
           "label": "SET 토글",
-          "desc": "MODE 로터리 설정 실행(EDID·외부 오디오·자동 스위칭)",
+          "desc": "MODE 로터리 스위치 설정 실행(EDID·외부 오디오·자동 스위칭)",
           "x1": 330,
           "x2": 372,
           "side": "top",
@@ -507,37 +498,37 @@
       },
       {
         "code": "1",
-        "function": "1920x1200@60 DVI"
+        "function": "1920x1200 @ 60Hz DVI"
       },
       {
         "code": "2",
-        "function": "1920x1080@60 DVI"
+        "function": "1920x1080 @ 60Hz DVI"
       },
       {
         "code": "3",
-        "function": "1920x1080@60 PCM 2CH",
+        "function": "1920x1080 @ 60Hz PCM 2CH",
         "highlight": true
       },
       {
         "code": "4",
-        "function": "1920x1080@60 Multi"
+        "function": "1920x1080 @ 60Hz Multi"
       },
       {
         "code": "5",
-        "function": "1920x1080@60 Dolby"
+        "function": "1920x1080 @ 60Hz Dolby"
       },
       {
         "code": "6",
-        "function": "3840x2160p@30 PCM 2CH",
+        "function": "3840x2160 @ 30Hz PCM 2CH",
         "highlight": true
       },
       {
         "code": "7",
-        "function": "3840x2160p@30 Multi"
+        "function": "3840x2160 @ 30Hz Multi"
       },
       {
         "code": "8",
-        "function": "3840x2160p@30 Dolby"
+        "function": "3840x2160 @ 30Hz Dolby"
       },
       {
         "code": "9",

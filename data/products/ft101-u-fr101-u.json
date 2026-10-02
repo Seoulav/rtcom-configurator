@@ -136,7 +136,7 @@
     {
       "group": "Transmission",
       "name": "데이터 전송 속도",
-      "value": "3.4 Gbps/ch, Total 10.2 Gbps Max",
+      "value": "3.4Gbps/ch, Total 10.2Gbps Max",
       "unit": "",
       "condition": "",
       "source": "C",
@@ -145,7 +145,7 @@
     {
       "group": "Video",
       "name": "지원 해상도",
-      "value": "최대 Ultra HD 4K 4096x2160@24/25/30Hz",
+      "value": "최대 Ultra HD 4K 3840x2160 @ 24/25/30Hz",
       "unit": "",
       "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0",
       "source": "C",
@@ -153,19 +153,10 @@
     },
     {
       "group": "Transmission",
-      "name": "최대 전송거리",
-      "value": "2",
-      "unit": "km",
-      "condition": "Single Mode Fiber · 1920x1200@60Hz 또는 1080p, Ultra HD 4K",
-      "source": "C",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "Transmission",
-      "name": "최대 전송거리",
-      "value": "500",
-      "unit": "m",
-      "condition": "Multi Mode Fiber · 1920x1200@60Hz 또는 1080p, Ultra HD 4K",
+      "name": "최대 전송 거리",
+      "value": "싱글모드 2km\n멀티모드 500m",
+      "unit": "",
+      "condition": "1920x1200 @ 60Hz·1080p·Ultra HD 4K",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -260,7 +251,7 @@
     },
     {
       "group": "TX · Control",
-      "connector": "Phoenix connector(녹색, 핀 수 미기재)",
+      "connector": "피닉스(녹색, 핀 수 미기재)",
       "signal": "RS-232",
       "direction": "BIDIR",
       "quantity": "1",
@@ -304,7 +295,7 @@
     },
     {
       "group": "RX · Control",
-      "connector": "Phoenix connector(녹색, 핀 수 미기재)",
+      "connector": "피닉스(녹색, 핀 수 미기재)",
       "signal": "RS-232",
       "direction": "BIDIR",
       "quantity": "1",

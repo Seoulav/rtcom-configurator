@@ -12,13 +12,13 @@
     "Matrix Switcher"
   ],
   "english": "True-4K 8x8 HDMI 2.0 scaling matrix switcher with 8-channel multi-view, video wall and dual mode",
-  "korean": "8CH 멀티뷰·비디오 월·듀얼 모드를 지원하는 True-4K 8x8 HDMI 2.0 매트릭스 스위처다.",
+  "korean": "8CH 멀티뷰·비디오 월·듀얼 모드를 지원하는 True-4K 8×8 HDMI 2.0 매트릭스 스위처다.",
   "subtitle": "8×8 HDMI 2.0 Matrix Switcher · 8CH 멀티뷰",
   "lead": "8개의 HDMI 입력을 **임의의 출력 포트로 자유롭게 전환**하는 True-4K 매트릭스입니다. 8CH 멀티뷰·비디오 월·듀얼 모드를 지원합니다.",
   "catalogPages": "28",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 30쪽의 소개·주요기능·제품사양·크기 및 무게·제품 이미지에서 확인했다.",
   "packageStatus": "VERIFIED",
-  "overview": "QMS-88UX는 HDMI Ver. 2.0을 지원하는 True-4K HDMI 8x8 고성능 매트릭스 스위처다. 최대 3840x2160p 60Hz 4:4:4 해상도를 지원하며 Seamless Switching, 8CH Multi-view, Video Wall, Dual 모드 등 다양한 용도로 사용할 수 있다. 서로 다른 임의의 HDMI 입력을 서로 다른 임의의 HDMI 출력 포트로 출력하거나 분배할 수 있다.\n\n전면 LCD 터치 패널, RS-232, LAN(이더넷·웹 브라우저)의 3가지 제어방식으로 동작한다. 출력 9번과 10번은 쿼드 뷰 모드로, 한 화면에 최대 8개의 분할 화면을 구성할 수 있다. HDCP v2.2를 지원한다.",
+  "overview": "QMS-88UX는 HDMI Ver. 2.0을 지원하는 True-4K HDMI 8×8 고성능 매트릭스 스위처다. 최대 3840x2160 @ 60Hz 4:4:4 해상도를 지원하며 심리스 스위칭, 8CH 멀티뷰, 비디오 월, Dual 모드 등 다양한 용도로 사용할 수 있다. 서로 다른 임의의 HDMI 입력을 서로 다른 임의의 HDMI 출력 포트로 출력하거나 분배할 수 있다.\n\n전면 LCD 터치 패널, RS-232, LAN(이더넷·웹 브라우저)의 3가지 제어방식으로 동작한다. 출력 9번과 10번은 쿼드 뷰 모드로, 한 화면에 최대 8개의 분할 화면을 구성할 수 있다. HDCP v2.2를 지원한다.",
   "images": [
     {
       "role": "Front",
@@ -127,11 +127,11 @@
       "source": "C"
     },
     {
-      "text": "매트릭스, 최대 3X3 비디오 월, 쿼드 뷰, 듀얼 모드의 4가지 모드 지원",
+      "text": "매트릭스, 최대 3×3 비디오 월, 쿼드 뷰, 듀얼 모드의 4가지 모드 지원",
       "source": "C"
     },
     {
-      "text": "멀티뷰 전용 출력 지원(출력 9·10번, 06 화면 구성 모드 참고)",
+      "text": "출력 9·10번 멀티뷰·일반 라우팅 겸용(06 화면 구성 모드 참고)",
       "source": "M1"
     },
     {
@@ -164,7 +164,7 @@
     {
       "group": "Video",
       "name": "출력 신호",
-      "value": "HDMI 10 Ports(매트릭스 8 + 9·10번 쿼드뷰 전용)",
+      "value": "HDMI 10 Ports(매트릭스 8 + 9·10번 멀티뷰·일반 라우팅 겸용)",
       "unit": "",
       "condition": "",
       "source": "J",
@@ -173,7 +173,7 @@
     {
       "group": "Video",
       "name": "해상도",
-      "value": "최대 4K 60Hz(3840x2160@60Hz)",
+      "value": "최대 4K/60(3840x2160 @ 60Hz)",
       "unit": "",
       "condition": "",
       "source": "J",
@@ -182,7 +182,7 @@
     {
       "group": "General",
       "name": "연결 단자",
-      "value": "RS-232, LAN(RJ45), 3.5mm stereo, 3-pin phoenix, HDMI 19-Pin Female",
+      "value": "RS-232, LAN(RJ45), 3.5mm 스테레오, 피닉스 3핀, HDMI",
       "unit": "",
       "condition": "",
       "source": "U2",
@@ -246,7 +246,7 @@
   "io": [
     {
       "group": "Video",
-      "connector": "HDMI 19-Pin Female",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "IN",
       "quantity": "8",
@@ -257,23 +257,23 @@
     },
     {
       "group": "Video",
-      "connector": "HDMI 19-Pin Female",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "OUT",
       "quantity": "10",
       "protocol": "HDMI 2.0",
-      "condition": "매트릭스 출력 1~8 + 9·10번 Quad-view(멀티뷰)",
+      "condition": "매트릭스 출력 1~8 + 9·10번 Quad-view(멀티뷰) 또는 일반 라우팅",
       "source": "J",
       "verification": "VERIFIED"
     },
     {
       "group": "Audio",
-      "connector": "3-pin Phoenix (female)",
+      "connector": "피닉스 3핀",
       "signal": "Analog Stereo Audio",
       "direction": "OUT",
       "quantity": "2",
       "protocol": "",
-      "condition": "후면 초록 3핀 Phoenix 단자 2개(QD1·QD2, 멀티뷰 출력 9·10번과 짝). 단자 1(QD1)은 입력 1~4번 중, 단자 2(QD2)는 입력 5~8번 중 원하는 포트 하나를 골라 그 오디오를 추출한다 — 전면 터치 패널의 [Function] → [QD Audio] 메뉴나 RS-232 IS 명령으로 선택",
+      "condition": "후면 초록 3핀 피닉스 단자 2개(QD1·QD2, 멀티뷰 출력 9·10번과 짝). 단자 1(QD1)은 입력 1~4번 중, 단자 2(QD2)는 입력 5~8번 중 원하는 포트 하나를 골라 그 오디오를 추출한다 — 전면 터치 패널의 [Function] → [QD Audio] 메뉴나 RS-232 IS 명령으로 선택",
       "source": "M1",
       "verification": "VERIFIED"
     }
@@ -291,23 +291,52 @@
         "summary": "2×2 월 최대 2개, 또는 월 1개 최대 3×3·2×5, 베젤 조정",
         "detail": "(출력 9·10번도 월에 사용 가능)",
         "page": "19",
-        "layouts": ["2×2","2×2 + 2×2","3×3","2×5"]
+        "layouts": [
+          "2×2",
+          "2×2 + 2×2",
+          "3×3",
+          "2×5"
+        ]
       },
       {
         "name": "QUAD",
-        "summary": "출력 9·10번 전용, 한 화면 최대 8분할(8CH Multi-view)",
+        "summary": "출력 9·10번에서 사용, 한 화면 최대 8분할(8CH 멀티뷰)",
         "detail": "Q1(입력 1~4)·Q2(입력 5~8) 그룹별 4분할, 합쳐서 8분할(비율무시·16:9)도 가능",
         "page": "22–23",
-        "layouts": ["QUAD","3-BOTTOM","3-SIDE RIGHT","3-SIDE LEFT","Horizontal PBP","Vertical PBP","Quad PBP, PIP","Single Select a port","3CH-MODE2","USER MODE 1","USER MODE 2","Default Single","8분할(비율무시)","8분할(16:9 비율)"]
+        "layouts": [
+          "QUAD",
+          "3-BOTTOM",
+          "3-SIDE RIGHT",
+          "3-SIDE LEFT",
+          "Horizontal PBP",
+          "Vertical PBP",
+          "Quad PBP, PIP",
+          "Single Select a port",
+          "3CH-MODE2",
+          "USER MODE 1",
+          "USER MODE 2",
+          "Default Single",
+          "8분할(비율무시)",
+          "8분할(16:9 비율)"
+        ]
       },
       {
         "name": "DUAL",
         "summary": "출력 9·10번 멀티뷰 설정의 2분할(PBP)·PIP 레이아웃",
         "detail": "멀티뷰 설정에서 그룹(Q1·Q2)별로 2분할 레이아웃 선택",
         "page": "20–21",
-        "layouts": ["Horizontal PBP","Vertical PBP","Quad PBP, PIP"]
+        "layouts": [
+          "Horizontal PBP",
+          "Vertical PBP",
+          "Quad PBP, PIP"
+        ]
       }
     ]
+  },
+  "audioOutFlow": {
+    "tag": "QD1 · QD2",
+    "caption": "QD1: IN 1–4 / QD2: IN 5–8 중 선택",
+    "source": "M1"
   },
   "portMap": {
     "image": "Rear",
@@ -330,7 +359,7 @@
       {
         "n": 3,
         "label": "HDMI OUTPUT 9·10",
-        "desc": "멀티뷰(쿼드 뷰) 전용 출력 · 한 화면에 최대 8분할",
+        "desc": "멀티뷰(쿼드 뷰) 또는 일반 라우팅 출력 · 멀티뷰 시 한 화면에 최대 8분할",
         "x1": 745,
         "x2": 830,
         "side": "bottom"
@@ -338,7 +367,7 @@
       {
         "n": 4,
         "label": "AUDIO OUT ×2(QD1·QD2)",
-        "desc": "초록 3핀 Phoenix · 단자 1(QD1)=입력 1~4번, 단자 2(QD2)=입력 5~8번 중 원하는 포트 하나를 골라 추출",
+        "desc": "초록 3핀 피닉스 · 단자 1(QD1)=입력 1~4번, 단자 2(QD2)=입력 5~8번 중 원하는 포트 하나를 골라 추출",
         "x1": 845,
         "x2": 940,
         "side": "bottom"
@@ -370,7 +399,7 @@
       {
         "n": 8,
         "label": "AC 인렛",
-        "desc": "전원 100-200 VAC",
+        "desc": "전원 100-200VAC",
         "x1": 1210,
         "x2": 1320,
         "side": "bottom"

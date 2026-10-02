@@ -12,14 +12,14 @@
     "Video",
     "Extender"
   ],
-  "english": "HDMI fiber optic extender pair (TX/RX) for Full HD 1080p60 over two fibers, up to 2km single-mode or 500m multi-mode.",
+  "english": "HDMI fiber optic extender pair (TX/RX) for Full HD 1080p/60 over two fibers, up to 2km single-mode or 500m multi-mode.",
   "korean": "HDMI 영상 신호를 광케이블 2가닥으로 싱글모드 최대 2km, 멀티모드 최대 500m 전송하는 Full HD 광 송·수신기 한 쌍이다.",
   "subtitle": "Optical Extender · Full HD 광 송·수신기",
-  "lead": "HDMI 영상 신호를 **광케이블 2가닥으로 싱글모드 최대 2km, 멀티모드 최대 500m** 전송하는 Full HD 1080p60 광 송·수신기 한 쌍입니다.",
+  "lead": "HDMI 영상 신호를 **광케이블 2가닥으로 싱글모드 최대 2km, 멀티모드 최대 500m** 전송하는 Full HD 1080p/60 광 송·수신기 한 쌍입니다.",
   "catalogPages": "39",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 41쪽의 OBHD-2C 소개·주요기능·크기 및 무게·제품사양에서 확인했다.",
   "packageStatus": "VERIFIED",
-  "overview": "OBHD-2C는 HDMI 영상 신호를 광케이블을 통해 장거리 전송하기 위한 한 쌍의 송신기와 수신기다. 송신기는 HDMI 신호를 광신호로 변환하고, 수신기는 광신호를 HDMI 신호로 복원한다.\n\nHDMI 영상 신호를 광케이블 2가닥으로 Single Mode 사용 시 최대 2km, Multi Mode 사용 시 최대 500m까지 전송할 수 있다. Full HD(1920X1080p@60Hz)와 HDCP를 지원하며 Plug & Play로 쉽게 설치할 수 있다.",
+  "overview": "OBHD-2C는 HDMI 영상 신호를 광케이블을 통해 장거리 전송하기 위한 한 쌍의 송신기와 수신기다. 송신기는 HDMI 신호를 광신호로 변환하고, 수신기는 광신호를 HDMI 신호로 복원한다.\n\nHDMI 영상 신호를 광케이블 2가닥으로 싱글모드 사용 시 최대 2km, 멀티모드 사용 시 최대 500m까지 전송할 수 있다. Full HD(1920x1080 @ 60Hz)와 HDCP 1.x를 지원하며 Plug & Play로 쉽게 설치할 수 있다.",
   "images": [
     {
       "role": "Main",
@@ -137,11 +137,11 @@
       "source": "C"
     },
     {
-      "text": "Full HD(1920X1080p@60Hz) 지원",
+      "text": "Full HD(1920x1080 @ 60Hz) 지원",
       "source": "C"
     },
     {
-      "text": "HDCP 지원",
+      "text": "HDCP 1.x 지원",
       "source": "C"
     },
     {
@@ -157,7 +157,7 @@
     {
       "group": "Video",
       "name": "최대 해상도",
-      "value": "1920X1080p@60Hz",
+      "value": "1920x1080 @ 60Hz",
       "unit": "",
       "condition": "Full HD",
       "source": "C",
@@ -174,19 +174,10 @@
     },
     {
       "group": "Transmission",
-      "name": "최대 전송거리",
-      "value": "2",
-      "unit": "km",
-      "condition": "Single Mode",
-      "source": "C",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "Transmission",
-      "name": "최대 전송거리",
-      "value": "500",
-      "unit": "m",
-      "condition": "Multi Mode",
+      "name": "최대 전송 거리",
+      "value": "싱글모드 2km\n멀티모드 500m",
+      "unit": "",
+      "condition": "",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -202,7 +193,7 @@
     {
       "group": "Video",
       "name": "HDCP",
-      "value": "HDCP 지원",
+      "value": "HDCP 1.x 지원",
       "unit": "",
       "condition": "",
       "source": "C",
@@ -239,7 +230,7 @@
   "io": [
     {
       "group": "TX · Video",
-      "connector": "HDMI (female)",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "IN",
       "quantity": "1",
@@ -250,7 +241,7 @@
     },
     {
       "group": "TX · Transmission",
-      "connector": "LC connector (female)",
+      "connector": "LC",
       "signal": "Fiber",
       "direction": "OUT",
       "quantity": "1",
@@ -261,7 +252,7 @@
     },
     {
       "group": "RX · Video",
-      "connector": "HDMI (female)",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "OUT",
       "quantity": "1",
@@ -272,7 +263,7 @@
     },
     {
       "group": "RX · Transmission",
-      "connector": "LC connector (female)",
+      "connector": "LC",
       "signal": "Fiber",
       "direction": "IN",
       "quantity": "1",
@@ -287,7 +278,7 @@
     {
       "image": "Other",
       "file": "obhd-2c-tx-front-rear.webp",
-      "title": "송신기 OBHD-2C Tx",
+      "title": "송신기 OBHD-2C TX",
       "items": [
         {
           "n": 1,
@@ -310,7 +301,7 @@
         {
           "n": 3,
           "label": "EDID S/W",
-          "desc": "MODE 로터리를 0번(EXTERNAL)에 두고 누르면 연결한 디스플레이 EDID를 저장. '06 EDID 설정' 참고",
+          "desc": "MODE 로터리 스위치를 0번(EXTERNAL)에 두고 누르면 연결한 디스플레이 EDID를 저장. '06 EDID 설정' 참고",
           "x1": 230,
           "x2": 258,
           "side": "top",
@@ -348,7 +339,7 @@
     {
       "image": "Other",
       "file": "obhd-2c-rx-front-rear.webp",
-      "title": "수신기 OBHD-2C Rx",
+      "title": "수신기 OBHD-2C RX",
       "items": [
         {
           "n": 1,
@@ -423,8 +414,8 @@
     "x2": 617,
     "y2": 112,
     "label": "MODE 로터리 스위치",
-    "desc": "송신기(Tx) 전면 파란 MODE 로터리 스위치로 EDID를 고른다. 1~E번은 내장 EDID Library, 0번(EXTERNAL)은 EDID S/W 버튼으로 저장한 디스플레이 EDID를 쓴다(EDID Emulation). Default EDID는 1920x1080@60Hz다.",
-    "default": "D = 1080p(2CH Audio) · 1920x1080@60Hz(Default EDID)",
+    "desc": "송신기(TX) 전면 파란 MODE 로터리 스위치로 EDID를 고른다. 1~E번은 내장 EDID Library, 0번(EXTERNAL)은 EDID S/W 버튼으로 저장한 디스플레이 EDID를 쓴다(EDID Emulation). Default EDID는 1920x1080 @ 60Hz다.",
+    "default": "D = 1080p(2CH Audio) · 1920x1080 @ 60Hz(Default EDID)",
     "steps": [
       {
         "title": "EDID 저장(Emulation)",
@@ -443,73 +434,73 @@
       },
       {
         "code": "1",
-        "function": "800x600@60Hz",
-        "caption": "800×600@60"
+        "function": "800x600 @ 60Hz",
+        "caption": "800x600 @ 60Hz"
       },
       {
         "code": "2",
-        "function": "1024x768@60Hz",
-        "caption": "1024×768@60"
+        "function": "1024x768 @ 60Hz",
+        "caption": "1024x768 @ 60Hz"
       },
       {
         "code": "3",
-        "function": "1280x768@60Hz",
-        "caption": "1280×768@60"
+        "function": "1280x768 @ 60Hz",
+        "caption": "1280x768 @ 60Hz"
       },
       {
         "code": "4",
-        "function": "1280x1024@60Hz",
-        "caption": "1280×1024@60"
+        "function": "1280x1024 @ 60Hz",
+        "caption": "1280x1024 @ 60Hz"
       },
       {
         "code": "5",
-        "function": "1360x768@60Hz",
-        "caption": "1360×768@60"
+        "function": "1360x768 @ 60Hz",
+        "caption": "1360x768 @ 60Hz"
       },
       {
         "code": "6",
-        "function": "1366x768@60Hz",
-        "caption": "1366×768@60"
+        "function": "1366x768 @ 60Hz",
+        "caption": "1366x768 @ 60Hz"
       },
       {
         "code": "7",
-        "function": "1400x1050@60Hz",
-        "caption": "1400×1050@60"
+        "function": "1400x1050 @ 60Hz",
+        "caption": "1400x1050 @ 60Hz"
       },
       {
         "code": "8",
-        "function": "1600x900@60Hz",
-        "caption": "1600×900@60"
+        "function": "1600x900 @ 60Hz",
+        "caption": "1600x900 @ 60Hz"
       },
       {
         "code": "9",
-        "function": "1600x1200@60Hz",
-        "caption": "1600×1200@60"
+        "function": "1600x1200 @ 60Hz",
+        "caption": "1600x1200 @ 60Hz"
       },
       {
         "code": "A",
-        "function": "1680x1050@60Hz",
-        "caption": "1680×1050@60"
+        "function": "1680x1050 @ 60Hz",
+        "caption": "1680x1050 @ 60Hz"
       },
       {
         "code": "B",
-        "function": "1920x1200@60Hz",
-        "caption": "1920×1200@60"
+        "function": "1920x1200 @ 60Hz",
+        "caption": "1920x1200 @ 60Hz"
       },
       {
         "code": "C",
-        "function": "1080i@60Hz(2CH Audio)",
+        "function": "1080i/60(2CH Audio)",
         "caption": "1080i 2CH"
       },
       {
         "code": "D",
-        "function": "1080p(2CH Audio) · 1920x1080@60Hz",
+        "function": "1080p(2CH Audio) · 1920x1080 @ 60Hz",
         "caption": "1080p 2CH",
         "highlight": true
       },
       {
         "code": "E",
-        "function": "1080p(Multi CH Audio) · 1920x1080@60Hz",
+        "function": "1080p(Multi CH Audio) · 1920x1080 @ 60Hz",
         "caption": "1080p Multi"
       },
       {

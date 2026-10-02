@@ -1,6 +1,12 @@
-# 남은 할 일·받을 자료 (2026-09-28 기준)
+# 남은 할 일·받을 자료 (2026-10-01 기준)
 
 새 세션은 이 목록을 먼저 확인합니다. 처리한 항목은 지우고, CHANGELOG에 버전과 함께 남깁니다.
+
+## 용어 통일 후속(0.189) — 사용자 결정 대기
+
+`docs/audit/TERMS_REVIEW_2026-10-01_decisions.md`의 검토 40행은 자동 적용하지 않았습니다(`docs/implementation/TERMS_UNIFICATION_0.189.md` §3).
+- [ ] 검토 행 판단: HD-13U·HD-210U 오디오 문구(믹스 표현 병존), QMS-88UX 쿼드 명칭(최대 8분할 설명 병존), SPX "Touch Screen" → 터치 패널/터치스크린, 짧은 영문 사양 값(Fiber Optical Input 등) 원문 여부
+- [ ] 영문 분류명(1x4 HDMI 18Gbps Splitter 등)과 모델명 축약(CTR100 등)은 사용자 "pass"로 그대로 둠. 다시 정할 때 이 항목에서 시작
 
 ## AI 검색 사내 베타(0.142) — 사용자 설정 대기
 
@@ -39,10 +45,6 @@
 `docs/implementation/SPX_R6_0.157.md` §4에 근거가 있습니다.
 - [ ] 크기·무게·전원 어댑터 전압: 사양서에 없어 04 제품 사양에 적지 않았습니다. 자료를 받으면 추가합니다.
 - [ ] RTCOM 로고가 있는 실물 사진이 생기면 평면 그림 대신 사진으로 바꿀 수 있습니다.
-
-## GitHub 설정 — 사용자 작업 대기
-
-- [ ] `main` 브랜치에 필수 검사 `RTCOM checks / verify`를 켜기(0.165, 순서: `docs/implementation/TOUCH_SLOT_X_AND_CI_0.165.md` §2). 켜기 전에도 검사는 PR마다 돌고, Claude는 통과를 확인한 뒤 병합합니다.
 
 ## AV 빌더 한 번에 열기(B안) — AV 빌더 쪽 작업 대기
 

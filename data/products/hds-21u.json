@@ -11,14 +11,14 @@
     "Video",
     "Switcher"
   ],
-  "english": "2x1 HDMI 2.0 4K60 switcher with audio extraction/insertion, priority and EDID minder",
-  "korean": "오디오 추출·삽입, Priority, EDID 마인더 기능을 갖춘 2입력 1출력 HDMI 2.0 4K 선택기다.",
-  "subtitle": "2×1 HDMI 2.0 Switcher · 오디오 추출·삽입",
+  "english": "2x1 HDMI 2.0 4K/60 switcher with audio extraction/insertion, priority and EDID minder",
+  "korean": "오디오 병합·추출, Priority, EDID 마인더 기능을 갖춘 2입력 1출력 HDMI 2.0 4K 선택기다.",
+  "subtitle": "2×1 HDMI 2.0 Switcher · 오디오 병합·추출",
   "lead": "두 개의 HDMI 입력 중 **하나를 선택해 출력**합니다. Priority 오토셀렉팅과 아날로그 오디오 병합·추출을 지원합니다.",
   "catalogPages": "32",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 34쪽의 소개·주요기능·제품사양·크기 및 무게·제품 이미지에서 확인했다.",
   "packageStatus": "VERIFIED",
-  "overview": "HDS-21U는 True HDMI 2.0 3840x2160p 60Hz 크로마샘플링 4:4:4 해상도를 지원하는 고성능 HDMI 선택기다. 두 개의 HDMI 입력신호를 선택하여 하나의 HDMI 신호로 출력한다. HDCP(고대역 디지털 콘텐츠 보호)와 EDID(디스플레이 식별 정보)를 완벽 지원하며 외부 EDID와 내부에 저장된 EDID를 사용할 수 있어 EDID 마인더 기능도 수행한다.\n\n아날로그 오디오를 병합·추출할 수 있으며 오디오 볼륨 조절 및 뮤트 기능을 지원한다. Priority(우선순위) 기능으로 오토셀렉팅(마지막에 입력된 신호를 출력)하거나 지정된 입력신호를 우선 출력하도록 선택할 수 있다. 버튼, RS-232, IR 리모콘의 3가지 제어방식을 지원한다.\n\n알티컴의 Fast Switching 기술을 적용하여 일반적인 스위처보다 빠르게 스위칭한다.",
+  "overview": "HDS-21U는 True HDMI 2.0 3840x2160 @ 60Hz 크로마샘플링 4:4:4 해상도를 지원하는 고성능 HDMI 선택기다. 두 개의 HDMI 입력신호를 선택하여 하나의 HDMI 신호로 출력한다. HDCP(고대역 디지털 콘텐츠 보호)와 EDID(디스플레이 식별 정보)를 완벽 지원하며 외부 EDID와 내부에 저장된 EDID를 사용할 수 있어 EDID 마인더 기능도 수행한다.\n\n아날로그 오디오를 병합·추출할 수 있으며 오디오 볼륨 조절 및 뮤트 기능을 지원한다. Priority(우선순위) 기능으로 오토셀렉팅(마지막에 입력된 신호를 출력)하거나 지정된 입력신호를 우선 출력하도록 선택할 수 있다. 버튼, RS-232, IR 리모콘의 3가지 제어방식을 지원한다.\n\n알티컴의 Fast Switching 기술을 적용하여 일반적인 스위처보다 빠르게 스위칭한다.",
   "images": [
     {
       "role": "Front",
@@ -142,7 +142,7 @@
       "source": "U"
     },
     {
-      "text": "버튼, RS232, IR 리모콘 제어 지원",
+      "text": "버튼, RS-232, IR 리모콘 제어 지원",
       "source": "C"
     },
     {
@@ -163,7 +163,7 @@
     {
       "group": "Video",
       "name": "비디오 해상도",
-      "value": "최대 3840x2160, 4K 60Hz",
+      "value": "최대 3840x2160, 4K/60",
       "unit": "",
       "condition": "",
       "source": "C",
@@ -356,7 +356,7 @@
     "x2": 1228,
     "y2": 180,
     "label": "EDID 로터리 스위치",
-    "desc": "전면 파란색 EDID 로터리 스위치로 디스플레이 EDID를 선택한다. HD-13U와 달리 별도 SET 버튼이 없어, 로터리를 돌린 뒤 전원 케이블을 1회 탈착해야 적용된다.",
+    "desc": "전면 파란색 EDID 로터리 스위치로 디스플레이 EDID를 선택한다. HD-13U와 달리 별도 SET 버튼이 없어, 로터리 스위치를 돌린 뒤 전원 케이블을 1회 탈착해야 적용된다.",
     "default": "0 = Throughpass(외부 EDID 저장: OUTPUT에 연결된 디스플레이의 EDID를 저장해 사용)",
     "steps": [
       {
@@ -383,49 +383,49 @@
       },
       {
         "code": "1",
-        "function": "1920x1200@60 (DVI)"
+        "function": "1920x1200 @ 60Hz (DVI)"
       },
       {
         "code": "2",
-        "function": "1920x1080p@60 (DVI)"
+        "function": "1920x1080 @ 60Hz (DVI)"
       },
       {
         "code": "3",
-        "function": "1920x1080p@60 PCM 2CH",
+        "function": "1920x1080 @ 60Hz PCM 2CH",
         "highlight": true
       },
       {
         "code": "4",
-        "function": "1920x1080p@60 Multi Channel"
+        "function": "1920x1080 @ 60Hz Multi Channel"
       },
       {
         "code": "5",
-        "function": "1920x1080p@60 Bitstream"
+        "function": "1920x1080 @ 60Hz Bitstream"
       },
       {
         "code": "6",
-        "function": "3840x2160p@30 PCM 2CH"
+        "function": "3840x2160 @ 30Hz PCM 2CH"
       },
       {
         "code": "7",
-        "function": "3840x2160p@30 Multi Channel"
+        "function": "3840x2160 @ 30Hz Multi Channel"
       },
       {
         "code": "8",
-        "function": "3840x2160p@30 Bitstream"
+        "function": "3840x2160 @ 30Hz Bitstream"
       },
       {
         "code": "9",
-        "function": "3840x2160p@60 PCM 2CH",
+        "function": "3840x2160 @ 60Hz PCM 2CH",
         "highlight": true
       },
       {
         "code": "A",
-        "function": "3840x2160p@60 Multi Channel"
+        "function": "3840x2160 @ 60Hz Multi Channel"
       },
       {
         "code": "B",
-        "function": "3840x2160p@60 Bitstream"
+        "function": "3840x2160 @ 60Hz Bitstream"
       }
     ],
     "source": "M1"

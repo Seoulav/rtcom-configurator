@@ -5,7 +5,7 @@
   "productName": "VDM Series",
   "model": "VDM Series",
   "series": "Variety Digital Matrix",
-  "seriesNote": "메인프레임 9종(카탈로그 기준)과 4포트 입출력 보드, HDBaseT·광 전송기로 구성한다.",
+  "seriesNote": "메인프레임 10종과 4포트 입출력 카드, HDBaseT·광 전송기로 구성한다.",
   "itemType": "SERIES",
   "categories": [
     "영상",
@@ -13,13 +13,13 @@
     "Modular Matrix"
   ],
   "english": "Variety Digital Matrix — modular cross-platform matrix switcher from 8x8 to 288x288 supporting HDMI, HDBaseT, fiber, 3G-SDI, DVI and VGA.",
-  "korean": "HDMI·HDBaseT·광·3G-SDI·DVI·VGA 신호를 8x8부터 288x288까지 자유롭게 입출력하는 모듈형 크로스 플랫폼 매트릭스 스위처다.",
+  "korean": "HDMI·HDBaseT·광·3G-SDI·DVI·VGA 신호를 8×8부터 288×288까지 자유롭게 입출력하는 모듈형 크로스 플랫폼 매트릭스 스위처다.",
   "subtitle": "Variety Digital Matrix · 크로스 플랫폼 모듈형 매트릭스",
   "lead": "HDMI·HDBaseT·광·3G-SDI를 **한 프레임에서 섞어 쓰는** 크로스 플랫폼 매트릭스입니다. 8×8부터 288×288까지 10가지 프레임으로 소규모 회의실부터 대형 상황실까지 대응합니다.",
   "catalogPages": "17–20",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 17~27쪽의 소개·LINE-UP·주요기능·제품사양·크기 및 무게·입출력 보드·전송기 사양에서 확인했다.",
   "packageStatus": "VERIFIED",
-  "overview": "VDM(Variety Digital Matrix Switcher) 시리즈는 디지털 인터페이스인 HDMI, CATx, Fiber, 3G/6G-SDI, DVI와 아날로그 인터페이스인 VGA까지 다양한 입출력 신호를 지원하는 모듈형 크로스 플랫폼 매트릭스 스위처다. 어떤 인터페이스로 입력해도 원하는 인터페이스로 출력할 수 있어 별도의 신호변환기가 필요 없고, 입출력 슬롯을 통해 영상·음성·제어신호를 장거리 전송할 수 있다.\n\n입출력 슬롯의 오디오 단자로 임베디드 오디오를 추출하거나 외부 오디오를 병합할 수 있으며, 후면에 별도 장착하는 오디오 매트릭스를 쓰면 오디오 병합·추출·입출력을 더 자유롭게 구성할 수 있다. 내장 패턴 제너레이터로 설치·운용 중 입력 채널 모니터링과 출력 채널 이상 유무를 확인할 수 있다.\n\n메인프레임은 8x8부터 288x288까지 9가지다. 전면 LCD 터치패널, RS-232, LAN으로 제어하며, 터치패널에서 파워모듈과 CPU 상태, 입력 소스 해상도, 출력 디스플레이 정보와 설정을 확인할 수 있다. 모든 메인프레임에 듀얼 리던던트 파워와 파워 핫스왑이 기본 적용된다.",
+  "overview": "VDM(Variety Digital Matrix Switcher) 시리즈는 디지털 인터페이스인 HDMI, CATx, 광, 3G/6G-SDI, DVI와 아날로그 인터페이스인 VGA까지 다양한 입출력 신호를 지원하는 모듈형 크로스 플랫폼 매트릭스 스위처다. 어떤 인터페이스로 입력해도 원하는 인터페이스로 출력할 수 있어 별도의 신호변환기가 필요 없고, 입출력 슬롯을 통해 영상·음성·제어신호를 장거리 전송할 수 있다.\n\n입출력 슬롯의 오디오 단자로 임베디드 오디오를 추출하거나 외부 오디오를 병합할 수 있으며, 후면에 별도 장착하는 오디오 매트릭스를 쓰면 오디오 병합·추출·입출력을 더 자유롭게 구성할 수 있다. 내장 패턴 제너레이터로 설치·운용 중 입력 채널 모니터링과 출력 채널 이상 유무를 확인할 수 있다.\n\n메인프레임은 8×8부터 288×288까지 10가지다. 전면 LCD 터치 패널, RS-232, LAN으로 제어하며, 터치 패널에서 파워모듈과 CPU 상태, 입력 소스 해상도, 출력 디스플레이 정보와 설정을 확인할 수 있다. 모든 메인프레임에 듀얼 이중화 전원와 파워 핫스왑이 기본 적용된다.",
   "images": [
     {
       "role": "Main",
@@ -97,11 +97,11 @@
   ],
   "features": [
     {
-      "text": "8x8부터 288x288까지 메인프레임 9종",
+      "text": "8×8부터 288×288까지 메인프레임 10종",
       "source": "C"
     },
     {
-      "text": "HDMI, DVI, 3G-SDI, HDBaseT, Fiber Optical, VGA 등 다양한 인터페이스 지원",
+      "text": "HDMI, DVI, 3G-SDI, HDBaseT, 광, VGA 등 다양한 인터페이스 지원",
       "source": "C"
     },
     {
@@ -109,7 +109,7 @@
       "source": "C"
     },
     {
-      "text": "HDMI 1.4 버전 4K@30Hz 지원",
+      "text": "HDMI 1.4 버전 4K/30 지원",
       "source": "C"
     },
     {
@@ -129,11 +129,11 @@
       "source": "C"
     },
     {
-      "text": "비디오월 기능 지원",
+      "text": "비디오 월 기능 지원",
       "source": "C"
     },
     {
-      "text": "EDID, HDCP 1.X 지원",
+      "text": "EDID, HDCP 1.x·2.0 지원",
       "source": "C"
     }
   ],
@@ -150,7 +150,7 @@
     {
       "group": "Video",
       "name": "최대 해상도",
-      "value": "3840×2160@30Hz",
+      "value": "3840x2160 @ 30Hz",
       "unit": "",
       "condition": "4:4:4",
       "source": "J",
@@ -159,7 +159,7 @@
     {
       "group": "General",
       "name": "입력 채널",
-      "value": "8, 16, 32, 48, 64, 80, 128, 180, 288",
+      "value": "8, 16, 32, 48, 64, 80, 128, 180, 256, 288",
       "unit": "ch",
       "condition": "",
       "source": "C",
@@ -168,7 +168,7 @@
     {
       "group": "General",
       "name": "출력 채널",
-      "value": "8, 16, 32, 48, 64, 80, 128, 180, 288",
+      "value": "8, 16, 32, 48, 64, 80, 128, 180, 256, 288",
       "unit": "ch",
       "condition": "",
       "source": "C",
@@ -177,7 +177,7 @@
     {
       "group": "Video",
       "name": "입력 신호",
-      "value": "HDMI(DVI 1.0 호환), 3G-SDI, HDBaseT, Fiber",
+      "value": "HDMI, 3G-SDI, HDBaseT, 광",
       "unit": "",
       "condition": "",
       "source": "J",
@@ -186,7 +186,7 @@
     {
       "group": "Video",
       "name": "출력 신호",
-      "value": "HDMI(DVI 1.0 호환), 3G-SDI, HDBaseT, Fiber",
+      "value": "HDMI, 3G-SDI, HDBaseT, 광",
       "unit": "",
       "condition": "",
       "source": "J",
@@ -197,7 +197,7 @@
       "name": "파워모듈",
       "value": "110~240",
       "unit": "VAC",
-      "condition": "50/60 Hz, 150W~600W",
+      "condition": "50/60Hz, 150W~600W",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -302,105 +302,105 @@
     },
     {
       "model": "HIS4-U",
-      "kind": "입력 보드",
-      "summary": "4K HDMI 입력 4포트 · DVI 1.0/HDMI 1.4 · 4096×2160@30Hz(4:4:4)·60Hz(4:2:0) · 오디오 병합/추출"
+      "kind": "입력 카드",
+      "summary": "4K HDMI 입력 4포트 · HDMI 1.4 · 3840x2160 @ 30Hz 4:4:4·60Hz 4:2:0 · 오디오 병합/추출"
     },
     {
       "model": "CIS4-U",
-      "kind": "입력 보드",
-      "summary": "4K CATx(HDBaseT) 입력 4포트 · 4096×2160@30Hz(4:4:4)·60Hz(4:2:0) · 오디오 병합/추출"
+      "kind": "입력 카드",
+      "summary": "4K CATx(HDBaseT) 입력 4포트 · 3840x2160 @ 30Hz 4:4:4·60Hz 4:2:0 · 오디오 병합/추출"
     },
     {
       "model": "FIS4-U",
-      "kind": "입력 보드",
-      "summary": "4K 광(1 LC) 입력 4포트 · 멀티모드 500m/싱글모드 10km · 4096×2160@30Hz(4:4:4)·60Hz(4:2:0)"
+      "kind": "입력 카드",
+      "summary": "4K 광(1 LC) 입력 4포트 · 멀티모드 500m/싱글모드 10km · 3840x2160 @ 30Hz 4:4:4·60Hz 4:2:0"
     },
     {
       "model": "SIS4-U",
-      "kind": "입력 보드",
-      "summary": "3G/HD-SDI 입력 4포트 · 1920×1080p60Hz · 오디오 병합/추출"
+      "kind": "입력 카드",
+      "summary": "3G/HD-SDI 입력 4포트 · 1920x1080 @ 60Hz · 오디오 병합/추출"
     },
     {
       "model": "QOS4S-U",
-      "kind": "출력 보드",
-      "summary": "4K 쿼드 뷰어 HDMI 출력 2포트 · 1920×1200, 3840×2160 30Hz · 심리스"
+      "kind": "출력 카드",
+      "summary": "4K 쿼드뷰어 HDMI 출력 2포트 · 1920x1200, 3840x2160 @ 30Hz · 심리스"
     },
     {
       "model": "COS4-U",
-      "kind": "출력 보드",
-      "summary": "4K CATx(HDBaseT) 출력 4포트 · 4096×2160@30Hz(4:4:4)·60Hz(4:2:0) · 오디오 병합/추출"
+      "kind": "출력 카드",
+      "summary": "4K CATx(HDBaseT) 출력 4포트 · 3840x2160 @ 30Hz 4:4:4·60Hz 4:2:0 · 오디오 병합/추출"
     },
     {
       "model": "HOS4-U",
-      "kind": "출력 보드",
-      "summary": "일반 스위칭 4K HDMI 출력 4포트 · DVI 1.0/HDMI 1.4 · 4096×2160@30Hz(4:4:4)·60Hz(4:2:0) · 오디오 추출/병합"
+      "kind": "출력 카드",
+      "summary": "일반 스위칭 4K HDMI 출력 4포트 · HDMI 1.4 · 3840x2160 @ 30Hz 4:4:4·60Hz 4:2:0 · 오디오 추출/병합"
     },
     {
       "model": "HOS4S-UW",
-      "kind": "출력 보드",
-      "summary": "심리스 스위칭 스케일링·월 HDMI 출력 4포트 · 1920×1080@60Hz 비디오월"
+      "kind": "출력 카드",
+      "summary": "심리스 스위칭 스케일링·월 HDMI 출력 4포트 · 1920x1080 @ 60Hz 비디오 월"
     },
     {
       "model": "FOS4-U",
-      "kind": "출력 보드",
-      "summary": "4K 광(1 LC) 출력 4포트 · 멀티모드 500m/싱글모드 10km · 4096×2160@30Hz(4:4:4)·60Hz(4:2:0)"
+      "kind": "출력 카드",
+      "summary": "4K 광(1 LC) 출력 4포트 · 멀티모드 500m/싱글모드 10km · 3840x2160 @ 30Hz 4:4:4·60Hz 4:2:0"
     },
     {
       "model": "SOS4",
-      "kind": "출력 보드",
-      "summary": "3G/HD-SDI 출력 4포트 · 스테레오 입·출력 4포트 · 1920×1080p60Hz · 심리스·스케일링"
+      "kind": "출력 카드",
+      "summary": "3G/HD-SDI 출력 4포트 · 스테레오 입·출력 4포트 · 1920x1080 @ 60Hz · 심리스·스케일링"
     },
     {
       "model": "CT101-U / CR101-U",
       "kind": "전송기",
-      "summary": "HDBaseT DVI/HDMI·오디오·RS-232 송수신기 · 100m"
+      "summary": "HDBaseT DVI/HDMI·오디오·RS-232 송·수신기 · 100m"
     },
     {
       "model": "CT103-U-H / CR103-U",
       "kind": "전송기",
-      "summary": "HDBaseT 벽부형 송수신기 · 100m"
+      "summary": "HDBaseT 벽부형 송·수신기 · 100m"
     },
     {
       "model": "CT104-U / CR104-U",
       "kind": "전송기",
-      "summary": "HDBaseT 4K HDMI·RS-232 송수신기 · CAT5e/CAT6 100m"
+      "summary": "HDBaseT 4K HDMI·RS-232 송·수신기 · CAT5e/CAT6 100m"
     },
     {
       "model": "FT101-U / FR101-U",
       "kind": "전송기",
-      "summary": "광 DVI/HDMI·오디오·RS-232 송수신기 · 싱글모드 2km/멀티모드 500m"
+      "summary": "광 DVI/HDMI·오디오·RS-232 송·수신기 · 싱글모드 2km/멀티모드 500m"
     },
     {
       "model": "FT103-U-H / FR103-U",
       "kind": "전송기",
-      "summary": "광 벽부형 DVI/HDMI 송수신기 · 최대 2km"
+      "summary": "광 벽부형 DVI/HDMI 송·수신기 · 싱글모드 2km/멀티모드 500m"
     }
   ],
   "related": [
     {
       "relation": "PART_OF_SERIES",
       "target": "ct101-u-cr101-u",
-      "note": "VDM 시리즈 HDBaseT 송수신기"
+      "note": "VDM 시리즈 HDBaseT 송·수신기"
     },
     {
       "relation": "PART_OF_SERIES",
       "target": "ct103-u-h-cr103-u",
-      "note": "VDM 시리즈 벽부형 HDBaseT 송수신기"
+      "note": "VDM 시리즈 벽부형 HDBaseT 송·수신기"
     },
     {
       "relation": "PART_OF_SERIES",
       "target": "ct104-u-cr104-u",
-      "note": "VDM 시리즈 HDBaseT 송수신기 · 구성기에서 CIS4-U↔CT104-U, COS4-U↔CR104-U 연동(U09)"
+      "note": "VDM 시리즈 HDBaseT 송·수신기 · 구성기에서 CIS4-U↔CT104-U, COS4-U↔CR104-U 연동(U09)"
     },
     {
       "relation": "PART_OF_SERIES",
       "target": "ft101-u-fr101-u",
-      "note": "VDM 시리즈 광 송수신기 · 구성기에서 FIS4-U↔FT101-U, FOS4-U↔FR101-U 연동(U09)"
+      "note": "VDM 시리즈 광 송·수신기 · 구성기에서 FIS4-U↔FT101-U, FOS4-U↔FR101-U 연동(U09)"
     },
     {
       "relation": "PART_OF_SERIES",
       "target": "ft103-u-h-fr103-u",
-      "note": "VDM 시리즈 벽부형 광 송수신기"
+      "note": "VDM 시리즈 벽부형 광 송·수신기"
     }
   ],
   "sources": [
