@@ -673,3 +673,12 @@ test('0.200: SPX-R6 03 Signal Flow는 TX 구성·RX 구성 버튼으로 두 연�
   assert.ok(src.includes("rx?'CAT IN → HDMI OUT':'HDMI IN → CAT OUT'"),'RX 구성 모듈은 CAT IN → HDMI OUT');
   assert.ok(src.includes("const remote=rx?'SPX-TX':'SPX-RX'"),'RX 구성 상대 기기는 SPX-TX');
 });
+
+test('0.201: SPX-TX/RX 03 Signal Flow 범례의 실효 전송 거리에 Belden 케이블 조건(7814A·10GXE02)을 남긴다',()=>{
+  // 사용자 요청 2026-10-04 "벨덴 케이블 7814a와 10gxe02사용 조건이야 수정해"
+  const src=read('src/products.js');
+  assert.ok(src.includes("const belden=inner.match(/Belden\\s*[A-Z0-9]+/i);return belden?` (${belden[0]})`:''"),'괄호 속 Belden 모델만 남기고 나머지 괄호 설명은 지운다');
+  const value=JSON.parse(read('data/products/spx-rx-tx.json')).specifications.find(spec=>spec.group==='Transmission').value;
+  const legend=value.split('\n').map(line=>line.replace(/\s*\(([^)]*)\)/g,(all,inner)=>{const belden=inner.match(/Belden\s*[A-Z0-9]+/i);return belden?` (${belden[0]})`:''}).trim()).join(' · ');
+  assert.equal(legend,'UTP CAT6 50m (Belden 7814A) · S/FTP CAT6A 70m (Belden 10GXE02)');
+});

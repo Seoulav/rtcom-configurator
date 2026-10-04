@@ -55,6 +55,13 @@
 - **0.145.0 배포 기록**: `docs/qa/DEPLOYMENT_0.145_2026-09-29.md`(PR #194 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.144.0 배포 기록**: `docs/qa/DEPLOYMENT_0.144_2026-09-29.md`(PR #192 → main 병합, Pages 배포 run 162, 공개 파일 337/338 일치, `.nojekyll` 제외)
 
+## 0.201.0
+
+사용자 요청 2026-10-04("벨덴 케이블 7814a와 10gxe02사용 조건이야 수정해"):
+
+- **SPX-TX/RX 실효 전송 거리 케이블 조건**: 03 Signal Flow 범례와 펼치는 그림 설명이 `4K/60 실효 전송 거리: UTP CAT6 50m (Belden 7814A) · S/FTP CAT6A 70m (Belden 10GXE02)`로 보입니다. 0.166부터 범례를 만들 때 괄호 설명을 모두 지워 케이블 모델이 빠졌던 것을, 괄호 속 Belden 모델만 남기도록 고쳤습니다. 다른 제품의 범례는 바뀌지 않습니다.
+- 근거·화면: `docs/implementation/SPX_TXRX_BELDEN_LEGEND_0.201.md`, `docs/qa/spx-txrx-belden-0.201/`
+
 ## 0.200.0
 
 사용자 요청 2026-10-04("다음 단계 진행해줘", 0.171 보고의 다음 단계 제안 3번 "03 Signal Flow에 RX 구성 예시 추가"):
