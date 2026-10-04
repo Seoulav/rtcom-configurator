@@ -624,49 +624,70 @@
       return diagramWrap(bodyMarkup,width,height,captions,{label:`${item.model} Signal Flow`,steps})+note;
     }
     // SPX-R6 "03 Signal Flow"(0.157). 송·수신기 한 쌍이 아니라 모듈 6개를 품은 섀시라 extenderDiagram이 그리지 못한다.
-    // 사양서 연결도(1쪽)에 있는 연결만 그린다: 소스 6대 → 모듈 칸 HDMI IN → CAT OUT → SPX-RX 6대 → 디스플레이,
+    // TX 구성은 사양서 연결도(1쪽)에 있는 연결만 그린다: 소스 6대 → 모듈 칸 HDMI IN → CAT OUT → SPX-RX 6대 → 디스플레이,
     // IR 리시버(리모컨) → IR IN, 제어 컨트롤러 → IR Ctrl, 외부 전원 어댑터 1개 → 본체(모듈 6개 공급).
+    // 0.200: 모듈 칸에 TX·RX 모듈을 원하는 대로 꽂으므로(사용자 확인 2026-09-29) RX 구성(소스 → SPX-TX → CAT IN → 모듈 HDMI OUT → 디스플레이)도
+    // 같은 틀로 그리고 "TX 구성 / RX 구성" 버튼(단자 지도 정면·후면과 같은 data-pm-side·data-pm-face)으로 바꿔 본다.
+    // RX 구성의 IR 연결은 사양서에 없어 그리지 않는다.
     const COLOR_IR='#7669EF';
-    function rackExtenderDiagram(item){
-      const width=860,rows=6,top=96,head=34,gap=50;
-      const r6X=160,r6W=190,rxX=530,rxW=112,srcX=48,dstX=812,rowY=i=>top+head+18+i*gap;
+    function rackExtenderDiagram(item,mode='tx'){
+      const rx=mode==='rx';
+      const width=860,rows=6,top=rx?60:96,head=34,gap=50;
+      const r6W=190,boxW=112,srcX=48,dstX=812,rowY=i=>top+head+18+i*gap;
+      // TX: 소스 → SPX-R6 → SPX-RX → 디스플레이 / RX: 소스 → SPX-TX → SPX-R6 → 디스플레이
+      const r6X=rx?420:160,boxX=rx?140:530;
       const r6Bottom=top+head+gap*rows+6,height=r6Bottom+92;
-      let body=`<text x="${width/2}" y="22" text-anchor="middle" font-size="12" font-weight="700" fill="#687386">${svgEsc(`${item.model} 1대 = 모듈 6개 · 모듈마다 소스 1대 → SPX-RX 1대 → 디스플레이 1대`)}</text>`;
-      // IR 리시버·제어 컨트롤러(위)와 전원 어댑터(아래)
-      body+=deviceBox(r6X-44,38,120,36,'IR 리시버','리모컨 신호')+deviceBox(r6X+114,38,120,36,'제어 컨트롤러','');
-      body+=arrow(r6X+22,74,r6X+22,top-3,COLOR_IR)+arrow(r6X+168,74,r6X+168,top-3,COLOR_IR);
-      body+=`<text x="${r6X+29}" y="${top-8}" font-size="10" font-weight="700" fill="${COLOR_IR}">IR IN</text><text x="${r6X+175}" y="${top-8}" font-size="10" font-weight="700" fill="${COLOR_IR}">IR Ctrl</text>`;
+      const remote=rx?'SPX-TX':'SPX-RX';
+      let body=`<text x="${width/2}" y="22" text-anchor="middle" font-size="12" font-weight="700" fill="#687386">${svgEsc(rx?`${item.model} 1대 = RX 모듈 6개 · 모듈마다 소스 1대 → SPX-TX 1대 → 디스플레이 1대`:`${item.model} 1대 = 모듈 6개 · 모듈마다 소스 1대 → SPX-RX 1대 → 디스플레이 1대`)}</text>`;
+      if(!rx){
+        // IR 리시버·제어 컨트롤러(위)
+        body+=deviceBox(r6X-44,38,120,36,'IR 리시버','리모컨 신호')+deviceBox(r6X+114,38,120,36,'제어 컨트롤러','');
+        body+=arrow(r6X+22,74,r6X+22,top-3,COLOR_IR)+arrow(r6X+168,74,r6X+168,top-3,COLOR_IR);
+        body+=`<text x="${r6X+29}" y="${top-8}" font-size="10" font-weight="700" fill="${COLOR_IR}">IR IN</text><text x="${r6X+175}" y="${top-8}" font-size="10" font-weight="700" fill="${COLOR_IR}">IR Ctrl</text>`;
+      }
       body+=`<rect x="${r6X}" y="${top}" width="${r6W}" height="${r6Bottom-top}" rx="14" fill="#eef2f8" stroke="#c8d3e6" stroke-width="2"/>`;
       body+=`<text x="${r6X+r6W/2}" y="${top+24}" text-anchor="middle" font-size="14" font-weight="800" fill="#1f2532">${svgEsc(item.model)}</text>`;
       body+=arrow(r6X+r6W/2,r6Bottom+34,r6X+r6W/2,r6Bottom+4,COLOR_POWER);
       body+=`<text x="${r6X+r6W/2}" y="${r6Bottom+52}" text-anchor="middle" font-size="11" fill="#687386">전원 어댑터 1개 → 모듈 6개 공급</text>`;
       for(let i=0;i<rows;i++){
-        const y=rowY(i);
-        body+=monitorIcon(srcX,y-4,i===rows-1?'소스 기기':'',0.8)+arrow(srcX+22,y,r6X-6,y,COLOR_IN);
-        body+=`<rect x="${r6X+12}" y="${y-17}" width="${r6W-24}" height="34" rx="8" fill="#fff" stroke="#c8d3e6" stroke-width="1.5"/><text x="${r6X+24}" y="${y+4}" font-size="12" font-weight="750" fill="#1f2532">모듈 ${i+1}</text><text x="${r6X+r6W-22}" y="${y+4}" text-anchor="end" font-size="10" fill="#687386">HDMI IN → CAT OUT</text>`;
-        body+=`<path d="M${r6X+r6W} ${y}L${rxX} ${y}" stroke="${COLOR_COPPER}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/>`;
-        body+=deviceBox(rxX,y-17,rxW,34,'SPX-RX','');
-        body+=arrow(rxX+rxW+6,y,dstX-22,y,COLOR_OUT)+monitorIcon(dstX,y-4,i===rows-1?'디스플레이':'',0.8);
+        const y=rowY(i),last=i===rows-1;
+        const firstX=rx?boxX:r6X;
+        body+=monitorIcon(srcX,y-4,last?'소스 기기':'',0.8)+arrow(srcX+22,y,firstX-6,y,COLOR_IN);
+        body+=`<rect x="${r6X+12}" y="${y-17}" width="${r6W-24}" height="34" rx="8" fill="#fff" stroke="#c8d3e6" stroke-width="1.5"/><text x="${r6X+24}" y="${y+4}" font-size="12" font-weight="750" fill="#1f2532">모듈 ${i+1}</text><text x="${r6X+r6W-22}" y="${y+4}" text-anchor="end" font-size="10" fill="#687386">${rx?'CAT IN → HDMI OUT':'HDMI IN → CAT OUT'}</text>`;
+        body+=deviceBox(boxX,y-17,boxW,34,remote,'');
+        body+=rx?`<path d="M${boxX+boxW} ${y}L${r6X} ${y}" stroke="${COLOR_COPPER}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/>`:`<path d="M${r6X+r6W} ${y}L${boxX} ${y}" stroke="${COLOR_COPPER}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/>`;
+        const lastX=rx?r6X+r6W:boxX+boxW;
+        body+=arrow(lastX+6,y,dstX-22,y,COLOR_OUT)+monitorIcon(dstX,y-4,last?'디스플레이':'',0.8);
       }
-      body+=`<text x="${(r6X+r6W+rxX)/2}" y="${rowY(0)-24}" text-anchor="middle" font-size="11" font-weight="700" fill="${COLOR_COPPER}">CATx(CAT5e) · PoC</text>`;
+      const catMid=rx?(boxX+boxW+r6X)/2:(r6X+r6W+boxX)/2;
+      body+=`<text x="${catMid}" y="${rowY(0)-24}" text-anchor="middle" font-size="11" font-weight="700" fill="${COLOR_COPPER}">CATx(CAT5e) · PoC</text>`;
       // 0.193: 전송 거리를 한 행에 줄 나눔("4K/60 @ 4:4:4 50m\n1080p/60 60m")으로 적으면 줄마다 범례 한 토막으로 쓴다.
       const distances=(item.specifications||[]).filter(spec=>/전송\s?거리/.test(spec.name)).flatMap(spec=>String(spec.value).includes('\n')?String(spec.value).split('\n').map(line=>line.replace(/\s*\([^)]*\)/g,'').replace(/\s*@\s*4:4:4/,'').trim()):[`${/1080p/.test(spec.condition)?'1080p':'4K/60'} 최대 ${spec.value}${spec.unit||''}`]);
-      const captions=[[COLOR_IN,'입력(HDMI)'],[COLOR_COPPER,'CATx 전송','dash'],[COLOR_IR,'IR 제어'],[COLOR_POWER,'전원'],[COLOR_OUT,'출력(HDMI)']];
+      const captions=[[COLOR_IN,'입력(HDMI)'],[COLOR_COPPER,'CATx 전송','dash'],...(rx?[]:[[COLOR_IR,'IR 제어']]),[COLOR_POWER,'전원'],[COLOR_OUT,'출력(HDMI)']];
       if(distances.length)captions.push([COLOR_COPPER,`최대 전송 거리 CAT5e 기준 ${distances.join(' · ')}`,'none']);
-      const steps=[
+      const steps=rx?[
+        `구성: ${item.model} 1대에 RX 모듈 6개. 모듈마다 소스 1대 → SPX-TX 1대 → 모듈 CAT IN → HDMI OUT → 디스플레이 1대로 연결합니다.`,
+        '전송: CATx(CAT5e) 케이블, PoC로 송·수신기 중 한쪽에만 전원을 연결해도 됩니다.',
+        '전원: 외부 전원 어댑터 1개로 모듈 6개에 공급합니다.',
+        '모듈 칸마다 TX·RX 모듈을 골라 꽂을 수 있습니다.'
+      ]:[
         `구성: ${item.model} 1대에 모듈 6개. 모듈마다 소스 1대 → 모듈 HDMI IN → CAT OUT → SPX-RX 1대 → 디스플레이 1대로 연결합니다.`,
         '전송: CATx(CAT5e) 케이블, PoC로 송·수신기 중 한쪽에만 전원을 연결해도 됩니다.',
         '제어: IR 리시버(리모컨) → IR IN, 제어 컨트롤러 → IR Ctrl',
         '전원: 외부 전원 어댑터 1개로 모듈 6개에 공급합니다.'
       ];
       if(distances.length)steps.push(`최대 전송 거리(CAT5e 기준): ${distances.join(' · ')}`);
-      return diagramWrap(body,width,height,captions,{label:`${item.model} Signal Flow`,steps})+`<p class="rt-pg-hint" style="text-align:center">사양서 연결도 기준입니다. PoC로 송·수신기 중 한쪽에만 전원을 연결해도 됩니다. 모듈은 TX(송신)·RX(수신)를 골라 쓸 수 있고(그림은 자주 쓰는 TX 구성), RX 사용과 SPX-RX IR 기능(IR Blaster)은 현장에서는 잘 쓰지 않습니다. IR Blaster 연결은 제조사 원본 다이어그램을 참고하세요.</p>`;
+      return diagramWrap(body,width,height,captions,{label:`${item.model} Signal Flow (${rx?'RX':'TX'} 구성)`,steps});
+    }
+    function rackExtenderFlow(item){
+      const seg=`<span class="rt-pg-seg" role="group" aria-label="모듈 구성 선택"><button type="button" class="rt-pg-on" data-pm-side="tx" aria-pressed="true">TX 구성(송신)</button><button type="button" data-pm-side="rx" aria-pressed="false">RX 구성(수신)</button></span>`;
+      return `<div class="rt-pg-flow-modes">${seg}<div class="rt-pg-face" data-pm-face="tx">${rackExtenderDiagram(item,'tx')}</div><div class="rt-pg-face" data-pm-face="rx" hidden>${rackExtenderDiagram(item,'rx')}</div></div><p class="rt-pg-hint" style="text-align:center">TX 구성은 사양서 연결도 기준이고, RX 구성은 같은 연결을 수신 쪽으로 바꾼 그림입니다. 모듈 칸마다 TX·RX 모듈을 골라 꽂을 수 있으며, 현장에서는 TX 구성을 주로 씁니다. PoC로 송·수신기 중 한쪽에만 전원을 연결해도 됩니다. SPX-RX IR 기능(IR Blaster)은 현장에서는 잘 쓰지 않으며, 연결은 제조사 원본 다이어그램을 참고하세요.</p>`;
     }
     function connectionDiagram(item){
       if(item.group==='cable')return cableDiagram(item);
       if(item.group==='distribution'||item.group==='integrated')return ioFlowDiagram(item);
       if(item.id==='xdm-psu')return psuDiagram(item);
-      if(item.id==='spx-r6')return rackExtenderDiagram(item);
+      if(item.id==='spx-r6')return rackExtenderFlow(item);
       if(item.group==='extender')return extenderDiagram(item);
       return null;
     }

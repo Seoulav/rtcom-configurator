@@ -74,3 +74,14 @@ SPX-R6 사양서와 다른 자료 사이:
 - 모듈 칸에는 TX(입력) 모듈과 RX(출력) 모듈을 원하는 대로 꽂습니다. 그래서 후면 그림(`scripts/tools/draw_spx_r6_panels.cjs`)의 단자 글자를 `HDMI IN` → `HDMI IN/OUT`, `CAT OUT` → `CAT IN/OUT`으로 바꿨습니다. RX 모듈을 꽂으면 CAT 단자가 입력이 되므로, 사용자가 말한 HDMI뿐 아니라 CAT 단자에도 같은 방식을 적용했습니다.
 - 02 Port Map 후면 1·2번 이름과 설명(TX 모듈은 입력·출력, RX 모듈은 반대)을 바꾸고, 제조사 자료 입출력 단자 표의 HDMI·RJ-45 방향을 입출력(BIDIR)으로 바꿨습니다. 번호 좌표는 그대로입니다.
 - 03 Signal Flow 그림은 자주 쓰는 TX 구성(HDMI IN → CAT OUT) 그대로이고, 안내 문장이 TX·RX 선택을 설명합니다.
+
+## 10. 0.200.0 보완(사용자 요청 2026-10-04 "다음 단계 진행해줘")
+
+0.171 보고에서 제안한 다음 단계 3번(03 Signal Flow에 RX 구성 예시 추가)을 진행했습니다.
+
+- `src/products.js`의 `rackExtenderDiagram(item,mode)`가 `'tx'`·`'rx'` 두 구성을 그리고, `rackExtenderFlow(item)`가 두 그림을 "TX 구성(송신) / RX 구성(수신)" 버튼(`data-pm-side`·`data-pm-face`, 02 Port Map 정면·후면 버튼과 같은 처리)으로 묶습니다. 처음에는 TX 구성이 보입니다.
+- TX 구성: 지금까지와 같습니다(사양서 연결도: 소스 → 모듈 HDMI IN → CAT OUT → SPX-RX → 디스플레이, IR IN·IR Ctrl, 전원 어댑터 1개).
+- RX 구성: 소스 → SPX-TX → CATx(CAT5e)·PoC → 모듈 CAT IN → HDMI OUT → 디스플레이, 전원 어댑터 1개. 근거는 사용자 확인 2026-09-29("입력카드가 출력카드 원하는대로 꽂는 거라서")입니다. 사양서에는 RX 구성 연결도가 없어 IR 연결은 그리지 않았습니다.
+- 그림 아래 안내 문장은 두 구성 공통으로 하나만 둡니다.
+- 검증: 단위 테스트 `0.200: SPX-R6 03 Signal Flow는 TX 구성·RX 구성 버튼…`, e2e(버튼 전환·SPX-TX 6대·CAT IN → HDMI OUT·가로 넘침 없음). 화면: `docs/qa/spx-r6-rx-flow-0.200/`(PC·휴대폰, TX·RX).
+- 되돌리기: `connectionDiagram`에서 `rackExtenderFlow(item)`를 `rackExtenderDiagram(item)`으로 바꾸면 TX 그림 하나만 보입니다.
