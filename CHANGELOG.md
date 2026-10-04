@@ -54,6 +54,15 @@
 - **0.145.0 배포 기록**: `docs/qa/DEPLOYMENT_0.145_2026-09-29.md`(PR #194 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.144.0 배포 기록**: `docs/qa/DEPLOYMENT_0.144_2026-09-29.md`(PR #192 → main 병합, Pages 배포 run 162, 공개 파일 337/338 일치, `.nojekyll` 제외)
 
+## 0.200.0
+
+사용자 요청 2026-10-04("다음 단계 진행해줘", 0.171 보고의 다음 단계 제안 3번 "03 Signal Flow에 RX 구성 예시 추가"):
+
+- **SPX-R6 RX 구성 그림**: 03 Signal Flow 위에 "TX 구성(송신) / RX 구성(수신)" 버튼을 넣었습니다. TX 구성(기본)은 지금까지와 같은 사양서 연결도 그림이고, RX 구성은 소스 → SPX-TX 6대 → CATx(CAT5e) → 모듈 CAT IN → HDMI OUT → 디스플레이로 그립니다. 사용자 확인 2026-09-29("입력카드가 출력카드 원하는대로 꽂는 거라서")가 근거입니다.
+- RX 구성의 IR 연결은 사양서에 없어 그리지 않았습니다. 그림 아래 안내 문장을 두 구성 공통으로 정리했습니다(모듈 칸마다 TX·RX 선택, 현장에서는 TX 구성을 주로 씀).
+- 버튼은 02 Port Map 정면·후면 버튼과 같은 구조(`data-pm-side`·`data-pm-face`)를 다시 씁니다.
+- 근거·화면: `docs/implementation/SPX_R6_0.157.md` §10, `docs/qa/spx-r6-rx-flow-0.200/`
+
 ## 0.199.0
 
 사용자 요청 2026-10-02("https://seoulav.github.io/rtcom-configurator/#products/mr-4s 이 제품의 전원이중화 가능해 그 부분도 명시해줘"):

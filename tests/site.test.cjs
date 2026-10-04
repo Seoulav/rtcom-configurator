@@ -442,7 +442,7 @@ test('0.157: SPX-R6는 사양서 근거로 등록하고, 로고 없는 평면 �
   for(const model of ['SPX-M2472','SPX-M24120'])assert.match(spx.lineup.find(entry=>entry.model===model).summary,/483×443\.7×365mm/);
   assert.ok(!JSON.stringify(spx.lineup).includes('433.7'),'라인업에 종합 카탈로그 2026의 433.7mm 표기를 남기지 않는다');
   assert.ok(spx.features.some(feature=>feature.text.includes('2×2, 3×3, 3×4')),'비디오 월 표기는 그대로 둔다(사용자 결정 "지금 표기 유지")');
-  assert.match(read('src/products.js'),/if\(item\.id==='spx-r6'\)return rackExtenderDiagram\(item\);/);
+  assert.match(read('src/products.js'),/if\(item\.id==='spx-r6'\)return rackExtenderFlow\(item\);/);
   const order=JSON.parse(read('data/products/index.json')).products.map(product=>product.id);
   assert.equal(order.indexOf('spx-r6')+1,order.indexOf('spx-rx-tx'),'전송기 목록에서 SPX-TX / SPX-RX 바로 앞에 보인다');
 });
@@ -662,4 +662,14 @@ test('0.198: 공식 홈페이지 링크는 공식 글이 있는 26종만, 4K/30 
   assert.deepEqual(ft.officialLinks.map(l=>l.label),['FT101-U','FR101-U']);
   const p=read('src/products.js');assert.match(p,/function officialButton/);assert.match(p,/official:officialButton\(item\)/);
   for(const id of ['ct101-u-cr101-u','ct103-u-h-cr103-u','ct104-u-cr104-u','ft101-u-fr101-u'])assert.doesNotMatch(read(`data/products/${id}.json`),/Ultra HD 4K/,id);
+});
+
+test('0.200: SPX-R6 03 Signal Flow는 TX 구성·RX 구성 버튼으로 두 연결을 바꿔 본다',()=>{
+  const src=read('src/products.js');
+  assert.match(src,/function rackExtenderFlow\(item\)/);
+  assert.match(src,/data-pm-side="tx" aria-pressed="true">TX 구성\(송신\)/);
+  assert.match(src,/data-pm-side="rx" aria-pressed="false">RX 구성\(수신\)/);
+  assert.match(src,/data-pm-face="rx" hidden>\$\{rackExtenderDiagram\(item,'rx'\)\}/);
+  assert.ok(src.includes("rx?'CAT IN → HDMI OUT':'HDMI IN → CAT OUT'"),'RX 구성 모듈은 CAT IN → HDMI OUT');
+  assert.ok(src.includes("const remote=rx?'SPX-TX':'SPX-RX'"),'RX 구성 상대 기기는 SPX-TX');
 });
