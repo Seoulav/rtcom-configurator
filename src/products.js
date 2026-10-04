@@ -529,8 +529,9 @@
       const isHDBaseT=/HDBaseT/i.test(JSON.stringify([item.english,item.korean,item.overview,item.features]));
       const cableName=isFiber?'광케이블':isHDBaseT?'HDBaseT(CATx)':'CATx';
       const cableLabelFor=spec=>{
-        // 0.166: 값이 여러 줄인 행(SPX-TX/RX "4K60 실효 전송거리")은 괄호 속 케이블 모델을 빼고 한 줄로 이어 범례에 쓴다.
-        if(String(spec.value).includes('\n'))return `${spec.name}: ${String(spec.value).split('\n').map(line=>line.replace(/\s*\([^)]*\)/g,'').trim()).join(' · ')}`;
+        // 0.166: 값이 여러 줄인 행(SPX-TX/RX "4K60 실효 전송거리")은 괄호 설명을 빼고 한 줄로 이어 범례에 쓴다.
+        // 0.201: 괄호 속 Belden 케이블 모델은 거리의 사용 조건이라 남긴다(사용자 요청 2026-10-04 "벨덴 케이블 7814a와 10gxe02사용 조건이야").
+        if(String(spec.value).includes('\n'))return `${spec.name}: ${String(spec.value).split('\n').map(line=>line.replace(/\s*\(([^)]*)\)/g,(all,inner)=>{const belden=inner.match(/Belden\s*[A-Z0-9]+/i);return belden?` (${belden[0]})`:''}).trim()).join(' · ')}`;
         const m=(spec.condition||'').match(/(BELDEN\s*)?([A-Z0-9]+)\s*\(([^)]+)\)/);
         if(!m&&!isFiber&&!isHDBaseT){const seg=(spec.condition||'').split('·').map(s=>s.replace(/\([^)]*\)/g,'').trim()).find(s=>/4K|1080p|Long Reach/i.test(s));if(seg)return `${seg.replace(/\s*모드$/,'')} 최대 ${spec.value}${spec.unit||''}`;}
         if(!m)return `최대 ${spec.value}${spec.unit||''}`;

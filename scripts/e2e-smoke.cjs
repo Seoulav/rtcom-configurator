@@ -581,6 +581,11 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     // 0.200 SPX-R6 03 Signal Flow: TX 구성(기본)·RX 구성 버튼으로 바꿔 보고, RX 구성은 소스 → SPX-TX 6대 → 모듈 CAT IN → HDMI OUT → 디스플레이로 그린다.
     const r6Flow=await page.evaluate(()=>{const box=document.querySelector('.rt-pg-flow-modes');const face=k=>box?.querySelector(`[data-pm-face="${k}"]`);const before={tx:!face('tx')?.hidden,rx:!face('rx')?.hidden};box?.querySelector('[data-pm-side="rx"]')?.click();const rxText=face('rx')?.querySelector('svg')?.textContent||'';return {before,after:{tx:!face('tx')?.hidden,rx:!face('rx')?.hidden},tx:(rxText.match(/SPX-TX/g)||[]).length,catIn:rxText.includes('CAT IN → HDMI OUT'),pressed:box?.querySelector('[data-pm-side="rx"]')?.getAttribute('aria-pressed'),overflow:document.documentElement.scrollWidth>innerWidth}});
     check('SPX-R6 03 Signal Flow는 TX 구성이 기본이고 RX 구성 버튼을 누르면 SPX-TX 6대 → 모듈 CAT IN → HDMI OUT 그림으로 바뀜',r6Flow.before.tx&&!r6Flow.before.rx&&!r6Flow.after.tx&&r6Flow.after.rx&&r6Flow.tx>=6&&r6Flow.catIn&&r6Flow.pressed==='true'&&!r6Flow.overflow,JSON.stringify(r6Flow));
+    // 0.201 SPX-TX/RX 03 Signal Flow 범례: 실효 전송 거리에 Belden 케이블 조건(7814A·10GXE02)이 남는다(사용자 요청 2026-10-04).
+    await page.goto(`${home}#products/spx-rx-tx`,{waitUntil:'networkidle'});
+    await page.waitForSelector('.rt-pg-legend');
+    const txrxLegend=await page.evaluate(()=>document.querySelector('.rt-pg-legend')?.textContent||'');
+    check('SPX-TX/RX 신호 흐름 범례의 실효 전송 거리에 Belden 7814A·10GXE02 조건이 보임',txrxLegend.includes('UTP CAT6 50m (Belden 7814A)')&&txrxLegend.includes('S/FTP CAT6A 70m (Belden 10GXE02)'),txrxLegend.slice(0,200));
     // 0.64 OBUX-1C Tx Mode 딥 스위치(매뉴얼 Ver.2.2): 검은 몸체 4핀, 1번 오디오 + 2·3·4번 EDID 조합 5칸(Through-pass EDID Fix 포함).
     await page.goto(`${home}#products/obux-1c`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-dip');
