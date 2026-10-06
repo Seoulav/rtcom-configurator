@@ -578,6 +578,14 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await page.waitForSelector('#rt-pg-title');
     const r6=await page.evaluate(()=>{const s=[...document.querySelectorAll('section')].find(s=>/Port Map/i.test(s.querySelector('h2')?.textContent||''));const flow=[...document.querySelectorAll('.rt-pg-svg-wrap svg')].map(x=>x.textContent).join(' ');return {title:document.querySelector('#rt-pg-title')?.textContent,front:!!s?.innerHTML.includes('spx-r6-front-art.webp'),rear:!!s?.innerHTML.includes('spx-r6-rear-art.webp'),ports:[...(s?.querySelectorAll('.rt-pg-ports')||[])].map(x=>x.children.length),rx:(flow.match(/SPX-RX/g)||[]).length,module6:flow.includes('모듈 6'),broken:[...document.images].filter(i=>i.complete&&!i.naturalWidth).length,overflow:document.documentElement.scrollWidth>innerWidth,diagramBtn:!!document.querySelector('[data-open-diagram]'),diagram:!!document.querySelector('.rt-pg-diagram-photo img')?.getAttribute('src')?.includes('spx-r6-diagram.webp')}});
     check('SPX-R6 상세에 전면·후면 그림 단자 지도(번호 5·4개)와 모듈 6개 → SPX-RX 6대 신호 흐름, 로고를 지운 제조사 원본 다이어그램(0.158)이 나오고 깨진 사진이 없음',/SPX-R6/.test(r6.title||'')&&r6.front&&r6.rear&&r6.ports.join()==='5,4'&&r6.rx>=6&&r6.module6&&r6.broken===0&&!r6.overflow&&r6.diagramBtn&&r6.diagram,JSON.stringify(r6));
+    // 0.200 SPX-R6 03 Signal Flow: TX 구성(기본)·RX 구성 버튼으로 바꿔 보고, RX 구성은 소스 → SPX-TX 6대 → 모듈 CAT IN → HDMI OUT → 디스플레이로 그린다.
+    const r6Flow=await page.evaluate(()=>{const box=document.querySelector('.rt-pg-flow-modes');const face=k=>box?.querySelector(`[data-pm-face="${k}"]`);const before={tx:!face('tx')?.hidden,rx:!face('rx')?.hidden};box?.querySelector('[data-pm-side="rx"]')?.click();const rxText=face('rx')?.querySelector('svg')?.textContent||'';return {before,after:{tx:!face('tx')?.hidden,rx:!face('rx')?.hidden},tx:(rxText.match(/SPX-TX/g)||[]).length,catIn:rxText.includes('CAT IN → HDMI OUT'),pressed:box?.querySelector('[data-pm-side="rx"]')?.getAttribute('aria-pressed'),overflow:document.documentElement.scrollWidth>innerWidth}});
+    check('SPX-R6 03 Signal Flow는 TX 구성이 기본이고 RX 구성 버튼을 누르면 SPX-TX 6대 → 모듈 CAT IN → HDMI OUT 그림으로 바뀜',r6Flow.before.tx&&!r6Flow.before.rx&&!r6Flow.after.tx&&r6Flow.after.rx&&r6Flow.tx>=6&&r6Flow.catIn&&r6Flow.pressed==='true'&&!r6Flow.overflow,JSON.stringify(r6Flow));
+    // 0.201 SPX-TX/RX 03 Signal Flow 범례: 실효 전송 거리에 Belden 케이블 조건(7814A·10GXE02)이 남는다(사용자 요청 2026-10-04).
+    await page.goto(`${home}#products/spx-rx-tx`,{waitUntil:'networkidle'});
+    await page.waitForSelector('.rt-pg-legend');
+    const txrxLegend=await page.evaluate(()=>document.querySelector('.rt-pg-legend')?.textContent||'');
+    check('SPX-TX/RX 신호 흐름 범례의 실효 전송 거리에 Belden 7814A·10GXE02 조건이 보임',txrxLegend.includes('UTP CAT6 50m (Belden 7814A)')&&txrxLegend.includes('S/FTP CAT6A 70m (Belden 10GXE02)'),txrxLegend.slice(0,200));
     // 0.64 OBUX-1C Tx Mode 딥 스위치(매뉴얼 Ver.2.2): 검은 몸체 4핀, 1번 오디오 + 2·3·4번 EDID 조합 5칸(Through-pass EDID Fix 포함).
     await page.goto(`${home}#products/obux-1c`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-dip');
@@ -592,7 +600,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       const expected=(JSON.parse(fs.readFileSync(`data/products/${id}.json`,'utf8')).documents||[]).filter(doc=>doc.file).length;
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
       await page.waitForSelector('.rt-pg-toolbar');
-      const docs=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-toolbar .rt-pg-doc')].map(el=>{
+      const docs=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-toolbar .rt-pg-doc:not([data-doc="official"])')].map(el=>{
         const open=el.querySelector('.rt-pg-doc-open');
         const popup=open?.tagName==='BUTTON'?open.getAttribute('data-doc-preview'):null;
         return {open:popup?true:open?.getAttribute('target')==='_blank'&&open?.relList.contains('noopener'),save:el.querySelector('.rt-pg-doc-save')?.hasAttribute('download'),href:popup?new URL(popup,document.baseURI).href:open?.href};
@@ -712,11 +720,15 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     const cat=await page.$eval('.rt-pg-toolbar [data-doc="Catalog"]',el=>{const open=el.querySelector('.rt-pg-doc-open');return {open:open.getAttribute('href')||open.getAttribute('data-doc-preview'),save:el.querySelector('.rt-pg-doc-save').getAttribute('href'),text:el.textContent.trim()}});
     await page.goto(`${home}#products`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-grid');
-    const listCat=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-toolbar .rt-pg-doc')].map(el=>({text:el.textContent.trim(),href:el.querySelector('.rt-pg-doc-open').getAttribute('href')})));
+    const listCat=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-toolbar .rt-pg-doc:not([data-doc="official"])')].map(el=>({text:el.textContent.trim(),href:el.querySelector('.rt-pg-doc-open').getAttribute('href')})));
     const catRes=await page.request.get(new URL(cat.save,home).href);
     // 0.97 제품별 카탈로그(사용자 결정 2026-09-28 "제품별로 잘라 공개"): 제품 상세 버튼은 해당 쪽만 담은 hd-13u-catalog.pdf를 열고 받는다. 제품 목록의 전체 카탈로그 버튼은 46쪽 공용 파일 그대로다.
     const listRes=await page.request.get(new URL(listCat[0]?.href||'',home).href);
     check('HD-13U 카탈로그 버튼이 제품별 카탈로그(hd-13u-catalog.pdf)를 열고 받으며, 제품 목록 전체 카탈로그 버튼 1개는 46쪽 공용 파일(PDF)',cat.open==='output/design/assets/docs/hd-13u-catalog.pdf'&&cat.save==='output/design/assets/docs/hd-13u-catalog.pdf'&&!/쪽/.test(cat.text)&&catRes.status()===200&&String(catRes.headers()['content-type']).includes('pdf')&&listCat.length===1&&/전체 카탈로그/.test(listCat[0].text)&&listCat[0].href==='output/design/assets/docs/rtcom-catalog-2026.pdf'&&listRes.status()===200,JSON.stringify({cat,listCat,status:catRes.status(),list:listRes.status()}));
+    // 0.198 공식 홈페이지 버튼: 공식 글이 있는 제품은 새 탭(rtcomav.com) 링크, 송·수신기는 두 글, 공식 글이 없는 제품은 버튼 없음.
+    const official=async id=>{await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});await page.waitForSelector('.rt-pg-toolbar');await page.waitForTimeout(200);return page.evaluate(()=>[...document.querySelectorAll('.rt-pg-toolbar [data-doc="official"] a')].map(a=>({text:a.textContent.trim(),href:a.href,blank:a.target==='_blank'&&a.relList.contains('noopener')})))};
+    const offHd=await official('hd-13u'),offFt=await official('ft101-u-fr101-u'),offR6=await official('spx-r6');
+    check('0.198 공식 홈페이지 버튼: HD-13U 1개, FT101-U/FR101-U 2개(새 탭 rtcomav.com), SPX-R6 없음',offHd.length===1&&offHd[0].text==='공식 홈페이지'&&offFt.length===2&&offFt[1].text==='FR101-U'&&[...offHd,...offFt].every(l=>l.blank&&l.href.startsWith('http://rtcomav.com/kor/bbs/board.php?bo_table='))&&offR6.length===0,JSON.stringify({offHd,offFt,offR6}));
     // 0.64 XDM-FT101/FR101 EDID·오디오 로터리(매뉴얼 Ver.1.3): 0(기본값)·3·8번 대표 설정 그림.
     await page.goto(`${home}#products/xdm-ft101-fr101`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-edid');
@@ -1198,8 +1210,19 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       const touch=await browser.newContext({viewport:{width:416,height:900},isMobile:true,hasTouch:true});const tp=await touch.newPage();
       await tp.goto(home,{waitUntil:'networkidle'});await tp.locator('button[data-family="XDM"]').first().click();await tp.locator('.rt-cg-preview [data-action="preview-next"]').first().click();
       await tp.click('button[data-model="XDM-12"]');await tp.locator('.rt-cg-preview [data-action="preview-next"]').first().click();
-      const touchChips=await tp.evaluate(()=>({chips:document.querySelectorAll('.rt-card-info-chip').length,draggable:document.querySelectorAll('.rt-card-info-chip[draggable]').length,palette:!!document.querySelector('.rt-card-palette')}));
-      check('휴대폰(터치)에서는 카드 정보 버튼을 끌 수 없고 안내 문구도 기존과 같음',touchChips.chips>0&&touchChips.draggable===0&&!touchChips.palette,JSON.stringify(touchChips));
+      const touchChips=await tp.evaluate(()=>({chips:document.querySelectorAll('.rt-card-info-chip').length,draggable:document.querySelectorAll('.rt-card-info-chip[draggable]').length,tap:document.querySelectorAll('.rt-card-info-chip[data-tap-card]').length}));
+      check('휴대폰(터치)에서는 카드 타일을 끌 수 없고 눌러서 고르는 타일로 바뀜(0.193 눌러서 옮기기)',touchChips.chips>0&&touchChips.draggable===0&&touchChips.tap===touchChips.chips,JSON.stringify(touchChips));
+      // 0.193 눌러서 옮기기(사용자 결정 2026-09-30): 타일 선택 → 다른 방향 슬롯은 안내만 → 같은 방향 슬롯에 장착 → 취소 → 팝업 "이동"으로 다른 슬롯으로 옮김.
+      const filled=()=>tp.evaluate(()=>[...document.querySelectorAll('.rt-rack-slot-filled')].map(b=>b.dataset.slot));
+      await tp.locator('button[data-tap-card="XDM-HIS100"]').click();
+      const picked=await tp.evaluate(()=>({on:document.querySelector('.rt-tap-tile-on')?.dataset.tapCard,banner:document.querySelector('.rt-tap-banner')?.innerText||''}));
+      await tp.locator('button[data-slot="out-1"]').click();const wrong=await filled();
+      await tp.locator('button[data-slot="in-1"]').click();const placed=await filled();
+      await tp.locator('[data-tap-cancel]').click();const bannerGone=await tp.locator('.rt-tap-banner').count();
+      await tp.locator('button[data-slot="in-1"]').click();await tp.locator('.rt-card-modal [data-tap-move]').click();
+      const movingBanner=await tp.evaluate(()=>document.querySelector('.rt-tap-banner')?.innerText||'');
+      await tp.locator('button[data-slot="in-3"]').click();const moved=await filled();
+      check('휴대폰(터치) 눌러서 옮기기: 카드 타일을 고른 뒤 같은 방향 슬롯을 누르면 장착되고(다른 방향은 안 됨), 끝내기로 선택을 풀고, 장착한 카드는 팝업 "이동"으로 다른 슬롯에 옮겨짐',picked.on==='XDM-HIS100'&&/선택됨/.test(picked.banner)&&wrong.length===0&&placed.join()==='in-1'&&bannerGone===0&&/이동 중/.test(movingBanner)&&moved.join()==='in-3',JSON.stringify({picked,wrong,placed,bannerGone,movingBanner,moved}));
       await touch.close();
       await p3.close();
     }

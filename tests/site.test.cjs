@@ -442,7 +442,7 @@ test('0.157: SPX-R6는 사양서 근거로 등록하고, 로고 없는 평면 �
   for(const model of ['SPX-M2472','SPX-M24120'])assert.match(spx.lineup.find(entry=>entry.model===model).summary,/483×443\.7×365mm/);
   assert.ok(!JSON.stringify(spx.lineup).includes('433.7'),'라인업에 종합 카탈로그 2026의 433.7mm 표기를 남기지 않는다');
   assert.ok(spx.features.some(feature=>feature.text.includes('2×2, 3×3, 3×4')),'비디오 월 표기는 그대로 둔다(사용자 결정 "지금 표기 유지")');
-  assert.match(read('src/products.js'),/if\(item\.id==='spx-r6'\)return rackExtenderDiagram\(item\);/);
+  assert.match(read('src/products.js'),/if\(item\.id==='spx-r6'\)return rackExtenderFlow\(item\);/);
   const order=JSON.parse(read('data/products/index.json')).products.map(product=>product.id);
   assert.equal(order.indexOf('spx-r6')+1,order.indexOf('spx-rx-tx'),'전송기 목록에서 SPX-TX / SPX-RX 바로 앞에 보인다');
 });
@@ -638,4 +638,47 @@ test('0.193: 전송기 최대 전송 거리는 제품마다 한 행(값 칸 줄 
   assert.equal(ft.value,'싱글모드 2km\n멀티모드 500m');
   const r6=JSON.parse(read('data/products/spx-r6.json')).specifications.find(s=>s.name==='최대 전송 거리');
   assert.equal(r6.value,'4K/60 @ 4:4:4 50m\n1080p/60 60m');
+});
+
+test('0.197: 터치 화면 눌러서 옮기기(카드 타일 선택 → 같은 방향 슬롯 장착, 팝업 이동 버튼)',()=>{
+  // 사용자 요청·선택 2026-09-30 "눌러서 옮기기 권장안으로 해줘"
+  const app=read('src/app.js'),css=read('src/styles.css');
+  assert.match(app,/const tapMode=\(\)=>PALETTE_DRAG&&!paletteDrag\(\);/,'마우스가 없는 화면에서만 켠다');
+  assert.match(app,/data-tap-card="\$\{c\[0\]\}"/,'터치 화면은 타일을 누르면 카드를 고른다');
+  assert.match(app,/const moveButton=tapMode\(\)&&installed\?/,'카드 팝업 이동 버튼은 터치 화면·장착 슬롯에서만');
+  assert.match(app,/if\(dir!==cardDir\(tapCard\)\)\{announce\(/,'다른 방향 슬롯에는 장착하지 않고 안내만 한다');
+  assert.match(app,/RtCore\.moveCard\(state,tapMove,id\)/,'이동은 끌어 옮기기와 같은 RtCore.moveCard를 쓴다');
+  assert.match(app,/if\(state\.step!==2\|\|signalView\)\{tapCard=null;tapMove=null\}/,'03 카드 장착 화면을 떠나면 선택을 지운다');
+  for(const selector of ['.rt-tap-banner','.rt-tap-tile-on','.rt-rack-slot-tapsrc','rt-tap-input'])assert.ok(css.includes(selector),`${selector} 스타일`);
+  assert.match(app,/tapMode\(\)\?\(tapMove\?slotDir\(tapMove\)/,'방향 표시용 루트 클래스를 렌더마다 갱신한다');
+});
+
+test('0.198: 공식 홈페이지 링크는 공식 글이 있는 26종만, 4K/30 표기',()=>{
+  const files=fs.readdirSync('data/products').filter(f=>f.endsWith('.json')&&f!=='index.json');
+  const withLinks=files.filter(f=>JSON.parse(read(`data/products/${f}`)).officialLinks);
+  assert.equal(withLinks.length,26);
+  for(const id of ['hd-d102u-rack','mr-4s','spx-r6','spx-rx-tx','xdm-ctr100-pse','xdm-psu'])assert.ok(!JSON.parse(read(`data/products/${id}.json`)).officialLinks,id);
+  const ft=JSON.parse(read('data/products/ft101-u-fr101-u.json'));
+  assert.deepEqual(ft.officialLinks.map(l=>l.label),['FT101-U','FR101-U']);
+  const p=read('src/products.js');assert.match(p,/function officialButton/);assert.match(p,/official:officialButton\(item\)/);
+  for(const id of ['ct101-u-cr101-u','ct103-u-h-cr103-u','ct104-u-cr104-u','ft101-u-fr101-u'])assert.doesNotMatch(read(`data/products/${id}.json`),/Ultra HD 4K/,id);
+});
+
+test('0.200: SPX-R6 03 Signal Flow는 TX 구성·RX 구성 버튼으로 두 연결을 바꿔 본다',()=>{
+  const src=read('src/products.js');
+  assert.match(src,/function rackExtenderFlow\(item\)/);
+  assert.match(src,/data-pm-side="tx" aria-pressed="true">TX 구성\(송신\)/);
+  assert.match(src,/data-pm-side="rx" aria-pressed="false">RX 구성\(수신\)/);
+  assert.match(src,/data-pm-face="rx" hidden>\$\{rackExtenderDiagram\(item,'rx'\)\}/);
+  assert.ok(src.includes("rx?'CAT IN → HDMI OUT':'HDMI IN → CAT OUT'"),'RX 구성 모듈은 CAT IN → HDMI OUT');
+  assert.ok(src.includes("const remote=rx?'SPX-TX':'SPX-RX'"),'RX 구성 상대 기기는 SPX-TX');
+});
+
+test('0.201: SPX-TX/RX 03 Signal Flow 범례의 실효 전송 거리에 Belden 케이블 조건(7814A·10GXE02)을 남긴다',()=>{
+  // 사용자 요청 2026-10-04 "벨덴 케이블 7814a와 10gxe02사용 조건이야 수정해"
+  const src=read('src/products.js');
+  assert.ok(src.includes("const belden=inner.match(/Belden\\s*[A-Z0-9]+/i);return belden?` (${belden[0]})`:''"),'괄호 속 Belden 모델만 남기고 나머지 괄호 설명은 지운다');
+  const value=JSON.parse(read('data/products/spx-rx-tx.json')).specifications.find(spec=>spec.group==='Transmission').value;
+  const legend=value.split('\n').map(line=>line.replace(/\s*\(([^)]*)\)/g,(all,inner)=>{const belden=inner.match(/Belden\s*[A-Z0-9]+/i);return belden?` (${belden[0]})`:''}).trim()).join(' · ');
+  assert.equal(legend,'UTP CAT6 50m (Belden 7814A) · S/FTP CAT6A 70m (Belden 10GXE02)');
 });

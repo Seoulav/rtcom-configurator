@@ -95,6 +95,12 @@
       "preview": "pdfjs"
     }
   ],
+  "officialLinks": [
+    {
+      "label": "XDM",
+      "url": "http://rtcomav.com/kor/bbs/board.php?bo_table=pro01_01_1&wr_id=19"
+    }
+  ],
   "features": [
     {
       "text": "HDMI v2.0, DisplayPort v1.2, 12G-SDI, HDBaseT 3.0 등 초고화질 True 4K/60 @ 4:4:4 지원",

@@ -95,6 +95,12 @@
       "preview": "pdfjs"
     }
   ],
+  "officialLinks": [
+    {
+      "label": "VDM",
+      "url": "http://rtcomav.com/kor/bbs/board.php?bo_table=pro01_01_2&wr_id=33"
+    }
+  ],
   "features": [
     {
       "text": "8×8부터 288×288까지 메인프레임 10종",

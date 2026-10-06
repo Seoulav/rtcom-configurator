@@ -81,6 +81,16 @@
       ]
     }
   ],
+  "officialLinks": [
+    {
+      "label": "CT101-U",
+      "url": "http://rtcomav.com/kor/bbs/board.php?bo_table=pro03_01_2&wr_id=2"
+    },
+    {
+      "label": "CR101-U",
+      "url": "http://rtcomav.com/kor/bbs/board.php?bo_table=pro03_01_2&wr_id=3"
+    }
+  ],
   "features": [
     {
       "text": "비디오·오디오·RS-232 신호 CATx(UTP/STP) 장거리 전송 지원",
@@ -144,7 +154,7 @@
     {
       "group": "Video",
       "name": "지원 해상도",
-      "value": "최대 Ultra HD 4K 3840x2160 @ 24/25/30Hz",
+      "value": "최대 4K/30 (3840x2160 @ 24/25/30Hz)",
       "unit": "",
       "condition": "RGB 4:4:4, YCbCr 4:4:4, 4:2:2, 4:2:0 · CT101-U",
       "source": "C",
@@ -153,7 +163,7 @@
     {
       "group": "Video",
       "name": "지원 해상도",
-      "value": "PC: VGA ~ WUXGA (최대 1920x1200 @ 60Hz), HDTV: 480i ~ 1080p, 최대 Ultra HD 4K",
+      "value": "PC: VGA ~ WUXGA (최대 1920x1200 @ 60Hz), HDTV: 480i ~ 1080p, 최대 4K/30",
       "unit": "",
       "condition": "CR101-U",
       "source": "C",
@@ -164,7 +174,7 @@
       "name": "최대 전송 거리",
       "value": "100",
       "unit": "m",
-      "condition": "1920x1200 @ 60Hz·1080p·Ultra HD 4K, BELDEN CI6522 기준",
+      "condition": "1920x1200 @ 60Hz·1080p·4K/30, BELDEN CI6522 기준",
       "source": "C",
       "verification": "VERIFIED"
     },
