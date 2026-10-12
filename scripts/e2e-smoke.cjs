@@ -648,7 +648,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     // 0.151(#205)에서 XDM 카탈로그를 전송기 쪽까지 넣은 4~12쪽(9쪽)으로 늘렸다.
     check('XDM 카탈로그 팝업이 9쪽 그림(xdm-catalog-p1~p9.webp)으로 나옴',xdmCat.join()===[1,2,3,4,5,6,7,8,9].map(n=>`xdm-catalog-p${n}.webp`).join(),JSON.stringify(xdmCat));
     // 0.205(사용자 요청 2026-10-12): 제품정보 XDM 04 카드 상세(WOS100·HOS100)와 02 신호 구성 그림의 WOS100·HOS100 칸에서 기능 팝업이 열리고,
-    // HOS100 팝업에는 레이아웃 6종과 레이어 2개·4개일 때 쓸 수 없는 포트가 보이며, HOS100 카드 사양표에 "멀티뷰 포트 제한" 행이 있다.
+    // HOS100 팝업에는 레이아웃 6종과 레이어 2개(1·2번, 3·4번 짝)·4개일 때 쓸 수 없는 포트가 보이며, HOS100 카드 사양표에 "멀티뷰 포트 제한" 행이 있다.
     {
       const openCount=()=>page.locator('dialog[open]').count();
       await page.click('[data-pg-card="XDM-WOS100"]');
@@ -666,7 +666,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       await sig.click();const sigClick=await page.locator('dialog[open] h3').last().textContent();await page.keyboard.press('Escape');
       await page.locator('svg [data-card-feature="layer-compare"]').focus();await page.keyboard.press('Enter');const sigKey=await page.locator('dialog[open] h3').last().textContent();await page.keyboard.press('Escape');
       check('제품정보 XDM: WOS100 카드 상세에 레이어 팝업 버튼, HOS100 카드 상세에 멀티뷰 포트 제한 행과 멀티뷰 팝업 버튼(카드 팝업 위로 겹쳐 열림)',wosCta===1&&wosOpen.n===2&&/WOS100 레이어/.test(wosOpen.title)&&hosInfo.row&&hosInfo.cta,JSON.stringify({wosCta,wosOpen,hosInfo}));
-      check('HOS100 멀티뷰 팝업: 레이아웃 6종(매뉴얼 KV08)과 레이어 2개면 2번 포트 불가·4개면 2~4번 1번과 같은 화면 안내',hosPopup.layouts==='Full 1~4,Quad,Bottom,Right,PIP,PBP'&&/2번 포트는 사용할 수 없습니다/.test(hosPopup.warn)&&/2~4번 포트에 1번과 같은 화면/.test(hosPopup.warn)&&hosPopup.pip===1&&hosPopup.quadDup===3,JSON.stringify(hosPopup));
+      check('HOS100 멀티뷰 팝업: 레이아웃 6종(매뉴얼 KV08)과 레이어 2개면 짝 포트(2·4번) 불가·4개면 2~4번 1번과 같은 화면 안내',hosPopup.layouts==='Full 1~4,Quad,Bottom,Right,PIP,PBP'&&/1번을 분할하면 2번, 3번을 분할하면 4번을 사용할 수 없습니다/.test(hosPopup.warn)&&/2~4번 포트에 1번과 같은 화면/.test(hosPopup.warn)&&hosPopup.pip===2&&hosPopup.quadDup===3,JSON.stringify(hosPopup));
       check('제품정보 XDM 02 신호 구성: WOS100·HOS100 칸이 버튼(role·tabindex)이고 누르거나 Enter로 팝업이 열리며 범례에 안내가 있음',sigInfo.wos===1&&sigInfo.hos===1&&sigInfo.legend===1&&/HOS100 멀티뷰/.test(sigClick)&&/WOS100 레이어/.test(sigKey),JSON.stringify({sigInfo,sigClick,sigKey}));
     }
     await page.goto(`${home}#products/vdm`,{waitUntil:'networkidle'});

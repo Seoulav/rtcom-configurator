@@ -228,7 +228,7 @@
       const slot=currentSlots().find(item=>item.id===modalSlot);
       if(!slot)return '';
       const installed=state.placements[slot.id];
-      const tips=slot.dir==='output'&&state.family==='XDM'?'<div class="rt-output-tips"><div class="rt-pro-tip rt-quad-tip"><span>최대 4분할</span><div><strong>XDM-HOS100 · 멀티뷰(4분할·2분할)</strong><p>일반 HDMI 4채널 출력 또는 원하는 레이어 구성에 활용합니다. 레이어 2개면 2번 포트, 4개면 2~4번 포트를 쓸 수 없습니다.</p>'+featureButton('XDM-HOS100','rt-feature-open-tip')+'</div></div><div class="rt-pro-tip"><span>활용 TIP</span><div><strong>XDM-WOS100 · 4레이어</strong><p>4개 레이어를 조합해 월 프로세서처럼 화면을 연출할 수 있습니다.</p>'+featureButton('XDM-WOS100','rt-feature-open-tip')+'</div></div></div>':'';
+      const tips=slot.dir==='output'&&state.family==='XDM'?'<div class="rt-output-tips"><div class="rt-pro-tip rt-quad-tip"><span>최대 4분할</span><div><strong>XDM-HOS100 · 멀티뷰(4분할·2분할)</strong><p>일반 HDMI 4채널 출력 또는 원하는 레이어 구성에 활용합니다. 레이어 2개면 짝 포트(1번 분할 시 2번, 3번 분할 시 4번), 4개면 2~4번 포트를 쓸 수 없습니다.</p>'+featureButton('XDM-HOS100','rt-feature-open-tip')+'</div></div><div class="rt-pro-tip"><span>활용 TIP</span><div><strong>XDM-WOS100 · 4레이어</strong><p>4개 레이어를 조합해 월 프로세서처럼 화면을 연출할 수 있습니다.</p>'+featureButton('XDM-WOS100','rt-feature-open-tip')+'</div></div></div>':'';
       const dirWord=slot.dir==='input'?'입력':'출력';
       // 0.94 수량 UI가 사라지는 버그 수정(사용자 지적 "입력카드 다시 조정하려고 누르면 수량이 안보이고 장착됨이 보임", "출력카드는 수량선택이 안되는 버그"):
       // 같은 방향 슬롯이 이미 다 채워지면 fillTargets가 채울 수 있는 칸(qtyMax)을 1로 돌려주는데, 그 값 하나로 "카드별 수량" UI 노출 여부까지 정했다.
@@ -381,15 +381,16 @@
       if(typeof dialog.showModal==='function'){dialog.showModal();dialog.querySelector('.rt-card-modal-close').focus()}else dialog.setAttribute('open','');
     }
     // 0.205 XDM-HOS100 멀티뷰 레이아웃 팝업. 레이아웃 그림은 매뉴얼 KV08 32~34쪽(Multiview: Full1~4·Quad·Bottom·Right·PIP·PBP) 예시 그림의 배치를 따른다.
-    // 포트 제한은 사용자 확인(2026-10-12 "레이어2개하면 1~2번 중 2번은 사용불가 4개 레이어 사용하면 2~4는 1번 동일화면 출력되서 사실상 사용불가"):
-    // 레이어는 카드 출력 포트 자원을 함께 쓴다. ports: 1~4번 포트 상태(on 사용·off 사용 불가·dup 1번과 같은 화면).
+    // 포트 제한은 사용자 확인(2026-10-12 "레이어2개하면 1~2번 중 2번은 사용불가 4개 레이어 사용하면 2~4는 1번 동일화면 출력되서 사실상 사용불가",
+    // "1~2번 중 2번은 사용불가, 3번 사용시 4번 사용불가로 보면 되"): 레이어는 카드 출력 포트 자원을 함께 쓴다. 레이어 2개는 1·2번, 3·4번이 짝이다.
+    // ports: 1~4번 포트 상태(split 분할 화면 출력·off 사용 불가·dup 1번과 같은 화면). 2레이어 그림은 1·3번을 모두 분할한 경우다.
     const hosLayouts=[
       {name:'Full 1~4',layers:1,desc:'입력 1~4번 중 한 소스를 전체 화면으로',cells:[[0,0,160,90,'1']]},
-      {name:'Quad',layers:4,desc:'4분할 쿼드뷰',cells:[[0,0,80,45,'1'],[80,0,80,45,'2'],[0,45,80,45,'3'],[80,45,80,45,'4']],ports:['on','dup','dup','dup']},
-      {name:'Bottom',layers:4,desc:'위 큰 화면 1 + 아래 작은 화면 3',cells:[[0,0,26.7,60,''],[26.7,0,106.6,60,'1'],[133.3,0,26.7,60,''],[0,60,53.3,30,'2'],[53.3,60,53.4,30,'3'],[106.7,60,53.3,30,'4']],ports:['on','dup','dup','dup']},
-      {name:'Right',layers:4,desc:'왼쪽 큰 화면 1 + 오른쪽 작은 화면 3',cells:[[0,0,106.7,15,''],[0,15,106.7,60,'1'],[0,75,106.7,15,''],[106.7,0,53.3,30,'2'],[106.7,30,53.3,30,'3'],[106.7,60,53.3,30,'4']],ports:['on','dup','dup','dup']},
-      {name:'PIP',layers:2,desc:'큰 화면 안에 작은 화면 1',cells:[[0,0,160,90,'1'],[116,63,44,27,'2']],ports:['on','off','on','on']},
-      {name:'PBP',layers:2,desc:'한 화면에 2개를 나란히',cells:[[0,0,80,90,'1'],[80,0,80,90,'2']],ports:['on','off','on','on']}
+      {name:'Quad',layers:4,desc:'4분할 쿼드뷰',cells:[[0,0,80,45,'1'],[80,0,80,45,'2'],[0,45,80,45,'3'],[80,45,80,45,'4']],ports:['split','dup','dup','dup']},
+      {name:'Bottom',layers:4,desc:'위 큰 화면 1 + 아래 작은 화면 3',cells:[[0,0,26.7,60,''],[26.7,0,106.6,60,'1'],[133.3,0,26.7,60,''],[0,60,53.3,30,'2'],[53.3,60,53.4,30,'3'],[106.7,60,53.3,30,'4']],ports:['split','dup','dup','dup']},
+      {name:'Right',layers:4,desc:'왼쪽 큰 화면 1 + 오른쪽 작은 화면 3',cells:[[0,0,106.7,15,''],[0,15,106.7,60,'1'],[0,75,106.7,15,''],[106.7,0,53.3,30,'2'],[106.7,30,53.3,30,'3'],[106.7,60,53.3,30,'4']],ports:['split','dup','dup','dup']},
+      {name:'PIP',layers:2,desc:'큰 화면 안에 작은 화면 1',cells:[[0,0,160,90,'1'],[116,63,44,27,'2']],ports:['split','off','split','off'],pairNote:true},
+      {name:'PBP',layers:2,desc:'한 화면에 2개를 나란히',cells:[[0,0,80,90,'1'],[80,0,80,90,'2']],ports:['split','off','split','off'],pairNote:true}
     ];
     const hosCellColor={'1':'#3978ee','2':'#16a37f','3':'#e39a2f','4':'#8b5cf6'};
     function hosLayoutSvg(layout){
@@ -397,15 +398,15 @@
       return `<svg viewBox="-3 -3 166 96" width="100%" aria-hidden="true"><rect x="-2" y="-2" width="164" height="94" rx="5" fill="#fff" stroke="#9aa6b8" stroke-width="1.5"/>${cells}</svg>`;
     }
     function openHosMultiview(){
-      const portWord={on:'사용',off:'불가',dup:'1번 동일'},portLabel={on:'사용',off:'사용 불가',dup:'1번과 같은 화면'};
-      const ports=layout=>layout.ports?`<ol class="rt-hos-ports" aria-label="이 레이아웃에서 출력 포트 1~4 상태">${layout.ports.map((p,i)=>`<li class="rt-hos-port-${p}" aria-label="${i+1}번 포트 ${portLabel[p]}"><b>${i+1}</b><span aria-hidden="true">${portWord[p]}</span></li>`).join('')}</ol>`:'';
+      const portWord={split:'분할',off:'불가',dup:'1번 동일'},portLabel={split:'분할 화면 출력',off:'사용 불가',dup:'1번과 같은 화면'};
+      const ports=layout=>layout.ports?`<ol class="rt-hos-ports" aria-label="이 레이아웃에서 출력 포트 1~4 상태">${layout.ports.map((p,i)=>`<li class="rt-hos-port-${p}" aria-label="${i+1}번 포트 ${portLabel[p]}"><b>${i+1}</b><span aria-hidden="true">${portWord[p]}</span></li>`).join('')}</ol>${layout.pairNote?'<p class="rt-hos-pair">1·2번, 3·4번이 짝입니다. 3번을 분할하지 않으면 3·4번은 각각 출력합니다.</p>':''}`:'';
       const cards=hosLayouts.map(layout=>`<li class="rt-hos-layout"><div class="rt-hos-fig">${hosLayoutSvg(layout)}</div><div class="rt-hos-meta"><strong>${layout.name}</strong><span class="rt-hos-layers">레이어 ${layout.layers}개</span></div><p>${layout.desc}</p>${ports(layout)}</li>`).join('');
       const dialog=document.createElement('dialog');
       dialog.className='rt-card-info-modal rt-layer-modal rt-hos-modal';
       dialog.setAttribute('aria-labelledby','rt-hos-title');
       dialog.innerHTML='<div class="rt-card-modal-head"><div><span class="rt-eyebrow">XDM 출력 카드 · 멀티뷰</span><h3 id="rt-hos-title">XDM-HOS100 멀티뷰(쿼드뷰) 레이아웃</h3><p class="rt-card-info-sub">HDMI Output Slot · 4포트 · 4K/60 @ 4:4:4 · Quad-Viewer Slot</p></div><button type="button" class="rt-card-modal-close" data-layer-close aria-label="멀티뷰 레이아웃 닫기">×</button></div>'
         +'<div class="rt-card-info-body"><p class="rt-card-info-tip">HOS100은 출력 슬롯마다 4분할·2분할 등 원하는 레이어 구성을 고를 수 있습니다. 칸의 숫자는 매뉴얼 그림의 입력 1~4번입니다.</p>'
-        +'<div class="rt-hos-warn" role="note"><strong>레이어는 카드 출력 포트 자원을 함께 씁니다</strong><ul><li><b>레이어 2개</b>(PIP · PBP): 1·2번 포트 중 <b>2번 포트는 사용할 수 없습니다.</b></li><li><b>레이어 4개</b>(Quad · Bottom · Right): 2~4번 포트에 1번과 같은 화면이 나와 <b>사실상 사용할 수 없습니다.</b> 이때 카드 1장은 분할 화면 1개를 냅니다.</li></ul></div>'
+        +'<div class="rt-hos-warn" role="note"><strong>레이어는 카드 출력 포트 자원을 함께 씁니다</strong><ul><li><b>레이어 2개</b>(PIP · PBP): 1·2번, 3·4번 포트가 짝입니다. <b>1번을 분할하면 2번, 3번을 분할하면 4번을 사용할 수 없습니다.</b> 카드 1장으로 2분할 화면을 최대 2개(1·3번) 낼 수 있습니다.</li><li><b>레이어 4개</b>(Quad · Bottom · Right): 2~4번 포트에 1번과 같은 화면이 나와 <b>사실상 사용할 수 없습니다.</b> 이때 카드 1장은 분할 화면 1개를 냅니다.</li></ul></div>'
         +`<ul class="rt-hos-grid">${cards}</ul>`
         +'<ul class="rt-layer-notes"><li>설정 순서: 전면 메뉴 Multiview에서 Timing → Layer → Output 슬롯을 고른 뒤 Enter를 누릅니다. Timing에서 OFF를 고르면 매트릭스 모드로 돌아가 4포트를 각각 출력합니다.</li><li>그 밖의 레이아웃은 커맨드로 User config mode를 씁니다.</li><li>Genlock을 켜면 Multiview와 Scaler Out 출력 해상도 변경이 제한됩니다.</li></ul>'
         +'<p class="rt-card-info-src">알티컴 종합 카탈로그 2026 (국문) 8쪽 · XDM 국문 사용자 매뉴얼 KV08 32~35쪽 · 포트 사용 제한은 서울영상테크 확인(2026-10-12)</p></div>'

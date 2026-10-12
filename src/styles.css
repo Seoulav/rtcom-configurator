@@ -1443,7 +1443,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-hos-layout p{margin:0;font-size:12px;line-height:1.4;color:#56627a}
 #rtcom-design .rt-hos-ports{list-style:none;margin:2px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
 #rtcom-design .rt-hos-ports li{display:flex;flex-direction:column;align-items:center;padding:3px 2px;border-radius:8px;font-size:10.5px;line-height:1.25;text-align:center;word-break:keep-all}#rtcom-design .rt-hos-ports b{font-size:12px}
-#rtcom-design .rt-hos-port-on{background:#e7f6ef;color:#0f6b4f}#rtcom-design .rt-hos-port-off{background:#fde8e8;color:#b42318}#rtcom-design .rt-hos-port-off b{text-decoration:line-through}#rtcom-design .rt-hos-port-dup{background:#f1f3f7;color:#6b7280}
+#rtcom-design .rt-hos-port-split{background:#e8f0ff;color:#2448a8}#rtcom-design .rt-hos-port-off{background:#fde8e8;color:#b42318}#rtcom-design .rt-hos-port-off b{text-decoration:line-through}#rtcom-design .rt-hos-port-dup{background:#f1f3f7;color:#6b7280}#rtcom-design .rt-hos-pair{margin:0;font-size:11px;line-height:1.4;color:#8a5a00}
 /* 0.205 제품정보 02 신호 구성: 눌러서 기능 팝업을 여는 WOS100·HOS100 칸 */
 #rtcom-design .rt-pg-sig-feature{cursor:pointer;outline:none}#rtcom-design .rt-pg-sig-feature:hover .rt-pg-sig-pill{fill-opacity:.26}#rtcom-design .rt-pg-sig-feature:focus-visible .rt-pg-sig-pill{stroke-width:3.2}
 #rtcom-design .rt-pg-legend .rt-pg-legend-feature{color:#2f5fd0;font-weight:700}#rtcom-design .rt-pg-legend .rt-pg-legend-feature i{display:inline-grid;place-items:center;width:14px;height:14px;border-radius:50%;background:#3978ee;color:#fff;font-style:normal;font-size:11px;line-height:1;vertical-align:-2px}
