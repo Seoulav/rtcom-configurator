@@ -1413,6 +1413,19 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-layer-note{display:flex;flex-direction:column;background:linear-gradient(135deg,#e9f6fd,#eef2ff);box-shadow:inset 0 0 0 1px #c9e3f3}#rtcom-design .rt-layer-note span{color:#1c86b8}#rtcom-design .rt-layer-note p{flex:1}
 #rtcom-design .rt-layer-modal{width:min(1060px,calc(100vw - 24px))}
 #rtcom-design .rt-layer-figure{overflow-x:auto;padding:4px;border:1px solid #e3e9f2;border-radius:14px;background:#fff}#rtcom-design .rt-layer-figure svg{display:block;width:100%;min-width:640px;height:auto}
+/* 0.207 WOS100 팝업: Analog Way 데이터시트식 핵심 수치 띠 + HOS100식 배치 예시 카드(.rt-hos-grid 재사용)와 겹침 순서 칩 */
+#rtcom-design .rt-wos-keys{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+#rtcom-design .rt-wos-keys li{display:flex;flex-direction:column;gap:2px;padding:12px 14px 11px;border-radius:14px;background:linear-gradient(135deg,#17304f,#22426a);box-shadow:inset 0 3px 0 #2aa3dc;color:#fff;min-width:0}
+#rtcom-design .rt-wos-keys b{font-size:24px;font-weight:800;line-height:1.1;letter-spacing:-.01em;white-space:nowrap}#rtcom-design .rt-wos-keys span{font-size:12px;font-weight:700;color:#9fd8f2}#rtcom-design .rt-wos-keys small{font-size:11px;line-height:1.35;color:#c9d6e8;word-break:keep-all}
+@media(max-width:560px){#rtcom-design .rt-wos-keys{grid-template-columns:1fr 1fr}#rtcom-design .rt-wos-keys b{font-size:20px}}
+#rtcom-design .rt-hos-grid.rt-wos-grid{grid-template-columns:repeat(3,1fr)}@media(max-width:560px){#rtcom-design .rt-hos-grid.rt-wos-grid{grid-template-columns:1fr 1fr}}
+#rtcom-design .rt-wos-layout .rt-hos-meta{flex-wrap:wrap;row-gap:3px}#rtcom-design .rt-wos-layout .rt-hos-meta strong{white-space:nowrap}
+#rtcom-design .rt-wos-lead{margin:-2px 0 0;font-size:12.5px;line-height:1.45;color:#56627a}
+#rtcom-design .rt-wos-order{display:flex;align-items:center;gap:5px;font-size:10.5px;color:#6b7280}#rtcom-design .rt-wos-order ol{list-style:none;margin:0;padding:0;display:flex;gap:3px}
+#rtcom-design .rt-wos-order li{display:grid;place-items:center;width:22px;height:20px;border-radius:6px;color:#fff;font-size:11px;font-weight:800}
+#rtcom-design .rt-wos-tiled{margin:0;font-size:11px;color:#6b7280}
+/* 0.207 WOS100 레이어 구성도: 휴대폰 폭에서는 가로 스크롤 대신 위 → 아래 세로 그림을 보여 준다 */
+#rtcom-design .rt-layer-figure .rt-layer-svg-tall{display:none}@media(max-width:640px){#rtcom-design .rt-layer-figure .rt-layer-svg-wide{display:none}#rtcom-design .rt-layer-figure .rt-layer-svg-tall{display:block;min-width:0}}
 #rtcom-design .rt-layer-h{margin:8px 0 0;font-size:14px;font-weight:800;color:var(--rt-ink);border-left:4px solid #17304f;padding-left:9px}
 #rtcom-design .rt-layer-scroll{overflow-x:auto}#rtcom-design .rt-layer-table{min-width:860px;font-variant-numeric:tabular-nums}
 #rtcom-design .rt-layer-table thead th{width:auto;padding:8px 8px;background:#17304f;color:#fff;font-size:12px;font-weight:700;white-space:nowrap;border:0}
