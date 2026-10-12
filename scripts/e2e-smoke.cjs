@@ -91,6 +91,12 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await page.locator('button[data-slot="in-1"]').click();
     await page.locator('.rt-card-modal .rt-card-choice').nth(1).click();
     await page.locator('button[data-slot="out-1"]').click();
+    // 0.205 출력 카드 선택 팝업 팁의 HOS100·WOS100 기능 팝업 버튼: 눌러도 카드 선택 팝업은 그대로 남는다.
+    const tipFeatures=await page.$$eval('.rt-card-modal .rt-output-tips [data-card-feature]',els=>els.map(e=>e.dataset.cardFeature).join());
+    await page.click('.rt-card-modal .rt-output-tips [data-card-feature="hos-multiview"]');
+    const tipHos=await page.locator('dialog.rt-hos-modal[open]').count();
+    await page.keyboard.press('Escape');
+    check('XDM 출력 카드 선택 팝업 팁에 HOS100 멀티뷰·WOS100 레이어 버튼이 있고, 멀티뷰 팝업을 닫으면 카드 선택 팝업이 남음',tipFeatures==='hos-multiview,layer-compare'&&tipHos===1&&await page.locator('.rt-card-modal[open]').count()===1,tipFeatures);
     await page.locator('.rt-card-modal .rt-card-choice').nth(1).click();
     await page.waitForLoadState('networkidle');
     check('장착한 슬롯이 카드 판넬로 바뀌고 전환 효과가 적용됨(블랭크였던 in-1도 카드로 교체됨)',await page.locator('button[data-slot="out-1"].rt-rack-slot-filled.rt-rack-slot-changed').count()===1&&await page.locator('button[data-slot="in-1"].rt-rack-slot-filled').count()===1&&await page.locator('.rt-rack-slot-empty').count()===70);
@@ -641,6 +647,28 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await page.click('dialog.rt-doc-zoom [data-zoom-close]');
     // 0.151(#205)에서 XDM 카탈로그를 전송기 쪽까지 넣은 4~12쪽(9쪽)으로 늘렸다.
     check('XDM 카탈로그 팝업이 9쪽 그림(xdm-catalog-p1~p9.webp)으로 나옴',xdmCat.join()===[1,2,3,4,5,6,7,8,9].map(n=>`xdm-catalog-p${n}.webp`).join(),JSON.stringify(xdmCat));
+    // 0.205(사용자 요청 2026-10-12): 제품정보 XDM 04 카드 상세(WOS100·HOS100)와 02 신호 구성 그림의 WOS100·HOS100 칸에서 기능 팝업이 열리고,
+    // HOS100 팝업에는 레이아웃 6종과 레이어 2개·4개일 때 쓸 수 없는 포트가 보이며, HOS100 카드 사양표에 "멀티뷰 포트 제한" 행이 있다.
+    {
+      const openCount=()=>page.locator('dialog[open]').count();
+      await page.click('[data-pg-card="XDM-WOS100"]');
+      const wosCta=await page.locator('dialog[open] .rt-feature-cta [data-card-feature="layer-compare"]').count();
+      await page.click('dialog[open] [data-card-feature="layer-compare"]');
+      const wosOpen={n:await openCount(),title:await page.locator('dialog[open] h3').last().textContent()};
+      await page.keyboard.press('Escape');await page.keyboard.press('Escape');
+      await page.click('[data-pg-card="XDM-HOS100"]');
+      const hosInfo=await page.evaluate(()=>{const d=[...document.querySelectorAll('dialog[open]')].pop();return {row:[...d.querySelectorAll('th')].some(th=>th.textContent==='멀티뷰 포트 제한'),cta:!!d.querySelector('.rt-feature-cta [data-card-feature="hos-multiview"]')}});
+      await page.click('dialog[open] [data-card-feature="hos-multiview"]');
+      const hosPopup=await page.evaluate(()=>{const d=[...document.querySelectorAll('dialog[open]')].pop();return {title:d.querySelector('h3').textContent,layouts:[...d.querySelectorAll('.rt-hos-layout strong')].map(e=>e.textContent).join(),warn:d.querySelector('.rt-hos-warn').textContent,pip:[...d.querySelectorAll('.rt-hos-layout')].find(li=>li.querySelector('strong').textContent==='PIP').querySelectorAll('.rt-hos-port-off').length,quadDup:[...d.querySelectorAll('.rt-hos-layout')].find(li=>li.querySelector('strong').textContent==='Quad').querySelectorAll('.rt-hos-port-dup').length}});
+      await page.keyboard.press('Escape');await page.keyboard.press('Escape');
+      const sig=page.locator('svg [data-card-feature="hos-multiview"]');
+      const sigInfo={wos:await page.locator('svg [data-card-feature="layer-compare"][role="button"][tabindex="0"]').count(),hos:await sig.count(),legend:await page.locator('.rt-pg-legend-feature').count()};
+      await sig.click();const sigClick=await page.locator('dialog[open] h3').last().textContent();await page.keyboard.press('Escape');
+      await page.locator('svg [data-card-feature="layer-compare"]').focus();await page.keyboard.press('Enter');const sigKey=await page.locator('dialog[open] h3').last().textContent();await page.keyboard.press('Escape');
+      check('제품정보 XDM: WOS100 카드 상세에 레이어 팝업 버튼, HOS100 카드 상세에 멀티뷰 포트 제한 행과 멀티뷰 팝업 버튼(카드 팝업 위로 겹쳐 열림)',wosCta===1&&wosOpen.n===2&&/WOS100 레이어/.test(wosOpen.title)&&hosInfo.row&&hosInfo.cta,JSON.stringify({wosCta,wosOpen,hosInfo}));
+      check('HOS100 멀티뷰 팝업: 레이아웃 6종(매뉴얼 KV08)과 레이어 2개면 2번 포트 불가·4개면 2~4번 1번과 같은 화면 안내',hosPopup.layouts==='Full 1~4,Quad,Bottom,Right,PIP,PBP'&&/2번 포트는 사용할 수 없습니다/.test(hosPopup.warn)&&/2~4번 포트에 1번과 같은 화면/.test(hosPopup.warn)&&hosPopup.pip===1&&hosPopup.quadDup===3,JSON.stringify(hosPopup));
+      check('제품정보 XDM 02 신호 구성: WOS100·HOS100 칸이 버튼(role·tabindex)이고 누르거나 Enter로 팝업이 열리며 범례에 안내가 있음',sigInfo.wos===1&&sigInfo.hos===1&&sigInfo.legend===1&&/HOS100 멀티뷰/.test(sigClick)&&/WOS100 레이어/.test(sigKey),JSON.stringify({sigInfo,sigClick,sigKey}));
+    }
     await page.goto(`${home}#products/vdm`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-toolbar');
     const vdmStart=Date.now();

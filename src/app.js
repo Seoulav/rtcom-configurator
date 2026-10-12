@@ -111,10 +111,21 @@
     function cardAsset(id){return photoCardFamilies.has(state.family)&&id?`output/design/assets/cards/${id}.webp`:assets[state.family]}
     const cardTips={
       'XDM-HI100':'HDMI 소스 4채널을 입력하는 기본 카드입니다.','XDM-HIS100':'HDMI 입력을 스케일링해야 하는 구성에 검토합니다.','XDM-DPI100':'DisplayPort 소스 4채널 입력용입니다.','XDM-CIS100':'HDBaseT 3.0 기반 원격 신호 4채널 입력용입니다.','XDM-FIS100':'광 전송 기반의 원거리 신호 4채널 입력용입니다.','XDM-SIS100':'12G-SDI 방송 신호 4채널 입력용입니다.',
-      'XDM-HOS100':'HDMI 4채널 출력 또는 최대 4분할(쿼드뷰) 화면 구성에 활용할 수 있습니다.','XDM-DPOS100':'DisplayPort 디스플레이 4채널 출력용입니다.','XDM-COS100':'HDBaseT 3.0 기반 원격 출력 4채널용입니다.','XDM-FOS100':'광 전송 기반의 원거리 출력 4채널용입니다.','XDM-SOS100':'12G-SDI 방송 신호 4채널 출력용입니다.','XDM-WOS100':'4개 레이어를 조합해 월 프로세서처럼 화면 연출에 활용할 수 있습니다.'
+      'XDM-HOS100':'HDMI 4채널 출력 또는 4분할·2분할 등 원하는 레이어(멀티뷰) 화면 구성에 활용할 수 있습니다. 레이어를 쓰면 일부 출력 포트를 쓸 수 없습니다.','XDM-DPOS100':'DisplayPort 디스플레이 4채널 출력용입니다.','XDM-COS100':'HDBaseT 3.0 기반 원격 출력 4채널용입니다.','XDM-FOS100':'광 전송 기반의 원거리 출력 4채널용입니다.','XDM-SOS100':'12G-SDI 방송 신호 4채널 출력용입니다.','XDM-WOS100':'4개 레이어를 조합해 월 프로세서처럼 화면 연출에 활용할 수 있습니다.'
     };
     function cardTip(id){return cardTips[id]||'카드 용도와 설치 조건을 검토한 뒤 선택하세요.'}
     globalThis.RtCardTips=cardTips; // 0.143: 제품정보 04 카드 라인업 상세 팝업(src/products.js)이 같은 카드 설명을 읽는다.
+    // 0.205(사용자 요청 2026-10-12 "제품정보 XDM-WOS100 팝업에도 동일하게 해주고 버튼이 살짝 눈에 띄게", "02 신호구성에 WOS카드와 HOS카드 버튼눌러서 팝업이 뜨는것도 좋겠다"):
+    // WOS100(레이어 구성도·비교표)과 HOS100(멀티뷰 레이아웃) 기능 팝업을 여는 버튼을 한 곳에서 만든다. 구성기 카드 상세·카드 선택 팁·02 프레임 선택과
+    // 제품정보(src/products.js) 04 카드 상세·02 신호 구성 그림이 같은 버튼·같은 팝업을 쓴다. 누르면 아래 [data-card-feature] 처리기가 연다.
+    const cardFeatures={
+      'XDM-WOS100':{key:'layer-compare',tag:'4레이어',name:'레이어',hint:'2×2 비디오 월 위에 4레이어를 겹치는 구성도와 비디오 프로세서 레이어 수 비교표',label:'레이어 구성도 · 비교표 보기'},
+      'XDM-HOS100':{key:'hos-multiview',tag:'멀티뷰',name:'멀티뷰',hint:'4분할·2분할 등 레이어 구성과 구성별로 쓸 수 없게 되는 출력 포트',label:'멀티뷰 레이아웃 보기'}
+    };
+    const featureIcon='<svg class="rt-feature-ico" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.8 14.5 5 8 8.2 1.5 5z" fill="currentColor"/><path d="M2.3 8.2 8 11l5.7-2.8M2.3 11 8 13.8l5.7-2.8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>';
+    function featureButton(id,extraClass=''){const f=cardFeatures[id];return f?`<button type="button" class="rt-button rt-feature-open${extraClass?' '+extraClass:''}" data-card-feature="${f.key}">${featureIcon}<span>${f.label}</span><b aria-hidden="true">→</b></button>`:''}
+    function featureCta(id){const f=cardFeatures[id];return f?`<div class="rt-feature-cta"><div><span class="rt-feature-tag">${f.tag}</span><p>${f.hint}</p></div>${featureButton(id)}</div>`:''}
+    globalThis.RtCardFeature={cards:Object.fromEntries(Object.entries(cardFeatures).map(([id,f])=>[id,{key:f.key,tag:f.tag,name:f.name,label:f.label}])),cta:featureCta};
     function cardBadge(id){return id==='XDM-WOS100'?'<em>4레이어</em>':id==='XDM-HOS100'?'<em>쿼드뷰</em>':''}
     function choices(s,c){return RtCore.choices(c[0])}
     // 카드 팝업에서 고른 전송기 → 없으면 이 슬롯에 이미 연결된 전송기(같은 카드일 때) → 없으면 카드 기본 연동(RtCore.defaultLink). ''는 연결 안 함.
@@ -184,7 +195,7 @@
     function chassisViewV2(){
       const f=families[state.family];
       // 0.203(사용자 요청 2026-10-12 "비디오 프로세서 레이어 비교는 vp제품 군 프레임선택 하는항목한쪽에 이 페이지를 볼 수 있게해줘"): EDID 팁 옆에 WOS100 레이어 구성도·비디오 프로세서 레이어 비교 팝업을 여는 카드를 둔다. 화면 상태일 뿐 저장·실행 취소 대상이 아니다.
-      const layerNote='<div class="rt-xdm-feature-note rt-layer-note"><span>XDM-WOS100 · 레이어</span><strong>비디오 프로세서와 레이어 수를 비교해 보세요.</strong><p>WOS100 카드 1장이 HDMI 4포트로 비디오 월을 채우고 4레이어를 겹치는 구성도와, Aquilon·NovaStar·Colorlight 프로세서의 2K/4K 레이어 수를 한 표로 봅니다.</p><button type="button" class="rt-button rt-layer-open" data-action="layer-compare">레이어 구성도 · 비교표 보기</button></div>';
+      const layerNote='<div class="rt-xdm-feature-note rt-layer-note"><span>XDM-WOS100 · 레이어</span><strong>비디오 프로세서와 레이어 수를 비교해 보세요.</strong><p>WOS100 카드 1장이 HDMI 4포트로 비디오 월을 채우고 4레이어를 겹치는 구성도와, Aquilon·NovaStar·Colorlight 프로세서의 2K/4K 레이어 수를 한 표로 봅니다.</p>'+featureButton('XDM-WOS100')+'</div>';
       const xdmFeature=state.family==='XDM'?'<div class="rt-xdm-feature-row"><div class="rt-xdm-feature-note"><span>EDID · LED 활용 팁</span><strong>커스텀 해상도도 설계할 수 있습니다.</strong><p>개선 펌웨어 기준으로 비표준 입력을 원본 패스스루(LED) 또는 4K 업스케일(모니터) 경로로 나눠 검토합니다. 출고용 EDID 주입 조건은 제조사 확인이 필요합니다.</p></div>'+layerNote+'</div>':'';
       const row=(m,i)=>{
         const plan=slotPlanFor(m),selected=state.model===m;
@@ -217,7 +228,7 @@
       const slot=currentSlots().find(item=>item.id===modalSlot);
       if(!slot)return '';
       const installed=state.placements[slot.id];
-      const tips=slot.dir==='output'&&state.family==='XDM'?'<div class="rt-output-tips"><div class="rt-pro-tip rt-quad-tip"><span>최대 4분할</span><div><strong>XDM-HOS100 · 쿼드뷰(최대 4분할)</strong><p>일반 HDMI 4채널 출력 또는 최대 4분할 화면 구성에 활용할 수 있습니다.</p></div></div><div class="rt-pro-tip"><span>활용 TIP</span><div><strong>XDM-WOS100 · 4레이어</strong><p>4개 레이어를 조합해 월 프로세서처럼 화면을 연출할 수 있습니다.</p><button type="button" class="rt-button rt-layer-open rt-layer-open-tip" data-action="layer-compare">레이어 구성도 · 비교표 보기</button></div></div></div>':'';
+      const tips=slot.dir==='output'&&state.family==='XDM'?'<div class="rt-output-tips"><div class="rt-pro-tip rt-quad-tip"><span>최대 4분할</span><div><strong>XDM-HOS100 · 멀티뷰(4분할·2분할)</strong><p>일반 HDMI 4채널 출력 또는 원하는 레이어 구성에 활용합니다. 레이어 2개면 2번 포트, 4개면 2~4번 포트를 쓸 수 없습니다.</p>'+featureButton('XDM-HOS100','rt-feature-open-tip')+'</div></div><div class="rt-pro-tip"><span>활용 TIP</span><div><strong>XDM-WOS100 · 4레이어</strong><p>4개 레이어를 조합해 월 프로세서처럼 화면을 연출할 수 있습니다.</p>'+featureButton('XDM-WOS100','rt-feature-open-tip')+'</div></div></div>':'';
       const dirWord=slot.dir==='input'?'입력':'출력';
       // 0.94 수량 UI가 사라지는 버그 수정(사용자 지적 "입력카드 다시 조정하려고 누르면 수량이 안보이고 장착됨이 보임", "출력카드는 수량선택이 안되는 버그"):
       // 같은 방향 슬롯이 이미 다 채워지면 fillTargets가 채울 수 있는 칸(qtyMax)을 1로 돌려주는데, 그 값 하나로 "카드별 수량" UI 노출 여부까지 정했다.
@@ -300,7 +311,7 @@
       const dialog=document.createElement('dialog');
       dialog.className='rt-card-info-modal';
       dialog.setAttribute('aria-labelledby','rt-card-info-title');
-      dialog.innerHTML=`<div class="rt-card-modal-head"><div><span class="rt-eyebrow">${dir} 카드 · ${esc(state.family)}</span><h3 id="rt-card-info-title">${esc(id)}</h3>${info.title?`<p class="rt-card-info-sub">${esc(info.title)}</p>`:''}</div><button type="button" class="rt-card-modal-close" data-card-info-close aria-label="카드 상세 정보 닫기">×</button></div><div class="rt-card-info-body"><div class="rt-card-info-plate"><img src="${cardAsset(id)}" alt="${esc(id)} 카드 후면 판넬"></div>${cardTips[id]?`<p class="rt-card-info-tip">${esc(cardTips[id])}</p>`:''}<table class="rt-card-info-table"><tbody>${rows.map(([k,v])=>`<tr><th scope="row">${esc(k)}</th><td>${esc(v)}</td></tr>`).join('')}</tbody></table>${info.note?`<p class="rt-card-info-note">${esc(info.note)}</p>`:''}${id==='XDM-WOS100'?'<p class="rt-layer-cta"><button type="button" class="rt-button rt-layer-open" data-action="layer-compare">레이어 구성도 · 비교표 보기</button></p>':''}${info.missing?`<p class="rt-card-info-missing">상세 사양 준비 중 · ${esc(info.missing)}</p>`:''}<p class="rt-card-info-src">${[info.page?`알티컴 종합 카탈로그 2026 (국문) ${info.page}쪽`:'',info.source?esc(info.source):''].filter(Boolean).join(' · ')||'제조사 자료 확인 중'}</p></div><div class="rt-card-modal-foot"><button type="button" class="rt-button" data-card-info-close>닫기</button></div>`;
+      dialog.innerHTML=`<div class="rt-card-modal-head"><div><span class="rt-eyebrow">${dir} 카드 · ${esc(state.family)}</span><h3 id="rt-card-info-title">${esc(id)}</h3>${info.title?`<p class="rt-card-info-sub">${esc(info.title)}</p>`:''}</div><button type="button" class="rt-card-modal-close" data-card-info-close aria-label="카드 상세 정보 닫기">×</button></div><div class="rt-card-info-body"><div class="rt-card-info-plate"><img src="${cardAsset(id)}" alt="${esc(id)} 카드 후면 판넬"></div>${cardTips[id]?`<p class="rt-card-info-tip">${esc(cardTips[id])}</p>`:''}<table class="rt-card-info-table"><tbody>${rows.map(([k,v])=>`<tr><th scope="row">${esc(k)}</th><td>${esc(v)}</td></tr>`).join('')}</tbody></table>${info.note?`<p class="rt-card-info-note">${esc(info.note)}</p>`:''}${featureCta(id)}${info.missing?`<p class="rt-card-info-missing">상세 사양 준비 중 · ${esc(info.missing)}</p>`:''}<p class="rt-card-info-src">${[info.page?`알티컴 종합 카탈로그 2026 (국문) ${info.page}쪽`:'',info.source?esc(info.source):''].filter(Boolean).join(' · ')||'제조사 자료 확인 중'}</p></div><div class="rt-card-modal-foot"><button type="button" class="rt-button" data-card-info-close>닫기</button></div>`;
       const opener=document.activeElement;
       const finish=()=>{if(dialog.open)dialog.close();dialog.remove();opener?.focus?.({preventScroll:true})};
       dialog.addEventListener('click',event=>{if(event.target===dialog||event.target.closest('[data-card-info-close]'))finish()});
@@ -369,6 +380,47 @@
       root.appendChild(dialog);
       if(typeof dialog.showModal==='function'){dialog.showModal();dialog.querySelector('.rt-card-modal-close').focus()}else dialog.setAttribute('open','');
     }
+    // 0.205 XDM-HOS100 멀티뷰 레이아웃 팝업. 레이아웃 그림은 매뉴얼 KV08 32~34쪽(Multiview: Full1~4·Quad·Bottom·Right·PIP·PBP) 예시 그림의 배치를 따른다.
+    // 포트 제한은 사용자 확인(2026-10-12 "레이어2개하면 1~2번 중 2번은 사용불가 4개 레이어 사용하면 2~4는 1번 동일화면 출력되서 사실상 사용불가"):
+    // 레이어는 카드 출력 포트 자원을 함께 쓴다. ports: 1~4번 포트 상태(on 사용·off 사용 불가·dup 1번과 같은 화면).
+    const hosLayouts=[
+      {name:'Full 1~4',layers:1,desc:'입력 1~4번 중 한 소스를 전체 화면으로',cells:[[0,0,160,90,'1']]},
+      {name:'Quad',layers:4,desc:'4분할 쿼드뷰',cells:[[0,0,80,45,'1'],[80,0,80,45,'2'],[0,45,80,45,'3'],[80,45,80,45,'4']],ports:['on','dup','dup','dup']},
+      {name:'Bottom',layers:4,desc:'위 큰 화면 1 + 아래 작은 화면 3',cells:[[0,0,26.7,60,''],[26.7,0,106.6,60,'1'],[133.3,0,26.7,60,''],[0,60,53.3,30,'2'],[53.3,60,53.4,30,'3'],[106.7,60,53.3,30,'4']],ports:['on','dup','dup','dup']},
+      {name:'Right',layers:4,desc:'왼쪽 큰 화면 1 + 오른쪽 작은 화면 3',cells:[[0,0,106.7,15,''],[0,15,106.7,60,'1'],[0,75,106.7,15,''],[106.7,0,53.3,30,'2'],[106.7,30,53.3,30,'3'],[106.7,60,53.3,30,'4']],ports:['on','dup','dup','dup']},
+      {name:'PIP',layers:2,desc:'큰 화면 안에 작은 화면 1',cells:[[0,0,160,90,'1'],[116,63,44,27,'2']],ports:['on','off','on','on']},
+      {name:'PBP',layers:2,desc:'한 화면에 2개를 나란히',cells:[[0,0,80,90,'1'],[80,0,80,90,'2']],ports:['on','off','on','on']}
+    ];
+    const hosCellColor={'1':'#3978ee','2':'#16a37f','3':'#e39a2f','4':'#8b5cf6'};
+    function hosLayoutSvg(layout){
+      const cells=layout.cells.map(([x,y,w,h,n])=>n?`<rect x="${x+.6}" y="${y+.6}" width="${w-1.2}" height="${h-1.2}" rx="2" fill="${hosCellColor[n]}" fill-opacity=".16" stroke="${hosCellColor[n]}" stroke-width="1.2"/><text x="${x+w/2}" y="${y+h/2+5}" text-anchor="middle" font-size="${h<40?12:15}" font-weight="800" fill="${hosCellColor[n]}">${layout.name.startsWith('Full')?'1~4':n}</text>`:`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#1f2532"/>`).join('');
+      return `<svg viewBox="-3 -3 166 96" width="100%" aria-hidden="true"><rect x="-2" y="-2" width="164" height="94" rx="5" fill="#fff" stroke="#9aa6b8" stroke-width="1.5"/>${cells}</svg>`;
+    }
+    function openHosMultiview(){
+      const portWord={on:'사용',off:'불가',dup:'1번 동일'},portLabel={on:'사용',off:'사용 불가',dup:'1번과 같은 화면'};
+      const ports=layout=>layout.ports?`<ol class="rt-hos-ports" aria-label="이 레이아웃에서 출력 포트 1~4 상태">${layout.ports.map((p,i)=>`<li class="rt-hos-port-${p}" aria-label="${i+1}번 포트 ${portLabel[p]}"><b>${i+1}</b><span aria-hidden="true">${portWord[p]}</span></li>`).join('')}</ol>`:'';
+      const cards=hosLayouts.map(layout=>`<li class="rt-hos-layout"><div class="rt-hos-fig">${hosLayoutSvg(layout)}</div><div class="rt-hos-meta"><strong>${layout.name}</strong><span class="rt-hos-layers">레이어 ${layout.layers}개</span></div><p>${layout.desc}</p>${ports(layout)}</li>`).join('');
+      const dialog=document.createElement('dialog');
+      dialog.className='rt-card-info-modal rt-layer-modal rt-hos-modal';
+      dialog.setAttribute('aria-labelledby','rt-hos-title');
+      dialog.innerHTML='<div class="rt-card-modal-head"><div><span class="rt-eyebrow">XDM 출력 카드 · 멀티뷰</span><h3 id="rt-hos-title">XDM-HOS100 멀티뷰(쿼드뷰) 레이아웃</h3><p class="rt-card-info-sub">HDMI Output Slot · 4포트 · 4K/60 @ 4:4:4 · Quad-Viewer Slot</p></div><button type="button" class="rt-card-modal-close" data-layer-close aria-label="멀티뷰 레이아웃 닫기">×</button></div>'
+        +'<div class="rt-card-info-body"><p class="rt-card-info-tip">HOS100은 출력 슬롯마다 4분할·2분할 등 원하는 레이어 구성을 고를 수 있습니다. 칸의 숫자는 매뉴얼 그림의 입력 1~4번입니다.</p>'
+        +'<div class="rt-hos-warn" role="note"><strong>레이어는 카드 출력 포트 자원을 함께 씁니다</strong><ul><li><b>레이어 2개</b>(PIP · PBP): 1·2번 포트 중 <b>2번 포트는 사용할 수 없습니다.</b></li><li><b>레이어 4개</b>(Quad · Bottom · Right): 2~4번 포트에 1번과 같은 화면이 나와 <b>사실상 사용할 수 없습니다.</b> 이때 카드 1장은 분할 화면 1개를 냅니다.</li></ul></div>'
+        +`<ul class="rt-hos-grid">${cards}</ul>`
+        +'<ul class="rt-layer-notes"><li>설정 순서: 전면 메뉴 Multiview에서 Timing → Layer → Output 슬롯을 고른 뒤 Enter를 누릅니다. Timing에서 OFF를 고르면 매트릭스 모드로 돌아가 4포트를 각각 출력합니다.</li><li>그 밖의 레이아웃은 커맨드로 User config mode를 씁니다.</li><li>Genlock을 켜면 Multiview와 Scaler Out 출력 해상도 변경이 제한됩니다.</li></ul>'
+        +'<p class="rt-card-info-src">알티컴 종합 카탈로그 2026 (국문) 8쪽 · XDM 국문 사용자 매뉴얼 KV08 32~35쪽 · 포트 사용 제한은 서울영상테크 확인(2026-10-12)</p></div>'
+        +'<div class="rt-card-modal-foot"><button type="button" class="rt-button" data-layer-close>닫기</button></div>';
+      const opener=document.activeElement;
+      const finish=()=>{if(dialog.open)dialog.close();dialog.remove();opener?.focus?.({preventScroll:true})};
+      dialog.addEventListener('click',event=>{if(event.target===dialog||event.target.closest('[data-layer-close]'))finish()});
+      dialog.addEventListener('cancel',event=>{event.preventDefault();finish()});
+      root.appendChild(dialog);
+      if(typeof dialog.showModal==='function'){dialog.showModal();dialog.querySelector('.rt-card-modal-close').focus()}else dialog.setAttribute('open','');
+    }
+    // 기능 팝업 버튼([data-card-feature]): 구성기 버튼과 제품정보 02 신호 구성 그림의 WOS100·HOS100 칸(SVG, role=button)이 함께 쓴다.
+    const featureOpeners={'layer-compare':openLayerCompare,'hos-multiview':openHosMultiview};
+    root.addEventListener('click',event=>{const el=event.target.closest?.('[data-card-feature]');if(!el||!root.contains(el))return;event.preventDefault();featureOpeners[el.dataset.cardFeature]?.()});
+    root.addEventListener('keydown',event=>{if(event.key!=='Enter'&&event.key!==' ')return;const el=event.target.closest?.('[data-card-feature]');if(!el||el.tagName==='BUTTON')return;event.preventDefault();featureOpeners[el.dataset.cardFeature]?.()});
     function configurationSummary(){
       const slotList=currentSlots(),t=totals(),completion=RtCore.completionFor(state),rows=dir=>{
         const counts={};for(const slot of slotList.filter(item=>item.dir===dir)){const c=slotCard(slot.id);if(c)counts[c[0]]=(counts[c[0]]||0)+1}
@@ -796,7 +848,6 @@ ${figure?`<h2 class="rt-rp-h"><i>1</i>후면 슬롯 배치</h2><div class="rt-rp
       if(b.dataset.family){if(state.family!==b.dataset.family){if(!await confirmReset())return;state.family=b.dataset.family;state.model=null;state.placements={};state.portAssignments={};state.links={};state.maxStep=0;state.slot='in-a'}previewSide='front';linkPreviewSlot=null;changed();return}if(b.dataset.model){if(state.model!==b.dataset.model){if(!confirmReset())return;state.model=b.dataset.model;state.placements={};state.portAssignments={};state.links={};state.maxStep=1;state.slot=currentSlots()[0].id}previewSide='front';linkPreviewSlot=null;changed();return}if(b.dataset.slot){state.slot=b.dataset.slot;modalSlot=b.dataset.slot;modalQtys={};modalExt={};modalExtQty={};changed();return}if(b.dataset.modalClose!==undefined){closeCardModal();return}if(b.dataset.linkDevice!==undefined){const id=b.dataset.owner,old=state.links[id]||{device:'',count:0,distance:'30'},slot=currentSlots().find(item=>item.id===id),c=slot&&slotCard(slot.id);if(!c||(b.dataset.linkDevice&&!choices(slot,c).includes(b.dataset.linkDevice)))return;linkPreviewSlot=id;if(old.device===b.dataset.linkDevice){render();return}old.device=b.dataset.linkDevice;old.count=old.device?(old.count||c[2]):0;state.links[id]=old;syncPorts();changed();return}if(b.dataset.card){const reopen=modalSlot;modalSlot=null;if(state.placements[state.slot]===b.dataset.card){const nextDev=extChoice(b.dataset.card,state.slot),nextQty=extQty(b.dataset.card,state.slot),cur=state.links[state.slot];if((cur?.device||'')!==nextDev||(nextDev&&cur?.count!==nextQty)){const link=linkFor(state.slot,b.dataset.card,nextDev,nextQty);if(link)state.links[state.slot]=link;else delete state.links[state.slot];modalExt={};modalExtQty={};focusSlotAfterRender=reopen;syncPorts();changed();announce(`${b.dataset.card} 연동 전송기를 ${link?`${extenderInfo[link.device]?.model||link.device} ${link.count}${link.device===RtCore.psePair?'쌍':'대'}`:'연결 안 함'}으로 바꿨습니다.`);return}closeCardModal(reopen);return}focusSlotAfterRender=reopen;changedSlot=state.slot;const targets=RtCore.fillTargets(state,state.slot,modalQtys[b.dataset.card]||1);modalQtys={};const selectedCard=b.dataset.card==='BLANK'?null:card(b.dataset.card),device=selectedCard?extChoice(b.dataset.card,state.slot):'',qty=selectedCard?extQty(b.dataset.card,state.slot):0;modalExt={};modalExtQty={};for(const id of targets){state.placements[id]=b.dataset.card;const link=selectedCard?linkFor(id,b.dataset.card,device,qty):null;if(link)state.links[id]=link;else delete state.links[id]}syncPorts();changed();if(targets.length>1)announce(`${b.dataset.card==='BLANK'?'블랭크 커버':b.dataset.card} ${targets.length}개를 채웠습니다.`);return}if(b.dataset.format){state.format=b.dataset.format;render();saveLocal();return}if(b.dataset.jump!==undefined){const n=Number(b.dataset.jump);if(n<=state.maxStep){state.step=n;changed()}return}if(b.dataset.action==='remove'){focusSlotAfterRender=modalSlot;changedSlot=state.slot;modalSlot=null;delete state.placements[state.slot];delete state.links[state.slot];syncPorts();changed();return}
       // "남은 N칸 블랭크로 채우기"(2-3): 빈 슬롯만 BLANK로 바꾸고, 이미 넣은 카드는 그대로 둔다. 실행 취소 1단계.
       if(b.dataset.action==='fill-blanks'){const filled=RtCore.fillBlanks(state);state.placements=filled.placements;syncPorts();changed();return}
-      if(b.dataset.action==='layer-compare'){openLayerCompare();return}
       if(b.dataset.action==='av-builder-open'){openInAvBuilder();return}
       if(b.dataset.action==='av-builder'){const data=RtCore.avBuilder(state);download(JSON.stringify(data,null,2),'application/json;charset=utf-8','json','av-builder');announce(`AV 빌더용 파일(장비 ${data.nodes.length}대 · 연결 ${data.edges.length}개)을 다운로드했습니다. AV 빌더의 Share → 가져오기 → 구성도 JSON에서 여세요.`);return}
       if(state.step===2&&b.dataset.action==='back'&&signalView){signalView=false;render();return}
