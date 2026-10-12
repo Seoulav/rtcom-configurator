@@ -61,6 +61,7 @@ claude
   - 세션 시작 알림: `input_doc` 새 자료가 있으면 알려 줍니다.
   - 자주 쓰는 검증 명령은 묻지 않고 실행합니다.
   - 위험한 Git 명령(force push, `reset --hard`, `clean`, main 직접 push)은 막습니다.
+  - 한국어 응답 강제(0.206): 응답 언어를 한국어로 정하고, 요청마다 한국어 규칙을 알리며, 마지막 답변이 대부분 영어면 한국어로 다시 쓰게 합니다(`scripts/korean-reply-hook.cjs`).
 - 작업 규칙은 `CLAUDE.md`에 있습니다. Claude Code가 자동으로 읽습니다.
 - Claude 데스크톱 앱을 쓰면 Code 탭에서 새 세션을 만들 때 로컬 폴더 `C:\work\rtcom-configurator`를 지정합니다. 클라우드 세션(claude.ai/code)은 PC 폴더를 볼 수 없습니다.
 - 클라우드 세션도 같은 저장소에 작업을 올리므로, 로컬 세션은 자기 이름의 새 브랜치에서 작업합니다.

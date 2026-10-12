@@ -935,22 +935,29 @@
         });
         return `<svg class="rt-pg-layout-wall" viewBox="0 0 ${W} ${H}" role="img" ${label}>${body}</svg>`;
       }
-      // 한 화면 분할: 모니터 200×134(베젤 6, 화면 188×106 ≈ 16:9, 스탠드). 칸 좌표 0~100을 화면 크기로 늘린다.
-      const SX=6,SY=6,SW=188,SH=106,mx=v=>SX+v*SW/100,my=v=>SY+v*SH/100;
       // 검은 여백 판정은 0.85·0.146·0.147 규칙 그대로(칸이 가장자리를 다 채우지 못하거나 매뉴얼에 검은 여백이 있는 레이아웃). 화면 바탕 사각형에 표시 클래스를 붙인다.
       const minX=Math.min(...cells.map(c=>c[1])),minY=Math.min(...cells.map(c=>c[2]));
       const maxX=Math.max(...cells.map(c=>c[1]+c[3])),maxY=Math.max(...cells.map(c=>c[2]+c[4]));
       const letterbox=minX>0.5||minY>0.5||maxX<99.5||maxY<99.5||(own?.shapes[key]?own.black.has(key):key==='USER MODE 2');
+      return monitorLayoutSvg(cells,{id,label,letterbox});
+    }
+    // 한 화면 분할 모니터 그림: 모니터 200×134(베젤 6, 화면 188×106 ≈ 16:9, 스탠드). 칸 [번호, x, y, 폭, 높이(0~100), 글자 x, 글자 y]를 화면 크기로 늘린다.
+    // 0.206(사용자 요청 2026-10-12 "분할 구성예시를 QMS-88UX 분할예시와 같은 디자인 컨셉으로 진행해줘"): XDM-HOS100 멀티뷰 팝업(src/app.js)도 같은 그림을 쓰도록
+    // globalThis.RtMonitorLayoutSvg로 내보낸다. opts.cellClass는 칸 사각형 클래스(06 화면 구성 모드는 e2e가 세는 rt-pg-cell), opts.labels는 칸 번호 대신 쓸 글자.
+    function monitorLayoutSvg(cells,opts={}){
+      const id=opts.id||`lay${++layoutSvgSeq}`,label=opts.label||'',cellClass=opts.cellClass||'rt-pg-cell',labels=opts.labels||{};
+      const SX=6,SY=6,SW=188,SH=106,mx=v=>SX+v*SW/100,my=v=>SY+v*SH/100;
       const used=[...new Set(cells.map(c=>c[0]))];
       const grads=used.map(n=>{const col=LAYOUT_COLORS[(n-1)%LAYOUT_COLORS.length];return `<linearGradient id="${id}g${n}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${col}"/><stop offset="1" stop-color="${col}" stop-opacity=".62"/></linearGradient>`}).join('');
       const tiles=cells.map(([n,x,y,w,h,lx,ly])=>{
         const X=mx(x),Y=my(y),Wd=w*SW/100,Hd=h*SH/100,fs=Math.max(7,Math.min(20,Math.min(Wd,Hd)*0.42));
         const tx=lx!=null?mx(lx):X+Wd/2,ty=ly!=null?my(ly):Y+Hd/2;
         const hill=Hd>18&&Wd>24?`<path d="M${X} ${Y+Hd}V${Y+Hd*0.8}Q${X+Wd*0.3} ${Y+Hd*0.62} ${X+Wd*0.55} ${Y+Hd*0.78}T${X+Wd} ${Y+Hd*0.72}V${Y+Hd}Z" fill="#fff" fill-opacity=".16"/>`:'';
-        return `<g><rect class="rt-pg-cell" data-w="${w}" data-h="${h}" x="${X}" y="${Y}" width="${Wd}" height="${Hd}" fill="url(#${id}g${n})" stroke="#fff" stroke-opacity=".7" stroke-width=".9"/>${hill}<text x="${tx}" y="${ty}" font-size="${fs.toFixed(1)}" font-weight="800" fill="#fff" text-anchor="middle" dominant-baseline="central" style="paint-order:stroke;stroke:rgba(0,0,0,.28);stroke-width:1.6px">${n}</text></g>`;
+        return `<g><rect class="${cellClass}" data-w="${w}" data-h="${h}" x="${X}" y="${Y}" width="${Wd}" height="${Hd}" fill="url(#${id}g${n})" stroke="#fff" stroke-opacity=".7" stroke-width=".9"/>${hill}<text x="${tx}" y="${ty}" font-size="${fs.toFixed(1)}" font-weight="800" fill="#fff" text-anchor="middle" dominant-baseline="central" style="paint-order:stroke;stroke:rgba(0,0,0,.28);stroke-width:1.6px">${esc(labels[n]??n)}</text></g>`;
       }).join('');
-      return `<svg viewBox="0 0 200 134" role="img" ${label}><defs>${grads}<clipPath id="${id}c"><rect x="${SX}" y="${SY}" width="${SW}" height="${SH}"/></clipPath></defs><rect x="1" y="1" width="198" height="118" rx="6" fill="#1f2532"/><rect${letterbox?' class="rt-pg-layout-letterbox"':''} x="${SX}" y="${SY}" width="${SW}" height="${SH}" fill="#0b0d12"/><g clip-path="url(#${id}c)">${tiles}</g><circle cx="100" cy="115.5" r="1.3" fill="#5b6475"/><path d="M92 119h16l3 9H89z" fill="#3a4150"/><rect x="72" y="127.5" width="56" height="5" rx="2.5" fill="#3a4150"/></svg>`;
+      return `<svg viewBox="0 0 200 134" ${label?`role="img" ${label}`:'aria-hidden="true"'}><defs>${grads}<clipPath id="${id}c"><rect x="${SX}" y="${SY}" width="${SW}" height="${SH}"/></clipPath></defs><rect x="1" y="1" width="198" height="118" rx="6" fill="#1f2532"/><rect${opts.letterbox?' class="rt-pg-layout-letterbox"':''} x="${SX}" y="${SY}" width="${SW}" height="${SH}" fill="#0b0d12"/><g clip-path="url(#${id}c)">${tiles}</g><circle cx="100" cy="115.5" r="1.3" fill="#5b6475"/><path d="M92 119h16l3 9H89z" fill="#3a4150"/><rect x="72" y="127.5" width="56" height="5" rx="2.5" fill="#3a4150"/></svg>`;
     }
+    globalThis.RtMonitorLayoutSvg=monitorLayoutSvg;
     // 0.159(사용자 요청 2026-09-29 "매트릭스쪽 비슷한 컨셉으로 하나 만들자", "1TO1, ALL, 임의스위칭 이거는 빼고 그냥 크로스포인트 이미지만"):
     // MATRIX 카드에 칩 없이 크로스포인트 그림 한 장을 둔다. 왼쪽 입력(IN n)에서 오른쪽 출력 모니터(OUT n)로 입력 색 선을 잇는다(색은 LAYOUT_COLORS, QUAD·DUAL과 같다).
     // 값은 출력 1번부터 차례로 "들어오는 입력 번호" 예시다. QMS-88UX 출력 9·10번은 멀티뷰 전용이라 매트릭스 그림에서 뺀다.

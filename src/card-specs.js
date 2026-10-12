@@ -5,7 +5,7 @@
    -U 카드 최대 해상도 3840×2160(4096×2160 표기는 0.182에서 화면에서 뺌), 광 카드 싱글모드 10km, HOS4S-UW 1920×1080@60Hz, SOS4 오디오 포트.
    구성기 03 카드 슬롯의 "카드 정보" 버튼·내 구성 카드 행이 이 값을 읽는다(docs/implementation/CARD_DETAIL_INFO.md). */
 globalThis.RtCardSpecs = {
-  'XDM-HIS100':{title:'HDMI Input Slot',page:6,specs:[['포트 구성','HDMI 4포트, 오디오 입·출력 4포트(병합 및 추출)'],['커넥터','HDMI, 피닉스 5핀'],['최대 해상도','4K/60 (3840x2160 @ 60Hz 4:4:4)'],['규격','HDMI v2.0']]},
+  'XDM-HIS100':{title:'HDMI Input Slot',page:6,specs:[['포트 구성','HDMI 4포트, 오디오 입·출력 4포트(병합 및 추출)'],['커넥터','HDMI, 피닉스 5핀'],['최대 해상도','4K/60 (3840x2160 @ 60Hz 4:4:4)'],['규격','HDMI v2.0'],['특징','화면 위 자막 표시 가능']]}, // 0.206 특징: 사용자 확인 2026-10-12 "HIS100입력카드는 화면 위 자막도 가능해"(카탈로그·매뉴얼 KV08에는 없음)
   'XDM-HI100':{title:'HDMI Input Slot (Non-Scaler)',page:6,specs:[['포트 구성','HDMI 4포트, 오디오 입·출력 4포트(병합 및 추출)'],['커넥터','HDMI, 피닉스 5핀'],['최대 해상도','4K/60 (3840x2160 @ 60Hz 4:4:4)'],['규격','HDMI v2.0']]},
   'XDM-DPI100':{title:'DisplayPort Input Slot',page:6,specs:[['포트 구성','DisplayPort 4포트, 오디오 입·출력 4포트(병합 및 추출)'],['커넥터','DisplayPort, 피닉스 5핀'],['최대 해상도','4K/60 (3840x2160 @ 60Hz 4:4:4)'],['규격','DisplayPort v1.2']]},
   'XDM-FIS100':{title:'Fiber Optical Input Slot',page:7,specs:[['포트 구성','광 4포트, 오디오 입·출력 4포트(병합 및 추출)'],['커넥터','1 LC, 피닉스 5핀'],['최대 해상도','4K/60 (3840x2160 @ 60Hz 4:4:4)'],['최대 전송 거리','싱글모드 2km, 멀티모드 300m']]},

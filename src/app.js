@@ -384,19 +384,17 @@
     // 포트 제한은 사용자 확인(2026-10-12 "레이어2개하면 1~2번 중 2번은 사용불가 4개 레이어 사용하면 2~4는 1번 동일화면 출력되서 사실상 사용불가",
     // "1~2번 중 2번은 사용불가, 3번 사용시 4번 사용불가로 보면 되"): 레이어는 카드 출력 포트 자원을 함께 쓴다. 레이어 2개는 1·2번, 3·4번이 짝이다.
     // ports: 1~4번 포트 상태(split 분할 화면 출력·off 사용 불가·dup 1번과 같은 화면). 2레이어 그림은 1·3번을 모두 분할한 경우다.
+    // 칸은 [번호, x, y, 폭, 높이](화면 0~100)이고 QMS 06 화면 구성 모드와 같은 모니터 그림(src/products.js monitorLayoutSvg)으로 그린다(0.206 사용자 요청
+    // "분할 구성예시를 QMS-88UX 분할예시와 같은 디자인 컨셉으로 진행해줘"). Bottom·Right는 매뉴얼 그림처럼 큰 화면 양옆·위아래가 검은 여백이다.
     const hosLayouts=[
-      {name:'Full 1~4',layers:1,desc:'입력 1~4번 중 한 소스를 전체 화면으로',cells:[[0,0,160,90,'1']]},
-      {name:'Quad',layers:4,desc:'4분할 쿼드뷰',cells:[[0,0,80,45,'1'],[80,0,80,45,'2'],[0,45,80,45,'3'],[80,45,80,45,'4']],ports:['split','dup','dup','dup']},
-      {name:'Bottom',layers:4,desc:'위 큰 화면 1 + 아래 작은 화면 3',cells:[[0,0,26.7,60,''],[26.7,0,106.6,60,'1'],[133.3,0,26.7,60,''],[0,60,53.3,30,'2'],[53.3,60,53.4,30,'3'],[106.7,60,53.3,30,'4']],ports:['split','dup','dup','dup']},
-      {name:'Right',layers:4,desc:'왼쪽 큰 화면 1 + 오른쪽 작은 화면 3',cells:[[0,0,106.7,15,''],[0,15,106.7,60,'1'],[0,75,106.7,15,''],[106.7,0,53.3,30,'2'],[106.7,30,53.3,30,'3'],[106.7,60,53.3,30,'4']],ports:['split','dup','dup','dup']},
-      {name:'PIP',layers:2,desc:'큰 화면 안에 작은 화면 1',cells:[[0,0,160,90,'1'],[116,63,44,27,'2']],ports:['split','off','split','off'],pairNote:true},
-      {name:'PBP',layers:2,desc:'한 화면에 2개를 나란히',cells:[[0,0,80,90,'1'],[80,0,80,90,'2']],ports:['split','off','split','off'],pairNote:true}
+      {name:'Full 1~4',layers:1,desc:'입력 1~4번 중 한 소스를 전체 화면으로',cells:[[1,0,0,100,100]],labels:{1:'1~4'}},
+      {name:'Quad',layers:4,desc:'4분할 쿼드뷰',cells:[[1,0,0,50,50],[2,50,0,50,50],[3,0,50,50,50],[4,50,50,50,50]],ports:['split','dup','dup','dup']},
+      {name:'Bottom',layers:4,desc:'위 큰 화면 1 + 아래 작은 화면 3',cells:[[1,16.67,0,66.66,66.67],[2,0,66.67,33.33,33.33],[3,33.33,66.67,33.34,33.33],[4,66.67,66.67,33.33,33.33]],letterbox:true,ports:['split','dup','dup','dup']},
+      {name:'Right',layers:4,desc:'왼쪽 큰 화면 1 + 오른쪽 작은 화면 3',cells:[[1,0,16.67,66.67,66.66],[2,66.67,0,33.33,33.33],[3,66.67,33.33,33.33,33.34],[4,66.67,66.67,33.33,33.33]],letterbox:true,ports:['split','dup','dup','dup']},
+      {name:'PIP',layers:2,desc:'큰 화면 안에 작은 화면 1',cells:[[1,0,0,100,100],[2,72.5,70,27.5,30]],ports:['split','off','split','off'],pairNote:true},
+      {name:'PBP',layers:2,desc:'한 화면에 2개를 나란히',cells:[[1,0,0,50,100],[2,50,0,50,100]],ports:['split','off','split','off'],pairNote:true}
     ];
-    const hosCellColor={'1':'#3978ee','2':'#16a37f','3':'#e39a2f','4':'#8b5cf6'};
-    function hosLayoutSvg(layout){
-      const cells=layout.cells.map(([x,y,w,h,n])=>n?`<rect x="${x+.6}" y="${y+.6}" width="${w-1.2}" height="${h-1.2}" rx="2" fill="${hosCellColor[n]}" fill-opacity=".16" stroke="${hosCellColor[n]}" stroke-width="1.2"/><text x="${x+w/2}" y="${y+h/2+5}" text-anchor="middle" font-size="${h<40?12:15}" font-weight="800" fill="${hosCellColor[n]}">${layout.name.startsWith('Full')?'1~4':n}</text>`:`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#1f2532"/>`).join('');
-      return `<svg viewBox="-3 -3 166 96" width="100%" aria-hidden="true"><rect x="-2" y="-2" width="164" height="94" rx="5" fill="#fff" stroke="#9aa6b8" stroke-width="1.5"/>${cells}</svg>`;
-    }
+    function hosLayoutSvg(layout){return globalThis.RtMonitorLayoutSvg?.(layout.cells,{labels:layout.labels,letterbox:layout.letterbox,cellClass:'rt-hos-cell'})||''}
     function openHosMultiview(){
       const portWord={split:'분할',off:'불가',dup:'1번 동일'},portLabel={split:'분할 화면 출력',off:'사용 불가',dup:'1번과 같은 화면'};
       const ports=layout=>layout.ports?`<ol class="rt-hos-ports" aria-label="이 레이아웃에서 출력 포트 1~4 상태">${layout.ports.map((p,i)=>`<li class="rt-hos-port-${p}" aria-label="${i+1}번 포트 ${portLabel[p]}"><b>${i+1}</b><span aria-hidden="true">${portWord[p]}</span></li>`).join('')}</ol>${layout.pairNote?'<p class="rt-hos-pair">1·2번, 3·4번이 짝입니다. 3번을 분할하지 않으면 3·4번은 각각 출력합니다.</p>':''}`:'';

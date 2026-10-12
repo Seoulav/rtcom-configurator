@@ -1,5 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "language": "korean",
   "permissions": {
     "allow": [
       "Bash(node --test *)",
@@ -38,6 +39,29 @@
             "command": "node \"$CLAUDE_PROJECT_DIR/scripts/input-doc-status.cjs\"",
             "timeout": 15,
             "statusMessage": "input_doc 새 자료 확인"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/scripts/korean-reply-hook.cjs\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/scripts/korean-reply-hook.cjs\"",
+            "timeout": 15,
+            "statusMessage": "한국어 답변 확인"
           }
         ]
       }
