@@ -57,6 +57,14 @@
 - **0.145.0 배포 기록**: `docs/qa/DEPLOYMENT_0.145_2026-09-29.md`(PR #194 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.144.0 배포 기록**: `docs/qa/DEPLOYMENT_0.144_2026-09-29.md`(PR #192 → main 병합, Pages 배포 run 162, 공개 파일 337/338 일치, `.nojekyll` 제외)
 
+## 0.203.0
+
+사용자 요청 2026-10-12("알티컴 XDM-Wos카드를 이런식으로 표현해주고 비디오프로세서들도 2k,4k레이어가 몇개 되는지 표로 정리해주면 좋겠어", "비디오 프로세서 레이어 비교는 vp제품 군 프레임선택 하는항목한쪽에 이 페이지를 볼 수 있게해줘 디자인을 너가해줘"):
+
+- **02 프레임 선택(XDM) 레이어 비교 카드**: 기존 "EDID · LED 활용 팁" 옆에 "XDM-WOS100 · 레이어" 카드를 나란히 두고, 버튼을 누르면 팝업이 열립니다. 팝업에는 Analog Way 데이터시트 응용도 방식으로 그린 WOS100 구성도(입력 슬롯 소스 → XDM 메인프레임 → WOS100 HDMI 4포트 → 2×2 비디오 월 + 4레이어 중첩, Multiview 기본 레이아웃 참고)와 Aquilon RS1·RS2·RS4, Zenith 100·200, Pulse·Eikos 4K, NovaStar H2·H5, Colorlight X100 Pro, Magnimage LED-780H, XDM-WOS100의 4K/60p 입출력·4K 레이어·2K/DL 레이어 비교표가 있습니다.
+- 값의 근거는 알티컴 카탈로그 9쪽·XDM 매뉴얼 KV08 32~34쪽·사용자 제공 Aquilon RS4 데이터시트·AV Portal 제품 상세이며, WOS100 레이어 수는 카드 설명과 같은 4레이어로 적고 제조사 확인 요청(`docs/RTCOM_MANUFACTURER_DATA_REQUEST.md` Q6)이 열려 있음을 팝업에 밝혔습니다.
+- 구성기 저장 형식·카탈로그·슬롯 ID는 바뀌지 않습니다. 근거: `docs/implementation/XDM_WOS100_LAYER_COMPARE_0.203.md`
+
 ## 0.202.0
 
 사용자 요청 2026-10-06("XDM 시리즈 국문 사용자 매뉴얼 KV08 P18 COS카드 모양과 지금 COS카드 이미지가 서로 틀려서 이거 수정해줘"):
