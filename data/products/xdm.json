@@ -373,7 +373,7 @@
     {
       "model": "XDM-WOS100",
       "kind": "출력 카드",
-      "summary": "HDMI(Wall Overlay) 출력 4포트 · 비디오 월, 커맨드 중첩 기능"
+      "summary": "HDMI(Wall Overlay) 출력 4포트 · 비디오 월 · 출력 1개에 4K/60 소스 4레이어 중첩(커맨드)"
     },
     {
       "model": "XDM-CTR100",
