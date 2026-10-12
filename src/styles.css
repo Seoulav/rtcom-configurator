@@ -1422,3 +1422,5 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-layer-table tr:last-child td{background:#fff7e6}
 #rtcom-design .rt-layer-notes{margin:0;padding-left:18px;color:#56627a;font-size:12px;line-height:1.55;display:grid;gap:4px}
 @media(max-width:720px){#rtcom-design .rt-xdm-feature-row{grid-template-columns:1fr}}
+#rtcom-design .rt-layer-cta{margin:0}#rtcom-design .rt-layer-cta .rt-layer-open{margin-top:0}
+#rtcom-design .rt-layer-open-tip{min-height:30px;margin-top:8px;padding:0 12px;font-size:11px;background:#ffffff2e;border:1px solid #ffffff66;color:#fff}#rtcom-design .rt-layer-open-tip:hover{background:#ffffff47}
