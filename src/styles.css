@@ -1109,7 +1109,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-card-info-tip{margin:0;font-size:13.5px;line-height:1.55}
 #rtcom-design .rt-card-info-table{width:100%;border-collapse:collapse;font-size:13px}
 #rtcom-design .rt-card-info-table th{width:112px;padding:8px 10px 8px 0;background:none;font-size:13px;color:#5b6679;font-weight:700;text-align:left;vertical-align:top;border-top:1px solid #edf1f7}
-#rtcom-design .rt-card-info-table td{padding:8px 0;background:none;text-align:left;font-size:13px;line-height:1.5;border-top:1px solid #edf1f7;word-break:keep-all;overflow-wrap:anywhere}
+#rtcom-design .rt-card-info-table td{white-space:pre-line;padding:8px 0;background:none;text-align:left;font-size:13px;line-height:1.5;border-top:1px solid #edf1f7;word-break:keep-all;overflow-wrap:anywhere}
 #rtcom-design .rt-card-info-note{margin:0;padding:10px 12px;border-radius:12px;background:#f5f8fc;font-size:12.5px;line-height:1.55}
 #rtcom-design .rt-card-info-missing{margin:0;padding:10px 12px;border-radius:12px;background:#fff6e5;color:#8a5a00;font-size:12.5px;line-height:1.55}
 #rtcom-design .rt-card-info-src{margin:0;color:var(--rt-muted);font-size:11.5px}
@@ -1411,7 +1411,6 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 /* 0.203 02 프레임 선택(XDM): EDID 팁 옆 레이어 비교 카드와 팝업(사용자 요청 2026-10-12). 팝업은 카드 상세 팝업(.rt-card-info-modal)을 넓혀 쓴다. */
 #rtcom-design .rt-xdm-feature-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}#rtcom-design .rt-xdm-feature-row .rt-xdm-feature-note{margin-top:0}
 #rtcom-design .rt-layer-note{display:flex;flex-direction:column;background:linear-gradient(135deg,#e9f6fd,#eef2ff);box-shadow:inset 0 0 0 1px #c9e3f3}#rtcom-design .rt-layer-note span{color:#1c86b8}#rtcom-design .rt-layer-note p{flex:1}
-#rtcom-design .rt-layer-open{align-self:flex-start;min-height:34px;margin-top:10px;padding:0 14px;font-size:12px;background:#17304f;border-color:#17304f;color:#fff}#rtcom-design .rt-layer-open:hover{background:#24466f}
 #rtcom-design .rt-layer-modal{width:min(1060px,calc(100vw - 24px))}
 #rtcom-design .rt-layer-figure{overflow-x:auto;padding:4px;border:1px solid #e3e9f2;border-radius:14px;background:#fff}#rtcom-design .rt-layer-figure svg{display:block;width:100%;min-width:640px;height:auto}
 #rtcom-design .rt-layer-h{margin:8px 0 0;font-size:14px;font-weight:800;color:var(--rt-ink);border-left:4px solid #17304f;padding-left:9px}
@@ -1422,5 +1421,29 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-layer-table tr:last-child td{background:#fff7e6}
 #rtcom-design .rt-layer-notes{margin:0;padding-left:18px;color:#56627a;font-size:12px;line-height:1.55;display:grid;gap:4px}
 @media(max-width:720px){#rtcom-design .rt-xdm-feature-row{grid-template-columns:1fr}}
-#rtcom-design .rt-layer-cta{margin:0}#rtcom-design .rt-layer-cta .rt-layer-open{margin-top:0}
-#rtcom-design .rt-layer-open-tip{min-height:30px;margin-top:8px;padding:0 12px;font-size:11px;background:#ffffff2e;border:1px solid #ffffff66;color:#fff}#rtcom-design .rt-layer-open-tip:hover{background:#ffffff47}
+/* 0.205 기능 팝업 버튼(XDM-WOS100 레이어 구성도·비교표, XDM-HOS100 멀티뷰 레이아웃). 사용자 요청 2026-10-12 "버튼이 살짝 눈에 띄게":
+   남색 단색 대신 사이트 강조색 그러데이션·레이어 아이콘·→ 화살표·그림자를 쓰고, 카드 상세 팝업에서는 연한 파랑 안내 상자 안에 둔다. */
+#rtcom-design .rt-feature-open{display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:0 16px 0 13px;border:0;border-radius:999px;background:linear-gradient(135deg,#3978ee,#5b5ce6);color:#fff;font-size:13px;font-weight:750;white-space:nowrap;box-shadow:0 6px 16px #3978ee47;transition:transform .15s,box-shadow .15s,background .15s}
+#rtcom-design .rt-feature-open:hover{transform:translateY(-1px);background:linear-gradient(135deg,#2f66da,#4f4fd6);box-shadow:0 9px 22px #3978ee5e}
+#rtcom-design .rt-feature-open:focus-visible{outline:3px solid #9cc0ff;outline-offset:2px}
+#rtcom-design .rt-feature-open b{font-weight:800;transition:transform .15s}#rtcom-design .rt-feature-open:hover b{transform:translateX(2px)}#rtcom-design .rt-feature-ico{flex:none}
+#rtcom-design .rt-layer-note .rt-feature-open{align-self:flex-start;margin-top:10px}
+#rtcom-design .rt-feature-open>span{display:inline;color:inherit;font-size:inherit;font-weight:inherit;letter-spacing:normal}
+#rtcom-design .rt-feature-cta{display:flex;align-items:center;justify-content:space-between;gap:10px 14px;flex-wrap:wrap;margin:0;padding:12px 14px;border-radius:14px;background:linear-gradient(135deg,#eef4ff,#f3efff);box-shadow:inset 0 0 0 1px #cfdcff}
+#rtcom-design .rt-feature-cta>div{flex:1 1 220px;min-width:0}#rtcom-design .rt-feature-cta p{margin:5px 0 0;font-size:12.5px;line-height:1.45;color:#3b4660}
+#rtcom-design .rt-feature-tag{display:inline-block;padding:2px 9px;border-radius:999px;background:#3978ee;color:#fff;font-size:11px;font-weight:800}
+#rtcom-design .rt-feature-open-tip{justify-self:start;min-height:32px;margin-top:8px;padding:0 13px 0 11px;font-size:12px;background:#fff;color:#2448a8;box-shadow:0 4px 12px #0f172a40}#rtcom-design .rt-feature-open-tip:hover{background:#eef4ff}
+/* 0.205 HOS100 멀티뷰 레이아웃 팝업 */
+#rtcom-design .rt-hos-modal{width:min(900px,calc(100vw - 24px))}
+#rtcom-design .rt-hos-warn{padding:12px 14px;border-radius:14px;background:#fff7e6;box-shadow:inset 0 0 0 1px #f1d49b;color:#5a4110;font-size:13px;line-height:1.5}#rtcom-design .rt-hos-warn strong{display:block;margin-bottom:4px;color:#8a5a00}#rtcom-design .rt-hos-warn ul{margin:0;padding-left:18px;display:grid;gap:3px}
+#rtcom-design .rt-hos-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}@media(max-width:560px){#rtcom-design .rt-hos-grid{grid-template-columns:1fr 1fr;gap:8px}#rtcom-design .rt-hos-layout{padding:8px}}
+#rtcom-design .rt-hos-layout{display:flex;flex-direction:column;gap:6px;padding:10px;border:1px solid #e3e9f2;border-radius:14px;background:#fff}#rtcom-design .rt-hos-fig svg{display:block}
+#rtcom-design .rt-hos-meta{display:flex;align-items:center;justify-content:space-between;gap:8px}#rtcom-design .rt-hos-meta strong{font-size:14px;color:var(--rt-ink)}
+#rtcom-design .rt-hos-layers{padding:1px 8px;border-radius:999px;background:#eef2f8;color:#475569;font-size:11px;font-weight:700;white-space:nowrap}
+#rtcom-design .rt-hos-layout p{margin:0;font-size:12px;line-height:1.4;color:#56627a}
+#rtcom-design .rt-hos-ports{list-style:none;margin:2px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+#rtcom-design .rt-hos-ports li{display:flex;flex-direction:column;align-items:center;padding:3px 2px;border-radius:8px;font-size:10.5px;line-height:1.25;text-align:center;word-break:keep-all}#rtcom-design .rt-hos-ports b{font-size:12px}
+#rtcom-design .rt-hos-port-split{background:#e8f0ff;color:#2448a8}#rtcom-design .rt-hos-port-off{background:#fde8e8;color:#b42318}#rtcom-design .rt-hos-port-off b{text-decoration:line-through}#rtcom-design .rt-hos-port-dup{background:#f1f3f7;color:#6b7280}#rtcom-design .rt-hos-pair{margin:0;font-size:11px;line-height:1.4;color:#8a5a00}
+/* 0.205 제품정보 02 신호 구성: 눌러서 기능 팝업을 여는 WOS100·HOS100 칸 */
+#rtcom-design .rt-pg-sig-feature{cursor:pointer;outline:none}#rtcom-design .rt-pg-sig-feature:hover .rt-pg-sig-pill{fill-opacity:.26}#rtcom-design .rt-pg-sig-feature:focus-visible .rt-pg-sig-pill{stroke-width:3.2}
+#rtcom-design .rt-pg-legend .rt-pg-legend-feature{color:#2f5fd0;font-weight:700}#rtcom-design .rt-pg-legend .rt-pg-legend-feature i{display:inline-grid;place-items:center;width:14px;height:14px;border-radius:50%;background:#3978ee;color:#fff;font-style:normal;font-size:11px;line-height:1;vertical-align:-2px}
