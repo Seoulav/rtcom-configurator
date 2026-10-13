@@ -202,6 +202,10 @@
       "source": "G"
     },
     {
+      "text": "LED 화면은 XDM-WOS100 사용(출력 동기 지원), XDM-HOS100은 레이어 구성은 가능하나 출력 동기가 맞지 않아 LED 적용 어려움",
+      "source": "U6"
+    },
+    {
       "text": "출력 화질(밝기·색조·채도·명암)·화면 크롭과 확대·비디오 월 베젤 보정 지원(커맨드)",
       "source": "G"
     },
@@ -627,7 +631,7 @@
     {
       "model": "XDM-HOS100",
       "kind": "출력 카드",
-      "summary": "HDMI v2.0 출력 4포트 · 오디오 추출 4 · 비디오 월, 쿼드뷰 전환 가능",
+      "summary": "HDMI v2.0 출력 4포트 · 오디오 추출 4 · 비디오 월, 쿼드뷰 전환 가능 · 출력 동기가 맞지 않아 LED 적용 어려움",
       "slotType": "output",
       "compatibleFrames": [
         "XDM-12",
@@ -828,7 +832,7 @@
     {
       "model": "XDM-WOS100",
       "kind": "출력 카드",
-      "summary": "HDMI(Wall Overlay) 출력 4포트 · 비디오 월 · 출력 1개에 4K/60 소스 4레이어 중첩(커맨드)",
+      "summary": "HDMI(Wall Overlay) 출력 4포트 · 비디오 월 · 출력 1개에 4K/60 소스 4레이어 중첩(커맨드) · 출력 동기(LED 적용)",
       "slotType": "output",
       "compatibleFrames": [
         "XDM-12",
@@ -969,6 +973,12 @@
       "name": "알티컴 확인(사용자 전달)",
       "page": "",
       "scope": "사용자 전달(2026-10-13) — XDM-WOS100은 레이어를 쓰면(1개라도) 카드 4포트 모두 같은 화면 출력·오디오 출력 없음, XDM-COS100은 출력마다 XDM-PHX 전원 연결, 발주 시 커스텀 EDID를 보내면 저장해 출고, XDM-288은 주문 생산"
+    },
+    {
+      "code": "U6",
+      "name": "서울영상테크 SI사업본부 확인",
+      "page": "",
+      "scope": "사용자 확인(2026-10-13) — XDM-WOS100과 XDM-HOS100의 가장 큰 차이는 출력 동기(싱크). HOS100은 레이어를 만들 수 있으나 동기가 맞지 않아 LED 적용이 어려움"
     },
     {
       "code": "G",
