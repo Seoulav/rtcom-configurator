@@ -315,6 +315,12 @@
       "verification": "VERIFIED"
     }
   ],
+  "slots": {
+    "shared": 6,
+    "source": "S1",
+    "verification": "VERIFIED",
+    "note": "모듈 칸 1~6(사양서). 칸마다 SPX-TX 또는 SPX-RX 모듈을 골라 장착(사용자 확인 2026-09-29, 출처 U2). 모듈 1개의 단자는 spx-rx-tx.json io의 \"TX ·\"·\"RX ·\" 행을 그대로 쓴다. 기존 io의 \"모듈 칸마다 1개\" 행(HDMI ×6, RJ-45 ×6)은 그대로 둔다."
+  },
   "related": [
     {
       "relation": "PART_OF_SERIES",

@@ -250,55 +250,118 @@
       "model": "VDM-8X",
       "kind": "메인프레임",
       "summary": "8×8 · 483×265×132.5mm(W×D×H) · 4.8kg",
-      "rackUnits": 3
+      "rackUnits": 3,
+      "slots": {
+        "input": 2,
+        "output": 2,
+        "source": "M",
+        "verification": "VERIFIED",
+        "note": "매뉴얼 KV07 11쪽: 최대 장착 Input 보드 2장 · Output 보드 2장"
+      }
     },
     {
       "model": "VDM-16X",
       "kind": "메인프레임",
       "summary": "16×16 · 483×402×310.3mm · 12.8kg",
-      "rackUnits": 7
+      "rackUnits": 7,
+      "slots": {
+        "input": 4,
+        "output": 4,
+        "source": "M",
+        "verification": "VERIFIED",
+        "note": "매뉴얼 KV07 12쪽: 최대 장착 Input 보드 4장 · Output 보드 4장"
+      }
     },
     {
       "model": "VDM-32X",
       "kind": "메인프레임",
       "summary": "32×32 · 483×402×532.6mm · 25.6kg",
-      "rackUnits": 12
+      "rackUnits": 12,
+      "slots": {
+        "input": 8,
+        "output": 8,
+        "source": "M",
+        "verification": "VERIFIED",
+        "note": "매뉴얼 KV07 13쪽: 최대 장착 Input 보드 8장 · Output 보드 8장"
+      }
     },
     {
       "model": "VDM-48X",
       "kind": "메인프레임",
       "summary": "48×48 · 483×402×843.75mm · 38.4kg",
-      "rackUnits": 19
+      "rackUnits": 19,
+      "slots": {
+        "input": 12,
+        "output": 12,
+        "source": "M",
+        "verification": "VERIFIED",
+        "note": "매뉴얼 KV07 14쪽: 최대 장착 Input 보드 12장 · Output 보드 12장"
+      }
     },
     {
       "model": "VDM-64X",
       "kind": "메인프레임",
       "summary": "64×64 · 483×402×1,066mm · 51.2kg",
-      "rackUnits": 24
+      "rackUnits": 24,
+      "slots": {
+        "input": 16,
+        "output": 16,
+        "source": "M",
+        "verification": "VERIFIED",
+        "note": "매뉴얼 KV07 15쪽: 최대 장착 Input 보드 16장 · Output 보드 16장"
+      }
     },
     {
       "model": "VDM-80X",
       "kind": "메인프레임",
       "summary": "80×80 · 483×402×1,199.4mm · 111.13kg(원문 · 계열 비례치 약 64kg과 차이가 커 제조사 확인 중)",
-      "rackUnits": 27
+      "rackUnits": 27,
+      "slots": {
+        "input": 20,
+        "output": 20,
+        "source": "M",
+        "verification": "VERIFIED",
+        "note": "매뉴얼 KV07 16쪽: 최대 장착 Input 보드 20장 · Output 보드 20장"
+      }
     },
     {
       "model": "VDM-128X",
       "kind": "메인프레임",
       "summary": "128×128 · 483×430×1,643.85mm · 112.4kg",
-      "rackUnits": 37
+      "rackUnits": 37,
+      "slots": {
+        "input": 32,
+        "output": 32,
+        "source": "M",
+        "verification": "VERIFIED",
+        "note": "매뉴얼 KV07 17쪽: 최대 장착 Input 보드 32장 · Output 보드 32장"
+      }
     },
     {
       "model": "VDM-180X",
       "kind": "메인프레임",
       "summary": "180×180 · 483×430×1,688.2mm · 116kg",
-      "rackUnits": 38
+      "rackUnits": 38,
+      "slots": {
+        "input": 45,
+        "output": 45,
+        "source": "M",
+        "verification": "VERIFIED",
+        "note": "매뉴얼 KV07 18쪽: 최대 장착 Input 보드 45장 · Output 보드 45장"
+      }
     },
     {
       "model": "VDM-256X",
       "kind": "메인프레임",
       "summary": "256×256 · 2랙 폭 39RU · 매뉴얼 기준(카탈로그 미수록)",
-      "rackUnits": 39
+      "rackUnits": 39,
+      "slots": {
+        "input": 64,
+        "output": 64,
+        "source": "M",
+        "verification": "VERIFIED",
+        "note": "매뉴얼 KV07 19쪽: 최대 장착 Input 보드 64장 · Output 보드 64장"
+      }
     },
     {
       "model": "VDM-288X",
@@ -309,52 +372,478 @@
     {
       "model": "HIS4-U",
       "kind": "입력 카드",
-      "summary": "4K HDMI 입력 4포트 · HDMI 1.4 · 3840x2160 @ 30Hz 4:4:4·60Hz 4:2:0 · 오디오 병합/추출"
+      "summary": "4K HDMI 입력 4포트 · HDMI 1.4 · 3840x2160 @ 30Hz 4:4:4·60Hz 4:2:0 · 오디오 병합/추출",
+      "slotType": "input",
+      "compatibleFrames": [
+        "VDM-8X",
+        "VDM-16X",
+        "VDM-32X",
+        "VDM-48X",
+        "VDM-64X",
+        "VDM-80X",
+        "VDM-128X",
+        "VDM-180X",
+        "VDM-256X"
+      ],
+      "io": [
+        {
+          "group": "Video",
+          "connector": "HDMI",
+          "signal": "HDMI",
+          "direction": "IN",
+          "quantity": "4",
+          "protocol": "HDMI 1.4",
+          "condition": "3840x2160 @ 30Hz 4:4:4 · 60Hz 4:2:0 · 매뉴얼 KV07 20쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "3.5mm stereo",
+          "signal": "Stereo Audio",
+          "direction": "IN",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "포트마다 1개 · 오디오 병합(Audio In) · 매뉴얼 KV07 20쪽 \"4 Stereo In/Out ports\", 카드 사진에서 포트마다 입력·출력 잭 2개 확인",
+          "source": "M",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "3.5mm stereo",
+          "signal": "Stereo Audio",
+          "direction": "OUT",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "포트마다 1개 · 오디오 추출(Audio Out) · 매뉴얼 KV07 20쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        }
+      ]
     },
     {
       "model": "CIS4-U",
       "kind": "입력 카드",
-      "summary": "4K CATx(HDBaseT) 입력 4포트 · 3840x2160 @ 30Hz 4:4:4·60Hz 4:2:0 · 오디오 병합/추출"
+      "summary": "4K CATx(HDBaseT) 입력 4포트 · 3840x2160 @ 30Hz 4:4:4·60Hz 4:2:0 · 오디오 병합/추출",
+      "slotType": "input",
+      "compatibleFrames": [
+        "VDM-8X",
+        "VDM-16X",
+        "VDM-32X",
+        "VDM-48X",
+        "VDM-64X",
+        "VDM-80X",
+        "VDM-128X",
+        "VDM-180X",
+        "VDM-256X"
+      ],
+      "io": [
+        {
+          "group": "Transmission",
+          "connector": "RJ45",
+          "signal": "HDBaseT",
+          "direction": "IN",
+          "quantity": "4",
+          "protocol": "HDBaseT",
+          "condition": "3840x2160 @ 30Hz 4:4:4 · 60Hz 4:2:0 · CAT5/5e·CAT6/6e·CAT6A·CAT7 100m · CATx 송신기와 연결 · 매뉴얼 KV07 22쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "3.5mm stereo",
+          "signal": "Stereo Audio",
+          "direction": "IN",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "포트마다 1개 · 오디오 병합(Audio In) · 매뉴얼 KV07 22쪽 \"4 Stereo In/Out ports\", 카드 사진에서 포트마다 입력·출력 잭 2개 확인",
+          "source": "M",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "3.5mm stereo",
+          "signal": "Stereo Audio",
+          "direction": "OUT",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "포트마다 1개 · 오디오 추출(Audio Out) · 매뉴얼 KV07 22쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        }
+      ]
     },
     {
       "model": "FIS4-U",
       "kind": "입력 카드",
-      "summary": "4K 광(1 LC) 입력 4포트 · 멀티모드 500m/싱글모드 10km · 3840x2160 @ 30Hz 4:4:4·60Hz 4:2:0"
+      "summary": "4K 광(1 LC) 입력 4포트 · 멀티모드 500m/싱글모드 10km · 3840x2160 @ 30Hz 4:4:4·60Hz 4:2:0",
+      "slotType": "input",
+      "compatibleFrames": [
+        "VDM-8X",
+        "VDM-16X",
+        "VDM-32X",
+        "VDM-48X",
+        "VDM-64X",
+        "VDM-80X",
+        "VDM-128X",
+        "VDM-180X",
+        "VDM-256X"
+      ],
+      "io": [
+        {
+          "group": "Transmission",
+          "connector": "LC",
+          "signal": "Fiber",
+          "direction": "IN",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "1 LC · 싱글모드 10km · 멀티모드 500m · 3840x2160 @ 30Hz 4:4:4 · 60Hz 4:2:0 · 매뉴얼 KV07 23쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "3.5mm stereo",
+          "signal": "Stereo Audio",
+          "direction": "IN",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "포트마다 1개 · 오디오 병합(Audio In) · 매뉴얼 KV07 23쪽 \"4 Stereo In/Out ports\", 카드 사진에서 포트마다 입력·출력 잭 2개 확인",
+          "source": "M",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "3.5mm stereo",
+          "signal": "Stereo Audio",
+          "direction": "OUT",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "포트마다 1개 · 오디오 추출(Audio Out) · 매뉴얼 KV07 23쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        }
+      ]
     },
     {
       "model": "SIS4-U",
       "kind": "입력 카드",
-      "summary": "3G/HD-SDI 입력 4포트 · 1920x1080 @ 60Hz · 오디오 병합/추출"
+      "summary": "3G/HD-SDI 입력 4포트 · 1920x1080 @ 60Hz · 오디오 병합/추출",
+      "slotType": "input",
+      "compatibleFrames": [
+        "VDM-8X",
+        "VDM-16X",
+        "VDM-32X",
+        "VDM-48X",
+        "VDM-64X",
+        "VDM-80X",
+        "VDM-128X",
+        "VDM-180X",
+        "VDM-256X"
+      ],
+      "io": [
+        {
+          "group": "Video",
+          "connector": "BNC",
+          "signal": "3G/HD-SDI",
+          "direction": "IN",
+          "quantity": "4",
+          "protocol": "3G/HD-SDI",
+          "condition": "1920x1080 @ 60Hz · 수량은 카탈로그 19쪽, BNC는 카탈로그 19쪽 SIS4-U 사진 기준(매뉴얼 KV07에는 이름이 다른 VDM-SIS4만 있어 쓰지 않음)",
+          "source": "R",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "3.5mm stereo",
+          "signal": "Stereo Audio",
+          "direction": "IN",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "오디오 병합 · 카탈로그 19쪽 \"4 Stereo Input/Output ports\" · 커넥터 규격은 문서에 없어 사진으로만 판독",
+          "source": "C2",
+          "verification": "REVIEW REQUIRED"
+        },
+        {
+          "group": "Audio",
+          "connector": "3.5mm stereo",
+          "signal": "Stereo Audio",
+          "direction": "OUT",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "오디오 추출 · 카탈로그 19쪽 \"4 Stereo Input/Output ports\" · 커넥터 규격은 문서에 없어 사진으로만 판독",
+          "source": "C2",
+          "verification": "REVIEW REQUIRED"
+        }
+      ]
     },
     {
       "model": "QOS4S-U",
       "kind": "출력 카드",
-      "summary": "4K 쿼드뷰어 HDMI 출력 2포트 · 1920x1200, 3840x2160 @ 30Hz · 심리스"
+      "summary": "4K 쿼드뷰어 HDMI 출력 2포트 · 1920x1200, 3840x2160 @ 30Hz · 심리스",
+      "slotType": "output",
+      "compatibleFrames": [
+        "VDM-8X",
+        "VDM-16X",
+        "VDM-32X",
+        "VDM-48X",
+        "VDM-64X",
+        "VDM-80X",
+        "VDM-128X",
+        "VDM-180X",
+        "VDM-256X"
+      ],
+      "io": [
+        {
+          "group": "Video",
+          "connector": "HDMI",
+          "signal": "HDMI",
+          "direction": "OUT",
+          "quantity": "2",
+          "protocol": "HDMI 1.4",
+          "condition": "쿼드뷰 · 매트릭스 입력 중 4개 · 1920x1200, 3840x2160 @ 30Hz · 심리스 · 매뉴얼 KV07 43쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        }
+      ]
     },
     {
       "model": "COS4-U",
       "kind": "출력 카드",
-      "summary": "4K CATx(HDBaseT) 출력 4포트 · 3840x2160 @ 30Hz 4:4:4·60Hz 4:2:0 · 오디오 병합/추출"
+      "summary": "4K CATx(HDBaseT) 출력 4포트 · 3840x2160 @ 30Hz 4:4:4·60Hz 4:2:0 · 오디오 병합/추출",
+      "slotType": "output",
+      "compatibleFrames": [
+        "VDM-8X",
+        "VDM-16X",
+        "VDM-32X",
+        "VDM-48X",
+        "VDM-64X",
+        "VDM-80X",
+        "VDM-128X",
+        "VDM-180X",
+        "VDM-256X"
+      ],
+      "io": [
+        {
+          "group": "Transmission",
+          "connector": "RJ45",
+          "signal": "HDBaseT",
+          "direction": "OUT",
+          "quantity": "4",
+          "protocol": "HDBaseT",
+          "condition": "3840x2160 @ 30Hz 4:4:4 · 60Hz 4:2:0 · CAT5/5e·CAT6/6e·CAT6A·CAT7 100m · CATx 수신기와 연결 · 매뉴얼 KV07 34쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "3.5mm stereo",
+          "signal": "Stereo Audio",
+          "direction": "IN",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "포트마다 1개 · 오디오 병합(Audio In) · 매뉴얼 KV07 34쪽 \"4 Stereo In/Out ports\", 카드 사진에서 포트마다 입력·출력 잭 2개 확인",
+          "source": "M",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "3.5mm stereo",
+          "signal": "Stereo Audio",
+          "direction": "OUT",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "포트마다 1개 · 오디오 추출(Audio Out) · 매뉴얼 KV07 34쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        }
+      ]
     },
     {
       "model": "HOS4-U",
       "kind": "출력 카드",
-      "summary": "일반 스위칭 4K HDMI 출력 4포트 · HDMI 1.4 · 3840x2160 @ 30Hz 4:4:4·60Hz 4:2:0 · 오디오 추출/병합"
+      "summary": "일반 스위칭 4K HDMI 출력 4포트 · HDMI 1.4 · 3840x2160 @ 30Hz 4:4:4·60Hz 4:2:0 · 오디오 추출/병합",
+      "slotType": "output",
+      "compatibleFrames": [
+        "VDM-8X",
+        "VDM-16X",
+        "VDM-32X",
+        "VDM-48X",
+        "VDM-64X",
+        "VDM-80X",
+        "VDM-128X",
+        "VDM-180X",
+        "VDM-256X"
+      ],
+      "io": [
+        {
+          "group": "Video",
+          "connector": "HDMI",
+          "signal": "HDMI",
+          "direction": "OUT",
+          "quantity": "4",
+          "protocol": "HDMI 1.4",
+          "condition": "3840x2160 @ 30Hz 4:4:4 · 60Hz 4:2:0 · 일반 스위칭 · 매뉴얼 KV07 30쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "3.5mm stereo",
+          "signal": "Stereo Audio",
+          "direction": "IN",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "포트마다 1개 · 오디오 병합(Audio In) · 매뉴얼 KV07 30쪽 \"4 Stereo In/Out ports\", 카드 사진에서 포트마다 입력·출력 잭 2개 확인",
+          "source": "M",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "3.5mm stereo",
+          "signal": "Stereo Audio",
+          "direction": "OUT",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "포트마다 1개 · 오디오 추출(Audio Out) · 매뉴얼 KV07 30쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        }
+      ]
     },
     {
       "model": "HOS4S-UW",
       "kind": "출력 카드",
-      "summary": "심리스 스위칭 스케일링·월 HDMI 출력 4포트 · 1920x1080 @ 60Hz 비디오 월"
+      "summary": "심리스 스위칭 스케일링·월 HDMI 출력 4포트 · 1920x1080 @ 60Hz 비디오 월",
+      "slotType": "output",
+      "compatibleFrames": [
+        "VDM-8X",
+        "VDM-16X",
+        "VDM-32X",
+        "VDM-48X",
+        "VDM-64X",
+        "VDM-80X",
+        "VDM-128X",
+        "VDM-180X",
+        "VDM-256X"
+      ],
+      "io": [
+        {
+          "group": "Video",
+          "connector": "HDMI",
+          "signal": "HDMI",
+          "direction": "OUT",
+          "quantity": "4",
+          "protocol": "HDMI 1.4",
+          "condition": "1920x1080 @ 60Hz · 비디오 월·심리스·스케일링 · 매뉴얼 KV07 44쪽(표 제목 VDM-HOS4SW)",
+          "source": "M",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Control",
+          "connector": "USB",
+          "signal": "USB",
+          "direction": "BIDIR",
+          "quantity": "2",
+          "protocol": "",
+          "condition": "매뉴얼 KV07 44쪽 \"2 port USB connector\" · 용도 미기재, 카탈로그 사진에는 보이지 않아 확인 필요",
+          "source": "M",
+          "verification": "REVIEW REQUIRED"
+        }
+      ]
     },
     {
       "model": "FOS4-U",
       "kind": "출력 카드",
-      "summary": "4K 광(1 LC) 출력 4포트 · 멀티모드 500m/싱글모드 10km · 3840x2160 @ 30Hz 4:4:4·60Hz 4:2:0"
+      "summary": "4K 광(1 LC) 출력 4포트 · 멀티모드 500m/싱글모드 10km · 3840x2160 @ 30Hz 4:4:4·60Hz 4:2:0",
+      "slotType": "output",
+      "compatibleFrames": [
+        "VDM-8X",
+        "VDM-16X",
+        "VDM-32X",
+        "VDM-48X",
+        "VDM-64X",
+        "VDM-80X",
+        "VDM-128X",
+        "VDM-180X",
+        "VDM-256X"
+      ],
+      "io": [
+        {
+          "group": "Transmission",
+          "connector": "LC",
+          "signal": "Fiber",
+          "direction": "OUT",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "1 LC · 싱글모드 10km · 멀티모드 500m · 3840x2160 @ 30Hz 4:4:4 · 60Hz 4:2:0 · 매뉴얼 KV07 35쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "3.5mm stereo",
+          "signal": "Stereo Audio",
+          "direction": "IN",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "포트마다 1개 · 오디오 병합(Audio In) · 매뉴얼 KV07 35쪽 \"4 Stereo In/Out ports\", 카드 사진에서 포트마다 입력·출력 잭 2개 확인",
+          "source": "M",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "3.5mm stereo",
+          "signal": "Stereo Audio",
+          "direction": "OUT",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "포트마다 1개 · 오디오 추출(Audio Out) · 매뉴얼 KV07 35쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        }
+      ]
     },
     {
       "model": "SOS4",
       "kind": "출력 카드",
-      "summary": "3G/HD-SDI 출력 4포트 · 스테레오 입·출력 4포트 · 1920x1080 @ 60Hz · 심리스·스케일링"
+      "summary": "3G/HD-SDI 출력 4포트 · 스테레오 입·출력 4포트 · 1920x1080 @ 60Hz · 심리스·스케일링",
+      "slotType": "output",
+      "compatibleFrames": [
+        "VDM-8X",
+        "VDM-16X",
+        "VDM-32X",
+        "VDM-48X",
+        "VDM-64X",
+        "VDM-80X",
+        "VDM-128X",
+        "VDM-180X",
+        "VDM-256X"
+      ],
+      "io": [
+        {
+          "group": "Video",
+          "connector": "BNC",
+          "signal": "3G/HD-SDI",
+          "direction": "OUT",
+          "quantity": "4",
+          "protocol": "3G/HD-SDI",
+          "condition": "1920x1080 @ 60Hz · 심리스·스케일링 · 매뉴얼 KV07 42쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "3.5mm stereo",
+          "signal": "Stereo Audio",
+          "direction": "BIDIR",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "매뉴얼 KV07 42쪽은 \"4 Stereo In/Out ports(3.5mm)\"이나 카탈로그 20쪽 사양·사진에는 오디오 단자가 없어 확인 필요",
+          "source": "M",
+          "verification": "REVIEW REQUIRED"
+        }
+      ]
     },
     {
       "model": "CT101-U / CR101-U",
@@ -439,6 +928,12 @@
       "name": "서울영상테크 SI사업본부 검토 판단",
       "page": "",
       "scope": "사용자 위임(2026-09-27) — 카탈로그 내부 충돌·오기 정리"
+    },
+    {
+      "code": "M",
+      "name": "VDM 시리즈 국문 사용자 매뉴얼 KV07(251219)",
+      "page": "4, 11–19, 20–44",
+      "scope": "제조사 공식 출처 — 공개본 vdm-manual.pdf, 인쇄 쪽 번호 기준. 프레임별 최대 Input·Output 보드 수(4·11–19쪽), 보드 단자 구성(20–44쪽)"
     }
   ],
   "issues": []

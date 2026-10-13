@@ -290,51 +290,189 @@
       "model": "SPX-M810",
       "kind": "메인프레임",
       "summary": "최대 8×10 I/O · 입력 슬롯 1 · 출력 슬롯 1 · 4.3\" Touch Screen · 483×355×88.1mm(2U)",
-      "rackUnits": 2
+      "rackUnits": 2,
+      "slots": {
+        "input": 1,
+        "output": 1,
+        "source": "M1",
+        "verification": "VERIFIED",
+        "note": "매뉴얼(250805) 7쪽: 입력 카드 최대 1 · 출력 카드 최대 1 · 가로 배치 · 위 입력, 아래 출력 · 출력은 SPX-HOS10·HOS12·COS12 중 1장(3쪽)"
+      }
     },
     {
       "model": "SPX-M1620",
       "kind": "메인프레임",
       "summary": "최대 16×20 I/O · 입력 슬롯 2 · 출력 슬롯 2 · 7\" Touch Screen · 483×355×177mm(4U)",
-      "rackUnits": 4
+      "rackUnits": 4,
+      "slots": {
+        "input": 2,
+        "output": 2,
+        "source": "M1",
+        "verification": "VERIFIED",
+        "note": "매뉴얼(250805) 8쪽: 입력 카드 최대 2 · 출력 카드 최대 2 · 가로 배치 · 위 입력, 아래 출력 · 출력은 SPX-HOS10·HOS12·COS12 중 최대 2장(3쪽)"
+      }
     },
     {
       "model": "SPX-M3236",
       "kind": "메인프레임",
       "summary": "최대 32×36 I/O · 입력 슬롯 4 · 출력 슬롯 3 · 7\" Touch Screen · 483×355×310.3mm(7U)",
-      "rackUnits": 7
+      "rackUnits": 7,
+      "slots": {
+        "input": 4,
+        "output": 3,
+        "source": "M1",
+        "verification": "VERIFIED",
+        "note": "매뉴얼(250805) 8쪽: 입력 카드 최대 4 · 출력 카드 최대 3 · 가로 배치 · 위 입력, 아래 출력 · 출력은 SPX-HOS12·COS12만(HOS10 불가, 3쪽)"
+      }
     },
     {
       "model": "SPX-M2472",
       "kind": "메인프레임",
       "summary": "최대 24×72 I/O · 입력 슬롯 3 · 출력 슬롯 6 · 7\" Touch Screen · 483×443.7×365mm(8U)",
-      "rackUnits": 8
+      "rackUnits": 8,
+      "slots": {
+        "input": 3,
+        "output": 6,
+        "source": "M1",
+        "verification": "VERIFIED",
+        "note": "매뉴얼(250805) 9쪽: 입력 카드 최대 3 · 출력 카드 최대 6 · 세로 배치 · 왼쪽 입력, 오른쪽 출력 · 출력은 SPX-HOS12·COS12만(HOS10 불가, 3쪽)"
+      }
     },
     {
       "model": "SPX-M24120",
       "kind": "메인프레임",
       "summary": "최대 24×120 I/O · 입력 슬롯 3 · 출력 슬롯 10 · 7\" Touch Screen · 483×443.7×365mm(8U)",
-      "rackUnits": 8
+      "rackUnits": 8,
+      "slots": {
+        "input": 3,
+        "output": 10,
+        "source": "M1",
+        "verification": "VERIFIED",
+        "note": "매뉴얼(250805) 9쪽: 입력 카드 최대 3 · 출력 카드 최대 10 · 세로 배치 · 왼쪽 입력, 오른쪽 출력 · 출력은 SPX-HOS12·COS12만(HOS10 불가, 3쪽)"
+      }
     },
     {
       "model": "SPX-HIS8",
       "kind": "입력 카드",
-      "summary": "HDMI 2.0b 입력 8포트 · 3840x2160 @ 60Hz · 스테레오 오디오 출력(추출) 8"
+      "summary": "HDMI 2.0b 입력 8포트 · 3840x2160 @ 60Hz · 스테레오 오디오 출력(추출) 8",
+      "slotType": "input",
+      "compatibleFrames": [
+        "SPX-M810",
+        "SPX-M1620",
+        "SPX-M3236",
+        "SPX-M2472",
+        "SPX-M24120"
+      ],
+      "io": [
+        {
+          "group": "Video",
+          "connector": "HDMI",
+          "signal": "HDMI",
+          "direction": "IN",
+          "quantity": "8",
+          "protocol": "HDMI 2.0b",
+          "condition": "3840x2160 @ 60Hz · 매뉴얼 10쪽",
+          "source": "M2",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "3.5mm stereo",
+          "signal": "Stereo Audio",
+          "direction": "OUT",
+          "quantity": "8",
+          "protocol": "",
+          "condition": "포트마다 1개 · 오디오 추출 · 수량은 매뉴얼 10쪽·카탈로그 16쪽, 커넥터 형태는 문서에 없어 카드 사진으로 판독(3.5mm 잭으로 보임)",
+          "source": "M2",
+          "verification": "REVIEW REQUIRED"
+        }
+      ]
     },
     {
       "model": "SPX-HOS10",
       "kind": "출력 카드",
-      "summary": "HDMI 2.0b 출력 10포트 · 3-pin 피닉스 오디오 2포트 · 3840x2160 @ 60Hz"
+      "summary": "HDMI 2.0b 출력 10포트 · 3-pin 피닉스 오디오 2포트 · 3840x2160 @ 60Hz",
+      "slotType": "output",
+      "compatibleFrames": [
+        "SPX-M810",
+        "SPX-M1620"
+      ],
+      "io": [
+        {
+          "group": "Video",
+          "connector": "HDMI",
+          "signal": "HDMI",
+          "direction": "OUT",
+          "quantity": "10",
+          "protocol": "HDMI 2.0b",
+          "condition": "3840x2160 @ 60Hz · SPX-M810·M1620 전용(매뉴얼 3쪽) · 매뉴얼 10쪽",
+          "source": "M2",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "피닉스 3핀",
+          "signal": "Stereo Audio",
+          "direction": "OUT",
+          "quantity": "2",
+          "protocol": "",
+          "condition": "오디오 추출 · 1번 출력과 10번 출력의 음성 · 매뉴얼 10쪽",
+          "source": "M2",
+          "verification": "VERIFIED"
+        }
+      ]
     },
     {
       "model": "SPX-HOS12",
       "kind": "출력 카드",
-      "summary": "HDMI 2.0b 출력 12포트 · 3840x2160 @ 60Hz"
+      "summary": "HDMI 2.0b 출력 12포트 · 3840x2160 @ 60Hz",
+      "slotType": "output",
+      "compatibleFrames": [
+        "SPX-M810",
+        "SPX-M1620",
+        "SPX-M3236",
+        "SPX-M2472",
+        "SPX-M24120"
+      ],
+      "io": [
+        {
+          "group": "Video",
+          "connector": "HDMI",
+          "signal": "HDMI",
+          "direction": "OUT",
+          "quantity": "12",
+          "protocol": "HDMI 2.0b",
+          "condition": "3840x2160 @ 60Hz · SPX-M810·M1620에 장착하면 11·12번은 10번 영상을 나눠 내보내는 분배 포트 · 매뉴얼 11쪽",
+          "source": "M2",
+          "verification": "VERIFIED"
+        }
+      ]
     },
     {
       "model": "SPX-COS12",
       "kind": "출력 카드",
-      "summary": "CATx 출력 12포트 · SPX-RX와 사용 · 3840x2160 @ 60Hz"
+      "summary": "CATx 출력 12포트 · SPX-RX와 사용 · 3840x2160 @ 60Hz",
+      "slotType": "output",
+      "compatibleFrames": [
+        "SPX-M810",
+        "SPX-M1620",
+        "SPX-M3236",
+        "SPX-M2472",
+        "SPX-M24120"
+      ],
+      "io": [
+        {
+          "group": "Transmission",
+          "connector": "RJ45",
+          "signal": "CATx",
+          "direction": "OUT",
+          "quantity": "12",
+          "protocol": "",
+          "condition": "SPX-RX와 사용 · 4K/60 @ 4:4:4 50m · PoC로 SPX-RX 전원 공급(4쪽) · SPX-M810·M1620에 장착하면 11·12번은 10번 영상을 나눠 내보내는 분배 포트 · 매뉴얼 11쪽",
+          "source": "M2",
+          "verification": "VERIFIED"
+        }
+      ]
     },
     {
       "model": "SPX-RX/TX",
@@ -397,6 +535,12 @@
       "name": "서울영상테크 SI사업본부 확인",
       "page": "",
       "scope": "사용자 결정(2026-09-29) — SPX-M2472·M24120 깊이는 종합 카탈로그 2026(433.7mm) 대신 매뉴얼·2023 카탈로그 값 443.7mm로 표기"
+    },
+    {
+      "code": "M2",
+      "name": "SPX 시리즈 국문 사용자 매뉴얼(250805)",
+      "page": "3–4, 10–12",
+      "scope": "제조사 공식 출처 — 공개본 spx-manual.pdf. 프레임별 장착 가능 보드(3쪽), CAT 슬롯 PoC(4쪽), 입출력 보드 단자 구성(10–12쪽)"
     }
   ],
   "issues": []
