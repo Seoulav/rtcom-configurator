@@ -3,6 +3,8 @@
 // .claude/settings.json의 두 훅이 이 스크립트를 부른다.
 // - UserPromptSubmit: 사용자가 요청을 보낼 때마다 "보이는 글은 한국어로" 알림을 모델 문맥에 넣는다.
 // - Stop: 답변을 끝내기 직전에 마지막 답변의 한글 비율을 재고, 대부분 영어면 끝내지 못하게 막아 한국어로 다시 쓰게 한다.
+//   0.214(사용자 지시 2026-10-13 "너의 모든 프로세싱과정을 한글로 해야하는 것 고정으로 명시했다 또 영어가 나온다"): 마지막 답변만이 아니라
+//   이번 요청 뒤에 쓴 중간 진행 안내도 모두 잰다. 영어 안내가 하나라도 있으면 끝내지 못하게 막고, 그 내용을 한국어로 다시 정리하게 한다.
 //   다시 쓰는 중(stop_hook_active)에는 막지 않아 무한 반복이 생기지 않는다.
 // 어떤 오류가 나도 세션을 막지 않도록 조용히 종료 코드 0으로 끝낸다.
 const fs = require('node:fs');
@@ -63,6 +65,33 @@ function lastAssistantText(transcriptPath) {
   } finally { fs.closeSync(fd); }
 }
 
+// 마지막 사용자 입력 뒤에 쓴 답변 글(중간 진행 안내 포함)을 쓴 순서대로 돌려준다.
+function turnAssistantTexts(transcriptPath) {
+  const fd = fs.openSync(transcriptPath, 'r');
+  try {
+    const size = fs.fstatSync(fd).size, start = Math.max(0, size - TAIL_BYTES), buf = Buffer.alloc(size - start);
+    fs.readSync(fd, buf, 0, buf.length, start);
+    const lines = buf.toString('utf8').split('\n');
+    if (start > 0) lines.shift();
+    const texts = [];
+    for (let i = lines.length - 1; i >= 0; i--) {
+      let entry;
+      try { entry = JSON.parse(lines[i]); } catch { continue; }
+      if (entry.isSidechain) continue;
+      const content = entry.message && entry.message.content;
+      if (entry.type === 'user') {
+        const prompt = typeof content === 'string' || (Array.isArray(content) && content.some(block => block.type === 'text'));
+        if (prompt) break;
+        continue;
+      }
+      if (entry.type !== 'assistant' || !Array.isArray(content)) continue;
+      const text = content.filter(block => block.type === 'text').map(block => block.text).join('\n').trim();
+      if (text) texts.unshift(text);
+    }
+    return texts;
+  } finally { fs.closeSync(fd); }
+}
+
 function handle(input) {
   const event = input.hook_event_name;
   if (event === 'UserPromptSubmit') {
@@ -73,7 +102,19 @@ function handle(input) {
     const text = typeof input.last_assistant_message === 'string' ? input.last_assistant_message
       : input.transcript_path ? lastAssistantText(input.transcript_path) : '';
     const result = isEnglishReply(text);
-    if (!result.english) return null;
+    if (!result.english) {
+      // 0.214 중간 진행 안내 검사: 마지막 답변이 한국어여도 이번 요청 중에 영어 안내가 있었으면 막는다.
+      let earlier = [];
+      try { earlier = input.transcript_path ? turnAssistantTexts(input.transcript_path).filter(t => isEnglishReply(t).english) : []; } catch { earlier = []; }
+      if (!earlier.length) return null;
+      const sample = prose(earlier[0]).replace(/\s+/g, ' ').trim().slice(0, 80);
+      return {
+        decision: 'block',
+        reason: `이번 작업 중 영어로 쓴 진행 안내가 ${earlier.length}건 있습니다(예: "${sample}…"). `
+          + '사용자 지시("처리 과정은 반드시 한국어로")를 어겼습니다. 이미 보낸 글은 고칠 수 없으니, 영어로 안내한 내용을 한국어로 짧게 다시 정리해 답변을 마치세요. '
+          + '이후 중간 진행 안내도 모두 한국어로 씁니다.'
+      };
+    }
     return {
       decision: 'block',
       reason: `마지막 답변이 영어로 작성되었습니다(한글 비율 ${Math.round(result.ratio * 100)}%). `
@@ -97,4 +138,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { prose, measure, isEnglishReply, lastAssistantText, handle, REMINDER };
+module.exports = { prose, measure, isEnglishReply, lastAssistantText, turnAssistantTexts, handle, REMINDER };

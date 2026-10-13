@@ -341,9 +341,15 @@
     // 0.207(사용자 요청 2026-10-12 "wos 출력1개에 4K60 소스.4개를 VP처럼 레이어링 할 수 있게 변경해그리고 선도 꼬여 있어"):
     // 2×2 비디오 월 그림(출력 4선이 서로 교차)을 "출력 1개(OUT 1)에 4K/60 소스 4개를 레이어로 합성하는 비디오 프로세서 방식" 그림으로 바꾼다.
     // 소스 → 입력 카드 → 매트릭스 → WOS100 레이어 1~4 → 합성 → OUT 1 → 디스플레이 1대. 신호선(rt-layer-route)은 모두 수평선이라 서로 교차하지 않는다(e2e 확인).
+    // 0.214(사용자 요청 2026-10-13 "출력 디스플레이를 4K 네 판으로 표시하고 레이어 4개를 연출한 화면으로 해줘. 그러면 WOS 카드를 네 장을 쓰는 거겠지",
+    // "이렇게 하면은 HOS 카드랑 크게 차이점이 없어"): 디스플레이 1대 그림은 HOS100 멀티뷰와 구별되지 않으므로, 매트릭스가 소스 1~4를 WOS100 카드 4장에 모두 보내고
+    // 카드마다 OUT 1이 4K 디스플레이 한 대(2×2 비디오 월의 한 조각)를 맡는 그림으로 바꾼다. 레이어 2·3은 화면 경계에 걸쳐, 카드 사이 출력 동기(0.211)가 왜 필요한지 보인다.
+    // 신호선은 여전히 모두 수평선(세로 그림은 수직선)이라 교차하지 않고, 카드 n의 선 끝에 "화면 n"을 적어 비디오 월의 화면 번호와 짝을 맞춘다.
     // 색은 QMS 06 화면 구성 모드(src/products.js LAYOUT_COLORS)의 입력 1~4번 색이다. 레이어를 쓰면(1개라도) 2~4번 포트에 1번과 같은 화면이 나와 따로 쓸 수 없으므로(0.210 알티컴 확인) 회색 점선 상자로 표시한다.
     const LAYER_SOURCES=[['PC 1','#2f7cf6'],['PC 2','#f08c1a'],['카메라','#1fb45a'],['미디어 서버','#9b51e0']];
-    const LAYER_WINDOWS=[[658,118,300,169],[670,130,150,84],[764,176,124,70],[878,128,72,42]]; // 디스플레이 화면 안 레이어 1~4 [x, y, 폭, 높이], 1번은 배경(전체 화면)
+    // 0.214 레이어 1~4 창 [x, y, 폭, 높이](가로 그림 좌표). 1번은 비디오 월 전체 배경, 2·3번은 화면 경계에 걸침, 4번은 화면 2 안.
+    const LAYER_WINDOWS=[[660,118,300,170],[676,132,150,96],[776,180,146,78],[890,128,60,36]];
+    const WALL_PANELS=[[660,118],[813,118],[660,205],[813,205]]; // 4K 디스플레이 1~4(2×2) 왼쪽 위 모서리
     // PC는 가로 그림(왼쪽 → 오른쪽), 휴대폰 폭(640px 이하)은 세로 그림(위 → 아래)을 CSS로 골라 보여 준다. 두 그림이 한 문서에 함께 있으므로
     // 그라데이션·그림자·화살촉 id는 그림마다 접두어(p)를 달리한다(숨긴 쪽 정의를 참조하면 색이 그려지지 않는다).
     // 화살촉은 SVG 마커 안의 currentColor가 선 색을 따르지 않아 검게 나오므로 색마다 마커를 만들고, 굵은 선에서도 커지지 않게 userSpaceOnUse로 크기를 고정한다.
@@ -359,43 +365,50 @@
       return `<defs>${arrows}${grads}<filter id="${p}sh" x="-10%" y="-10%" width="130%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity=".45"/></filter></defs>`;
     }
     const layerRoute=(p,d,col,arrow=true,w=2)=>`<path class="rt-layer-route" d="${d}" stroke="${col}" stroke-width="${w}" fill="none"${arrow?` marker-end="url(#${layerMk(p,col)})"`:''}/>`;
-    // 디스플레이 화면(가로 그림 좌표). 세로 그림은 같은 내용을 transform으로 옮겨 쓴다.
+    // 디스플레이 화면(가로 그림 좌표): 4K 디스플레이 4대를 2×2로 붙인 비디오 월(7680x4320) 하나에 레이어 1~4를 겹친다.
+    // 레이어 2·3은 화면 경계에 걸쳐 놓아, 카드 4장이 각자 맡은 화면 조각을 같은 박자(출력 동기)로 내야 이어진 그림이 된다는 점을 보인다.
+    // 패널 사이 이음매(베젤)와 화면 번호는 레이어 위에 그린다. 세로 그림은 같은 내용을 transform으로 옮겨 쓴다.
     function layerScreen(p){
       const t=layerTxt;
-      // 창마다 QMS 06·HOS100 모니터 그림(monitorLayoutSvg)과 같은 산 무늬를 얹는다.
-      return LAYER_WINDOWS.map(([x,y,w,h],i)=>`<rect class="rt-layer-win" data-layer="${i+1}" x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#${p}g${i+1})"${i?` stroke="#fff" stroke-width="1.5" filter="url(#${p}sh)"`:''}/><path d="M${x} ${y+h}V${y+h*0.8}Q${x+w*0.3} ${y+h*0.62} ${x+w*0.55} ${y+h*0.78}T${x+w} ${y+h*0.72}V${y+h}Z" fill="#fff" fill-opacity=".16"/>`).join('')
-        +t(668,276,'레이어 1 · 배경 (PC 1)','fill="#fff" font-weight="700" font-size="11"')+t(678,147,'레이어 2 · PC 2','fill="#fff" font-weight="700" font-size="11"')
-        +t(772,193,'레이어 3 · 카메라','fill="#fff" font-weight="700" font-size="11"')+t(914,146,'레이어 4','fill="#fff" font-weight="700" font-size="10" text-anchor="middle"')+t(914,160,'미디어 서버','fill="#fff" font-size="8.5" text-anchor="middle"');
+      const wins=LAYER_WINDOWS.map(([x,y,w,h],i)=>`<rect class="rt-layer-win" data-layer="${i+1}" x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#${p}g${i+1})"${i?` stroke="#fff" stroke-width="1.5" filter="url(#${p}sh)"`:''}/><path d="M${x} ${y+h}V${y+h*0.8}Q${x+w*0.3} ${y+h*0.62} ${x+w*0.55} ${y+h*0.78}T${x+w} ${y+h*0.72}V${y+h}Z" fill="#fff" fill-opacity=".16"/>`).join('');
+      const seams='<rect x="809" y="118" width="4" height="170" fill="#1f2532"/><rect x="660" y="201" width="300" height="4" fill="#1f2532"/>';
+      const badges=WALL_PANELS.map(([x,y],i)=>`<rect class="rt-wall-panel" data-screen="${i+1}" x="${x+3}" y="${y+3}" width="44" height="14" rx="3" fill="#0b0d12" fill-opacity=".78"/>`+t(x+25,y+13.5,`화면 ${i+1}`,'fill="#fff" font-weight="700" font-size="9" text-anchor="middle"')).join('');
+      return wins+t(668,281,'레이어 1 · 배경 (PC 1)','fill="#fff" font-weight="700" font-size="11"')+t(686,150,'레이어 2 · PC 2','fill="#fff" font-weight="700" font-size="11"')
+        +t(819,247,'레이어 3 · 카메라','fill="#fff" font-weight="700" font-size="11"')+t(920,146,'레이어 4','fill="#fff" font-weight="700" font-size="10" text-anchor="middle"')+t(920,160,'미디어 서버','fill="#fff" font-size="8.5" text-anchor="middle"')
+        +seams+badges;
     }
     const layerOrder=(x0,y,step,w)=>[4,3,2,1].map((n,i)=>`<rect x="${x0+i*step}" y="${y}" width="${w}" height="20" rx="3" fill="${LAYER_SOURCES[n-1][1]}"/>`+layerTxt(x0+i*step+w/2,y+14,`레이어 ${n}`,'fill="#fff" font-weight="700" font-size="9.5" text-anchor="middle"')).join('');
-    const LAYER_ARIA='aria-label="4K/60 소스 4개가 XDM 매트릭스 입력 카드를 거쳐 WOS100 카드의 레이어 1~4로 들어가 합성되고, 출력 1개(OUT 1)로 디스플레이 1대에 겹쳐 보이는 구성도" font-family="Pretendard Variable, Pretendard, system-ui, sans-serif" font-size="12"';
+    // WOS100 카드 1장(상자 안): 이름, 레이어 1~4 칩, OUT 1 단자. 가로 그림은 cx 왼쪽 끝 기준, 세로 그림은 가운데 기준이다.
+    const wosChips=(x,y,size)=>LAYER_SOURCES.map(([,col],i)=>`<rect x="${x+i*(size+3)}" y="${y}" width="${size}" height="${size-2}" rx="2" fill="${col}"/>`+layerTxt(x+i*(size+3)+size/2,y+size-4.5,i+1,`fill="#fff" font-weight="700" font-size="${size<12?7.5:8.5}" text-anchor="middle"`)).join('');
+    const LAYER_ARIA='aria-label="4K/60 소스 4개가 XDM 매트릭스를 거쳐 WOS100 카드 4장에 모두 들어가고, 카드마다 레이어 1~4를 합성해 OUT 1로 4K 디스플레이 4대(2×2 비디오 월)의 화면 한 조각씩을 내는 구성도. 카드 4장의 출력 동기가 맞아 화면 경계에 걸친 레이어가 이어져 보인다" font-family="Pretendard Variable, Pretendard, system-ui, sans-serif" font-size="12"';
     function layerCompareSvg(){
-      const p='rt-lw-',t=layerTxt,R=[132,186,240,294],mid=213,route=(...a)=>layerRoute(p,...a);
+      const p='rt-lw-',t=layerTxt,R=[132,186,240,294],route=(...a)=>layerRoute(p,...a);
       const rows=LAYER_SOURCES.map(([name,col],i)=>{const y=R[i],n=i+1;return `<rect x="20" y="${y-17}" width="136" height="34" rx="5" fill="${col}"/>`
         +t(30,y+4,esc(name),'fill="#fff" font-weight="700" font-size="12"')+t(148,y+4,'4K/60','fill="#fff" font-size="10" text-anchor="end"')
         +route(`M156 ${y} H238`,col)
         +`<rect x="240" y="${y-14}" width="70" height="28" rx="3" fill="#0f2238" stroke="${col}" stroke-width="1.5"/>`+t(275,y+4,`입력 ${n}`,'fill="#fff" font-size="10.5" text-anchor="middle"')
-        +route(`M310 ${y} H410`,col)
-        +`<rect x="412" y="${y-16}" width="90" height="32" rx="3" fill="${col}" stroke="#fff" stroke-width="1.2"/>`+t(457,y-1,`레이어 ${n}`,'fill="#fff" font-weight="700" font-size="11" text-anchor="middle"')+t(457,y+11,'4K/60','fill="#fff" font-size="9" text-anchor="middle" opacity=".9"')
-        +route(`M502 ${y} H512`,col,false)}).join('');
+        +route(`M310 ${y} H328`,col)}).join('');
+      // 카드 4장: 매트릭스가 소스 1~4를 카드마다 모두 보내고(레이어 1~4), 카드마다 OUT 1이 화면 한 대를 맡는다.
+      const cards=R.map((y,i)=>{const n=i+1;return route(`M362 ${y} H396`,'#2aa3dc',true,3)
+        +`<rect class="rt-wos-card" x="398" y="${y-23}" width="190" height="46" rx="4" fill="#22426a" stroke="#2aa3dc" stroke-width="1.5"/>`
+        +t(408,y-6,`XDM-WOS100 #${n}`,'fill="#fff" font-weight="700" font-size="10.5"')+wosChips(408,y+2,14)+t(478,y+12,'레이어 합성','fill="#c9d6e8" font-size="9"')
+        +`<rect x="540" y="${y-12}" width="42" height="24" rx="3" fill="#0f2238" stroke="#2aa3dc" stroke-width="1.5"/>`+t(561,y+4,'OUT 1','fill="#fff" font-weight="700" font-size="10" text-anchor="middle"')
+        +route(`M582 ${y} H648`,'#2aa3dc',true,3)+t(615,y-6,`화면 ${n}`,'fill="#1c86b8" font-weight="700" font-size="9.5" text-anchor="middle"')}).join('');
       return `<svg class="rt-layer-svg-wide" viewBox="0 0 980 414" role="img" ${LAYER_ARIA}>`+layerDefs(p)
-        +t(490,28,'XDM-WOS100 · 출력 1개에 4K/60 소스 4개를 비디오 프로세서처럼 레이어로 합성','text-anchor="middle" font-weight="700" font-size="15" fill="#1f2532"')
+        +t(490,28,'XDM-WOS100 4장 · 4K 디스플레이 4대(2×2)에 4K/60 소스 4개를 비디오 프로세서처럼 레이어로 합성','text-anchor="middle" font-weight="700" font-size="15" fill="#1f2532"')
         +t(20,104,'입력 소스 · 4K/60 ×4','font-weight="700" font-size="12" fill="#1f2532"')
-        +'<rect x="214" y="50" width="392" height="288" rx="8" fill="#17304f"/>'+t(230,73,'XDM 메인프레임','fill="#fff" font-weight="700" font-size="13"')+t(592,73,'XDM-12 … XDM-216','fill="#c9d6e8" font-size="10" text-anchor="end"')
+        +'<rect x="214" y="50" width="380" height="288" rx="8" fill="#17304f"/>'+t(230,73,'XDM 메인프레임','fill="#fff" font-weight="700" font-size="13"')+t(580,73,'XDM-12 … XDM-216','fill="#c9d6e8" font-size="10" text-anchor="end"')
         +'<rect x="228" y="84" width="94" height="242" rx="5" fill="#22426a"/>'+t(275,104,'입력 카드','fill="#fff" font-weight="700" font-size="11" text-anchor="middle"')
-        +t(361,104,'매트릭스','fill="#c9d6e8" font-size="10" text-anchor="middle"')
-        +'<rect x="400" y="84" width="192" height="242" rx="5" fill="#22426a" stroke="#2aa3dc" stroke-width="1.5"/>'+t(496,104,'XDM-WOS100','fill="#fff" font-weight="700" font-size="11" text-anchor="middle"')
-        +rows
-        +`<rect x="512" y="${R[0]-16}" width="16" height="${R[3]-R[0]+32}" rx="3" fill="#2aa3dc"/>`+t(520,mid-3,'합','fill="#fff" font-weight="700" font-size="10" text-anchor="middle"')+t(520,mid+10,'성','fill="#fff" font-weight="700" font-size="10" text-anchor="middle"')
-        +route(`M528 ${mid} H538`,'#2aa3dc',false)
-        +`<rect x="538" y="${mid-15}" width="46" height="30" rx="3" fill="#0f2238" stroke="#2aa3dc" stroke-width="1.5"/>`+t(561,mid+4,'OUT 1','fill="#fff" font-weight="700" font-size="10.5" text-anchor="middle"')+t(561,mid+29,'HDMI 2.0','fill="#c9d6e8" font-size="9" text-anchor="middle"')
-        // 0.210 레이어를 쓰면(1개라도) 2~4번 포트에 1번과 같은 화면이 나와 따로 쓸 수 없음(알티컴 확인, 사용자 전달 2026-10-13)
-        +'<rect x="538" y="250" width="46" height="62" rx="3" fill="#1a2f4a" stroke="#6b7a90" stroke-dasharray="3 2"/>'+t(561,266,'OUT 2~4','fill="#c9d6e8" font-weight="700" font-size="9" text-anchor="middle"')+t(561,281,'1번과','fill="#c9d6e8" font-size="8.5" text-anchor="middle"')+t(561,293,'같은 화면','fill="#c9d6e8" font-size="8.5" text-anchor="middle"')+t(561,306,'사용 불가','fill="#ff9b9b" font-size="8.5" font-weight="700" text-anchor="middle"')
-        +route(`M584 ${mid} H646`,'#2aa3dc',true,3)+t(628,mid-8,'4K/60','fill="#1c86b8" font-size="9.5" text-anchor="middle"')
-        +t(808,98,'디스플레이 1대 · OUT 1','text-anchor="middle" font-weight="700" font-size="12" fill="#1f2532"')
-        +'<rect x="650" y="110" width="316" height="186" rx="8" fill="#1f2532"/><rect x="658" y="118" width="300" height="169" fill="#0b0d12"/>'+layerScreen(p)
-        +'<path d="M800 296h16l4 14h-24z" fill="#3a4150"/><rect x="780" y="310" width="56" height="6" rx="3" fill="#3a4150"/>'
-        +t(650,345,'겹침 순서','fill="#56627a" font-weight="700" font-size="10"')+layerOrder(708,331,62,58)+t(708,366,'왼쪽이 맨 앞, 오른쪽이 배경','fill="#56627a" font-size="9.5"')
+        +'<rect x="330" y="112" width="32" height="204" rx="4" fill="#2a4d7a" stroke="#4f79ad"/>'+['매','트','릭','스'].map((c,i)=>t(346,190+i*15,c,'fill="#fff" font-weight="700" font-size="11" text-anchor="middle"')).join('')
+        +t(346,104,'분배','fill="#c9d6e8" font-size="10" text-anchor="middle"')
+        +t(493,104,'XDM-WOS100 ×4','fill="#fff" font-weight="700" font-size="11" text-anchor="middle"')
+        +rows+cards
+        // 0.210 레이어를 쓰면(1개라도) 카드의 OUT 2~4에 OUT 1과 같은 화면이 나와 따로 쓸 수 없음(알티컴 확인, 사용자 전달 2026-10-13)
+        +t(493,331,'OUT 2~4: OUT 1과 같은 화면 · 사용 불가','fill="#c9d6e8" font-size="9.5" text-anchor="middle"')
+        +t(810,98,'4K 디스플레이 4대 · 2×2 비디오 월 (7680x4320)','text-anchor="middle" font-weight="700" font-size="12" fill="#1f2532"')
+        +'<rect x="652" y="110" width="316" height="186" rx="6" fill="#1f2532"/><rect x="660" y="118" width="300" height="170" fill="#0b0d12"/>'+layerScreen(p)
+        +t(810,314,'카드 4장 출력 동기(싱크) · 화면 경계에 걸친 레이어도 어긋나지 않음','text-anchor="middle" fill="#1c4f8a" font-weight="700" font-size="10.5"')
+        +t(652,345,'겹침 순서','fill="#56627a" font-weight="700" font-size="10"')+layerOrder(710,331,62,58)+t(710,366,'왼쪽이 맨 앞, 오른쪽이 배경','fill="#56627a" font-size="9.5"')
         +t(20,336,'입력 카드: HIS100 · DPI100 · SIS100','fill="#56627a" font-size="10"')+t(20,350,'CIS100 · FIS100 어느 입력이든','fill="#56627a" font-size="10"')+t(20,364,'WOS100 레이어로 라우팅','fill="#56627a" font-size="10"')
         +'<rect x="330" y="372" width="160" height="32" rx="4" fill="#e39a2f"/>'+t(410,393,'제어 · 커맨드','text-anchor="middle" fill="#1a1200" font-weight="700" font-size="12"')
         +`<path d="M410 372 V342" stroke="#e39a2f" stroke-width="2" fill="none" marker-end="url(#${layerMk(p,'#e39a2f')})"/>`
@@ -407,32 +420,30 @@
       const p='rt-lt-',t=layerTxt,C=[132,204,276,348],route=(...a)=>layerRoute(p,...a),k=304/300;
       const cols=LAYER_SOURCES.map(([name,col],i)=>{const x=C[i],n=i+1;return `<rect x="${x-33}" y="84" width="66" height="40" rx="5" fill="${col}"/>`
         +t(x,101,esc(name),'fill="#fff" font-weight="700" font-size="11" text-anchor="middle"')+t(x,116,'4K/60','fill="#fff" font-size="9" text-anchor="middle"')
-        +route(`M${x} 124 V186`,col)
-        +`<rect x="${x-31}" y="188" width="62" height="26" rx="3" fill="#0f2238" stroke="${col}" stroke-width="1.5"/>`+t(x,205,`입력 ${n}`,'fill="#fff" font-size="10" text-anchor="middle"')
-        +route(`M${x} 214 V276`,col)
-        +`<rect x="${x-31}" y="278" width="62" height="28" rx="3" fill="${col}" stroke="#fff" stroke-width="1.2"/>`+t(x,290,`레이어 ${n}`,'fill="#fff" font-weight="700" font-size="9.5" text-anchor="middle"')+t(x,301,'4K/60','fill="#fff" font-size="8" text-anchor="middle" opacity=".9"')
-        +route(`M${x} 306 V316`,col,false)}).join('');
-      return `<svg class="rt-layer-svg-tall" viewBox="0 0 420 798" role="img" ${LAYER_ARIA}>`+layerDefs(p)
-        +t(210,24,'XDM-WOS100 · 출력 1개에 4K/60 소스 4개','text-anchor="middle" font-weight="700" font-size="14" fill="#1f2532"')+t(210,44,'비디오 프로세서처럼 레이어로 합성','text-anchor="middle" font-weight="700" font-size="14" fill="#1f2532"')
+        +route(`M${x} 124 V166`,col)
+        +`<rect x="${x-31}" y="168" width="62" height="26" rx="3" fill="#0f2238" stroke="${col}" stroke-width="1.5"/>`+t(x,185,`입력 ${n}`,'fill="#fff" font-size="10" text-anchor="middle"')
+        +route(`M${x} 194 V212`,col)
+        +route(`M${x} 234 V252`,'#2aa3dc',true,3)
+        +`<rect class="rt-wos-card" x="${x-33}" y="254" width="66" height="54" rx="4" fill="#22426a" stroke="#2aa3dc" stroke-width="1.5"/>`+t(x,267,`WOS100 #${n}`,'fill="#fff" font-weight="700" font-size="9" text-anchor="middle"')
+        +wosChips(x-26,272,11)
+        +`<rect x="${x-20}" y="287" width="40" height="16" rx="3" fill="#0f2238" stroke="#2aa3dc"/>`+t(x,298.5,'OUT 1','fill="#fff" font-weight="700" font-size="8.5" text-anchor="middle"')
+        +route(`M${x} 308 V438`,'#2aa3dc',true,3)+t(x+5,392,`화면 ${n}`,'fill="#1c86b8" font-weight="700" font-size="9"')}).join('');
+      return `<svg class="rt-layer-svg-tall" viewBox="0 0 420 790" role="img" ${LAYER_ARIA}>`+layerDefs(p)
+        +t(210,24,'XDM-WOS100 4장 · 4K 디스플레이 4대(2×2)에','text-anchor="middle" font-weight="700" font-size="14" fill="#1f2532"')+t(210,44,'4K/60 소스 4개를 레이어로 합성','text-anchor="middle" font-weight="700" font-size="14" fill="#1f2532"')
         +t(16,100,'입력 소스','font-weight="700" font-size="11" fill="#1f2532"')+t(16,114,'4K/60 ×4','font-size="10" fill="#56627a"')
-        +'<rect x="8" y="140" width="404" height="264" rx="8" fill="#17304f"/>'+t(16,162,'XDM 메인프레임','fill="#fff" font-weight="700" font-size="12"')
-        +t(16,205,'입력 카드','fill="#fff" font-weight="700" font-size="10"')+t(16,250,'매트릭스','fill="#c9d6e8" font-size="10"')
-        +'<rect x="92" y="266" width="312" height="116" rx="5" fill="#22426a" stroke="#2aa3dc" stroke-width="1.5"/>'+t(16,296,'XDM-','fill="#fff" font-weight="700" font-size="10"')+t(16,309,'WOS100','fill="#fff" font-weight="700" font-size="10"')
+        +'<rect x="8" y="140" width="404" height="206" rx="8" fill="#17304f"/>'+t(16,160,'XDM 메인프레임','fill="#fff" font-weight="700" font-size="12"')
+        +t(16,185,'입력 카드','fill="#fff" font-weight="700" font-size="10"')+t(16,228,'매트릭스','fill="#c9d6e8" font-size="10"')+t(16,276,'XDM-','fill="#fff" font-weight="700" font-size="10"')+t(16,289,'WOS100','fill="#fff" font-weight="700" font-size="10"')+t(16,302,'×4','fill="#fff" font-weight="700" font-size="10"')
+        +'<rect x="96" y="214" width="288" height="20" rx="3" fill="#2a4d7a" stroke="#4f79ad"/>'+t(240,228,'소스 1~4를 카드 4장에 모두 분배','fill="#fff" font-weight="700" font-size="9.5" text-anchor="middle"')
         +cols
-        +'<rect x="101" y="316" width="278" height="16" rx="3" fill="#2aa3dc"/>'+t(240,328,'합성','fill="#fff" font-weight="700" font-size="10" text-anchor="middle"')
-        +route('M240 332 V342','#2aa3dc',false)
-        +'<rect x="214" y="342" width="52" height="28" rx="3" fill="#0f2238" stroke="#2aa3dc" stroke-width="1.5"/>'+t(240,360,'OUT 1','fill="#fff" font-weight="700" font-size="10" text-anchor="middle"')+t(274,360,'HDMI 2.0','fill="#c9d6e8" font-size="9"')
-        +'<rect x="318" y="342" width="80" height="28" rx="3" fill="#1a2f4a" stroke="#6b7a90" stroke-dasharray="3 2"/>'+t(358,353,'OUT 2~4 1번 동일','fill="#c9d6e8" font-size="8" text-anchor="middle"')+t(358,365,'사용 불가','fill="#ff9b9b" font-size="8" font-weight="700" text-anchor="middle"')
-        +t(404,398,'XDM-12 … XDM-216','fill="#c9d6e8" font-size="9" text-anchor="end"')
-        +route('M240 370 V440','#2aa3dc',true,3)+t(248,424,'4K/60','fill="#1c86b8" font-size="9.5"')
-        +t(16,430,'디스플레이 1대','font-weight="700" font-size="11" fill="#1f2532"')
-        +'<rect x="50" y="444" width="320" height="187" rx="8" fill="#1f2532"/><rect x="58" y="452" width="304" height="171" fill="#0b0d12"/>'
-        +`<g transform="translate(${(58-658*k).toFixed(2)} ${(452-118*k).toFixed(2)}) scale(${k.toFixed(4)})">${layerScreen(p)}</g>`
-        +'<path d="M202 631h16l4 14h-24z" fill="#3a4150"/><rect x="182" y="645" width="56" height="6" rx="3" fill="#3a4150"/>'
-        +t(16,683,'겹침 순서','fill="#56627a" font-weight="700" font-size="10"')+layerOrder(88,669,80,74)+t(88,706,'왼쪽이 맨 앞, 오른쪽이 배경','fill="#56627a" font-size="9.5"')
-        +t(16,732,'입력 카드: HIS100 · DPI100 · SIS100 · CIS100 · FIS100','fill="#56627a" font-size="10"')+t(16,746,'어느 입력이든 WOS100 레이어로 라우팅','fill="#56627a" font-size="10"')
-        +'<rect x="16" y="758" width="124" height="30" rx="4" fill="#e39a2f"/>'+t(78,778,'제어 · 커맨드','text-anchor="middle" fill="#1a1200" font-weight="700" font-size="11"')
-        +t(150,770,'레이어 겹침 설정은 커맨드 전용','fill="#56627a" font-size="10"')+t(150,784,'(XDM 커맨드 가이드) · LCD · RS-232 · LAN','fill="#56627a" font-size="10"')
+        +t(240,330,'카드마다 OUT 2~4: OUT 1과 같은 화면 · 사용 불가','fill="#c9d6e8" font-size="9" text-anchor="middle"')+t(404,341,'XDM-12 … XDM-216','fill="#c9d6e8" font-size="9" text-anchor="end"')
+        +t(16,368,'4K 디스플레이 4대','font-weight="700" font-size="11" fill="#1f2532"')+t(16,382,'2×2 (7680x4320)','font-size="10" fill="#56627a"')
+        +'<rect x="50" y="440" width="320" height="188" rx="6" fill="#1f2532"/><rect x="58" y="448" width="304" height="172" fill="#0b0d12"/>'
+        +`<g transform="translate(${(58-660*k).toFixed(2)} ${(448-118*k).toFixed(2)}) scale(${k.toFixed(4)})">${layerScreen(p)}</g>`
+        +t(210,648,'카드 4장 출력 동기(싱크) · 화면 경계에 걸친 레이어도 어긋나지 않음','text-anchor="middle" fill="#1c4f8a" font-weight="700" font-size="10"')
+        +t(16,680,'겹침 순서','fill="#56627a" font-weight="700" font-size="10"')+layerOrder(88,666,80,74)+t(88,703,'왼쪽이 맨 앞, 오른쪽이 배경','fill="#56627a" font-size="9.5"')
+        +t(16,728,'입력 카드: HIS100 · DPI100 · SIS100 · CIS100 · FIS100','fill="#56627a" font-size="10"')+t(16,742,'어느 입력이든 WOS100 레이어로 라우팅','fill="#56627a" font-size="10"')
+        +'<rect x="16" y="752" width="124" height="30" rx="4" fill="#e39a2f"/>'+t(78,772,'제어 · 커맨드','text-anchor="middle" fill="#1a1200" font-weight="700" font-size="11"')
+        +t(150,764,'레이어 겹침 설정은 커맨드 전용','fill="#56627a" font-size="10"')+t(150,778,'(XDM 커맨드 가이드) · LCD · RS-232 · LAN','fill="#56627a" font-size="10"')
         +'</svg>';
     }
     // 0.207(사용자 요청 2026-10-12 "HOS100카드와 컨셉과 아날로그웨이 브로셔와 잘 믹싱해봐"): WOS100 팝업에 두 가지를 섞는다.
@@ -468,7 +479,7 @@
       dialog.className='rt-card-info-modal rt-layer-modal';
       dialog.setAttribute('aria-labelledby','rt-layer-title');
       dialog.innerHTML='<div class="rt-card-modal-head"><div><span class="rt-eyebrow">XDM 출력 카드 · 레이어</span><h3 id="rt-layer-title">XDM-WOS100 레이어 구성도 · 비디오 프로세서 비교</h3><p class="rt-card-info-sub">HDMI (Wall Overlay) Output Slot · 4포트 · 4K/60 @ 4:4:4</p></div><button type="button" class="rt-card-modal-close" data-layer-close aria-label="레이어 비교 닫기">×</button></div>'
-        +'<div class="rt-card-info-body"><p class="rt-card-info-tip">WOS100은 출력 1개에 4K/60 소스 4개를 레이어로 겹쳐, 비디오 프로세서처럼 한 화면을 구성합니다. 매트릭스의 어느 입력 슬롯 소스든 레이어로 보낼 수 있습니다.</p>'
+        +'<div class="rt-card-info-body"><p class="rt-card-info-tip">WOS100은 출력 1개에 4K/60 소스 4개를 레이어로 겹쳐, 비디오 프로세서처럼 한 화면을 구성합니다. 매트릭스의 어느 입력 슬롯 소스든 레이어로 보낼 수 있습니다. 아래 구성도는 카드 4장이 4K 디스플레이 4대(2×2)를 한 화면처럼 나눠 맡는 예입니다.</p>'
         +'<ul class="rt-wos-keys" aria-label="XDM-WOS100 핵심 수치">'+wosKeys.map(([big,label,sub])=>'<li><b>'+big+'</b><span>'+label+'</span><small>'+sub+'</small></li>').join('')+'</ul>'
         +'<div class="rt-layer-figure">'+layerCompareSvg()+layerCompareTallSvg()+'</div>'
         +'<div class="rt-hos-warn rt-wos-warn" role="note"><strong>레이어를 쓰면 카드 4포트가 모두 같은 화면을 냅니다</strong><ul><li>레이어를 <b>1개만 써도</b> 2~4번 포트에 1번과 같은 합성 화면이 나와 <b>따로 쓸 수 없습니다.</b> 레이어 모드에서 카드 1장은 합성 화면 1개를 냅니다.</li><li>HOS100(레이어 2개면 짝 포트만 사용 불가)과 다릅니다. 포트를 각각 쓰려면 스위칭 모드로 씁니다.</li></ul></div>'
