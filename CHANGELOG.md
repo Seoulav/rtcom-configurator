@@ -62,6 +62,21 @@
 - **0.145.0 배포 기록**: `docs/qa/DEPLOYMENT_0.145_2026-09-29.md`(PR #194 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.144.0 배포 기록**: `docs/qa/DEPLOYMENT_0.144_2026-09-29.md`(PR #192 → main 병합, Pages 배포 run 162, 공개 파일 337/338 일치, `.nojekyll` 제외)
 
+## 0.208.0
+
+AV Portal·AV System Builder 담당 요청(2026-10-13, 사용자 전달 "RTCOM 모듈형 장비 슬롯·카드 데이터 추가 요청"):
+
+- **공개 JSON에 모듈형 장비 슬롯·카드 데이터 추가**: AV System Builder가 XDM·SPX·VDM 프레임에 슬롯별로 카드를 장착하고 카드 단자로 결선할 수 있게 했습니다.
+  - **메인프레임 `slots`:** 입력·출력 슬롯 수를 넣었습니다. XDM 6종, SPX 5종, VDM 9종이며, 매뉴얼 XDM KV08·SPX 250805·VDM KV07의 "보드 N장" 문장을 옮긴 값이라 구성기 `slotPlans`와 같습니다.
+  - **카드 26종:** `slotType`·`compatibleFrames`·`io`(카드 1장의 물리 단자)를 넣었습니다.
+  - **SPX-R6:** `slots`(모듈 칸 6개)를 넣었습니다.
+  - **기존 값 유지:** 기존 키·값은 바꾸지 않았고 화면도 그대로입니다.
+  - **확인하지 못한 단자:** 다음은 `REVIEW REQUIRED`로 표시했습니다. XDM-COS100 PoE 전원 포트, SPX-HIS8 오디오 커넥터, VDM SIS4-U 오디오, SOS4 오디오, HOS4S-UW USB입니다.
+  - **넣지 않은 슬롯:** XDM-288·VDM-288X는 근거가 없어 슬롯을 넣지 않았습니다.
+  - **SPX-HOS10 호환:** 매뉴얼 3쪽대로 SPX-M810·M1620만 적었습니다(요청서 예시와 다름).
+- **검증:** `scripts/build-product-index.cjs`가 새 필드 형식(키·정수·출처·방향·호환 프레임 슬롯 유무)을 검사합니다. `tests/modular-slots.test.cjs`가 구성기 슬롯 수·카드 채널 수와 대조합니다.
+- 근거·인계: `docs/handoff/AV_PORTAL_MODULAR_SLOTS.md`, `docs/implementation/MODULAR_SLOT_DATA_0.208.md`
+
 ## 0.207.0
 
 사용자 요청 2026-10-12("wos 출력1개에 4K60 소스.4개를 VP처럼 레이어링 할 수 있게 변경해그리고 선도 꼬여 있어", "HOS100카드와 컨셉과 아날로그웨이 브로셔와 잘 믹싱해봐"):
