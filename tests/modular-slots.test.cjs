@@ -44,14 +44,15 @@ test('SPX-HOS10은 SPX-M810·M1620에만, 나머지 SPX 카드는 SPX 5종 모�
   for(const model of ['SPX-HIS8','SPX-HOS12','SPX-COS12'])assert.deepEqual(lineup.find(item=>item.model===model).compatibleFrames,frames,model);
 });
 
-test('확인하지 못한 단자는 REVIEW REQUIRED, SPX-R6는 모듈 칸 6개(shared)',()=>{
+test('확인하지 못한 단자는 REVIEW REQUIRED(COS100 전원은 0.210에 확인), SPX-R6는 모듈 칸 6개(shared)',()=>{
   const row=(id,model,connector)=>read(id).lineup.find(item=>item.model===model).io.find(item=>item.connector.startsWith(connector));
-  assert.equal(row('xdm','XDM-COS100','피닉스 5핀(').verification,'REVIEW REQUIRED');
-  assert.equal(row('xdm','XDM-COS100','피닉스 5핀(').quantity,'');
+  // 0.210 COS100 전원은 출력마다 XDM-PHX 1개로 확인됨(알티컴 확인, 사용자 전달 2026-10-13)
+  assert.equal(row('xdm','XDM-COS100','피닉스 5핀(').verification,'VERIFIED');
+  assert.equal(row('xdm','XDM-COS100','피닉스 5핀(').quantity,'4');
   assert.equal(row('vdm','SOS4','3.5mm').verification,'REVIEW REQUIRED');
   assert.equal(row('vdm','HOS4S-UW','USB').verification,'REVIEW REQUIRED');
   assert.equal(row('spx','SPX-HIS8','3.5mm').verification,'REVIEW REQUIRED');
-  assert.ok(!read('xdm').lineup.find(item=>item.model==='XDM-WOS100').io.some(item=>item.group==='Audio'),'카탈로그에 없는 WOS100 오디오 단자를 지어내지 않음');
+  assert.ok(!read('xdm').lineup.find(item=>item.model==='XDM-WOS100').io.some(item=>item.group==='Audio'),'WOS100은 오디오 출력 없음(0.210 알티컴 확인)');
   const r6=read('spx-r6');
   assert.deepEqual(r6.slots,{shared:6,source:'S1',verification:'VERIFIED',note:r6.slots.note});
   assert.equal(r6.io.filter(item=>/모듈 칸마다 1개/.test(item.condition)).length,2,'기존 io 행은 그대로');

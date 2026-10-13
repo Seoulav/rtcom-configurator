@@ -31,6 +31,7 @@
 |---|---|---|
 | `xdm.json` | `M` | XDM 시리즈 국문 사용자 매뉴얼 KV08(250902), 공개본 `xdm-manual.pdf` |
 | `xdm.json` | `U3` | 서울영상테크 확인(2026-09-28): XDM-COS100 피닉스 단자로 XDM-PHX 전원을 받음 |
+| `xdm.json` | `U5` | 0.210 알티컴 확인(사용자 전달 2026-10-13): XDM-COS100 출력마다 XDM-PHX 전원, XDM-WOS100 오디오 출력 없음, XDM-288 주문 생산 |
 | `spx.json` | `M2` | SPX 시리즈 국문 사용자 매뉴얼(250805) 3–4·10–12쪽, 공개본 `spx-manual.pdf` |
 | `vdm.json` | `M` | VDM 시리즈 국문 사용자 매뉴얼 KV07(251219), 공개본 `vdm-manual.pdf` |
 
@@ -51,7 +52,7 @@
 | SPX-R6 | (최상위) | shared 6 | SPX-R6 제품 사양서(S1). 칸마다 SPX-TX 또는 SPX-RX 모듈(사용자 확인 2026-09-29, U2) |
 
 - **넣지 않은 모델**
-  - **XDM-288:** 카탈로그에 LINE-UP 표기만 있고 사양이 없습니다.
+  - **XDM-288:** 주문 생산 모델입니다(0.210 알티컴 확인, `summary`에 표기). 보드 수는 아직 문서·답변에 없어 `slots`를 넣지 않았습니다.
   - **VDM-288X:** 카탈로그에 크기·무게만 있고, 보드 수는 카탈로그와 매뉴얼 KV07 모두에 없습니다. 구성기도 특수 상황실용 커스텀 제작으로 보고 제외합니다.
 - **계산하지 않음:** 채널 수 ÷ 슬롯당 포트로 계산한 값은 하나도 없습니다. 위 값은 모두 매뉴얼 문장("입출력보드는 각각 N장씩 장착 가능", "최대 장착 Input 보드 N장")을 그대로 옮겼습니다.
 - **구성기와 일치:** 구성기 `src/core.js` `slotPlans`와 값이 같습니다. 단위 테스트 `tests/modular-slots.test.cjs`가 둘을 대조합니다.
@@ -85,13 +86,16 @@
 
 | 항목 | 상태 | 이유 |
 |---|---|---|
-| XDM-COS100 PoE 전원 입력 | `Power` 행, `quantity: ""`, REVIEW REQUIRED | XDM-PHX는 카드 1장당 1개입니다. 포트마다 받는지, 1번 포트 단자 하나로 받는지는 문서에 없습니다 |
-| XDM-WOS100 오디오 | 행 없음 | 카탈로그 9쪽 포트 구성은 "4 HDMI ports"뿐이고 매뉴얼 KV08에는 이 카드가 없습니다 |
 | SPX-HIS8 오디오 커넥터 | `3.5mm stereo`, REVIEW REQUIRED | 수량 8은 문서로 확인했습니다. 커넥터 형태는 문서에 없어 사진으로 판독했습니다 |
 | VDM SIS4-U | 영상 `BNC`는 VERIFIED(카탈로그 19쪽 사진), 오디오 2행은 REVIEW REQUIRED | 매뉴얼 KV07에는 이름이 다른 `VDM-SIS4`만 있어 그 값은 옮기지 않았습니다(요청서 §3-4) |
 | VDM SOS4 오디오 | `3.5mm stereo` `BIDIR` 4, REVIEW REQUIRED | 매뉴얼 42쪽은 "4 Stereo In/Out ports"이나, 카탈로그 20쪽 사양·사진에는 오디오 단자가 없습니다 |
 | VDM HOS4S-UW USB | `USB` `BIDIR` 2, REVIEW REQUIRED | 매뉴얼 44쪽에 "2 port USB connector"만 있고 용도가 없습니다. 카탈로그 사진에도 보이지 않습니다 |
-| XDM-288 · VDM-288X | `slots` 없음 | §2 참고 |
+| XDM-288 · VDM-288X | `slots` 없음 | §2 참고. XDM-288은 주문 생산(0.210) |
+
+0.210에서 확인되어 이 표에서 뺀 항목(알티컴 확인, 사용자 전달 2026-10-13, 출처 `U5`):
+
+- **XDM-COS100 PoE 전원 입력:** `Power` 행을 `quantity: "4"`, VERIFIED로 고쳤습니다. 출력마다 XDM-PHX 1개에서 전원을 받습니다. 구성기 BOM도 XDM-PHX를 COS100에 연결한 CTR100 RX 대수만큼 셉니다(0.72~0.209는 카드 장수).
+- **XDM-WOS100 오디오:** 오디오 출력이 없습니다. 오디오 행은 지금처럼 두지 않고, 영상 행 `condition`에 "오디오 출력 없음"을 적었습니다.
 
 - **`packageStatus` 유지:** 위 항목은 카드 `lineup` 안에만 있습니다. 그래서 시리즈의 `packageStatus`("VERIFIED")는 바꾸지 않았습니다(기존 값 유지). 검토 필요 여부는 행마다 `verification`으로 판단해 주십시오.
 

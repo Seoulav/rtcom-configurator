@@ -52,7 +52,7 @@
     const extenderLineup=[
       {model:'XDM-CTR100',role:'HDBaseT 3.0 송수신기 (딥 스위치 TX/RX)',image:'output/design/assets/extenders/xdm-ctr100.webp',pair:'XDM-CIS100 · XDM-COS100',note:'딥 스위치로 TX/RX를 설정합니다. TX는 CIS100, RX는 COS100과 연동하며 이때는 XDM-PSU로 전원을 공급해 CTR100에 전원 어댑터가 필요 없습니다. PSE와 한 쌍이어도 전원 불필요',page:10},
       {model:'XDM-CTR100 PSE',role:'POE 전원 공급형 송수신기 (딥 스위치 TX/RX)',image:'output/design/assets/extenders/xdm-ctr100-pse.webp',pair:'XDM-CTR100 (HDMI 카드 연장 · 1:1 연장)',note:'CTR100과 한 쌍으로 쓰면 PSE 쪽에만 전원을 연결하고 CTR100은 전원이 필요 없습니다. HDMI 입력·출력 카드 연장에 사용하며, HDBaseT 카드(CIS100·COS100) 구성에는 사용할 수 없습니다.',page:10},
-      {model:'XDM-PSU',role:'16채널 모듈형 전원 장치 (19인치 2U)',image:'output/design/assets/products/xdm-psu-front.webp',pair:'XDM-CIS100 · XDM-COS100 + XDM-CTR100',note:'CIS100·COS100에 연결한 CTR100에 전원을 공급합니다. CIS용 XDM-POH(TX 1대당 1개)와 COS용 XDM-PHX(COS100 1장당 1개) 모듈을 16칸에 꽂습니다.',source:'제조사 도면·구성도'},
+      {model:'XDM-PSU',role:'16채널 모듈형 전원 장치 (19인치 2U)',image:'output/design/assets/products/xdm-psu-front.webp',pair:'XDM-CIS100 · XDM-COS100 + XDM-CTR100',note:'CIS100·COS100에 연결한 CTR100에 전원을 공급합니다. CIS용 XDM-POH(TX 1대당 1개)와 COS용 XDM-PHX(COS100 출력 1포트당 1개) 모듈을 16칸에 꽂습니다.',source:'제조사 도면·구성도'},
       {model:'XDM-CT103',role:'1 Gang 벽부형 송신기',image:'output/design/assets/extenders/xdm-ct103.webp',pair:'XDM-CIS100',note:'XDM 슬롯 POE로 전원 공급',page:11},
       {model:'XDM-CR103',role:'1 Gang 벽부형 수신기',image:'output/design/assets/extenders/xdm-cr103.webp',pair:'XDM-COS100',note:'XDM 슬롯 POE로 전원 공급',page:11},
       {model:'XDM-FT101',role:'4K 광 송신기',image:'output/design/assets/extenders/xdm-ft101.webp',pair:'XDM-FIS100',note:'싱글모드 2km · 멀티모드 300m',page:12},
@@ -111,7 +111,7 @@
     function cardAsset(id){return photoCardFamilies.has(state.family)&&id?`output/design/assets/cards/${id}.webp`:assets[state.family]}
     const cardTips={
       'XDM-HI100':'HDMI 소스 4채널을 입력하는 기본 카드입니다.','XDM-HIS100':'HDMI 입력을 스케일링해야 하는 구성에 검토합니다.','XDM-DPI100':'DisplayPort 소스 4채널 입력용입니다.','XDM-CIS100':'HDBaseT 3.0 기반 원격 신호 4채널 입력용입니다.','XDM-FIS100':'광 전송 기반의 원거리 신호 4채널 입력용입니다.','XDM-SIS100':'12G-SDI 방송 신호 4채널 입력용입니다.',
-      'XDM-HOS100':'HDMI 4채널 출력 또는 4분할·2분할 등 원하는 레이어(멀티뷰) 화면 구성에 활용할 수 있습니다. 레이어를 쓰면 일부 출력 포트를 쓸 수 없습니다.','XDM-DPOS100':'DisplayPort 디스플레이 4채널 출력용입니다.','XDM-COS100':'HDBaseT 3.0 기반 원격 출력 4채널용입니다.','XDM-FOS100':'광 전송 기반의 원거리 출력 4채널용입니다.','XDM-SOS100':'12G-SDI 방송 신호 4채널 출력용입니다.','XDM-WOS100':'출력 1개에 4K/60 소스 4개를 레이어로 겹쳐 비디오 프로세서처럼 화면 연출에 활용할 수 있습니다. 레이어를 쓰면 일부 출력 포트를 쓸 수 없습니다.'
+      'XDM-HOS100':'HDMI 4채널 출력 또는 4분할·2분할 등 원하는 레이어(멀티뷰) 화면 구성에 활용할 수 있습니다. 레이어를 쓰면 일부 출력 포트를 쓸 수 없습니다.','XDM-DPOS100':'DisplayPort 디스플레이 4채널 출력용입니다.','XDM-COS100':'HDBaseT 3.0 기반 원격 출력 4채널용입니다.','XDM-FOS100':'광 전송 기반의 원거리 출력 4채널용입니다.','XDM-SOS100':'12G-SDI 방송 신호 4채널 출력용입니다.','XDM-WOS100':'출력 1개에 4K/60 소스 4개를 레이어로 겹쳐 비디오 프로세서처럼 화면 연출에 활용할 수 있습니다. 레이어를 쓰면 카드 4포트가 모두 같은 화면을 냅니다.'
     };
     function cardTip(id){return cardTips[id]||'카드 용도와 설치 조건을 검토한 뒤 선택하세요.'}
     globalThis.RtCardTips=cardTips; // 0.143: 제품정보 04 카드 라인업 상세 팝업(src/products.js)이 같은 카드 설명을 읽는다.
@@ -228,7 +228,7 @@
       const slot=currentSlots().find(item=>item.id===modalSlot);
       if(!slot)return '';
       const installed=state.placements[slot.id];
-      const tips=slot.dir==='output'&&state.family==='XDM'?'<div class="rt-output-tips"><div class="rt-pro-tip rt-quad-tip"><span>최대 4분할</span><div><strong>XDM-HOS100 · 멀티뷰(4분할·2분할)</strong><p>일반 HDMI 4채널 출력 또는 원하는 레이어 구성에 활용합니다. 레이어 2개면 짝 포트(1번 분할 시 2번, 3번 분할 시 4번), 4개면 2~4번 포트를 쓸 수 없습니다.</p>'+featureButton('XDM-HOS100','rt-feature-open-tip')+'</div></div><div class="rt-pro-tip"><span>활용 TIP</span><div><strong>XDM-WOS100 · 4레이어</strong><p>출력 1개에 4K/60 소스 4개를 레이어로 겹쳐 비디오 프로세서처럼 화면을 연출할 수 있습니다. HOS100과 같이 레이어 2개면 짝 포트, 4개면 2~4번 포트를 쓸 수 없습니다.</p>'+featureButton('XDM-WOS100','rt-feature-open-tip')+'</div></div></div>':'';
+      const tips=slot.dir==='output'&&state.family==='XDM'?'<div class="rt-output-tips"><div class="rt-pro-tip rt-quad-tip"><span>최대 4분할</span><div><strong>XDM-HOS100 · 멀티뷰(4분할·2분할)</strong><p>일반 HDMI 4채널 출력 또는 원하는 레이어 구성에 활용합니다. 레이어 2개면 짝 포트(1번 분할 시 2번, 3번 분할 시 4번), 4개면 2~4번 포트를 쓸 수 없습니다.</p>'+featureButton('XDM-HOS100','rt-feature-open-tip')+'</div></div><div class="rt-pro-tip"><span>활용 TIP</span><div><strong>XDM-WOS100 · 4레이어</strong><p>출력 1개에 4K/60 소스 4개를 레이어로 겹쳐 비디오 프로세서처럼 화면을 연출할 수 있습니다. 레이어를 1개만 써도 카드 4포트가 모두 같은 화면을 내므로 2~4번 포트를 따로 쓸 수 없습니다.</p>'+featureButton('XDM-WOS100','rt-feature-open-tip')+'</div></div></div>':'';
       const dirWord=slot.dir==='input'?'입력':'출력';
       // 0.94 수량 UI가 사라지는 버그 수정(사용자 지적 "입력카드 다시 조정하려고 누르면 수량이 안보이고 장착됨이 보임", "출력카드는 수량선택이 안되는 버그"):
       // 같은 방향 슬롯이 이미 다 채워지면 fillTargets가 채울 수 있는 칸(qtyMax)을 1로 돌려주는데, 그 값 하나로 "카드별 수량" UI 노출 여부까지 정했다.
@@ -323,7 +323,7 @@
     // 0.204(사용자 지적 2026-10-12 03 카드 슬롯의 WOS100 카드 상세 팝업을 보며 "안보여"): 같은 팝업을 WOS100 카드 상세 팝업과 출력 카드 선택 팝업의 활용 TIP에서도 연다. 카드 상세 dialog 위에 겹쳐 열리는 두 번째 dialog다.
     // 표의 값은 AV Portal 상세 페이지(제조사 데이터시트 근거)와 사용자가 제공한 Aquilon RS4 데이터시트(AQL-RS4-EN-20260401)에서 옮겼다. 제조사마다 "레이어" 정의가 달라 비고를 함께 적는다.
     // WOS100의 4레이어는 구성기 카드 설명(cardTips)과 같은 값이다. 0.207부터 "출력 1개에 4K/60 소스 4개"는 서울영상테크 확인(2026-10-12)이며,
-    // 0.209부터 포트 제한은 HOS100과 같다(서울영상테크 확인 2026-10-13, 레이어 3개일 때만 미확인 — docs/RTCOM_MANUFACTURER_DATA_REQUEST.md Q6).
+    // 0.210: 레이어를 쓰면(1개라도) WOS100 카드 4포트가 모두 같은 화면을 낸다(알티컴 확인, 사용자 전달 2026-10-13). HOS100의 짝 포트 규칙과 다르다.
     const layerCompareRows=[
       ['Analog Way','Aquilon RS4','24','16','12','24','믹싱 레이어 최대 · 분할 레이어 사용 시 24 / 48 · 구성기·AV Portal 미등록','RS4 데이터시트'],
       ['Analog Way','Aquilon RS2','16','12','8','16','믹싱 레이어 최대 · 분할 레이어 사용 시 16 / 32','AV Portal'],
@@ -336,12 +336,12 @@
       ['Colorlight','X100 Pro-7U','8','8','64 (2K/4K 구분 없음)','','사양서가 레이어를 해상도로 나누지 않음 · 최대 로드 52 MP','AV Portal'],
       ['Colorlight','X100 Pro-4U · 2U','4 · 2','4','32 (2K/4K 구분 없음)','','최대 로드 26 MP','AV Portal'],
       ['Magnimage','LED-780H','—','—','—','4 / 출력','입력이 2K급(DVI·HDMI 1.3·DP 1.2·3G-SDI) · 비스플라이싱 모드','AV Portal'],
-      ['RTCOM','XDM-WOS100','매트릭스 입력','4 / 카드','4 / 출력 1개','—','출력 1개에 4K/60 소스 4개를 레이어로 합성 · 커맨드 설정 · 레이어 4개면 2~4번 포트 사용 불가','카탈로그 9쪽 · 서울영상테크 확인']
+      ['RTCOM','XDM-WOS100','매트릭스 입력','4 / 카드','4 / 출력 1개','—','출력 1개에 4K/60 소스 4개를 레이어로 합성 · 커맨드 설정 · 레이어를 쓰면 카드 4포트가 같은 화면','카탈로그 9쪽 · 서울영상테크 확인']
     ];
     // 0.207(사용자 요청 2026-10-12 "wos 출력1개에 4K60 소스.4개를 VP처럼 레이어링 할 수 있게 변경해그리고 선도 꼬여 있어"):
     // 2×2 비디오 월 그림(출력 4선이 서로 교차)을 "출력 1개(OUT 1)에 4K/60 소스 4개를 레이어로 합성하는 비디오 프로세서 방식" 그림으로 바꾼다.
     // 소스 → 입력 카드 → 매트릭스 → WOS100 레이어 1~4 → 합성 → OUT 1 → 디스플레이 1대. 신호선(rt-layer-route)은 모두 수평선이라 서로 교차하지 않는다(e2e 확인).
-    // 색은 QMS 06 화면 구성 모드(src/products.js LAYOUT_COLORS)의 입력 1~4번 색이다. 레이어 4개면 2~4번 포트에 1번과 같은 화면이 나와 쓸 수 없으므로(HOS100과 같음, 0.209 사용자 확인) 회색 점선 상자로 표시한다.
+    // 색은 QMS 06 화면 구성 모드(src/products.js LAYOUT_COLORS)의 입력 1~4번 색이다. 레이어를 쓰면(1개라도) 2~4번 포트에 1번과 같은 화면이 나와 따로 쓸 수 없으므로(0.210 알티컴 확인) 회색 점선 상자로 표시한다.
     const LAYER_SOURCES=[['PC 1','#2f7cf6'],['PC 2','#f08c1a'],['카메라','#1fb45a'],['미디어 서버','#9b51e0']];
     const LAYER_WINDOWS=[[658,118,300,169],[670,130,150,84],[764,176,124,70],[878,128,72,42]]; // 디스플레이 화면 안 레이어 1~4 [x, y, 폭, 높이], 1번은 배경(전체 화면)
     // PC는 가로 그림(왼쪽 → 오른쪽), 휴대폰 폭(640px 이하)은 세로 그림(위 → 아래)을 CSS로 골라 보여 준다. 두 그림이 한 문서에 함께 있으므로
@@ -389,7 +389,7 @@
         +`<rect x="512" y="${R[0]-16}" width="16" height="${R[3]-R[0]+32}" rx="3" fill="#2aa3dc"/>`+t(520,mid-3,'합','fill="#fff" font-weight="700" font-size="10" text-anchor="middle"')+t(520,mid+10,'성','fill="#fff" font-weight="700" font-size="10" text-anchor="middle"')
         +route(`M528 ${mid} H538`,'#2aa3dc',false)
         +`<rect x="538" y="${mid-15}" width="46" height="30" rx="3" fill="#0f2238" stroke="#2aa3dc" stroke-width="1.5"/>`+t(561,mid+4,'OUT 1','fill="#fff" font-weight="700" font-size="10.5" text-anchor="middle"')+t(561,mid+29,'HDMI 2.0','fill="#c9d6e8" font-size="9" text-anchor="middle"')
-        // 0.209 레이어 4개면 2~4번 포트에 1번과 같은 화면이 나와 사실상 사용 불가(HOS100과 같음, 서울영상테크 확인 2026-10-13)
+        // 0.210 레이어를 쓰면(1개라도) 2~4번 포트에 1번과 같은 화면이 나와 따로 쓸 수 없음(알티컴 확인, 사용자 전달 2026-10-13)
         +'<rect x="538" y="250" width="46" height="62" rx="3" fill="#1a2f4a" stroke="#6b7a90" stroke-dasharray="3 2"/>'+t(561,266,'OUT 2~4','fill="#c9d6e8" font-weight="700" font-size="9" text-anchor="middle"')+t(561,281,'1번과','fill="#c9d6e8" font-size="8.5" text-anchor="middle"')+t(561,293,'같은 화면','fill="#c9d6e8" font-size="8.5" text-anchor="middle"')+t(561,306,'사용 불가','fill="#ff9b9b" font-size="8.5" font-weight="700" text-anchor="middle"')
         +route(`M584 ${mid} H646`,'#2aa3dc',true,3)+t(628,mid-8,'4K/60','fill="#1c86b8" font-size="9.5" text-anchor="middle"')
         +t(808,98,'디스플레이 1대 · OUT 1','text-anchor="middle" font-weight="700" font-size="12" fill="#1f2532"')
@@ -440,9 +440,8 @@
     // - Analog Way 데이터시트(0.203 요청 때 받은 Aquilon RS4 응용 구성도): 핵심 수치 띠, 흰 테두리 레이어와 "레이어 n · 4K/60" 표기
     // 배치 예시는 레이어(소스) 4개 이하를 출력 1개에 겹치는 대표 모양이다. 칸 순서가 그리는 순서라 뒤 칸이 앞에 겹친다(큰 번호가 앞). 칸의 숫자는 레이어 번호다.
     // 칸은 [번호, x, y, 폭, 높이, 숫자 x, 숫자 y](화면 0~100)이다. 배경 숫자가 창에 가려지면 숫자 위치를 빈 곳으로 옮긴다(자유 배치).
-    // 0.209 포트 칩: 레이어는 같은 카드의 출력 포트 자원을 함께 쓴다(HOS100과 같음, 서울영상테크 확인 2026-10-13). 예시는 모두 1번 포트 화면이다.
-    // 레이어 4개 → 2~4번 1번과 같은 화면(사실상 사용 불가), 레이어 2개 → 짝인 2번 사용 불가·3·4번은 사용 가능(3번에도 레이어 2개를 쓰면 4번 불가).
-    // 레이어 3개 조건은 확인되지 않아 예시를 2개·4개로만 둔다(0.207의 "PBP + PIP" 3레이어 예시에 로고를 더해 4레이어로 바꿈).
+    // 0.210 포트 칩: 레이어를 쓰면(1개라도) WOS100 카드 4포트가 모두 같은 화면을 낸다(알티컴 확인, 사용자 전달 2026-10-13).
+    // 그래서 레이어 수와 상관없이 1번 합성 · 2~4번 1번과 같은 화면으로 표시한다(0.209의 HOS100식 짝 포트 규칙은 WOS100에 맞지 않아 뺌).
     const wosLayouts=[
       {name:'자유 배치',desc:'배경 위에 크기가 다른 창 3개를 겹쳐 배치',cells:[[1,0,0,100,100,15,80],[2,4,7,50,50],[3,35,48,41,41],[4,74,6,24,25]]},
       {name:'배경 + PIP 3',desc:'전체 배경 위 세 모서리에 작은 화면',cells:[[1,0,0,100,100],[2,5,8,30,30],[3,65,8,30,30],[4,65,62,30,30]]},
@@ -455,8 +454,8 @@
     function wosLayoutCards(){
       return wosLayouts.map(layout=>{
         const nums=layout.cells.map(c=>c[0]),fig=globalThis.RtMonitorLayoutSvg?.(layout.cells,{cellClass:'rt-wos-cell'})||'';
-        const ports=nums.length===4?['main','dup','dup','dup']:['main','off','free','free'];
-        const portWord={main:'합성',off:'불가',dup:'1번 동일',free:'사용'},portLabel={main:'합성 화면 출력',off:'사용 불가',dup:'1번과 같은 화면',free:'따로 사용 가능'};
+        const ports=['main','dup','dup','dup'];
+        const portWord={main:'합성',dup:'1번 동일'},portLabel={main:'합성 화면 출력',dup:'1번과 같은 화면'};
         const chips=`<ol class="rt-hos-ports rt-wos-ports" aria-label="이 배치에서 출력 포트 1~4 상태">${ports.map((p,i)=>`<li class="rt-hos-port-${p}" aria-label="${i+1}번 포트 ${portLabel[p]}"><b>${i+1}</b><span aria-hidden="true">${portWord[p]}</span></li>`).join('')}</ol>`;
         const order=layout.tiled?'<p class="rt-wos-tiled">나란히 배치 · 겹치지 않음</p>'
           :`<div class="rt-wos-order"><span>앞</span><ol aria-label="겹침 순서, 앞에서 뒤로">${[...nums].reverse().map(n=>`<li style="background:${LAYER_SOURCES[n-1][1]}" aria-label="레이어 ${n}">${n}</li>`).join('')}</ol><span>뒤</span></div>`;
@@ -472,7 +471,7 @@
         +'<div class="rt-card-info-body"><p class="rt-card-info-tip">WOS100은 출력 1개에 4K/60 소스 4개를 레이어로 겹쳐, 비디오 프로세서처럼 한 화면을 구성합니다. 매트릭스의 어느 입력 슬롯 소스든 레이어로 보낼 수 있습니다.</p>'
         +'<ul class="rt-wos-keys" aria-label="XDM-WOS100 핵심 수치">'+wosKeys.map(([big,label,sub])=>'<li><b>'+big+'</b><span>'+label+'</span><small>'+sub+'</small></li>').join('')+'</ul>'
         +'<div class="rt-layer-figure">'+layerCompareSvg()+layerCompareTallSvg()+'</div>'
-        +'<div class="rt-hos-warn rt-wos-warn" role="note"><strong>레이어는 카드 출력 포트 자원을 함께 씁니다(HOS100과 같음)</strong><ul><li><b>레이어 4개</b>: 2~4번 포트에 1번과 같은 화면이 나와 <b>사실상 사용할 수 없습니다.</b> 이때 카드 1장은 합성 화면 1개를 냅니다.</li><li><b>레이어 2개</b>: 1·2번, 3·4번 포트가 짝입니다. <b>1번에 레이어 2개를 쓰면 2번, 3번에 쓰면 4번을 사용할 수 없습니다.</b></li><li>레이어 3개일 때의 포트 조건은 아직 확인되지 않았습니다.</li></ul></div>'
+        +'<div class="rt-hos-warn rt-wos-warn" role="note"><strong>레이어를 쓰면 카드 4포트가 모두 같은 화면을 냅니다</strong><ul><li>레이어를 <b>1개만 써도</b> 2~4번 포트에 1번과 같은 합성 화면이 나와 <b>따로 쓸 수 없습니다.</b> 레이어 모드에서 카드 1장은 합성 화면 1개를 냅니다.</li><li>HOS100(레이어 2개면 짝 포트만 사용 불가)과 다릅니다. 포트를 각각 쓰려면 스위칭 모드로 씁니다.</li></ul></div>'
         +'<h4 class="rt-layer-h">레이어 배치 예시 · 출력 1개</h4><p class="rt-wos-lead">칸의 숫자는 레이어(소스) 번호이고, 큰 번호가 앞에 겹칩니다. 아래 칩은 이 배치를 1번 포트에 냈을 때 1~4번 포트 상태입니다.</p><ul class="rt-hos-grid rt-wos-grid">'+wosLayoutCards()+'</ul>'
         +'<ul class="rt-layer-notes"><li>레이어 겹침 설정은 커맨드 전용입니다(RS-232 · LAN(TCP/IP), XDM 커맨드 가이드 44쪽부터). 커맨드로 레이어마다 입력, 화면 위치·크기(X·Y·W·H), 겹침 순서를 정하고, 레이어마다 같은 카드의 출력 포트 하나를 자원으로 지정합니다(알티컴 회신 2026-10-13).</li><li>WOS100의 다른 쓰임(카탈로그 9쪽): 비디오 월 모드는 HDMI 4포트로 2×2 비디오 월 한 면을 구성하고, 스위칭 모드는 4포트를 각각 출력합니다(심리스 전환).</li></ul>'
         // 0.209 커맨드 가이드 특장점(사용자 선택 2026-10-13 "WOS100 LED 모드·로고"): LED 모드 56~57쪽, 로고 이미지 43쪽
@@ -480,7 +479,7 @@
         +cmdGuideLinks(44,'Wall Overlay 커맨드')
         +'<h4 class="rt-layer-h">비디오 프로세서 레이어 비교 · 2K / 4K 믹싱 레이어 수</h4><div class="rt-layer-scroll"><table class="rt-card-info-table rt-layer-table"><thead><tr><th scope="col">제조사</th><th scope="col">모델</th><th scope="col">4K/60p 입력</th><th scope="col">4K/60p 출력</th><th scope="col">4K 레이어</th><th scope="col">2K/DL 레이어</th><th scope="col">레이어 정의 · 비고</th><th scope="col">근거</th></tr></thead><tbody>'+rows+'</tbody></table></div>'
         +'<ul class="rt-layer-notes"><li>Aquilon의 4K 레이어 하나는 2K(DL) 레이어 둘과 같고, 분할(split) 레이어로 쓰면 다시 2배가 됩니다.</li><li>NovaStar H의 값은 출력 카드 1매 기준이며 전역 합산이 아닙니다. 섀시 상한과 카드당 자원 중 작은 쪽이 실제 한도입니다.</li><li>Colorlight X100 Pro 사양서는 레이어를 해상도로 나누지 않아 4K와 2K 칸을 합쳐 적었습니다.</li></ul>'
-        +'<p class="rt-card-info-src">알티컴 종합 카탈로그 2026 (국문) 9쪽 · 출력 1개 4레이어 구성은 서울영상테크 확인(2026-10-12) · 포트 제한은 서울영상테크 확인(2026-10-13) · 커맨드 구조는 알티컴 회신(2026-10-13)·XDM 커맨드 가이드(1013판) 43~57쪽 · Analog Way Aquilon RS4 Technical Datasheet (AQL-RS4-EN-20260401) · AV Portal 제품 상세(Analog Way·NovaStar·Colorlight·Magnimage)</p></div>'
+        +'<p class="rt-card-info-src">알티컴 종합 카탈로그 2026 (국문) 9쪽 · 출력 1개 4레이어 구성은 서울영상테크 확인(2026-10-12) · 포트 조건(레이어를 쓰면 카드 4포트 같은 화면)은 알티컴 확인(2026-10-13) · 커맨드 구조는 알티컴 회신(2026-10-13)·XDM 커맨드 가이드(1013판) 43~57쪽 · Analog Way Aquilon RS4 Technical Datasheet (AQL-RS4-EN-20260401) · AV Portal 제품 상세(Analog Way·NovaStar·Colorlight·Magnimage)</p></div>'
         +'<div class="rt-card-modal-foot"><button type="button" class="rt-button" data-layer-close>닫기</button></div>';
       const opener=document.activeElement;
       const finish=()=>{if(dialog.open)dialog.close();dialog.remove();opener?.focus?.({preventScroll:true})};
@@ -623,9 +622,9 @@
     }
     function powerNotice(){
       const count=Object.values(state.links).filter(link=>link.device?.startsWith('XDM-CTR100 · ')).reduce((sum,link)=>sum+link.count,0);
-      // 0.72 XDM-PSU(사용자 결정 2026-09-28): CIS100·COS100에 연결한 CTR100은 XDM-PSU가 전원을 공급한다(POH는 Tx 1대당, PHX는 COS100 1장당).
+      // 0.72 XDM-PSU(사용자 결정 2026-09-28): CIS100·COS100에 연결한 CTR100은 XDM-PSU가 전원을 공급한다(POH는 Tx 1대당, PHX는 0.210부터 COS100 출력(Rx) 1대당).
       const power=count?RtCore.bom(state).filter(row=>row.category==='전원 장비'):[],qty=model=>power.find(row=>row.model.startsWith(model))?.quantity||0;
-      return count?`<div class="rt-power-notice"><span>전원 공급</span><div><strong>XDM-CTR100 ${count}대 · XDM-PSU로 전원 공급(개별 어댑터 불필요)</strong><p>XDM-PSU ${qty('XDM-PSU')}대 · XDM-POH ${qty('XDM-POH')}개(CIS100 → POH → CTR100 TX, TX 1대당 1개) · XDM-PHX ${qty('XDM-PHX')}개(PSU → 2핀 전원선 → COS100 → CAT → CTR100 RX, COS100 1장당 1개)를 BOM에 자동 추가했습니다. 매트릭스 카드 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다.</p></div></div>`:'';
+      return count?`<div class="rt-power-notice"><span>전원 공급</span><div><strong>XDM-CTR100 ${count}대 · XDM-PSU로 전원 공급(개별 어댑터 불필요)</strong><p>XDM-PSU ${qty('XDM-PSU')}대 · XDM-POH ${qty('XDM-POH')}개(CIS100 → POH → CTR100 TX, TX 1대당 1개) · XDM-PHX ${qty('XDM-PHX')}개(PSU → 2핀 전원선 → COS100 → CAT → CTR100 RX, COS100 출력 1포트당 1개)를 BOM에 자동 추가했습니다. 매트릭스 카드 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다.</p></div></div>`:'';
     }
     // 04 전송기(2-2, Analog Way 구조 — 시안 configurator-aw-style.html?step=4): 왼쪽 목록(카드별 묶음 제목+선택 행) | 오른쪽 고정 미리보기(세그먼트로 고른 슬롯의 연결 흐름).
     // 01/02와 같은 rt-cg-split/rt-cg-list/rt-cg-row/rt-cg-preview/rt-cg-dot/rt-cg-seg 틀을 그대로 쓰고, 이 화면에만 있는 모양(묶음 제목+채널 선택, 흐름 그림, 접이식 라인업)만 새로 더한다.
