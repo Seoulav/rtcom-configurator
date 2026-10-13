@@ -47,6 +47,17 @@ test('SPX-HOS10은 SPX-M810·M1620에만, 나머지 SPX 카드는 SPX 5종 모�
   for(const model of ['SPX-HIS8','SPX-HOS12','SPX-COS12'])assert.deepEqual(lineup.find(item=>item.model===model).compatibleFrames,frames,model);
 });
 
+test('288 프레임 카드 호환: XDM 카드는 XDM-288에만, VDM 카드는 VDM-288X에만(사용자 확인 2026-10-13, 0.213)',()=>{
+  for(const [id,frame,other] of [['xdm','XDM-288','VDM-288X'],['vdm','VDM-288X','XDM-288']]){
+    const cards=read(id).lineup.filter(item=>item.compatibleFrames);
+    assert.ok(cards.length>0,id);
+    for(const card of cards){
+      assert.ok(card.compatibleFrames.includes(frame),`${card.model}: ${frame}`);
+      assert.ok(!card.compatibleFrames.includes(other),`${card.model}: ${other} 없음`);
+    }
+  }
+});
+
 test('0.208에 미확인이던 단자는 모두 확인됨(0.210·0.212), SPX-R6는 모듈 칸 6개(shared)',()=>{
   const row=(id,model,connector)=>read(id).lineup.find(item=>item.model===model).io.find(item=>item.connector.startsWith(connector));
   // 0.210 COS100 전원은 출력마다 XDM-PHX 1개로 확인됨(알티컴 확인, 사용자 전달 2026-10-13)
