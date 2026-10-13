@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.212.0 배포 기록**: `docs/qa/DEPLOYMENT_0.212_2026-10-13.md`(PR #322 → main 병합, Pages 배포 run 38403754707, 공개 JSON 288 프레임 슬롯·미확인 0건 확인)
 - **0.211.0 배포 기록**: `docs/qa/DEPLOYMENT_0.211_2026-10-13.md`(PR #320 → main 병합, Pages 배포 run 38374562902)
 - **0.210.0 배포 기록**: `docs/qa/DEPLOYMENT_0.210_2026-10-13.md`(PR #318 → main 병합, Pages 배포 run 38367380853, 공개 JSON 새 값 확인)
 - **0.209.0 배포 기록**: `docs/qa/DEPLOYMENT_0.209_2026-10-13.md`(PR #315 → main 병합, Pages 배포 run 38361701084, 커맨드 가이드 PDF 공개 확인)
