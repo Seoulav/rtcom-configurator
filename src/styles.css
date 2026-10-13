@@ -1423,6 +1423,13 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-wos-lead{margin:-2px 0 0;font-size:12.5px;line-height:1.45;color:#56627a}
 #rtcom-design .rt-wos-order{display:flex;align-items:center;gap:5px;font-size:10.5px;color:#6b7280}#rtcom-design .rt-wos-order ol{list-style:none;margin:0;padding:0;display:flex;gap:3px}
 #rtcom-design .rt-wos-order li{display:grid;place-items:center;width:22px;height:20px;border-radius:6px;color:#fff;font-size:11px;font-weight:800}
+#rtcom-design .rt-hos-port-main{background:#e8f0ff;color:#2448a8}#rtcom-design .rt-hos-port-free{background:#e7f6ec;color:#1e7a3c}
+/* 0.209 XDM 커맨드 가이드 링크·WOS100 LED 모드/로고·HOS100 커맨드 레이아웃 표 */
+#rtcom-design .rt-cmd-guide{margin:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;font-size:12.5px;color:#56627a}#rtcom-design .rt-cmd-guide>span{font-weight:800;color:var(--rt-ink)}
+#rtcom-design .rt-cmd-guide a{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:999px;background:#eef4ff;color:#1d4fb8;font-weight:700;text-decoration:none;box-shadow:inset 0 0 0 1px #c9d9f6}#rtcom-design .rt-cmd-guide a small{font-weight:600;color:#5b6b85}#rtcom-design .rt-cmd-guide a:hover,#rtcom-design .rt-cmd-guide a:focus-visible{background:#dfeaff}
+#rtcom-design .rt-wos-feats{display:grid;grid-template-columns:2fr 1fr;gap:8px}@media(max-width:560px){#rtcom-design .rt-wos-feats{grid-template-columns:1fr}}
+#rtcom-design .rt-wos-feats>div{padding:11px 13px;border-radius:14px;background:linear-gradient(135deg,#eef6fd,#f3f1ff);box-shadow:inset 0 0 0 1px #d6e4f5}#rtcom-design .rt-wos-feats strong{display:block;margin-bottom:3px;font-size:13px;color:#1c4f8a}#rtcom-design .rt-wos-feats p{margin:0;font-size:12.5px;line-height:1.5;color:#3b4658}
+#rtcom-design .rt-hos-cmd th[scope="row"]{width:86px;white-space:nowrap;font-variant-numeric:tabular-nums}
 #rtcom-design .rt-wos-tiled{margin:0;font-size:11px;color:#6b7280}
 /* 0.207 WOS100 레이어 구성도: 휴대폰 폭에서는 가로 스크롤 대신 위 → 아래 세로 그림을 보여 준다 */
 #rtcom-design .rt-layer-figure .rt-layer-svg-tall{display:none}@media(max-width:640px){#rtcom-design .rt-layer-figure .rt-layer-svg-wide{display:none}#rtcom-design .rt-layer-figure .rt-layer-svg-tall{display:block;min-width:0}}

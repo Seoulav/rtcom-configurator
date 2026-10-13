@@ -8,6 +8,7 @@
 
 **전체 카탈로그(2026-09-28, 0.95.0):** `rtcom-catalog-2026.pdf`(46쪽판, 사용자 결정 "전체 카탈로그 공개해도 돼"). 29개 제품의 카탈로그 버튼이 이 파일을 함께 쓰고 `page`로 제품 쪽을 엽니다. 새 판이 나오면 같은 이름으로 덮어쓰고, 쪽 번호가 바뀌면 각 제품의 `page`·`catalogPages`도 고칩니다. 제품별 발췌본을 올리면 그 제품만 발췌본으로 바꿉니다.
 **SPX 자료(2026-09-29, 0.157.0):** 사용자 결정으로 `spx-r6-catalog.pdf`(SPX-R6 제품 사양서 1쪽)·`spx-manual.pdf`(SPX 시리즈 사용자 매뉴얼 250805, 54쪽)·`spx-rx-tx-manual.pdf`(SPX-TX/RX 매뉴얼 Ver.2.0, 13쪽)를 추가로 공개합니다. SPX 카탈로그(2023)는 근거 자료로만 쓰고 공개하지 않습니다.
+**XDM 커맨드 가이드(2026-10-13, 0.209.0):** 사용자 결정("공개 진행")으로 `xdm-command-guide.pdf`(알티컴 XDM 시리즈 Command Guide 국문 1013판, 73쪽)를 공개합니다. 문서 속성의 작성자·프로그램 정보와 XMP를 지운 사본입니다. 새 판이 오면 같은 이름으로 덮어쓰고 XDM 제품 상세의 문서 제목과 WOS100·HOS100 팝업 쪽 번호를 확인합니다.
 구조 설명은 `docs/implementation/PRODUCT_DOCUMENT_DOWNLOADS.md`에 있습니다.
 
 ## 올리는 방법 (GitHub 웹)
@@ -61,4 +62,4 @@
 | XDM-CTR100 | `xdm-ctr100-catalog.pdf` | `xdm-ctr100-manual.pdf` |
 | XDM-FT101 / XDM-FR101 | `xdm-ft101-fr101-catalog.pdf` | `xdm-ft101-fr101-manual.pdf` |
 | XDM-PSU | `xdm-psu-catalog.pdf` | `xdm-psu-manual.pdf` |
-| XDM Series | `xdm-catalog.pdf` | `xdm-manual.pdf` |
+| XDM Series | `xdm-catalog.pdf` | `xdm-manual.pdf`, 커맨드 가이드 `xdm-command-guide.pdf` |
