@@ -42,6 +42,27 @@ test('Stop: 마지막 사용자 입력 뒤의 마지막 답변만 보고, 다시
   assert.equal(hook.handle({ hook_event_name: 'Stop', stop_hook_active: false, transcript_path: fresh }), null);
 });
 
+test('Stop: 마지막 답변이 한국어여도 이번 요청 중 영어 진행 안내가 있으면 막음(0.214)', () => {
+  const mixed = transcript([
+    { type: 'user', message: { content: '요청' } },
+    say('PR is up, and the automatic checks are running. Meanwhile I am checking the code that draws the popup diagram.'),
+    { type: 'user', message: { content: [{ type: 'tool_result', content: 'ok' }] } },
+    say('병합과 배포를 마쳤습니다. 공개 주소에서 새 버전을 확인했습니다.')
+  ]);
+  assert.deepEqual(hook.turnAssistantTexts(mixed).length, 2);
+  const blocked = hook.handle({ hook_event_name: 'Stop', stop_hook_active: false, transcript_path: mixed });
+  assert.equal(blocked.decision, 'block');
+  assert.match(blocked.reason, /진행 안내가 1건/);
+  assert.equal(hook.handle({ hook_event_name: 'Stop', stop_hook_active: true, transcript_path: mixed }), null);
+  const before = transcript([
+    say('An old English progress note from the previous request, which should not be counted any more.'),
+    { type: 'user', message: { content: '새 요청' } },
+    say('중간 안내입니다.'),
+    say('작업을 마쳤습니다.')
+  ]);
+  assert.equal(hook.handle({ hook_event_name: 'Stop', stop_hook_active: false, transcript_path: before }), null);
+});
+
 test('UserPromptSubmit: 한국어 규칙 알림을 문맥에 넣음', () => {
   const out = hook.handle({ hook_event_name: 'UserPromptSubmit', prompt: 'x' });
   assert.equal(out.hookSpecificOutput.hookEventName, 'UserPromptSubmit');

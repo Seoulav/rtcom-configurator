@@ -10,11 +10,12 @@ const read=id=>JSON.parse(fs.readFileSync(`data/products/${id}.json`,'utf8'));
 const ids=new Set(fs.readdirSync('data/products').filter(name=>name.endsWith('.json')&&name!=='index.json').map(name=>name.replace(/\.json$/,'')));
 const SERIES={XDM:'xdm',SPX:'spx',VDM:'vdm'};
 
-test('메인프레임 slots는 매뉴얼 값(구성기 slotPlan)과 같고, 구성기에 없는 XDM-288·VDM-288X는 사용자 확인 72·72(0.212)',()=>{
+test('메인프레임 slots는 매뉴얼 값(구성기 slotPlan)과 같고, 구성기에 없는 VDM-288X는 사용자 확인 72·72(0.212)',()=>{
   for(const [family,id] of Object.entries(SERIES)){
     for(const entry of read(id).lineup.filter(item=>item.kind==='메인프레임')){
       const plan=core.slotPlan(family,entry.model);
-      // 0.212 XDM-288·VDM-288X: 주문 생산, 카드 1장 = 4채널이라 288 ÷ 4 = 72(서울영상테크 확인 2026-10-13). 구성기에는 넣지 않음
+      // 0.212 VDM-288X: 주문 생산, 카드 1장 = 4채널이라 288 ÷ 4 = 72(서울영상테크 확인 2026-10-13). 구성기에는 넣지 않음
+      // 0.214 XDM-288은 공개 라인업에서 뺐다(사용자 확인 2026-10-13 "xdm-216프레임이 가장 큰거야 더 이상은 없어")
       if(!plan){assert.deepEqual([entry.slots.input,entry.slots.output],[72,72],entry.model);assert.match(entry.slots.source,/^U/,entry.model);assert.match(entry.summary,/주문 생산/,entry.model);continue}
       assert.deepEqual([entry.slots.input,entry.slots.output],plan,entry.model);
       assert.equal(entry.slots.verification,'VERIFIED',entry.model);
@@ -24,7 +25,8 @@ test('메인프레임 slots는 매뉴얼 값(구성기 slotPlan)과 같고, 구�
   const missing=Object.values(SERIES).flatMap(id=>read(id).lineup.filter(item=>item.kind==='메인프레임'&&!item.slots).map(item=>item.model));
   assert.deepEqual(missing,[]);
   const noPlan=Object.entries(SERIES).flatMap(([family,id])=>read(id).lineup.filter(item=>item.kind==='메인프레임'&&!core.slotPlan(family,item.model)).map(item=>item.model));
-  assert.deepEqual(noPlan,['XDM-288','VDM-288X'],'구성기에 없는 프레임은 두 288 모델뿐');
+  assert.deepEqual(noPlan,['VDM-288X'],'구성기에 없는 프레임은 VDM-288X뿐');
+  assert.ok(!JSON.stringify(read('xdm').lineup).includes('XDM-288'),'XDM-288은 라인업·호환 프레임에 없음(0.214)');
 });
 
 test('구성기 카드마다 slotType·compatibleFrames·io가 있고, 첫 단자 수량이 구성기 채널 수와 같음',()=>{
@@ -47,8 +49,9 @@ test('SPX-HOS10은 SPX-M810·M1620에만, 나머지 SPX 카드는 SPX 5종 모�
   for(const model of ['SPX-HIS8','SPX-HOS12','SPX-COS12'])assert.deepEqual(lineup.find(item=>item.model===model).compatibleFrames,frames,model);
 });
 
-test('288 프레임 카드 호환: XDM 카드는 XDM-288에만, VDM 카드는 VDM-288X에만(사용자 확인 2026-10-13, 0.213)',()=>{
-  for(const [id,frame,other] of [['xdm','XDM-288','VDM-288X'],['vdm','VDM-288X','XDM-288']]){
+test('288 프레임 카드 호환: VDM 카드는 VDM-288X에(사용자 확인 2026-10-13, 0.213), XDM 카드에는 288 프레임 없음(0.214)',()=>{
+  for(const card of read('xdm').lineup.filter(item=>item.compatibleFrames))assert.ok(!card.compatibleFrames.some(f=>f.includes('288')),card.model);
+  for(const [id,frame,other] of [['vdm','VDM-288X','XDM-288']]){
     const cards=read(id).lineup.filter(item=>item.compatibleFrames);
     assert.ok(cards.length>0,id);
     for(const card of cards){
@@ -85,7 +88,7 @@ test('검증 스크립트가 잘못된 슬롯·카드 데이터를 잡음',()=>{
   assert.match(errorsFor(p=>{entry(p,'XDM-12').slots.rows=2}),/정하지 않은 키: rows/);
   assert.match(errorsFor(p=>{entry(p,'XDM-12').slots.source='Z'}),/slots\.source\(Z\)/);
   assert.match(errorsFor(p=>{entry(p,'XDM-HIS100').slotType='output'}),/slotType\(output\)/);
-  assert.match(errorsFor(p=>{entry(p,'XDM-288').slots.input=0}),/XDM-288에 input 슬롯이 없음/);
+  assert.match(errorsFor(p=>{entry(p,'XDM-216').slots.input=0}),/XDM-216에 input 슬롯이 없음/);
   assert.match(errorsFor(p=>{entry(p,'XDM-HIS100').compatibleFrames.push('SPX-M810')}),/같은 시리즈 메인프레임에 없음/);
   assert.match(errorsFor(p=>{entry(p,'XDM-HIS100').io[0].direction='INOUT'}),/direction 값/);
   assert.match(errorsFor(p=>{entry(p,'XDM-HIS100').io[0].quantity='네 개'}),/quantity/);
