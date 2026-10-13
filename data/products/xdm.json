@@ -92,6 +92,17 @@
       "language": "ko",
       "note": "사용자 제공 매뉴얼 공개본(2026-09-28, 사용자 결정 \"1번\" — 매뉴얼 전부 공개)",
       "file": "xdm-manual.pdf",
+      "preview": "pdfjs",
+      "label": "매뉴얼"
+    },
+    {
+      "type": "Manual",
+      "status": "FOUND",
+      "title": "XDM 시리즈 Command Guide(국문, 1013판)",
+      "language": "ko",
+      "note": "알티컴 제공 커맨드 가이드 공개본(2026-10-13 사용자 결정 \"공개 진행\", 문서 속성의 작성자 정보 삭제)",
+      "file": "xdm-command-guide.pdf",
+      "label": "커맨드 가이드",
       "preview": "pdfjs"
     }
   ],
@@ -169,6 +180,30 @@
     {
       "text": "EDID, HDCP 2.2 지원",
       "source": "C"
+    },
+    {
+      "text": "입출력 Genlock 지원(입력: XDM-HIS100 딥 스위치 1번, 출력: 전면 메뉴 Genlock에서 타이밍·출력 포트 선택)",
+      "source": "U4"
+    },
+    {
+      "text": "입력·출력 OSD 자막 지원(포트마다 최대 20자 문자·타임코드, 글자 크기 1·2·4배, 커맨드)",
+      "source": "G"
+    },
+    {
+      "text": "XDM-HOS100 멀티뷰 레이아웃 14종(쿼드뷰·PIP·PBP 16:9·사용자 배치) 커맨드 지원",
+      "source": "G"
+    },
+    {
+      "text": "XDM-WOS100 LED 모드 지원(출력 포트마다 LED 픽셀을 지정해 비표준 해상도 LED 화면 구동), 로고 이미지 출력",
+      "source": "G"
+    },
+    {
+      "text": "출력 화질(밝기·색조·채도·명암)·화면 크롭과 확대·비디오 월 베젤 보정 지원(커맨드)",
+      "source": "G"
+    },
+    {
+      "text": "입출력 프리즈·블랙·출력 끄기, CEC 디스플레이 전원 제어, 스위칭 프리셋 20개, 시스템 잠금 지원(커맨드)",
+      "source": "G"
     }
   ],
   "specifications": [
@@ -918,6 +953,18 @@
       "name": "서울영상테크 SI사업본부 확인",
       "page": "",
       "scope": "사용자 확인(2026-09-28 \"COS PHNIX픽에 전원연결\") — XDM-COS100 피닉스 단자로 XDM-PSU의 XDM-PHX 전원을 받음(카드 1장당 PHX 1개)"
+    },
+    {
+      "code": "U4",
+      "name": "알티컴 기술 회신",
+      "page": "",
+      "scope": "알티컴 회신(2026-10-13) — XDM-HIS100 딥 스위치 1번 입력 Genlock, 출력 Genlock 설정 위치(전면 메뉴), 멀티뷰·레이어 커맨드(레이어마다 입력·위치·크기·겹침 순서·출력 포트 자원 지정)"
+    },
+    {
+      "code": "G",
+      "name": "XDM 시리즈 Command Guide(국문, 1013판)",
+      "page": "11~13·17~31·40~44·56~57·66~69",
+      "scope": "제조사 공식 출처 — 공개본 xdm-command-guide.pdf, 인쇄 쪽 번호 기준"
     }
   ],
   "issues": [
