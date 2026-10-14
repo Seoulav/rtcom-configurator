@@ -79,6 +79,15 @@
       "previewImages": [
         "ct101-u-cr101-u-catalog-p1.webp"
       ]
+    },
+    {
+      "type": "Manual",
+      "status": "FOUND",
+      "title": "CT101-U / CR101-U 사용자 매뉴얼 Ver.1.0",
+      "language": "ko",
+      "note": "알티컴 사용자 매뉴얼 PDF(사용자가 Word에서 저장해 제공 2026-10-14) 공개본, 문서 속성의 작성자·프로그램 정보 삭제",
+      "file": "ct101-u-cr101-u-manual.pdf",
+      "preview": "pdfjs"
     }
   ],
   "officialLinks": [
@@ -101,8 +110,12 @@
       "source": "C"
     },
     {
-      "text": "DVI/HDMI(TMDS)·3.5mm 스테레오 오디오 입력 지원(CT101-U)",
-      "source": "C"
+      "text": "DVI/HDMI 입력, 3.5mm 아날로그 오디오 병합 지원(CT101-U, 입력이 DVI 신호일 때)",
+      "source": "M"
+    },
+    {
+      "text": "VDM 매트릭스 CIS4-U(CT101-U)·COS4-U(CR101-U) 카드 연동 지원",
+      "source": "M"
     }
   ],
   "specifications": [
@@ -181,19 +194,10 @@
     {
       "group": "General",
       "name": "규격",
-      "value": "DVI 1.0, HDMI 1.4b, HDBaseT",
-      "unit": "",
-      "condition": "CT101-U",
-      "source": "C",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "General",
-      "name": "규격",
       "value": "HDMI 1.4, HDBaseT",
       "unit": "",
-      "condition": "CR101-U",
-      "source": "C",
+      "condition": "",
+      "source": "M",
       "verification": "VERIFIED"
     },
     {
@@ -208,10 +212,10 @@
     {
       "group": "Power",
       "name": "전원",
-      "value": "DC +12V 2A",
+      "value": "DC +12V 1A 이상",
       "unit": "",
       "condition": "",
-      "source": "C",
+      "source": "M",
       "verification": "VERIFIED"
     },
     {
@@ -270,8 +274,8 @@
       "direction": "IN",
       "quantity": "1",
       "protocol": "",
-      "condition": "CT101-U",
-      "source": "C",
+      "condition": "CT101-U · HDMI 신호에 병합(입력이 DVI 신호일 때)",
+      "source": "M",
       "verification": "VERIFIED"
     },
     {
@@ -287,13 +291,24 @@
     },
     {
       "group": "TX · Control",
-      "connector": "피닉스(녹색, 핀 수 미기재)",
+      "connector": "피닉스 3핀",
       "signal": "RS-232",
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
-      "condition": "CT101-U · 커넥터 핀 수 미기재",
-      "source": "C",
+      "condition": "CT101-U · RS-232",
+      "source": "M",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "TX · Control",
+      "connector": "USB",
+      "signal": "Firmware",
+      "direction": "BIDIR",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "CT101-U · 펌웨어 업데이트용 시리얼 포트",
+      "source": "M",
       "verification": "VERIFIED"
     },
     {
@@ -331,13 +346,24 @@
     },
     {
       "group": "RX · Control",
-      "connector": "피닉스(녹색, 핀 수 미기재)",
+      "connector": "피닉스 3핀",
       "signal": "RS-232",
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
-      "condition": "CR101-U · 커넥터 핀 수 미기재",
-      "source": "C",
+      "condition": "CR101-U · RS-232",
+      "source": "M",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Control",
+      "connector": "USB",
+      "signal": "Firmware",
+      "direction": "BIDIR",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "CR101-U · 펌웨어 업데이트용 시리얼 포트",
+      "source": "M",
       "verification": "VERIFIED"
     }
   ],
@@ -356,7 +382,7 @@
         {
           "n": 6,
           "label": "DC IN",
-          "desc": "전원 입력 +12V 2A(3핀 터미널)",
+          "desc": "전원 입력 +12V 1A 이상(3핀 터미널)",
           "x1": 68,
           "x2": 111,
           "side": "bottom",
@@ -374,7 +400,7 @@
         {
           "n": 2,
           "label": "AUDIO IN",
-          "desc": "3.5mm 스테레오 오디오 입력",
+          "desc": "3.5mm 스테레오 오디오 입력(DVI 입력일 때 병합)",
           "x1": 276,
           "x2": 296,
           "side": "bottom",
@@ -425,7 +451,7 @@
         {
           "n": 6,
           "label": "DC IN",
-          "desc": "전원 입력 +12V 2A(3핀 터미널)",
+          "desc": "전원 입력 +12V 1A 이상(3핀 터미널)",
           "x1": 70,
           "x2": 112,
           "side": "bottom",
@@ -500,6 +526,12 @@
       "name": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
       "page": "21",
       "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
+    },
+    {
+      "code": "M",
+      "name": "CT101-U / CR101-U 사용자 매뉴얼 Ver.1.0 (알티컴, 2026-10-07판)",
+      "page": "4–11",
+      "scope": "사용자 제공(2026-10-14) — HDMI 1.4·HDBaseT, HDCP v1.x, DC +12V 1A 이상, RS-232 피닉스 3핀, USB 펌웨어 포트, 오디오 병합은 DVI 입력일 때, VDM CIS4-U·COS4-U 연동. CR101-U 무게는 매뉴얼 0.23kg이 송신기 칸 복사로 보여 카탈로그 0.27kg 유지(사용자 결정 2026-10-14)"
     }
   ],
   "issues": []

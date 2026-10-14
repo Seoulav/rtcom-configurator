@@ -85,7 +85,9 @@
       "status": "FOUND",
       "title": "FT-103-U-H / FR-103-U 사용자 매뉴얼 Ver.1.4",
       "language": "ko",
-      "note": "4–11쪽 · 사용자 제공, 배포 제외"
+      "note": "알티컴 사용자 매뉴얼 PDF(사용자가 Word에서 저장해 제공 2026-10-14) 공개본, 문서 속성의 작성자·프로그램 정보 삭제 · 2026-10-07 개정판, 기존 근거 M1과 같은 값",
+      "file": "ft103-u-h-fr103-u-manual.pdf",
+      "preview": "pdfjs"
     }
   ],
   "officialLinks": [
@@ -235,10 +237,10 @@
     {
       "group": "Power",
       "name": "전원",
-      "value": "DC +12V 2A",
+      "value": "DC +12V 1A 이상",
       "unit": "",
-      "condition": "DC +12V 1A 이상",
-      "source": "C",
+      "condition": "",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {

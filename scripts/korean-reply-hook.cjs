@@ -5,6 +5,9 @@
 // - Stop: 답변을 끝내기 직전에 마지막 답변의 한글 비율을 재고, 대부분 영어면 끝내지 못하게 막아 한국어로 다시 쓰게 한다.
 //   0.214(사용자 지시 2026-10-13 "너의 모든 프로세싱과정을 한글로 해야하는 것 고정으로 명시했다 또 영어가 나온다"): 마지막 답변만이 아니라
 //   이번 요청 뒤에 쓴 중간 진행 안내도 모두 잰다. 영어 안내가 하나라도 있으면 끝내지 못하게 막고, 그 내용을 한국어로 다시 정리하게 한다.
+// - PreToolUse(0.215, 사용자 지시 2026-10-14 "진행과정은 한글로 해줘 계속 규칙을 어긴대"): 도구를 실행하기 직전에 이번 요청에서 가장 최근에 쓴
+//   진행 안내를 잰다. 영어면 그 도구 실행을 막아(deny) 같은 안내를 한국어로 다시 쓰고 나서 실행하게 한다. 끝날 때만 검사하던 Stop 훅은
+//   이미 화면에 나간 영어 안내를 뒤늦게 잡을 뿐이라, 작업 중에 바로 멈추게 하려고 더했다. 한국어로 다시 쓰면 가장 최근 안내가 바뀌어 통과한다.
 //   다시 쓰는 중(stop_hook_active)에는 막지 않아 무한 반복이 생기지 않는다.
 // 어떤 오류가 나도 세션을 막지 않도록 조용히 종료 코드 0으로 끝낸다.
 const fs = require('node:fs');
@@ -96,6 +99,22 @@ function handle(input) {
   const event = input.hook_event_name;
   if (event === 'UserPromptSubmit') {
     return { hookSpecificOutput: { hookEventName: 'UserPromptSubmit', additionalContext: REMINDER } };
+  }
+  if (event === 'PreToolUse') {
+    let texts = [];
+    try { texts = input.transcript_path ? turnAssistantTexts(input.transcript_path) : []; } catch { texts = []; }
+    const latest = texts[texts.length - 1] || '';
+    const result = isEnglishReply(latest);
+    if (!result.english) return null;
+    const sample = prose(latest).replace(/\s+/g, ' ').trim().slice(0, 60);
+    return {
+      hookSpecificOutput: {
+        hookEventName: 'PreToolUse',
+        permissionDecision: 'deny',
+        permissionDecisionReason: `직전 진행 안내가 영어입니다(한글 비율 ${Math.round(result.ratio * 100)}%, "${sample}…"). `
+          + '사용자 지시("처리 과정은 반드시 한국어로")에 따라 같은 안내를 한국어로 다시 쓴 뒤 이 작업을 다시 실행하세요.'
+      }
+    };
   }
   if (event === 'Stop' || event === 'SubagentStop') {
     if (input.stop_hook_active) return null;
