@@ -63,6 +63,28 @@ test('Stop: 마지막 답변이 한국어여도 이번 요청 중 영어 진행 
   assert.equal(hook.handle({ hook_event_name: 'Stop', stop_hook_active: false, transcript_path: before }), null);
 });
 
+test('PreToolUse: 이번 요청의 가장 최근 진행 안내가 영어면 도구 실행을 막고, 한국어로 다시 쓰면 통과(0.215)', () => {
+  const english = transcript([
+    { type: 'user', message: { content: '요청' } },
+    say('작업 상태를 확인하겠습니다.'),
+    { type: 'user', message: { content: [{ type: 'tool_result', content: 'ok' }] } },
+    say('Now I will check the deployment status and then merge the pull request once the checks pass.')
+  ]);
+  const denied = hook.handle({ hook_event_name: 'PreToolUse', tool_name: 'Bash', transcript_path: english });
+  assert.equal(denied.hookSpecificOutput.permissionDecision, 'deny');
+  assert.match(denied.hookSpecificOutput.permissionDecisionReason, /한국어로 다시/);
+  const rewritten = transcript([
+    { type: 'user', message: { content: '요청' } },
+    say('Now I will check the deployment status and then merge the pull request once the checks pass.'),
+    say('배포 상태를 확인한 뒤 검사가 통과하면 PR을 병합하겠습니다.')
+  ]);
+  assert.equal(hook.handle({ hook_event_name: 'PreToolUse', tool_name: 'Bash', transcript_path: rewritten }), null);
+  const codeOnly = transcript([{ type: 'user', message: { content: '요청' } }, say('```bash\nnode scripts/package-site.cjs && git status --short\n```')]);
+  assert.equal(hook.handle({ hook_event_name: 'PreToolUse', tool_name: 'Bash', transcript_path: codeOnly }), null);
+  const none = transcript([{ type: 'user', message: { content: '요청' } }]);
+  assert.equal(hook.handle({ hook_event_name: 'PreToolUse', tool_name: 'Read', transcript_path: none }), null);
+});
+
 test('UserPromptSubmit: 한국어 규칙 알림을 문맥에 넣음', () => {
   const out = hook.handle({ hook_event_name: 'UserPromptSubmit', prompt: 'x' });
   assert.equal(out.hookSpecificOutput.hookEventName, 'UserPromptSubmit');
@@ -72,7 +94,7 @@ test('UserPromptSubmit: 한국어 규칙 알림을 문맥에 넣음', () => {
 test('.claude/settings.json이 두 훅과 language를 연결함', () => {
   const settings = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '.claude', 'settings.json'), 'utf8'));
   assert.equal(settings.language, 'korean');
-  for (const event of ['UserPromptSubmit', 'Stop']) {
+  for (const event of ['UserPromptSubmit', 'Stop', 'PreToolUse']) {
     assert.ok(settings.hooks[event].some(group => group.hooks.some(h => h.command.includes('scripts/korean-reply-hook.cjs'))), event);
   }
 });
