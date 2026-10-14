@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.218.0 배포 기록**: `docs/qa/DEPLOYMENT_0.218_2026-10-14.md`(PR #332 → main 병합, Pages 배포 run 38650420464, 공개 spx.json 터치스크린 6곳 확인)
 - **0.215.0 배포 기록**: `docs/qa/DEPLOYMENT_0.215_2026-10-14.md`(PR #327 → main 병합, Pages 배포 run 38499900527, 매뉴얼 PDF 7건 공개 확인)
 - **0.214.0 배포 기록**: `docs/qa/DEPLOYMENT_0.214_2026-10-13.md`(PR #325 → main 병합, Pages 배포 run 38478903226, 공개 xdm.json XDM-288 0건 확인)
 - **0.213.0 배포 기록**: `docs/qa/DEPLOYMENT_0.213_2026-10-13.md`(PR #324 → main 병합, Pages 배포 run 38477535678)
