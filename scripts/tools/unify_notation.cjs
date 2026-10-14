@@ -34,7 +34,9 @@ function fix(s){
   // 6) 단위 붙여 쓰기
   t=t.replace(/(\d) (Gbps|Mbps|VDC|VAC|kHz|MHz|Hz|mA)\b/g,'$1$2').replace(/(\d) (V|A|W)\b(?![-/])/g,'$1$2');
   // 7) 소수 표기 정리
-  t=t.replace(/CAT6a/g,'CAT6A').replace(/HDCP 1\.X/g,'HDCP 1.x').replace(/\bRS232(C?)\b/g,'RS-232$1').replace(/DIP ?스위치/g,'딥 스위치');
+  t=t.replace(/CAT6a/g,'CAT6A').replace(/HDCP 1\.X/g,'HDCP 1.x').replace(/\bRS232(C?)\b/g,'RS-232$1').replace(/DIP ?스위치/g,'딥 스위치')
+    // 0.218(사용자 결정 2026-10-14): SPX 화면 크기 표기 Touch Screen → 터치스크린, 분배기 오디오 '출력에 믹스' → '출력에 병합'
+    .replace(/Touch Screen/g,'터치스크린').replace(/출력(\([^)]*\))?에 믹스/g,'출력$1에 병합');
   return particle(t);
 }
 // JS 소스: 따옴표 안 문자열만 바꾼다(주석은 그대로).

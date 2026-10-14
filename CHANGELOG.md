@@ -70,6 +70,12 @@
 - **0.145.0 배포 기록**: `docs/qa/DEPLOYMENT_0.145_2026-09-29.md`(PR #194 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.144.0 배포 기록**: `docs/qa/DEPLOYMENT_0.144_2026-09-29.md`(PR #192 → main 병합, Pages 배포 run 162, 공개 파일 337/338 일치, `.nojekyll` 제외)
 
+## 0.218.0
+
+- **0.189 용어 검토 행 결정(사용자 결정 2026-10-14):** HD-13U·HD-210U의 오디오 "믹스" 3곳을 다른 제품과 같은 "병합"으로, SPX 시리즈의 "Touch Screen" 6곳(05 주요 기능·메인프레임 5종 요약)을 "터치스크린"으로 바꿨습니다. QMS-88UX 모드명(QUAD 등)과 "Fiber Optical Input"·"Pass-Through" 같은 짧은 영문 사양 값은 원문대로 둡니다.
+- **표기 검사 규칙 추가:** `scripts/tools/unify_notation.cjs`가 `Touch Screen`과 "출력에 믹스"를 바뀔 곳으로 알려 줍니다.
+- 근거: `docs/implementation/TERMS_REVIEW_DECISIONS_0.218.md`
+
 ## 0.217.0
 
 - **MR-4S 장착 모듈 정정(사용자 확인 2026-10-14):** MR-4S 슬롯에는 CT104-U/CR104-U(CATx)와 FT101-U/FR101-U(광) 카드를 꽂는 것으로 바꿨습니다. 기존 XDM-CTR100·XDM-FT101/FR101 표기와 관련 제품 연결을 이 이름으로 바꿨습니다.
