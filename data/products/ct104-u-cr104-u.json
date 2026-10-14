@@ -86,7 +86,7 @@
       "status": "FOUND",
       "title": "CT104-U / CR104-U 사용자 매뉴얼 Ver.1.0",
       "language": "ko",
-      "note": "알티컴 사용자 매뉴얼 DOCX(사용자 제공 2026-10-14)를 PDF로 변환한 공개본(사용자 결정 \"제가 PDF로 변환\")",
+      "note": "알티컴 사용자 매뉴얼 PDF(사용자가 Word에서 저장해 제공 2026-10-14) 공개본, 문서 속성의 작성자·프로그램 정보 삭제",
       "file": "ct104-u-cr104-u-manual.pdf",
       "preview": "pdfjs"
     }
