@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.218.0 배포 기록**: `docs/qa/DEPLOYMENT_0.218_2026-10-14.md`(PR #332 → main 병합, Pages 배포 run 38650420464, 공개 spx.json 터치스크린 6곳 확인)
 - **0.215.0 배포 기록**: `docs/qa/DEPLOYMENT_0.215_2026-10-14.md`(PR #327 → main 병합, Pages 배포 run 38499900527, 매뉴얼 PDF 7건 공개 확인)
 - **0.214.0 배포 기록**: `docs/qa/DEPLOYMENT_0.214_2026-10-13.md`(PR #325 → main 병합, Pages 배포 run 38478903226, 공개 xdm.json XDM-288 0건 확인)
 - **0.213.0 배포 기록**: `docs/qa/DEPLOYMENT_0.213_2026-10-13.md`(PR #324 → main 병합, Pages 배포 run 38477535678)
@@ -69,6 +70,12 @@
 - **0.146.0 배포 기록**: `docs/qa/DEPLOYMENT_0.146_2026-09-29.md`(PR #195 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.145.0 배포 기록**: `docs/qa/DEPLOYMENT_0.145_2026-09-29.md`(PR #194 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.144.0 배포 기록**: `docs/qa/DEPLOYMENT_0.144_2026-09-29.md`(PR #192 → main 병합, Pages 배포 run 162, 공개 파일 337/338 일치, `.nojekyll` 제외)
+
+## 0.219.0
+
+- **03 카드 슬롯 시안 C(사용자 결정 2026-10-14 "C만 진행"):** 후면 장착 슬롯 태그에 매트릭스 채널 범위를 붙였습니다(`IN 2 | CIS100 | CH 5–8`, ② 신호 입력 표와 같은 번호 규칙). 내 구성의 슬롯 완성도 막대를 슬롯마다 한 칸(카드 칸은 신호 색, 블랭크 회색, 빈칸 흰색)으로 나누고, 카드와 함께 연결한 전송기를 "연동 전송기" 묶음(`CIS100 IN 2 → XDM-CTR100 · TX × 4`)으로 보여 줍니다.
+- 저장 형식(LocalStorage key, schema 3)은 그대로입니다.
+- 근거: `docs/implementation/CARD_SLOT_PLAN_C_0.219.md`, 화면 캡처 `docs/qa/card-slot-plan-c-0.219/`
 
 ## 0.218.0
 
