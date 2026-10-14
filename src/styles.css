@@ -1469,3 +1469,21 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 /* 0.205 제품정보 02 신호 구성: 눌러서 기능 팝업을 여는 WOS100·HOS100 칸 */
 #rtcom-design .rt-pg-sig-feature{cursor:pointer;outline:none}#rtcom-design .rt-pg-sig-feature:hover .rt-pg-sig-pill{fill-opacity:.26}#rtcom-design .rt-pg-sig-feature:focus-visible .rt-pg-sig-pill{stroke-width:3.2}
 #rtcom-design .rt-pg-legend .rt-pg-legend-feature{color:#2f5fd0;font-weight:700}#rtcom-design .rt-pg-legend .rt-pg-legend-feature i{display:inline-grid;place-items:center;width:14px;height:14px;border-radius:50%;background:#3978ee;color:#fff;font-style:normal;font-size:11px;line-height:1;vertical-align:-2px}
+/* 0.219 시안 C(사용자 선택 2026-10-14 "C만 진행"): 장착 슬롯 태그의 채널 범위(CH 5–8), 슬롯마다 한 칸인 신호 색 완성도 막대, 내 구성 연동 전송기 묶음 */
+#rtcom-design .rt-slot-tag .rt-slot-tag-ch{display:flex;align-items:center;padding:2px 4px;background:#0d1117e0;color:#fff;font-size:10px;font-weight:700;letter-spacing:-.02em;white-space:nowrap}
+#rtcom-design .rt-rack-vs .rt-slot-tag .rt-slot-tag-ch,#rtcom-design .rt-rack-vt .rt-slot-tag .rt-slot-tag-ch{padding:5px 2px}
+#rtcom-design .rt-completion-bar.rt-completion-slots{gap:1px;background:#c9ced6;box-shadow:inset 0 0 0 1px #c9ced6;padding:1px}
+#rtcom-design .rt-completion-slots i{flex:1 1 0;min-width:0;background:var(--rt-sig,#007AFF)}
+#rtcom-design .rt-completion-slots i:first-child{border-radius:8px 0 0 8px}
+#rtcom-design .rt-completion-slots i:last-child{border-radius:0 8px 8px 0}
+#rtcom-design .rt-completion-slots i:only-child{border-radius:8px}
+#rtcom-design .rt-completion-slots i.rt-seg-blank{background:#8a94a6}
+#rtcom-design .rt-completion-slots i.rt-seg-empty{background:#fff}
+#rtcom-design .rt-completion-dot-card{background:linear-gradient(90deg,#002060 0 34%,#00B050 34% 67%,#00B0F0 67%)}
+#rtcom-design .rt-config-summary .rt-summary-links{gap:6px}
+#rtcom-design .rt-config-summary li.rt-summary-link{grid-template-columns:auto auto minmax(0,1fr) auto;border-left:3px solid var(--rt-sig,#C7590A);gap:6px;padding:8px 10px;border-radius:10px;background:#fff4e8;font-size:12px}
+#rtcom-design .rt-summary-link .rt-summary-link-from{display:flex;align-items:baseline;gap:4px;font-weight:700;white-space:nowrap}
+#rtcom-design .rt-config-summary .rt-summary-link .rt-summary-link-from small{display:inline;font-size:10px}
+#rtcom-design .rt-summary-link .rt-summary-link-arrow{color:#C7590A;font-weight:800}
+#rtcom-design .rt-config-summary li.rt-summary-link strong{min-width:0;overflow:hidden;font-size:12px;text-overflow:ellipsis;white-space:nowrap}
+#rtcom-design .rt-config-summary li.rt-summary-link b{color:#1f2a3d;font-size:13px;font-weight:800;white-space:nowrap}
