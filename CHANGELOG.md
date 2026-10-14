@@ -70,6 +70,18 @@
 - **0.145.0 배포 기록**: `docs/qa/DEPLOYMENT_0.145_2026-09-29.md`(PR #194 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.144.0 배포 기록**: `docs/qa/DEPLOYMENT_0.144_2026-09-29.md`(PR #192 → main 병합, Pages 배포 run 162, 공개 파일 337/338 일치, `.nojekyll` 제외)
 
+## 0.217.0
+
+- **MR-4S 장착 모듈 정정(사용자 확인 2026-10-14):** MR-4S 슬롯에는 CT104-U/CR104-U(CATx)와 FT101-U/FR101-U(광) 카드를 꽂는 것으로 바꿨습니다. 기존 XDM-CTR100·XDM-FT101/FR101 표기와 관련 제품 연결을 이 이름으로 바꿨습니다.
+- **XDM 매트릭스 호환 문구 삭제:** 호환 모듈은 가칭으로 확인 중이라, 확인 전까지 공개 사양에 호환 문구를 적지 않았습니다(`docs/handoff/OPEN_ITEMS.md`).
+- 근거: `data/products/mr-4s.json`, `docs/RTCOM_MANUFACTURER_DATA_REQUEST.md` 13번
+
+## 0.216.0
+
+- **SPX-R6 제품 사양 추가:** 알티컴 답변(사용자 전달, 2026-10-14, 질문 7번)으로 크기 440×43.6×170mm(W×H×D), 무게 2.9kg, 외부 전원 어댑터 12V 5A 60W를 04 제품 사양에 넣었습니다. 출처는 `U3`입니다.
+- **정리:** `docs/handoff/OPEN_ITEMS.md`에서 7번 항목과 SPX-R6 "확인할 사항"의 크기·어댑터 항목을 지웠고, 질문표 §5 7번에 답을 적었습니다.
+- 근거: `docs/implementation/SPX_R6_SPEC_0.216.md`
+
 ## 0.215.0
 
 사용자가 보낸 알티컴 매뉴얼 DOCX 5건(HD-D102U Ver.1.0, CT101-U/CR101-U Ver.1.0, CT104-U/CR104-U Ver.1.0, MR-4S v1.00, FT/FR103-U-H Ver.1.4)을 반영했습니다.
