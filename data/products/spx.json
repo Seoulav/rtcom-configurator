@@ -144,7 +144,7 @@
       "source": "C"
     },
     {
-      "text": "전면 Touch Screen으로 쉽게 제어",
+      "text": "전면 터치스크린으로 쉽게 제어",
       "source": "C"
     },
     {
@@ -289,7 +289,7 @@
     {
       "model": "SPX-M810",
       "kind": "메인프레임",
-      "summary": "최대 8×10 I/O · 입력 슬롯 1 · 출력 슬롯 1 · 4.3\" Touch Screen · 483×355×88.1mm(2U)",
+      "summary": "최대 8×10 I/O · 입력 슬롯 1 · 출력 슬롯 1 · 4.3\" 터치스크린 · 483×355×88.1mm(2U)",
       "rackUnits": 2,
       "slots": {
         "input": 1,
@@ -302,7 +302,7 @@
     {
       "model": "SPX-M1620",
       "kind": "메인프레임",
-      "summary": "최대 16×20 I/O · 입력 슬롯 2 · 출력 슬롯 2 · 7\" Touch Screen · 483×355×177mm(4U)",
+      "summary": "최대 16×20 I/O · 입력 슬롯 2 · 출력 슬롯 2 · 7\" 터치스크린 · 483×355×177mm(4U)",
       "rackUnits": 4,
       "slots": {
         "input": 2,
@@ -315,7 +315,7 @@
     {
       "model": "SPX-M3236",
       "kind": "메인프레임",
-      "summary": "최대 32×36 I/O · 입력 슬롯 4 · 출력 슬롯 3 · 7\" Touch Screen · 483×355×310.3mm(7U)",
+      "summary": "최대 32×36 I/O · 입력 슬롯 4 · 출력 슬롯 3 · 7\" 터치스크린 · 483×355×310.3mm(7U)",
       "rackUnits": 7,
       "slots": {
         "input": 4,
@@ -328,7 +328,7 @@
     {
       "model": "SPX-M2472",
       "kind": "메인프레임",
-      "summary": "최대 24×72 I/O · 입력 슬롯 3 · 출력 슬롯 6 · 7\" Touch Screen · 483×443.7×365mm(8U)",
+      "summary": "최대 24×72 I/O · 입력 슬롯 3 · 출력 슬롯 6 · 7\" 터치스크린 · 483×443.7×365mm(8U)",
       "rackUnits": 8,
       "slots": {
         "input": 3,
@@ -341,7 +341,7 @@
     {
       "model": "SPX-M24120",
       "kind": "메인프레임",
-      "summary": "최대 24×120 I/O · 입력 슬롯 3 · 출력 슬롯 10 · 7\" Touch Screen · 483×443.7×365mm(8U)",
+      "summary": "최대 24×120 I/O · 입력 슬롯 3 · 출력 슬롯 10 · 7\" 터치스크린 · 483×443.7×365mm(8U)",
       "rackUnits": 8,
       "slots": {
         "input": 3,

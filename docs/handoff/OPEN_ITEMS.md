@@ -1,4 +1,4 @@
-# 남은 할 일·받을 자료 (2026-10-13 기준)
+# 남은 할 일·받을 자료 (2026-10-14 기준)
 
 새 세션은 이 목록을 먼저 확인합니다. 처리한 항목은 지우고, CHANGELOG에 버전과 함께 남깁니다.
 
@@ -19,11 +19,10 @@
 - [ ] HD-13U 제품 안내서 → `hd-13u-sheet.pdf`
 - [ ] XDM-CTR100 PSE 제품 안내서 → `xdm-ctr100-pse-sheet.pdf`(XDM-CTR100 PSE 상세에만)
 
-## 용어 통일 후속(0.189) — 사용자 결정 대기
+## 용어 통일 후속(0.189) — 0.218에 결정 완료
 
-`docs/audit/TERMS_REVIEW_2026-10-01_decisions.md`의 검토 40행은 자동 적용하지 않았습니다(`docs/implementation/TERMS_UNIFICATION_0.189.md` §3).
-- [ ] 검토 행 판단: HD-13U·HD-210U 오디오 문구(믹스 표현 병존), QMS-88UX 쿼드 명칭(최대 8분할 설명 병존), SPX "Touch Screen" → 터치 패널/터치스크린, 짧은 영문 사양 값(Fiber Optical Input 등) 원문 여부
-- [ ] 영문 분류명(1x4 HDMI 18Gbps Splitter 등)과 모델명 축약(CTR100 등)은 사용자 "pass"로 그대로 둠. 다시 정할 때 이 항목에서 시작
+검토 40행은 2026-10-14 사용자 결정으로 모두 정리했습니다(`docs/implementation/TERMS_REVIEW_DECISIONS_0.218.md`: 믹스 → 병합, Touch Screen → 터치스크린, 짧은 영문 원문 유지).
+- 영문 분류명(1x4 HDMI 18Gbps Splitter 등)과 모델명 축약(CTR100 등)은 사용자 "pass"로 그대로 둡니다. 다시 정할 때 이 항목에서 시작합니다.
 
 ## AI 검색 사내 베타(0.142) — 사용자 설정 대기
 

@@ -132,7 +132,7 @@
       "source": "C"
     },
     {
-      "text": "오디오 병합 지원(3.5mm Stereo Audio를 모든 출력에 믹스)",
+      "text": "오디오 병합 지원(3.5mm Stereo Audio를 모든 출력에 병합)",
       "source": "M-HD210"
     },
     {
@@ -426,7 +426,7 @@
         },
         "on": {
           "name": "병합",
-          "text": "3.5mm AUDIO IN 소리(Stereo Audio)가 모든 출력(OUT 1~10)에 믹스되어 나간다."
+          "text": "3.5mm AUDIO IN 소리(Stereo Audio)가 모든 출력(OUT 1~10)에 병합되어 나간다."
         },
         "note": "HD-210U는 병합만 되고, 소리를 따로 빼내는 추출(AUDIO OUT)은 없다."
       },

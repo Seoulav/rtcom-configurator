@@ -564,6 +564,9 @@ test('0.184: 해상도(Extron 방식)·단위 붙여 쓰기 표기 통일이 사
   assert.equal(fix('1080p 60m / 4K 50m'),'1080p 60m / 4K 50m','전송거리(m)는 주사율로 보지 않는다');
   assert.equal(fix('483×402×310.3mm'),'483×402×310.3mm','크기 표기는 바꾸지 않는다');
   assert.equal(fix('3.4 Gbps/ch, 100-200 VAC'),'3.4Gbps/ch, 100-200VAC');
+  // 0.218(사용자 결정 2026-10-14): Touch Screen → 터치스크린, 분배기 오디오 "출력에 믹스" → "출력에 병합"
+  assert.equal(fix('7" Touch Screen'),'7" 터치스크린');
+  assert.equal(fix('모든 출력(OUT 1~10)에 믹스되어 나간다'),'모든 출력(OUT 1~10)에 병합되어 나간다');
   // 모든 제품 데이터와 카드 사양이 이미 통일안대로라서 한 번 더 돌려도 바뀌는 곳이 없다.
   const out=require('child_process').execFileSync(process.execPath,['scripts/tools/unify_notation.cjs'],{encoding:'utf8'});
   assert.match(out,/바뀔 곳: 0건/,out);
