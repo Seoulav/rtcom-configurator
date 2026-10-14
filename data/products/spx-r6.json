@@ -18,7 +18,7 @@
   "subtitle": "SPX Series Extender · 6 HDMI Extender Module Chassis",
   "lead": "SPX-Extender 모듈을 **최대 6개** 장착하고 단일 전원으로 전원을 공급하는 랙 모듈형 전송기입니다. 전면 LCD와 버튼으로 신호 유무를 확인하고 EDID를 설정하며, 모듈은 핫스왑으로 교체합니다.",
   "catalogPages": "",
-  "verificationSummary": "사용자 제공 SPX-R6 제품 사양서(1쪽, 2026-09-29)의 소개·제품 기능·제품사양·연결도에서 확인했다. 사진과 연결도에 다른 회사 로고가 있어 화면 그림은 사용자 결정(2026-09-29 \"평면 그래픽\")에 따라 사양서 사진·연결도 배치대로 새로 그렸다. 크기·무게·전원 전압은 사양서에 없어 적지 않았다. 모듈 TX·RX 선택 사용과 SPX-RX IR 기능은 사용자 확인(2026-09-29)으로 추가했다. 제조사 원본 다이어그램은 사양서 연결도에서 다른 회사 로고만 지워 그대로 쓴다(사용자 요청 2026-09-29).",
+  "verificationSummary": "사용자 제공 SPX-R6 제품 사양서(1쪽, 2026-09-29)의 소개·제품 기능·제품사양·연결도에서 확인했다. 사진과 연결도에 다른 회사 로고가 있어 화면 그림은 사용자 결정(2026-09-29 \"평면 그래픽\")에 따라 사양서 사진·연결도 배치대로 새로 그렸다. 크기·무게·어댑터 규격은 사양서에 없어 처음에는 적지 않았고, 2026-10-14 알티컴 답변(사용자 전달)으로 추가했다(출처 U3). 모듈 TX·RX 선택 사용과 SPX-RX IR 기능은 사용자 확인(2026-09-29)으로 추가했다. 제조사 원본 다이어그램은 사양서 연결도에서 다른 회사 로고만 지워 그대로 쓴다(사용자 요청 2026-09-29).",
   "packageStatus": "VERIFIED",
   "overview": "SPX-R6는 SPX Extender 제품의 랙 모듈형 제품이다. SPX-Extender 모듈을 최대 6개 장착하고 단일 전원으로 모듈 전체에 전원을 공급한다. 모듈은 핫스왑을 지원해 장애가 생겨도 전원을 끄지 않고 교체할 수 있다.\n\n전면 LCD와 버튼(방향 버튼·MENU·CANCEL)으로 Extender의 신호 유무를 확인하고 EDID를 설정한다. 본체 내장 EDID와 EDID 패스스루를 고를 수 있고, IR 포트 2개(IR IN·IR Ctrl)로 IR 원격 제어와 제어 컨트롤러 연동을 지원한다.\n\n사양서 연결도는 후면 모듈 칸마다 HDMI IN으로 소스를 받아 CAT OUT으로 SPX-RX에 보내는 구성을 보여 준다. HDMI 2.0·HDCP 1.4/2.2·18Gbps·HDR을 지원하고, CAT5e 기준 4K/60 @ 4:4:4 최대 50m, 1080p 최대 60m까지 전송한다. PoC(Power over Cable)로 송·수신기 중 한쪽에만 전원을 연결해도 된다.\n\n모듈은 TX(송신)·RX(수신)를 골라 쓸 수 있고, 연결도의 SPX-RX IR 기능(IR Blaster)도 지원한다. 다만 RX 사용과 IR 기능은 현장에서는 잘 쓰지 않는다(서울영상테크 SI사업본부 확인).",
   "images": [
@@ -249,12 +249,39 @@
       "verification": "VERIFIED"
     },
     {
+      "group": "Power",
+      "name": "외부 전원 어댑터 규격",
+      "value": "12V 5A 60W",
+      "unit": "",
+      "condition": "외부 전원 어댑터 1개로 모듈 6개 공급",
+      "source": "U3",
+      "verification": "VERIFIED"
+    },
+    {
       "group": "Environment",
       "name": "동작 온도·습도",
       "value": "0~40°C, 10~90% RH",
       "unit": "",
       "condition": "불응축",
       "source": "S1",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "크기(W×H×D)",
+      "value": "440×43.6×170",
+      "unit": "mm",
+      "condition": "",
+      "source": "U3",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "무게",
+      "value": "2.9",
+      "unit": "kg",
+      "condition": "",
+      "source": "U3",
       "verification": "VERIFIED"
     }
   ],
@@ -437,6 +464,12 @@
       "name": "서울영상테크 SI사업본부 확인",
       "page": "",
       "scope": "사용자 확인(2026-09-29 \"SPX-RX의 IR 기능과 수신가능한대 잘 안써\") — SPX-RX IR 기능과 SPX-R6 수신 모듈 장착은 가능하지만 현장에서는 잘 쓰지 않음. 추가 확인(2026-09-29 \"SPX-R6에 TX, RX선택해서 사용할 수가 있어\") — 모듈을 TX·RX 중 골라 사용"
+    },
+    {
+      "code": "U3",
+      "name": "알티컴 답변(사용자 전달)",
+      "page": "",
+      "scope": "사용자가 전달한 알티컴 답변(2026-10-14) — 질문 7번(크기·무게·외부 전원 어댑터 규격), docs/RTCOM_MANUFACTURER_DATA_REQUEST.md §5"
     }
   ],
   "issues": []
