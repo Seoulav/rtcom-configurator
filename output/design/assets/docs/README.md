@@ -9,6 +9,7 @@
 **전체 카탈로그(2026-09-28, 0.95.0):** `rtcom-catalog-2026.pdf`(46쪽판, 사용자 결정 "전체 카탈로그 공개해도 돼"). 29개 제품의 카탈로그 버튼이 이 파일을 함께 쓰고 `page`로 제품 쪽을 엽니다. 새 판이 나오면 같은 이름으로 덮어쓰고, 쪽 번호가 바뀌면 각 제품의 `page`·`catalogPages`도 고칩니다. 제품별 발췌본을 올리면 그 제품만 발췌본으로 바꿉니다.
 **SPX 자료(2026-09-29, 0.157.0):** 사용자 결정으로 `spx-r6-catalog.pdf`(SPX-R6 제품 사양서 1쪽)·`spx-manual.pdf`(SPX 시리즈 사용자 매뉴얼 250805, 54쪽)·`spx-rx-tx-manual.pdf`(SPX-TX/RX 매뉴얼 Ver.2.0, 13쪽)를 추가로 공개합니다. SPX 카탈로그(2023)는 근거 자료로만 쓰고 공개하지 않습니다.
 **XDM 커맨드 가이드(2026-10-13, 0.209.0):** 사용자 결정("공개 진행")으로 `xdm-command-guide.pdf`(알티컴 XDM 시리즈 Command Guide 국문 1013판, 73쪽)를 공개합니다. 문서 속성의 작성자·프로그램 정보와 XMP를 지운 사본입니다. 새 판이 오면 같은 이름으로 덮어쓰고 XDM 제품 상세의 문서 제목과 WOS100·HOS100 팝업 쪽 번호를 확인합니다.
+**DOCX 매뉴얼 변환본(2026-10-14, 0.215.0):** 사용자가 보낸 알티컴 매뉴얼 DOCX 5건을 사용자 결정("제가 PDF로 변환")에 따라 Claude가 PDF로 바꿔 공개합니다. `hd-d102u-manual.pdf`(Ver.1.0, 10쪽)·`ct101-u-cr101-u-manual.pdf`(Ver.1.0, 13쪽)·`ct104-u-cr104-u-manual.pdf`(Ver.1.0, 13쪽)·`mr-4s-manual.pdf`(v1.00, 12쪽)·`ft103-u-h-fr103-u-manual.pdf`(Ver.1.4, 13쪽). 원래 글꼴(Noto Sans KR)로 Word와 같은 쪽 나눔을 맞췄고, 작성자·프로그램 정보와 XMP를 지웠습니다. 변환 절차는 `docs/implementation/MANUALS_DOCX_0.215.md`에 있습니다.
 구조 설명은 `docs/implementation/PRODUCT_DOCUMENT_DOWNLOADS.md`에 있습니다.
 
 ## 올리는 방법 (GitHub 웹)
