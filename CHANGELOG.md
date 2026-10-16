@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.243.0 배포 기록**: `docs/qa/DEPLOYMENT_0.243_2026-10-16.md`(PR #377 → main 병합 `c409558`, Pages 배포 run 38982634768 success, 공개 `CATALOG BASED · 0.243`·`products.js`·`styles.css` 해시 일치·`CLAUDE.md` 404, 0.242 → 0.243 재번호 경위)
 - **0.242.0 배포 기록**: `docs/qa/DEPLOYMENT_0.242_2026-10-16.md`(PR #371 → main `81c57dc`, Pages 배포 run 38981934145 success, 공개 `CATALOG BASED · 0.242`·신호 색 확인)
 - **0.240.0·0.241.0 배포 기록**: `docs/qa/DEPLOYMENT_0.241_2026-10-16.md`(PR #374 → `752241c` run 38980067205, PR #375 → `73140cd` run 38980943940, 모두 success, 공개 `CATALOG BASED · 0.241`·비밀번호 원문 비노출 확인)
 - **알티컴 2차 짧은 메일**(문서만): 남은 질문 중 20~26번(LAN 기본 IP, SPX·VDM·XDM·QMS·HDS 명령 확인)만 담은 메일 문안을 `docs/handoff/RTCOM_QUESTIONS_2026-10-16.md`에 추가했습니다.
