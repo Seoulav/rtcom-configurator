@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.227.0 배포 기록**: `docs/qa/DEPLOYMENT_0.227_2026-10-16.md`(PR #349 → main 병합, Pages 배포 run 38902444688, 공개 스위치·그림 코드와 MR-4S 전원 공급 값 확인)
 - **0.226.0 배포 기록**: `docs/qa/DEPLOYMENT_0.226_2026-10-16.md`(PR #346 → main 병합, Pages 배포 run 38899767327, 공개 `src/layout-sim.js` 일치)
 - **0.225.0 배포 기록**: `docs/qa/DEPLOYMENT_0.225_2026-10-16.md`(PR #345 → main 병합, Pages 배포 run 38897820970, 공개 `src/layout-sim.js` 일치)
 - **0.224.0 배포 기록**: `docs/qa/DEPLOYMENT_0.224_2026-10-16.md`(PR #343 → main 병합, Pages 배포 run 38894744259, 공개 `src/layout-sim.js` 일치)
