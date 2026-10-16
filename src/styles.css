@@ -1847,3 +1847,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-ce-chips{margin:8px 0 0;font:600 12px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--pg-ink);word-break:break-word}
 #rtcom-design .rt-ce-tok-sep{color:var(--rt-fg-9aa3b2)}
 @media (max-width:480px){#rtcom-design .rt-ce-cell-mini{min-height:30px;font-size:12px}#rtcom-design .rt-ce-grid-matrix{gap:3px}#rtcom-design .rt-ce-grid-matrix .rt-ce-rowhead{font-size:12px}}
+#rtcom-design .rt-ce-warn{margin:8px 0 0;padding:10px 12px;border-radius:12px;background:var(--pg-field-fill);font:600 13px/1.5 var(--pg-sans);color:var(--pg-ink)}
+#rtcom-design .rt-ce-page{color:var(--pg-muted);white-space:nowrap}
+#rtcom-design .rt-ce-oneline{margin-top:8px;font-size:12px;white-space:pre-wrap;word-break:break-all}
+#rtcom-design .rt-ce-builder .rt-ce-controls input[type=text]{min-width:180px}
