@@ -6,12 +6,12 @@ const L=require('../src/layout-sim.js');
 // 0.224 XDM 화면 연출 시뮬레이터(WOS100 월 오버레이). 근거: 알티컴 XDM Command Guide 1013(44~55쪽, 0.209 공개본)과 알티컴 확인(0.210·0.214).
 // 가이드에 적힌 커맨드 원문이 글자 하나 다르지 않게 나와야 한다.
 
-test('0.224/0.229: 프리셋 커맨드가 가이드 예제 2·3 원문, 기본 예시 계산값, 현장 메모 원문 3개와 똑같다',()=>{
+test('0.224/0.231: 프리셋 커맨드가 가이드 예제 2·3 원문, 기본 예시 계산값, 현장 메모 원문 3개와 똑같다',()=>{
   const checked=L.PRESETS.filter(p=>p.expected);
   assert.equal(checked.length,6);
   for(const p of checked)assert.equal(L.commandFor(p.state).command,p.expected,p.id);
   assert.equal(L.PRESETS[0].state.mapping,'card','기본 프리셋은 알티컴 확인 배치');
-  // 0.229 사용자 결정 2026-10-16 "2안으로 전부 공개해": 현장 메모 원문(출력 9~12번) 3개를 그대로 둔다
+  // 0.231 사용자 결정 2026-10-16 "2안으로 전부 공개해": 현장 메모 원문(출력 9~12번) 3개를 그대로 둔다
   const memo=L.PRESETS.filter(p=>p.id.startsWith('memo-'));
   assert.deepEqual(memo.map(p=>p.expected),[
     '*255OWO009-012W14H01V01P4321O000I001O009X0Y295W1920H1571I002O010X1920Y295W1920H1571!',
@@ -73,7 +73,7 @@ test('0.224: 시뮬레이터는 XDM 시리즈 화면의 07 카드에만 붙고, 
   assert.match(products,/<span class="rt-pg-idx">07<\/span>화면 연출 시뮬레이터/);
   assert.match(products,/window\.RtLayoutSim\?\.mountAll\(body\)/);
   assert.match(products,/data-scroll-to="rt-layout-sim"/);
-  assert.match(fs.readFileSync('index.html','utf8'),/<script src="src\/layout-sim\.js"><\/script><script src="src\/products\.js">/);
+  assert.match(fs.readFileSync('index.html','utf8'),/<script src="src\/layout-sim\.js"><\/script>(<script src="src\/control-example\.js"><\/script>)?<script src="src\/products\.js">/);
   assert.match(fs.readFileSync('scripts/package-site.cjs','utf8'),/'src\/layout-sim\.js'/);
   assert.match(fs.readFileSync('src/styles.css','utf8'),/#rtcom-design \.rt-ls-canvas\{[^}]*touch-action:none/);
   assert.equal(L.GUIDE_PDF,'output/design/assets/docs/xdm-command-guide.pdf');

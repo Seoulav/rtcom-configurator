@@ -1103,7 +1103,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-card-palette .rt-card-info-group{grid-template-columns:1fr;gap:6px}
 #rtcom-design .rt-card-palette .rt-card-info-group>span{padding-top:0}
 #rtcom-design .rt-card-palette .rt-card-info-group>div{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
-@media(max-width:1100px){#rtcom-design .rt-card-palette .rt-card-info-group>div{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:1279px){#rtcom-design .rt-card-palette .rt-card-info-group>div{grid-template-columns:repeat(3,minmax(0,1fr))}}
 #rtcom-design .rt-palette-tile{grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:7px 8px;padding:9px;border:1px solid #e3e9f3;border-radius:12px;background:#fff}
 #rtcom-design .rt-palette-tile:hover,#rtcom-design .rt-palette-tile:focus-visible{border-color:#007AFF66;background:#f5f9ff}
 #rtcom-design .rt-palette-tile small{color:var(--rt-muted)}
@@ -1113,8 +1113,12 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-card-palette .rt-card-info-group-output>span{color:#c2410c}
 #rtcom-design .rt-palette-tile img{grid-column:1/-1;display:block;width:100%;height:auto;border-radius:3px;pointer-events:none}
 #rtcom-design .rt-palette-tile>span{min-width:0}
-/* 0.228 예외(SVT 디자인 v2 T2): 3열 타일(390px) 안에서 배지를 12px로 올리면 모델명이 7px 더 넘쳐 페이지 가로 넘침이 난다. 이 타일의 배지만 이전 크기 9.5px로 둔다. */
-#rtcom-design .rt-palette-tile .rt-sig-badge{font-size:9.5px}
+/* 0.230: 카드 정보 타일의 신호 배지와 모델명을 모든 폭에서 두 줄로 나누고, 휴대폰(560px 이하)에서는 2열, 360px 이하에서는 모델명도 하이픈에서 줄바꿈을 허용한다.
+   3열이던 390px에서는 타일 안쪽 폭(약 59px)보다 모델명(약 75px)이 길어 "XDM-H…"처럼 잘렸고, 데스크톱 6열(1101~1279px)에서도 잘렸다(수정 전부터 있던 문제). 그래서 3열 → 6열 전환 지점도 1100px에서 1279px로 올렸다.
+   2열이면 안쪽 폭이 약 120px이라 배지 아래 줄에 모델명이 끝까지 보인다. 0.228에서 둔 배지 9.5px 예외는 이 규칙으로 없앴다(배지 12px). */
+#rtcom-design .rt-palette-tile strong:has(.rt-sig-badge){flex-wrap:wrap;row-gap:3px}
+@media(max-width:560px){#rtcom-design .rt-card-palette .rt-card-info-group>div{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:360px){#rtcom-design .rt-palette-tile strong{white-space:normal}}
 #rtcom-design .rt-palette-tile small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #rtcom-design .rt-palette-tile{position:relative}
 #rtcom-design .rt-palette-tile b{position:absolute;top:-10px;right:8px;box-shadow:0 1px 3px #0003;padding:2px 8px;border-radius:999px;background:#1f2a3d;color:#fff;font-size:12px;font-weight:800;white-space:nowrap}
@@ -1596,6 +1600,46 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-ls-mini i span{position:absolute;left:5px;top:5px}
 #rtcom-design .rt-ls-mini b{position:absolute;box-sizing:border-box;border:2px solid var(--rt-ls-color);background:color-mix(in srgb,var(--rt-ls-color) 38%,transparent);border-radius:4px;color:#fff;font:800 12px/1.2 var(--pg-sans);padding:3px 5px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 @media (max-width:720px){#rtcom-design .rt-ls-allgrid{grid-template-columns:1fr}}
+/* 0.229 "AMX 통합 제어 커맨드 예시"(src/control-example.js). 모든 클래스는 rt-ce-* 접두사, 제품정보 화면 안에서만 쓴다. */
+#rtcom-design .rt-ce-controls{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:flex-end;margin:0 0 6px}
+#rtcom-design .rt-ce-controls label{display:flex;flex-direction:column;gap:5px;font:600 12px/1.2 var(--pg-sans);color:var(--pg-muted);min-width:0}
+#rtcom-design .rt-ce-controls select,#rtcom-design .rt-ce-controls input[type=number]{font:600 13px/1.2 var(--pg-sans);color:var(--pg-ink);background:var(--pg-field-fill);border:1px solid transparent;border-radius:12px;padding:8px 12px;min-height:36px;margin:0}
+#rtcom-design .rt-ce-controls input[type=number]{width:120px}
+#rtcom-design .rt-ce-controls .rt-ce-check{flex-direction:row;align-items:center;gap:8px;color:var(--pg-ink);min-height:36px;font-size:13px}
+#rtcom-design .rt-ce-controls .rt-ce-check input{margin:0;width:16px;height:16px;accent-color:var(--pg-accent)}
+#rtcom-design .rt-ce-head{display:flex;align-items:center;gap:10px;margin-top:16px}
+#rtcom-design .rt-ce-head h3{font:700 13px/1.2 var(--pg-sans);letter-spacing:.04em;color:var(--pg-muted);margin:0}
+#rtcom-design .rt-ce-head .rt-pg-btn{min-height:32px}
+#rtcom-design .rt-ce-copied{font:600 12px/1 var(--pg-sans);color:var(--pg-muted)}
+#rtcom-design .rt-ce-cmd{font-variant-numeric:slashed-zero;margin:8px 0 0;padding:12px 14px;border-radius:var(--pg-r-inner);background:#0f1115;color:#e8ebf2;font:600 14px/1.7 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap;word-break:break-all;overflow-x:auto}
+#rtcom-design .rt-ce-code{font-size:13px;font-weight:500;color:#cfd6e4;word-break:normal;white-space:pre}
+#rtcom-design .rt-ce-line{display:block}
+#rtcom-design .rt-ce-line small{display:block;font:600 12px/1.4 var(--pg-sans);color:#9aa3b2;letter-spacing:.02em;margin-top:6px}
+#rtcom-design .rt-ce-line:first-child small{margin-top:0}
+#rtcom-design .rt-ce-tok{border-radius:4px;padding:0 1px}
+#rtcom-design .rt-ce-tok-start,#rtcom-design .rt-ce-tok-end{color:#9aa3b2}
+#rtcom-design .rt-ce-tok-id{color:#c9a8ff}
+#rtcom-design .rt-ce-tok-cmd{color:#ffd479}
+#rtcom-design .rt-ce-tok-in{color:#7fd6a0}
+#rtcom-design .rt-ce-tok-out{color:#ff9f7a}
+#rtcom-design .rt-ce-tok-vol{color:#6fb7ff}
+#rtcom-design .rt-ce-cr{margin-left:6px;color:#9aa3b2;font-weight:500}
+#rtcom-design .rt-ce-hex{margin:6px 0 0;font:500 12px/1.5 var(--pg-sans);color:var(--pg-muted)}
+#rtcom-design .rt-ce-hex code{font:600 12px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--pg-ink);word-break:break-word}
+@media (max-width:640px){#rtcom-design .rt-ce-controls label,#rtcom-design .rt-ce-controls select{width:100%}#rtcom-design .rt-ce-controls input[type=number]{width:100%}}
+#rtcom-design .rt-ce-grid{display:grid;grid-template-columns:auto repeat(var(--rt-ce-cols,2),minmax(0,1fr));gap:8px;margin-top:10px;align-items:stretch}
+#rtcom-design .rt-ce-corner{font:600 12px/1.2 var(--pg-sans);color:var(--pg-muted);align-self:center}
+#rtcom-design .rt-ce-colhead,#rtcom-design .rt-ce-rowhead{font:700 12px/1.2 var(--pg-sans);color:var(--pg-muted);align-self:center}
+#rtcom-design .rt-ce-colhead{text-align:center}
+#rtcom-design .rt-ce-cell{display:flex;flex-direction:column;gap:4px;align-items:flex-start;text-align:left;padding:10px 12px;border-radius:14px;border:1px solid transparent;background:var(--pg-field-fill);color:var(--pg-ink);cursor:pointer;min-width:0;min-height:56px}
+#rtcom-design .rt-ce-cell small{font:600 12px/1.2 var(--pg-sans);color:var(--pg-muted)}
+#rtcom-design .rt-ce-cell code{font:700 13px/1.3 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-variant-numeric:slashed-zero;white-space:nowrap}
+#rtcom-design .rt-ce-cell:hover{border-color:var(--pg-accent)}
+#rtcom-design .rt-ce-cell:focus-visible{outline:2px solid var(--pg-accent);outline-offset:2px}
+#rtcom-design .rt-ce-cell.is-sel{background:var(--pg-accent);color:#fff}
+#rtcom-design .rt-ce-cell.is-sel small{color:rgba(255,255,255,.85)}
+@media (max-width:480px){#rtcom-design .rt-ce-grid{gap:6px}#rtcom-design .rt-ce-cell{padding:8px 8px}#rtcom-design .rt-ce-cell code{font-size:12px}}
+#rtcom-design .rt-ce-controls{margin-top:14px}
 
 /* 모바일 상단 압축 (SVT 공통 디자인 v2, T7) */
 @media (max-width:720px){

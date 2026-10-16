@@ -572,6 +572,28 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       const clipped=await page.evaluate(()=>{const svg=[...document.querySelectorAll('.rt-pg-svg-wrap svg')].find(s=>s.textContent.includes('HDMI IN'));if(!svg)return ['svg 없음'];const vb=svg.viewBox.baseVal;return [...svg.querySelectorAll('text,rect')].filter(el=>{const bb=el.getBBox();return bb.x<vb.x-1||bb.y<vb.y-1||bb.x+bb.width>vb.x+vb.width+1||bb.y+bb.height>vb.y+vb.height+1}).map(el=>(el.textContent||el.tagName).slice(0,20))});
       check(`${id} 신호 흐름 그림 요소가 틀 밖으로 잘리지 않음`,clipped.length===0,JSON.stringify(clipped));
     }
+    // 0.229 HDS-42MU "AMX 통합 제어 커맨드 예시": 매뉴얼 9쪽 예시(*000CI02O02!, *000V54!)가 처음에 나오고, 입력·출력·볼륨을 바꾸면 커맨드와 AMX 코드가 바뀐다.
+    await page.goto(`${home}#products/hds-42mu`,{waitUntil:'networkidle'});
+    await page.waitForSelector('.rt-pg-control .rt-ce-cmd');
+    const ceText=sel=>page.locator(`.rt-pg-control [data-ce-text="${sel}"]`).innerText();
+    const ce0={sw:(await ceText('sw')).replace(/\s+/g,' '),vol:(await ceText('vol')).replace(/\s+/g,' '),amx:await ceText('amx')};
+    check('HDS-42MU AMX 커맨드 카드가 매뉴얼 예시 *000CI02O02!·*000V54!와 AMX SEND_STRING을 보여 줌',/\*000CI02O02!/.test(ce0.sw)&&/\*000V54!/.test(ce0.vol)&&/SEND_STRING dvHDS42MU,"'\*000CI02O02!',\$0D"/.test(ce0.amx),JSON.stringify(ce0).slice(0,200));
+    await page.click('.rt-pg-control [data-ce-cell="4,1"]');
+    await page.fill('.rt-pg-control [data-ce-field="db"]','-3');
+    await page.dispatchEvent('.rt-pg-control [data-ce-field="db"]','change');
+    const ce1={grid:await page.locator('.rt-pg-control .rt-ce-cell').count(),cell:await page.locator('.rt-pg-control [data-ce-cell="4,1"]').innerText(),sw:(await ceText('sw')).replace(/\s+/g,' '),vol:(await ceText('vol')).replace(/\s+/g,' '),amx:await ceText('amx')};
+    check('HDS-42MU AMX 커맨드 카드: 입력 4×출력 2 라우팅 표 8칸에서 IN 4 → OUT 1을 누르면 *000CI04O01!과 -3dB(*000V44!)·AMX 코드가 바뀜',ce1.grid===8&&/\*000CI04O01!/.test(ce1.cell)&&/\*000CI04O01!/.test(ce1.sw)&&/\*000V44!/.test(ce1.vol)&&/\*000CI04O01!/.test(ce1.amx),JSON.stringify(ce1).slice(0,300));
+    await page.selectOption('.rt-pg-control [data-ce-field="input"]','3');
+    await page.selectOption('.rt-pg-control [data-ce-field="output"]','2');
+    const ce2={sel:await page.locator('.rt-pg-control .rt-ce-cell.is-sel').getAttribute('data-ce-cell'),sw:(await ceText('sw')).replace(/\s+/g,' ')};
+    check('HDS-42MU AMX 커맨드 카드: 입력·출력 드롭다운을 바꾸면 표의 선택 칸과 커맨드(*000CI03O02!)가 같이 바뀜',ce2.sel==='3,2'&&/\*000CI03O02!/.test(ce2.sw),JSON.stringify(ce2));
+    const ceOver=await page.evaluate(()=>({overflow:document.documentElement.scrollWidth>innerWidth,idx:document.querySelector('.rt-pg-control .rt-pg-idx')?.textContent}));
+    check('HDS-42MU AMX 커맨드 카드 번호는 08이고 가로 넘침이 없음',ceOver.idx==='08'&&!ceOver.overflow,JSON.stringify(ceOver));
+    // 0.229 HDS-21U 같은 카드: 입력 2×출력 1 표 2칸, 매뉴얼 예시 *000CI02O01!, 뮤트 *000V00!(표의 Mute 칸 값 0), AMX 버튼 3개.
+    await page.goto(`${home}#products/hds-21u`,{waitUntil:'networkidle'});
+    await page.waitForSelector('.rt-pg-control .rt-ce-cmd');
+    const ce21={cells:await page.locator('.rt-pg-control .rt-ce-cell').count(),sw:(await ceText('sw')).replace(/\s+/g,' '),mute:(await ceText('mute')).replace(/\s+/g,' '),amx:await ceText('amx'),idx:await page.locator('.rt-pg-control .rt-pg-idx').innerText(),overflow:await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth)};
+    check('HDS-21U AMX 커맨드 카드: 표 2칸·*000CI02O01!(IN 2 → OUT 1)·뮤트 *000V00!·AMX 버튼 3개·가로 넘침 없음',ce21.cells===2&&/\*000CI02O01!/.test(ce21.sw)&&/\*000V00!/.test(ce21.mute)&&(ce21.amx.match(/BUTTON_EVENT/g)||[]).length===3&&!ce21.overflow,JSON.stringify(ce21).slice(0,260));
     // 0.62 HDS-21U·HDS-42MU 딥 스위치 칸 순서: ON이 왼쪽, OFF가 오른쪽(dipSwitch.order, 사용자 요청 2026-09-27). HD-210U는 OFF → ON 그대로.
     for(const [id,first] of [['hds-21u','ON'],['hds-42mu','ON'],['hd-210u','OFF']]){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
@@ -623,7 +645,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await page.reload({waitUntil:'networkidle'});
     await page.waitForSelector('#rt-layout-sim [data-ls-win="1"]');
     const simBefore=await page.locator('#rt-layout-sim [data-ls-cmd]').innerText();
-    // 0.229 레이어 번호(1 = 맨 위, 사용자 요청 2026-10-16): 기본 배치(P4321, PIP가 포트 14)에서 PIP(창 2)가 레이어 1, 전체 창 1이 레이어 2. 끌기 전에 잰다(PIP를 다른 카드로 옮기면 받는 포트가 바뀌어 순서도 바뀜).
+    // 0.231 레이어 번호(1 = 맨 위, 사용자 요청 2026-10-16): 기본 배치(P4321, PIP가 포트 14)에서 PIP(창 2)가 레이어 1, 전체 창 1이 레이어 2. 끌기 전에 잰다(PIP를 다른 카드로 옮기면 받는 포트가 바뀌어 순서도 바뀜).
     const simLayers=await page.evaluate(()=>({layers:[...document.querySelectorAll('#rt-layout-sim .rt-ls-win-layer')].map(e=>e.textContent),top:document.querySelector('#rt-layout-sim .rt-ls-win-layer.is-top')?.closest('.rt-ls-win')?.dataset.lsWin}));
     await page.locator('#rt-layout-sim [data-ls-win="1"]').scrollIntoViewIfNeeded();
     const simWin=await page.locator('#rt-layout-sim [data-ls-win="1"]').boundingBox();
@@ -638,7 +660,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await page.click('#rt-layout-sim [data-ls-top="0"]');
     const topCmd=await page.evaluate(()=>document.querySelector('#rt-layout-sim [data-ls-cmd]').textContent);
     check('XDM 07 시뮬레이터 "맨 위로": 창 1을 맨 위로 올리면 포트 배정과 커맨드 순서가 바뀜',/I002O013X5760Y3240W1920H1080I001O001O005O009O014X0Y0W7680H4320!$/.test(topCmd),topCmd.slice(-90));
-    // 0.229 Delete 키(사용자 요청 2026-10-16): 창을 누른 뒤(끌지 않고) Delete → WOS100은 창을 지우고, HOS100 L00은 창을 끈다(W0000 H0000).
+    // 0.231 Delete 키(사용자 요청 2026-10-16): 창을 누른 뒤(끌지 않고) Delete → WOS100은 창을 지우고, HOS100 L00은 창을 끈다(W0000 H0000).
     await page.evaluate(()=>{try{localStorage.removeItem('rtcom.layoutSim.v1')}catch(e){}});
     await page.reload({waitUntil:'networkidle'});
     await page.waitForSelector('#rt-layout-sim [data-ls-win="1"]');
@@ -656,7 +678,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await page.evaluate(()=>{try{localStorage.removeItem('rtcom.layoutSim.v1');localStorage.removeItem('rtcom.layoutSim.hos.v1');localStorage.removeItem('rtcom.layoutSim.card.v1')}catch(e){}});
     await page.reload({waitUntil:'networkidle'});
     await page.waitForSelector('#rt-layout-sim [data-ls-preset]');
-    // 0.229 현장 메모 공개(사용자 결정 2026-10-16 "2안으로 전부 공개해"): 프리셋 원문과 참고 커맨드 접이식 칸.
+    // 0.231 현장 메모 공개(사용자 결정 2026-10-16 "2안으로 전부 공개해"): 프리셋 원문과 참고 커맨드 접이식 칸.
     await page.selectOption('#rt-layout-sim [data-ls-preset]','memo-22x9x2');
     const memo=await page.evaluate(()=>({cmd:document.querySelector('#rt-layout-sim [data-ls-cmd]').textContent,notes:document.querySelector('#rt-layout-sim .rt-ls-notes')?.textContent||''}));
     check('XDM 07 시뮬레이터 현장 메모 프리셋이 회신 원문(O009-012·O000·X0Y295W1920H1571)과 같고 참고 커맨드 칸에 IV·IE 커맨드가 있음',memo.cmd==='*255OWO009-012W14H01V01P4321O000I001O009X0Y295W1920H1571I002O010X1920Y295W1920H1571!'&&memo.notes.includes('*255IVI001I002I003M03!')&&memo.notes.includes('*255IEI009M18!'),JSON.stringify({cmd:memo.cmd.slice(-60),notes:memo.notes.length}));
