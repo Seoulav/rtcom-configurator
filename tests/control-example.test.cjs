@@ -109,3 +109,66 @@ test('QMS 두 제품은 115200bps 8N1과 매뉴얼 쪽수 근거를 갖고 AMX �
     assert.match(ce.amxCode(q,[{label:'x',text:'*0!'}]),/SET BAUD 115200,N,8,1 485 DISABLE/);
   }
 });
+
+// ---- 명령 빌더: 매뉴얼 예시와 글자까지 같아야 한다(QMS-88UX 32~39쪽, QMS-44UX 28~30쪽) ----
+const B=(spec,id)=>spec.builders.find(b=>b.id===id);
+const build=(spec,id,values)=>ce.buildCommand(spec,B(spec,id),values).text;
+
+test('번호 목록 파싱: 콤마·하이픈·공백, 범위 밖과 중복 제외',()=>{
+  assert.deepEqual(ce.parseNumList('4,8',1,10),[4,8]);
+  assert.deepEqual(ce.parseNumList('1-4, 8 3',1,10),[1,2,3,4,8]);
+  assert.deepEqual(ce.parseNumList('0,9-12',1,10),[9,10]);
+  assert.deepEqual(ce.parseNumList('abc',1,10),[]);
+  assert.deepEqual(ce.formatNumList([1,2,3,4,8],'O',2,'range').map(i=>i.text),['O01-04','O08']);
+  assert.deepEqual(ce.formatNumList([1,2,3],'O',2,'explicit').map(i=>i.text),['O01','O02','O03']);
+});
+
+test('QMS-88UX 출력 해상도(OS)·테스트 패턴(OT·IT)·출력 초기화(OR)·정보(OF)는 매뉴얼 예시와 같다',()=>{
+  assert.equal(build(q88,'res',{out:'4,8',res:'09'}),'*255OSO04O08H09!');
+  assert.equal(build(q88,'res',{out:'1-10',res:'10'}),'*255OSO01-10H10!');
+  assert.equal(build(q88,'tp',{out:'3',pat:'01'}),'*255OTO03M01!');
+  assert.equal(build(q88,'tp',{out:'1-4',pat:'06'}),'*255OTO01-04M06!');
+  assert.equal(build(q88,'itp',{inp:'3',pat:'04'}),'*255ITI03M04!');
+  assert.equal(build(q88,'itp',{inp:'1-4',pat:'07'}),'*255ITI01-04M07!');
+  assert.equal(build(q88,'reset',{out:'1-4'}),'*255ORO01-04!');
+  assert.equal(build(q88,'reset',{out:'5'}),'*255ORO05!');
+  assert.equal(build(q88,'of',{out:1}),'*255OFO01!');
+});
+
+test('QMS-88UX 비디오 월(OW)은 매뉴얼 35쪽 예시 2개와 같고 해상도를 생략할 수 있다',()=>{
+  assert.equal(build(q88,'wall',{range:'1-6',res:'13',h:2,v:3,members:'1-6'}),'*255OWO01-06M13H02V03O01O02O03O04O05O06!');
+  assert.equal(build(q88,'wall',{range:'1-6',res:'',h:2,v:3,members:'1-6'}),'*255OWO01-06H02V03O01O02O03O04O05O06!');
+});
+
+test('QMS-88UX 멀티뷰(Q)는 매뉴얼 39쪽 예시 2개와 같다',()=>{
+  assert.equal(build(q88,'mv',{res:'13',layer:'01',inopt:'0',outopt:'0'}),'*255QM13L01S00!');
+  assert.equal(build(q88,'mv',{res:'10',layer:'07',inopt:'0',outopt:'2'}),'*255QM10L07S02!');
+});
+
+test('QMS-44UX 화면 모드(WM)·해상도(TC)·줌(Z)·보레이트(@)는 매뉴얼 28~30쪽 예시와 같다',()=>{
+  assert.equal(build(q44,'wm',{mode:'00'}),'*01WM00!');
+  assert.equal(build(q44,'wm',{mode:'03'}),'*01WM03!');
+  assert.equal(build(q44,'wmq',{lay:'01'}),'*01WM01P01!');
+  assert.equal(build(q44,'wmw',{lay:'2',inp:'1'}),'*01WM02P21!');
+  assert.equal(build(q44,'wmd',{top:'1',bottom:'1'}),'*01WM03P11!');
+  assert.equal(build(q44,'wmd',{top:'2',bottom:'0'}),'*01WM03P20!');
+  assert.equal(build(q44,'tc',{out:'4',res:'00'}),'*01TCO04S00!');
+  assert.equal(build(q44,'tc',{out:'1',res:'02'}),'*01TCO01S02!');
+  assert.equal(build(q44,'zoom',{out:'01'}),'*01ZO01!');
+  assert.equal(build(q44,'baud',{rate:'05'}),'*01@05!');
+});
+
+test('빌더 입력이 비었거나 틀리면 명령을 만들지 않고 안내 문구를 돌려준다',()=>{
+  const r=ce.buildCommand(q88,B(q88,'res'),{out:'',res:'09'});
+  assert.equal(r.text,undefined);
+  assert.match(r.error,/출력 번호/);
+  assert.match(ce.buildCommand(q88,B(q88,'res'),{out:'1',res:'99'}).error,/해상도/);
+});
+
+test('빌더 정의는 모두 기본값으로 명령이 만들어지고 매뉴얼 쪽 근거를 갖는다',()=>{
+  for(const q of [q88,q44])for(const b of q.builders){
+    const r=ce.buildCommand(q,b,ce.builderDefaults(b));
+    assert.ok(r.text&&r.text.startsWith('*'+q.productId)&&r.text.endsWith('!'),`${b.id}: ${r.error||r.text}`);
+    assert.match(b.page,/쪽/);
+  }
+});

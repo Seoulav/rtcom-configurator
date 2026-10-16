@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.233.0 배포 기록**: `docs/qa/DEPLOYMENT_0.233_2026-10-16.md`(PR #354 → main 병합 `ea5d37a`, Pages 배포 run 38910325950 success, 공개 `CATALOG BASED · 0.233`·`layout-sim.js` 해시 일치·`CLAUDE.md` 404, 0.229 → 0.233 재번호 경위 포함)
 - **0.232.0 배포 기록**: `docs/qa/DEPLOYMENT_0.232_2026-10-16.md`(PR #359 → main 병합, Pages 배포 run 38909807341, 공개 `src/styles.css`의 `--rt-*` 변수 반영 확인)
 - **0.231.0 배포 기록**: `docs/qa/DEPLOYMENT_0.231_2026-10-16.md`(PR #357 → main 병합, Pages 배포 run 38908619438, 공개 QMS-44UX·QMS-88UX 카드 데이터·`mountMatrix` 확인)
 - **0.230.0 배포 기록**: `docs/qa/DEPLOYMENT_0.230_2026-10-16.md`(PR #355 → main 병합, 카드 정보 타일 모델명 잘림 개선)
@@ -84,13 +85,21 @@
 - **0.145.0 배포 기록**: `docs/qa/DEPLOYMENT_0.145_2026-09-29.md`(PR #194 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.144.0 배포 기록**: `docs/qa/DEPLOYMENT_0.144_2026-09-29.md`(PR #192 → main 병합, Pages 배포 run 162, 공개 파일 337/338 일치, `.nojekyll` 제외)
 
-## 0.234.0
+## 0.235.0
 
-다크 모드 B단계 ②(사용자 결정 2026-10-16 "계획대로 시작", `docs/implementation/DARK_MODE_0.234.md`):
+다크 모드 B단계 ②(사용자 결정 2026-10-16 "계획대로 시작", `docs/implementation/DARK_MODE_0.235.md`):
 
 - **다크 값 연결**: 기기 설정이 다크일 때(`@media screen and (prefers-color-scheme:dark)`) 페이지 `#000`, 카드 `#1C1C1E`, 안쪽 면 `#2C2C2E`, 글자 `#F5F5F7`, 보조 글자 `#8E8E93`, 강조 글자 `#409CFF`, 유리 면 `rgba(44,44,46,.58)`과 어두운 배경 그라데이션으로 바뀝니다. 0.232 변수 150개와 변수로 모으지 못한 직접 적힌 색 41곳을 `scripts/tools/dark_tokens.cjs`가 계산해 `src/styles.css` 맨 끝 블록에 씁니다(`--check`로 최신 여부 확인).
 - **밝게 유지**: 제품 사진 판넬, 카드 판넬 사진 받침(0.178 결정), SVG에 색이 직접 적힌 그림(제품 상세 그림·화면 구성 미리보기·딥 스위치·로터리·WOS100 레이어 팝업·크게 보기 창, B③에서 그림별로 정리), 구성 보고서 미리보기는 다크에서도 흰 판입니다. 신호 배지에는 다크에서만 옅은 테두리를 둡니다.
 - 라이트 화면과 인쇄는 바뀌지 않습니다(블록이 screen 조건 안에만 있음, 라이트 11개 화면 픽셀 비교). 단위 테스트 `tests/dark-mode.test.cjs` 5개를 더했습니다.
+
+## 0.234.0
+
+사용자 요청 2026-10-16("1~2번 진행해", 0.231 보고의 다음 단계 1번 "QMS 나머지 명령 확장"):
+
+- **QMS-44UX·QMS-88UX "설정 명령" 패널:** 명령을 고르고 값을 넣으면 매뉴얼 형식의 명령·HEX·AMX 한 줄이 바로 만들어집니다. 88UX는 출력 해상도(`OS`)·출력/입력 테스트 패턴(`OT`·`IT`)·비디오 월(`OW`)·멀티뷰(`Q`)·출력 초기화(`OR`)·출력 정보(`OF`), 44UX는 화면 모드(`W`: Matrix·Quad·Wall·Dual 레이아웃)·출력 해상도(`TC`)·Quad 줌(`Z`)·보레이트(`@`)입니다(매뉴얼 예시 14개와 글자까지 일치, 근거 쪽 표시).
+- 명령을 코드에 쓰지 않고 제품 JSON `controlExample.builders`에 정의하는 **명령 빌더** 구조로 만들어 모듈러 매트릭스(XDM·SPX·VDM)에도 같은 방식으로 확장할 수 있습니다(0.235 예정).
+- 근거·구조·되돌리기: `docs/implementation/CONTROL_EXAMPLE_QMS_CMD_0.234.md`, 화면: `docs/qa/control-example-0.234/`
 
 ## 0.233.0
 

@@ -1847,8 +1847,12 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-ce-chips{margin:8px 0 0;font:600 12px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--pg-ink);word-break:break-word}
 #rtcom-design .rt-ce-tok-sep{color:var(--rt-fg-9aa3b2)}
 @media (max-width:480px){#rtcom-design .rt-ce-cell-mini{min-height:30px;font-size:12px}#rtcom-design .rt-ce-grid-matrix{gap:3px}#rtcom-design .rt-ce-grid-matrix .rt-ce-rowhead{font-size:12px}}
+#rtcom-design .rt-ce-warn{margin:8px 0 0;padding:10px 12px;border-radius:12px;background:var(--pg-field-fill);font:600 13px/1.5 var(--pg-sans);color:var(--pg-ink)}
+#rtcom-design .rt-ce-page{color:var(--pg-muted);white-space:nowrap}
+#rtcom-design .rt-ce-oneline{margin-top:8px;font-size:12px;white-space:pre-wrap;word-break:break-all}
+#rtcom-design .rt-ce-builder .rt-ce-controls input[type=text]{min-width:180px}
 
-/* ==== 0.234 다크 값(자동 생성: scripts/tools/dark_tokens.cjs) 시작 ==== */
+/* ==== 0.235 다크 값(자동 생성: scripts/tools/dark_tokens.cjs) 시작 ==== */
 /* 기기 설정이 다크일 때만 적용한다(screen 한정: 인쇄는 항상 라이트). 라이트 화면은 이 블록의 영향을 받지 않는다.
    사진 판넬(--rt-photo, 카드 판넬 사진 받침)과 그림 판·보고서 미리보기는 밝게 유지한다. 손으로 정한 값은 이 도구에 있다. */
 @media screen and (prefers-color-scheme:dark){
@@ -2059,4 +2063,4 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
   #rtcom-design .rt-palette-tile img,#rtcom-design .rt-link-flow-node img[src*="assets/cards/"]{background:#eef1f5}
   #rtcom-design .rt-card-info-plate{background:#f2f5fa}
 }
-/* ==== 0.234 다크 값 끝 ==== */
+/* ==== 0.235 다크 값 끝 ==== */

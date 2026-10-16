@@ -147,11 +147,65 @@
     const parts=[mStart(),mId(spec),{kind:'cmd',text:def[0],title:def[1]},{kind:'vol',text:pad2(num),title:`Preset Number · 프리셋 ${num}번(01~${pad2(max)})`},mEnd()];
     return {text:textOf(parts),parts,number:num};
   }
+  // ---- 명령 빌더(제품 JSON의 builders): 매개변수를 고르면 매뉴얼 형식의 명령이 만들어진다 ----
+  // builder: {id,title,cmd,page,summary,order:[매개변수 id 또는 {lit,kind}],params:[{id,label,type:'select'|'number'|'list',prefix,pad,min,max,default,options,optional,style,kind}]}
+  //  - select: 옵션 값 앞에 prefix를 붙인다(예: H + 09). optional이면 빈 값("생략")을 고를 수 있다.
+  //  - number: min~max 정수, pad 자리 0 채움(예: V + 03).
+  //  - list: "1-4,8" 같은 번호 목록. style 'range'는 3개 이상 이어진 번호를 범위(O01-04)로, 'explicit'은 번호마다 적는다(O01O02O03).
+  //  - lit: 고정 글자(예: 멀티뷰의 S, 화면 모드의 M01).
+  function parseNumList(text,min,max){
+    const nums=new Set();
+    for(const part of String(text??'').split(/[,\s]+/).filter(Boolean)){
+      const m=part.match(/^(\d+)(?:-(\d+))?$/);if(!m)continue;
+      let a=Number(m[1]),b=m[2]===undefined?a:Number(m[2]);
+      if(a>b)[a,b]=[b,a];
+      for(let n=Math.max(a,min);n<=Math.min(b,max);n++)nums.add(n);
+    }
+    return [...nums].sort((x,y)=>x-y);
+  }
+  function formatNumList(nums,prefix,pad,style){
+    const out=[];let k=0;
+    while(k<nums.length){
+      let e=k;while(e+1<nums.length&&nums[e+1]===nums[e]+1)e++;
+      if(style!=='explicit'&&e-k+1>=3)out.push({text:`${prefix}${String(nums[k]).padStart(pad,'0')}-${String(nums[e]).padStart(pad,'0')}`,from:nums[k],to:nums[e]});
+      else for(let n=k;n<=e;n++)out.push({text:`${prefix}${String(nums[n]).padStart(pad,'0')}`,from:nums[n],to:nums[n]});
+      k=e+1;
+    }
+    return out;
+  }
+  function builderDefaults(b){const v={};for(const p of b.params||[])v[p.id]=p.default??'';return v}
+  function buildCommand(spec,b,values){
+    const vals={...builderDefaults(b),...(values||{})};
+    const parts=[mStart(),mId(spec)];
+    if(b.cmd)parts.push({kind:'cmd',text:b.cmd,title:`Command · ${b.title}`});
+    for(const item of b.order||[]){
+      if(typeof item==='object'&&item.lit!==undefined){parts.push({kind:item.kind||'cmd',text:item.lit,title:item.title||'고정 글자'});continue}
+      const p=(b.params||[]).find(x=>x.id===item);if(!p)continue;
+      const raw=vals[p.id],prefix=p.prefix||'',kind=p.kind||'vol';
+      if(p.type==='select'){
+        if(raw===''||raw===undefined||raw===null){if(p.optional)continue;return {error:`${p.label}을(를) 고르세요.`}}
+        const opt=(p.options||[]).find(o=>String(o[0])===String(raw));
+        if(!opt)return {error:`${p.label} 값이 올바르지 않습니다.`};
+        parts.push({kind,text:`${prefix}${opt[0]}`,title:`${p.label} · ${opt[1]}`});
+      }else if(p.type==='number'){
+        const n=clamp(Math.round(Number(raw)),p.min??0,p.max??99);
+        if(!Number.isFinite(n))return {error:`${p.label}을(를) 입력하세요.`};
+        parts.push({kind,text:`${prefix}${String(n).padStart(p.pad||2,'0')}`,title:`${p.label} · ${n}`});
+      }else if(p.type==='list'){
+        const nums=parseNumList(raw,p.min??1,p.max??99);
+        if(!nums.length)return {error:`${p.label}을(를) 입력하세요(예: 1-4,8, 범위 ${p.min??1}~${p.max??99}).`};
+        for(const it of formatNumList(nums,prefix,p.pad||2,p.style))parts.push({kind,text:it.text,title:it.from===it.to?`${p.label} · ${it.from}`:`${p.label} · ${it.from}~${it.to}(범위)`});
+      }
+    }
+    parts.push(mEnd());
+    return {text:textOf(parts),parts};
+  }
   const tokens=parts=>parts.map(p=>`<span class="rt-ce-tok rt-ce-tok-${p.kind}" title="${esc(p.title)}">${esc(p.text)}</span>`).join('');
   const range=(n,from=1)=>Array.from({length:n},(_,i)=>from+i);
 
   function mount(root,spec){
     if(spec.kind==='matrix')return mountMatrix(root,spec);
+    if(spec.kind==='builders')return mountBuilders(root,spec);
     let st={input:2,output:2,db:2};
     const key=`rtcom.controlExample.${spec.id||'x'}`;
     try{const v=JSON.parse(localStorage.getItem(key)||'null');if(v&&typeof v==='object')st={...st,...v}}catch{}
@@ -214,6 +268,84 @@
     });
     render();
   }
+  // 설정 명령 패널(spec.builders): 명령을 고르고 매개변수를 넣으면 명령·HEX·AMX 한 줄이 바로 만들어진다.
+  // 선택값은 이 브라우저에만 기억한다(rtcom.controlExample.<제품 id>.builder). 매트릭스 카드가 다시 그려져도 상태가 남도록 닫힘 변수로 둔다.
+  function createBuilderPanel(spec){
+    const list=spec.builders||[];
+    const key=`rtcom.controlExample.${spec.id||'x'}.builder`;
+    let st={sel:list[0]?.id,values:{}};
+    try{const v=JSON.parse(localStorage.getItem(key)||'null');if(v&&typeof v==='object')st={...st,...v,values:{...(v.values||{})}}}catch{}
+    if(!list.some(b=>b.id===st.sel))st.sel=list[0]?.id;
+    const save=()=>{try{localStorage.setItem(key,JSON.stringify(st))}catch{}};
+    const cur=()=>list.find(b=>b.id===st.sel)||list[0];
+    const valuesOf=b=>({...builderDefaults(b),...(st.values[b.id]||{})});
+    let lastText='';
+    const control=(b,p,v)=>{
+      const val=v[p.id];
+      if(p.type==='select')return `<label>${esc(p.label)}<select data-ce-bp="${esc(p.id)}">${p.optional?`<option value=""${val===''?' selected':''}>(생략)</option>`:''}${(p.options||[]).map(o=>`<option value="${esc(o[0])}"${String(o[0])===String(val)?' selected':''}>${esc(o[1])}</option>`).join('')}</select></label>`;
+      if(p.type==='number')return `<label>${esc(p.label)}<input type="number" data-ce-bp="${esc(p.id)}" value="${esc(val)}" min="${p.min??0}" max="${p.max??99}" step="1"></label>`;
+      return `<label>${esc(p.label)}<input type="text" data-ce-bp="${esc(p.id)}" value="${esc(val)}" placeholder="예: 1-4,8" autocomplete="off"></label>`;
+    };
+    function output(b){
+      const r=buildCommand(spec,b,valuesOf(b));
+      if(r.error){lastText='';return `<p class="rt-ce-warn">${esc(r.error)}</p>`}
+      lastText=r.text;
+      const dev=spec.amxDevice||'dvSwitcher';
+      return `<div class="rt-ce-head"><h3>${esc(b.title)}${b.cmd?` (${esc(b.cmd)})`:''}</h3><button type="button" class="rt-pg-btn" data-ce-bcopy>복사</button><span class="rt-ce-copied" data-ce-bnote aria-live="polite"></span></div>
+        <pre class="rt-ce-cmd"><span class="rt-ce-line"><small>${esc(b.title)} · 매뉴얼 ${esc(b.page)}</small>${tokens(r.parts)}<span class="rt-ce-cr" title="Enter · 0x0D">⏎</span></span></pre>
+        <p class="rt-ce-hex">HEX <code>${esc(toHex(r.text))}</code></p>
+        <pre class="rt-ce-cmd rt-ce-code rt-ce-oneline">SEND_STRING ${esc(dev)},"'${esc(r.text)}',$0D"</pre>`;
+    }
+    function render(el){
+      const b=cur();if(!b){el.innerHTML='';return}
+      const v=valuesOf(b);
+      el.innerHTML=`<div class="rt-ce-block"><div class="rt-ce-head"><h3>설정 명령 · ${list.length}종</h3></div>
+        <div class="rt-ce-controls"><label>명령<select data-ce-bsel>${list.map(x=>`<option value="${esc(x.id)}"${x.id===b.id?' selected':''}>${esc(x.title)}${x.cmd?` (${esc(x.cmd)})`:''}</option>`).join('')}</select></label></div>
+        <p class="rt-ce-hint-inline">${esc(b.summary||'')} <span class="rt-ce-page">매뉴얼 ${esc(b.page)}</span></p>
+        <div class="rt-ce-controls">${(b.params||[]).map(p=>control(b,p,v)).join('')}</div>
+        <div data-ce-bout>${output(b)}</div></div>`;
+    }
+    function mount(el){
+      if(!el)return;
+      render(el);
+      el.addEventListener('change',event=>{
+        const sel=event.target.closest('[data-ce-bsel]');
+        if(sel){st.sel=sel.value;save();render(el);return}
+        const f=event.target.closest('[data-ce-bp]');if(!f)return;
+        const b=cur();st.values[b.id]={...(st.values[b.id]||{}),[f.dataset.ceBp]:f.value};save();
+        el.querySelector('[data-ce-bout]').innerHTML=output(b);
+      });
+      el.addEventListener('input',event=>{
+        const f=event.target.closest('[data-ce-bp]');if(!f||f.tagName==='SELECT')return;
+        const b=cur();st.values[b.id]={...(st.values[b.id]||{}),[f.dataset.ceBp]:f.value};save();
+        el.querySelector('[data-ce-bout]').innerHTML=output(b);
+      });
+      el.addEventListener('click',event=>{
+        if(!event.target.closest('[data-ce-bcopy]')||!lastText)return;
+        const note=el.querySelector('[data-ce-bnote]');
+        const done=()=>{if(note){note.textContent='복사했습니다';setTimeout(()=>{note.textContent=''},1800)}};
+        if(navigator.clipboard?.writeText)navigator.clipboard.writeText(lastText).then(done,()=>{if(note)note.textContent='복사하지 못했습니다. 직접 선택해 복사하세요.'});
+        else{const pre=el.querySelector('[data-ce-bout] pre');const r=document.createRange();r.selectNodeContents(pre);const sl=getSelection();sl.removeAllRanges();sl.addRange(r);done()}
+      });
+    }
+    return {mount};
+  }
+  // 빌더만 있는 제품(모듈러 매트릭스 시리즈 등): 통신 설정과 AMX 시작 코드, 설정 명령 패널.
+  function mountBuilders(root,spec){
+    const baud=spec.serial?.baud||9600;
+    root.innerHTML=`<div class="rt-ce-block"><div class="rt-ce-head"><h3>통신 설정과 AMX 시작 코드</h3><button type="button" class="rt-pg-btn" data-ce-copy="amx">복사</button><span class="rt-ce-copied" data-ce-note="amx" aria-live="polite"></span></div>
+      <pre class="rt-ce-cmd rt-ce-code" data-ce-text="amx">${esc(amxCode(spec,[]))}</pre></div>
+      <div data-ce-builders></div>
+      <p class="rt-pg-hint">※ 근거: ${esc(spec.source)}. 통신 ${baud}bps ${esc(spec.serial?.confirmed||'')}. 문장 끝에 Enter를 붙입니다. 제품 ID는 ${esc(spec.productId)}입니다(${esc(spec.productIdNote||'')}).</p>
+      <p class="rt-pg-hint">※ ${esc(spec.limits||'')} AMX 장치 번호와 버튼 번호는 현장에 맞게 바꾸세요.</p>`;
+    createBuilderPanel(spec).mount(root.querySelector('[data-ce-builders]'));
+    root.addEventListener('click',event=>{
+      const btn=event.target.closest('[data-ce-copy]');if(!btn)return;
+      const pre=root.querySelector('[data-ce-text="amx"]'),note=root.querySelector('[data-ce-note="amx"]');
+      const done=()=>{if(note){note.textContent='복사했습니다';setTimeout(()=>{note.textContent=''},1800)}};
+      if(navigator.clipboard?.writeText)navigator.clipboard.writeText(pre.textContent).then(done,()=>{if(note)note.textContent='복사하지 못했습니다. 직접 선택해 복사하세요.'});
+    });
+  }
   function mountMatrix(root,spec){
     const key=`rtcom.controlExample.${spec.id||'x'}`;
     const manual=(spec.defaultRoutes||[[4,1],[2,2]]).map(r=>[...r]);
@@ -224,6 +356,7 @@
     if(st.action==='D'&&!spec.commands?.disconnect)st.action='C';
     const nIn=spec.inputCodes.length,nOut=spec.outputCodes.length,presetMax=spec.commands?.preset?.max||0;
     const has=(i,o)=>st.routes.some(r=>r[0]===i&&r[1]===o);
+    const panel=spec.builders?.length?createBuilderPanel(spec):null;
     function render(){
       const cmd=routeCommand(spec,st.routes,st.action);
       const grid=`<div class="rt-ce-grid rt-ce-grid-matrix" role="group" aria-label="입력·출력 라우팅 표" style="--rt-ce-cols:${nOut}">
@@ -249,10 +382,12 @@
         ${cmd?`<pre class="rt-ce-cmd" data-ce-text="route"><span class="rt-ce-line"><small>${cmd.action==='A'?'한 입력을 모든 출력에(A)':cmd.action==='D'?'선택한 경로 연결 해제(D)':'선택한 경로 연결(C)'}</small>${tokens(cmd.parts)}<span class="rt-ce-cr" title="Enter · 0x0D">⏎</span></span></pre>
         <p class="rt-ce-hex">HEX <code>${esc(toHex(cmd.text))}</code></p>`:'<pre class="rt-ce-cmd" data-ce-text="route"><span class="rt-ce-line"><small>경로를 선택하면 커맨드가 만들어집니다.</small></span></pre>'}</div>
       ${presetMax?`<div class="rt-ce-controls"><label>프리셋 번호<input type="number" data-ce-field="preset" value="${st.preset}" min="1" max="${presetMax}" step="1"></label></div>${presetBlocks}`:''}
+      ${panel?'<div data-ce-builders></div>':''}
       <div class="rt-ce-block"><div class="rt-ce-head"><h3>AMX NetLinx 예제 (${presetMax?'경로 · 프리셋 불러오기':'선택한 경로'})</h3><button type="button" class="rt-pg-btn" data-ce-copy="amx"${amxList.length?'':' disabled'}>복사</button><span class="rt-ce-copied" data-ce-note="amx" aria-live="polite"></span></div>
         <pre class="rt-ce-cmd rt-ce-code" data-ce-text="amx">${amxList.length?esc(amxCode(spec,amxList)):'경로를 선택하면 코드가 만들어집니다.'}</pre></div>
       <p class="rt-pg-hint">※ 근거: ${esc(spec.source)}. 통신 ${spec.serial?.baud}bps ${esc(spec.serial?.confirmed||'')}. 문장 끝에 Enter(CR 0x0D)를 붙입니다. 제품 ID는 매뉴얼 예시의 ${esc(spec.productId)}입니다(${esc(spec.productIdNote||'')}).</p>
       <p class="rt-pg-hint">※ ${esc(spec.limits||'')} AMX 장치 번호와 버튼 번호는 현장에 맞게 바꾸세요.</p>`;
+      if(panel)panel.mount(root.querySelector('[data-ce-builders]'));
     }
     root.addEventListener('change',event=>{
       const f=event.target.closest('[data-ce-field]');if(!f)return;
@@ -292,5 +427,5 @@
       try{mount(el,JSON.parse(el.dataset.controlExample))}catch{el.textContent='커맨드 예시를 불러오지 못했습니다.'}
     });
   }
-  return {routeCommand,presetCommand,switchCommand,volumeCommand,muteCommand,volumeCode,dbOf,toHex,amxCode,mount,mountAll};
+  return {parseNumList,formatNumList,buildCommand,builderDefaults,routeCommand,presetCommand,switchCommand,volumeCommand,muteCommand,volumeCode,dbOf,toHex,amxCode,mount,mountAll};
 });

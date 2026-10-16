@@ -608,6 +608,26 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       const info=await page.evaluate(()=>({cells:document.querySelectorAll('.rt-pg-control .rt-ce-cell').length,presets:document.querySelectorAll('.rt-pg-control [data-ce-text^="preset-"]').length,pc:document.querySelector('.rt-pg-control [data-ce-text="preset-call"]')?.textContent.replace(/\s+/g,' ')||'',amx:document.querySelector('.rt-pg-control [data-ce-text="amx"]').textContent,idx:document.querySelector('.rt-pg-control .rt-pg-idx').textContent,overflow:document.documentElement.scrollWidth>innerWidth}));
       check(`${id} AMX 커맨드 카드: 매뉴얼 예시 ${first}, 칸 추가 ${after}, 모든 출력에 ${allCmd}, 프리셋 ${presets}개, 115200 AMX 코드, 가로 넘침 없음`,r0.includes(first)&&r1.includes(after)&&r2.includes(allCmd)&&info.presets===presets&&(presets?info.pc.includes('*255PC01!'):true)&&/SET BAUD 115200,N,8,1/.test(info.amx)&&info.cells>=16&&!info.overflow,JSON.stringify({r0,r1,r2,...info,amx:undefined}).slice(0,320));
     }
+    // 0.234 QMS 설정 명령 패널(명령 빌더): 명령을 고르고 값을 넣으면 매뉴얼 예시와 같은 명령이 만들어진다.
+    for(const [id,steps] of [['qms-88ux',[['res','*255OSO01-10H10!'],['wall','*255OWO01-06M13H02V03O01O02O03O04O05O06!'],['mv','*255QM13L01S00!'],['tp','*255OTO01-04M06!']]],['qms-44ux',[['wm','*01WM01!'],['wmw','*01WM02P21!'],['tc','*01TCO01S02!'],['baud','*01@05!']]]]){
+      await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
+      await page.waitForSelector('.rt-pg-control [data-ce-bsel]');
+      const seen=[];
+      for(const [bid,expect] of steps){
+        await page.selectOption('.rt-pg-control [data-ce-bsel]',bid);
+        const text=(await page.locator('.rt-pg-control [data-ce-bout] .rt-ce-cmd').first().innerText()).replace(/\s+/g,' ');
+        seen.push([bid,text.includes(expect)]);
+      }
+      let edited='';
+      if(id==='qms-88ux'){
+        await page.selectOption('.rt-pg-control [data-ce-bsel]','res');
+        await page.fill('.rt-pg-control [data-ce-bp="out"]','4,8');
+        await page.selectOption('.rt-pg-control [data-ce-bp="res"]','09');
+        edited=(await page.locator('.rt-pg-control [data-ce-bout] .rt-ce-cmd').first().innerText()).replace(/\s+/g,' ');
+      }
+      const over=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
+      check(`${id} 설정 명령 패널: ${steps.map(x=>x[1]).join(' · ')}${id==='qms-88ux'?' · 값 직접 입력 *255OSO04O08H09!':''} 가 만들어지고 가로 넘침 없음`,seen.every(x=>x[1])&&(id!=='qms-88ux'||edited.includes('*255OSO04O08H09!'))&&!over,JSON.stringify({seen,edited,over}).slice(0,260));
+    }
     // 0.62 HDS-21U·HDS-42MU 딥 스위치 칸 순서: ON이 왼쪽, OFF가 오른쪽(dipSwitch.order, 사용자 요청 2026-09-27). HD-210U는 OFF → ON 그대로.
     for(const [id,first] of [['hds-21u','ON'],['hds-42mu','ON'],['hd-210u','OFF']]){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
