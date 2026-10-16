@@ -30,10 +30,12 @@
 검토 40행은 2026-10-14 사용자 결정으로 모두 정리했습니다(`docs/implementation/TERMS_REVIEW_DECISIONS_0.218.md`: 믹스 → 병합, Touch Screen → 터치스크린, 짧은 영문 원문 유지).
 - 영문 분류명(1x4 HDMI 18Gbps Splitter 등)과 모델명 축약(CTR100 등)은 사용자 "pass"로 그대로 둡니다. 다시 정할 때 이 항목에서 시작합니다.
 
-## AMX 통합 제어 커맨드 예시 확장(0.229) — 제품별 자료·확인 대기
+## AMX 통합 제어 커맨드 예시 확장(0.229·0.230) — 제품별 자료·확인 대기
 
-`docs/implementation/CONTROL_EXAMPLE_0.229.md`. HDS-42MU·HDS-21U는 0.229에 반영했습니다. 사용자 지시 순서대로 확장합니다.
-- [ ] 일체형 매트릭스(QMS-44UX·QMS-88UX), 모듈러 매트릭스(XDM·SPX·VDM): RS-232/Telnet 명령 가이드가 필요합니다(XDM은 `XDM Command Guide 1013`을 시뮬레이터에 이미 사용). 명령 문법이 다르므로 제품별 생성기를 추가합니다
+`docs/implementation/CONTROL_EXAMPLE_0.229.md`(HDS-42MU·HDS-21U), `docs/implementation/CONTROL_EXAMPLE_QMS_0.230.md`(QMS-44UX·QMS-88UX). 사용자 지시 순서대로 확장합니다.
+- [ ] 모듈러 매트릭스(XDM·SPX·VDM): XDM은 `XDM Command Guide 1013`(시뮬레이터에 이미 사용, `OW`·`OQ`·`C` 커맨드), SPX·VDM은 RS-232/Telnet 명령 가이드가 필요합니다. 카드 슬롯 구성에 따라 출력이 바뀌므로 구성기 연동을 함께 정해야 합니다
+- [ ] QMS 나머지 명령(멀티뷰 Q·월·화면 모드·해상도·OSD): 이번 카드에는 연결·프리셋만 넣었습니다. 필요하면 다음 단계로 진행
+- [ ] QMS-44UX 연결 해제·프리셋 명령 유무(28쪽 예시에서 확인 못 함), QMS-88UX 입력 Q1·Q2 표기(`IQ1`)와 콤마 앞 공백 허용 여부를 RT컴에 확인
 - [ ] HDS-42MU 뮤트 명령: HDS-21U 매뉴얼 표에는 Mute 칸(값 0 → `*000V00!`)이 있으나 HDS-42MU 매뉴얼 9쪽 표에는 없습니다(딥 스위치 카드 note는 "뮤트할 수 있다"). RT컴에 42MU 뮤트 코드, 뮤트 해제 방식, 두 제품의 데이터 비트·패리티·스톱 비트, 볼륨 허용 범위를 확인
 
 ## AI 검색 사내 베타(0.142) — 사용자 설정 대기

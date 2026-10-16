@@ -594,6 +594,20 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await page.waitForSelector('.rt-pg-control .rt-ce-cmd');
     const ce21={cells:await page.locator('.rt-pg-control .rt-ce-cell').count(),sw:(await ceText('sw')).replace(/\s+/g,' '),mute:(await ceText('mute')).replace(/\s+/g,' '),amx:await ceText('amx'),idx:await page.locator('.rt-pg-control .rt-pg-idx').innerText(),overflow:await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth)};
     check('HDS-21U AMX 커맨드 카드: 표 2칸·*000CI02O01!(IN 2 → OUT 1)·뮤트 *000V00!·AMX 버튼 3개·가로 넘침 없음',ce21.cells===2&&/\*000CI02O01!/.test(ce21.sw)&&/\*000V00!/.test(ce21.mute)&&(ce21.amx.match(/BUTTON_EVENT/g)||[]).length===3&&!ce21.overflow,JSON.stringify(ce21).slice(0,260));
+    // 0.230 QMS-88UX·QMS-44UX 같은 카드(매트릭스 표): 매뉴얼 예시 경로가 처음 선택돼 있고, 칸을 누르면 경로가 합쳐지고, "모든 출력에 연결"은 88UX 범위(O01-10)·44UX A 명령이 된다.
+    for(const [id,first,addCell,after,allCmd,presets] of [['qms-88ux','*255CI04O01,I02O02!','1,3','*255CI04O01,I02O02,I01O03!','*255CI01O01-10!',3],['qms-44ux','*01CI04O01,I02O02!','1,3','*01CI04O01,I02O02,I01O03!','*01AI01!',0]]){
+      await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
+      await page.waitForSelector('.rt-pg-control .rt-ce-cmd');
+      const route=()=>page.locator('.rt-pg-control [data-ce-text="route"]').innerText().then(t=>t.replace(/\s+/g,' '));
+      const r0=await route();
+      await page.click(`.rt-pg-control [data-ce-cell="${addCell}"]`);
+      const r1=await route();
+      await page.selectOption('.rt-pg-control [data-ce-field="allIn"]','1');
+      await page.click('.rt-pg-control [data-ce-act="all"]');
+      const r2=await route();
+      const info=await page.evaluate(()=>({cells:document.querySelectorAll('.rt-pg-control .rt-ce-cell').length,presets:document.querySelectorAll('.rt-pg-control [data-ce-text^="preset-"]').length,pc:document.querySelector('.rt-pg-control [data-ce-text="preset-call"]')?.textContent.replace(/\s+/g,' ')||'',amx:document.querySelector('.rt-pg-control [data-ce-text="amx"]').textContent,idx:document.querySelector('.rt-pg-control .rt-pg-idx').textContent,overflow:document.documentElement.scrollWidth>innerWidth}));
+      check(`${id} AMX 커맨드 카드: 매뉴얼 예시 ${first}, 칸 추가 ${after}, 모든 출력에 ${allCmd}, 프리셋 ${presets}개, 115200 AMX 코드, 가로 넘침 없음`,r0.includes(first)&&r1.includes(after)&&r2.includes(allCmd)&&info.presets===presets&&(presets?info.pc.includes('*255PC01!'):true)&&/SET BAUD 115200,N,8,1/.test(info.amx)&&info.cells>=16&&!info.overflow,JSON.stringify({r0,r1,r2,...info,amx:undefined}).slice(0,320));
+    }
     // 0.62 HDS-21U·HDS-42MU 딥 스위치 칸 순서: ON이 왼쪽, OFF가 오른쪽(dipSwitch.order, 사용자 요청 2026-09-27). HD-210U는 OFF → ON 그대로.
     for(const [id,first] of [['hds-21u','ON'],['hds-42mu','ON'],['hd-210u','OFF']]){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
