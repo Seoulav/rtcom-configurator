@@ -655,7 +655,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     {
       const openCount=()=>page.locator('dialog[open]').count();
       // 0.209 XDM 커맨드 가이드(알티컴 1013판, 사용자 결정 2026-10-13 "공개 진행"): 제품 상세 문서 버튼에 "커맨드 가이드 보기 | 다운로드"가 있다.
-      const xdmDocs=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-doc[data-doc="Manual"] .rt-pg-doc-open')].map(b=>b.textContent.trim()+'>'+(b.dataset.docPreview||'')).join('|'));
+      const xdmDocs=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-doc[data-doc="Manual"] .rt-pg-doc-open')].map(b=>(b.querySelector('b')||b).textContent.trim()+'>'+(b.dataset.docPreview||'')).join('|'));
       check('XDM 제품 상세 문서 버튼에 매뉴얼과 커맨드 가이드(PDF.js 팝업·다운로드)가 함께 있음',xdmDocs==='매뉴얼 보기>output/design/assets/docs/xdm-manual.pdf|커맨드 가이드 보기>output/design/assets/docs/xdm-command-guide.pdf'&&await page.locator('.rt-pg-doc-save[download="xdm-command-guide.pdf"]').count()===1,xdmDocs);
       await page.click('[data-pg-card="XDM-WOS100"]');
       const wosCta=await page.locator('dialog[open] .rt-feature-cta [data-card-feature="layer-compare"]').count();

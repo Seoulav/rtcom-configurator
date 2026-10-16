@@ -759,6 +759,18 @@
     const DOC_LABEL={Catalog:'카탈로그',Manual:'매뉴얼',ProductSheet:'제품 안내서'};
     const docFile=file=>`output/design/assets/docs/${encodeURIComponent(file)}`;
     const DOWNLOAD_ICON='<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M8 2v8m0 0L4.8 6.8M8 10l3.2-3.2M3 13h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    // 0.222 문서 버튼 카드형(사용자 선택 2026-10-16 시안 A): 종류별 색 아이콘 + "○○ 보기" + 보조 줄(쪽수·판 번호·PDF), 오른쪽은 다운로드 칸.
+    const DOC_ICON={
+      Catalog:'<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2.5" y="2.5" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M5.5 6h5M5.5 9h3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+      Manual:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3.5h4a2 2 0 0 1 2 2v7a1.5 1.5 0 0 0-1.5-1.5H3zM13 3.5H9a2 2 0 0 0-2 2v7a1.5 1.5 0 0 1 1.5-1.5H13z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      ProductSheet:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5h6l2.5 2.5v8.5H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6 8.5h4M6 11h3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'
+    };
+    function docSub(doc){
+      if(doc.page)return `${doc.page}쪽`;
+      const ver=String(doc.title||'').match(/Ver\.?\s?\d+(?:\.\d+)*/i);
+      return ver?ver[0].replace(/\s/g,''):'PDF';
+    }
+    const docFace=(doc,label)=>`<span class="rt-pg-doc-kind" aria-hidden="true">${DOC_ICON[doc.type]||DOC_ICON.Catalog}</span><span class="rt-pg-doc-txt"><b>${esc(label)} 보기</b><small>${esc(docSub(doc))}</small></span>`;
     function docButtons(item){
       const order=Object.keys(DOC_LABEL);
       return (item.documents||[]).filter(doc=>doc.file&&DOC_LABEL[doc.type]).sort((a,b)=>order.indexOf(a.type)-order.indexOf(b.type)).map(doc=>{
@@ -769,9 +781,9 @@
         const popup=doc.preview==='image'||doc.preview==='pdfjs';
         const images=doc.preview==='image'?(doc.previewImages||[]).map(name=>image(name)).join('|'):'';
         const openEl=popup
-          ?`<button type="button" class="rt-pg-doc-open" data-doc-preview="${href}" data-doc-kind="${doc.preview}"${images?` data-doc-images="${images}"`:''} data-doc-title="${title}" title="${title} · 미리보기">${esc(label)} 보기</button>`
-          :`<a class="rt-pg-doc-open" href="${href}${doc.page?`#page=${doc.page}`:''}" target="_blank" rel="noopener" title="${title} · 새 탭에서 보기">${esc(label)} 보기${doc.page?` <small>${doc.page}쪽</small>`:''}</a>`;
-        return `<span class="rt-pg-doc" data-doc="${esc(doc.type)}">${openEl}<a class="rt-pg-doc-save" href="${href}" download="${esc(doc.file)}" title="${title} · 다운로드(전체 파일)" aria-label="${esc(label)} 다운로드">${DOWNLOAD_ICON}<span class="rt-pg-doc-save-text">다운로드</span></a></span>`;
+          ?`<button type="button" class="rt-pg-doc-open" data-doc-preview="${href}" data-doc-kind="${doc.preview}"${images?` data-doc-images="${images}"`:''} data-doc-title="${title}" title="${title} · 미리보기">${docFace(doc,label)}</button>`
+          :`<a class="rt-pg-doc-open" href="${href}${doc.page?`#page=${doc.page}`:''}" target="_blank" rel="noopener" title="${title} · 새 탭에서 보기">${docFace(doc,label)}</a>`;
+        return `<span class="rt-pg-doc rt-pg-doc-card" data-doc="${esc(doc.type)}">${openEl}<a class="rt-pg-doc-save" href="${href}" download="${esc(doc.file)}" title="${title} · 다운로드(전체 파일)" aria-label="${esc(label)} 다운로드">${DOWNLOAD_ICON}<span class="rt-pg-doc-save-text">다운로드</span></a></span>`;
       }).join('');
     }
     // 제품 목록 화면의 "전체 카탈로그" 버튼(0.95): 링크 하나로 카탈로그 전체를 공유한다.

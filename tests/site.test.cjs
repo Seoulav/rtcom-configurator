@@ -624,6 +624,15 @@ test('0.191: 커넥터는 암수(Female) 표기 없이 QMS-44UX처럼 이름만 
   assert.equal(q.io[0].connector,'HDMI');
 });
 
+test('0.222: 문서 버튼은 종류별 색 아이콘·보조 줄(쪽수·판·PDF)이 있는 카드형(시안 A)',()=>{
+  const p=read('src/products.js'),c=read('src/styles.css');
+  assert.match(p,/rt-pg-doc rt-pg-doc-card/);assert.match(p,/function docSub\(doc\)/);assert.match(p,/rt-pg-doc-kind/);
+  for(const type of ['Catalog','Manual','ProductSheet'])assert.match(p,new RegExp(`${type}:'<svg`));
+  assert.match(c,/\.rt-pg-doc-card\[data-doc="Manual"\]\{--doc-c:var\(--pg-purple-ink\)\}/);
+  assert.match(c,/\.rt-pg-doc-card \.rt-pg-doc-save\{/);
+  assert.doesNotMatch(p.replace(/\/\/.*$/gm,''),/rt-pg-doc-card[^`]*officialLinks/);
+});
+
 test('0.192: 문서 버튼은 "카탈로그 보기 | ↓ 다운로드", 화면 문구는 "다운로드"로 통일',()=>{
   const p=read('src/products.js'),a=read('src/app.js'),c=read('src/styles.css');
   assert.match(p,/\$\{esc\(label\)\} 보기/);assert.match(p,/rt-pg-doc-save-text">다운로드</);assert.match(p,/>새 탭<\/a>/);
