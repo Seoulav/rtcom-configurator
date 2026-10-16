@@ -171,6 +171,18 @@
     const windows=s.windows.slice();[windows[top],windows[index]]=[windows[index],windows[top]];
     return {...s,windows};
   }
+  // 0.226 두 카드를 한 구성에: WOS100 월 + HOS100 멀티뷰(사용자 설명 2026-10-16 "둘 다 사용하는 경우가 있거든 … 각각의 커맨드 구성을 … 선택해서 볼 수 있었으면").
+  // include로 포함할 카드를 고르고, 출력 포트 범위가 겹치면 경고한다.
+  function combinedCommands(wos,hos,include){
+    const inc={wos:include?.wos!==false,hos:include?.hos!==false};
+    const lines=[],warnings=[];
+    let wosRange=null,hosRange=null;
+    if(inc.wos){const r=commandFor(wos);wosRange=[r.geometry.startPort,r.geometry.endPort];lines.push({card:'WOS100',label:`XDM-WOS100 월 오버레이 · 출력 ${wosRange[0]}~${wosRange[1]}번`,text:r.command});r.warnings.forEach(w=>warnings.push(`[WOS100] ${w}`))}
+    if(inc.hos){const r=hosCommandFor(hos),s=normalizeHos(hos);hosRange=[s.startPort,s.startPort+3];if(r.switching)lines.push({card:'HOS100',label:`XDM-HOS100 입력 → 포트 연결 · 출력 ${hosRange[0]}~${hosRange[1]}번`,text:r.switching});lines.push({card:'HOS100',label:`XDM-HOS100 멀티뷰 레이아웃 ${r.layout.code}`,text:r.command});r.warnings.forEach(w=>warnings.push(`[HOS100] ${w}`))}
+    if(wosRange&&hosRange&&hosRange[0]<=wosRange[1]&&hosRange[1]>=wosRange[0])warnings.push(`두 카드의 출력 포트가 겹칩니다(WOS100 ${wosRange[0]}~${wosRange[1]}번, HOS100 ${hosRange[0]}~${hosRange[1]}번). HOS100 카드 시작 포트를 ${wosRange[1]+1}번으로 옮기세요.`);
+    if(!lines.length)warnings.push('포함한 카드가 없습니다. WOS100 또는 HOS100을 구성에 포함하세요.');
+    return {lines,warnings,overlap:!!(wosRange&&hosRange&&hosRange[0]<=wosRange[1]&&hosRange[1]>=wosRange[0]),nextFreePort:wosRange?wosRange[1]+1:1};
+  }
   const HOS_PRESETS=[
     {id:'hos-guide-stairs',name:'가이드 예제 · 계단식 사용자 배치(창 4개, 4K/60)',source:'Command Guide 28쪽',
       state:{timing:14,startPort:1,layout:'L00',priority:'4321',windows:[{input:1,x:0,y:0,w:960,h:540},{input:2,x:960,y:540,w:960,h:540},{input:3,x:1920,y:1080,w:960,h:540},{input:4,x:2880,y:1620,w:960,h:540}]},
@@ -319,7 +331,7 @@
 
   // ---------------- 브라우저 UI ----------------
   const STORE_KEY='rtcom.layoutSim.v1';
-  const CARD_KEY='rtcom.layoutSim.card.v1',HOS_KEY='rtcom.layoutSim.hos.v1';
+  const CARD_KEY='rtcom.layoutSim.card.v1',HOS_KEY='rtcom.layoutSim.hos.v1',INCLUDE_KEY='rtcom.layoutSim.include.v1';
   const loadKey=(key,norm)=>{try{const raw=localStorage.getItem(key);return raw?norm(JSON.parse(raw)):null}catch(e){return null}};
   const saveKey=(key,value)=>{try{localStorage.setItem(key,typeof value==='string'?value:JSON.stringify(value))}catch(e){}};
   const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -332,10 +344,26 @@
     root.dataset.layoutSimMounted='1';
     let state=load()||normalize({...PRESETS[0].state});
     let hos=loadKey(HOS_KEY,normalizeHos)||normalizeHos({});
-    let card=loadKey(CARD_KEY,v=>v==='HOS100'?'HOS100':'WOS100')||'WOS100';
+    let card=loadKey(CARD_KEY,v=>v==='HOS100'?'HOS100':v==='ALL'?'ALL':'WOS100')||'WOS100';
+    let include=loadKey(INCLUDE_KEY,v=>({wos:v?.wos!==false,hos:v?.hos!==false}))||{wos:true,hos:true};
     let selected=state.windows.length?0:-1;
     const option=(v,label,cur,disabled)=>`<option value="${esc(v)}"${String(v)===String(cur)?' selected':''}${disabled?' disabled':''}>${esc(label)}</option>`;
-    const cardSeg=()=>`<div class="rt-ls-cardseg"><span class="rt-pg-seg" role="group" aria-label="출력 카드 선택"><button type="button" class="${card==='WOS100'?'rt-pg-on':''}" data-ls-card="WOS100" aria-pressed="${card==='WOS100'}">XDM-WOS100 · 월 오버레이(OW)</button><button type="button" class="${card==='HOS100'?'rt-pg-on':''}" data-ls-card="HOS100" aria-pressed="${card==='HOS100'}">XDM-HOS100 · 한 화면 멀티뷰(OQ)</button></span></div>`;
+    const cardSeg=()=>`<div class="rt-ls-cardseg"><span class="rt-pg-seg" role="group" aria-label="출력 카드 선택"><button type="button" class="${card==='WOS100'?'rt-pg-on':''}" data-ls-card="WOS100" aria-pressed="${card==='WOS100'}">XDM-WOS100 · 월 오버레이(OW)</button><button type="button" class="${card==='HOS100'?'rt-pg-on':''}" data-ls-card="HOS100" aria-pressed="${card==='HOS100'}">XDM-HOS100 · 한 화면 멀티뷰(OQ)</button><button type="button" class="${card==='ALL'?'rt-pg-on':''}" data-ls-card="ALL" aria-pressed="${card==='ALL'}">전체 커맨드(두 카드)</button></span>
+      <label class="rt-ls-check rt-ls-include"><input type="checkbox" data-ls-include="wos"${include.wos?' checked':''}> WOS100 포함</label><label class="rt-ls-check rt-ls-include"><input type="checkbox" data-ls-include="hos"${include.hos?' checked':''}> HOS100 포함</label></div>`;
+    // ---- 전체 커맨드(두 카드) ----
+    const renderAll=()=>{
+      const c=combinedCommands(state,hos,include),geo=geometry(state),hs=normalizeHos(hos),hl=hosLayout(hs.layout),ht=timingOf(hs.timing);
+      root.innerHTML=`${cardSeg()}
+      <p class="rt-ls-summary">한 현장에서 두 카드를 함께 쓸 때의 커맨드 묶음입니다. ${include.wos?`<b>WOS100</b> ${geo.cols}×${geo.rows} 월(${geo.timing.label}, 출력 ${geo.startPort}~${geo.endPort}번, 창 ${state.windows.length}개)`:'<s>WOS100 제외</s>'} · ${include.hos?`<b>HOS100</b> ${hl.code} ${hl.name}(${ht.label}, 출력 ${hs.startPort}~${hs.startPort+3}번)`:'<s>HOS100 제외</s>'}</p>
+      <div class="rt-ls-allgrid">
+        <div class="rt-ls-allcard${include.wos?'':' is-off'}"><h4>XDM-WOS100 · 월 오버레이</h4><div class="rt-ls-mini" style="aspect-ratio:${geo.width} / ${geo.height}">${portMapFor(state).map((row,r)=>row.map((port,col)=>`<i style="left:${(col/geo.cols)*100}%;top:${(r/geo.rows)*100}%;width:${100/geo.cols}%;height:${100/geo.rows}%"><span>${port}</span></i>`).join('')).join('')}${state.windows.map((w,i)=>`<b style="left:${(w.x/geo.width)*100}%;top:${(w.y/geo.height)*100}%;width:${(w.w/geo.width)*100}%;height:${(w.h/geo.height)*100}%;--rt-ls-color:${colorOf(i)}">입력 ${w.input}</b>`).join('')}</div><button type="button" class="rt-pg-btn" data-ls-card="WOS100">WOS100 편집</button></div>
+        <div class="rt-ls-allcard${include.hos?'':' is-off'}"><h4>XDM-HOS100 · 한 화면 멀티뷰</h4><div class="rt-ls-mini" style="aspect-ratio:${ht.w} / ${ht.h}"><i style="left:0;top:0;width:100%;height:100%"><span>${hs.startPort}</span></i>${hosWindows(hs).filter(w=>w.w>0&&w.h>0).map(w=>`<b style="left:${(w.x/ht.w)*100}%;top:${(w.y/ht.h)*100}%;width:${(w.w/ht.w)*100}%;height:${(w.h/ht.h)*100}%;--rt-ls-color:${colorOf(w.n-1)}">창 ${w.n} · 입력 ${w.input}</b>`).join('')}</div><button type="button" class="rt-pg-btn" data-ls-card="HOS100">HOS100 편집</button></div>
+      </div>
+      <div class="rt-ls-cmd-head"><h3>전체 커맨드</h3><button type="button" class="rt-pg-btn" data-ls-copy${c.lines.length?'':' disabled'}>전부 복사</button><span class="rt-ls-copied" data-ls-copied aria-live="polite"></span>${c.overlap?`<button type="button" class="rt-pg-btn" data-ls-hos-port="${c.nextFreePort}">HOS100 시작 포트를 ${c.nextFreePort}번으로</button>`:''}</div>
+      <pre class="rt-ls-cmd" data-ls-cmd>${c.lines.length?c.lines.map((l,i)=>`<span class="rt-ls-cmdline"><small>${i+1}. ${esc(l.label)}</small>${esc(l.text)}</span>`).join('\n'):'<span class="rt-ls-cmdline"><small>포함한 카드가 없습니다.</small></span>'}</pre>
+      <p class="rt-pg-hint">순서대로 한 줄씩 보내고 각 줄 끝에 Ctrl+Enter(0x0D)를 붙입니다. HOS100은 입력 연결(C) 뒤에 레이아웃(OQ)을 보냅니다. 두 카드는 서로 다른 출력 슬롯에 꽂혀 있어야 하므로 출력 포트 범위가 겹치면 안 됩니다.</p>
+      ${c.warnings.length?`<ul class="rt-ls-warn">${c.warnings.map(w=>`<li>${esc(w)}</li>`).join('')}</ul>`:''}`;
+    };
     const tokens=parts=>parts.map(p=>`<span class="rt-ls-tok rt-ls-tok-${p.kind}"${p.kind==='window'?` style="--rt-ls-color:${colorOf(p.window)}"`:''} title="${esc(p.title)}">${esc(p.text)}</span>`).join('');
     // ---- HOS100 화면 ----
     const renderHos=()=>{
@@ -374,6 +402,7 @@
       <p class="rt-pg-hint">근거: 알티컴 <a href="${GUIDE_PDF}#page=26" target="_blank" rel="noopener">XDM 시리즈 Command Guide 25쪽부터([OQ] Quad view 커맨드)</a>, 레이아웃 14종은 27쪽 표. 좌표·크기는 출력 해상도 안의 픽셀이며 4자리로 적습니다(W0000·H0000은 창 끄기). 포트 상태(레이어 4개면 2~4번은 1번과 같은 화면, 2개면 2번 사용 불가·3·4번 따로 스위칭)는 서울영상테크 확인(2026-10-12)입니다. L13(1~4번 PIP 사용자 배치)은 가이드의 좌표 묶음 수가 분명하지 않아 넣지 않았습니다.</p>`;
     };
     const render=()=>{
+      if(card==='ALL'){renderAll();return}
       if(card==='HOS100'){renderHos();return}
       const result=commandFor(state),geo=result.geometry,map=portMapFor(state),cover=coverageFor(state);
       const startOptions=[];for(let p=1;p<=61;p+=4)startOptions.push(option(p,`${p}번부터 (슬롯 ${Math.floor(p/4)+1})`,state.startPort));
@@ -439,6 +468,8 @@
       return {...win,w:snapValue(win.x+win.w,stepX,th)-win.x,h:snapValue(win.y+win.h,stepY,th)-win.y};
     };
     root.addEventListener('change',event=>{
+      const incl=event.target.closest('[data-ls-include]');
+      if(incl){include={...include,[incl.dataset.lsInclude]:incl.checked};saveKey(INCLUDE_KEY,include);render();return}
       const hctl=event.target.closest('[data-ls-hos]');
       if(hctl){const key=hctl.dataset.lsHos;updateHos({[key]:hctl.type==='checkbox'?hctl.checked:hctl.value});return}
       const hpreset=event.target.closest('[data-ls-hos-preset]');
@@ -454,7 +485,9 @@
     });
     root.addEventListener('click',event=>{
       const cardBtn=event.target.closest('[data-ls-card]');
-      if(cardBtn){card=cardBtn.dataset.lsCard==='HOS100'?'HOS100':'WOS100';saveKey(CARD_KEY,card);selected=0;render();return}
+      if(cardBtn){card=['HOS100','ALL'].includes(cardBtn.dataset.lsCard)?cardBtn.dataset.lsCard:'WOS100';saveKey(CARD_KEY,card);selected=0;render();return}
+      const portBtn=event.target.closest('[data-ls-hos-port]');
+      if(portBtn){updateHos({startPort:Number(portBtn.dataset.lsHosPort)});return}
       if(event.target.closest('[data-ls-add]')){
         const geo=geometry(state),w=Math.min(geo.outW,geo.width),h=Math.min(geo.outH,geo.height);
         const n=state.windows.length;
@@ -468,7 +501,7 @@
       const del=event.target.closest('[data-ls-del]');
       if(del){const i=Number(del.dataset.lsDel);const windows=state.windows.filter((_,k)=>k!==i);selected=Math.min(i,windows.length-1);update({windows},false);return}
       if(event.target.closest('[data-ls-copy]')){
-        const text=card==='HOS100'?(r=>[r.switching,r.command].filter(Boolean).join('\n'))(hosCommandFor(hos)):commandFor(state).command,note=root.querySelector('[data-ls-copied]');
+        const text=card==='ALL'?combinedCommands(state,hos,include).lines.map(l=>l.text).join('\n'):card==='HOS100'?(r=>[r.switching,r.command].filter(Boolean).join('\n'))(hosCommandFor(hos)):commandFor(state).command,note=root.querySelector('[data-ls-copied]');
         const done=()=>{if(note){note.textContent='복사했습니다';setTimeout(()=>{note.textContent=''},1800)}};
         if(navigator.clipboard?.writeText)navigator.clipboard.writeText(text).then(done,()=>{if(note)note.textContent='복사하지 못했습니다. 커맨드를 직접 선택해 복사하세요.'});
         else{const range=document.createRange();range.selectNodeContents(root.querySelector('[data-ls-cmd]'));const sel=getSelection();sel.removeAllRanges();sel.addRange(range);done()}
@@ -517,5 +550,5 @@
   }
   function mountAll(scopeEl){(scopeEl||document).querySelectorAll('[data-layout-sim-root]').forEach(mount)}
 
-  return {TIMINGS,CLEAR_MODES,MAPPINGS,PRESETS,HOS_LAYOUTS,HOS_PRESETS,GUIDE_PDF,MAX_COLS,MAX_ROWS,MAX_WINDOWS,normalize,geometry,portMapFor,assignPorts,commandFor,coverageFor,stackOrder,bringToFront,normalizeHos,hosWindows,hosCommandFor,hosPortStatus,hosBringToFront,mount,mountAll};
+  return {TIMINGS,CLEAR_MODES,MAPPINGS,PRESETS,HOS_LAYOUTS,HOS_PRESETS,GUIDE_PDF,MAX_COLS,MAX_ROWS,MAX_WINDOWS,normalize,geometry,portMapFor,assignPorts,commandFor,coverageFor,stackOrder,bringToFront,normalizeHos,hosWindows,hosCommandFor,hosPortStatus,hosBringToFront,combinedCommands,mount,mountAll};
 });
