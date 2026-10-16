@@ -17,7 +17,7 @@
   "subtitle": "VDM Series Extender · 광 송·수신기",
   "lead": "비디오·오디오·RS-232 신호를 **광케이블로 싱글모드 최대 2km, 멀티모드 최대 500m** 전송합니다. VDM FIS4-U/FOS4-U 카드와 짝을 이룹니다.",
   "catalogPages": "24",
-  "verificationSummary": "알티컴 종합 카탈로그(2026-03) 25쪽의 FT101-U/FR101-U 소개와 FT101-U·FR101-U 제품사양 표에서 확인했다. VDM 카드 연동은 근거 문서 U09(사용자 확인)를 따랐다.",
+  "verificationSummary": "알티컴 종합 카탈로그(2026-03) 25쪽의 FT101-U/FR101-U 소개와 FT101-U·FR101-U 제품사양 표에서 확인했다. VDM 카드 연동은 근거 문서 U09(사용자 확인)를 따랐다. 2026-10-16 사용자가 정정한 매뉴얼 Ver.1.4로 전원(1A 이상)·규격(HDMI 1.4)·RS-232 피닉스 3핀·Mini USB 펌웨어 포트·오디오 병합·추출을 보완했다. 무게는 사용자 결정(2026-10-16 \"FT101-U 무게 카탈로그 0.65kg 기준으로해\")으로 카탈로그 값을 쓴다.",
   "packageStatus": "VERIFIED",
   "overview": "FT101-U와 FR101-U는 비디오와 오디오, RS-232 신호를 광케이블을 통해 장거리 전송하기 위한 송신기와 수신기다. FT101-U는 비디오·오디오·RS-232 신호를 광신호로 변환하고, FR101-U는 광신호를 다시 비디오·오디오·RS-232 신호로 복원한다.\n\n광신호를 사용해 최대 2km까지 전송할 수 있으며, 외부 신호의 영향으로부터 안전하게 신호를 전송할 수 있어 보안이 필요한 기업이나 군부대, 정부기관 등에 적합한 전송장비다.",
   "images": [
@@ -86,7 +86,7 @@
       "status": "FOUND",
       "title": "FT101-U / FR101-U 사용자 매뉴얼 Ver.1.4",
       "language": "ko",
-      "note": "알티컴 사용자 매뉴얼 PDF(사용자가 Word에서 저장해 제공 2026-10-14) 공개본, 문서 속성의 작성자·프로그램 정보 삭제 · 사양표는 FT103-U-H 내용과 같음(사이트 사양은 카탈로그 기준)",
+      "note": "알티컴 사용자 매뉴얼 PDF(사용자가 FT101-U 내용으로 정정해 다시 제공 2026-10-16) 공개본, 문서 속성의 작성자·프로그램 정보 삭제",
       "file": "ft101-u-fr101-u-manual.pdf",
       "preview": "pdfjs"
     }
@@ -105,6 +105,14 @@
     {
       "text": "비디오·오디오·RS-232 신호 광케이블 장거리 전송 지원",
       "source": "C"
+    },
+    {
+      "text": "송신기는 3.5mm 아날로그 오디오 병합(입력이 DVI 신호일 때), 수신기는 오디오 추출 지원",
+      "source": "M"
+    },
+    {
+      "text": "VDM 매트릭스 FIS4-U(FT101-U)·FOS4-U(FR101-U) 카드 연동 지원",
+      "source": "M"
     },
     {
       "text": "광케이블 전송 지원(싱글모드 최대 2km, 멀티모드 최대 500m)",
@@ -182,19 +190,10 @@
     {
       "group": "General",
       "name": "규격",
-      "value": "DVI 1.0, HDMI 1.4b",
+      "value": "DVI 1.0, HDMI 1.4",
       "unit": "",
-      "condition": "FT101-U",
-      "source": "C",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "General",
-      "name": "규격",
-      "value": "DVI 1.0, HDMI 1.4b",
-      "unit": "",
-      "condition": "FR101-U",
-      "source": "J",
+      "condition": "",
+      "source": "M",
       "verification": "VERIFIED"
     },
     {
@@ -209,10 +208,10 @@
     {
       "group": "Power",
       "name": "전원",
-      "value": "DC +12V 2A",
+      "value": "DC +12V 1A 이상",
       "unit": "",
       "condition": "",
-      "source": "C",
+      "source": "M",
       "verification": "VERIFIED"
     },
     {
@@ -220,8 +219,8 @@
       "name": "크기(W×D×H)",
       "value": "144.78×114.3×31.75",
       "unit": "mm",
-      "condition": "FT101-U",
-      "source": "C",
+      "condition": "",
+      "source": "M",
       "verification": "VERIFIED"
     },
     {
@@ -241,7 +240,7 @@
       "signal": "DVI / HDMI (TMDS)",
       "direction": "IN",
       "quantity": "1",
-      "protocol": "HDMI 1.4b",
+      "protocol": "HDMI 1.4",
       "condition": "FT101-U",
       "source": "C",
       "verification": "VERIFIED"
@@ -270,13 +269,24 @@
     },
     {
       "group": "TX · Control",
-      "connector": "피닉스(녹색, 핀 수 미기재)",
+      "connector": "피닉스 3핀",
       "signal": "RS-232",
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
-      "condition": "FT101-U · 커넥터 핀 수 미기재",
-      "source": "C",
+      "condition": "FT101-U · RS-232",
+      "source": "M",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "TX · Control",
+      "connector": "Mini USB",
+      "signal": "Firmware",
+      "direction": "BIDIR",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "FT101-U · 펌웨어 업데이트",
+      "source": "M",
       "verification": "VERIFIED"
     },
     {
@@ -296,7 +306,7 @@
       "signal": "DVI / HDMI (TMDS)",
       "direction": "OUT",
       "quantity": "1",
-      "protocol": "HDMI 1.4b",
+      "protocol": "HDMI 1.4",
       "condition": "FR101-U",
       "source": "C",
       "verification": "VERIFIED"
@@ -314,13 +324,24 @@
     },
     {
       "group": "RX · Control",
-      "connector": "피닉스(녹색, 핀 수 미기재)",
+      "connector": "피닉스 3핀",
       "signal": "RS-232",
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
-      "condition": "FR101-U · 커넥터 핀 수 미기재",
-      "source": "C",
+      "condition": "FR101-U · RS-232",
+      "source": "M",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "RX · Control",
+      "connector": "Mini USB",
+      "signal": "Firmware",
+      "direction": "BIDIR",
+      "quantity": "1",
+      "protocol": "",
+      "condition": "FR101-U · 펌웨어 업데이트",
+      "source": "M",
       "verification": "VERIFIED"
     }
   ],
@@ -344,7 +365,7 @@
         {
           "n": 6,
           "label": "DC IN",
-          "desc": "전원 입력 +12V 2A(3핀 터미널)",
+          "desc": "전원 입력 +12V 1A 이상(3핀 터미널)",
           "x1": 23,
           "x2": 46,
           "side": "bottom",
@@ -413,7 +434,7 @@
         {
           "n": 6,
           "label": "DC IN",
-          "desc": "전원 입력 +12V 2A(3핀 터미널)",
+          "desc": "전원 입력 +12V 1A 이상(3핀 터미널)",
           "x1": 23,
           "x2": 45,
           "side": "bottom",
@@ -511,7 +532,7 @@
       "code": "M",
       "name": "FT-101-U / FR-101-U 사용자 매뉴얼 Ver.1.4 (알티컴, 2026-10-07판)",
       "page": "1–13",
-      "scope": "사용자 제공 PDF(2026-10-14). 표지·구성품·첫 소개 문장만 FT-101-U이고 사양표·앞면 설명(벽부형, HDMI 입력 2개, EDID 로터리, 91.44×107.95×57.15mm)은 FT-103-U-H 매뉴얼과 같아, 사이트 사양은 카탈로그 기준을 유지. 파일은 사용자 결정(\"그대로 공개\")으로 공개"
+      "scope": "사용자 제공 PDF(2026-10-14 첫 제공본은 사양표가 FT-103-U-H 내용이라 2026-10-16 사용자가 정정본으로 교체). 사양표·앞뒷면 설명·사용 방법 기준. 4쪽 TX 입력 \"HDMI 2 Ports\"는 6쪽 사진·설명(HDMI IN 1개)과 달라 오기로 보고 1개 유지, 해상도 4096x2160 표기는 0.182 기준대로 3840x2160로 적음. 무게(0.24·0.23kg)는 사용자 결정(2026-10-16)으로 쓰지 않고 카탈로그 0.65kg 유지"
     }
   ],
   "issues": []

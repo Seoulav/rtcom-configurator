@@ -564,6 +564,9 @@ test('0.184: 해상도(Extron 방식)·단위 붙여 쓰기 표기 통일이 사
   assert.equal(fix('1080p 60m / 4K 50m'),'1080p 60m / 4K 50m','전송거리(m)는 주사율로 보지 않는다');
   assert.equal(fix('483×402×310.3mm'),'483×402×310.3mm','크기 표기는 바꾸지 않는다');
   assert.equal(fix('3.4 Gbps/ch, 100-200 VAC'),'3.4Gbps/ch, 100-200VAC');
+  // 0.218(사용자 결정 2026-10-14): Touch Screen → 터치스크린, 분배기 오디오 "출력에 믹스" → "출력에 병합"
+  assert.equal(fix('7" Touch Screen'),'7" 터치스크린');
+  assert.equal(fix('모든 출력(OUT 1~10)에 믹스되어 나간다'),'모든 출력(OUT 1~10)에 병합되어 나간다');
   // 모든 제품 데이터와 카드 사양이 이미 통일안대로라서 한 번 더 돌려도 바뀌는 곳이 없다.
   const out=require('child_process').execFileSync(process.execPath,['scripts/tools/unify_notation.cjs'],{encoding:'utf8'});
   assert.match(out,/바뀔 곳: 0건/,out);
@@ -681,4 +684,21 @@ test('0.201: SPX-TX/RX 03 Signal Flow 범례의 실효 전송 거리에 Belden �
   const value=JSON.parse(read('data/products/spx-rx-tx.json')).specifications.find(spec=>spec.group==='Transmission').value;
   const legend=value.split('\n').map(line=>line.replace(/\s*\(([^)]*)\)/g,(all,inner)=>{const belden=inner.match(/Belden\s*[A-Z0-9]+/i);return belden?` (${belden[0]})`:''}).trim()).join(' · ');
   assert.equal(legend,'UTP CAT6 50m (Belden 7814A) · S/FTP CAT6A 70m (Belden 10GXE02)');
+});
+
+test('0.220: FT101-U/FR101-U 정정 매뉴얼 기준 값과 구성기 전송기 전원 문구',()=>{
+  const ft=JSON.parse(read('data/products/ft101-u-fr101-u.json'));
+  const spec=(name)=>ft.specifications.filter(s=>s.name===name);
+  assert.equal(spec('전원')[0].value,'DC +12V 1A 이상');
+  assert.deepEqual(spec('규격').map(s=>s.value),['DVI 1.0, HDMI 1.4']);
+  assert.deepEqual(spec('무게').map(s=>[s.condition,s.value,s.source]),[['FT101-U','0.65','C']],'0.221 사용자 결정: 무게는 카탈로그 기준');
+  assert.equal(ft.io.filter(r=>r.connector==='Mini USB').length,2,'송·수신기 펌웨어 포트');
+  assert.equal(ft.io.filter(r=>r.signal==='RS-232'&&r.connector==='피닉스 3핀').length,2);
+  assert.doesNotMatch(JSON.stringify(ft.documents),/FT103/,'매뉴얼 설명에서 FT103 사양표 안내 삭제');
+  const app=read('src/app.js');
+  for(const model of ['CT104-U','CR104-U','FT101-U','FR101-U']){
+    const line=app.split('\n').find(l=>l.includes(`'${model}':{model:'${model}'`));
+    assert.match(line,/전원: DC 12V 1A 이상/,model);
+    assert.doesNotMatch(line,/HDMI 1\.4b/,model);
+  }
 });
