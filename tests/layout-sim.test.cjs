@@ -70,3 +70,57 @@ test('0.224: 시뮬레이터는 XDM 시리즈 화면의 07 카드에만 붙고, 
   assert.equal(L.GUIDE_PDF,'output/design/assets/docs/xdm-command-guide.pdf');
   assert.ok(fs.existsSync(L.GUIDE_PDF),'0.209에서 공개한 커맨드 가이드 PDF');
 });
+
+// 0.225 2차: XDM-HOS100 한 화면 멀티뷰(OQ, Command Guide 25~29쪽).
+test('0.225: HOS100 프리셋 커맨드가 가이드 28쪽 예제 4개(L00 계단식·L09 PIP·L05·L12) 원문과 똑같다',()=>{
+  const checked=L.HOS_PRESETS.filter(p=>p.expected);
+  assert.equal(checked.length,4);
+  for(const p of checked)assert.equal(L.hosCommandFor(p.state).command,p.expected,p.id);
+  // 끄기 커맨드(가이드 28쪽 "Quadview mode OFF")
+  assert.equal(L.hosCommandFor({startPort:1}).off,'*255OQO001M00!');
+});
+
+test('0.225: HOS100 창 n은 카드 포트 n에 연결되고(스위칭 C 커맨드), 레이어 수에 따라 포트 상태를 알려 준다',()=>{
+  const stairs=L.hosCommandFor(L.HOS_PRESETS[0].state);
+  assert.equal(stairs.switching,'*255CI001O001,I002O002,I003O003,I004O004!');
+  assert.deepEqual(stairs.ports,['합성 출력','1번과 같은 화면','1번과 같은 화면','1번과 같은 화면']);
+  const pip=L.hosCommandFor({layout:'L09',startPort:9,windows:[{input:5},{input:6,x:1920,y:1080,w:1920,h:1080}]});
+  assert.equal(pip.switching,'*255CI005O009,I006O010!','카드 시작 포트 9번이면 창 1·2 = 포트 9·10');
+  assert.equal(pip.command,'*255OQO009M14L09X1920Y1080W1920H1080!');
+  assert.deepEqual(pip.ports,['합성 출력','사용 불가','따로 스위칭','따로 스위칭']);
+  // L00에서 창 3·4를 끄면(W0 H0) 레이어 2개로 센다
+  const two=L.hosCommandFor({layout:'L00',windows:[{input:1,x:0,y:0,w:1920,h:2160},{input:2,x:1920,y:0,w:1920,h:2160},{w:0,h:0},{w:0,h:0}]});
+  assert.equal(two.layers,2);
+  assert.match(two.command,/O003X\d{4}Y\d{4}W0000H0000O004X\d{4}Y\d{4}W0000H0000!$/,'꺼진 창은 W0000 H0000(좌표는 그대로)');
+  assert.equal(two.switching,'*255CI001O001,I002O002!');
+});
+
+test('0.225: HOS100 고정 레이아웃은 출력 해상도 비율로 창 위치를 계산하고 끌 수 없으며, L13은 넣지 않았다',()=>{
+  assert.deepEqual(L.hosWindows({layout:'L05',timing:10}).map(w=>[w.n,w.x,w.y,w.w,w.h,w.free]),[[1,0,0,960,540,false],[2,960,0,960,540,false],[3,0,540,960,540,false],[4,960,540,960,540,false]]);
+  const pip=L.hosWindows({layout:'L09',timing:14,windows:[{},{x:100,y:200,w:800,h:450}]});
+  assert.deepEqual(pip.map(w=>[w.n,w.free]),[[1,false],[2,true]]);
+  assert.ok(!L.HOS_LAYOUTS.some(l=>l.code==='L13'));
+  assert.equal(L.HOS_LAYOUTS.length,13);
+  const out=L.hosCommandFor({layout:'L00',windows:[{input:1,x:3000,y:0,w:1920,h:1080}]});
+  assert.ok(out.warnings.some(w=>/밖으로 나갑니다/.test(w)));
+});
+
+test('0.225: "맨 위로"는 그 창이 맨 위 포트를 받도록 순서를 바꾼다(WOS100은 창 순서, HOS100 L00은 포트 자리 맞바꿈)',()=>{
+  // WOS100 기본 프리셋: 전체 창(포트 1·5·9·13) 위에 PIP(포트 14). 전체 창을 맨 위로 → 뒤로 가서 PIP가 13, 전체 창이 1·5·9·14를 받아 P4321에서 맨 위
+  const base=L.PRESETS[0].state;
+  const front=L.bringToFront(base,0);
+  const r=L.commandFor(front);
+  assert.deepEqual(r.assigned.map(a=>a.ports),[[13],[1,5,9,14]]);
+  assert.match(r.command,/I002O013X5760Y3240W1920H1080I001O001O005O009O014X0Y0W7680H4320!$/);
+  // P1234면 앞으로 옮긴다(이미 맨 앞이면 그대로)
+  assert.equal(L.bringToFront({...base,priority:'1234'},0).windows[0].input,1);
+  assert.equal(L.bringToFront({...base,priority:'1234'},1).windows[0].input,2);
+  // HOS100 L00: P4321이면 창 4 자리가 맨 위 → 창 1 데이터를 4번 자리로 맞바꿈(입력 1이 포트 4로)
+  const hos=L.hosBringToFront({layout:'L00',priority:'4321',windows:[{input:1},{input:2},{input:3},{input:4}]},0);
+  assert.deepEqual(hos.windows.map(w=>w.input),[4,2,3,1]);
+  assert.equal(L.hosCommandFor(hos).switching,'*255CI004O001,I002O002,I003O003,I001O004!');
+  assert.deepEqual(L.hosBringToFront({layout:'L00',priority:'1234',windows:[{input:1},{input:2},{input:3},{input:4}]},2).windows.map(w=>w.input),[3,2,1,4]);
+  // 쌓임 순서(위가 먼저): WOS100 P4321은 큰 포트 번호가 위
+  assert.deepEqual(L.stackOrder(front),[1,0]);
+  assert.deepEqual(L.stackOrder({...front,priority:'1234'}),[0,1]);
+});

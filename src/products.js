@@ -1228,8 +1228,8 @@
     // 여기서는 카드 틀만 둔다. show()가 화면을 그린 뒤 RtLayoutSim.mountAll(body)로 채운다. 근거: 사용자 제공 XDM Command Guide 1013(44~55쪽).
     function layoutSimSection(family){
       if(family!=='XDM')return '';
-      return `<section class="rt-pg-card rt-pg-layout-sim" id="rt-layout-sim" style="margin-top:18px"><h2><span class="rt-pg-idx">07</span>화면 연출 시뮬레이터 <span class="rt-pg-note">— XDM-WOS100 월 오버레이 · 창을 끌어 놓으면 커맨드가 바뀝니다</span></h2>
-      <p class="rt-pg-lead">디스플레이 월을 정하고 입력 영상 창을 끌어 놓으면, 그 위치·크기대로 영상을 띄우는 제어 커맨드(<code>OW</code>)가 아래에 바로 만들어집니다. 창의 오른쪽 아래 모서리를 끌면 크기가 바뀌고, 표에서 숫자로도 고칠 수 있습니다.</p>
+      return `<section class="rt-pg-card rt-pg-layout-sim" id="rt-layout-sim" style="margin-top:18px"><h2><span class="rt-pg-idx">07</span>화면 연출 시뮬레이터 <span class="rt-pg-note">— XDM-WOS100 월 오버레이(OW) · XDM-HOS100 한 화면 멀티뷰(OQ) · 창을 끌어 놓으면 커맨드가 바뀝니다</span></h2>
+      <p class="rt-pg-lead">출력 카드를 고르고 입력 영상 창을 끌어 놓으면, 그 위치·크기대로 영상을 띄우는 제어 커맨드가 아래에 바로 만들어집니다. WOS100은 디스플레이 월 위에 창을 겹치는 <code>OW</code>, HOS100은 디스플레이 1대 안에 창 1~4를 배치하는 <code>OQ</code> 커맨드입니다. 창의 오른쪽 아래 모서리를 끌면 크기가 바뀌고, 표에서 숫자로도 고칠 수 있습니다.</p>
       <div data-layout-sim-root></div></section>`;
     }
     // 신호 구성 SVG(입력 카드 → 메인프레임 → 출력 카드). series-glass-style.html 시안의 배치 로직을 그대로 옮겼다.
