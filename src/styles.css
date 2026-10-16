@@ -1103,7 +1103,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-card-palette .rt-card-info-group{grid-template-columns:1fr;gap:6px}
 #rtcom-design .rt-card-palette .rt-card-info-group>span{padding-top:0}
 #rtcom-design .rt-card-palette .rt-card-info-group>div{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
-@media(max-width:1100px){#rtcom-design .rt-card-palette .rt-card-info-group>div{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:1279px){#rtcom-design .rt-card-palette .rt-card-info-group>div{grid-template-columns:repeat(3,minmax(0,1fr))}}
 #rtcom-design .rt-palette-tile{grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:7px 8px;padding:9px;border:1px solid #e3e9f3;border-radius:12px;background:#fff}
 #rtcom-design .rt-palette-tile:hover,#rtcom-design .rt-palette-tile:focus-visible{border-color:#007AFF66;background:#f5f9ff}
 #rtcom-design .rt-palette-tile small{color:var(--rt-muted)}
@@ -1113,8 +1113,12 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-card-palette .rt-card-info-group-output>span{color:#c2410c}
 #rtcom-design .rt-palette-tile img{grid-column:1/-1;display:block;width:100%;height:auto;border-radius:3px;pointer-events:none}
 #rtcom-design .rt-palette-tile>span{min-width:0}
-/* 0.228 예외(SVT 디자인 v2 T2): 3열 타일(390px) 안에서 배지를 12px로 올리면 모델명이 7px 더 넘쳐 페이지 가로 넘침이 난다. 이 타일의 배지만 이전 크기 9.5px로 둔다. */
-#rtcom-design .rt-palette-tile .rt-sig-badge{font-size:9.5px}
+/* 0.230: 카드 정보 타일의 신호 배지와 모델명을 모든 폭에서 두 줄로 나누고, 휴대폰(560px 이하)에서는 2열, 360px 이하에서는 모델명도 하이픈에서 줄바꿈을 허용한다.
+   3열이던 390px에서는 타일 안쪽 폭(약 59px)보다 모델명(약 75px)이 길어 "XDM-H…"처럼 잘렸고, 데스크톱 6열(1101~1279px)에서도 잘렸다(수정 전부터 있던 문제). 그래서 3열 → 6열 전환 지점도 1100px에서 1279px로 올렸다.
+   2열이면 안쪽 폭이 약 120px이라 배지 아래 줄에 모델명이 끝까지 보인다. 0.228에서 둔 배지 9.5px 예외는 이 규칙으로 없앴다(배지 12px). */
+#rtcom-design .rt-palette-tile strong:has(.rt-sig-badge){flex-wrap:wrap;row-gap:3px}
+@media(max-width:560px){#rtcom-design .rt-card-palette .rt-card-info-group>div{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:360px){#rtcom-design .rt-palette-tile strong{white-space:normal}}
 #rtcom-design .rt-palette-tile small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #rtcom-design .rt-palette-tile{position:relative}
 #rtcom-design .rt-palette-tile b{position:absolute;top:-10px;right:8px;box-shadow:0 1px 3px #0003;padding:2px 8px;border-radius:999px;background:#1f2a3d;color:#fff;font-size:12px;font-weight:800;white-space:nowrap}
