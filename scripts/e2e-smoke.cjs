@@ -396,9 +396,9 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     // 0.33 — 제품정보 글래스 디자인(rt-pg-*)으로 목록·상세 마크업이 바뀌었다.
     await page.click('a[data-view-tab="products"]');
     await page.waitForSelector('.rt-pg-gridcard');
-    check('제품정보 탭을 누르면 구성기를 숨기고 제품 32종 목록(0.64 SPX-TX/RX, 0.72 XDM-PSU, 0.121 HD-D102U Rack마운트, 0.157 SPX-R6 포함)을 표시',await page.locator('.rt-configurator-view').isHidden()&&await page.locator('.rt-pg-gridcard').count()===32);
+    check('제품정보 탭을 누르면 구성기를 숨기고 제품 33종 목록(0.64 SPX-TX/RX, 0.72 XDM-PSU, 0.121 HD-D102U Rack마운트, 0.157 SPX-R6, 0.223 XDM-MR4S 포함)을 표시',await page.locator('.rt-configurator-view').isHidden()&&await page.locator('.rt-pg-gridcard').count()===33);
     await page.click('[data-product-filter="extender"]');
-    check('전송기 분류는 15종(0.64 SPX-TX/RX, 0.72 XDM-PSU, 0.157 SPX-R6 포함)',await page.locator('.rt-pg-gridcard').count()===15);
+    check('전송기 분류는 16종(0.64 SPX-TX/RX, 0.72 XDM-PSU, 0.157 SPX-R6, 0.223 XDM-MR4S 포함)',await page.locator('.rt-pg-gridcard').count()===16);
     await page.click('[data-product-filter="all"]');
     await page.fill('[data-product-search]','QMS');
     check('검색어 QMS로 일체형 매트릭스 2종이 남음',await page.locator('.rt-pg-gridcard').count()===2);
@@ -423,7 +423,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await page.goBack();
     await page.waitForSelector('.rt-pg-gridcard');
     check('제품정보 목록의 첫 카드는 XDM(0.125, 사용자 요청 "XDM이 처음으로 나오게해")',(await page.locator('.rt-pg-gridcard').first().getAttribute('href'))==='#products/xdm');
-    check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-pg-gridcard').count()===32);
+    check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-pg-gridcard').count()===33);
     // 0.154 제품정보 프레임 정면·후면 팝업: 위아래로 쌓일 때 두 그림의 가로폭이 같아야 한다(사용자 요청 2026-09-29).
     await page.goto(`${home}#products/spx`,{waitUntil:'networkidle'});
     await page.click('[data-pg-frame="SPX-M1620"]');
@@ -590,6 +590,11 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     // 0.200 SPX-R6 03 Signal Flow: TX 구성(기본)·RX 구성 버튼으로 바꿔 보고, RX 구성은 소스 → SPX-TX 6대 → 모듈 CAT IN → HDMI OUT → 디스플레이로 그린다.
     const r6Flow=await page.evaluate(()=>{const box=document.querySelector('.rt-pg-flow-modes');const face=k=>box?.querySelector(`[data-pm-face="${k}"]`);const before={tx:!face('tx')?.hidden,rx:!face('rx')?.hidden};box?.querySelector('[data-pm-side="rx"]')?.click();const rxText=face('rx')?.querySelector('svg')?.textContent||'';return {before,after:{tx:!face('tx')?.hidden,rx:!face('rx')?.hidden},tx:(rxText.match(/SPX-TX/g)||[]).length,catIn:rxText.includes('CAT IN → HDMI OUT'),pressed:box?.querySelector('[data-pm-side="rx"]')?.getAttribute('aria-pressed'),overflow:document.documentElement.scrollWidth>innerWidth}});
     check('SPX-R6 03 Signal Flow는 TX 구성이 기본이고 RX 구성 버튼을 누르면 SPX-TX 6대 → 모듈 CAT IN → HDMI OUT 그림으로 바뀜',r6Flow.before.tx&&!r6Flow.before.rx&&!r6Flow.after.tx&&r6Flow.after.rx&&r6Flow.tx>=6&&r6Flow.catIn&&r6Flow.pressed==='true'&&!r6Flow.overflow,JSON.stringify(r6Flow));
+    // 0.223 XDM-MR4S: 사용자 제공 실물 사진(앞면·뒷면) 단자 지도와 장착 카드(XDM-CTR100·XDM-FT101/FR101) 관련 제품 연결(사용자 요청 2026-10-16).
+    await page.goto(`${home}#products/xdm-mr4s`,{waitUntil:'networkidle'});
+    await page.waitForSelector('#rt-pg-title');
+    const mr4=await page.evaluate(()=>{const s=[...document.querySelectorAll('section')].find(s=>/Port Map/i.test(s.querySelector('h2')?.textContent||''));const links=[...document.querySelectorAll('a[href*="#products/"]')].map(a=>a.getAttribute('href'));return {title:document.querySelector('#rt-pg-title')?.textContent,front:!!s?.innerHTML.includes('xdm-mr4s-front.webp'),rear:!!s?.innerHTML.includes('xdm-mr4s-rear.webp'),ports:[...(s?.querySelectorAll('.rt-pg-ports')||[])].map(x=>x.children.length),ctr:links.some(h=>h.endsWith('#products/xdm-ctr100')),ft:links.some(h=>h.endsWith('#products/xdm-ft101-fr101')),broken:[...document.images].filter(i=>i.complete&&!i.naturalWidth).length,overflow:document.documentElement.scrollWidth>innerWidth}});
+    check('XDM-MR4S 상세에 앞면·뒷면 실물 사진 단자 지도(번호 5·5개)와 XDM-CTR100·XDM-FT101/FR101 관련 제품 링크가 나오고 깨진 사진이 없음',/XDM-MR4S/.test(mr4.title||'')&&mr4.front&&mr4.rear&&mr4.ports.join()==='5,5'&&mr4.ctr&&mr4.ft&&!mr4.broken&&!mr4.overflow,JSON.stringify(mr4));
     // 0.201 SPX-TX/RX 03 Signal Flow 범례: 실효 전송 거리에 Belden 케이블 조건(7814A·10GXE02)이 남는다(사용자 요청 2026-10-04).
     await page.goto(`${home}#products/spx-rx-tx`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-legend');

@@ -480,6 +480,23 @@
       "cardImage": "xdm-ft101-fr101-main.webp"
     },
     {
+      "id": "xdm-mr4s",
+      "group": "extender",
+      "productName": "XDM-MR4S",
+      "model": "XDM-MR4S",
+      "itemType": "PRODUCT",
+      "categories": [
+        "영상",
+        "Video",
+        "Extension Frame"
+      ],
+      "english": "Rack-mountable 4K modular extension frame holding up to four XDM-CTR100, XDM-FT101 or XDM-FR101 card modules.",
+      "korean": "XDM-CTR100·XDM-FT101·XDM-FR101 전송기를 카드 형태로 최대 4장 장착하는 랙 장착형 4K 집합 프레임이다.",
+      "catalogPages": null,
+      "packageStatus": "VERIFIED",
+      "cardImage": "xdm-mr4s-front.webp"
+    },
+    {
       "id": "xdm-psu",
       "group": "extender",
       "productName": "XDM-PSU",
