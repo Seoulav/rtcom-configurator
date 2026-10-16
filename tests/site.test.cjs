@@ -6,7 +6,7 @@ const vm=require('node:vm');
 const {execFileSync}=require('node:child_process');
 
 const read=file=>fs.readFileSync(file,'utf8');
-const runtimeScripts=['src/catalog.js','src/card-specs.js','src/core.js','src/app.js','src/products.js'];
+const runtimeScripts=['src/catalog.js','src/card-specs.js','src/core.js','src/app.js','src/layout-sim.js','src/products.js'];
 const loadCatalog=()=>{const context={globalThis:{}};vm.runInNewContext(read('src/catalog.js'),context);return context.globalThis.RtCatalog};
 
 test('Pretendard Variable font and its OFL license are present and referenced by styles.css',()=>{

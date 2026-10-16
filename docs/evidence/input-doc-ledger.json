@@ -459,6 +459,23 @@
    "original": "SPX-TX_RX_Manual_Ver.2.0.pdf",
    "model": "SPX-TX-SPX-RX",
    "version": "Ver2.0"
+  },
+  {
+   "sha256": "986bb5e5727dc864",
+   "file": "RTCOM/manual/RTcom_Manual_XDM_CommandGuide1013.pdf",
+   "status": "reflected",
+   "reflected": [
+    {
+     "where": "src/layout-sim.js",
+     "what": "XDM-WOS100 월 오버레이 커맨드(OW) 생성기·07 화면 연출 시뮬레이터(44~55쪽 문법·예제, 포트 배치 46~47쪽)",
+     "release": "0.202.0"
+    }
+   ],
+   "note": "XDM 시리즈 Command Guide 73쪽(RS-232/LAN 제어 커맨드: C·D·P, IV·IT·IR·IA, OS·OA·OP·OQ·OW·OB·OR·OC·OL, WOS100 Wall Zoom·Overlay·LED, LAN·SL). 사용자 업로드 2026-10-16, 화면 연출 시뮬레이터 근거",
+   "date": "2026-10-16",
+   "original": "RTcom_XDM_Command_Guide_1013_1.pdf",
+   "model": "XDM",
+   "version": "CommandGuide1013"
   }
  ]
 }
