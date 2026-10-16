@@ -600,6 +600,20 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await page.waitForSelector('.rt-pg-legend');
     const txrxLegend=await page.evaluate(()=>document.querySelector('.rt-pg-legend')?.textContent||'');
     check('SPX-TX/RX 신호 흐름 범례의 실효 전송 거리에 Belden 7814A·10GXE02 조건이 보임',txrxLegend.includes('UTP CAT6 50m (Belden 7814A)')&&txrxLegend.includes('S/FTP CAT6A 70m (Belden 10GXE02)'),txrxLegend.slice(0,200));
+    // 0.224 XDM 07 화면 연출 시뮬레이터(WOS100 월 오버레이): 기본 프리셋 커맨드가 가이드 문법으로 나오고, 창을 끌면 X 좌표와 커맨드가 함께 바뀐다.
+    await page.goto(`${home}#products/xdm`,{waitUntil:'networkidle'});
+    await page.waitForSelector('#rt-layout-sim .rt-ls-canvas');
+    await page.evaluate(()=>{try{localStorage.removeItem('rtcom.layoutSim.v1')}catch(e){}});
+    await page.reload({waitUntil:'networkidle'});
+    await page.waitForSelector('#rt-layout-sim [data-ls-win="1"]');
+    const simBefore=await page.locator('#rt-layout-sim [data-ls-cmd]').innerText();
+    await page.locator('#rt-layout-sim [data-ls-win="1"]').scrollIntoViewIfNeeded();
+    const simWin=await page.locator('#rt-layout-sim [data-ls-win="1"]').boundingBox();
+    await page.mouse.move(simWin.x+simWin.width/2,simWin.y+simWin.height/2);await page.mouse.down();
+    await page.mouse.move(simWin.x+simWin.width/2-240,simWin.y+simWin.height/2,{steps:6});await page.mouse.up();
+    const sim=await page.evaluate(()=>({cmd:document.querySelector('#rt-layout-sim [data-ls-cmd]').textContent,x:Number(document.querySelector('#rt-layout-sim [data-ls-win-field="x"][data-ls-win-index="1"]').value),cells:document.querySelectorAll('#rt-layout-sim .rt-ls-cell').length,btn:!!document.querySelector('[data-scroll-to="rt-layout-sim"]'),warn:document.querySelectorAll('#rt-layout-sim .rt-ls-warn li').length,overflow:document.documentElement.scrollWidth>innerWidth}));
+    check('XDM 07 화면 연출 시뮬레이터: 기본 커맨드(2×2 월 전체 + PIP)가 가이드 OW 문법이고 PIP 창을 끌면 X와 커맨드가 바뀜',simBefore==='*255OWO001-016W14H02V02P4321O001O002O003O004O005O006O007O008O009O010O011O012O013O014O015O016X0Y0W0H0I001O001O005O009O013X0Y0W7680H4320I002O014X5760Y3240W1920H1080!'&&sim.x<5760&&sim.cmd.includes(`X${sim.x}Y3240W1920H1080!`)&&sim.cells===4&&sim.btn&&!sim.overflow,JSON.stringify({before:simBefore.slice(-60),x:sim.x,cells:sim.cells,btn:sim.btn,warn:sim.warn}));
+    await page.evaluate(()=>{try{localStorage.removeItem('rtcom.layoutSim.v1')}catch(e){}});
     // 0.64 OBUX-1C Tx Mode 딥 스위치(매뉴얼 Ver.2.2): 검은 몸체 4핀, 1번 오디오 + 2·3·4번 EDID 조합 5칸(Through-pass EDID Fix 포함).
     await page.goto(`${home}#products/obux-1c`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-dip');
