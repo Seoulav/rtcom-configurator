@@ -596,11 +596,11 @@ const patchAmxLock=async()=>{
       await page.fill('.rt-pg-control [data-ce-lockform] input',AMX_TEST_PASSWORD);
       await page.click('.rt-pg-control [data-ce-lockform] button[type=submit]');
       await page.waitForSelector('.rt-pg-control [data-ce-text="amx"]');
-      const opened=await page.evaluate(()=>({send:/SEND_STRING dvHDS42MU/.test(document.querySelector('.rt-pg-control [data-ce-text="amx"]').textContent),box:!!document.querySelector('.rt-pg-control [data-ce-lockbox]')}));
+      const opened=await page.evaluate(()=>({send:/SEND_STRING dvHDS42MU/.test(document.querySelector('.rt-pg-control [data-ce-text="amx"]').textContent),serial:/SET BAUD 9600/.test(document.querySelector('.rt-pg-control [data-ce-text="amx"]').textContent)&&!/IP_CLIENT_OPEN/.test(document.querySelector('.rt-pg-control').textContent),noLanChoice:!document.querySelector('.rt-pg-control [data-ce-comm="mode"]')&&/LAN 제어는 없습니다/.test(document.querySelector('.rt-pg-control').textContent),box:!!document.querySelector('.rt-pg-control [data-ce-lockbox]')}));
       await page.click('.rt-pg-control [data-ce-relock]');
       await page.waitForSelector('.rt-pg-control [data-ce-lockbox]');
       const relocked=await page.locator('.rt-pg-control [data-ce-text="amx"]').count()===0;
-      check('AMX 코드 잠금: 잠겨 있으면 커맨드·HEX·복사만 보이고 SEND_STRING은 없음, 틀린 비밀번호는 거절, 맞으면 열리고 다시 잠글 수 있음',locked.box&&!locked.code&&!locked.send&&locked.sw&&locked.hex&&locked.copy&&stillLocked&&opened.send&&!opened.box&&relocked,JSON.stringify({locked,stillLocked,opened,relocked}));
+      check('AMX 코드 잠금: 잠겨 있으면 커맨드·HEX·복사만 보이고 SEND_STRING은 없음, 틀린 비밀번호는 거절, 맞으면 열리고(HDS는 RS-232 전용·LAN 선택 없음) 다시 잠글 수 있음',locked.box&&!locked.code&&!locked.send&&locked.sw&&locked.hex&&locked.copy&&stillLocked&&opened.send&&opened.serial&&opened.noLanChoice&&!opened.box&&relocked,JSON.stringify({locked,stillLocked,opened,relocked}));
       // XDM: "내 AMX 구성"은 잠겨도 담기·목록은 되고, 코드·복사·파일 저장은 잠금 뒤에만 보인다. 설정 명령의 SEND_STRING 줄도 잠겨 있다.
       await page.goto(`${home}#products/xdm`,{waitUntil:'networkidle'});
       await page.evaluate(()=>{try{localStorage.removeItem('rtcom.amxBasket.xdm.v1')}catch{}});
