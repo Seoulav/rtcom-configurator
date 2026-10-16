@@ -1209,7 +1209,7 @@
       const legendKeys=[...new Set([...inCards,...outCards].map(card=>card[3]))];
       const featureCards=outCards.filter(card=>globalThis.RtCardFeature?.cards?.[card[0]]); // 0.205 02 신호 구성에서 눌러 기능 팝업을 여는 카드(WOS100·HOS100)
       const arch=seriesSignalSvg(item.name||family,inCards,outCards,SIG_COLOR);
-      return `${headerBlock({icon:GROUP_ICON.series,title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,docs:docButtons(item),official:officialButton(item),cta:`<a class="rt-pg-btn rt-pg-primary" href="#matrix-configurator" data-configure-family="${esc(family)}">${esc(family)} 구성기에서 구성하기 →</a>`})}
+      return `${headerBlock({icon:GROUP_ICON.series,title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,docs:docButtons(item),official:officialButton(item),cta:`${family==='XDM'?'<button type="button" class="rt-pg-btn" data-scroll-to="rt-layout-sim">화면 연출 시뮬레이터</button>':''}<a class="rt-pg-btn rt-pg-primary" href="#matrix-configurator" data-configure-family="${esc(family)}">${esc(family)} 구성기에서 구성하기 →</a>`})}
       <div class="rt-pg-cols">
         <div class="rt-pg-col">
           <section class="rt-pg-card rt-pg-col-mobile-1"><h2><span class="rt-pg-idx">01</span>한눈에 보기</h2><p class="rt-pg-lead">${leadFor(item)}</p>${factsList(facts)}</section>
@@ -1222,7 +1222,15 @@
           <section class="rt-pg-card rt-pg-col-mobile-4"><h2><span class="rt-pg-idx">04</span>카드 라인업 <span class="rt-pg-note">— 입력 ${inCards.length} · 출력 ${outCards.length} · 카드를 누르면 상세 정보</span></h2><div class="rt-pg-cards2"><div class="rt-pg-cardcol"><h3>입력</h3>${inCards.map(card=>cardRow(card,false)).join('')}</div><div class="rt-pg-cardcol"><h3>출력</h3>${outCards.map(card=>cardRow(card,true)).join('')}</div></div></section>
           ${recordSection(item,null,null)}
         </div>
-      </div>`;
+      </div>${layoutSimSection(family)}`;
+    }
+    // 0.224 XDM 시리즈 "07 화면 연출 시뮬레이터"(XDM-WOS100 월 오버레이): 그리기·커맨드 생성은 src/layout-sim.js(RtLayoutSim)가 맡고,
+    // 여기서는 카드 틀만 둔다. show()가 화면을 그린 뒤 RtLayoutSim.mountAll(body)로 채운다. 근거: 사용자 제공 XDM Command Guide 1013(44~55쪽).
+    function layoutSimSection(family){
+      if(family!=='XDM')return '';
+      return `<section class="rt-pg-card rt-pg-layout-sim" id="rt-layout-sim" style="margin-top:18px"><h2><span class="rt-pg-idx">07</span>화면 연출 시뮬레이터 <span class="rt-pg-note">— XDM-WOS100 월 오버레이(OW) · XDM-HOS100 한 화면 멀티뷰(OQ) · 창을 끌어 놓으면 커맨드가 바뀝니다</span></h2>
+      <p class="rt-pg-lead">출력 카드를 고르고 입력 영상 창을 끌어 놓으면, 그 위치·크기대로 영상을 띄우는 제어 커맨드가 아래에 바로 만들어집니다. WOS100은 디스플레이 월 위에 창을 겹치는 <code>OW</code>, HOS100은 디스플레이 1대 안에 창 1~4를 배치하는 <code>OQ</code> 커맨드입니다. 창의 오른쪽 아래 모서리를 끌면 크기가 바뀌고, 표에서 숫자로도 고칠 수 있습니다.</p>
+      <div data-layout-sim-root></div></section>`;
     }
     // 신호 구성 SVG(입력 카드 → 메인프레임 → 출력 카드). series-glass-style.html 시안의 배치 로직을 그대로 옮겼다.
     function seriesSignalSvg(name,ins,outs,sigColor){
@@ -1289,6 +1297,7 @@
         body.querySelector('#rt-pg-title')?.focus({preventScroll:true});
         window.scrollTo({top:view.offsetTop-8});
         initDiagramScroll(body);
+        window.RtLayoutSim?.mountAll(body);
       }):(body.innerHTML=`<div class="rt-pg-orbs"></div><div class="rt-pg-wrap">${listView()}</div>`))
         .catch(()=>{body.innerHTML=`<div class="rt-pg-wrap"><p class="rt-pg-empty">제품 정보를 불러오지 못했습니다. <a href="#products">목록으로</a></p></div>`});
     }
@@ -1364,6 +1373,8 @@
       if(configure){event.preventDefault();location.hash='#matrix-configurator';root.dispatchEvent(new CustomEvent('rt-configure-family',{detail:configure.dataset.configureFamily}));return}
       const printBtn=event.target.closest('[data-print]');
       if(printBtn){window.print();return}
+      const scrollBtn=event.target.closest('[data-scroll-to]');
+      if(scrollBtn){const target=body.querySelector(`#${scrollBtn.dataset.scrollTo}`);if(target){target.scrollIntoView({behavior:'smooth',block:'start'});target.querySelector('select,button,[tabindex]')?.focus({preventScroll:true})}return}
       // 0.55 2U 이상 제품의 정면·후면 버튼: 같은 단자 지도 안에서 정면 사진과 후면 단자 지도를 바꿔 보여준다.
       const sideBtn=event.target.closest('[data-pm-side]');
       if(sideBtn){const seg=sideBtn.closest('.rt-pg-seg'),scope=seg?.parentElement;if(scope){seg.querySelectorAll('[data-pm-side]').forEach(btn=>{const on=btn===sideBtn;btn.classList.toggle('rt-pg-on',on);btn.setAttribute('aria-pressed',String(on))});scope.querySelectorAll('[data-pm-face]').forEach(el=>{el.hidden=el.dataset.pmFace!==sideBtn.dataset.pmSide})}return}
