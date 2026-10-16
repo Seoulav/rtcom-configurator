@@ -41,3 +41,29 @@ test('제품 데이터는 AMX 예시 카드 값을 갖고 근거 쪽수를 밝�
   assert.equal(spec.serial.baud,9600);
   assert.match(spec.source,/9쪽/);
 });
+
+// HDS-21U 사용자 매뉴얼 9쪽: 입력 2번 → 출력 1번 예시 *000CI02O01!, 표의 Mute 칸 값 0
+const spec21=JSON.parse(fs.readFileSync('data/products/hds-21u.json','utf8')).controlExample;
+
+test('HDS-21U 입력 선택은 매뉴얼 예시(*000CI02O01!)와 같고 출력은 1개뿐이다',()=>{
+  assert.equal(ce.switchCommand(spec21,2,1).text,'*000CI02O01!');
+  assert.equal(ce.switchCommand(spec21,1,1).text,'*000CI01O01!');
+  assert.equal(ce.switchCommand(spec21,9,9).text,'*000CI02O01!');
+});
+
+test('HDS-21U 볼륨 V54=+2dB, 뮤트는 표의 Mute 칸 값 0(*000V00!)이며 dB 값은 뮤트 코드로 내려가지 않는다',()=>{
+  assert.equal(ce.volumeCommand(spec21,2).text,'*000V54!');
+  assert.equal(ce.muteCommand(spec21).text,'*000V00!');
+  assert.equal(ce.volumeCommand(spec21,-100).code,1);
+});
+
+test('뮤트 값이 없는 HDS-42MU는 뮤트 커맨드를 만들지 않는다',()=>{
+  assert.equal(ce.muteCommand(spec),null);
+});
+
+test('AMX 코드는 명령마다 버튼 이벤트를 하나씩 만든다',()=>{
+  const code=ce.amxCode(spec21,[{label:'IN 2 → OUT 1',text:'*000CI02O01!'},{label:'뮤트',text:'*000V00!'}]);
+  assert.match(code,/BUTTON_EVENT\[dvTP,1\]/);
+  assert.match(code,/BUTTON_EVENT\[dvTP,2\]/);
+  assert.match(code,/SEND_STRING dvHDS21U,"'\*000V00!',\$0D"/);
+});

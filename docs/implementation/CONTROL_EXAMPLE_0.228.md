@@ -11,6 +11,13 @@
 - **AMX NetLinx 예제**: 선택한 경로와 볼륨을 `SEND_STRING dv…,"'…',$0D"`로 보내는 코드를 만들어 줍니다.
 - 선택은 이 브라우저에만 기억합니다(`rtcom.controlExample.<제품 id>`, 구성 저장 key와 무관).
 
+## 1-1. HDS-21U (같은 0.228에 포함, 사용자 요청 2026-10-16 "HDS-21U도 동일하게 만들어줘")
+
+- 입력 2 × 출력 1 표 2칸. 매뉴얼 9쪽 예시는 입력 2번 → 출력 1번 `*000CI02O01!`입니다.
+- **뮤트 커맨드 추가**: HDS-21U 매뉴얼 9쪽 표에는 `0 dB = 50`, `Mute = 0` 칸이 있어, 볼륨 자리에 0을 넣은 `*000V00!`을 뮤트로 보여 줍니다(`volume.muteCode: 0`). 뮤트 해제 방법은 매뉴얼에 없어 화면에 "장비에서 확인이 필요합니다"라고 적었습니다. `minCode`를 1로 두어 dB 입력이 뮤트 코드로 내려가지 않게 했습니다.
+- AMX 예제는 명령마다 터치 패널 버튼을 하나씩 만듭니다(경로·볼륨·뮤트).
+- HDS-42MU 매뉴얼 표에는 Mute 칸이 없어 42MU 카드에는 뮤트를 넣지 않았습니다(같은 계열이라 같을 가능성이 높으나 RT컴 확인 대기).
+
 ## 2. 근거와 한계
 
 - 근거: HDS-42MU 사용자 매뉴얼 9쪽 "RS-232C Control"(`output/design/assets/docs/hds-42mu-manual.pdf`). 9600bps, `*` + 제품 ID `000` + `C` + `Ixx` + `Oxx` + `!` + Enter(0x0D), 볼륨 `*000V54!`(0dB → 2dB).
@@ -22,7 +29,7 @@
 
 - `src/control-example.js`(`RtControlExample`): 순수 함수(`switchCommand`·`volumeCommand`·`volumeCode`·`toHex`·`amxCode`)와 화면 그리기.
 - 제품 JSON의 `controlExample`(`productId`·`inputs`·`outputs`·`volume`·`serial`·`amxDevice`·`lead`·`source`)이 있으면 `src/products.js`의 `controlExampleSection()`이 카드 틀을 만들고, 제품정보 화면이 그려진 뒤 `RtControlExample.mountAll(body)`가 채웁니다.
-- 확장 순서(사용자 지시): HDS-21U → 일체형 매트릭스(QMS-44UX·QMS-88UX) → 모듈러 매트릭스(XDM·SPX·VDM). HDS-21U 매뉴얼도 같은 프로토콜(9600bps, `*000CI02O01!`, `*000V54!`)이라 JSON 값만 더하면 됩니다. QMS·XDM 등은 명령 문법이 다를 수 있어 해당 제품 명령 가이드를 받은 뒤 `kind`별 생성기를 추가합니다.
+- 확장 순서(사용자 지시): HDS-21U(완료) → 일체형 매트릭스(QMS-44UX·QMS-88UX) → 모듈러 매트릭스(XDM·SPX·VDM). QMS·XDM 등은 명령 문법이 다를 수 있어 해당 제품 명령 가이드를 받은 뒤 `kind`별 생성기를 추가합니다.
 
 ## 4. 검증
 

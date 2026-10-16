@@ -587,6 +587,11 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     check('HDS-42MU AMX 커맨드 카드: 입력·출력 드롭다운을 바꾸면 표의 선택 칸과 커맨드(*000CI03O02!)가 같이 바뀜',ce2.sel==='3,2'&&/\*000CI03O02!/.test(ce2.sw),JSON.stringify(ce2));
     const ceOver=await page.evaluate(()=>({overflow:document.documentElement.scrollWidth>innerWidth,idx:document.querySelector('.rt-pg-control .rt-pg-idx')?.textContent}));
     check('HDS-42MU AMX 커맨드 카드 번호는 08이고 가로 넘침이 없음',ceOver.idx==='08'&&!ceOver.overflow,JSON.stringify(ceOver));
+    // 0.228 HDS-21U 같은 카드: 입력 2×출력 1 표 2칸, 매뉴얼 예시 *000CI02O01!, 뮤트 *000V00!(표의 Mute 칸 값 0), AMX 버튼 3개.
+    await page.goto(`${home}#products/hds-21u`,{waitUntil:'networkidle'});
+    await page.waitForSelector('.rt-pg-control .rt-ce-cmd');
+    const ce21={cells:await page.locator('.rt-pg-control .rt-ce-cell').count(),sw:(await ceText('sw')).replace(/\s+/g,' '),mute:(await ceText('mute')).replace(/\s+/g,' '),amx:await ceText('amx'),idx:await page.locator('.rt-pg-control .rt-pg-idx').innerText(),overflow:await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth)};
+    check('HDS-21U AMX 커맨드 카드: 표 2칸·*000CI02O01!(IN 2 → OUT 1)·뮤트 *000V00!·AMX 버튼 3개·가로 넘침 없음',ce21.cells===2&&/\*000CI02O01!/.test(ce21.sw)&&/\*000V00!/.test(ce21.mute)&&(ce21.amx.match(/BUTTON_EVENT/g)||[]).length===3&&!ce21.overflow,JSON.stringify(ce21).slice(0,260));
     // 0.62 HDS-21U·HDS-42MU 딥 스위치 칸 순서: ON이 왼쪽, OFF가 오른쪽(dipSwitch.order, 사용자 요청 2026-09-27). HD-210U는 OFF → ON 그대로.
     for(const [id,first] of [['hds-21u','ON'],['hds-42mu','ON'],['hd-210u','OFF']]){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});

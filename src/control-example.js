@@ -4,7 +4,8 @@
      - 통신속도 9600bps, 형식 * + 제품 ID(000) + C + Ixx(입력) + Oxx(출력) + ! + Enter(0x0D)
      - 입력 선택: *000CI02O02!+0x0D (입력 2번 → 출력 2번)
      - 볼륨: *000Vxx!+0x0D, 50이 0dB, 1 오르면 +0.5dB·1 내려가면 -0.5dB (예: *000V54! = 0dB에서 2dB)
-   매뉴얼에 없는 값(데이터 비트·패리티·스톱 비트, 뮤트 명령, 볼륨 허용 범위)은 만들어 넣지 않는다.
+   HDS-21U 매뉴얼 9쪽 표에는 0dB(50) 옆에 Mute(0) 칸이 있어 volume.muteCode가 있는 제품만 뮤트 커맨드(*000V00!)를 보여 준다.
+   매뉴얼에 없는 값(데이터 비트·패리티·스톱 비트, 뮤트 명령(muteCode가 없는 제품), 볼륨 허용 범위)은 만들어 넣지 않는다.
    AMX NetLinx 코드는 위 문자열을 SEND_STRING으로 보내는 일반 문법 예시이며, 장치 번호(5001:1:0)와 버튼 번호는 현장에 맞게 바꿔야 한다.
    순수 함수(switchCommand·volumeCommand·volumeCode·toHex·amxCode)는 Node 테스트(tests/control-example.test.cjs)에서도 쓰므로 DOM을 건드리지 않는다.
    mountAll(body)는 제품정보 상세 화면 안의 [data-control-example] 자리에만 그린다(src/products.js, 데이터는 제품 JSON의 controlExample). */
@@ -37,10 +38,22 @@
     ];
   }
   const textOf=parts=>parts.map(p=>p.text).join('');
-  const volumeSpec=spec=>({zero:spec.volume?.zeroCode??50,step:spec.volume?.stepDb??0.5,min:spec.volume?.minCode??0,max:spec.volume?.maxCode??99});
+  const volumeSpec=spec=>({zero:spec.volume?.zeroCode??50,step:spec.volume?.stepDb??0.5,min:spec.volume?.minCode??0,max:spec.volume?.maxCode??99,mute:spec.volume?.muteCode});
   function volumeCode(spec,db){const v=volumeSpec(spec);return clamp(Math.round(v.zero+db/v.step),v.min,v.max)}
   function dbOf(spec,code){const v=volumeSpec(spec);return (code-v.zero)*v.step}
   function dbText(db){return `${db>0?'+':''}${db.toFixed(1)}dB`}
+  // 뮤트: 매뉴얼 표의 Mute 칸 값(HDS-21U는 0)을 그대로 Vxx에 넣는다. muteCode가 없는 제품은 null.
+  function muteCommand(spec){
+    const m=volumeSpec(spec).mute;
+    if(m===undefined||m===null)return null;
+    const parts=[
+      {kind:'start',text:'*',title:'Start · 명령 시작'},
+      {kind:'id',text:spec.productId,title:'Product ID · 제품 ID'},
+      {kind:'vol',text:`V${pad2(m)}`,title:'Volume · 뮤트(매뉴얼 표 Mute 칸 값)'},
+      {kind:'end',text:'!',title:'End · 명령 끝(이어서 Enter 0x0D)'}
+    ];
+    return {text:textOf(parts),parts,code:m};
+  }
   function switchCommand(spec,input,output){
     const i=clamp(Math.round(input),1,spec.inputs),o=clamp(Math.round(output),1,spec.outputs);
     const parts=switchParts(spec,i,o);
@@ -54,7 +67,8 @@
   function toHex(text){
     return [...text].map(ch=>ch.charCodeAt(0).toString(16).toUpperCase().padStart(2,'0')).concat('0D').join(' ');
   }
-  // AMX NetLinx: 직렬 포트 설정 한 줄 + 버튼을 눌렀을 때 문자열을 보내는 이벤트. 데이터 비트·패리티는 매뉴얼에 없어 일반값(8N1)으로 적고 현장 확인을 안내한다.
+  // AMX NetLinx: 직렬 포트 설정 한 줄 + 명령마다 터치 패널 버튼 하나씩 SEND_STRING. commands는 문자열 또는 {label,text}.
+  // 데이터 비트·패리티는 매뉴얼에 없어 일반값(8N1)으로 적고 현장 확인을 안내한다.
   function amxCode(spec,commands){
     const dev=spec.amxDevice||'dvSwitcher',baud=spec.serial?.baud||9600;
     const lines=[
@@ -62,17 +76,12 @@
       `${dev} = 5001:1:0   // RS-232 포트 장치 번호는 현장에 맞게 변경`,
       ``,
       `DEFINE_START`,
-      `SEND_COMMAND ${dev},'SET BAUD ${baud},N,8,1 485 DISABLE'   // ${baud}bps, 데이터·패리티·스톱 비트는 현장 확인`,
-      ``,
-      `// 터치 패널 버튼 1번을 누르면 전송 (CR = $0D)`,
-      `BUTTON_EVENT[dvTP,1]`,
-      `{`,
-      `  PUSH:`,
-      `  {`,
-      ...commands.map(c=>`    SEND_STRING ${dev},"'${c}',$0D"`),
-      `  }`,
-      `}`
+      `SEND_COMMAND ${dev},'SET BAUD ${baud},N,8,1 485 DISABLE'   // ${baud}bps, 데이터·패리티·스톱 비트는 현장 확인`
     ];
+    commands.forEach((c,i)=>{
+      const item=typeof c==='string'?{label:'',text:c}:c;
+      lines.push(``,`// 터치 패널 버튼 ${i+1}번${item.label?` · ${item.label}`:''} (CR = $0D)`,`BUTTON_EVENT[dvTP,${i+1}]`,`{`,`  PUSH:`,`  {`,`    SEND_STRING ${dev},"'${item.text}',$0D"`,`  }`,`}`);
+    });
     return lines.join('\n');
   }
   const tokens=parts=>parts.map(p=>`<span class="rt-ce-tok rt-ce-tok-${p.kind}" title="${esc(p.title)}">${esc(p.text)}</span>`).join('');
@@ -88,7 +97,7 @@
     const dbMin=dbOf(spec,v.min),dbMax=dbOf(spec,v.max);
     function render(){
       const sel=switchCommand(spec,st.input,st.output);
-      const vol=volumeCommand(spec,Number(st.db)||0);
+      const vol=volumeCommand(spec,Number(st.db)||0),mute=muteCommand(spec);
       // 라우팅 표: 가로는 출력, 세로는 입력. 칸마다 그 경로의 명령어를 바로 보여 주고, 누르면 아래 상세가 그 칸으로 바뀐다.
       const grid=`<div class="rt-ce-grid" role="group" aria-label="입력·출력 라우팅 표" style="--rt-ce-cols:${spec.outputs}">
         <span class="rt-ce-corner">입력 / 출력</span>${range(spec.outputs).map(o=>`<b class="rt-ce-colhead">OUT ${o}</b>`).join('')}
@@ -107,10 +116,13 @@
       <div class="rt-ce-block"><div class="rt-ce-head"><h3>볼륨 커맨드</h3><button type="button" class="rt-pg-btn" data-ce-copy="vol">복사</button><span class="rt-ce-copied" data-ce-note="vol" aria-live="polite"></span></div>
         <pre class="rt-ce-cmd" data-ce-text="vol"><span class="rt-ce-line"><small>${esc(dbText(vol.db))} (코드 ${pad2(vol.code)})</small>${tokens(vol.parts)}<span class="rt-ce-cr" title="Enter · 0x0D">⏎</span></span></pre>
         <p class="rt-ce-hex">HEX <code>${esc(toHex(vol.text))}</code> · 코드 ${v.zero}가 0dB, 1 오를 때마다 ${v.step}dB 증가</p></div>
-      <div class="rt-ce-block"><div class="rt-ce-head"><h3>AMX NetLinx 예제 (선택한 경로 + 볼륨)</h3><button type="button" class="rt-pg-btn" data-ce-copy="amx">복사</button><span class="rt-ce-copied" data-ce-note="amx" aria-live="polite"></span></div>
-        <pre class="rt-ce-cmd rt-ce-code" data-ce-text="amx">${esc(amxCode(spec,[sel.text,vol.text]))}</pre></div>
-      <p class="rt-pg-hint">※ 근거: ${esc(spec.source)}. 통신 속도 ${spec.serial?.baud||9600}bps, 문장 끝에 Enter(0x0D)를 붙입니다. 제품 ID는 매뉴얼 예시의 ${esc(spec.productId)}입니다. 표의 모든 칸은 매뉴얼 예시(<code>*000CI02O02!</code>)에서 번호만 바꾼 값입니다.</p>
-      <p class="rt-pg-hint">※ 매뉴얼에 적혀 있지 않아 넣지 않은 것: 데이터 비트·패리티·스톱 비트(코드의 8N1은 일반값), 뮤트 명령, 볼륨 허용 범위(코드 ${pad2(v.min)}~${pad2(v.max)}는 두 자리 형식에서 계산한 값). AMX 장치 번호와 버튼 번호는 현장에 맞게 바꾸세요.</p>`;
+      ${mute?`<div class="rt-ce-block"><div class="rt-ce-head"><h3>뮤트 커맨드</h3><button type="button" class="rt-pg-btn" data-ce-copy="mute">복사</button><span class="rt-ce-copied" data-ce-note="mute" aria-live="polite"></span></div>
+        <pre class="rt-ce-cmd" data-ce-text="mute"><span class="rt-ce-line"><small>뮤트 (볼륨 코드 ${pad2(mute.code)})</small>${tokens(mute.parts)}<span class="rt-ce-cr" title="Enter · 0x0D">⏎</span></span></pre>
+        <p class="rt-ce-hex">HEX <code>${esc(toHex(mute.text))}</code> · 매뉴얼 표의 Mute 칸 값(${mute.code})을 볼륨 자리에 넣은 값입니다. 뮤트 해제 방법은 매뉴얼에 없어 장비에서 확인이 필요합니다.</p></div>`:''}
+      <div class="rt-ce-block"><div class="rt-ce-head"><h3>AMX NetLinx 예제 (${mute?'경로 · 볼륨 · 뮤트':'선택한 경로 + 볼륨'})</h3><button type="button" class="rt-pg-btn" data-ce-copy="amx">복사</button><span class="rt-ce-copied" data-ce-note="amx" aria-live="polite"></span></div>
+        <pre class="rt-ce-cmd rt-ce-code" data-ce-text="amx">${esc(amxCode(spec,[{label:`IN ${sel.input} → OUT ${sel.output}`,text:sel.text},{label:dbText(vol.db),text:vol.text},...(mute?[{label:'뮤트',text:mute.text}]:[])]))}</pre></div>
+      <p class="rt-pg-hint">※ 근거: ${esc(spec.source)}. 통신 속도 ${spec.serial?.baud||9600}bps, 문장 끝에 Enter(0x0D)를 붙입니다. 제품 ID는 매뉴얼 예시의 ${esc(spec.productId)}입니다. 표의 모든 칸은 매뉴얼 예시(<code>${esc(spec.manualExample||'*000CI02O02!')}</code>)에서 번호만 바꾼 값입니다.</p>
+      <p class="rt-pg-hint">※ 매뉴얼에 적혀 있지 않아 넣지 않은 것: 데이터 비트·패리티·스톱 비트(코드의 8N1은 일반값), ${mute?'':'뮤트 명령, '}볼륨 허용 범위(코드 ${pad2(v.min)}~${pad2(v.max)}는 두 자리 형식에서 계산한 값). AMX 장치 번호와 버튼 번호는 현장에 맞게 바꾸세요.</p>`;
     }
     root.addEventListener('change',event=>{
       const field=event.target.closest('[data-ce-field]');if(!field)return;
@@ -143,5 +155,5 @@
       try{mount(el,JSON.parse(el.dataset.controlExample))}catch{el.textContent='커맨드 예시를 불러오지 못했습니다.'}
     });
   }
-  return {switchCommand,volumeCommand,volumeCode,dbOf,toHex,amxCode,mount,mountAll};
+  return {switchCommand,volumeCommand,muteCommand,volumeCode,dbOf,toHex,amxCode,mount,mountAll};
 });
