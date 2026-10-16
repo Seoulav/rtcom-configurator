@@ -78,7 +78,7 @@
 - **0.145.0 배포 기록**: `docs/qa/DEPLOYMENT_0.145_2026-09-29.md`(PR #194 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.144.0 배포 기록**: `docs/qa/DEPLOYMENT_0.144_2026-09-29.md`(PR #192 → main 병합, Pages 배포 run 162, 공개 파일 337/338 일치, `.nojekyll` 제외)
 
-## 0.227.0
+## 0.228.0
 
 사용자 요청 2026-10-16("클로드 디자인이 준거야 적용해줘", 클로드 디자인 지시서 `rtcom-configurator-design-touch.md`)으로 SVT 공통 디자인 v2 A단계(T1·T2·T3·T4·T6·T7)를 적용했습니다. 수정 파일은 `src/styles.css` 하나이고 데이터·계산·내보내기는 바뀌지 않았습니다.
 
@@ -89,7 +89,14 @@
 - **T6 예정 단계 탭:** 비활성 단계(02~06)를 흐리게 숨기지 않고 보조 글자색으로 읽히게 했습니다.
 - **T7 모바일 상단:** 720px 이하에서 버전 알약을 숨기고 툴바를 한 줄 가로 스크롤로 바꿨습니다.
 - **그대로 둔 것:** `@media print` 규칙과 인쇄 보고서 규칙(`.rt-rp*`, `#print-report`), 3줄 `light-dark()` 블록의 `--rt-accent`, 신호 범례 색, 다크 모드(B단계는 계획 보고·승인 뒤 별도 PR).
-- 근거: `docs/implementation/SVT_DESIGN_TOUCH_0.227.md`, 화면 비교 `docs/qa/svt-design-touch-0.227/`
+- 근거: `docs/implementation/SVT_DESIGN_TOUCH_0.228.md`, 화면 비교 `docs/qa/svt-design-touch-0.228/`
+
+## 0.227.0
+
+- **구성기 XDM-MR4S 랙 장착 스위치(사용자 결정 2026-10-16 "전송기 단계 선택 스위치"):** 04 전송기에 켜기/끄기를 두었습니다. 기본은 꺼짐이라 기존 견적은 바뀌지 않습니다. 켜면 포트에 배정한 XDM-CTR100·XDM-FT101·XDM-FR101 대수를 4로 나눈 올림값만큼 XDM-MR4S를 BOM에 넣습니다. 저장 파일에는 `mr4s` 항목으로 남고(schema 3 유지), 이 항목이 없는 예전 파일은 꺼짐으로 읽습니다.
+- **XDM-MR4S 원격 전원 공급 불가(사용자 확인 2026-10-16 "MR4S는 슬롯카드를 통해서 전송기전원공급이 가능해 그러나 XDM-MR4S는 원격전원 공급이 불가능해"):** 스위치를 켜면 XDM-PSU·XDM-POH·XDM-PHX를 세지 않고 프레임 전원(POWER 1·2) 안내를 보여 줍니다. XDM-MR4S 04 제품 사양·05 주요 기능·개요에 "원격 전원 공급 불가"를, MR-4S에는 "슬롯 카드를 통해 전송기 전원 공급 가능"을 적었습니다.
+- **XDM-MR4S 03 Signal Flow:** 뒷면 사진의 장착 예대로 XDM 매트릭스 카드(FIS100·FOS100·CIS100·COS100) ↔ 광·HDBaseT ↔ MR4S 카드 4장 ↔ 소스·디스플레이를 그렸습니다.
+- 근거: `docs/implementation/XDM_MR4S_SWITCH_FLOW_0.227.md`
 
 ## 0.226.0
 

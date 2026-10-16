@@ -597,6 +597,20 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await page.waitForSelector('#rt-pg-title');
     const mr4=await page.evaluate(()=>{const s=[...document.querySelectorAll('section')].find(s=>/Port Map/i.test(s.querySelector('h2')?.textContent||''));const links=[...document.querySelectorAll('a[href*="#products/"]')].map(a=>a.getAttribute('href'));return {title:document.querySelector('#rt-pg-title')?.textContent,front:!!s?.innerHTML.includes('xdm-mr4s-front.webp'),rear:!!s?.innerHTML.includes('xdm-mr4s-rear.webp'),ports:[...(s?.querySelectorAll('.rt-pg-ports')||[])].map(x=>x.children.length),ctr:links.some(h=>h.endsWith('#products/xdm-ctr100')),ft:links.some(h=>h.endsWith('#products/xdm-ft101-fr101')),broken:[...document.images].filter(i=>i.complete&&!i.naturalWidth).length,overflow:document.documentElement.scrollWidth>innerWidth}});
     check('XDM-MR4S 상세에 앞면·뒷면 실물 사진 단자 지도(번호 5·5개)와 XDM-CTR100·XDM-FT101/FR101 관련 제품 링크가 나오고 깨진 사진이 없음',/XDM-MR4S/.test(mr4.title||'')&&mr4.front&&mr4.rear&&mr4.ports.join()==='5,5'&&mr4.ctr&&mr4.ft&&!mr4.broken&&!mr4.overflow,JSON.stringify(mr4));
+    // 0.227 XDM-MR4S 03 Signal Flow(매트릭스 카드 ↔ MR4S 카드 4장)와 구성기 04 전송기 "XDM-MR4S 랙 장착" 스위치(사용자 결정 2026-10-16).
+    const mr4Flow=await page.evaluate(()=>{const w=document.querySelector('.rt-pg-svg-wrap[aria-label^="XDM-MR4S Signal Flow"]');const t=w?.textContent||'';return {svg:!!w,cards:['XDM-FIS100','XDM-FOS100','XDM-CIS100','XDM-COS100'].every(c=>t.includes(c)),power:/원격 전원 공급 불가/.test(t)}});
+    check('XDM-MR4S 03 Signal Flow에 매트릭스 카드 4종과 MR4S 카드 줄, 원격 전원 공급 불가 안내가 나옴',mr4Flow.svg&&mr4Flow.cards&&mr4Flow.power,JSON.stringify(mr4Flow));
+    {
+      const st={step:3,maxStep:3,family:'XDM',model:'XDM-12',requirements:{inputs:[],outputs:[]},placements:{'in-1':'XDM-CIS100','out-1':'XDM-COS100'},physicalSlots:{status:'unknown',slots:[]},portAssignments:{},links:{'in-1':{device:'XDM-CTR100 · TX',count:4,distance:'30'},'out-1':{device:'XDM-CTR100 · RX',count:4,distance:'30'}},slot:'in-1',format:'PDF'};
+      await page.goto(home,{waitUntil:'networkidle'});
+      await page.evaluate(s=>{localStorage.setItem('rtcom.configuration.v1',JSON.stringify({schemaVersion:3,catalogVersion:RtCore.catalogVersion,state:RtCore.checkState({...s,portAssignments:RtCore.syncPorts(s)})}))},st);
+      await page.reload({waitUntil:'networkidle'});
+      const before=await page.evaluate(()=>({sw:document.querySelector('[data-mr4s-toggle]')?.getAttribute('aria-checked'),power:!!document.querySelector('.rt-power-notice')}));
+      await page.locator('[data-mr4s-toggle]').click();
+      const after=await page.evaluate(()=>{const st=JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state;const rows=RtCore.bom(st);return {sw:document.querySelector('[data-mr4s-toggle]')?.getAttribute('aria-checked'),power:!!document.querySelector('.rt-power-notice'),mr4s:rows.find(r=>r.model.startsWith('XDM-MR4S'))?.quantity||0,psu:rows.some(r=>/^XDM-(PSU|POH|PHX)/.test(r.model)),overflow:document.documentElement.scrollWidth>innerWidth}});
+      check('04 전송기 XDM-MR4S 랙 장착 스위치: 기본 꺼짐(XDM-PSU 안내), 켜면 CTR100 8대 → MR4S 2대를 BOM에 넣고 XDM-PSU·POH·PHX를 뺌',before.sw==='false'&&before.power&&after.sw==='true'&&!after.power&&after.mr4s===2&&!after.psu&&!after.overflow,JSON.stringify({before,after}));
+      await page.evaluate(()=>localStorage.removeItem('rtcom.configuration.v1'));
+    }
     // 0.201 SPX-TX/RX 03 Signal Flow 범례: 실효 전송 거리에 Belden 케이블 조건(7814A·10GXE02)이 남는다(사용자 요청 2026-10-04).
     await page.goto(`${home}#products/spx-rx-tx`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-legend');
