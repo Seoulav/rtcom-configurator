@@ -693,7 +693,7 @@
         {card:'XDM-FOS100',slot:'XDM-FR101',role:'광 수신',tx:false,fiber:true},
         {card:'XDM-CIS100',slot:'XDM-CTR100',role:'TX 모드',tx:true,fiber:false},
         {card:'XDM-COS100',slot:'XDM-CTR100',role:'RX 모드',tx:false,fiber:false}];
-      const mxX=40,mxW=180,frX=420,frW=230,endX=800,rowY=i=>top+head+20+i*gap,bottom=top+head+gap*rows.length+8,height=bottom+96;
+      const mxX=40,mxW=180,frX=420,frW=230,endX=770,rowY=i=>top+head+20+i*gap,bottom=top+head+gap*rows.length+8,height=bottom+96;
       let body=`<text x="${width/2}" y="24" text-anchor="middle" font-size="12" font-weight="700" fill="#687386">${svgEsc(`${item.model} 1대 = 카드 4장 · 뒷면 사진의 장착 예(XDM-FT101·XDM-FR101·XDM-CTR100 2장)`)}</text>`;
       body+=`<rect x="${mxX}" y="${top}" width="${mxW}" height="${bottom-top}" rx="14" fill="#eef2f8" stroke="#c8d3e6" stroke-width="2"/><text x="${mxX+mxW/2}" y="${top+24}" text-anchor="middle" font-size="14" font-weight="800" fill="#1f2532">XDM 매트릭스</text>`;
       body+=`<rect x="${frX}" y="${top}" width="${frW}" height="${bottom-top}" rx="14" fill="#eef2f8" stroke="#c8d3e6" stroke-width="2"/><text x="${frX+frW/2}" y="${top+24}" text-anchor="middle" font-size="14" font-weight="800" fill="#1f2532">${svgEsc(item.model)}</text>`;
@@ -703,7 +703,8 @@
         body+=`<rect x="${frX+12}" y="${y-17}" width="${frW-24}" height="34" rx="8" fill="#fff" stroke="#c8d3e6" stroke-width="1.5"/><text x="${frX+24}" y="${y+4}" font-size="12" font-weight="750" fill="#1f2532">${i+1} · ${svgEsc(row.slot)}</text><text x="${frX+frW-22}" y="${y+4}" text-anchor="end" font-size="10" fill="#687386">${svgEsc(row.role)}</text>`;
         body+=`<path d="M${mxX+mxW} ${y}L${frX} ${y}" stroke="${color}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/>`;
         body+=`<text x="${(mxX+mxW+frX)/2}" y="${y-7}" text-anchor="middle" font-size="10" font-weight="700" fill="${color}">${row.fiber?'FIBER':'HDBaseT'} ${row.tx?'←':'→'}</text>`;
-        body+=row.tx?arrow(endX-24,y,frX+frW+6,y,COLOR_IN)+monitorIcon(endX,y-4,i===0?'소스 기기':'',0.8):arrow(frX+frW+6,y,endX-24,y,COLOR_OUT)+monitorIcon(endX,y-4,i===1?'디스플레이':'',0.8);
+        body+=row.tx?arrow(endX-24,y,frX+frW+6,y,COLOR_IN)+monitorIcon(endX,y-4,'',0.8):arrow(frX+frW+6,y,endX-24,y,COLOR_OUT)+monitorIcon(endX,y-4,'',0.8);
+        body+=`<text x="${endX+24}" y="${y+2}" font-size="10" fill="#687386">${row.tx?'소스':'디스플레이'}</text>`;
       });
       body+=arrow(frX+frW/2,bottom+34,frX+frW/2,bottom+4,COLOR_POWER);
       body+=`<text x="${frX+frW/2}" y="${bottom+52}" text-anchor="middle" font-size="11" fill="#687386">POWER 1·2 → 카드 4장 공급 (MR4S의 CTR100은 원격 전원 공급 불가)</text>`;

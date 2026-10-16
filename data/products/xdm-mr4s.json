@@ -17,7 +17,7 @@
   "lead": "XDM 전송기(XDM-CTR100·XDM-FT101·XDM-FR101)를 **카드 형태로 최대 4장** 장착하는 랙 장착형 4K 집합 프레임입니다.",
   "verificationSummary": "사용자 제공 실물 사진(앞면·뒷면, 2026-10-16)과 사용자 확인으로 장착 카드·슬롯 수·전원 입력·표시등을 확인했다. 크기·무게·전원 규격은 자료를 받은 뒤 채운다.",
   "packageStatus": "VERIFIED",
-  "overview": "XDM-MR4S는 XDM 시리즈 전송기 XDM-CTR100(HDBaseT)·XDM-FT101(광 송신)·XDM-FR101(광 수신)을 카드 형태로 최대 4장 장착하는 랙 장착형 4K 집합 프레임이다. 송신 카드와 수신 카드를 섞어 꽂을 수 있으며, 후면에 전원 입력 POWER 1·2가 있다. 앞면에는 슬롯마다 상태 표시등(ST 1·ST 2·LINK)과 전원 표시등(POWER 1·2)이 있다.\n\n프레임은 카드 장착과 전원 공급을 담당하며, 해상도·HDCP·EDID 등 영상 사양은 장착하는 XDM 전송기 카드를 따른다. 기존 MR-4S(CT104-U/CR104-U·FT101-U/FR101-U 장착)와는 장착 카드가 다른 별도 제품이다.",
+  "overview": "XDM-MR4S는 XDM 시리즈 전송기 XDM-CTR100(HDBaseT)·XDM-FT101(광 송신)·XDM-FR101(광 수신)을 카드 형태로 최대 4장 장착하는 랙 장착형 4K 집합 프레임이다. 송신 카드와 수신 카드를 섞어 꽂을 수 있으며, 후면에 전원 입력 POWER 1·2가 있다. 앞면에는 슬롯마다 상태 표시등(ST 1·ST 2·LINK)과 전원 표시등(POWER 1·2)이 있다.\n\n프레임은 카드 장착과 전원 공급을 담당하며, 해상도·HDCP·EDID 등 영상 사양은 장착하는 XDM 전송기 카드를 따른다. 기존 MR-4S(CT104-U/CR104-U·FT101-U/FR101-U 장착)와는 장착 카드가 다른 별도 제품이다. MR-4S는 슬롯 카드를 통해 전송기에 전원을 공급할 수 있지만, XDM-MR4S는 원격 전원 공급이 되지 않는다.",
   "images": [
     {
       "role": "Front",
@@ -81,6 +81,10 @@
       "source": "P"
     },
     {
+      "text": "MR4S에 꽂은 XDM-CTR100은 원격 전원 공급 불가(프레임 전원 사용)",
+      "source": "U2"
+    },
+    {
       "text": "앞면 슬롯별 상태 표시등(ST 1·ST 2·LINK) 지원",
       "source": "P"
     },
@@ -133,6 +137,15 @@
       "unit": "",
       "condition": "뒷면",
       "source": "P",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "name": "원격 전원 공급",
+      "value": "불가 (MR4S에 꽂은 XDM-CTR100)",
+      "unit": "",
+      "condition": "카드는 프레임 POWER 1·2로 공급",
+      "source": "U2",
       "verification": "VERIFIED"
     }
   ],
@@ -261,6 +274,12 @@
       "name": "알티컴 XDM 전송기 제품정보(XDM-CTR100·XDM-FT101/FR101)",
       "page": "",
       "scope": "이 사이트의 XDM-CTR100(CIS100·COS100 카드와 짝)·XDM-FT101/FR101(FIS100·FOS100 카드와 짝) 제품 데이터"
+    },
+    {
+      "code": "U2",
+      "name": "서울영상테크 SI사업본부 확인",
+      "page": "",
+      "scope": "사용자 확인(2026-10-16 \"MR4S에 CTR100카드를 꽂아서 원격으로 전원공급 불가능해\") — 구성기 BOM에서 MR4S 장착 시 XDM-PSU(POH·PHX)를 세지 않음; 사용자 확인(2026-10-16 \"MR4S는 슬롯카드를 통해서 전송기전원공급이 가능해 그러나 XDM-MR4S는 원격전원 공급이 불가능해 명심해\")"
     }
   ],
   "issues": []
