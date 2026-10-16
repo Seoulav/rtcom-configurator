@@ -627,7 +627,14 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await page.selectOption('#rt-layout-sim [data-ls-hos-preset]','hos-guide-pip');
     const hosPip=await page.evaluate(()=>({cmd:document.querySelector('#rt-layout-sim [data-ls-cmd]').textContent,fixed:document.querySelectorAll('#rt-layout-sim .rt-ls-win.is-fixed').length,free:document.querySelectorAll('#rt-layout-sim .rt-ls-win:not(.is-fixed)').length,overflow:document.documentElement.scrollWidth>innerWidth}));
     check('XDM 07 시뮬레이터 HOS100 모드: 사용자 배치(L00) 커맨드와 스위칭 커맨드가 나오고 PIP 프리셋이 가이드 원문과 같음',/\*255CI001O001,I002O002,I003O003,I004O004!/.test(hosDefault)&&/\*255OQO001M14L00P4321O001X0000Y0000W1920H1080/.test(hosDefault)&&hosPip.cmd.includes('*255OQO001M14L09X1920Y1080W1920H1080!')&&hosPip.fixed===1&&hosPip.free===1&&!hosPip.overflow,JSON.stringify({hosDefault:hosDefault.slice(0,120),fixed:hosPip.fixed,free:hosPip.free}));
-    await page.evaluate(()=>{try{localStorage.removeItem('rtcom.layoutSim.v1');localStorage.removeItem('rtcom.layoutSim.hos.v1');localStorage.removeItem('rtcom.layoutSim.card.v1')}catch(e){}});
+    // 0.226 전체 커맨드(두 카드): WOS100·HOS100 커맨드가 번호 순으로 모이고, 포트가 겹치면 경고와 "시작 포트를 17번으로" 버튼이 나오며 누르면 경고가 사라진다.
+    await page.click('#rt-layout-sim [data-ls-card="ALL"]');
+    await page.waitForSelector('#rt-layout-sim .rt-ls-allgrid');
+    const allBefore=await page.evaluate(()=>({lines:document.querySelectorAll('#rt-layout-sim .rt-ls-cmdline').length,overlapBtn:!!document.querySelector('#rt-layout-sim [data-ls-hos-port]'),warn:document.querySelectorAll('#rt-layout-sim .rt-ls-warn li').length}));
+    await page.click('#rt-layout-sim [data-ls-hos-port]');
+    const allAfter=await page.evaluate(()=>({overlapBtn:!!document.querySelector('#rt-layout-sim [data-ls-hos-port]'),text:document.querySelector('#rt-layout-sim [data-ls-cmd]').textContent,overflow:document.documentElement.scrollWidth>innerWidth}));
+    check('XDM 07 시뮬레이터 전체 커맨드: 두 카드 커맨드 3줄, 포트 겹침 경고 → 버튼으로 HOS100 시작 포트 17번',allBefore.lines===3&&allBefore.overlapBtn&&!allAfter.overlapBtn&&/\*255OQO017M14L09X1920Y1080W1920H1080!/.test(allAfter.text)&&/I001O017,I002O018!/.test(allAfter.text)&&!allAfter.overflow,JSON.stringify({before:allBefore,after:allAfter.text.slice(-80)}));
+    await page.evaluate(()=>{try{localStorage.removeItem('rtcom.layoutSim.v1');localStorage.removeItem('rtcom.layoutSim.hos.v1');localStorage.removeItem('rtcom.layoutSim.card.v1');localStorage.removeItem('rtcom.layoutSim.include.v1')}catch(e){}});
     await page.evaluate(()=>{try{localStorage.removeItem('rtcom.layoutSim.v1')}catch(e){}});
     // 0.64 OBUX-1C Tx Mode 딥 스위치(매뉴얼 Ver.2.2): 검은 몸체 4핀, 1번 오디오 + 2·3·4번 EDID 조합 5칸(Through-pass EDID Fix 포함).
     await page.goto(`${home}#products/obux-1c`,{waitUntil:'networkidle'});
