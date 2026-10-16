@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.238.0 배포 기록**: `docs/qa/DEPLOYMENT_0.238_2026-10-16.md`(PR #366 → main 병합, Pages 배포 run 38976120761, 공개 `src/styles.css` 다크 블록 확인)
 - **0.237.0 배포 기록**: `docs/qa/DEPLOYMENT_0.237_2026-10-16.md`(PR #369 → main 병합 `c9abf7e`, Pages 배포 run 38975011080 success, 공개 `CATALOG BASED · 0.237`·`layout-sim.js` 해시 일치)
 - **0.236.0 배포 기록**: `docs/qa/DEPLOYMENT_0.236_2026-10-16.md`(PR #365 → main 병합 `56c35a8`, Pages 배포 run 38915324453 success, 공개 `CATALOG BASED · 0.236`·XDM·SPX·VDM `controlExample` 확인)
 - **0.235.0 배포 기록**: `docs/qa/DEPLOYMENT_0.235_2026-10-16.md`(PR #363 → main 병합 `07a1c07`, Pages 배포 run 38913897451 success, 공개 `CATALOG BASED · 0.235`·`layout-sim.js` 해시 일치, 번호 0.234 → 0.235 재정리 경위)
@@ -88,6 +89,14 @@
 - **0.146.0 배포 기록**: `docs/qa/DEPLOYMENT_0.146_2026-09-29.md`(PR #195 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.145.0 배포 기록**: `docs/qa/DEPLOYMENT_0.145_2026-09-29.md`(PR #194 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.144.0 배포 기록**: `docs/qa/DEPLOYMENT_0.144_2026-09-29.md`(PR #192 → main 병합, Pages 배포 run 162, 공개 파일 337/338 일치, `.nojekyll` 제외)
+
+## 0.239.0
+
+신호 색 통일(사용자 제공 구성도 범례 2026-10-16, 선택 "추천하는 레드 좋아보여", `docs/implementation/SIGNAL_COLORS_0.239.md`):
+
+- **DP 신호 레드**: 구성기 DP 배지를 순색 `#FF0000`에서 `#E5242B`(흰 글자 대비 4.55:1)로 바꿨습니다.
+- **제품정보 신호 색을 구성기·범례와 같게**: XDM·SPX·VDM "02 신호 구성"과 범례가 HDMI 남색 `#002060`, DP `#E5242B`, SDI 검정, HDBaseT·CATx 초록 `#00B050`, 광 하늘색 `#00B0F0`을 씁니다. 전송기 그림의 광케이블·CAT 케이블 색도 같은 값입니다. HDMI는 0.170 결정대로 남색을 유지합니다.
+- 다크 화면에서 제품정보 범례 점에도 신호 배지처럼 옅은 테두리를 둡니다. 테스트 `tests/signal-colors.test.cjs`를 더했습니다.
 
 ## 0.238.0
 

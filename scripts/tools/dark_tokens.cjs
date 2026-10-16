@@ -183,8 +183,9 @@ ${END}`;
 function EXTRA(){
   // 손으로 정한 다크 규칙(변수·자동 덮어쓰기로 정할 수 없는 것).
   return [
-    '/* 손 규칙: 신호 배지는 SDI(검정)·HDMI(남색)가 어두운 면에 묻히지 않게 옅은 테두리를 둔다. */',
+    '/* 손 규칙: 신호 배지·제품정보 범례 점은 SDI(검정)·HDMI(남색)가 어두운 면에 묻히지 않게 옅은 테두리를 둔다. */',
     '#rtcom-design .rt-sig-badge{box-shadow:0 0 0 1px rgba(255,255,255,.28)}',
+    '#rtcom-design .rt-pg-legend i{box-shadow:0 0 0 1px rgba(255,255,255,.28)}',
     '/* 손 규칙: 카드 판넬 사진(검은 몸체) 받침은 0.178 결정대로 옅은 회색을 유지한다. */',
     '#rtcom-design .rt-palette-tile img,#rtcom-design .rt-link-flow-node img[src*="assets/cards/"]{background:#eef1f5}',
     '#rtcom-design .rt-card-info-plate{background:#f2f5fa}',
