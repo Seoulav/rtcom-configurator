@@ -1113,6 +1113,8 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-card-palette .rt-card-info-group-output>span{color:#c2410c}
 #rtcom-design .rt-palette-tile img{grid-column:1/-1;display:block;width:100%;height:auto;border-radius:3px;pointer-events:none}
 #rtcom-design .rt-palette-tile>span{min-width:0}
+/* 0.228 예외(SVT 디자인 v2 T2): 3열 타일(390px) 안에서 배지를 12px로 올리면 모델명이 7px 더 넘쳐 페이지 가로 넘침이 난다. 이 타일의 배지만 이전 크기 9.5px로 둔다. */
+#rtcom-design .rt-palette-tile .rt-sig-badge{font-size:9.5px}
 #rtcom-design .rt-palette-tile small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #rtcom-design .rt-palette-tile{position:relative}
 #rtcom-design .rt-palette-tile b{position:absolute;top:-10px;right:8px;box-shadow:0 1px 3px #0003;padding:2px 8px;border-radius:999px;background:#1f2a3d;color:#fff;font-size:12px;font-weight:800;white-space:nowrap}
@@ -1364,7 +1366,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 @media(max-width:900px){#rtcom-design .rt-export{grid-template-columns:1fr}#rtcom-design .rt-export-options{position:static}#rtcom-design .rt-report-paper{padding:16px}}
 @media(max-width:480px){#rtcom-design .rt-report-fields{grid-template-columns:1fr}}
 
-#rtcom-design .rt-report{color:#1d2433;font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;font-size:13px;line-height:1.5;font-feature-settings:"tnum"}
+#rtcom-design .rt-report{color:#1d2433;font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;font-size:12.5px;line-height:1.5;font-feature-settings:"tnum"}
 #rtcom-design .rt-report *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 #rtcom-design .rt-rp-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding-bottom:10px;border-bottom:2.5px solid #1d2433}
 #rtcom-design .rt-rp-brand{display:flex;align-items:center;gap:10px}#rtcom-design .rt-rp-mark{display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#347ff2,#8268f3);color:#fff;font-size:19px;font-weight:800}
@@ -1389,7 +1391,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-rp-table .rt-rp-n,#rtcom-design .rt-rp-csv td:nth-child(4),#rtcom-design .rt-rp-csv th:nth-child(4){width:52px;text-align:right;font-weight:700;white-space:nowrap}
 #rtcom-design .rt-rp-group td{padding:4px 8px;background:#fafbfd;color:#5d687a;font-size:10px;font-weight:700}
 #rtcom-design .rt-rp-model{display:inline-flex;align-items:center;gap:6px;font-weight:650;white-space:nowrap}
-#rtcom-design .rt-report .rt-sig-badge{min-width:30px;height:16px;font-size:12px}
+#rtcom-design .rt-report .rt-sig-badge{min-width:30px;height:16px;font-size:8.5px}
 #rtcom-design .rt-rp-muted{color:#6c7789}
 #rtcom-design .rt-rp-checks{display:grid;gap:6px;margin:0;padding:0;list-style:none}#rtcom-design .rt-rp-checks li{display:grid;grid-template-columns:64px 1fr;gap:8px;align-items:start;padding:7px 10px;border-radius:7px;background:#f6f8fb;break-inside:avoid}
 #rtcom-design .rt-rp-lv{padding:1px 0;border-radius:4px;font-size:10px;font-weight:800;text-align:center}
