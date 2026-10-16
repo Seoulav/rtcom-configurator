@@ -1718,6 +1718,10 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-ls-card.is-over{background:rgba(255,55,95,.14);color:var(--rt-fg-d70015)}
 #rtcom-design .rt-ls-card em{font-style:normal;font-weight:700}
 #rtcom-design .rt-ls-span{margin:-4px 0 10px}
+/* 0.237 선택한 창 배치 버튼 줄 */
+#rtcom-design .rt-ls-align{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 10px;font-size:13px;color:var(--pg-muted)}
+#rtcom-design .rt-ls-align>span{font-weight:700;color:var(--pg-ink);margin-right:2px}
+#rtcom-design .rt-ls-align small{font-size:12px}
 #rtcom-design .rt-ls-stage{border-radius:var(--pg-r-inner);background:#0f1115;padding:10px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
 #rtcom-design .rt-ls-canvas{position:relative;width:100%;max-height:520px;margin:0 auto;background:#1b1f27;border-radius:10px;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}
 #rtcom-design .rt-ls-cell{position:absolute;box-sizing:border-box;border:1px dashed rgba(255,255,255,.28);display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;padding:6px 8px;color:rgba(255,255,255,.55);font:700 12px/1.2 var(--pg-sans);pointer-events:none}

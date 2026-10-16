@@ -298,6 +298,20 @@
     const win=s.windows[index],rest=s.windows.filter((_,i)=>i!==index);
     return {...s,windows:s.priority==='4321'?[...rest,win]:[win,...rest]};
   }
+  // 창 정렬(0.237): 선택한 창의 위치·크기를 한 번에 맞춘다. wall = 월 전체, center = 월 한가운데(디스플레이 1칸 크기, 가로·세로가 2의 배수이면 분할점 위에 놓여 모든 카드에 걸침),
+  // cell = 창 중심이 있는 디스플레이 1칸 가득. 월 바깥으로 나가지 않게 맞추고 좌표는 10px 단위로 내린다.
+  function alignWindow(state,index,mode){
+    const s=normalize(state);if(index<0||index>=s.windows.length)return s;
+    const geo=geometry(s),win=s.windows[index];
+    let rect;
+    if(mode==='wall')rect={x:0,y:0,w:geo.width,h:geo.height};
+    else if(mode==='center'){const w=Math.min(geo.outW,geo.width),h=Math.min(geo.outH,geo.height);rect={x:Math.floor((geo.width-w)/2/10)*10,y:Math.floor((geo.height-h)/2/10)*10,w,h}}
+    else if(mode==='cell'){
+      const col=Math.min(geo.cols-1,Math.max(0,Math.floor((win.x+win.w/2)/geo.outW))),row=Math.min(geo.rows-1,Math.max(0,Math.floor((win.y+win.h/2)/geo.outH)));
+      rect={x:col*geo.outW,y:row*geo.outH,w:geo.outW,h:geo.outH};
+    }else return s;
+    return {...s,windows:s.windows.map((w,i)=>i===index?{...w,...rect}:w)};
+  }
   // 창마다 어느 디스플레이(출력 포트)에 어느 영역이 나오는지(디스플레이 안 좌표 기준).
   function coverageFor(state){
     const s=normalize(state),geo=geometry(s),map=portMapFor(s);
@@ -456,6 +470,7 @@
       </div>
       <p class="rt-ls-summary">월 전체 <b>${geo.width}×${geo.height}</b>px · 출력 ${geo.timing.label} × ${geo.cols}×${geo.rows} · 출력 포트 ${geo.startPort}~${geo.endPort}번(WOS100 ${geo.slots}장) · 창 ${state.windows.length}개${state.mapping==='guide'?' · <b>가이드 연결 그림 배치</b>':''}</p>
       ${cardUsageHtml(state,result.assigned)}
+      <div class="rt-ls-align" role="group" aria-label="선택한 창 배치"><span>선택한 창 배치</span>${[['wall','월 전체','창을 월 전체 크기로 펼칩니다'],['center','월 가운데','디스플레이 1칸 크기로 월 한가운데(분할점 위)에 놓습니다. 2×2 월이면 카드 4장에 걸칩니다'],['cell','디스플레이 1칸','창 중심이 있는 디스플레이 1칸을 가득 채웁니다']].map(([m,t,d])=>`<button type="button" class="rt-pg-btn" data-ls-align="${m}" title="${d}"${state.windows[selected]?'':' disabled'}>${t}</button>`).join('')}${state.windows[selected]?'':'<small>캔버스나 표에서 창을 먼저 고르세요.</small>'}</div>
       <div class="rt-ls-stage">
         <div class="rt-ls-canvas" data-ls-canvas style="aspect-ratio:${geo.width} / ${geo.height};--rt-ls-cols:${geo.cols};--rt-ls-rows:${geo.rows}" role="application" aria-label="디스플레이 월 캔버스. 창을 끌어 옮기고 오른쪽 아래 모서리로 크기를 바꿉니다. 선택한 창은 방향키로 10px, Shift와 함께 100px 움직입니다.">
           ${map.map((row,r)=>row.map((port,c)=>`<div class="rt-ls-cell" style="left:${(c/geo.cols)*100}%;top:${(r/geo.rows)*100}%;width:${100/geo.cols}%;height:${100/geo.rows}%"><span>출력 ${port}</span><small>${r+1}행 ${c+1}열</small></div>`).join('')).join('')}
@@ -529,6 +544,8 @@
         const win={input:n+1,label:'',x:Math.min(geo.width-w,(n%geo.cols)*geo.outW),y:Math.min(geo.height-h,Math.floor(n/geo.cols)%geo.rows*geo.outH),w,h};
         selected=n;update({windows:[...state.windows,win]});return;
       }
+      const alignBtn=event.target.closest('[data-ls-align]');
+      if(alignBtn){if(state.windows[selected]){const next=alignWindow(state,selected,alignBtn.dataset.lsAlign);state=next;save(state);render()}return}
       const topBtn=event.target.closest('[data-ls-top]');
       if(topBtn){const i=Number(topBtn.dataset.lsTop);const next=bringToFront(state,i);selected=next.windows.indexOf(state.windows[i]);state=next;save(state);render();return}
       const hosOff=event.target.closest('[data-ls-hos-off]');
@@ -607,5 +624,5 @@
   }
   function mountAll(scopeEl){(scopeEl||document).querySelectorAll('[data-layout-sim-root]').forEach(mount)}
 
-  return {TIMINGS,CLEAR_MODES,MAPPINGS,PRESETS,HOS_LAYOUTS,HOS_PRESETS,GUIDE_PDF,MAX_COLS,MAX_ROWS,MAX_WINDOWS,normalize,geometry,portMapFor,assignPorts,cardUsage,commandFor,coverageFor,stackOrder,bringToFront,normalizeHos,hosWindows,hosCommandFor,hosPortStatus,hosBringToFront,combinedCommands,FIELD_NOTES,mount,mountAll};
+  return {TIMINGS,CLEAR_MODES,MAPPINGS,PRESETS,HOS_LAYOUTS,HOS_PRESETS,GUIDE_PDF,MAX_COLS,MAX_ROWS,MAX_WINDOWS,normalize,geometry,portMapFor,assignPorts,cardUsage,commandFor,coverageFor,stackOrder,bringToFront,alignWindow,normalizeHos,hosWindows,hosCommandFor,hosPortStatus,hosBringToFront,combinedCommands,FIELD_NOTES,mount,mountAll};
 });
