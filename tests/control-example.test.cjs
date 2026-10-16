@@ -343,3 +343,124 @@ test('모듈러 빌더는 모두 기본값으로 명령이 만들어지고 매�
   }
   for(const spec of [xdm,spx,vdm])assert.equal(new Set(spec.builders.map(b=>b.id)).size,spec.builders.length);
 });
+
+// 0.239 "내 AMX 구성"(장바구니): 담기·중복·순서·코드 생성
+test('0.239: 장바구니는 같은 문자열을 한 번만 담고 담은 순서대로 버튼 하나씩 AMX 코드를 만든다',()=>{
+  const items=[{label:'월 오버레이',text:'*255OWO001!',source:'07 시뮬레이터'},{label:'입력 연결',text:'*255CI001O001!'}];
+  let r=ce.basketAdd([],items);
+  assert.equal(r.added,2);assert.equal(r.dup,0);
+  r=ce.basketAdd(r.list,[items[0],{text:'*255CI002O002!'}]);
+  assert.equal(r.added,1);assert.equal(r.dup,1);assert.equal(r.list.length,3);
+  const code=ce.basketCode(xdm,r.list);
+  assert.match(code,/BUTTON_EVENT\[dvTP,1\][\s\S]*SEND_STRING dvXDM,"'\*255OWO001!',\$0D"/);
+  assert.match(code,/BUTTON_EVENT\[dvTP,3\][\s\S]*'\*255CI002O002!'/);
+  assert.match(code,/SET BAUD 115200,N,8,1/);
+  // 순서 바꾸기·빼기
+  const moved=ce.basketMove(r.list,2,-1);
+  assert.deepEqual(moved.map(x=>x.text),['*255OWO001!','*255CI002O002!','*255CI001O001!']);
+  assert.equal(ce.basketMove(r.list,0,-1)[0].text,'*255OWO001!','맨 위는 더 못 올라간다');
+  assert.deepEqual(ce.basketRemove(r.list,1).map(x=>x.text),['*255OWO001!','*255CI002O002!']);
+  // 빈 문자열·잘못된 값은 걸러낸다
+  assert.equal(ce.basketClean([null,{text:''},{text:'*255C!'}]).length,1);
+});
+
+test('0.239: 장바구니 상한(60개)을 넘기면 담지 않고 알린다, Enter 없는 문장 형식은 $0D를 붙이지 않는다',()=>{
+  const many=Array.from({length:ce.BASKET_MAX+3},(_,i)=>({text:`*255CI${String(i+1).padStart(3,'0')}O001!`}));
+  const r=ce.basketAdd([],many);
+  assert.equal(r.list.length,ce.BASKET_MAX);assert.equal(r.added,ce.BASKET_MAX);assert.equal(r.full,3);
+  const code=ce.basketCode(spx,[{label:'문장형',text:'s in 1 av out 2!',enter:false}]);
+  assert.match(code,/SEND_STRING dv\w+,"'s in 1 av out 2!'"/);
+  assert.doesNotMatch(code.split('BUTTON_EVENT')[1],/\$0D/);
+});
+
+test('0.239: 브라우저 저장소가 없어도(Node) 메모리에 담고 꺼낸다',()=>{
+  ce.basket.clear('xdm-test');
+  const r=ce.basket.add('xdm-test',[{text:'*255CI001O001!'}]);
+  assert.equal(r.added,1);assert.equal(ce.basket.get('xdm-test').length,1);
+  ce.basket.move('xdm-test',0,1);ce.basket.remove('xdm-test',0);
+  assert.equal(ce.basket.get('xdm-test').length,0);
+});
+
+// 0.239 AMX 코드 잠금: 비밀번호 변환값 확인(PBKDF2-SHA256), 상태 유지, 원문 미저장
+test('0.239: 잠금 변환값은 맞는 비밀번호만 통과시키고 원문을 담지 않는다',async()=>{
+  const cfg=await ce.makeLock('test-pass-1234',{iterations:1000});
+  assert.equal(cfg.v,1);assert.equal(cfg.iterations,1000);assert.match(cfg.salt,/^[0-9a-f]{32}$/);assert.match(cfg.hash,/^[0-9a-f]{64}$/);
+  assert.ok(!JSON.stringify(cfg).includes('test-pass-1234'));
+  assert.equal(await ce.verifyPassword('test-pass-1234',cfg),true);
+  assert.equal(await ce.verifyPassword('test-pass-1235',cfg),false);
+  assert.equal(await ce.verifyPassword('',cfg),false);
+  assert.equal(await ce.verifyPassword('test-pass-1234',null),false,'설정이 없으면 열리지 않는다');
+  const again=await ce.makeLock('test-pass-1234',{iterations:1000});
+  assert.notEqual(again.salt,cfg.salt);assert.notEqual(again.hash,cfg.hash,'같은 비밀번호도 salt가 달라 변환값이 다르다');
+});
+test('0.239: 잠금 상태는 설정에 맞을 때만 열리고 다시 잠글 수 있다(Node에서는 메모리)',async()=>{
+  const cfg=await ce.makeLock('open-sesame-77',{iterations:1000});
+  ce.lock.relock();
+  assert.equal(ce.lock.isUnlocked(cfg),false);
+  assert.equal(await ce.lock.unlock('wrong-password',cfg),false);
+  assert.equal(ce.lock.isUnlocked(cfg),false);
+  assert.equal(await ce.lock.unlock('open-sesame-77',cfg),true);
+  assert.equal(ce.lock.isUnlocked(cfg),true);
+  const other=await ce.makeLock('other-pass-99',{iterations:1000});
+  assert.equal(ce.lock.isUnlocked(other),false,'다른 비밀번호 설정이면 열린 상태가 이어지지 않는다');
+  ce.lock.relock();
+  assert.equal(ce.lock.isUnlocked(cfg),false);
+});
+test('0.239: 저장소의 AMX_LOCK은 비밀번호 원문 없이 변환값 또는 null이다',()=>{
+  const src=require('node:fs').readFileSync(require('node:path').join(__dirname,'..','src','control-example.js'),'utf8');
+  const m=src.match(/^\s*const AMX_LOCK=(.*);$/m);
+  assert.ok(m,'AMX_LOCK 줄이 있어야 한다');
+  if(m[1]!=='null'){const cfg=JSON.parse(m[1]);assert.deepEqual(Object.keys(cfg).sort(),['hash','iterations','salt','v']);assert.ok(cfg.iterations>=100000)}
+});
+
+// 0.239 AMX 통신 방식: LAN(TCP) 기본 화면, RS-232 선택. 포트는 매뉴얼 값만 쓰고 없으면 0과 "확인 필요"
+test('0.239·0.241: LAN 코드는 IP_CLIENT_OPEN과 DATA_EVENT를 만들고 알티컴 회신(포트 23·동시 접속 1·자동 끊김 없음)을 담는다',()=>{
+  // 알티컴 회신(사용자 전달 2026-10-16, 질문 17~19번): 포트 23, RS-232와 동일하게 전송, 동시 접속 1개, 자동으로 끊기지 않음
+  const names={xdm,vdm,spx,hds42:JSON.parse(fs.readFileSync('data/products/hds-42mu.json','utf8')).controlExample,hds21:JSON.parse(fs.readFileSync('data/products/hds-21u.json','utf8')).controlExample,q44:JSON.parse(fs.readFileSync('data/products/qms-44ux.json','utf8')).controlExample,q88:JSON.parse(fs.readFileSync('data/products/qms-88ux.json','utf8')).controlExample};
+  for(const [k,s] of Object.entries(names)){
+    assert.deepEqual({port:s.lan?.port,connections:s.lan?.connections,autoDisconnect:s.lan?.autoDisconnect,confirmed:s.lan?.confirmed},{port:23,connections:1,autoDisconnect:false,confirmed:true},`${k} lan`);
+    assert.match(s.lan.source,/알티컴 회신/);
+  }
+  const code=ce.amxCode(spx,[{label:'연결',text:'*255CI001O001!'}],{mode:'lan',ip:'192.168.10.75'});
+  assert.match(code,/dvSPX = 0:3:0/);
+  assert.match(code,/CHAR cDeviceIp\[\] = '192\.168\.10\.75'/);
+  assert.match(code,/LONG nDevicePort = 23 +\/\/ TCP 포트 — 알티컴 회신/);
+  assert.match(code,/IP_CLIENT_OPEN\(dvSPX\.PORT, cDeviceIp, nDevicePort, IP_TCP\) +\/\/ 장비에 TCP 연결\(장비는 동시 접속 1개/);
+  assert.match(code,/OFFLINE: \{ \} +\/\/ 연결이 끊김\(장비는 연결을 자동으로 끊지 않음/);
+  assert.match(code,/DATA_EVENT\[dvSPX\][\s\S]*ONLINE[\s\S]*OFFLINE[\s\S]*ONERROR/);
+  assert.match(code,/BUTTON_EVENT\[dvTP,1\][\s\S]*SEND_STRING dvSPX,"'\*255CI001O001!',\$0D"/);
+  assert.doesNotMatch(code,/SET BAUD/);
+  assert.match(code,/DEFINE_EVENT[\s\S]*BUTTON_EVENT/,'BUTTON_EVENT는 DEFINE_EVENT 아래');
+  // XDM도 같은 포트 23이 기본으로 들어간다
+  assert.match(ce.amxCode(xdm,[],{mode:'lan'}),/LONG nDevicePort = 23 +\/\/ TCP 포트 — 알티컴 회신/);
+});
+test('0.239: lan 항목이 없는 제품은 포트 0과 확인 필요 주석, 직접 입력한 포트와 IP가 우선, 잘못된 값은 걸러낸다',()=>{
+  const bare={amxDevice:'dvXDM',serial:{baud:115200}};
+  const none=ce.amxCode(bare,[],{mode:'lan'});
+  assert.match(none,/LONG nDevicePort = 0 +\/\/ TCP 포트 번호를 입력하세요\(이 제품은 매뉴얼에 없어 알티컴 확인 필요\)/);
+  assert.match(none,/'192\.168\.1\.100'.*예시/);
+  assert.doesNotMatch(none,/동시 접속 1개|자동으로 끊지 않음/);
+  const own=ce.amxCode(bare,[],{mode:'lan',ip:'10.1.2.3',port:'4001'});
+  assert.match(own,/'10\.1\.2\.3'/);assert.match(own,/LONG nDevicePort = 4001 +\/\/ TCP 포트 \(직접 입력한 값\)/);
+  assert.match(ce.amxCode(xdm,[],{mode:'lan',port:'2323'}),/nDevicePort = 2323 +\/\/ TCP 포트 \(직접 입력한 값\)/);
+  // 코드 주입·범위 밖 값 차단: 잘못된 포트는 제품 기본값(23)으로 돌아간다
+  const bad=ce.amxCode(xdm,[],{mode:'lan',ip:"10.0.0.1'; evil",port:'99999'});
+  assert.doesNotMatch(bad,/evil/);assert.match(bad,/'192\.168\.1\.100'/);assert.match(bad,/nDevicePort = 23\b/);
+  assert.doesNotMatch(ce.amxCode(xdm,[],{mode:'lan',ip:'999.1.1.1'}),/999\.1\.1\.1/);
+});
+test('0.239: RS-232를 고르면 기존 직렬 코드(SET BAUD)가 나오고, 옵션이 없으면 직렬이 기본(기존 호출 호환)',()=>{
+  for(const opts of [undefined,{},{mode:'serial'}]){
+    const code=ce.amxCode(xdm,[{text:'*255CI001O001!'}],opts);
+    assert.match(code,/dvXDM = 5001:1:0/);assert.match(code,/SET BAUD 115200,N,8,1 485 DISABLE/);assert.doesNotMatch(code,/IP_CLIENT_OPEN/);
+    assert.match(code,/DEFINE_EVENT\s+\/\/ 터치 패널 버튼 1번/);
+  }
+  assert.match(ce.basketCode(xdm,[{text:'*255C!'}],{mode:'lan'}),/IP_CLIENT_OPEN/);
+  assert.match(ce.basketCode(xdm,[{text:'*255C!'}]),/SET BAUD/);
+});
+test('0.239: 통신 방식 상태는 기본 LAN이고 저장소가 없어도 메모리에 기억한다',()=>{
+  const s={id:'comm-test'};
+  assert.deepEqual(ce.commOf(s),{mode:'lan',ip:'',port:''});
+  ce.setComm(s,{mode:'serial',ip:'10.0.0.9',port:'23'});
+  assert.deepEqual(ce.commOf(s),{mode:'serial',ip:'10.0.0.9',port:'23'});
+  ce.setComm(s,{mode:'lan'});assert.equal(ce.commOf(s).mode,'lan');assert.equal(ce.commOf(s).ip,'10.0.0.9');
+});
