@@ -727,3 +727,13 @@ test('0.223: XDM-MR4S를 별도 제품으로 추가하고 XDM 전송기 카드�
   assert.ok(!JSON.stringify(JSON.parse(read('data/products/mr-4s.json')).specifications).includes('XDM'),'MR-4S 사양에는 XDM 호환 문구를 넣지 않는다');
   assert.equal(JSON.parse(read('data/products/index.json')).products.length,33);
 });
+
+test('0.227: XDM-MR4S는 원격 전원 공급 불가, MR-4S는 슬롯 카드로 전송기 전원 공급 가능, MR4S Signal Flow·04 스위치',()=>{
+  const xdm=JSON.parse(read('data/products/xdm-mr4s.json')),mr=JSON.parse(read('data/products/mr-4s.json'));
+  assert.equal(xdm.specifications.find(s=>s.name==='원격 전원 공급').value,'불가 (MR4S에 꽂은 XDM-CTR100)');
+  assert.ok(xdm.features.some(f=>/원격 전원 공급 불가/.test(f.text)));
+  assert.equal(mr.specifications.find(s=>s.name==='전송기 전원 공급').value,'가능 (슬롯 카드를 통해 공급)');
+  assert.ok(mr.features.some(f=>f.text==='슬롯 카드를 통해 전송기 전원 공급 지원'));
+  assert.match(read('src/products.js'),/if\(item\.id==='xdm-mr4s'\)return mr4sDiagram\(item\);/);
+  assert.match(read('src/app.js'),/data-mr4s-toggle role="switch"/);
+});
