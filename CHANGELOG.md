@@ -1,5 +1,7 @@
 ## Unreleased
 
+- **0.229.0 배포 기록**: `docs/qa/DEPLOYMENT_0.229_2026-10-16.md`(PR #351 → main 병합, Pages 배포 run 38905585107, 공개 `src/control-example.js`·HDS-42MU·HDS-21U 데이터 일치)
+- **0.228.0 배포 기록**: `docs/qa/DEPLOYMENT_0.228_2026-10-16.md`(PR #348 → main 병합, Pages 배포 run 38904278900, 공개 `src/styles.css` 디자인 v2 반영 확인)
 - **0.227.0 배포 기록**: `docs/qa/DEPLOYMENT_0.227_2026-10-16.md`(PR #349 → main 병합, Pages 배포 run 38902444688, 공개 스위치·그림 코드와 MR-4S 전원 공급 값 확인)
 - **0.226.0 배포 기록**: `docs/qa/DEPLOYMENT_0.226_2026-10-16.md`(PR #346 → main 병합, Pages 배포 run 38899767327, 공개 `src/layout-sim.js` 일치)
 - **0.225.0 배포 기록**: `docs/qa/DEPLOYMENT_0.225_2026-10-16.md`(PR #345 → main 병합, Pages 배포 run 38897820970, 공개 `src/layout-sim.js` 일치)
