@@ -1136,7 +1136,7 @@ const patchAmxLock=async()=>{
     const dual=await dualCard.evaluate(card=>({chips:[...card.querySelectorAll('[data-layout-chip]')].map(b=>b.textContent),name:card.querySelector('[data-layout-name]')?.textContent,rects:card.querySelectorAll('[data-layout-preview] svg rect.rt-pg-cell').length,text:card.querySelector('p')?.textContent||''}));
     const quadName=await page.locator('.rt-pg-vmode-card',{hasText:'QUAD'}).first().evaluate(card=>card.querySelector('[data-layout-name]')?.textContent);
     check('QMS-88UX 06 DUAL 카드에 PBP·PIP 레이아웃 3종이 있고 Vertical PBP를 누르면 2칸 도해로 바뀌며 QUAD 카드 미리보기는 그대로임',dual.chips.join('|')==='Horizontal PBP|Vertical PBP|Quad PBP, PIP'&&dual.name==='Vertical PBP'&&dual.rects===2&&/출력 9·10번/.test(dual.text)&&quadName==='8분할(비율무시)',JSON.stringify({dual,quadName}));
-    // 0.242 — QMS-88UX 쿼드 뷰·듀얼 카드의 입력 그룹 전환(매뉴얼 KV.04 22쪽: Q1 = 입력 1~4번, Q2 = 입력 5~8번). Q2를 누르면 도해 칸 번호가 5~8로 바뀐다.
+    // 0.243 — QMS-88UX 쿼드 뷰·듀얼 카드의 입력 그룹 전환(매뉴얼 KV.04 22쪽: Q1 = 입력 1~4번, Q2 = 입력 5~8번). Q2를 누르면 도해 칸 번호가 5~8로 바뀐다.
     const cellLabels=card=>[...card.querySelectorAll('[data-layout-preview] svg text')].map(t=>t.textContent).join(',');
     await quadCard88.locator('[data-layout-chip]',{hasText:/^QUAD$/}).click();
     const q1Labels=await quadCard88.evaluate(cellLabels);

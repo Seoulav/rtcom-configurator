@@ -4,6 +4,7 @@
 - **알티컴 2차 짧은 메일**(문서만): 남은 질문 중 20~26번(LAN 기본 IP, SPX·VDM·XDM·QMS·HDS 명령 확인)만 담은 메일 문안을 `docs/handoff/RTCOM_QUESTIONS_2026-10-16.md`에 추가했습니다.
 - **알티컴 확인 질문 목록 정리**(문서만, 버전 변경 없음): 답이 없는 15~28번(LAN 제어 포트·형식·기본 IP, SPX·VDM·QMS·HDS 명령 확인, XDM 월 배치·L13, XDM-MR4S 사양, FT101-U 매뉴얼 오기)을 `docs/handoff/RTCOM_QUESTIONS_2026-10-16.md`에 메일 문안과 함께 정리하고 `docs/RTCOM_MANUFACTURER_DATA_REQUEST.md` §5 표에 17~28번을 더했습니다.
 - **0.239.0 배포 기록**: `docs/qa/DEPLOYMENT_0.239_2026-10-16.md`(PR #368 → main 병합 `f73f30f`, Pages 배포 run 38977833690 success, 공개 `CATALOG BASED · 0.239`·공개 파일 8개 빌드와 일치·비밀번호 원문 비노출 확인)
+- **0.238.0 배포 기록**: `docs/qa/DEPLOYMENT_0.238_2026-10-16.md`(PR #366 → main 병합, Pages 배포 run 38976120761, 공개 `src/styles.css` 다크 블록 확인)
 - **0.237.0 배포 기록**: `docs/qa/DEPLOYMENT_0.237_2026-10-16.md`(PR #369 → main 병합 `c9abf7e`, Pages 배포 run 38975011080 success, 공개 `CATALOG BASED · 0.237`·`layout-sim.js` 해시 일치)
 - **0.236.0 배포 기록**: `docs/qa/DEPLOYMENT_0.236_2026-10-16.md`(PR #365 → main 병합 `56c35a8`, Pages 배포 run 38915324453 success, 공개 `CATALOG BASED · 0.236`·XDM·SPX·VDM `controlExample` 확인)
 - **0.235.0 배포 기록**: `docs/qa/DEPLOYMENT_0.235_2026-10-16.md`(PR #363 → main 병합 `07a1c07`, Pages 배포 run 38913897451 success, 공개 `CATALOG BASED · 0.235`·`layout-sim.js` 해시 일치, 번호 0.234 → 0.235 재정리 경위)
@@ -93,13 +94,21 @@
 - **0.145.0 배포 기록**: `docs/qa/DEPLOYMENT_0.145_2026-09-29.md`(PR #194 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.144.0 배포 기록**: `docs/qa/DEPLOYMENT_0.144_2026-09-29.md`(PR #192 → main 병합, Pages 배포 run 162, 공개 파일 337/338 일치, `.nojekyll` 제외)
 
-## 0.242.0
+## 0.243.0
 
 사용자 요청 2026-10-16("다음 단계 진행해줘", QMS-88UX 분할 구성 질문 뒤 제안 2번):
 
 - **QMS-88UX 쿼드 뷰·듀얼 입력 그룹 전환:** 제품정보 06 화면 구성 모드의 쿼드 뷰·듀얼 카드에 "Q1 · 입력 1~4 / Q2 · 입력 5~8" 버튼을 넣었습니다. Q2를 누르면 분할 도해의 칸 번호가 실제 입력 5~8번으로 바뀝니다(매뉴얼 KV.04 22쪽: Q1은 입력 1~4번, Q2는 입력 5~8번으로 구성된 4분할 세트).
 - 8분할 레이아웃 2종은 칸 번호가 이미 입력 1~8번이라 버튼을 숨기고, 비디오 월(WALL)과 QMS-44UX에는 버튼이 없습니다.
-- 근거·되돌리기: `docs/implementation/QMS88_INPUT_GROUP_0.242.md`
+- 근거·되돌리기: `docs/implementation/QMS88_INPUT_GROUP_0.243.md`
+
+## 0.242.0
+
+신호 색 통일(사용자 제공 구성도 범례 2026-10-16, 사용자 선택 "1번으로 진행해줘", `docs/implementation/SIGNAL_COLORS_0.242.md`):
+
+- **HDMI 빨강·DP 짙은 주황**: 구성기 신호 배지·범례·완성도 막대의 HDMI를 남색 `#002060`에서 구성도와 같은 빨강 `#E5242B`(흰 글자 대비 4.55:1)로, DP를 `#FF0000`에서 짙은 주황 `#C55A11`(4.33:1, 범례 접점 주황 `#E97132`와 구별)로 바꿨습니다.
+- **제품정보 신호 색을 구성기·범례와 같게**: XDM·SPX·VDM "02 신호 구성"과 범례가 HDMI `#E5242B`, DP `#C55A11`, SDI 검정, HDBaseT·CATx 초록 `#00B050`, 광 하늘색 `#00B0F0`을 씁니다. 전송기 그림의 광케이블·CAT 케이블 색도 같은 값입니다.
+- 다크 화면에서 제품정보 범례 점에도 신호 배지처럼 옅은 테두리를 둡니다. 테스트 `tests/signal-colors.test.cjs`를 더했습니다.
 
 ## 0.241.0
 

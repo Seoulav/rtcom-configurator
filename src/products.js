@@ -130,7 +130,7 @@
     const specTable=specs=>table(['구분','사양'],specs.map(spec=>[`<span class="rt-pg-spec-dot" style="display:inline-block;width:8px;height:8px;border-radius:999px;margin-right:6px;background:${GROUP_DOT[spec.group]||'#8a94a6'}" title="${esc(spec.group)}"></span>${esc(spec.name)}`,`${specValue(spec.value)}${spec.unit?`${unitGap(spec.unit)}${esc(spec.unit)}`:''}${verification(spec.verification)}${spec.condition?`<span class="rt-pg-note-line">${esc(spec.condition)}</span>`:''}`])).replace('class="rt-pg-tablewrap"','class="rt-pg-tablewrap rt-pg-spec-table"');
 
     // ---- 연결 다이어그램(신호 흐름, 02 카드). 기존 자동 생성 로직을 새 팔레트로 그대로 재사용한다 ----
-    const COLOR_IN='#007AFF',COLOR_OUT='#BF5AF2',COLOR_FIBER='#30B0C7',COLOR_COPPER='#1E9E52';
+    const COLOR_IN='#007AFF',COLOR_OUT='#BF5AF2',COLOR_FIBER='#00B0F0',COLOR_COPPER='#00B050';
     const svgEsc=value=>esc(value);
     const monitorIcon=(cx,cy,label,scale=1)=>{
       const w=44*scale,h=30*scale;
@@ -985,7 +985,7 @@
       const minX=Math.min(...cells.map(c=>c[1])),minY=Math.min(...cells.map(c=>c[2]));
       const maxX=Math.max(...cells.map(c=>c[1]+c[3])),maxY=Math.max(...cells.map(c=>c[2]+c[4]));
       const letterbox=minX>0.5||minY>0.5||maxX<99.5||maxY<99.5||(own?.shapes[key]?own.black.has(key):key==='USER MODE 2');
-      // 0.242(사용자 요청 2026-10-16 "다음 단계 진행해줘"): QMS-88UX 멀티뷰는 Q1이 입력 1~4번, Q2가 입력 5~8번으로 구성된 4분할 세트다(매뉴얼 KV.04 22쪽).
+      // 0.243(사용자 요청 2026-10-16 "다음 단계 진행해줘"): QMS-88UX 멀티뷰는 Q1이 입력 1~4번, Q2가 입력 5~8번으로 구성된 4분할 세트다(매뉴얼 KV.04 22쪽).
       // Q2를 고르면 도해 칸 번호 1~4를 실제 입력 5~8번으로 바꿔 그린다. 8분할 레이아웃은 칸 번호가 이미 입력 1~8번이라 그대로 둔다.
       const labels=group===2&&!isEightSplit(key)?Object.fromEntries([1,2,3,4].map(n=>[n,n+4])):undefined;
       return monitorLayoutSvg(cells,{id,label,letterbox,labels});
@@ -1024,7 +1024,7 @@
       route.forEach((inp,o)=>{const x=mx,y=iy(o);outs+=`<rect x="${x}" y="${y}" width="${mw+6}" height="${mh+6}" rx="3" fill="#1f2532"/><rect class="rt-pg-cell" x="${x+3}" y="${y+3}" width="${mw}" height="${mh}" fill="${col(inp)}"/><path d="M${x+3} ${y+3+mh}V${y+3+mh*0.75}Q${x+3+mw*0.3} ${y+3+mh*0.55} ${x+3+mw*0.55} ${y+3+mh*0.72}T${x+3+mw} ${y+3+mh*0.66}V${y+3+mh}Z" fill="#fff" fill-opacity=".18"/><text x="${x+3+mw/2}" y="${y+3+mh/2}" font-size="${big?10:12}" font-weight="800" fill="#fff" text-anchor="middle" dominant-baseline="central">${inp}</text><text x="${x+mw+14}" y="${y+3+mh/2}" font-size="10" font-weight="800" fill="#6b7280" dominant-baseline="central">OUT ${o+1}</text>`});
       return `<div class="rt-pg-layout-preview rt-pg-matrix-preview"><svg class="rt-pg-layout-matrix" viewBox="0 0 ${W} ${H}" role="img" aria-label="입력 ${N} → 출력 ${N} 크로스포인트 예시">${lines}${ins}${outs}</svg></div>`;
     }
-    // QMS-88UX 쿼드 뷰·듀얼 카드의 입력 그룹 전환(0.242). Q1 = 입력 1~4번, Q2 = 입력 5~8번(매뉴얼 KV.04 22쪽).
+    // QMS-88UX 쿼드 뷰·듀얼 카드의 입력 그룹 전환(0.243). Q1 = 입력 1~4번, Q2 = 입력 5~8번(매뉴얼 KV.04 22쪽).
     function multiviewGroupToggle(productId,modeName){
       if(productId!=='qms-88ux'||(modeName!=='QUAD'&&modeName!=='DUAL'))return '';
       return `<div class="rt-pg-group-toggle" data-layout-groups role="group" aria-label="멀티뷰 입력 그룹"><button type="button" class="rt-pg-layout-chip on" data-layout-group-btn="1" aria-pressed="true">Q1 · 입력 1~4</button><button type="button" class="rt-pg-layout-chip" data-layout-group-btn="2" aria-pressed="false">Q2 · 입력 5~8</button><small>도해 칸 번호를 입력 번호로 바꿔 봅니다.</small></div>`;
