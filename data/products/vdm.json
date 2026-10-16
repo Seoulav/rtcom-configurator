@@ -973,6 +973,13 @@
       "stopBits": 1,
       "confirmed": "8N1 공장 출고값, 전면 RS-232 메뉴에서 변경 가능(매뉴얼 53쪽)"
     },
+    "lan": {
+      "port": 23,
+      "connections": 1,
+      "autoDisconnect": false,
+      "confirmed": true,
+      "source": "알티컴 회신(사용자 전달 2026-10-16)"
+    },
     "amxDevice": "dvVDM",
     "lead": "AMX 같은 통합 제어 시스템이 RS-232로 보내는 문자열 예시입니다. 연결·해제·상태 확인, 입력·출력 설정, 테스트 패턴, 쿼드뷰, 오디오 매트릭스 볼륨 명령을 아래 \"설정 명령\"에서 값을 골라 만듭니다. 매뉴얼은 VDM-128X·256X만 번호를 세 자리로 쓰므로 번호 자릿수를 먼저 고르세요.",
     "source": "VDM 사용자 매뉴얼 53쪽·4.2 Command Line Operation(RS-232C) 67~84쪽",
