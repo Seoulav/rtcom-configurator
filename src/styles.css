@@ -469,6 +469,20 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-doc-save{gap:5px}
 #rtcom-design .rt-doc-zoom-link .rt-doc-save-text{margin-left:4px}
 @media(max-width:480px){#rtcom-design .rt-pg-doc-save-text,#rtcom-design .rt-doc-save-text{display:none}}
+/* 0.222 문서 버튼 카드형(사용자 선택 2026-10-16 시안 A): 카탈로그=파랑·매뉴얼=보라·제품 안내서=남색 아이콘 칸 + "○○ 보기"(굵게)·보조 줄(쪽수·판·PDF) + 오른쪽 다운로드 칸 */
+#rtcom-design .rt-pg-toolbar{align-items:center}
+#rtcom-design .rt-pg-doc-card{--doc-c:var(--pg-accent);background:rgba(255,255,255,.78);border:1px solid var(--pg-line-2);border-radius:14px;box-shadow:0 1px 2px rgba(20,26,40,.06)}
+#rtcom-design .rt-pg-doc-card[data-doc="Manual"]{--doc-c:var(--pg-purple-ink)}
+#rtcom-design .rt-pg-doc-card[data-doc="ProductSheet"]{--doc-c:var(--pg-accent-2)}
+#rtcom-design .rt-pg-doc-card .rt-pg-doc-open{gap:10px;padding:7px 16px 7px 7px;color:var(--pg-ink);text-align:left}
+#rtcom-design .rt-pg-doc-card .rt-pg-doc-kind{flex:none;width:34px;height:34px;border-radius:10px;background:var(--doc-c);color:#fff;display:grid;place-items:center}
+#rtcom-design .rt-pg-doc-card .rt-pg-doc-kind svg{width:17px;height:17px}
+#rtcom-design .rt-pg-doc-card .rt-pg-doc-txt{display:flex;flex-direction:column;gap:3px;min-width:0}
+#rtcom-design .rt-pg-doc-card .rt-pg-doc-txt b{font-size:14px;font-weight:700;line-height:1.1}
+#rtcom-design .rt-pg-doc-card .rt-pg-doc-txt small{font-size:11.5px;font-weight:500;line-height:1.1;color:var(--pg-muted);margin:0;opacity:1}
+#rtcom-design .rt-pg-doc-card .rt-pg-doc-save{padding:0 14px;color:var(--pg-ink-2);border-left:1px solid var(--pg-line)}
+#rtcom-design .rt-pg-doc-card .rt-pg-doc-save svg{color:var(--doc-c)}
+@media(max-width:480px){#rtcom-design .rt-pg-doc-card .rt-pg-doc-save{padding:0 12px}#rtcom-design .rt-pg-doc-card .rt-pg-doc-open{padding-right:12px}}
 /* 0.198 공식 홈페이지 버튼: 문서 버튼과 같은 알약 모양, 링크 2개면 오른쪽 칸에 수신기 */
 #rtcom-design .rt-pg-official-one{padding-right:16px}
 #rtcom-design .rt-pg-official-more{padding-left:10px;padding-right:14px}
