@@ -303,6 +303,11 @@
       "relation": "WORKS_WITH",
       "target": "xdm-psu",
       "note": "CIS100·COS100에 직결할 때 XDM-PSU로 전원 공급(개별 어댑터 불필요)"
+    },
+    {
+      "relation": "WORKS_WITH",
+      "target": "xdm-mr4s",
+      "note": "XDM-MR4S 프레임에 카드 형태로 장착"
     }
   ],
   "portMap": {

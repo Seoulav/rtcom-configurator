@@ -1,0 +1,267 @@
+{
+  "id": "xdm-mr4s",
+  "group": "extender",
+  "manufacturer": "RTCOM",
+  "productName": "XDM-MR4S",
+  "model": "XDM-MR4S",
+  "series": "4K Modular Extension Center",
+  "itemType": "PRODUCT",
+  "categories": [
+    "영상",
+    "Video",
+    "Extension Frame"
+  ],
+  "english": "Rack-mountable 4K modular extension frame holding up to four XDM-CTR100, XDM-FT101 or XDM-FR101 card modules.",
+  "korean": "XDM-CTR100·XDM-FT101·XDM-FR101 전송기를 카드 형태로 최대 4장 장착하는 랙 장착형 4K 집합 프레임이다.",
+  "subtitle": "4K Modular Extension Center",
+  "lead": "XDM 전송기(XDM-CTR100·XDM-FT101·XDM-FR101)를 **카드 형태로 최대 4장** 장착하는 랙 장착형 4K 집합 프레임입니다.",
+  "verificationSummary": "사용자 제공 실물 사진(앞면·뒷면, 2026-10-16)과 사용자 확인으로 장착 카드·슬롯 수·전원 입력·표시등을 확인했다. 크기·무게·전원 규격은 자료를 받은 뒤 채운다.",
+  "packageStatus": "VERIFIED",
+  "overview": "XDM-MR4S는 XDM 시리즈 전송기 XDM-CTR100(HDBaseT)·XDM-FT101(광 송신)·XDM-FR101(광 수신)을 카드 형태로 최대 4장 장착하는 랙 장착형 4K 집합 프레임이다. 송신 카드와 수신 카드를 섞어 꽂을 수 있으며, 후면에 전원 입력 POWER 1·2가 있다. 앞면에는 슬롯마다 상태 표시등(ST 1·ST 2·LINK)과 전원 표시등(POWER 1·2)이 있다.\n\n프레임은 카드 장착과 전원 공급을 담당하며, 해상도·HDCP·EDID 등 영상 사양은 장착하는 XDM 전송기 카드를 따른다. 기존 MR-4S(CT104-U/CR104-U·FT101-U/FR101-U 장착)와는 장착 카드가 다른 별도 제품이다.",
+  "images": [
+    {
+      "role": "Front",
+      "file": "xdm-mr4s-front.webp",
+      "alt": "RTCOM XDM-MR4S 앞면",
+      "note": "Front · 사용자 제공 실물 사진(2026-10-16)",
+      "provider": "RTCOM",
+      "model": "XDM-MR4S",
+      "source": "P",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "1981×225"
+    },
+    {
+      "role": "Rear",
+      "file": "xdm-mr4s-rear.webp",
+      "alt": "RTCOM XDM-MR4S 뒷면(XDM-FT101·XDM-FR101·XDM-CTR100 2장 장착 예)",
+      "note": "Rear · 사용자 제공 실물 사진(2026-10-16), 카드 장착 예",
+      "provider": "RTCOM",
+      "model": "XDM-MR4S",
+      "source": "P",
+      "officialSource": true,
+      "verificationStatus": "FOUND",
+      "resolution": "2107×240"
+    }
+  ],
+  "imageStatuses": [
+    {
+      "role": "Main",
+      "status": "MISSING"
+    },
+    {
+      "role": "Front",
+      "status": "FOUND"
+    },
+    {
+      "role": "Rear",
+      "status": "FOUND"
+    },
+    {
+      "role": "Perspective",
+      "status": "MISSING"
+    }
+  ],
+  "documents": [],
+  "features": [
+    {
+      "text": "최대 4장 카드(XDM-CTR100·XDM-FT101·XDM-FR101) 장착",
+      "source": "U"
+    },
+    {
+      "text": "송신 카드와 수신 카드를 섞어 구성",
+      "source": "P"
+    },
+    {
+      "text": "XDM 매트릭스 카드(CIS100·COS100·FIS100·FOS100)와 연동",
+      "source": "X"
+    },
+    {
+      "text": "전원 입력 2개(POWER 1·2)",
+      "source": "P"
+    },
+    {
+      "text": "앞면 슬롯별 상태 표시등(ST 1·ST 2·LINK) 지원",
+      "source": "P"
+    },
+    {
+      "text": "영상 사양(해상도·HDCP·EDID)은 장착 카드 기준",
+      "source": "X"
+    }
+  ],
+  "specifications": [
+    {
+      "group": "Transmission",
+      "name": "인터페이스",
+      "value": "HDBaseT(RJ45), 광(FIBER)",
+      "unit": "",
+      "condition": "장착 카드에 따라",
+      "source": "P",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "General",
+      "name": "카드 장착 수",
+      "value": "4",
+      "unit": "장",
+      "condition": "최대",
+      "source": "P",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "General",
+      "name": "장착 카드",
+      "value": "XDM-CTR100(HDBaseT), XDM-FT101·XDM-FR101(광)",
+      "unit": "",
+      "condition": "",
+      "source": "U",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "General",
+      "name": "표시등",
+      "value": "슬롯별 ST 1·ST 2·LINK, 전원 POWER 1·2",
+      "unit": "",
+      "condition": "앞면",
+      "source": "P",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "name": "전원 입력",
+      "value": "2개 (POWER 1·2)",
+      "unit": "",
+      "condition": "뒷면",
+      "source": "P",
+      "verification": "VERIFIED"
+    }
+  ],
+  "io": [],
+  "related": [
+    {
+      "relation": "PART_OF_SERIES",
+      "target": "xdm",
+      "note": "XDM 시리즈 전송기 카드용 프레임"
+    },
+    {
+      "relation": "WORKS_WITH",
+      "target": "xdm-ctr100",
+      "note": "XDM-MR4S에 카드 형태로 장착하는 HDBaseT 전송기"
+    },
+    {
+      "relation": "WORKS_WITH",
+      "target": "xdm-ft101-fr101",
+      "note": "XDM-MR4S에 카드 형태로 장착하는 광 전송기"
+    },
+    {
+      "relation": "WORKS_WITH",
+      "target": "mr-4s",
+      "note": "같은 형태의 MR-4S(CT104-U/CR104-U·FT101-U/FR101-U 장착)"
+    }
+  ],
+  "portMap": [
+    {
+      "image": "Front",
+      "title": "앞면",
+      "items": [
+        {
+          "n": 1,
+          "label": "슬롯 1 표시등",
+          "desc": "ST 1·ST 2 상태, LINK 1 연결 표시",
+          "x1": 1128,
+          "x2": 1222
+        },
+        {
+          "n": 2,
+          "label": "슬롯 2 표시등",
+          "desc": "ST 1·ST 2 상태, LINK 2 연결 표시",
+          "x1": 1290,
+          "x2": 1382
+        },
+        {
+          "n": 3,
+          "label": "슬롯 3 표시등",
+          "desc": "ST 1·ST 2 상태, LINK 3 연결 표시",
+          "x1": 1455,
+          "x2": 1547
+        },
+        {
+          "n": 4,
+          "label": "슬롯 4 표시등",
+          "desc": "ST 1·ST 2 상태, LINK 4 연결 표시",
+          "x1": 1632,
+          "x2": 1724
+        },
+        {
+          "n": 5,
+          "label": "전원 표시등",
+          "desc": "POWER 1·2 입력 상태 표시",
+          "x1": 1820,
+          "x2": 1916
+        }
+      ]
+    },
+    {
+      "image": "Rear",
+      "title": "뒷면",
+      "items": [
+        {
+          "n": 1,
+          "label": "카드 슬롯 1",
+          "desc": "사진은 XDM-FT101 장착 예: HDMI IN, 오디오·RS-232 피닉스 5핀, FIBER",
+          "x1": 132,
+          "x2": 627
+        },
+        {
+          "n": 2,
+          "label": "카드 슬롯 2",
+          "desc": "사진은 XDM-FR101 장착 예: HDMI OUT, 오디오·RS-232 피닉스 5핀, FIBER",
+          "x1": 632,
+          "x2": 1106
+        },
+        {
+          "n": 3,
+          "label": "카드 슬롯 3",
+          "desc": "사진은 XDM-CTR100 장착 예: HDBaseT(RJ45), HDMI IN·OUT, 오디오·RS-232 피닉스 5핀",
+          "x1": 1111,
+          "x2": 1585
+        },
+        {
+          "n": 4,
+          "label": "카드 슬롯 4",
+          "desc": "사진은 XDM-CTR100 장착 예(슬롯 3과 같은 단자)",
+          "x1": 1593,
+          "x2": 2091
+        },
+        {
+          "n": 5,
+          "label": "DC 전원 1·2",
+          "desc": "전원 입력 2개(POWER 1·2)",
+          "x1": 32,
+          "x2": 121
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "code": "P",
+      "name": "XDM-MR4S 실물 사진(앞면·뒷면)",
+      "page": "",
+      "scope": "사용자 제공(2026-10-16) — 앞면 실크 \"XDM-MR4S 4K MODULAR EXTENSION CENTER\", 뒷면 XDM-FT101·XDM-FR101·XDM-CTR100 2장 장착 예, POWER 1·2"
+    },
+    {
+      "code": "U",
+      "name": "서울영상테크 SI사업본부 확인",
+      "page": "",
+      "scope": "사용자 확인(2026-10-16 \"MR-4S 4K프레임 사진이 추가 등록해줘 여기에는 XDM-CTR100, FT101FR101 카드 형태로 만들어서 장착할 수 있는거야\") — XDM-CTR100·XDM-FT101·XDM-FR101을 카드 형태로 장착, 별도 제품으로 등록(사용자 결정 2026-10-16 \"별도 제품 추가\")"
+    },
+    {
+      "code": "X",
+      "name": "알티컴 XDM 전송기 제품정보(XDM-CTR100·XDM-FT101/FR101)",
+      "page": "",
+      "scope": "이 사이트의 XDM-CTR100(CIS100·COS100 카드와 짝)·XDM-FT101/FR101(FIS100·FOS100 카드와 짝) 제품 데이터"
+    }
+  ],
+  "issues": []
+}

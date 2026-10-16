@@ -469,6 +469,20 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-pg-doc-save{gap:5px}
 #rtcom-design .rt-doc-zoom-link .rt-doc-save-text{margin-left:4px}
 @media(max-width:480px){#rtcom-design .rt-pg-doc-save-text,#rtcom-design .rt-doc-save-text{display:none}}
+/* 0.222 문서 버튼 카드형(사용자 선택 2026-10-16 시안 A): 카탈로그=파랑·매뉴얼=보라·제품 안내서=남색 아이콘 칸 + "○○ 보기"(굵게)·보조 줄(쪽수·판·PDF) + 오른쪽 다운로드 칸 */
+#rtcom-design .rt-pg-toolbar{align-items:center}
+#rtcom-design .rt-pg-doc-card{--doc-c:var(--pg-accent);background:rgba(255,255,255,.78);border:1px solid var(--pg-line-2);border-radius:14px;box-shadow:0 1px 2px rgba(20,26,40,.06)}
+#rtcom-design .rt-pg-doc-card[data-doc="Manual"]{--doc-c:var(--pg-purple-ink)}
+#rtcom-design .rt-pg-doc-card[data-doc="ProductSheet"]{--doc-c:var(--pg-accent-2)}
+#rtcom-design .rt-pg-doc-card .rt-pg-doc-open{gap:10px;padding:7px 16px 7px 7px;color:var(--pg-ink);text-align:left}
+#rtcom-design .rt-pg-doc-card .rt-pg-doc-kind{flex:none;width:34px;height:34px;border-radius:10px;background:var(--doc-c);color:#fff;display:grid;place-items:center}
+#rtcom-design .rt-pg-doc-card .rt-pg-doc-kind svg{width:17px;height:17px}
+#rtcom-design .rt-pg-doc-card .rt-pg-doc-txt{display:flex;flex-direction:column;gap:3px;min-width:0}
+#rtcom-design .rt-pg-doc-card .rt-pg-doc-txt b{font-size:14px;font-weight:700;line-height:1.1}
+#rtcom-design .rt-pg-doc-card .rt-pg-doc-txt small{font-size:11.5px;font-weight:500;line-height:1.1;color:var(--pg-muted);margin:0;opacity:1}
+#rtcom-design .rt-pg-doc-card .rt-pg-doc-save{padding:0 14px;color:var(--pg-ink-2);border-left:1px solid var(--pg-line)}
+#rtcom-design .rt-pg-doc-card .rt-pg-doc-save svg{color:var(--doc-c)}
+@media(max-width:480px){#rtcom-design .rt-pg-doc-card .rt-pg-doc-save{padding:0 12px}#rtcom-design .rt-pg-doc-card .rt-pg-doc-open{padding-right:12px}}
 /* 0.198 공식 홈페이지 버튼: 문서 버튼과 같은 알약 모양, 링크 2개면 오른쪽 칸에 수신기 */
 #rtcom-design .rt-pg-official-one{padding-right:16px}
 #rtcom-design .rt-pg-official-more{padding-left:10px;padding-right:14px}
@@ -1109,7 +1123,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-card-info-tip{margin:0;font-size:13.5px;line-height:1.55}
 #rtcom-design .rt-card-info-table{width:100%;border-collapse:collapse;font-size:13px}
 #rtcom-design .rt-card-info-table th{width:112px;padding:8px 10px 8px 0;background:none;font-size:13px;color:#5b6679;font-weight:700;text-align:left;vertical-align:top;border-top:1px solid #edf1f7}
-#rtcom-design .rt-card-info-table td{padding:8px 0;background:none;text-align:left;font-size:13px;line-height:1.5;border-top:1px solid #edf1f7;word-break:keep-all;overflow-wrap:anywhere}
+#rtcom-design .rt-card-info-table td{white-space:pre-line;padding:8px 0;background:none;text-align:left;font-size:13px;line-height:1.5;border-top:1px solid #edf1f7;word-break:keep-all;overflow-wrap:anywhere}
 #rtcom-design .rt-card-info-note{margin:0;padding:10px 12px;border-radius:12px;background:#f5f8fc;font-size:12.5px;line-height:1.55}
 #rtcom-design .rt-card-info-missing{margin:0;padding:10px 12px;border-radius:12px;background:#fff6e5;color:#8a5a00;font-size:12.5px;line-height:1.55}
 #rtcom-design .rt-card-info-src{margin:0;color:var(--rt-muted);font-size:11.5px}
@@ -1407,7 +1421,87 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-tap-banner .rt-button{flex:1 1 0;min-height:36px;padding:0 14px;font-size:13px;background:#ffffff1f;border:1px solid #ffffff59;color:#fff}
 #rtcom-design .rt-tap-banner .rt-button[data-tap-cancel]{background:#fff;border-color:#fff;color:#1f2532}
 #rtcom-design .rt-pg-flow-modes>.rt-pg-seg{display:flex;width:max-content;max-width:100%;margin:0 auto}#rtcom-design .rt-pg-flow-modes>.rt-pg-face{margin-top:12px}
-/* 0.202 XDM "07 화면 연출 시뮬레이터"(src/layout-sim.js). 모든 클래스는 rt-ls-* 접두사, 제품정보 화면 안에서만 쓴다. */
+
+/* 0.203 02 프레임 선택(XDM): EDID 팁 옆 레이어 비교 카드와 팝업(사용자 요청 2026-10-12). 팝업은 카드 상세 팝업(.rt-card-info-modal)을 넓혀 쓴다. */
+#rtcom-design .rt-xdm-feature-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}#rtcom-design .rt-xdm-feature-row .rt-xdm-feature-note{margin-top:0}
+#rtcom-design .rt-layer-note{display:flex;flex-direction:column;background:linear-gradient(135deg,#e9f6fd,#eef2ff);box-shadow:inset 0 0 0 1px #c9e3f3}#rtcom-design .rt-layer-note span{color:#1c86b8}#rtcom-design .rt-layer-note p{flex:1}
+#rtcom-design .rt-layer-modal{width:min(1060px,calc(100vw - 24px))}
+#rtcom-design .rt-layer-figure{overflow-x:auto;padding:4px;border:1px solid #e3e9f2;border-radius:14px;background:#fff}#rtcom-design .rt-layer-figure svg{display:block;width:100%;min-width:640px;height:auto}
+/* 0.207 WOS100 팝업: Analog Way 데이터시트식 핵심 수치 띠 + HOS100식 배치 예시 카드(.rt-hos-grid 재사용)와 겹침 순서 칩 */
+#rtcom-design .rt-wos-keys{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+#rtcom-design .rt-wos-keys li{display:flex;flex-direction:column;gap:2px;padding:12px 14px 11px;border-radius:14px;background:linear-gradient(135deg,#17304f,#22426a);box-shadow:inset 0 3px 0 #2aa3dc;color:#fff;min-width:0}
+#rtcom-design .rt-wos-keys b{font-size:24px;font-weight:800;line-height:1.1;letter-spacing:-.01em;white-space:nowrap}#rtcom-design .rt-wos-keys span{font-size:12px;font-weight:700;color:#9fd8f2}#rtcom-design .rt-wos-keys small{font-size:11px;line-height:1.35;color:#c9d6e8;word-break:keep-all}
+@media(max-width:560px){#rtcom-design .rt-wos-keys{grid-template-columns:1fr 1fr}#rtcom-design .rt-wos-keys b{font-size:20px}}
+#rtcom-design .rt-hos-grid.rt-wos-grid{grid-template-columns:repeat(3,1fr)}@media(max-width:560px){#rtcom-design .rt-hos-grid.rt-wos-grid{grid-template-columns:1fr 1fr}}
+#rtcom-design .rt-wos-layout .rt-hos-meta{flex-wrap:wrap;row-gap:3px}#rtcom-design .rt-wos-layout .rt-hos-meta strong{white-space:nowrap}
+#rtcom-design .rt-wos-lead{margin:-2px 0 0;font-size:12.5px;line-height:1.45;color:#56627a}
+#rtcom-design .rt-wos-order{display:flex;align-items:center;gap:5px;font-size:10.5px;color:#6b7280}#rtcom-design .rt-wos-order ol{list-style:none;margin:0;padding:0;display:flex;gap:3px}
+#rtcom-design .rt-wos-order li{display:grid;place-items:center;width:22px;height:20px;border-radius:6px;color:#fff;font-size:11px;font-weight:800}
+#rtcom-design .rt-hos-port-main{background:#e8f0ff;color:#2448a8}
+/* 0.209 XDM 커맨드 가이드 링크·WOS100 LED 모드/로고·HOS100 커맨드 레이아웃 표 */
+#rtcom-design .rt-cmd-guide{margin:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;font-size:12.5px;color:#56627a}#rtcom-design .rt-cmd-guide>span{font-weight:800;color:var(--rt-ink)}
+#rtcom-design .rt-cmd-guide a{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:999px;background:#eef4ff;color:#1d4fb8;font-weight:700;text-decoration:none;box-shadow:inset 0 0 0 1px #c9d9f6}#rtcom-design .rt-cmd-guide a small{font-weight:600;color:#5b6b85}#rtcom-design .rt-cmd-guide a:hover,#rtcom-design .rt-cmd-guide a:focus-visible{background:#dfeaff}
+#rtcom-design .rt-wos-feats{display:grid;grid-template-columns:2fr 1fr;gap:8px}@media(max-width:560px){#rtcom-design .rt-wos-feats{grid-template-columns:1fr}}
+#rtcom-design .rt-wos-feats>div{padding:11px 13px;border-radius:14px;background:linear-gradient(135deg,#eef6fd,#f3f1ff);box-shadow:inset 0 0 0 1px #d6e4f5}#rtcom-design .rt-wos-feats strong{display:block;margin-bottom:3px;font-size:13px;color:#1c4f8a}#rtcom-design .rt-wos-feats p{margin:0;font-size:12.5px;line-height:1.5;color:#3b4658}
+/* 0.211 WOS100 LED 상자의 출력 동기 문장, HOS100 팝업의 두 번째 안내 상자(LED는 WOS100) 간격 */
+#rtcom-design .rt-wos-feats p.rt-wos-sync{margin-bottom:6px;color:#1c4f8a}#rtcom-design .rt-hos-warn+.rt-hos-warn{margin-top:8px}
+#rtcom-design .rt-hos-cmd th[scope="row"]{width:86px;white-space:nowrap;font-variant-numeric:tabular-nums}
+#rtcom-design .rt-wos-tiled{margin:0;font-size:11px;color:#6b7280}
+/* 0.207 WOS100 레이어 구성도: 휴대폰 폭에서는 가로 스크롤 대신 위 → 아래 세로 그림을 보여 준다 */
+#rtcom-design .rt-layer-figure .rt-layer-svg-tall{display:none}@media(max-width:640px){#rtcom-design .rt-layer-figure .rt-layer-svg-wide{display:none}#rtcom-design .rt-layer-figure .rt-layer-svg-tall{display:block;min-width:0}}
+#rtcom-design .rt-layer-h{margin:8px 0 0;font-size:14px;font-weight:800;color:var(--rt-ink);border-left:4px solid #17304f;padding-left:9px}
+#rtcom-design .rt-layer-scroll{overflow-x:auto}#rtcom-design .rt-layer-table{min-width:860px;font-variant-numeric:tabular-nums}
+#rtcom-design .rt-layer-table thead th{width:auto;padding:8px 8px;background:#17304f;color:#fff;font-size:12px;font-weight:700;white-space:nowrap;border:0}
+#rtcom-design .rt-layer-table td{padding:7px 8px;font-size:12.5px;vertical-align:top}#rtcom-design .rt-layer-table td strong{white-space:nowrap}
+#rtcom-design .rt-layer-brand{white-space:nowrap;color:#5b6679}#rtcom-design .rt-layer-num{white-space:nowrap;text-align:right}#rtcom-design .rt-layer-src{white-space:nowrap;color:#5b6679;font-size:11.5px}
+#rtcom-design .rt-layer-table tr:last-child td{background:#fff7e6}
+#rtcom-design .rt-layer-notes{margin:0;padding-left:18px;color:#56627a;font-size:12px;line-height:1.55;display:grid;gap:4px}
+@media(max-width:720px){#rtcom-design .rt-xdm-feature-row{grid-template-columns:1fr}}
+/* 0.205 기능 팝업 버튼(XDM-WOS100 레이어 구성도·비교표, XDM-HOS100 멀티뷰 레이아웃). 사용자 요청 2026-10-12 "버튼이 살짝 눈에 띄게":
+   남색 단색 대신 사이트 강조색 그러데이션·레이어 아이콘·→ 화살표·그림자를 쓰고, 카드 상세 팝업에서는 연한 파랑 안내 상자 안에 둔다. */
+#rtcom-design .rt-feature-open{display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:0 16px 0 13px;border:0;border-radius:999px;background:linear-gradient(135deg,#3978ee,#5b5ce6);color:#fff;font-size:13px;font-weight:750;white-space:nowrap;box-shadow:0 6px 16px #3978ee47;transition:transform .15s,box-shadow .15s,background .15s}
+#rtcom-design .rt-feature-open:hover{transform:translateY(-1px);background:linear-gradient(135deg,#2f66da,#4f4fd6);box-shadow:0 9px 22px #3978ee5e}
+#rtcom-design .rt-feature-open:focus-visible{outline:3px solid #9cc0ff;outline-offset:2px}
+#rtcom-design .rt-feature-open b{font-weight:800;transition:transform .15s}#rtcom-design .rt-feature-open:hover b{transform:translateX(2px)}#rtcom-design .rt-feature-ico{flex:none}
+#rtcom-design .rt-layer-note .rt-feature-open{align-self:flex-start;margin-top:10px}
+#rtcom-design .rt-feature-open>span{display:inline;color:inherit;font-size:inherit;font-weight:inherit;letter-spacing:normal}
+#rtcom-design .rt-feature-cta{display:flex;align-items:center;justify-content:space-between;gap:10px 14px;flex-wrap:wrap;margin:0;padding:12px 14px;border-radius:14px;background:linear-gradient(135deg,#eef4ff,#f3efff);box-shadow:inset 0 0 0 1px #cfdcff}
+#rtcom-design .rt-feature-cta>div{flex:1 1 220px;min-width:0}#rtcom-design .rt-feature-cta p{margin:5px 0 0;font-size:12.5px;line-height:1.45;color:#3b4660}
+#rtcom-design .rt-feature-tag{display:inline-block;padding:2px 9px;border-radius:999px;background:#3978ee;color:#fff;font-size:11px;font-weight:800}
+#rtcom-design .rt-feature-open-tip{justify-self:start;min-height:32px;margin-top:8px;padding:0 13px 0 11px;font-size:12px;background:#fff;color:#2448a8;box-shadow:0 4px 12px #0f172a40}#rtcom-design .rt-feature-open-tip:hover{background:#eef4ff}
+/* 0.205 HOS100 멀티뷰 레이아웃 팝업 */
+#rtcom-design .rt-hos-modal{width:min(900px,calc(100vw - 24px))}
+#rtcom-design .rt-hos-warn{padding:12px 14px;border-radius:14px;background:#fff7e6;box-shadow:inset 0 0 0 1px #f1d49b;color:#5a4110;font-size:13px;line-height:1.5}#rtcom-design .rt-hos-warn strong{display:block;margin-bottom:4px;color:#8a5a00}#rtcom-design .rt-hos-warn ul{margin:0;padding-left:18px;display:grid;gap:3px}
+#rtcom-design .rt-hos-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}@media(max-width:560px){#rtcom-design .rt-hos-grid{grid-template-columns:1fr 1fr;gap:8px}#rtcom-design .rt-hos-layout{padding:8px}}
+#rtcom-design .rt-hos-layout{display:flex;flex-direction:column;gap:6px;padding:10px;border:1px solid #e3e9f2;border-radius:14px;background:#fff}#rtcom-design .rt-hos-fig{display:grid;justify-items:center;padding:4px 0 2px}#rtcom-design .rt-hos-fig svg{display:block;width:100%;max-width:200px;height:auto;filter:drop-shadow(0 4px 10px rgba(31,37,50,.18))}
+#rtcom-design .rt-hos-meta{display:flex;align-items:center;justify-content:space-between;gap:8px}#rtcom-design .rt-hos-meta strong{font-size:14px;color:var(--rt-ink)}
+#rtcom-design .rt-hos-layers{padding:1px 8px;border-radius:999px;background:#eef2f8;color:#475569;font-size:11px;font-weight:700;white-space:nowrap}
+#rtcom-design .rt-hos-layout p{margin:0;font-size:12px;line-height:1.4;color:#56627a}
+#rtcom-design .rt-hos-ports{list-style:none;margin:2px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+#rtcom-design .rt-hos-ports li{display:flex;flex-direction:column;align-items:center;padding:3px 2px;border-radius:8px;font-size:10.5px;line-height:1.25;text-align:center;word-break:keep-all}#rtcom-design .rt-hos-ports b{font-size:12px}
+#rtcom-design .rt-hos-port-split{background:#e8f0ff;color:#2448a8}#rtcom-design .rt-hos-port-off{background:#fde8e8;color:#b42318}#rtcom-design .rt-hos-port-off b{text-decoration:line-through}#rtcom-design .rt-hos-port-dup{background:#f1f3f7;color:#6b7280}#rtcom-design .rt-hos-pair{margin:0;font-size:11px;line-height:1.4;color:#8a5a00}
+/* 0.205 제품정보 02 신호 구성: 눌러서 기능 팝업을 여는 WOS100·HOS100 칸 */
+#rtcom-design .rt-pg-sig-feature{cursor:pointer;outline:none}#rtcom-design .rt-pg-sig-feature:hover .rt-pg-sig-pill{fill-opacity:.26}#rtcom-design .rt-pg-sig-feature:focus-visible .rt-pg-sig-pill{stroke-width:3.2}
+#rtcom-design .rt-pg-legend .rt-pg-legend-feature{color:#2f5fd0;font-weight:700}#rtcom-design .rt-pg-legend .rt-pg-legend-feature i{display:inline-grid;place-items:center;width:14px;height:14px;border-radius:50%;background:#3978ee;color:#fff;font-style:normal;font-size:11px;line-height:1;vertical-align:-2px}
+/* 0.219 시안 C(사용자 선택 2026-10-14 "C만 진행"): 장착 슬롯 태그의 채널 범위(CH 5–8), 슬롯마다 한 칸인 신호 색 완성도 막대, 내 구성 연동 전송기 묶음 */
+#rtcom-design .rt-slot-tag .rt-slot-tag-ch{display:flex;align-items:center;padding:2px 4px;background:#0d1117e0;color:#fff;font-size:10px;font-weight:700;letter-spacing:-.02em;white-space:nowrap}
+#rtcom-design .rt-rack-vs .rt-slot-tag .rt-slot-tag-ch,#rtcom-design .rt-rack-vt .rt-slot-tag .rt-slot-tag-ch{padding:5px 2px}
+#rtcom-design .rt-completion-bar.rt-completion-slots{gap:1px;background:#c9ced6;box-shadow:inset 0 0 0 1px #c9ced6;padding:1px}
+#rtcom-design .rt-completion-slots i{flex:1 1 0;min-width:0;background:var(--rt-sig,#007AFF)}
+#rtcom-design .rt-completion-slots i:first-child{border-radius:8px 0 0 8px}
+#rtcom-design .rt-completion-slots i:last-child{border-radius:0 8px 8px 0}
+#rtcom-design .rt-completion-slots i:only-child{border-radius:8px}
+#rtcom-design .rt-completion-slots i.rt-seg-blank{background:#8a94a6}
+#rtcom-design .rt-completion-slots i.rt-seg-empty{background:#fff}
+#rtcom-design .rt-completion-dot-card{background:linear-gradient(90deg,#002060 0 34%,#00B050 34% 67%,#00B0F0 67%)}
+#rtcom-design .rt-config-summary .rt-summary-links{gap:6px}
+#rtcom-design .rt-config-summary li.rt-summary-link{grid-template-columns:auto auto minmax(0,1fr) auto;border-left:3px solid var(--rt-sig,#C7590A);gap:6px;padding:8px 10px;border-radius:10px;background:#fff4e8;font-size:12px}
+#rtcom-design .rt-summary-link .rt-summary-link-from{display:flex;align-items:baseline;gap:4px;font-weight:700;white-space:nowrap}
+#rtcom-design .rt-config-summary .rt-summary-link .rt-summary-link-from small{display:inline;font-size:10px}
+#rtcom-design .rt-summary-link .rt-summary-link-arrow{color:#C7590A;font-weight:800}
+#rtcom-design .rt-config-summary li.rt-summary-link strong{min-width:0;overflow:hidden;font-size:12px;text-overflow:ellipsis;white-space:nowrap}
+#rtcom-design .rt-config-summary li.rt-summary-link b{color:#1f2a3d;font-size:13px;font-weight:800;white-space:nowrap}
+/* 0.224 XDM "07 화면 연출 시뮬레이터"(src/layout-sim.js). 모든 클래스는 rt-ls-* 접두사, 제품정보 화면 안에서만 쓴다. */
 #rtcom-design .rt-products-view .rt-pg-layout-sim .rt-pg-lead code{font:600 12px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--pg-field-fill);padding:2px 6px;border-radius:6px}
 #rtcom-design .rt-ls-controls{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:flex-end;margin:0 0 12px}
 #rtcom-design .rt-ls-controls label{display:flex;flex-direction:column;gap:5px;font:600 11.5px/1.2 var(--pg-sans);color:var(--pg-muted);min-width:0}

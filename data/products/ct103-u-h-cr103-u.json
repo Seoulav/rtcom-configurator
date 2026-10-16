@@ -83,9 +83,11 @@
     {
       "type": "Manual",
       "status": "FOUND",
-      "title": "CT-103-U / CR-103-U 사용자 매뉴얼 KV01",
+      "title": "CT103-U-H / CR103-U 사용자 매뉴얼 Ver.1.1",
       "language": "ko",
-      "note": "CR-103-U 사양·사진 · 사용자 제공, 배포 제외"
+      "note": "알티컴 사용자 매뉴얼 PDF(사용자가 Word에서 저장해 제공 2026-10-14) 공개본, 문서 속성의 작성자·프로그램 정보 삭제",
+      "file": "ct103-u-h-cr103-u-manual.pdf",
+      "preview": "pdfjs"
     }
   ],
   "officialLinks": [
@@ -147,10 +149,10 @@
     {
       "group": "Video",
       "name": "출력 신호",
-      "value": "HDMI 1 Port, 3.5mm Stereo Audio 1 Port",
+      "value": "HDMI 1 Port",
       "unit": "",
       "condition": "CR103-U",
-      "source": "M1",
+      "source": "M3",
       "verification": "VERIFIED"
     },
     {
@@ -183,10 +185,10 @@
     {
       "group": "General",
       "name": "규격",
-      "value": "DVI 1.0, HDMI 1.4, HDBaseT",
+      "value": "HDMI 1.4, HDBaseT",
       "unit": "",
-      "condition": "CR103-U는 HDMI 1.4b",
-      "source": "C",
+      "condition": "",
+      "source": "M3",
       "verification": "VERIFIED"
     },
     {
@@ -201,10 +203,10 @@
     {
       "group": "Power",
       "name": "전원",
-      "value": "DC +12V 2A",
+      "value": "DC +12V 1A 이상",
       "unit": "",
       "condition": "CR103-U 소비전력 최대 15W",
-      "source": "C",
+      "source": "M3",
       "verification": "VERIFIED"
     },
     {
@@ -291,17 +293,6 @@
       "protocol": "HDMI 1.4b",
       "condition": "CR103-U",
       "source": "C",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "RX · Audio",
-      "connector": "3.5mm stereo",
-      "signal": "Stereo Audio",
-      "direction": "OUT",
-      "quantity": "1",
-      "protocol": "",
-      "condition": "CR103-U · 뒷면",
-      "source": "M1",
       "verification": "VERIFIED"
     },
     {
@@ -443,6 +434,12 @@
       "name": "FT-103-U-H / FR-103-U 사용자 매뉴얼 Ver.1.4",
       "page": "6",
       "scope": "같은 -U-H 벽부형 송신기의 판넬 배치(HDMI1·HDMI2·INPUT 버튼) 참고 — 사용자 제공 PDF, 배포 제외"
+    },
+    {
+      "code": "M3",
+      "name": "CT-103-U-H / CR-103-U 사용자 매뉴얼 Ver.1.1 (알티컴, 2026-10-07판)",
+      "page": "4–7",
+      "scope": "사용자 제공 PDF(2026-10-14) — CT103-U-H HDMI 2·3.5mm 오디오 입력, CR103-U 출력 HDMI 1 Port(오디오 출력 없음, 앞면 단자 HDMI·RS-232·DC·CAT IN), HDMI 1.4·HDBaseT, HDCP v1.x, DC +12V 1A 이상, 91.44×107.95×57.15mm, 0.23kg. CR103-U 오디오 출력은 KV01(M1)과 달라 Ver.1.1 기준으로 삭제(사용자 결정 2026-10-14)"
     }
   ],
   "issues": []

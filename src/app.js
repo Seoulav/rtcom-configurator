@@ -37,10 +37,10 @@
       [RtCore.psePair]:{model:'CTR100 PSE + CTR100',role:'HDMI 연장 한 쌍 (HDBaseT 3.0)',images:['output/design/assets/extenders/xdm-ctr100-pse.webp','output/design/assets/extenders/xdm-ctr100.webp'],specs:['4K/60 @ 4:4:4 · 최대 100m (S/FTP CAT6A 필수)','전원: PSE 쪽에만 연결 · CTR100은 전원 불필요','두 제품 모두 딥 스위치로 TX/RX 설정'],page:10},
       'SPX-RX':{model:'SPX-RX',role:'CATx 수신기 (HDMI 2.0 · CEC)',specs:['4K/60 @ 4:4:4 · 18Gbps · HDCP 2.2','CATx 4K/60 최대 50m · 1080p 최대 60m','전원: 메인프레임이 CAT으로 공급(POC)'],recommended:true},
       // VDM 연동 전송기(사용자 확인 2026-09-26, 사양·사진: 알티컴 홈페이지 VDM EXTENDER 게시판)
-      'CT104-U':{model:'CT104-U',role:'HDBaseT 4K 송신기 (HDMI + RS-232)',image:'output/design/assets/extenders/vdm-ct104-u.webp',specs:['4K/30 · 1080p/60 최대 100m (CAT5e/6)','HDMI 1.4 · RS-232 · HDCP','전원: DC 12V 2A'],pair:'CIS4-U',recommended:true},
-      'CR104-U':{model:'CR104-U',role:'HDBaseT 4K 수신기 (HDMI + RS-232)',image:'output/design/assets/extenders/vdm-cr104-u.webp',specs:['4K/30 · 1080p/60 최대 100m (CAT5e/6)','HDMI 1.4 · RS-232 · HDCP','전원: DC 12V 2A'],pair:'COS4-U',recommended:true},
-      'FT101-U':{model:'FT101-U',role:'HDMI 광 송신기 (오디오 · RS-232)',image:'output/design/assets/extenders/vdm-ft101-u.webp',specs:['4K/30 · 싱글모드 2km · 멀티모드 500m','HDMI 1.4b · 3.5mm 오디오 입력 · RS-232','전원: DC 12V 2A'],pair:'FIS4-U',recommended:true},
-      'FR101-U':{model:'FR101-U',role:'HDMI 광 수신기 (RS-232)',image:'output/design/assets/extenders/vdm-fr101-u.webp',specs:['4K/30 · 싱글모드 2km · 멀티모드 500m','HDMI 1.4b · 오디오 출력 · RS-232','전원: DC 12V 2A'],pair:'FOS4-U',recommended:true},
+      'CT104-U':{model:'CT104-U',role:'HDBaseT 4K 송신기 (HDMI + RS-232)',image:'output/design/assets/extenders/vdm-ct104-u.webp',specs:['4K/30 · 1080p/60 최대 100m (CAT5e/6)','HDMI 1.4 · RS-232 · HDCP','전원: DC 12V 1A 이상'],pair:'CIS4-U',recommended:true},
+      'CR104-U':{model:'CR104-U',role:'HDBaseT 4K 수신기 (HDMI + RS-232)',image:'output/design/assets/extenders/vdm-cr104-u.webp',specs:['4K/30 · 1080p/60 최대 100m (CAT5e/6)','HDMI 1.4 · RS-232 · HDCP','전원: DC 12V 1A 이상'],pair:'COS4-U',recommended:true},
+      'FT101-U':{model:'FT101-U',role:'HDMI 광 송신기 (오디오 · RS-232)',image:'output/design/assets/extenders/vdm-ft101-u.webp',specs:['4K/30 · 싱글모드 2km · 멀티모드 500m','HDMI 1.4 · 3.5mm 오디오 입력 · RS-232','전원: DC 12V 1A 이상'],pair:'FIS4-U',recommended:true},
+      'FR101-U':{model:'FR101-U',role:'HDMI 광 수신기 (RS-232)',image:'output/design/assets/extenders/vdm-fr101-u.webp',specs:['4K/30 · 싱글모드 2km · 멀티모드 500m','HDMI 1.4 · 오디오 출력 · RS-232','전원: DC 12V 1A 이상'],pair:'FOS4-U',recommended:true},
       'XDM-FR101':{model:'XDM-FR101',role:'4K 광 수신기',image:'output/design/assets/extenders/xdm-fr101.webp',specs:['4K/60 @ 4:4:4 · HDMI 2.0','싱글모드 2km · 멀티모드 300m (LC 1)','오디오 추출 · RS-232+'],pair:'XDM-FOS100',page:12,recommended:true}
     };
     const vdmExtenderLineup=[
@@ -52,7 +52,7 @@
     const extenderLineup=[
       {model:'XDM-CTR100',role:'HDBaseT 3.0 송수신기 (딥 스위치 TX/RX)',image:'output/design/assets/extenders/xdm-ctr100.webp',pair:'XDM-CIS100 · XDM-COS100',note:'딥 스위치로 TX/RX를 설정합니다. TX는 CIS100, RX는 COS100과 연동하며 이때는 XDM-PSU로 전원을 공급해 CTR100에 전원 어댑터가 필요 없습니다. PSE와 한 쌍이어도 전원 불필요',page:10},
       {model:'XDM-CTR100 PSE',role:'POE 전원 공급형 송수신기 (딥 스위치 TX/RX)',image:'output/design/assets/extenders/xdm-ctr100-pse.webp',pair:'XDM-CTR100 (HDMI 카드 연장 · 1:1 연장)',note:'CTR100과 한 쌍으로 쓰면 PSE 쪽에만 전원을 연결하고 CTR100은 전원이 필요 없습니다. HDMI 입력·출력 카드 연장에 사용하며, HDBaseT 카드(CIS100·COS100) 구성에는 사용할 수 없습니다.',page:10},
-      {model:'XDM-PSU',role:'16채널 모듈형 전원 장치 (19인치 2U)',image:'output/design/assets/products/xdm-psu-front.webp',pair:'XDM-CIS100 · XDM-COS100 + XDM-CTR100',note:'CIS100·COS100에 연결한 CTR100에 전원을 공급합니다. CIS용 XDM-POH(TX 1대당 1개)와 COS용 XDM-PHX(COS100 1장당 1개) 모듈을 16칸에 꽂습니다.',source:'제조사 도면·구성도'},
+      {model:'XDM-PSU',role:'16채널 모듈형 전원 장치 (19인치 2U)',image:'output/design/assets/products/xdm-psu-front.webp',pair:'XDM-CIS100 · XDM-COS100 + XDM-CTR100',note:'CIS100·COS100에 연결한 CTR100에 전원을 공급합니다. CIS용 XDM-POH(TX 1대당 1개)와 COS용 XDM-PHX(COS100 출력 1포트당 1개) 모듈을 16칸에 꽂습니다.',source:'제조사 도면·구성도'},
       {model:'XDM-CT103',role:'1 Gang 벽부형 송신기',image:'output/design/assets/extenders/xdm-ct103.webp',pair:'XDM-CIS100',note:'XDM 슬롯 POE로 전원 공급',page:11},
       {model:'XDM-CR103',role:'1 Gang 벽부형 수신기',image:'output/design/assets/extenders/xdm-cr103.webp',pair:'XDM-COS100',note:'XDM 슬롯 POE로 전원 공급',page:11},
       {model:'XDM-FT101',role:'4K 광 송신기',image:'output/design/assets/extenders/xdm-ft101.webp',pair:'XDM-FIS100',note:'싱글모드 2km · 멀티모드 300m',page:12},
@@ -111,10 +111,21 @@
     function cardAsset(id){return photoCardFamilies.has(state.family)&&id?`output/design/assets/cards/${id}.webp`:assets[state.family]}
     const cardTips={
       'XDM-HI100':'HDMI 소스 4채널을 입력하는 기본 카드입니다.','XDM-HIS100':'HDMI 입력을 스케일링해야 하는 구성에 검토합니다.','XDM-DPI100':'DisplayPort 소스 4채널 입력용입니다.','XDM-CIS100':'HDBaseT 3.0 기반 원격 신호 4채널 입력용입니다.','XDM-FIS100':'광 전송 기반의 원거리 신호 4채널 입력용입니다.','XDM-SIS100':'12G-SDI 방송 신호 4채널 입력용입니다.',
-      'XDM-HOS100':'HDMI 4채널 출력 또는 최대 4분할(쿼드뷰) 화면 구성에 활용할 수 있습니다.','XDM-DPOS100':'DisplayPort 디스플레이 4채널 출력용입니다.','XDM-COS100':'HDBaseT 3.0 기반 원격 출력 4채널용입니다.','XDM-FOS100':'광 전송 기반의 원거리 출력 4채널용입니다.','XDM-SOS100':'12G-SDI 방송 신호 4채널 출력용입니다.','XDM-WOS100':'4개 레이어를 조합해 월 프로세서처럼 화면 연출에 활용할 수 있습니다.'
+      'XDM-HOS100':'HDMI 4채널 출력 또는 4분할·2분할 등 원하는 레이어(멀티뷰) 화면 구성에 활용할 수 있습니다. 레이어를 쓰면 일부 출력 포트를 쓸 수 없습니다. 출력 동기(싱크)가 맞지 않아 LED 화면에는 WOS100을 씁니다.','XDM-DPOS100':'DisplayPort 디스플레이 4채널 출력용입니다.','XDM-COS100':'HDBaseT 3.0 기반 원격 출력 4채널용입니다.','XDM-FOS100':'광 전송 기반의 원거리 출력 4채널용입니다.','XDM-SOS100':'12G-SDI 방송 신호 4채널 출력용입니다.','XDM-WOS100':'출력 1개에 4K/60 소스 4개를 레이어로 겹쳐 비디오 프로세서처럼 화면 연출에 활용할 수 있습니다. 레이어를 쓰면 카드 4포트가 모두 같은 화면을 냅니다. 출력 동기(싱크)가 맞아 여러 장으로 LED S-BOX에 나눠 보낼 수 있습니다.'
     };
     function cardTip(id){return cardTips[id]||'카드 용도와 설치 조건을 검토한 뒤 선택하세요.'}
     globalThis.RtCardTips=cardTips; // 0.143: 제품정보 04 카드 라인업 상세 팝업(src/products.js)이 같은 카드 설명을 읽는다.
+    // 0.205(사용자 요청 2026-10-12 "제품정보 XDM-WOS100 팝업에도 동일하게 해주고 버튼이 살짝 눈에 띄게", "02 신호구성에 WOS카드와 HOS카드 버튼눌러서 팝업이 뜨는것도 좋겠다"):
+    // WOS100(레이어 구성도·비교표)과 HOS100(멀티뷰 레이아웃) 기능 팝업을 여는 버튼을 한 곳에서 만든다. 구성기 카드 상세·카드 선택 팁·02 프레임 선택과
+    // 제품정보(src/products.js) 04 카드 상세·02 신호 구성 그림이 같은 버튼·같은 팝업을 쓴다. 누르면 아래 [data-card-feature] 처리기가 연다.
+    const cardFeatures={
+      'XDM-WOS100':{key:'layer-compare',tag:'4레이어',name:'레이어',hint:'출력 1개에 4K/60 소스 4개를 겹치는 레이어 구성도와 비디오 프로세서 레이어 수 비교표',label:'레이어 구성도 · 비교표 보기'},
+      'XDM-HOS100':{key:'hos-multiview',tag:'멀티뷰',name:'멀티뷰',hint:'4분할·2분할 등 레이어 구성과 구성별로 쓸 수 없게 되는 출력 포트',label:'멀티뷰 레이아웃 보기'}
+    };
+    const featureIcon='<svg class="rt-feature-ico" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.8 14.5 5 8 8.2 1.5 5z" fill="currentColor"/><path d="M2.3 8.2 8 11l5.7-2.8M2.3 11 8 13.8l5.7-2.8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>';
+    function featureButton(id,extraClass=''){const f=cardFeatures[id];return f?`<button type="button" class="rt-button rt-feature-open${extraClass?' '+extraClass:''}" data-card-feature="${f.key}">${featureIcon}<span>${f.label}</span><b aria-hidden="true">→</b></button>`:''}
+    function featureCta(id){const f=cardFeatures[id];return f?`<div class="rt-feature-cta"><div><span class="rt-feature-tag">${f.tag}</span><p>${f.hint}</p></div>${featureButton(id)}</div>`:''}
+    globalThis.RtCardFeature={cards:Object.fromEntries(Object.entries(cardFeatures).map(([id,f])=>[id,{key:f.key,tag:f.tag,name:f.name,label:f.label}])),cta:featureCta};
     function cardBadge(id){return id==='XDM-WOS100'?'<em>4레이어</em>':id==='XDM-HOS100'?'<em>쿼드뷰</em>':''}
     function choices(s,c){return RtCore.choices(c[0])}
     // 카드 팝업에서 고른 전송기 → 없으면 이 슬롯에 이미 연결된 전송기(같은 카드일 때) → 없으면 카드 기본 연동(RtCore.defaultLink). ''는 연결 안 함.
@@ -183,7 +194,9 @@
     }
     function chassisViewV2(){
       const f=families[state.family];
-      const xdmFeature=state.family==='XDM'?'<div class="rt-xdm-feature-note"><span>EDID · LED 활용 팁</span><strong>커스텀 해상도도 설계할 수 있습니다.</strong><p>개선 펌웨어 기준으로 비표준 입력을 원본 패스스루(LED) 또는 4K 업스케일(모니터) 경로로 나눠 검토합니다. 출고용 EDID 주입 조건은 제조사 확인이 필요합니다.</p></div>':'';
+      // 0.203(사용자 요청 2026-10-12 "비디오 프로세서 레이어 비교는 vp제품 군 프레임선택 하는항목한쪽에 이 페이지를 볼 수 있게해줘"): EDID 팁 옆에 WOS100 레이어 구성도·비디오 프로세서 레이어 비교 팝업을 여는 카드를 둔다. 화면 상태일 뿐 저장·실행 취소 대상이 아니다.
+      const layerNote='<div class="rt-xdm-feature-note rt-layer-note"><span>XDM-WOS100 · 레이어</span><strong>비디오 프로세서와 레이어 수를 비교해 보세요.</strong><p>WOS100 출력 1개에 4K/60 소스 4개를 비디오 프로세서처럼 겹치는 구성도와, Aquilon·NovaStar·Colorlight 프로세서의 2K/4K 레이어 수를 한 표로 봅니다.</p>'+featureButton('XDM-WOS100')+'</div>';
+      const xdmFeature=state.family==='XDM'?'<div class="rt-xdm-feature-row"><div class="rt-xdm-feature-note"><span>EDID · LED 활용 팁</span><strong>커스텀 해상도도 설계할 수 있습니다.</strong><p>개선 펌웨어 기준으로 비표준 입력을 원본 패스스루(LED) 또는 4K 업스케일(모니터) 경로로 나눠 검토합니다. 출고용 EDID 주입 조건은 제조사 확인이 필요합니다.</p></div>'+layerNote+'</div>':'';
       const row=(m,i)=>{
         const plan=slotPlanFor(m),selected=state.model===m;
         const maxChannels=state.family!=='SPX'?`${plan?.[0]*4}×${plan?.[1]*4}`:String(f.modelNotes[i]||'').split('·')[0].trim().replace(/\s*×\s*/,'×');
@@ -215,7 +228,7 @@
       const slot=currentSlots().find(item=>item.id===modalSlot);
       if(!slot)return '';
       const installed=state.placements[slot.id];
-      const tips=slot.dir==='output'&&state.family==='XDM'?'<div class="rt-output-tips"><div class="rt-pro-tip rt-quad-tip"><span>최대 4분할</span><div><strong>XDM-HOS100 · 쿼드뷰(최대 4분할)</strong><p>일반 HDMI 4채널 출력 또는 최대 4분할 화면 구성에 활용할 수 있습니다.</p></div></div><div class="rt-pro-tip"><span>활용 TIP</span><div><strong>XDM-WOS100 · 4레이어</strong><p>4개 레이어를 조합해 월 프로세서처럼 화면을 연출할 수 있습니다.</p></div></div></div>':'';
+      const tips=slot.dir==='output'&&state.family==='XDM'?'<div class="rt-output-tips"><div class="rt-pro-tip rt-quad-tip"><span>최대 4분할</span><div><strong>XDM-HOS100 · 멀티뷰(4분할·2분할)</strong><p>일반 HDMI 4채널 출력 또는 원하는 레이어 구성에 활용합니다. 레이어 2개면 짝 포트(1번 분할 시 2번, 3번 분할 시 4번), 4개면 2~4번 포트를 쓸 수 없습니다. 출력 동기(싱크)가 맞지 않아 LED 화면에는 WOS100을 씁니다.</p>'+featureButton('XDM-HOS100','rt-feature-open-tip')+'</div></div><div class="rt-pro-tip"><span>활용 TIP</span><div><strong>XDM-WOS100 · 4레이어</strong><p>출력 1개에 4K/60 소스 4개를 레이어로 겹쳐 비디오 프로세서처럼 화면을 연출할 수 있습니다. 레이어를 1개만 써도 카드 4포트가 모두 같은 화면을 내므로 2~4번 포트를 따로 쓸 수 없습니다. 출력 동기(싱크)가 맞아 2~3장으로 LED S-BOX 1·2에 나눠 보낼 때도 동기가 맞습니다.</p>'+featureButton('XDM-WOS100','rt-feature-open-tip')+'</div></div></div>':'';
       const dirWord=slot.dir==='input'?'입력':'출력';
       // 0.94 수량 UI가 사라지는 버그 수정(사용자 지적 "입력카드 다시 조정하려고 누르면 수량이 안보이고 장착됨이 보임", "출력카드는 수량선택이 안되는 버그"):
       // 같은 방향 슬롯이 이미 다 채워지면 fillTargets가 채울 수 있는 칸(qtyMax)을 1로 돌려주는데, 그 값 하나로 "카드별 수량" UI 노출 여부까지 정했다.
@@ -261,6 +274,11 @@
     const sigBadge=(text,cls='',label)=>{const k=signalKind(text);return `<i class="rt-sig-badge${cls?` ${cls}`:''}" data-sig="${k}" aria-hidden="true">${esc(label||signalAbbr[k])}</i>`};
     // 0.170(사용자 요청 2026-09-29 "XDM-HI100과 HIS100 구별점을 줘야할 거 같아"): 후면 슬롯 태그는 색으로 신호를, 글자로 모델(HI100·HIS100, HOS4-U·HOS4S-UW 등)을 알려 준다.
     const slotModel=id=>String(id).replace(/^(XDM|SPX)-/,'');
+    // 0.219 시안 C(사용자 선택 2026-10-14 "C만 진행"): 장착 슬롯 태그에 매트릭스 채널 범위(CH 5–8)를 붙인다.
+    // 번호는 ② 신호 입력 표와 같은 규칙: (슬롯 번호 − 1) × 그 방향 카드의 최대 포트 수 + 1부터 카드 포트 수만큼. 빈 슬롯은 꽂을 카드에 따라 포트 수가 달라 표시하지 않는다.
+    const slotShort=slot=>slot.id.replace(/^in-/,'IN ').replace(/^out-/,'OUT ').toUpperCase();
+    const chRange=(slot,c)=>{const n=Number(slot.id.split('-')[1]),first=(n-1)*Math.max(...families[state.family][slot.dir].map(item=>item[2]))+1;return c[2]>1?`CH ${first}–${first+c[2]-1}`:`CH ${first}`};
+    const slotTag=(slot,c,hidden)=>`<span class="rt-rack-slot-no rt-rack-slot-no-${slot.dir} rt-slot-tag"${hidden?' aria-hidden="true"':''}><span class="rt-slot-tag-n">${slotShort(slot)}</span>${sigBadge(c[1],'rt-slot-tag-s',slotModel(c[0]))}<span class="rt-slot-tag-ch">${chRange(slot,c)}</span></span>`;
     // 후면 아래 범례: 지금 제품군에 있는 신호만, 카탈로그 표기(예: 12G-SDI, 3G/HD-SDI) 그대로.
     function signalLegend(){const f=families[state.family],seen=new Map();for(const c of [...f.input,...f.output]){const k=signalKind(c[1]);if(!seen.has(k))seen.set(k,c[1])}return `<div class="rt-sig-legend" aria-label="신호 종류">${[...seen].map(([,text])=>`<span>${sigBadge(text)}${esc(signalShort(text))}</span>`).join('')}</div>`}
     // 내 구성 행의 장착 위치: 같은 방향 슬롯 번호를 이어진 구간으로 줄인다(IN 1–4·7).
@@ -298,7 +316,7 @@
       const dialog=document.createElement('dialog');
       dialog.className='rt-card-info-modal';
       dialog.setAttribute('aria-labelledby','rt-card-info-title');
-      dialog.innerHTML=`<div class="rt-card-modal-head"><div><span class="rt-eyebrow">${dir} 카드 · ${esc(state.family)}</span><h3 id="rt-card-info-title">${esc(id)}</h3>${info.title?`<p class="rt-card-info-sub">${esc(info.title)}</p>`:''}</div><button type="button" class="rt-card-modal-close" data-card-info-close aria-label="카드 상세 정보 닫기">×</button></div><div class="rt-card-info-body"><div class="rt-card-info-plate"><img src="${cardAsset(id)}" alt="${esc(id)} 카드 후면 판넬"></div>${cardTips[id]?`<p class="rt-card-info-tip">${esc(cardTips[id])}</p>`:''}<table class="rt-card-info-table"><tbody>${rows.map(([k,v])=>`<tr><th scope="row">${esc(k)}</th><td>${esc(v)}</td></tr>`).join('')}</tbody></table>${info.note?`<p class="rt-card-info-note">${esc(info.note)}</p>`:''}${info.missing?`<p class="rt-card-info-missing">상세 사양 준비 중 · ${esc(info.missing)}</p>`:''}<p class="rt-card-info-src">${[info.page?`알티컴 종합 카탈로그 2026 (국문) ${info.page}쪽`:'',info.source?esc(info.source):''].filter(Boolean).join(' · ')||'제조사 자료 확인 중'}</p></div><div class="rt-card-modal-foot"><button type="button" class="rt-button" data-card-info-close>닫기</button></div>`;
+      dialog.innerHTML=`<div class="rt-card-modal-head"><div><span class="rt-eyebrow">${dir} 카드 · ${esc(state.family)}</span><h3 id="rt-card-info-title">${esc(id)}</h3>${info.title?`<p class="rt-card-info-sub">${esc(info.title)}</p>`:''}</div><button type="button" class="rt-card-modal-close" data-card-info-close aria-label="카드 상세 정보 닫기">×</button></div><div class="rt-card-info-body"><div class="rt-card-info-plate"><img src="${cardAsset(id)}" alt="${esc(id)} 카드 후면 판넬"></div>${cardTips[id]?`<p class="rt-card-info-tip">${esc(cardTips[id])}</p>`:''}<table class="rt-card-info-table"><tbody>${rows.map(([k,v])=>`<tr><th scope="row">${esc(k)}</th><td>${esc(v)}</td></tr>`).join('')}</tbody></table>${info.note?`<p class="rt-card-info-note">${esc(info.note)}</p>`:''}${featureCta(id)}${info.missing?`<p class="rt-card-info-missing">상세 사양 준비 중 · ${esc(info.missing)}</p>`:''}<p class="rt-card-info-src">${[info.page?`알티컴 종합 카탈로그 2026 (국문) ${info.page}쪽`:'',info.source?esc(info.source):''].filter(Boolean).join(' · ')||'제조사 자료 확인 중'}</p></div><div class="rt-card-modal-foot"><button type="button" class="rt-button" data-card-info-close>닫기</button></div>`;
       const opener=document.activeElement;
       const finish=()=>{if(dialog.open)dialog.close();dialog.remove();opener?.focus?.({preventScroll:true})};
       dialog.addEventListener('click',event=>{if(event.target===dialog||event.target.closest('[data-card-info-close]'))finish()});
@@ -306,6 +324,233 @@
       root.appendChild(dialog);
       if(typeof dialog.showModal==='function'){dialog.showModal();dialog.querySelector('.rt-card-modal-close').focus()}else dialog.setAttribute('open','');
     }
+    // 0.203 XDM-WOS100 레이어 구성도 + 비디오 프로세서 레이어 비교 팝업(02 프레임 선택 XDM). 카드 상세 팝업(openCardInfo)과 같은 dialog 방식.
+    // 0.204(사용자 지적 2026-10-12 03 카드 슬롯의 WOS100 카드 상세 팝업을 보며 "안보여"): 같은 팝업을 WOS100 카드 상세 팝업과 출력 카드 선택 팝업의 활용 TIP에서도 연다. 카드 상세 dialog 위에 겹쳐 열리는 두 번째 dialog다.
+    // 표의 값은 AV Portal 상세 페이지(제조사 데이터시트 근거)와 사용자가 제공한 Aquilon RS4 데이터시트(AQL-RS4-EN-20260401)에서 옮겼다. 제조사마다 "레이어" 정의가 달라 비고를 함께 적는다.
+    // WOS100의 4레이어는 구성기 카드 설명(cardTips)과 같은 값이다. 0.207부터 "출력 1개에 4K/60 소스 4개"는 서울영상테크 확인(2026-10-12)이며,
+    // 0.210: 레이어를 쓰면(1개라도) WOS100 카드 4포트가 모두 같은 화면을 낸다(알티컴 확인, 사용자 전달 2026-10-13). HOS100의 짝 포트 규칙과 다르다.
+    const layerCompareRows=[
+      ['Analog Way','Aquilon RS4','24','16','12','24','믹싱 레이어 최대 · 분할 레이어 사용 시 24 / 48 · 구성기·AV Portal 미등록','RS4 데이터시트'],
+      ['Analog Way','Aquilon RS2','16','12','8','16','믹싱 레이어 최대 · 분할 레이어 사용 시 16 / 32','AV Portal'],
+      ['Analog Way','Aquilon RS1','16','8','4','8','믹싱 레이어 최대 · 분할 레이어 사용 시 8 / 16','AV Portal'],
+      ['Analog Way','Zenith 200','14 + 2K 2','6','4 믹싱 / 8 분할','—','4K 레이어만 명시 · PGM 4K/60 ×4','AV Portal'],
+      ['Analog Way','Zenith 100','11 + 2K 2','4','3 믹싱 / 6 분할','—','4K 레이어만 명시 · PGM 4K/60 ×3','AV Portal'],
+      ['Analog Way','Pulse 4K · Eikos 4K','8 + 2K 2','2','2 믹싱 / 4 분할','—','라이브 배경 + 4K 레이어 + 4K 정지영상 전경 1','AV Portal'],
+      ['NovaStar','H5','40 ch','12 ch','4 / 출력 카드','16 / 출력 카드','출력 카드 1매당 2K 16 · DL 8 · 4K 4 · 섀시 상한 48','AV Portal'],
+      ['NovaStar','H2','16 ch','8 ch','4 / 출력 카드','16 / 출력 카드','출력 카드 1매당 2K 16 · DL 8 · 4K 4 · 섀시 상한 32','AV Portal'],
+      ['Colorlight','X100 Pro-7U','8','8','64 (2K/4K 구분 없음)','','사양서가 레이어를 해상도로 나누지 않음 · 최대 로드 52 MP','AV Portal'],
+      ['Colorlight','X100 Pro-4U · 2U','4 · 2','4','32 (2K/4K 구분 없음)','','최대 로드 26 MP','AV Portal'],
+      ['Magnimage','LED-780H','—','—','—','4 / 출력','입력이 2K급(DVI·HDMI 1.3·DP 1.2·3G-SDI) · 비스플라이싱 모드','AV Portal'],
+      ['RTCOM','XDM-WOS100','매트릭스 입력','4 / 카드','4 / 출력 1개','—','출력 1개에 4K/60 소스 4개를 레이어로 합성 · 커맨드 설정 · 레이어를 쓰면 카드 4포트가 같은 화면','카탈로그 9쪽 · 서울영상테크 확인']
+    ];
+    // 0.207(사용자 요청 2026-10-12 "wos 출력1개에 4K60 소스.4개를 VP처럼 레이어링 할 수 있게 변경해그리고 선도 꼬여 있어"):
+    // 2×2 비디오 월 그림(출력 4선이 서로 교차)을 "출력 1개(OUT 1)에 4K/60 소스 4개를 레이어로 합성하는 비디오 프로세서 방식" 그림으로 바꾼다.
+    // 소스 → 입력 카드 → 매트릭스 → WOS100 레이어 1~4 → 합성 → OUT 1 → 디스플레이 1대. 신호선(rt-layer-route)은 모두 수평선이라 서로 교차하지 않는다(e2e 확인).
+    // 0.214(사용자 요청 2026-10-13 "출력 디스플레이를 4K 네 판으로 표시하고 레이어 4개를 연출한 화면으로 해줘. 그러면 WOS 카드를 네 장을 쓰는 거겠지",
+    // "이렇게 하면은 HOS 카드랑 크게 차이점이 없어"): 디스플레이 1대 그림은 HOS100 멀티뷰와 구별되지 않으므로, 매트릭스가 소스 1~4를 WOS100 카드 4장에 모두 보내고
+    // 카드마다 OUT 1이 4K 디스플레이 한 대(2×2 비디오 월의 한 조각)를 맡는 그림으로 바꾼다. 레이어 2·3은 화면 경계에 걸쳐, 카드 사이 출력 동기(0.211)가 왜 필요한지 보인다.
+    // 신호선은 여전히 모두 수평선(세로 그림은 수직선)이라 교차하지 않고, 카드 n의 선 끝에 "화면 n"을 적어 비디오 월의 화면 번호와 짝을 맞춘다.
+    // 색은 QMS 06 화면 구성 모드(src/products.js LAYOUT_COLORS)의 입력 1~4번 색이다. 레이어를 쓰면(1개라도) 2~4번 포트에 1번과 같은 화면이 나와 따로 쓸 수 없으므로(0.210 알티컴 확인) 회색 점선 상자로 표시한다.
+    const LAYER_SOURCES=[['PC 1','#2f7cf6'],['PC 2','#f08c1a'],['카메라','#1fb45a'],['미디어 서버','#9b51e0']];
+    // 0.214 레이어 1~4 창 [x, y, 폭, 높이](가로 그림 좌표). 1번은 비디오 월 전체 배경, 2·3번은 화면 경계에 걸침, 4번은 화면 2 안.
+    const LAYER_WINDOWS=[[660,118,300,170],[676,132,150,96],[776,180,146,78],[890,128,60,36]];
+    const WALL_PANELS=[[660,118],[813,118],[660,205],[813,205]]; // 4K 디스플레이 1~4(2×2) 왼쪽 위 모서리
+    // PC는 가로 그림(왼쪽 → 오른쪽), 휴대폰 폭(640px 이하)은 세로 그림(위 → 아래)을 CSS로 골라 보여 준다. 두 그림이 한 문서에 함께 있으므로
+    // 그라데이션·그림자·화살촉 id는 그림마다 접두어(p)를 달리한다(숨긴 쪽 정의를 참조하면 색이 그려지지 않는다).
+    // 화살촉은 SVG 마커 안의 currentColor가 선 색을 따르지 않아 검게 나오므로 색마다 마커를 만들고, 굵은 선에서도 커지지 않게 userSpaceOnUse로 크기를 고정한다.
+    const layerTxt=(x,y,t,a='')=>`<text x="${x}" y="${y}" ${a}>${t}</text>`;
+    // 0.209 XDM 커맨드 가이드(알티컴 1013판, 사용자 결정 2026-10-13 "공개 진행") 링크. 이 팝업은 제품정보 화면 밖(구성기)에서도 열리므로
+    // 제품정보의 PDF.js 팝업 대신 해당 쪽을 새 탭으로 연다. page는 가이드에 인쇄된 쪽 번호이고 PDF 쪽은 1 크다.
+    const CMD_GUIDE='output/design/assets/docs/xdm-command-guide.pdf';
+    const cmdGuideLinks=(page,what)=>`<p class="rt-cmd-guide"><span>XDM 커맨드 가이드</span><a href="${CMD_GUIDE}#page=${page+1}" target="_blank" rel="noopener" data-cmd-guide="${page}">${what} 보기 <small>${page}쪽</small></a><a href="${CMD_GUIDE}" download="xdm-command-guide.pdf">↓ 다운로드</a></p>`;
+    const layerMk=(p,col)=>p+'a'+col.slice(1);
+    function layerDefs(p){
+      const arrows=[...LAYER_SOURCES.map(c=>c[1]),'#2aa3dc','#e39a2f'].map(col=>`<marker id="${layerMk(p,col)}" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto"><path d="M0 0L10 5L0 10z" fill="${col}"/></marker>`).join('');
+      const grads=LAYER_SOURCES.map(([,col],i)=>`<linearGradient id="${p}g${i+1}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${col}"/><stop offset="1" stop-color="${col}" stop-opacity=".7"/></linearGradient>`).join('');
+      return `<defs>${arrows}${grads}<filter id="${p}sh" x="-10%" y="-10%" width="130%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity=".45"/></filter></defs>`;
+    }
+    const layerRoute=(p,d,col,arrow=true,w=2)=>`<path class="rt-layer-route" d="${d}" stroke="${col}" stroke-width="${w}" fill="none"${arrow?` marker-end="url(#${layerMk(p,col)})"`:''}/>`;
+    // 디스플레이 화면(가로 그림 좌표): 4K 디스플레이 4대를 2×2로 붙인 비디오 월(7680x4320) 하나에 레이어 1~4를 겹친다.
+    // 레이어 2·3은 화면 경계에 걸쳐 놓아, 카드 4장이 각자 맡은 화면 조각을 같은 박자(출력 동기)로 내야 이어진 그림이 된다는 점을 보인다.
+    // 패널 사이 이음매(베젤)와 화면 번호는 레이어 위에 그린다. 세로 그림은 같은 내용을 transform으로 옮겨 쓴다.
+    function layerScreen(p){
+      const t=layerTxt;
+      const wins=LAYER_WINDOWS.map(([x,y,w,h],i)=>`<rect class="rt-layer-win" data-layer="${i+1}" x="${x}" y="${y}" width="${w}" height="${h}" fill="url(#${p}g${i+1})"${i?` stroke="#fff" stroke-width="1.5" filter="url(#${p}sh)"`:''}/><path d="M${x} ${y+h}V${y+h*0.8}Q${x+w*0.3} ${y+h*0.62} ${x+w*0.55} ${y+h*0.78}T${x+w} ${y+h*0.72}V${y+h}Z" fill="#fff" fill-opacity=".16"/>`).join('');
+      const seams='<rect x="809" y="118" width="4" height="170" fill="#1f2532"/><rect x="660" y="201" width="300" height="4" fill="#1f2532"/>';
+      const badges=WALL_PANELS.map(([x,y],i)=>`<rect class="rt-wall-panel" data-screen="${i+1}" x="${x+3}" y="${y+3}" width="44" height="14" rx="3" fill="#0b0d12" fill-opacity=".78"/>`+t(x+25,y+13.5,`화면 ${i+1}`,'fill="#fff" font-weight="700" font-size="9" text-anchor="middle"')).join('');
+      return wins+t(668,281,'레이어 1 · 배경 (PC 1)','fill="#fff" font-weight="700" font-size="11"')+t(686,150,'레이어 2 · PC 2','fill="#fff" font-weight="700" font-size="11"')
+        +t(819,247,'레이어 3 · 카메라','fill="#fff" font-weight="700" font-size="11"')+t(920,146,'레이어 4','fill="#fff" font-weight="700" font-size="10" text-anchor="middle"')+t(920,160,'미디어 서버','fill="#fff" font-size="8.5" text-anchor="middle"')
+        +seams+badges;
+    }
+    const layerOrder=(x0,y,step,w)=>[4,3,2,1].map((n,i)=>`<rect x="${x0+i*step}" y="${y}" width="${w}" height="20" rx="3" fill="${LAYER_SOURCES[n-1][1]}"/>`+layerTxt(x0+i*step+w/2,y+14,`레이어 ${n}`,'fill="#fff" font-weight="700" font-size="9.5" text-anchor="middle"')).join('');
+    // WOS100 카드 1장(상자 안): 이름, 레이어 1~4 칩, OUT 1 단자. 가로 그림은 cx 왼쪽 끝 기준, 세로 그림은 가운데 기준이다.
+    const wosChips=(x,y,size)=>LAYER_SOURCES.map(([,col],i)=>`<rect x="${x+i*(size+3)}" y="${y}" width="${size}" height="${size-2}" rx="2" fill="${col}"/>`+layerTxt(x+i*(size+3)+size/2,y+size-4.5,i+1,`fill="#fff" font-weight="700" font-size="${size<12?7.5:8.5}" text-anchor="middle"`)).join('');
+    const LAYER_ARIA='aria-label="4K/60 소스 4개가 XDM 매트릭스를 거쳐 WOS100 카드 4장에 모두 들어가고, 카드마다 레이어 1~4를 합성해 OUT 1로 4K 디스플레이 4대(2×2 비디오 월)의 화면 한 조각씩을 내는 구성도. 카드 4장의 출력 동기가 맞아 화면 경계에 걸친 레이어가 이어져 보인다" font-family="Pretendard Variable, Pretendard, system-ui, sans-serif" font-size="12"';
+    function layerCompareSvg(){
+      const p='rt-lw-',t=layerTxt,R=[132,186,240,294],route=(...a)=>layerRoute(p,...a);
+      const rows=LAYER_SOURCES.map(([name,col],i)=>{const y=R[i],n=i+1;return `<rect x="20" y="${y-17}" width="136" height="34" rx="5" fill="${col}"/>`
+        +t(30,y+4,esc(name),'fill="#fff" font-weight="700" font-size="12"')+t(148,y+4,'4K/60','fill="#fff" font-size="10" text-anchor="end"')
+        +route(`M156 ${y} H238`,col)
+        +`<rect x="240" y="${y-14}" width="70" height="28" rx="3" fill="#0f2238" stroke="${col}" stroke-width="1.5"/>`+t(275,y+4,`입력 ${n}`,'fill="#fff" font-size="10.5" text-anchor="middle"')
+        +route(`M310 ${y} H328`,col)}).join('');
+      // 카드 4장: 매트릭스가 소스 1~4를 카드마다 모두 보내고(레이어 1~4), 카드마다 OUT 1이 화면 한 대를 맡는다.
+      const cards=R.map((y,i)=>{const n=i+1;return route(`M362 ${y} H396`,'#2aa3dc',true,3)
+        +`<rect class="rt-wos-card" x="398" y="${y-23}" width="190" height="46" rx="4" fill="#22426a" stroke="#2aa3dc" stroke-width="1.5"/>`
+        +t(408,y-6,`XDM-WOS100 #${n}`,'fill="#fff" font-weight="700" font-size="10.5"')+wosChips(408,y+2,14)+t(478,y+12,'레이어 합성','fill="#c9d6e8" font-size="9"')
+        +`<rect x="540" y="${y-12}" width="42" height="24" rx="3" fill="#0f2238" stroke="#2aa3dc" stroke-width="1.5"/>`+t(561,y+4,'OUT 1','fill="#fff" font-weight="700" font-size="10" text-anchor="middle"')
+        +route(`M582 ${y} H648`,'#2aa3dc',true,3)+t(615,y-6,`화면 ${n}`,'fill="#1c86b8" font-weight="700" font-size="9.5" text-anchor="middle"')}).join('');
+      return `<svg class="rt-layer-svg-wide" viewBox="0 0 980 414" role="img" ${LAYER_ARIA}>`+layerDefs(p)
+        +t(490,28,'XDM-WOS100 4장 · 4K 디스플레이 4대(2×2)에 4K/60 소스 4개를 비디오 프로세서처럼 레이어로 합성','text-anchor="middle" font-weight="700" font-size="15" fill="#1f2532"')
+        +t(20,104,'입력 소스 · 4K/60 ×4','font-weight="700" font-size="12" fill="#1f2532"')
+        +'<rect x="214" y="50" width="380" height="288" rx="8" fill="#17304f"/>'+t(230,73,'XDM 메인프레임','fill="#fff" font-weight="700" font-size="13"')+t(580,73,'XDM-12 … XDM-216','fill="#c9d6e8" font-size="10" text-anchor="end"')
+        +'<rect x="228" y="84" width="94" height="242" rx="5" fill="#22426a"/>'+t(275,104,'입력 카드','fill="#fff" font-weight="700" font-size="11" text-anchor="middle"')
+        +'<rect x="330" y="112" width="32" height="204" rx="4" fill="#2a4d7a" stroke="#4f79ad"/>'+['매','트','릭','스'].map((c,i)=>t(346,190+i*15,c,'fill="#fff" font-weight="700" font-size="11" text-anchor="middle"')).join('')
+        +t(346,104,'분배','fill="#c9d6e8" font-size="10" text-anchor="middle"')
+        +t(493,104,'XDM-WOS100 ×4','fill="#fff" font-weight="700" font-size="11" text-anchor="middle"')
+        +rows+cards
+        // 0.210 레이어를 쓰면(1개라도) 카드의 OUT 2~4에 OUT 1과 같은 화면이 나와 따로 쓸 수 없음(알티컴 확인, 사용자 전달 2026-10-13)
+        +t(493,331,'OUT 2~4: OUT 1과 같은 화면 · 사용 불가','fill="#c9d6e8" font-size="9.5" text-anchor="middle"')
+        +t(810,98,'4K 디스플레이 4대 · 2×2 비디오 월 (7680x4320)','text-anchor="middle" font-weight="700" font-size="12" fill="#1f2532"')
+        +'<rect x="652" y="110" width="316" height="186" rx="6" fill="#1f2532"/><rect x="660" y="118" width="300" height="170" fill="#0b0d12"/>'+layerScreen(p)
+        +t(810,314,'카드 4장 출력 동기(싱크) · 화면 경계에 걸친 레이어도 어긋나지 않음','text-anchor="middle" fill="#1c4f8a" font-weight="700" font-size="10.5"')
+        +t(652,345,'겹침 순서','fill="#56627a" font-weight="700" font-size="10"')+layerOrder(710,331,62,58)+t(710,366,'왼쪽이 맨 앞, 오른쪽이 배경','fill="#56627a" font-size="9.5"')
+        +t(20,336,'입력 카드: HIS100 · DPI100 · SIS100','fill="#56627a" font-size="10"')+t(20,350,'CIS100 · FIS100 어느 입력이든','fill="#56627a" font-size="10"')+t(20,364,'WOS100 레이어로 라우팅','fill="#56627a" font-size="10"')
+        +'<rect x="330" y="372" width="160" height="32" rx="4" fill="#e39a2f"/>'+t(410,393,'제어 · 커맨드','text-anchor="middle" fill="#1a1200" font-weight="700" font-size="12"')
+        +`<path d="M410 372 V342" stroke="#e39a2f" stroke-width="2" fill="none" marker-end="url(#${layerMk(p,'#e39a2f')})"/>`
+        +t(500,384,'레이어 겹침 설정은 커맨드 전용(XDM 커맨드 가이드)','fill="#56627a" font-size="10"')+t(500,398,'전면 LCD · RS-232 · LAN(TCP/IP)','fill="#56627a" font-size="10"')
+        +'</svg>';
+    }
+    // 휴대폰 세로 그림: 같은 흐름을 위 → 아래로 그린다. 왼쪽 칸(x 16~86)은 줄 이름, 신호선은 모두 수직선이다.
+    function layerCompareTallSvg(){
+      const p='rt-lt-',t=layerTxt,C=[132,204,276,348],route=(...a)=>layerRoute(p,...a),k=304/300;
+      const cols=LAYER_SOURCES.map(([name,col],i)=>{const x=C[i],n=i+1;return `<rect x="${x-33}" y="84" width="66" height="40" rx="5" fill="${col}"/>`
+        +t(x,101,esc(name),'fill="#fff" font-weight="700" font-size="11" text-anchor="middle"')+t(x,116,'4K/60','fill="#fff" font-size="9" text-anchor="middle"')
+        +route(`M${x} 124 V166`,col)
+        +`<rect x="${x-31}" y="168" width="62" height="26" rx="3" fill="#0f2238" stroke="${col}" stroke-width="1.5"/>`+t(x,185,`입력 ${n}`,'fill="#fff" font-size="10" text-anchor="middle"')
+        +route(`M${x} 194 V212`,col)
+        +route(`M${x} 234 V252`,'#2aa3dc',true,3)
+        +`<rect class="rt-wos-card" x="${x-33}" y="254" width="66" height="54" rx="4" fill="#22426a" stroke="#2aa3dc" stroke-width="1.5"/>`+t(x,267,`WOS100 #${n}`,'fill="#fff" font-weight="700" font-size="9" text-anchor="middle"')
+        +wosChips(x-26,272,11)
+        +`<rect x="${x-20}" y="287" width="40" height="16" rx="3" fill="#0f2238" stroke="#2aa3dc"/>`+t(x,298.5,'OUT 1','fill="#fff" font-weight="700" font-size="8.5" text-anchor="middle"')
+        +route(`M${x} 308 V438`,'#2aa3dc',true,3)+t(x+5,392,`화면 ${n}`,'fill="#1c86b8" font-weight="700" font-size="9"')}).join('');
+      return `<svg class="rt-layer-svg-tall" viewBox="0 0 420 790" role="img" ${LAYER_ARIA}>`+layerDefs(p)
+        +t(210,24,'XDM-WOS100 4장 · 4K 디스플레이 4대(2×2)에','text-anchor="middle" font-weight="700" font-size="14" fill="#1f2532"')+t(210,44,'4K/60 소스 4개를 레이어로 합성','text-anchor="middle" font-weight="700" font-size="14" fill="#1f2532"')
+        +t(16,100,'입력 소스','font-weight="700" font-size="11" fill="#1f2532"')+t(16,114,'4K/60 ×4','font-size="10" fill="#56627a"')
+        +'<rect x="8" y="140" width="404" height="206" rx="8" fill="#17304f"/>'+t(16,160,'XDM 메인프레임','fill="#fff" font-weight="700" font-size="12"')
+        +t(16,185,'입력 카드','fill="#fff" font-weight="700" font-size="10"')+t(16,228,'매트릭스','fill="#c9d6e8" font-size="10"')+t(16,276,'XDM-','fill="#fff" font-weight="700" font-size="10"')+t(16,289,'WOS100','fill="#fff" font-weight="700" font-size="10"')+t(16,302,'×4','fill="#fff" font-weight="700" font-size="10"')
+        +'<rect x="96" y="214" width="288" height="20" rx="3" fill="#2a4d7a" stroke="#4f79ad"/>'+t(240,228,'소스 1~4를 카드 4장에 모두 분배','fill="#fff" font-weight="700" font-size="9.5" text-anchor="middle"')
+        +cols
+        +t(240,330,'카드마다 OUT 2~4: OUT 1과 같은 화면 · 사용 불가','fill="#c9d6e8" font-size="9" text-anchor="middle"')+t(404,341,'XDM-12 … XDM-216','fill="#c9d6e8" font-size="9" text-anchor="end"')
+        +t(16,368,'4K 디스플레이 4대','font-weight="700" font-size="11" fill="#1f2532"')+t(16,382,'2×2 (7680x4320)','font-size="10" fill="#56627a"')
+        +'<rect x="50" y="440" width="320" height="188" rx="6" fill="#1f2532"/><rect x="58" y="448" width="304" height="172" fill="#0b0d12"/>'
+        +`<g transform="translate(${(58-660*k).toFixed(2)} ${(448-118*k).toFixed(2)}) scale(${k.toFixed(4)})">${layerScreen(p)}</g>`
+        +t(210,648,'카드 4장 출력 동기(싱크) · 화면 경계에 걸친 레이어도 어긋나지 않음','text-anchor="middle" fill="#1c4f8a" font-weight="700" font-size="10"')
+        +t(16,680,'겹침 순서','fill="#56627a" font-weight="700" font-size="10"')+layerOrder(88,666,80,74)+t(88,703,'왼쪽이 맨 앞, 오른쪽이 배경','fill="#56627a" font-size="9.5"')
+        +t(16,728,'입력 카드: HIS100 · DPI100 · SIS100 · CIS100 · FIS100','fill="#56627a" font-size="10"')+t(16,742,'어느 입력이든 WOS100 레이어로 라우팅','fill="#56627a" font-size="10"')
+        +'<rect x="16" y="752" width="124" height="30" rx="4" fill="#e39a2f"/>'+t(78,772,'제어 · 커맨드','text-anchor="middle" fill="#1a1200" font-weight="700" font-size="11"')
+        +t(150,764,'레이어 겹침 설정은 커맨드 전용','fill="#56627a" font-size="10"')+t(150,778,'(XDM 커맨드 가이드) · LCD · RS-232 · LAN','fill="#56627a" font-size="10"')
+        +'</svg>';
+    }
+    // 0.207(사용자 요청 2026-10-12 "HOS100카드와 컨셉과 아날로그웨이 브로셔와 잘 믹싱해봐"): WOS100 팝업에 두 가지를 섞는다.
+    // - HOS100 멀티뷰 팝업(0.205·0.206): 안내 상자 + QMS 06과 같은 모니터 그림(RtMonitorLayoutSvg)으로 그린 배치 예시 카드
+    // - Analog Way 데이터시트(0.203 요청 때 받은 Aquilon RS4 응용 구성도): 핵심 수치 띠, 흰 테두리 레이어와 "레이어 n · 4K/60" 표기
+    // 배치 예시는 레이어(소스) 4개 이하를 출력 1개에 겹치는 대표 모양이다. 칸 순서가 그리는 순서라 뒤 칸이 앞에 겹친다(큰 번호가 앞). 칸의 숫자는 레이어 번호다.
+    // 칸은 [번호, x, y, 폭, 높이, 숫자 x, 숫자 y](화면 0~100)이다. 배경 숫자가 창에 가려지면 숫자 위치를 빈 곳으로 옮긴다(자유 배치).
+    // 0.210 포트 칩: 레이어를 쓰면(1개라도) WOS100 카드 4포트가 모두 같은 화면을 낸다(알티컴 확인, 사용자 전달 2026-10-13).
+    // 그래서 레이어 수와 상관없이 1번 합성 · 2~4번 1번과 같은 화면으로 표시한다(0.209의 HOS100식 짝 포트 규칙은 WOS100에 맞지 않아 뺌).
+    const wosLayouts=[
+      {name:'자유 배치',desc:'배경 위에 크기가 다른 창 3개를 겹쳐 배치',cells:[[1,0,0,100,100,15,80],[2,4,7,50,50],[3,35,48,41,41],[4,74,6,24,25]]},
+      {name:'배경 + PIP 3',desc:'전체 배경 위 세 모서리에 작은 화면',cells:[[1,0,0,100,100],[2,5,8,30,30],[3,65,8,30,30],[4,65,62,30,30]]},
+      {name:'PBP + PIP + 로고',desc:'좌우 2분할 가운데 작은 화면, 오른쪽 위 로고',cells:[[1,0,0,50,100],[2,50,0,50,100],[3,32,52,36,40],[4,82,5,14,16]]},
+      {name:'쿼드',desc:'소스 4개를 4분할로 나란히',cells:[[1,0,0,50,50],[2,50,0,50,50],[3,0,50,50,50],[4,50,50,50,50]],tiled:true},
+      {name:'L자형',desc:'메인 화면 + 오른쪽 2개 + 아래 띠',cells:[[1,0,0,70,75],[2,70,0,30,37.5],[3,70,37.5,30,37.5],[4,0,75,100,25]],tiled:true},
+      {name:'배경 + 하단 띠',desc:'전체 배경 아래에 자막·정보 띠',cells:[[1,0,0,100,100],[2,0,78,100,22]]}
+    ];
+    const wosKeys=[['4','레이어','출력 1개에 겹치는 소스 수'],['4K/60','레이어 소스','레이어마다 4K/60 소스'],['HDMI 2.0','출력 4포트','4K/60 @ 4:4:4'],['커맨드','겹침 설정','RS-232 · LAN(TCP/IP)']];
+    function wosLayoutCards(){
+      return wosLayouts.map(layout=>{
+        const nums=layout.cells.map(c=>c[0]),fig=globalThis.RtMonitorLayoutSvg?.(layout.cells,{cellClass:'rt-wos-cell'})||'';
+        const ports=['main','dup','dup','dup'];
+        const portWord={main:'합성',dup:'1번 동일'},portLabel={main:'합성 화면 출력',dup:'1번과 같은 화면'};
+        const chips=`<ol class="rt-hos-ports rt-wos-ports" aria-label="이 배치에서 출력 포트 1~4 상태">${ports.map((p,i)=>`<li class="rt-hos-port-${p}" aria-label="${i+1}번 포트 ${portLabel[p]}"><b>${i+1}</b><span aria-hidden="true">${portWord[p]}</span></li>`).join('')}</ol>`;
+        const order=layout.tiled?'<p class="rt-wos-tiled">나란히 배치 · 겹치지 않음</p>'
+          :`<div class="rt-wos-order"><span>앞</span><ol aria-label="겹침 순서, 앞에서 뒤로">${[...nums].reverse().map(n=>`<li style="background:${LAYER_SOURCES[n-1][1]}" aria-label="레이어 ${n}">${n}</li>`).join('')}</ol><span>뒤</span></div>`;
+        return `<li class="rt-hos-layout rt-wos-layout"><div class="rt-hos-fig">${fig}</div><div class="rt-hos-meta"><strong>${layout.name}</strong><span class="rt-hos-layers">레이어 ${nums.length}개</span></div><p>${layout.desc}</p>${order}${chips}</li>`;
+      }).join('');
+    }
+    function openLayerCompare(){
+      const rows=layerCompareRows.map(r=>'<tr><td class="rt-layer-brand">'+esc(r[0])+'</td><td><strong>'+esc(r[1])+'</strong></td><td class="rt-layer-num">'+esc(r[2])+'</td><td class="rt-layer-num">'+esc(r[3])+'</td>'+(r[5]===''?'<td class="rt-layer-num" colspan="2">'+esc(r[4])+'</td>':'<td class="rt-layer-num">'+esc(r[4])+'</td><td class="rt-layer-num">'+esc(r[5])+'</td>')+'<td>'+esc(r[6])+'</td><td class="rt-layer-src">'+esc(r[7])+'</td></tr>').join('');
+      const dialog=document.createElement('dialog');
+      dialog.className='rt-card-info-modal rt-layer-modal';
+      dialog.setAttribute('aria-labelledby','rt-layer-title');
+      dialog.innerHTML='<div class="rt-card-modal-head"><div><span class="rt-eyebrow">XDM 출력 카드 · 레이어</span><h3 id="rt-layer-title">XDM-WOS100 레이어 구성도 · 비디오 프로세서 비교</h3><p class="rt-card-info-sub">HDMI (Wall Overlay) Output Slot · 4포트 · 4K/60 @ 4:4:4</p></div><button type="button" class="rt-card-modal-close" data-layer-close aria-label="레이어 비교 닫기">×</button></div>'
+        +'<div class="rt-card-info-body"><p class="rt-card-info-tip">WOS100은 출력 1개에 4K/60 소스 4개를 레이어로 겹쳐, 비디오 프로세서처럼 한 화면을 구성합니다. 매트릭스의 어느 입력 슬롯 소스든 레이어로 보낼 수 있습니다. 아래 구성도는 카드 4장이 4K 디스플레이 4대(2×2)를 한 화면처럼 나눠 맡는 예입니다.</p>'
+        +'<ul class="rt-wos-keys" aria-label="XDM-WOS100 핵심 수치">'+wosKeys.map(([big,label,sub])=>'<li><b>'+big+'</b><span>'+label+'</span><small>'+sub+'</small></li>').join('')+'</ul>'
+        +'<div class="rt-layer-figure">'+layerCompareSvg()+layerCompareTallSvg()+'</div>'
+        +'<div class="rt-hos-warn rt-wos-warn" role="note"><strong>레이어를 쓰면 카드 4포트가 모두 같은 화면을 냅니다</strong><ul><li>레이어를 <b>1개만 써도</b> 2~4번 포트에 1번과 같은 합성 화면이 나와 <b>따로 쓸 수 없습니다.</b> 레이어 모드에서 카드 1장은 합성 화면 1개를 냅니다.</li><li>HOS100(레이어 2개면 짝 포트만 사용 불가)과 다릅니다. 포트를 각각 쓰려면 스위칭 모드로 씁니다.</li></ul></div>'
+        +'<h4 class="rt-layer-h">레이어 배치 예시 · 출력 1개</h4><p class="rt-wos-lead">칸의 숫자는 레이어(소스) 번호이고, 큰 번호가 앞에 겹칩니다. 아래 칩은 이 배치를 1번 포트에 냈을 때 1~4번 포트 상태입니다.</p><ul class="rt-hos-grid rt-wos-grid">'+wosLayoutCards()+'</ul>'
+        +'<ul class="rt-layer-notes"><li>레이어 겹침 설정은 커맨드 전용입니다(RS-232 · LAN(TCP/IP), XDM 커맨드 가이드 44쪽부터). 커맨드로 레이어마다 입력, 화면 위치·크기(X·Y·W·H), 겹침 순서를 정하고, 레이어마다 같은 카드의 출력 포트 하나를 자원으로 지정합니다(알티컴 회신 2026-10-13).</li><li>WOS100의 다른 쓰임(카탈로그 9쪽): 비디오 월 모드는 HDMI 4포트로 2×2 비디오 월 한 면을 구성하고, 스위칭 모드는 4포트를 각각 출력합니다(심리스 전환).</li></ul>'
+        // 0.209 커맨드 가이드 특장점(사용자 선택 2026-10-13 "WOS100 LED 모드·로고"): LED 모드 56~57쪽, 로고 이미지 43쪽
+        +'<div class="rt-wos-feats"><div><strong>LED 모드</strong><p class="rt-wos-sync"><b>출력 동기(싱크)가 맞아 LED 화면에 씁니다.</b> WOS100 2~3장으로 LED S-BOX 1·2에 나눠 보낼 때도 카드 사이 동기가 맞습니다. HOS100과의 가장 큰 차이로, HOS100은 레이어를 만들 수 있지만 동기가 맞지 않아 LED에 적용하기 어렵습니다.</p><p>출력 포트마다 LED 픽셀(가로×세로)을 지정해 비표준 해상도 LED 화면을 구동합니다. 예: 2560x1080 + 1920x1080 = 4480x1080 화면을 카드 1장으로 구성(가이드 56~57쪽). 출고 시에는 일반 스위칭 모드이고, LED 모드로 바꾸는 데 약 10초 걸립니다.</p></div><div><strong>로고 이미지 출력</strong><p>입력 대신 로고 이미지(권장 960x540)를 월에 띄웁니다(가이드 43쪽).</p></div></div>'
+        +cmdGuideLinks(44,'Wall Overlay 커맨드')
+        +'<h4 class="rt-layer-h">비디오 프로세서 레이어 비교 · 2K / 4K 믹싱 레이어 수</h4><div class="rt-layer-scroll"><table class="rt-card-info-table rt-layer-table"><thead><tr><th scope="col">제조사</th><th scope="col">모델</th><th scope="col">4K/60p 입력</th><th scope="col">4K/60p 출력</th><th scope="col">4K 레이어</th><th scope="col">2K/DL 레이어</th><th scope="col">레이어 정의 · 비고</th><th scope="col">근거</th></tr></thead><tbody>'+rows+'</tbody></table></div>'
+        +'<ul class="rt-layer-notes"><li>Aquilon의 4K 레이어 하나는 2K(DL) 레이어 둘과 같고, 분할(split) 레이어로 쓰면 다시 2배가 됩니다.</li><li>NovaStar H의 값은 출력 카드 1매 기준이며 전역 합산이 아닙니다. 섀시 상한과 카드당 자원 중 작은 쪽이 실제 한도입니다.</li><li>Colorlight X100 Pro 사양서는 레이어를 해상도로 나누지 않아 4K와 2K 칸을 합쳐 적었습니다.</li></ul>'
+        +'<p class="rt-card-info-src">알티컴 종합 카탈로그 2026 (국문) 9쪽 · 출력 1개 4레이어 구성은 서울영상테크 확인(2026-10-12) · 포트 조건(레이어를 쓰면 카드 4포트 같은 화면)은 알티컴 확인(2026-10-13) · 커맨드 구조는 알티컴 회신(2026-10-13)·XDM 커맨드 가이드(1013판) 43~57쪽 · Analog Way Aquilon RS4 Technical Datasheet (AQL-RS4-EN-20260401) · AV Portal 제품 상세(Analog Way·NovaStar·Colorlight·Magnimage)</p></div>'
+        +'<div class="rt-card-modal-foot"><button type="button" class="rt-button" data-layer-close>닫기</button></div>';
+      const opener=document.activeElement;
+      const finish=()=>{if(dialog.open)dialog.close();dialog.remove();opener?.focus?.({preventScroll:true})};
+      dialog.addEventListener('click',event=>{if(event.target===dialog||event.target.closest('[data-layer-close]'))finish()});
+      dialog.addEventListener('cancel',event=>{event.preventDefault();finish()});
+      root.appendChild(dialog);
+      if(typeof dialog.showModal==='function'){dialog.showModal();dialog.querySelector('.rt-card-modal-close').focus()}else dialog.setAttribute('open','');
+    }
+    // 0.205 XDM-HOS100 멀티뷰 레이아웃 팝업. 레이아웃 그림은 매뉴얼 KV08 32~34쪽(Multiview: Full1~4·Quad·Bottom·Right·PIP·PBP) 예시 그림의 배치를 따른다.
+    // 포트 제한은 사용자 확인(2026-10-12 "레이어2개하면 1~2번 중 2번은 사용불가 4개 레이어 사용하면 2~4는 1번 동일화면 출력되서 사실상 사용불가",
+    // "1~2번 중 2번은 사용불가, 3번 사용시 4번 사용불가로 보면 되"): 레이어는 카드 출력 포트 자원을 함께 쓴다. 레이어 2개는 1·2번, 3·4번이 짝이다.
+    // ports: 1~4번 포트 상태(split 분할 화면 출력·off 사용 불가·dup 1번과 같은 화면). 2레이어 그림은 1·3번을 모두 분할한 경우다.
+    // 칸은 [번호, x, y, 폭, 높이](화면 0~100)이고 QMS 06 화면 구성 모드와 같은 모니터 그림(src/products.js monitorLayoutSvg)으로 그린다(0.206 사용자 요청
+    // "분할 구성예시를 QMS-88UX 분할예시와 같은 디자인 컨셉으로 진행해줘"). Bottom·Right는 매뉴얼 그림처럼 큰 화면 양옆·위아래가 검은 여백이다.
+    // 0.209 커맨드 레이아웃 14종(XDM 커맨드 가이드 1013판 25~28쪽, OQ 커맨드 Lxx). 전면 메뉴 6종(hosLayouts)보다 많고 L00은 사용자 배치다.
+    const HOS_CMD_LAYOUTS=[['L00','사용자 배치 · 창마다 위치·크기(X·Y·W·H)와 겹침 순서'],['L01~L04','1~4번 포트 각각 전체 화면'],['L05','쿼드뷰(4분할)'],['L06','위 1 · 아래 3'],['L07','왼쪽 1 · 오른쪽 3'],['L08','1·2번 PIP 고정'],['L09','1·2번 PIP 사용자 배치'],['L10','1·2번 PBP Full'],['L11','1·2번 PBP 16:9'],['L12','1~4번 PIP 고정'],['L13','1~4번 PIP 사용자 배치']];
+    const hosLayouts=[
+      {name:'Full 1~4',layers:1,desc:'입력 1~4번 중 한 소스를 전체 화면으로',cells:[[1,0,0,100,100]],labels:{1:'1~4'}},
+      {name:'Quad',layers:4,desc:'4분할 쿼드뷰',cells:[[1,0,0,50,50],[2,50,0,50,50],[3,0,50,50,50],[4,50,50,50,50]],ports:['split','dup','dup','dup']},
+      {name:'Bottom',layers:4,desc:'위 큰 화면 1 + 아래 작은 화면 3',cells:[[1,16.67,0,66.66,66.67],[2,0,66.67,33.33,33.33],[3,33.33,66.67,33.34,33.33],[4,66.67,66.67,33.33,33.33]],letterbox:true,ports:['split','dup','dup','dup']},
+      {name:'Right',layers:4,desc:'왼쪽 큰 화면 1 + 오른쪽 작은 화면 3',cells:[[1,0,16.67,66.67,66.66],[2,66.67,0,33.33,33.33],[3,66.67,33.33,33.33,33.34],[4,66.67,66.67,33.33,33.33]],letterbox:true,ports:['split','dup','dup','dup']},
+      {name:'PIP',layers:2,desc:'큰 화면 안에 작은 화면 1',cells:[[1,0,0,100,100],[2,72.5,70,27.5,30]],ports:['split','off','split','off'],pairNote:true},
+      {name:'PBP',layers:2,desc:'한 화면에 2개를 나란히',cells:[[1,0,0,50,100],[2,50,0,50,100]],ports:['split','off','split','off'],pairNote:true}
+    ];
+    function hosLayoutSvg(layout){return globalThis.RtMonitorLayoutSvg?.(layout.cells,{labels:layout.labels,letterbox:layout.letterbox,cellClass:'rt-hos-cell'})||''}
+    function openHosMultiview(){
+      const portWord={split:'분할',off:'불가',dup:'1번 동일'},portLabel={split:'분할 화면 출력',off:'사용 불가',dup:'1번과 같은 화면'};
+      const ports=layout=>layout.ports?`<ol class="rt-hos-ports" aria-label="이 레이아웃에서 출력 포트 1~4 상태">${layout.ports.map((p,i)=>`<li class="rt-hos-port-${p}" aria-label="${i+1}번 포트 ${portLabel[p]}"><b>${i+1}</b><span aria-hidden="true">${portWord[p]}</span></li>`).join('')}</ol>${layout.pairNote?'<p class="rt-hos-pair">1·2번, 3·4번이 짝입니다. 3번을 분할하지 않으면 3·4번은 각각 출력합니다.</p>':''}`:'';
+      const cards=hosLayouts.map(layout=>`<li class="rt-hos-layout"><div class="rt-hos-fig">${hosLayoutSvg(layout)}</div><div class="rt-hos-meta"><strong>${layout.name}</strong><span class="rt-hos-layers">레이어 ${layout.layers}개</span></div><p>${layout.desc}</p>${ports(layout)}</li>`).join('');
+      const dialog=document.createElement('dialog');
+      dialog.className='rt-card-info-modal rt-layer-modal rt-hos-modal';
+      dialog.setAttribute('aria-labelledby','rt-hos-title');
+      dialog.innerHTML='<div class="rt-card-modal-head"><div><span class="rt-eyebrow">XDM 출력 카드 · 멀티뷰</span><h3 id="rt-hos-title">XDM-HOS100 멀티뷰(쿼드뷰) 레이아웃</h3><p class="rt-card-info-sub">HDMI Output Slot · 4포트 · 4K/60 @ 4:4:4 · Quad-Viewer Slot</p></div><button type="button" class="rt-card-modal-close" data-layer-close aria-label="멀티뷰 레이아웃 닫기">×</button></div>'
+        +'<div class="rt-card-info-body"><p class="rt-card-info-tip">HOS100은 출력 슬롯마다 4분할·2분할 등 원하는 레이어 구성을 고를 수 있습니다. 칸의 숫자는 매뉴얼 그림의 입력 1~4번입니다.</p>'
+        +'<div class="rt-hos-warn" role="note"><strong>레이어는 카드 출력 포트 자원을 함께 씁니다</strong><ul><li><b>레이어 2개</b>(PIP · PBP): 1·2번, 3·4번 포트가 짝입니다. <b>1번을 분할하면 2번, 3번을 분할하면 4번을 사용할 수 없습니다.</b> 카드 1장으로 2분할 화면을 최대 2개(1·3번) 낼 수 있습니다.</li><li><b>레이어 4개</b>(Quad · Bottom · Right): 2~4번 포트에 1번과 같은 화면이 나와 <b>사실상 사용할 수 없습니다.</b> 이때 카드 1장은 분할 화면 1개를 냅니다.</li></ul></div>'
+        // 0.211 HOS100과 WOS100의 가장 큰 차이는 출력 동기(싱크)다. WOS100은 2~3장으로 LED S-BOX 1·2에 나눠 보낼 때 카드 사이 동기가 맞는다(알티컴 확인, 사용자 전달 2026-10-13).
+        +'<div class="rt-hos-warn rt-hos-sync" role="note"><strong>LED 화면에는 WOS100을 씁니다</strong><ul><li>HOS100은 레이어를 만들 수 있지만 <b>출력 동기(싱크)가 맞지 않아 LED에 적용하기 어렵습니다.</b></li><li>WOS100은 2~3장으로 LED S-BOX 1·2에 나눠 보낼 때도 카드 사이 동기가 맞습니다. 두 카드의 가장 큰 차이입니다.</li></ul></div>'
+        +`<ul class="rt-hos-grid">${cards}</ul>`
+        +'<h4 class="rt-layer-h">커맨드 레이아웃 14종 · OQ 커맨드</h4><p class="rt-wos-lead">전면 메뉴의 6종 외에 커맨드로 PBP 16:9, 4포트 PIP, 사용자 배치를 쓸 수 있습니다. PIP 모드(1·2번)를 쓰는 동안 3·4번 포트는 스위칭 모드로 따로 쓸 수 있습니다(가이드 27쪽).</p>'
+        +'<div class="rt-layer-scroll"><table class="rt-card-info-table rt-hos-cmd"><thead><tr><th scope="col">코드</th><th scope="col">레이아웃</th></tr></thead><tbody>'+HOS_CMD_LAYOUTS.map(([code,name])=>`<tr><th scope="row">${code}</th><td>${name}</td></tr>`).join('')+'</tbody></table></div>'
+        +cmdGuideLinks(25,'Quad view 커맨드')
+        +'<ul class="rt-layer-notes"><li>설정 순서: 전면 메뉴 Multiview에서 Timing → Layer → Output 슬롯을 고른 뒤 Enter를 누릅니다. Timing에서 OFF를 고르면 매트릭스 모드로 돌아가 4포트를 각각 출력합니다.</li><li>그 밖의 레이아웃은 커맨드(User config mode)로 만듭니다. 레이어마다 입력, 화면 위치·크기(X·Y·W·H), 겹침 순서를 정하고, 레이어마다 같은 카드의 출력 포트 하나를 자원으로 씁니다(알티컴 회신 2026-10-13). 그래서 레이어를 쓰면 그 포트는 따로 출력하지 못합니다.</li><li>출력 Genlock은 전면 메뉴 Genlock에서 타이밍과 출력 포트를 고르면 약 10초 뒤 적용됩니다(매뉴얼 34쪽). Genlock을 켜면 Multiview와 Scaler Out 출력 해상도 변경이 제한됩니다.</li></ul>'
+        +'<p class="rt-card-info-src">알티컴 종합 카탈로그 2026 (국문) 8쪽 · XDM 국문 사용자 매뉴얼 KV08 32~35쪽 · 포트 사용 제한은 서울영상테크 확인(2026-10-12) · 커맨드 구조는 알티컴 회신(2026-10-13) · 커맨드 레이아웃은 XDM 커맨드 가이드(1013판) 25~31쪽</p></div>'
+        +'<div class="rt-card-modal-foot"><button type="button" class="rt-button" data-layer-close>닫기</button></div>';
+      const opener=document.activeElement;
+      const finish=()=>{if(dialog.open)dialog.close();dialog.remove();opener?.focus?.({preventScroll:true})};
+      dialog.addEventListener('click',event=>{if(event.target===dialog||event.target.closest('[data-layer-close]'))finish()});
+      dialog.addEventListener('cancel',event=>{event.preventDefault();finish()});
+      root.appendChild(dialog);
+      if(typeof dialog.showModal==='function'){dialog.showModal();dialog.querySelector('.rt-card-modal-close').focus()}else dialog.setAttribute('open','');
+    }
+    // 기능 팝업 버튼([data-card-feature]): 구성기 버튼과 제품정보 02 신호 구성 그림의 WOS100·HOS100 칸(SVG, role=button)이 함께 쓴다.
+    const featureOpeners={'layer-compare':openLayerCompare,'hos-multiview':openHosMultiview};
+    root.addEventListener('click',event=>{const el=event.target.closest?.('[data-card-feature]');if(!el||!root.contains(el))return;event.preventDefault();featureOpeners[el.dataset.cardFeature]?.()});
+    root.addEventListener('keydown',event=>{if(event.key!=='Enter'&&event.key!==' ')return;const el=event.target.closest?.('[data-card-feature]');if(!el||el.tagName==='BUTTON')return;event.preventDefault();featureOpeners[el.dataset.cardFeature]?.()});
     function configurationSummary(){
       const slotList=currentSlots(),t=totals(),completion=RtCore.completionFor(state),rows=dir=>{
         const counts={};for(const slot of slotList.filter(item=>item.dir===dir)){const c=slotCard(slot.id);if(c)counts[c[0]]=(counts[c[0]]||0)+1}
@@ -314,12 +559,16 @@
         return entries.length?`<ul>${entries.map(([id,qty])=>{const c=card(id),at=slotList.filter(slot=>slot.dir===dir&&slotCard(slot.id)?.[0]===id).map(slot=>slot.id),where=`${dir==='input'?'IN':'OUT'} ${slotRanges(at)}`;return `<li><button type="button" class="rt-summary-card" data-card-info="${id}" aria-label="${id} ${qty}장(${where}), 카드 상세 정보 보기">${sigBadge(c[1])}<strong>${id}</strong><small>${where}</small><b>× ${qty}</b></button></li>`}).join('')}</ul>`:'<p class="rt-summary-empty">아직 장착한 카드가 없습니다.</p>';
       };
       const capacity=dir=>slotList.filter(item=>item.dir===dir).length*maxPorts(dir),meter=(label,value,max)=>`<div class="rt-summary-meter"><span>${label}<b>${value} / ${max}채널</b></span><i style="--rt-fill:${max?Math.min(100,Math.round(value/max*100)):0}%"></i></div>`;
-      const cards=completion.cards,segTotal=completion.total||1;
-      // 슬롯 완성도(2-3): N / 전체, 3색 막대(카드 파랑 · 블랭크 회색 · 빈칸 흰색), 미완성/완성 배지.
-      const segbar=`<div class="rt-completion"><div class="rt-completion-head"><span>슬롯 완성도 ${completion.cards+completion.blanks} / ${completion.total}</span><span class="rt-completion-badge ${completion.empty?'rt-completion-badge-no':'rt-completion-badge-ok'}">${completion.empty?'미완성':'완성'}</span></div><div class="rt-completion-bar"><i style="width:${(completion.cards/segTotal*100).toFixed(2)}%;background:#007AFF"></i><i style="width:${(completion.blanks/segTotal*100).toFixed(2)}%;background:#8a94a6"></i></div><div class="rt-completion-legend"><span><i class="rt-completion-dot-card"></i>카드 ${completion.cards}</span><span><i class="rt-completion-dot-blank"></i>블랭크 ${completion.blanks}</span><span><i class="rt-completion-dot-empty"></i>빈칸 ${completion.empty}</span></div></div>`;
+      const cards=completion.cards;
+      // 슬롯 완성도(2-3): N / 전체, 미완성/완성 배지. 0.219 시안 C: 막대를 슬롯마다 한 칸(입력 → 출력 순)으로 나누고 카드 칸은 신호 색, 블랭크 회색, 빈칸 흰색.
+      const segs=slotList.map(slot=>{if(state.placements[slot.id]==='BLANK')return '<i class="rt-seg-blank"></i>';const c=slotCard(slot.id);return c?`<i data-sig="${signalKind(c[1])}"></i>`:'<i class="rt-seg-empty"></i>'}).join('');
+      const segbar=`<div class="rt-completion"><div class="rt-completion-head"><span>슬롯 완성도 ${completion.cards+completion.blanks} / ${completion.total}</span><span class="rt-completion-badge ${completion.empty?'rt-completion-badge-no':'rt-completion-badge-ok'}">${completion.empty?'미완성':'완성'}</span></div><div class="rt-completion-bar rt-completion-slots" role="img" aria-label="슬롯 ${completion.total}칸 · 카드 ${completion.cards} · 블랭크 ${completion.blanks} · 빈칸 ${completion.empty}">${segs}</div><div class="rt-completion-legend"><span><i class="rt-completion-dot-card"></i>카드 ${completion.cards}(신호 색)</span><span><i class="rt-completion-dot-blank"></i>블랭크 ${completion.blanks}</span><span><i class="rt-completion-dot-empty"></i>빈칸 ${completion.empty}</span></div></div>`;
+      // 0.219 시안 C: 카드와 함께 연결한 전송기(카드 팝업·04 전송기에서 고른 값)를 슬롯마다 한 줄로 모은다. 수량 0인 연결은 뺀다.
+      const linkRows=slotList.filter(slot=>state.links[slot.id]?.device&&state.links[slot.id].count>0&&slotCard(slot.id)).map(slot=>{const c=slotCard(slot.id),l=state.links[slot.id];return `<li class="rt-summary-link" data-sig="${signalKind(c[1])}"><span class="rt-summary-link-from">${esc(slotModel(c[0]))}<small>${slotShort(slot)}</small></span><span class="rt-summary-link-arrow" aria-hidden="true">→</span><strong>${esc(l.device)}</strong><b>× ${l.count}</b></li>`}).join('');
+      const linkBlock=linkRows?`<h4>연동 전송기</h4><ul class="rt-summary-links">${linkRows}</ul>`:'';
       const blankRow=completion.blanks?`<h4>마감재</h4><div class="rt-summary-total"><span>블랭크 커버 (${esc(state.family)})</span><b>× ${completion.blanks}</b></div>`:'';
       // 0.153(사용자 요청 2026-09-29 "모든 제품 프레임에 내 구성 … 몇 U인지 표기를해줘"): 슬롯 수 뒤에 랙 높이(frameRackU)를 붙인다.
-      return `<aside class="rt-config-summary" aria-label="구성 요약"><span class="rt-eyebrow">내 구성</span><h3>${esc(state.model)}</h3><p>${state.family} · 입력 ${slotList.filter(item=>item.dir==='input').length} / 출력 ${slotList.filter(item=>item.dir==='output').length} 슬롯${frameRackU[state.model]?` · ${frameRackU[state.model]}U`:''}</p>${meter('입력',t.input,capacity('input'))}${meter('출력',t.output,capacity('output'))}${segbar}<h4>입력 카드</h4>${rows('input')}<h4>출력 카드</h4>${rows('output')}${blankRow}<div class="rt-summary-total"><span>장착 카드</span><b>${cards}장</b></div><p class="rt-summary-note">${state.family==='SPX'?'다음 단계에서 CATx 출력 카드(COS12)에 연결할 SPX-RX를 확인합니다.':'다음 단계에서 HDBaseT·광 카드에 연결할 전송기를 고릅니다.'}</p></aside>`;
+      return `<aside class="rt-config-summary" aria-label="구성 요약"><span class="rt-eyebrow">내 구성</span><h3>${esc(state.model)}</h3><p>${state.family} · 입력 ${slotList.filter(item=>item.dir==='input').length} / 출력 ${slotList.filter(item=>item.dir==='output').length} 슬롯${frameRackU[state.model]?` · ${frameRackU[state.model]}U`:''}</p>${meter('입력',t.input,capacity('input'))}${meter('출력',t.output,capacity('output'))}${segbar}<h4>입력 카드</h4>${rows('input')}<h4>출력 카드</h4>${rows('output')}${blankRow}${linkBlock}<div class="rt-summary-total"><span>장착 카드</span><b>${cards}장</b></div><p class="rt-summary-note">${state.family==='SPX'?'다음 단계에서 CATx 출력 카드(COS12)에 연결할 SPX-RX를 확인합니다.':'다음 단계에서 HDBaseT·광 카드에 연결할 전송기를 고릅니다.'}</p></aside>`;
     }
     // 0.172 opts.figureOnly: 06 구성 보고서(인쇄·미리보기)에 넣을 후면 그림만 돌려준다. 이때 슬롯은 누를 수 없는 표시용 칸(span)이다.
     function cardsViewV4(opts={}){
@@ -334,9 +583,9 @@
       const slotButton=slot=>{
         const rawValue=state.placements[slot.id],isBlank=rawValue==='BLANK',c=isBlank?null:slotCard(slot.id),selecting=modalSlot===slot.id;
         const stateClass=(c?'rt-rack-slot-filled':isBlank?'rt-rack-slot-blank':'rt-rack-slot-empty')+(!opts.figureOnly&&tapMove===slot.id?' rt-rack-slot-tapsrc':'');
-        if(opts.figureOnly)return `<span class="rt-rack-slot ${stateClass}">${c?`<span class="rt-rack-slot-no rt-rack-slot-no-${slot.dir} rt-slot-tag"><span class="rt-slot-tag-n">${shortLabel(slot)}</span>${sigBadge(c[1],'rt-slot-tag-s',slotModel(c[0]))}</span><img class="rt-faceplate" src="${cardAsset(c[0])}" alt="">`:isBlank?`<img class="rt-faceplate rt-blank-plate" src="${blankPlates[state.family]}" alt="">`:''}</span>`;
-        const label=c?`${c[0]} 장착됨 · 눌러서 변경`:isBlank?'블랭크 커버 · 눌러서 변경':'비어 있음 · 눌러서 카드 선택';
-        return `<button type="button" class="rt-rack-slot ${stateClass} ${selecting?'rt-rack-slot-selecting':''} ${changed===slot.id?'rt-rack-slot-changed':''}" data-slot="${slot.id}"${rawValue?' draggable="true"':''} aria-label="${esc(slot.label)}, ${label}" title="${esc(slot.label)}${c?` · ${c[0]}`:isBlank?' · 블랭크 커버':''}">${c?`<span class="rt-rack-slot-no rt-rack-slot-no-${slot.dir} rt-slot-tag" aria-hidden="true"><span class="rt-slot-tag-n">${shortLabel(slot)}</span>${sigBadge(c[1],'rt-slot-tag-s',slotModel(c[0]))}</span>`:`<span class="rt-rack-slot-no rt-rack-slot-no-${slot.dir}" aria-hidden="true">${shortLabel(slot)}</span>`}${rawValue?`<span class="rt-rack-slot-x" role="button" tabindex="-1" data-slot-clear="${slot.id}" aria-label="${esc(slot.label)} ${c?c[0]:'블랭크 커버'} 빼기" title="카드 빼기">×</span>`:''}${c?`<img draggable="false" class="rt-faceplate" src="${cardAsset(c[0])}" alt="">`:isBlank?`<img draggable="false" class="rt-faceplate rt-blank-plate" src="${blankPlates[state.family]}" alt="">`:'<span class="rt-rack-slot-add" aria-hidden="true">+</span>'}</button>`;
+        if(opts.figureOnly)return `<span class="rt-rack-slot ${stateClass}">${c?`${slotTag(slot,c)}<img class="rt-faceplate" src="${cardAsset(c[0])}" alt="">`:isBlank?`<img class="rt-faceplate rt-blank-plate" src="${blankPlates[state.family]}" alt="">`:''}</span>`;
+        const label=c?`${c[0]} 장착됨 · ${chRange(slot,c)} · 눌러서 변경`:isBlank?'블랭크 커버 · 눌러서 변경':'비어 있음 · 눌러서 카드 선택';
+        return `<button type="button" class="rt-rack-slot ${stateClass} ${selecting?'rt-rack-slot-selecting':''} ${changed===slot.id?'rt-rack-slot-changed':''}" data-slot="${slot.id}"${rawValue?' draggable="true"':''} aria-label="${esc(slot.label)}, ${label}" title="${esc(slot.label)}${c?` · ${c[0]} · ${chRange(slot,c)}`:isBlank?' · 블랭크 커버':''}">${c?slotTag(slot,c,true):`<span class="rt-rack-slot-no rt-rack-slot-no-${slot.dir}" aria-hidden="true">${shortLabel(slot)}</span>`}${rawValue?`<span class="rt-rack-slot-x" role="button" tabindex="-1" data-slot-clear="${slot.id}" aria-label="${esc(slot.label)} ${c?c[0]:'블랭크 커버'} 빼기" title="카드 빼기">×</span>`:''}${c?`<img draggable="false" class="rt-faceplate" src="${cardAsset(c[0])}" alt="">`:isBlank?`<img draggable="false" class="rt-faceplate rt-blank-plate" src="${blankPlates[state.family]}" alt="">`:'<span class="rt-rack-slot-add" aria-hidden="true">+</span>'}</button>`;
       };
       const bank=(dir,items)=>`<section class="rt-rack-bank rt-rack-bank-${dir}" aria-label="${dir==='input'?'입력':'출력'} 카드 슬롯"><div class="rt-rack-bank-title"><strong>${dir==='input'?'입력':'출력'}</strong><span>${items.filter(item=>slotCard(item.id)).length} / ${items.length}</span></div><div class="rt-rack-grid">${items.map(slotButton).join('')}</div></section>`;
       const photo=rearPhotos[model];
@@ -395,9 +644,9 @@
     }
     function powerNotice(){
       const count=Object.values(state.links).filter(link=>link.device?.startsWith('XDM-CTR100 · ')).reduce((sum,link)=>sum+link.count,0);
-      // 0.72 XDM-PSU(사용자 결정 2026-09-28): CIS100·COS100에 연결한 CTR100은 XDM-PSU가 전원을 공급한다(POH는 Tx 1대당, PHX는 COS100 1장당).
+      // 0.72 XDM-PSU(사용자 결정 2026-09-28): CIS100·COS100에 연결한 CTR100은 XDM-PSU가 전원을 공급한다(POH는 Tx 1대당, PHX는 0.210부터 COS100 출력(Rx) 1대당).
       const power=count?RtCore.bom(state).filter(row=>row.category==='전원 장비'):[],qty=model=>power.find(row=>row.model.startsWith(model))?.quantity||0;
-      return count?`<div class="rt-power-notice"><span>전원 공급</span><div><strong>XDM-CTR100 ${count}대 · XDM-PSU로 전원 공급(개별 어댑터 불필요)</strong><p>XDM-PSU ${qty('XDM-PSU')}대 · XDM-POH ${qty('XDM-POH')}개(CIS100 → POH → CTR100 TX, TX 1대당 1개) · XDM-PHX ${qty('XDM-PHX')}개(PSU → 2핀 전원선 → COS100 → CAT → CTR100 RX, COS100 1장당 1개)를 BOM에 자동 추가했습니다. 매트릭스 카드 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다.</p></div></div>`:'';
+      return count?`<div class="rt-power-notice"><span>전원 공급</span><div><strong>XDM-CTR100 ${count}대 · XDM-PSU로 전원 공급(개별 어댑터 불필요)</strong><p>XDM-PSU ${qty('XDM-PSU')}대 · XDM-POH ${qty('XDM-POH')}개(CIS100 → POH → CTR100 TX, TX 1대당 1개) · XDM-PHX ${qty('XDM-PHX')}개(PSU → 2핀 전원선 → COS100 → CAT → CTR100 RX, COS100 출력 1포트당 1개)를 BOM에 자동 추가했습니다. 매트릭스 카드 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다.</p></div></div>`:'';
     }
     // 04 전송기(2-2, Analog Way 구조 — 시안 configurator-aw-style.html?step=4): 왼쪽 목록(카드별 묶음 제목+선택 행) | 오른쪽 고정 미리보기(세그먼트로 고른 슬롯의 연결 흐름).
     // 01/02와 같은 rt-cg-split/rt-cg-list/rt-cg-row/rt-cg-preview/rt-cg-dot/rt-cg-seg 틀을 그대로 쓰고, 이 화면에만 있는 모양(묶음 제목+채널 선택, 흐름 그림, 접이식 라인업)만 새로 더한다.

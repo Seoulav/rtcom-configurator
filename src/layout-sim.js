@@ -1,4 +1,4 @@
-/* 0.202 — XDM 화면 연출 시뮬레이터(1차: XDM-WOS100 월 오버레이).
+/* 0.224 — XDM 화면 연출 시뮬레이터(1차: XDM-WOS100 월 오버레이).
    디스플레이 월 위에 창(입력 영상)을 끌어 놓으면 그 좌표·크기대로 영상을 띄우는 제어 커맨드를 가이드 문법 그대로 만든다.
    근거: 사용자 제공 "RTcom XDM 시리즈 Command Guide 1013"(input_doc/RTCOM/manual/RTcom_Manual_XDM_CommandGuide1013.pdf, 로컬 보관·배포 제외)
      - 44~55쪽 "XDM-WOS100 Wall Overlay Command": *255OW O001-008 W10 H03V02 P4321 [O…X0Y0W0H0 레이어 지우기] I001 O001 X0Y0 W2880 H2160 …!

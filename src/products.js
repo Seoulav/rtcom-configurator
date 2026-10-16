@@ -440,7 +440,7 @@
       body+=pill(610,262,'2핀 전원선',COLOR_POWER);
       body+=pill(128,670,'HDMI',COLOR_IN)+pill(848,670,'HDMI',COLOR_OUT);
       const ac=(item.specifications||[]).find(spec=>spec.name==='전원');
-      body+=`<text x="${width/2}" y="470" text-anchor="middle" font-size="10" fill="${SUB}">XDM-PSU 1대 = 모듈 16칸(POH·PHX를 섞어 장착) · POH 1개 = CTR100 TX 1대 · PHX 1개 = COS100 1장${ac?` · 본체 전원 ${svgEsc(ac.value)}`:''}</text>`;
+      body+=`<text x="${width/2}" y="470" text-anchor="middle" font-size="10" fill="${SUB}">XDM-PSU 1대 = 모듈 16칸(POH·PHX를 섞어 장착) · POH 1개 = CTR100 TX 1대 · PHX 1개 = COS100 출력 1포트(CTR100 RX 1대)${ac?` · 본체 전원 ${svgEsc(ac.value)}`:''}</text>`;
       body+=`<text x="${width/2}" y="486" text-anchor="middle" font-size="10" fill="${SUB}">XDM-CIS100·COS100 카드 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다</text>`;
       // 0.99: XDM-PSU만 그림이 커서 "크게 보기"(전체 화면 확대 창)를 둔다(사용자 요청 2026-09-28 "xdm-psu만 03 Singal flow 확대해서 볼 수 있게해줘"). 그림을 눌러도 열린다.
       return `<div class="rt-flow-zoom-bar"><button type="button" class="rt-pg-btn" data-flow-zoom>⤢ 크게 보기</button></div>`+diagramWrap(`<g class="rt-psu-anim">${body}</g>`,width,height,[[COLOR_IN,'입력(HDMI)'],[COLOR_COPPER,'HDBaseT 신호(CATx)'],[COLOR_POWER,'전원'],[COLOR_OUT,'출력(HDMI)']]);
@@ -759,6 +759,18 @@
     const DOC_LABEL={Catalog:'카탈로그',Manual:'매뉴얼',ProductSheet:'제품 안내서'};
     const docFile=file=>`output/design/assets/docs/${encodeURIComponent(file)}`;
     const DOWNLOAD_ICON='<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M8 2v8m0 0L4.8 6.8M8 10l3.2-3.2M3 13h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    // 0.222 문서 버튼 카드형(사용자 선택 2026-10-16 시안 A): 종류별 색 아이콘 + "○○ 보기" + 보조 줄(쪽수·판 번호·PDF), 오른쪽은 다운로드 칸.
+    const DOC_ICON={
+      Catalog:'<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2.5" y="2.5" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M5.5 6h5M5.5 9h3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+      Manual:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3.5h4a2 2 0 0 1 2 2v7a1.5 1.5 0 0 0-1.5-1.5H3zM13 3.5H9a2 2 0 0 0-2 2v7a1.5 1.5 0 0 1 1.5-1.5H13z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      ProductSheet:'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2.5h6l2.5 2.5v8.5H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6 8.5h4M6 11h3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'
+    };
+    function docSub(doc){
+      if(doc.page)return `${doc.page}쪽`;
+      const ver=String(doc.title||'').match(/Ver\.?\s?\d+(?:\.\d+)*/i);
+      return ver?ver[0].replace(/\s/g,''):'PDF';
+    }
+    const docFace=(doc,label)=>`<span class="rt-pg-doc-kind" aria-hidden="true">${DOC_ICON[doc.type]||DOC_ICON.Catalog}</span><span class="rt-pg-doc-txt"><b>${esc(label)} 보기</b><small>${esc(docSub(doc))}</small></span>`;
     function docButtons(item){
       const order=Object.keys(DOC_LABEL);
       return (item.documents||[]).filter(doc=>doc.file&&DOC_LABEL[doc.type]).sort((a,b)=>order.indexOf(a.type)-order.indexOf(b.type)).map(doc=>{
@@ -769,9 +781,9 @@
         const popup=doc.preview==='image'||doc.preview==='pdfjs';
         const images=doc.preview==='image'?(doc.previewImages||[]).map(name=>image(name)).join('|'):'';
         const openEl=popup
-          ?`<button type="button" class="rt-pg-doc-open" data-doc-preview="${href}" data-doc-kind="${doc.preview}"${images?` data-doc-images="${images}"`:''} data-doc-title="${title}" title="${title} · 미리보기">${esc(label)} 보기</button>`
-          :`<a class="rt-pg-doc-open" href="${href}${doc.page?`#page=${doc.page}`:''}" target="_blank" rel="noopener" title="${title} · 새 탭에서 보기">${esc(label)} 보기${doc.page?` <small>${doc.page}쪽</small>`:''}</a>`;
-        return `<span class="rt-pg-doc" data-doc="${esc(doc.type)}">${openEl}<a class="rt-pg-doc-save" href="${href}" download="${esc(doc.file)}" title="${title} · 다운로드(전체 파일)" aria-label="${esc(label)} 다운로드">${DOWNLOAD_ICON}<span class="rt-pg-doc-save-text">다운로드</span></a></span>`;
+          ?`<button type="button" class="rt-pg-doc-open" data-doc-preview="${href}" data-doc-kind="${doc.preview}"${images?` data-doc-images="${images}"`:''} data-doc-title="${title}" title="${title} · 미리보기">${docFace(doc,label)}</button>`
+          :`<a class="rt-pg-doc-open" href="${href}${doc.page?`#page=${doc.page}`:''}" target="_blank" rel="noopener" title="${title} · 새 탭에서 보기">${docFace(doc,label)}</a>`;
+        return `<span class="rt-pg-doc rt-pg-doc-card" data-doc="${esc(doc.type)}">${openEl}<a class="rt-pg-doc-save" href="${href}" download="${esc(doc.file)}" title="${title} · 다운로드(전체 파일)" aria-label="${esc(label)} 다운로드">${DOWNLOAD_ICON}<span class="rt-pg-doc-save-text">다운로드</span></a></span>`;
       }).join('');
     }
     // 제품 목록 화면의 "전체 카탈로그" 버튼(0.95): 링크 하나로 카탈로그 전체를 공유한다.
@@ -935,22 +947,29 @@
         });
         return `<svg class="rt-pg-layout-wall" viewBox="0 0 ${W} ${H}" role="img" ${label}>${body}</svg>`;
       }
-      // 한 화면 분할: 모니터 200×134(베젤 6, 화면 188×106 ≈ 16:9, 스탠드). 칸 좌표 0~100을 화면 크기로 늘린다.
-      const SX=6,SY=6,SW=188,SH=106,mx=v=>SX+v*SW/100,my=v=>SY+v*SH/100;
       // 검은 여백 판정은 0.85·0.146·0.147 규칙 그대로(칸이 가장자리를 다 채우지 못하거나 매뉴얼에 검은 여백이 있는 레이아웃). 화면 바탕 사각형에 표시 클래스를 붙인다.
       const minX=Math.min(...cells.map(c=>c[1])),minY=Math.min(...cells.map(c=>c[2]));
       const maxX=Math.max(...cells.map(c=>c[1]+c[3])),maxY=Math.max(...cells.map(c=>c[2]+c[4]));
       const letterbox=minX>0.5||minY>0.5||maxX<99.5||maxY<99.5||(own?.shapes[key]?own.black.has(key):key==='USER MODE 2');
+      return monitorLayoutSvg(cells,{id,label,letterbox});
+    }
+    // 한 화면 분할 모니터 그림: 모니터 200×134(베젤 6, 화면 188×106 ≈ 16:9, 스탠드). 칸 [번호, x, y, 폭, 높이(0~100), 글자 x, 글자 y]를 화면 크기로 늘린다.
+    // 0.206(사용자 요청 2026-10-12 "분할 구성예시를 QMS-88UX 분할예시와 같은 디자인 컨셉으로 진행해줘"): XDM-HOS100 멀티뷰 팝업(src/app.js)도 같은 그림을 쓰도록
+    // globalThis.RtMonitorLayoutSvg로 내보낸다. opts.cellClass는 칸 사각형 클래스(06 화면 구성 모드는 e2e가 세는 rt-pg-cell), opts.labels는 칸 번호 대신 쓸 글자.
+    function monitorLayoutSvg(cells,opts={}){
+      const id=opts.id||`lay${++layoutSvgSeq}`,label=opts.label||'',cellClass=opts.cellClass||'rt-pg-cell',labels=opts.labels||{};
+      const SX=6,SY=6,SW=188,SH=106,mx=v=>SX+v*SW/100,my=v=>SY+v*SH/100;
       const used=[...new Set(cells.map(c=>c[0]))];
       const grads=used.map(n=>{const col=LAYOUT_COLORS[(n-1)%LAYOUT_COLORS.length];return `<linearGradient id="${id}g${n}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${col}"/><stop offset="1" stop-color="${col}" stop-opacity=".62"/></linearGradient>`}).join('');
       const tiles=cells.map(([n,x,y,w,h,lx,ly])=>{
         const X=mx(x),Y=my(y),Wd=w*SW/100,Hd=h*SH/100,fs=Math.max(7,Math.min(20,Math.min(Wd,Hd)*0.42));
         const tx=lx!=null?mx(lx):X+Wd/2,ty=ly!=null?my(ly):Y+Hd/2;
         const hill=Hd>18&&Wd>24?`<path d="M${X} ${Y+Hd}V${Y+Hd*0.8}Q${X+Wd*0.3} ${Y+Hd*0.62} ${X+Wd*0.55} ${Y+Hd*0.78}T${X+Wd} ${Y+Hd*0.72}V${Y+Hd}Z" fill="#fff" fill-opacity=".16"/>`:'';
-        return `<g><rect class="rt-pg-cell" data-w="${w}" data-h="${h}" x="${X}" y="${Y}" width="${Wd}" height="${Hd}" fill="url(#${id}g${n})" stroke="#fff" stroke-opacity=".7" stroke-width=".9"/>${hill}<text x="${tx}" y="${ty}" font-size="${fs.toFixed(1)}" font-weight="800" fill="#fff" text-anchor="middle" dominant-baseline="central" style="paint-order:stroke;stroke:rgba(0,0,0,.28);stroke-width:1.6px">${n}</text></g>`;
+        return `<g><rect class="${cellClass}" data-w="${w}" data-h="${h}" x="${X}" y="${Y}" width="${Wd}" height="${Hd}" fill="url(#${id}g${n})" stroke="#fff" stroke-opacity=".7" stroke-width=".9"/>${hill}<text x="${tx}" y="${ty}" font-size="${fs.toFixed(1)}" font-weight="800" fill="#fff" text-anchor="middle" dominant-baseline="central" style="paint-order:stroke;stroke:rgba(0,0,0,.28);stroke-width:1.6px">${esc(labels[n]??n)}</text></g>`;
       }).join('');
-      return `<svg viewBox="0 0 200 134" role="img" ${label}><defs>${grads}<clipPath id="${id}c"><rect x="${SX}" y="${SY}" width="${SW}" height="${SH}"/></clipPath></defs><rect x="1" y="1" width="198" height="118" rx="6" fill="#1f2532"/><rect${letterbox?' class="rt-pg-layout-letterbox"':''} x="${SX}" y="${SY}" width="${SW}" height="${SH}" fill="#0b0d12"/><g clip-path="url(#${id}c)">${tiles}</g><circle cx="100" cy="115.5" r="1.3" fill="#5b6475"/><path d="M92 119h16l3 9H89z" fill="#3a4150"/><rect x="72" y="127.5" width="56" height="5" rx="2.5" fill="#3a4150"/></svg>`;
+      return `<svg viewBox="0 0 200 134" ${label?`role="img" ${label}`:'aria-hidden="true"'}><defs>${grads}<clipPath id="${id}c"><rect x="${SX}" y="${SY}" width="${SW}" height="${SH}"/></clipPath></defs><rect x="1" y="1" width="198" height="118" rx="6" fill="#1f2532"/><rect${opts.letterbox?' class="rt-pg-layout-letterbox"':''} x="${SX}" y="${SY}" width="${SW}" height="${SH}" fill="#0b0d12"/><g clip-path="url(#${id}c)">${tiles}</g><circle cx="100" cy="115.5" r="1.3" fill="#5b6475"/><path d="M92 119h16l3 9H89z" fill="#3a4150"/><rect x="72" y="127.5" width="56" height="5" rx="2.5" fill="#3a4150"/></svg>`;
     }
+    globalThis.RtMonitorLayoutSvg=monitorLayoutSvg;
     // 0.159(사용자 요청 2026-09-29 "매트릭스쪽 비슷한 컨셉으로 하나 만들자", "1TO1, ALL, 임의스위칭 이거는 빼고 그냥 크로스포인트 이미지만"):
     // MATRIX 카드에 칩 없이 크로스포인트 그림 한 장을 둔다. 왼쪽 입력(IN n)에서 오른쪽 출력 모니터(OUT n)로 입력 색 선을 잇는다(색은 LAYOUT_COLORS, QUAD·DUAL과 같다).
     // 값은 출력 1번부터 차례로 "들어오는 입력 번호" 예시다. QMS-88UX 출력 9·10번은 멀티뷰 전용이라 매트릭스 그림에서 뺀다.
@@ -1188,6 +1207,7 @@
       // SPX의 CAT 카드(SPX-COS12)는 HDBaseT가 아닌 CATx 전송이다(사용자 확인 2026-09-27).
       const SIG_NAME={HDMI:'HDMI',DP:'DisplayPort',SDI:'SDI',CAT:family==='SPX'?'CATx':'HDBaseT·CATx',FIBER:'광'};
       const legendKeys=[...new Set([...inCards,...outCards].map(card=>card[3]))];
+      const featureCards=outCards.filter(card=>globalThis.RtCardFeature?.cards?.[card[0]]); // 0.205 02 신호 구성에서 눌러 기능 팝업을 여는 카드(WOS100·HOS100)
       const arch=seriesSignalSvg(item.name||family,inCards,outCards,SIG_COLOR);
       return `${headerBlock({icon:GROUP_ICON.series,title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,docs:docButtons(item),official:officialButton(item),cta:`${family==='XDM'?'<button type="button" class="rt-pg-btn" data-scroll-to="rt-layout-sim">화면 연출 시뮬레이터</button>':''}<a class="rt-pg-btn rt-pg-primary" href="#matrix-configurator" data-configure-family="${esc(family)}">${esc(family)} 구성기에서 구성하기 →</a>`})}
       <div class="rt-pg-cols">
@@ -1197,14 +1217,14 @@
           <section class="rt-pg-card rt-pg-col-mobile-6"><h2><span class="rt-pg-idx">06</span>주요 기능</h2><ul class="rt-pg-checks" data-feature-list>${featureItems.slice(0,featureShown).map(feature=>`<li><i><svg width="11" height="11" viewBox="0 0 12 12"><path d="M2 6.3l2.6 2.5L10 3.4" fill="none" stroke="#fff" stroke-width="2"/></svg></i><span>${esc(feature.text)}</span></li>`).join('')}</ul>${featureItems.length>featureShown?`<button type="button" class="rt-pg-more" data-more-features>기능 ${featureItems.length-featureShown}개 더 보기 ›</button><ul class="rt-pg-checks" data-feature-more hidden>${featureItems.slice(featureShown).map(feature=>`<li><i><svg width="11" height="11" viewBox="0 0 12 12"><path d="M2 6.3l2.6 2.5L10 3.4" fill="none" stroke="#fff" stroke-width="2"/></svg></i><span>${esc(feature.text)}</span></li>`).join('')}</ul>`:''}</section>
         </div>
         <div class="rt-pg-col">
-          <section class="rt-pg-card rt-pg-col-mobile-2"><h2><span class="rt-pg-idx">02</span>신호 구성 <span class="rt-pg-note">— 입력 카드 → 메인프레임 → 출력 카드</span></h2>${arch}<ul class="rt-pg-legend">${legendKeys.map(key=>`<li><i style="background:${SIG_COLOR[key]||'#8A8A8E'}"></i>${esc(SIG_NAME[key]||key)}</li>`).join('')}<li><i style="background:transparent;border:1.5px dashed #8A8A8E"></i>전송기(연동)</li></ul></section>
+          <section class="rt-pg-card rt-pg-col-mobile-2"><h2><span class="rt-pg-idx">02</span>신호 구성 <span class="rt-pg-note">— 입력 카드 → 메인프레임 → 출력 카드</span></h2>${arch}<ul class="rt-pg-legend">${legendKeys.map(key=>`<li><i style="background:${SIG_COLOR[key]||'#8A8A8E'}"></i>${esc(SIG_NAME[key]||key)}</li>`).join('')}<li><i style="background:transparent;border:1.5px dashed #8A8A8E"></i>전송기(연동)</li>${featureCards.length?`<li class="rt-pg-legend-feature"><i aria-hidden="true">›</i>${esc(featureCards.map(card=>card[0].replace(/^XDM-/,'')).join('·'))} 칸을 누르면 ${esc(featureCards.map(card=>globalThis.RtCardFeature.cards[card[0]].name).join('·'))} 그림</li>`:''}</ul></section>
           <section class="rt-pg-card rt-pg-col-mobile-3"><h2><span class="rt-pg-idx">03</span>메인프레임 <span class="rt-pg-note">— ${frames.length}종 · 막대는 랙 높이 · 누르면 정면·후면</span></h2><div class="rt-pg-frames">${frames.map(frame=>{const slug=frame.model.toLowerCase();const hasPhoto=!NO_FRAME_PHOTO.has(frame.model);return `<button type="button" class="rt-pg-frame rt-pg-framebtn" data-pg-frame="${esc(frame.model)}" data-pg-frame-family="${esc(family)}" data-pg-frame-summary="${esc(frame.summary||'')}" data-pg-frame-ru="${frame.rackUnits}" aria-label="${esc(frame.model)} 정면·후면 보기"><div class="rt-pg-ph">${hasPhoto?`<img src="output/design/assets/frames/${slug}-front-art.webp" alt="">`:'<em>사진 준비 중</em>'}</div><b>${esc(frame.model)}</b><small>${esc((frame.summary||'').split(' · ')[0])} · ${frame.rackUnits}U</small>${frameSlotText(frame.summary)?`<small class="rt-pg-frame-slots">${esc(frameSlotText(frame.summary))}</small>`:''}<div class="rt-pg-ru"><i style="width:${Math.max(8,frame.rackUnits/maxRU*100)}%"></i></div></button>`}).join('')}</div></section>
           <section class="rt-pg-card rt-pg-col-mobile-4"><h2><span class="rt-pg-idx">04</span>카드 라인업 <span class="rt-pg-note">— 입력 ${inCards.length} · 출력 ${outCards.length} · 카드를 누르면 상세 정보</span></h2><div class="rt-pg-cards2"><div class="rt-pg-cardcol"><h3>입력</h3>${inCards.map(card=>cardRow(card,false)).join('')}</div><div class="rt-pg-cardcol"><h3>출력</h3>${outCards.map(card=>cardRow(card,true)).join('')}</div></div></section>
           ${recordSection(item,null,null)}
         </div>
       </div>${layoutSimSection(family)}`;
     }
-    // 0.202 XDM 시리즈 "07 화면 연출 시뮬레이터"(XDM-WOS100 월 오버레이): 그리기·커맨드 생성은 src/layout-sim.js(RtLayoutSim)가 맡고,
+    // 0.224 XDM 시리즈 "07 화면 연출 시뮬레이터"(XDM-WOS100 월 오버레이): 그리기·커맨드 생성은 src/layout-sim.js(RtLayoutSim)가 맡고,
     // 여기서는 카드 틀만 둔다. show()가 화면을 그린 뒤 RtLayoutSim.mountAll(body)로 채운다. 근거: 사용자 제공 XDM Command Guide 1013(44~55쪽).
     function layoutSimSection(family){
       if(family!=='XDM')return '';
@@ -1225,9 +1245,13 @@
         if(linked)h+=`<rect x="4" y="${y-12}" width="92" height="24" rx="12" fill="none" stroke="#8A8A8E" stroke-dasharray="4 3"/><text x="50" y="${y+4}" text-anchor="middle" font-size="10.5" font-weight="600" fill="#3A3A3C">${svgEsc(linked.split(' · ')[0])}</text><path d="M96 ${y}H112" stroke="#8A8A8E" stroke-width="1.5" stroke-dasharray="3 3"/>`;
         h+=`<rect x="112" y="${y-14}" width="140" height="28" rx="14" fill="${col}" fill-opacity=".12"/><circle cx="128" cy="${y}" r="4.5" fill="${col}"/><text x="140" y="${y+4.5}" font-size="12" font-weight="700" fill="#1C1C1E">${svgEsc(c[0])}</text><path d="M252 ${y}C276 ${y} 276 ${H/2+(y-H/2)*.6} ${mx} ${H/2+(y-H/2)*.6}" fill="none" stroke="${col}" stroke-width="2"/>`;
       });
+      // 0.205(사용자 요청 2026-10-12 "02 신호구성에 WOS카드와 HOS카드 버튼눌러서 팝업이 뜨는것도 좋겠다"): 기능 팝업이 있는 카드(RtCardFeature, src/app.js)는
+      // 칸 테두리와 오른쪽 › 표시로 눌러 볼 수 있음을 알리고, 누르거나 Enter·Space를 치면 src/app.js의 [data-card-feature] 처리기가 팝업을 연다.
+      const features=globalThis.RtCardFeature?.cards||{};
       outs.forEach((c,i)=>{
-        const y=y0(outs.length)+i*rh,col=sigColor[c[3]]||'#8A8A8E',x=508,linked=CARD_EXTENDER_LABEL[c[0]];
-        h+=`<path d="M${mx+mw} ${H/2+(y-H/2)*.6}C${x-24} ${H/2+(y-H/2)*.6} ${x-24} ${y} ${x} ${y}" fill="none" stroke="${col}" stroke-width="2"/><rect x="${x}" y="${y-14}" width="140" height="28" rx="14" fill="${col}" fill-opacity=".12"/><circle cx="${x+16}" cy="${y}" r="4.5" fill="${col}"/><text x="${x+28}" y="${y+4.5}" font-size="12" font-weight="700" fill="#1C1C1E">${svgEsc(c[0])}</text>`;
+        const y=y0(outs.length)+i*rh,col=sigColor[c[3]]||'#8A8A8E',x=508,linked=CARD_EXTENDER_LABEL[c[0]],feature=features[c[0]];
+        const pill=`<rect class="rt-pg-sig-pill" x="${x}" y="${y-14}" width="${feature?160:140}" height="28" rx="14" fill="${col}" fill-opacity=".12"${feature?` stroke="${col}" stroke-width="1.6"`:''}/><circle cx="${x+16}" cy="${y}" r="4.5" fill="${col}"/><text x="${x+28}" y="${y+4.5}" font-size="12" font-weight="700" fill="#1C1C1E">${svgEsc(c[0])}</text>`;
+        h+=`<path d="M${mx+mw} ${H/2+(y-H/2)*.6}C${x-24} ${H/2+(y-H/2)*.6} ${x-24} ${y} ${x} ${y}" fill="none" stroke="${col}" stroke-width="2"/>`+(feature?`<g class="rt-pg-sig-feature" data-card-feature="${feature.key}" role="button" tabindex="0" aria-label="${svgEsc(c[0])} ${svgEsc(feature.label)}"><title>${svgEsc(feature.label)}</title>${pill}<circle cx="${x+144}" cy="${y}" r="8.5" fill="${col}"/><path d="M${x+142} ${y-3.6}l3.6 3.6-3.6 3.6" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>`:pill);
         if(linked)h+=`<path d="M${x+140} ${y}H${x+156}" stroke="#8A8A8E" stroke-width="1.5" stroke-dasharray="3 3"/><rect x="${x+156}" y="${y-12}" width="92" height="24" rx="12" fill="none" stroke="#8A8A8E" stroke-dasharray="4 3"/><text x="${x+202}" y="${y+4}" text-anchor="middle" font-size="10.5" font-weight="600" fill="#3A3A3C">${svgEsc(linked.split(' · ')[0])}</text>`;
       });
       return `<div class="rt-pg-svg-wrap"><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="신호 구성"><defs><linearGradient id="rt-pg-mf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0A84FF"/><stop offset=".55" stop-color="#5E5CE6"/><stop offset="1" stop-color="#BF5AF2"/></linearGradient></defs>${h}</svg></div>`;
@@ -1285,7 +1309,7 @@
       const dialog=document.createElement('dialog');
       dialog.className='rt-card-info-modal';
       dialog.setAttribute('aria-labelledby','rt-pg-card-info-title');
-      dialog.innerHTML=`<div class="rt-card-modal-head"><div><span class="rt-eyebrow">${esc(dir)} 카드 · ${esc(family)}</span><h3 id="rt-pg-card-info-title">${esc(id)}</h3>${info.title?`<p class="rt-card-info-sub">${esc(info.title)}</p>`:''}</div><button type="button" class="rt-card-modal-close" data-card-info-close aria-label="카드 상세 정보 닫기">×</button></div><div class="rt-card-info-body"><div class="rt-card-info-plate"><img src="output/design/assets/cards/${encodeURIComponent(id)}.webp" alt="${esc(id)} 카드 후면 판넬"></div>${tips[id]?`<p class="rt-card-info-tip">${esc(tips[id])}</p>`:''}<table class="rt-card-info-table"><tbody>${rows.map(([k,v])=>`<tr><th scope="row">${esc(k)}</th><td>${esc(v)}</td></tr>`).join('')}</tbody></table>${info.note?`<p class="rt-card-info-note">${esc(info.note)}</p>`:''}${info.missing?`<p class="rt-card-info-missing">상세 사양 준비 중 · ${esc(info.missing)}</p>`:''}<p class="rt-card-info-src">${[info.page?`알티컴 종합 카탈로그 2026 (국문) ${info.page}쪽`:'',info.source?esc(info.source):''].filter(Boolean).join(' · ')||'제조사 자료 확인 중'}</p></div><div class="rt-card-modal-foot"><button type="button" class="rt-button" data-card-info-close>닫기</button></div>`;
+      dialog.innerHTML=`<div class="rt-card-modal-head"><div><span class="rt-eyebrow">${esc(dir)} 카드 · ${esc(family)}</span><h3 id="rt-pg-card-info-title">${esc(id)}</h3>${info.title?`<p class="rt-card-info-sub">${esc(info.title)}</p>`:''}</div><button type="button" class="rt-card-modal-close" data-card-info-close aria-label="카드 상세 정보 닫기">×</button></div><div class="rt-card-info-body"><div class="rt-card-info-plate"><img src="output/design/assets/cards/${encodeURIComponent(id)}.webp" alt="${esc(id)} 카드 후면 판넬"></div>${tips[id]?`<p class="rt-card-info-tip">${esc(tips[id])}</p>`:''}<table class="rt-card-info-table"><tbody>${rows.map(([k,v])=>`<tr><th scope="row">${esc(k)}</th><td>${esc(v)}</td></tr>`).join('')}</tbody></table>${info.note?`<p class="rt-card-info-note">${esc(info.note)}</p>`:''}${globalThis.RtCardFeature?.cta(id)||''}${info.missing?`<p class="rt-card-info-missing">상세 사양 준비 중 · ${esc(info.missing)}</p>`:''}<p class="rt-card-info-src">${[info.page?`알티컴 종합 카탈로그 2026 (국문) ${info.page}쪽`:'',info.source?esc(info.source):''].filter(Boolean).join(' · ')||'제조사 자료 확인 중'}</p></div><div class="rt-card-modal-foot"><button type="button" class="rt-button" data-card-info-close>닫기</button></div>`;
       const opener=document.activeElement;
       const finish=()=>{if(dialog.open)dialog.close();dialog.remove();opener?.focus?.({preventScroll:true})};
       dialog.addEventListener('click',event=>{if(event.target===dialog||event.target.closest('[data-card-info-close]'))finish()});

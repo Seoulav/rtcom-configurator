@@ -154,7 +154,7 @@ test('public product data (0.19) is valid, brochure-level only and listed in ind
   assert.equal(read('data/products/index.json'),text,'run node scripts/build-product-index.cjs');
   assert.equal(index.schema,'rtcom.products.v1');
   const count=group=>index.products.filter(product=>product.group===group).length;
-  assert.deepEqual({series:count('series'),integrated:count('integrated'),distribution:count('distribution'),extender:count('extender'),cable:count('cable')},{series:3,integrated:2,distribution:8,extender:15,cable:4});
+  assert.deepEqual({series:count('series'),integrated:count('integrated'),distribution:count('distribution'),extender:count('extender'),cable:count('cable')},{series:3,integrated:2,distribution:8,extender:16,cable:4});
   for(const model of EXCLUDED)assert.equal(index.products.some(product=>product.model===model),false,`${model} is excluded like AV Portal`);
   for(const model of ['HD-104U','HD-108U','QMS-44UX','MR-4S'])assert.ok(index.products.some(product=>product.model===model),`missing ${model}`);
   for(const product of index.products)assert.ok(product.cardImage,`${product.id} needs a card image`);
@@ -564,6 +564,9 @@ test('0.184: 해상도(Extron 방식)·단위 붙여 쓰기 표기 통일이 사
   assert.equal(fix('1080p 60m / 4K 50m'),'1080p 60m / 4K 50m','전송거리(m)는 주사율로 보지 않는다');
   assert.equal(fix('483×402×310.3mm'),'483×402×310.3mm','크기 표기는 바꾸지 않는다');
   assert.equal(fix('3.4 Gbps/ch, 100-200 VAC'),'3.4Gbps/ch, 100-200VAC');
+  // 0.218(사용자 결정 2026-10-14): Touch Screen → 터치스크린, 분배기 오디오 "출력에 믹스" → "출력에 병합"
+  assert.equal(fix('7" Touch Screen'),'7" 터치스크린');
+  assert.equal(fix('모든 출력(OUT 1~10)에 믹스되어 나간다'),'모든 출력(OUT 1~10)에 병합되어 나간다');
   // 모든 제품 데이터와 카드 사양이 이미 통일안대로라서 한 번 더 돌려도 바뀌는 곳이 없다.
   const out=require('child_process').execFileSync(process.execPath,['scripts/tools/unify_notation.cjs'],{encoding:'utf8'});
   assert.match(out,/바뀔 곳: 0건/,out);
@@ -619,6 +622,15 @@ test('0.191: 커넥터는 암수(Female) 표기 없이 QMS-44UX처럼 이름만 
   assert.doesNotMatch(read('src/card-specs.js'),/Female|암\(/,'카드 상세 커넥터');
   const q=JSON.parse(read('data/products/qms-88ux.json'));
   assert.equal(q.io[0].connector,'HDMI');
+});
+
+test('0.222: 문서 버튼은 종류별 색 아이콘·보조 줄(쪽수·판·PDF)이 있는 카드형(시안 A)',()=>{
+  const p=read('src/products.js'),c=read('src/styles.css');
+  assert.match(p,/rt-pg-doc rt-pg-doc-card/);assert.match(p,/function docSub\(doc\)/);assert.match(p,/rt-pg-doc-kind/);
+  for(const type of ['Catalog','Manual','ProductSheet'])assert.match(p,new RegExp(`${type}:'<svg`));
+  assert.match(c,/\.rt-pg-doc-card\[data-doc="Manual"\]\{--doc-c:var\(--pg-purple-ink\)\}/);
+  assert.match(c,/\.rt-pg-doc-card \.rt-pg-doc-save\{/);
+  assert.doesNotMatch(p.replace(/\/\/.*$/gm,''),/rt-pg-doc-card[^`]*officialLinks/);
 });
 
 test('0.192: 문서 버튼은 "카탈로그 보기 | ↓ 다운로드", 화면 문구는 "다운로드"로 통일',()=>{
@@ -681,4 +693,37 @@ test('0.201: SPX-TX/RX 03 Signal Flow 범례의 실효 전송 거리에 Belden �
   const value=JSON.parse(read('data/products/spx-rx-tx.json')).specifications.find(spec=>spec.group==='Transmission').value;
   const legend=value.split('\n').map(line=>line.replace(/\s*\(([^)]*)\)/g,(all,inner)=>{const belden=inner.match(/Belden\s*[A-Z0-9]+/i);return belden?` (${belden[0]})`:''}).trim()).join(' · ');
   assert.equal(legend,'UTP CAT6 50m (Belden 7814A) · S/FTP CAT6A 70m (Belden 10GXE02)');
+});
+
+test('0.220: FT101-U/FR101-U 정정 매뉴얼 기준 값과 구성기 전송기 전원 문구',()=>{
+  const ft=JSON.parse(read('data/products/ft101-u-fr101-u.json'));
+  const spec=(name)=>ft.specifications.filter(s=>s.name===name);
+  assert.equal(spec('전원')[0].value,'DC +12V 1A 이상');
+  assert.deepEqual(spec('규격').map(s=>s.value),['DVI 1.0, HDMI 1.4']);
+  assert.deepEqual(spec('무게').map(s=>[s.condition,s.value,s.source]),[['FT101-U','0.65','C']],'0.221 사용자 결정: 무게는 카탈로그 기준');
+  assert.equal(ft.io.filter(r=>r.connector==='Mini USB').length,2,'송·수신기 펌웨어 포트');
+  assert.equal(ft.io.filter(r=>r.signal==='RS-232'&&r.connector==='피닉스 3핀').length,2);
+  assert.doesNotMatch(JSON.stringify(ft.documents),/FT103/,'매뉴얼 설명에서 FT103 사양표 안내 삭제');
+  const app=read('src/app.js');
+  for(const model of ['CT104-U','CR104-U','FT101-U','FR101-U']){
+    const line=app.split('\n').find(l=>l.includes(`'${model}':{model:'${model}'`));
+    assert.match(line,/전원: DC 12V 1A 이상/,model);
+    assert.doesNotMatch(line,/HDMI 1\.4b/,model);
+  }
+});
+
+test('0.223: XDM-MR4S를 별도 제품으로 추가하고 XDM 전송기 카드와 잇는다',()=>{
+  const mr=JSON.parse(read('data/products/xdm-mr4s.json'));
+  assert.equal(mr.group,'extender');
+  assert.deepEqual(mr.images.map(image=>[image.role,image.file]),[['Front','xdm-mr4s-front.webp'],['Rear','xdm-mr4s-rear.webp']]);
+  for(const image of mr.images)assert.ok(fs.existsSync(`output/design/assets/products/${image.file}`),image.file);
+  assert.equal(mr.specifications.find(s=>s.name==='장착 카드').value,'XDM-CTR100(HDBaseT), XDM-FT101·XDM-FR101(광)');
+  assert.ok(!mr.specifications.some(s=>/크기|무게|전원 이중화/.test(s.name)),'사용자 결정 "사진으로 확인되는 것만": 크기·무게·이중화는 자료를 받은 뒤 적는다');
+  assert.deepEqual(mr.portMap.map(map=>[map.image,map.items.length]),[['Front',5],['Rear',5]]);
+  for(const id of ['xdm-ctr100','xdm-ft101-fr101','mr-4s']){
+    assert.ok(mr.related.some(link=>link.target===id),id);
+    assert.ok(JSON.parse(read(`data/products/${id}.json`)).related.some(link=>link.target==='xdm-mr4s'),`${id} → xdm-mr4s`);
+  }
+  assert.ok(!JSON.stringify(JSON.parse(read('data/products/mr-4s.json')).specifications).includes('XDM'),'MR-4S 사양에는 XDM 호환 문구를 넣지 않는다');
+  assert.equal(JSON.parse(read('data/products/index.json')).products.length,33);
 });

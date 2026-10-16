@@ -18,9 +18,9 @@
   "subtitle": "XDM Series · 16채널 모듈형 전원 장치 · 19인치 2U",
   "lead": "XDM 매트릭스 HDBaseT 카드(CIS100·COS100)에 연결한 XDM-CTR100에 **전원을 한곳에서 공급**하는 16채널 모듈형 전원 장치입니다. 이때 CTR100에는 전원 어댑터를 따로 연결하지 않습니다.",
   "catalogPages": "",
-  "verificationSummary": "사용자 제공 XDM-POE ASSY 도면(2024.07.23)의 정면·후면·크기와 사용자 제공 구성도·모듈 사진(MAX2 표기)으로 정리했다. 모델명(XDM-PSU·XDM-POH·XDM-PHX)과 모듈 수량 기준은 사용자 결정(2026-09-28)이다.",
+  "verificationSummary": "사용자 제공 XDM-POE ASSY 도면(2024.07.23)의 정면·후면·크기와 사용자 제공 구성도·모듈 사진(MAX2 표기)으로 정리했다. 모델명(XDM-PSU·XDM-POH·XDM-PHX)과 모듈 수량 기준은 사용자 결정(2026-09-28)이고, XDM-PHX 수량은 알티컴 확인(2026-10-13)으로 COS100 출력 1포트당 1개로 정정했다.",
   "packageStatus": "VERIFIED",
-  "overview": "XDM-PSU는 XDM 전송기용 16채널 모듈형 전원 공급 장치다. 후면 16칸에 두 종류 모듈을 필요한 만큼 섞어 꽂는다.\n\nXDM-POH(CIS용) 모듈은 RJ45 단자 2개(CIS Card·Extender)로 XDM-CIS100 포트와 XDM-CTR100(TX) 사이의 CAT 케이블에 전원을 실어 보낸다. XDM-POH 1개가 XDM-CTR100(TX) 1대를 맡는다.\n\nXDM-PHX(COS용) 모듈은 2핀(+/−) 전원 단자로 XDM-COS100 카드에 전원을 넣고, COS100이 CAT 케이블로 XDM-CTR100(RX)에 전원을 함께 보낸다. XDM-PHX 1개가 XDM-COS100 카드 1장을 맡는다.\n\nXDM-PSU로 전원을 공급하면 XDM-CTR100에 전원 어댑터를 따로 연결하지 않는다. 정면에는 채널 LED 16개가 있고, 전원은 AC 100~240V 50/60Hz다.",
+  "overview": "XDM-PSU는 XDM 전송기용 16채널 모듈형 전원 공급 장치다. 후면 16칸에 두 종류 모듈을 필요한 만큼 섞어 꽂는다.\n\nXDM-POH(CIS용) 모듈은 RJ45 단자 2개(CIS Card·Extender)로 XDM-CIS100 포트와 XDM-CTR100(TX) 사이의 CAT 케이블에 전원을 실어 보낸다. XDM-POH 1개가 XDM-CTR100(TX) 1대를 맡는다.\n\nXDM-PHX(COS용) 모듈은 2핀(+/−) 전원 단자로 XDM-COS100 카드에 전원을 넣고, COS100이 CAT 케이블로 XDM-CTR100(RX)에 전원을 함께 보낸다. XDM-PHX 1개가 XDM-COS100 출력 1포트(CTR100 RX 1대)를 맡는다.\n\nXDM-PSU로 전원을 공급하면 XDM-CTR100에 전원 어댑터를 따로 연결하지 않는다. 정면에는 채널 LED 16개가 있고, 전원은 AC 100~240V 50/60Hz다.",
   "images": [
     {
       "role": "Front",
@@ -140,8 +140,8 @@
       "source": "U"
     },
     {
-      "text": "XDM-PHX 모듈: 2핀 전원선으로 XDM-COS100 카드에 급전, CTR100(RX)은 CAT로 전원 수신(COS100 1장당 1개)",
-      "source": "U"
+      "text": "XDM-PHX 모듈: 2핀 전원선으로 XDM-COS100 카드에 급전, CTR100(RX)은 CAT로 전원 수신(COS100 출력 1포트당 1개)",
+      "source": "U5"
     },
     {
       "text": "정면 채널 LED 16개 표시 지원",
@@ -172,8 +172,8 @@
       "name": "XDM-PHX",
       "value": "COS용 모듈 · 2핀 전원 단자(+/−)",
       "unit": "",
-      "condition": "XDM-COS100 카드 1장당 1개",
-      "source": "U",
+      "condition": "XDM-COS100 출력 1포트당 1개(CTR100 RX 1대)",
+      "source": "U5",
       "verification": "VERIFIED"
     },
     {
@@ -225,8 +225,8 @@
       "direction": "OUT",
       "quantity": "PHX 모듈당 1",
       "protocol": "",
-      "condition": "XDM-COS100 카드와 2핀 전원선으로 연결",
-      "source": "D1",
+      "condition": "XDM-COS100 출력 포트의 피닉스 단자와 2핀 전원선으로 연결(출력 1포트당 PHX 1개)",
+      "source": "U5",
       "verification": "VERIFIED"
     },
     {
@@ -298,7 +298,13 @@
       "code": "U",
       "name": "서울영상테크 SI사업본부 확인",
       "page": "",
-      "scope": "사용자 결정(2026-09-28) — 모델명 XDM-PSU/XDM-POH/XDM-PHX, POH는 CTR100(Tx) 1대당 1개, PHX는 COS100 카드 1장당 1개, PSU 사용 시 CTR100 개별 전원 불필요"
+      "scope": "사용자 결정(2026-09-28) — 모델명 XDM-PSU/XDM-POH/XDM-PHX, POH는 CTR100(Tx) 1대당 1개, PHX는 COS100 카드 1장당 1개(0.210부터 U5: 출력 1포트당 1개), PSU 사용 시 CTR100 개별 전원 불필요"
+    },
+    {
+      "code": "U5",
+      "name": "알티컴 확인(사용자 전달)",
+      "page": "",
+      "scope": "사용자 전달(2026-10-13) — XDM-COS100은 출력마다 XDM-PHX 전원을 연결함(PHX 1개 = COS100 출력 1포트)"
     }
   ],
   "issues": []

@@ -85,6 +85,15 @@
       "title": "제조사 연결 다이어그램",
       "language": "en/ko",
       "note": "카탈로그 46쪽판 29쪽"
+    },
+    {
+      "type": "Manual",
+      "status": "FOUND",
+      "title": "HD-D102U 사용자 매뉴얼 Ver.1.0",
+      "language": "ko",
+      "note": "알티컴 사용자 매뉴얼 PDF(사용자가 Word에서 저장해 제공 2026-10-14) 공개본, 문서 속성의 작성자·프로그램 정보 삭제",
+      "file": "hd-d102u-manual.pdf",
+      "preview": "pdfjs"
     }
   ],
   "officialLinks": [
@@ -115,8 +124,8 @@
       "source": "C"
     },
     {
-      "text": "스마트 EDID 지원(내장 EDID 사용 또는 출력 1번에 연결된 디스플레이의 EDID 그대로 전달 중 선택)",
-      "source": "U"
+      "text": "스마트 EDID 지원(전면 스위치 STD: 내장 3840x2160 @ 60Hz EDID, TV: 출력 1번 디스플레이 EDID 복사)",
+      "source": "M"
     },
     {
       "text": "설치가 쉬운 컴팩트 구조 지원",
@@ -161,12 +170,39 @@
       "verification": "VERIFIED"
     },
     {
-      "group": "Power",
-      "name": "전원공급",
-      "value": "DC 5V, 1A",
+      "group": "General",
+      "name": "규격",
+      "value": "HDMI 2.0",
       "unit": "",
       "condition": "",
-      "source": "C",
+      "source": "M",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "HDCP",
+      "value": "HDCP 2.2 지원",
+      "unit": "",
+      "condition": "",
+      "source": "M",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Video",
+      "name": "EDID",
+      "value": "전면 스위치 STD·TV 선택",
+      "unit": "",
+      "condition": "STD: 내장 3840x2160 @ 60Hz EDID · TV: 출력 1번 디스플레이 EDID 복사(바꾼 뒤 전원 1회 재연결)",
+      "source": "M",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Power",
+      "name": "전원공급",
+      "value": "DC 5V, 2A",
+      "unit": "",
+      "condition": "",
+      "source": "M",
       "verification": "VERIFIED"
     },
     {
@@ -243,7 +279,7 @@
       {
         "n": 4,
         "label": "DC 5V",
-        "desc": "전원 어댑터 5V 1A",
+        "desc": "전원 어댑터 5V 2A",
         "x1": 360,
         "x2": 386,
         "side": "bottom",
@@ -279,6 +315,12 @@
       "name": "서울영상테크 SI사업본부 확인",
       "page": "",
       "scope": "사용자 확인(2026-09-28) — 카탈로그 원문 \"Smart EDID, STP(4K60Hz) mode and TV(copy OUT1) Mode\"를 내장 EDID·출력 1번 EDID 패스스루 선택 기능으로 알기 쉽게 정리"
+    },
+    {
+      "code": "M",
+      "name": "HD-D102U 사용자 매뉴얼 Ver.1.0 (알티컴, 2026-10-08판)",
+      "page": "4–8",
+      "scope": "사용자 제공(2026-10-14) — 일반 사양(HDMI 2.0, HDCP v2.2, DC +5V 2A, 100×56×16mm, 0.26kg), EDID 전면 스위치 STD·TV"
     }
   ],
   "issues": []

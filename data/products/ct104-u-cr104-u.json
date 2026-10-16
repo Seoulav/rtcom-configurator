@@ -80,6 +80,15 @@
       "previewImages": [
         "ct104-u-cr104-u-catalog-p1.webp"
       ]
+    },
+    {
+      "type": "Manual",
+      "status": "FOUND",
+      "title": "CT104-U / CR104-U 사용자 매뉴얼 Ver.1.0",
+      "language": "ko",
+      "note": "알티컴 사용자 매뉴얼 PDF(사용자가 Word에서 저장해 제공 2026-10-14) 공개본, 문서 속성의 작성자·프로그램 정보 삭제",
+      "file": "ct104-u-cr104-u-manual.pdf",
+      "preview": "pdfjs"
     }
   ],
   "officialLinks": [
@@ -104,6 +113,10 @@
     {
       "text": "EDID 패스스루 지원",
       "source": "C"
+    },
+    {
+      "text": "VDM 매트릭스 CIS4-U(CT104-U)·COS4-U(CR104-U) 카드 연동 지원",
+      "source": "M"
     }
   ],
   "specifications": [
@@ -200,10 +213,10 @@
     {
       "group": "Power",
       "name": "전원",
-      "value": "DC +12V 2A",
+      "value": "DC +12V 1A 이상",
       "unit": "",
       "condition": "",
-      "source": "C",
+      "source": "M",
       "verification": "VERIFIED"
     },
     {
@@ -211,8 +224,17 @@
       "name": "크기(W×D×H)",
       "value": "112×72×26",
       "unit": "mm",
-      "condition": "",
-      "source": "C",
+      "condition": "CT104-U",
+      "source": "M",
+      "verification": "VERIFIED"
+    },
+    {
+      "group": "Physical",
+      "name": "크기(W×D×H)",
+      "value": "113×73×29",
+      "unit": "mm",
+      "condition": "CR104-U",
+      "source": "M",
       "verification": "VERIFIED"
     },
     {
@@ -259,13 +281,13 @@
     },
     {
       "group": "TX · Control",
-      "connector": "RS-232 단자",
+      "connector": "피닉스 3핀",
       "signal": "RS-232",
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
       "condition": "CT104-U · RS-232C",
-      "source": "C",
+      "source": "M",
       "verification": "VERIFIED"
     },
     {
@@ -292,13 +314,13 @@
     },
     {
       "group": "RX · Control",
-      "connector": "RS-232 단자",
+      "connector": "피닉스 3핀",
       "signal": "RS-232",
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
       "condition": "CR104-U · RS-232C",
-      "source": "C",
+      "source": "M",
       "verification": "VERIFIED"
     }
   ],
@@ -322,7 +344,7 @@
         {
           "n": 4,
           "label": "DC 12V",
-          "desc": "전원 어댑터 12V 2A",
+          "desc": "전원 어댑터 12V 1A 이상",
           "x1": 31,
           "x2": 44,
           "side": "bottom",
@@ -364,7 +386,7 @@
         {
           "n": 4,
           "label": "DC 12V",
-          "desc": "전원 어댑터 12V 2A",
+          "desc": "전원 어댑터 12V 1A 이상",
           "x1": 30,
           "x2": 43,
           "side": "bottom",
@@ -424,6 +446,12 @@
       "name": "알티컴 종합 카탈로그 2026 (국문 46쪽, 개정판)",
       "page": "23",
       "scope": "제조사 공식 출처 — docs/RTcom_catalogue_2026_46p.pdf"
+    },
+    {
+      "code": "M",
+      "name": "CT104-U / CR104-U 사용자 매뉴얼 Ver.1.0 (알티컴, 2026-10-07판)",
+      "page": "4–11",
+      "scope": "사용자 제공(2026-10-14) — HDMI 1.4·HDBaseT, HDCP v1.x, DC +12V 1A 이상, 크기 CT104-U 112×72×26mm·CR104-U 113×73×29mm, RS-232 피닉스 3핀, VDM CIS4-U·COS4-U 연동"
     }
   ],
   "issues": []

@@ -91,6 +91,12 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await page.locator('button[data-slot="in-1"]').click();
     await page.locator('.rt-card-modal .rt-card-choice').nth(1).click();
     await page.locator('button[data-slot="out-1"]').click();
+    // 0.205 출력 카드 선택 팝업 팁의 HOS100·WOS100 기능 팝업 버튼: 눌러도 카드 선택 팝업은 그대로 남는다.
+    const tipFeatures=await page.$$eval('.rt-card-modal .rt-output-tips [data-card-feature]',els=>els.map(e=>e.dataset.cardFeature).join());
+    await page.click('.rt-card-modal .rt-output-tips [data-card-feature="hos-multiview"]');
+    const tipHos=await page.locator('dialog.rt-hos-modal[open]').count();
+    await page.keyboard.press('Escape');
+    check('XDM 출력 카드 선택 팝업 팁에 HOS100 멀티뷰·WOS100 레이어 버튼이 있고, 멀티뷰 팝업을 닫으면 카드 선택 팝업이 남음',tipFeatures==='hos-multiview,layer-compare'&&tipHos===1&&await page.locator('.rt-card-modal[open]').count()===1,tipFeatures);
     await page.locator('.rt-card-modal .rt-card-choice').nth(1).click();
     await page.waitForLoadState('networkidle');
     check('장착한 슬롯이 카드 판넬로 바뀌고 전환 효과가 적용됨(블랭크였던 in-1도 카드로 교체됨)',await page.locator('button[data-slot="out-1"].rt-rack-slot-filled.rt-rack-slot-changed').count()===1&&await page.locator('button[data-slot="in-1"].rt-rack-slot-filled').count()===1&&await page.locator('.rt-rack-slot-empty').count()===70);
@@ -103,6 +109,9 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     check('XDM-144 후면 그림 위에 슬롯이 표시되고 그림이 정상 로드됨',await page.locator('.rt-rack-photo .rt-rack-slot').count()===72&&await page.$eval('.rt-rack-photo-image',image=>image.naturalWidth>0));
     await page.locator('button[data-slot="in-2"]').click();
     await page.locator('.rt-card-modal .rt-card-choice[data-card="XDM-CIS100"]').click();
+    // 0.219 시안 C(사용자 선택 2026-10-14 "C만 진행"): 장착 슬롯 태그에 채널 범위, 완성도 막대는 슬롯마다 한 칸(카드 칸은 신호 색), 내 구성에 연동 전송기 묶음.
+    const planC=await page.evaluate(()=>{const segs=[...document.querySelectorAll('.rt-completion-slots i')],sig=segs.filter(i=>i.dataset.sig);return {tag:document.querySelector('.rt-rack-slot[data-slot="in-2"] .rt-slot-tag')?.textContent.replace(/\s+/g,' ').trim()||'',slots:document.querySelectorAll('.rt-rack-photo .rt-rack-slot').length,segs:segs.length,filled:document.querySelectorAll('.rt-rack-slot-filled').length,sig:sig.length,hdbt:getComputedStyle(sig.find(i=>i.dataset.sig==='hdbt')||document.body).backgroundColor,links:[...document.querySelectorAll('.rt-summary-links .rt-summary-link')].map(li=>li.textContent.replace(/\s+/g,' ').trim())}});
+    check('시안 C: IN 2 태그에 CH 5–8, 완성도 막대가 슬롯 수(72)만큼 칸이고 카드 칸은 신호 색(HDBT 초록), 내 구성에 "CIS100 IN 2 → XDM-CTR100 · TX × 4" 연동 전송기 행',/^IN 2 ?CIS100 ?CH 5–8$/.test(planC.tag)&&planC.segs===planC.slots&&planC.slots===72&&planC.sig===planC.filled&&planC.hdbt==='rgb(0, 176, 80)'&&planC.links.some(t=>/^CIS100 ?IN 2 ?→ ?XDM-CTR100 · TX ?× 4$/.test(t)),JSON.stringify(planC));
     await nextToLinks(page);
     await page.waitForLoadState('networkidle');
     check('CIS100 장착 시 전송기 단계에 XDM-CTR100(TX)이 4채널로 자동 연결됨',await page.locator('button[data-owner="in-2"][data-link-device="XDM-CTR100 · TX"][aria-pressed="true"]').count()===1&&await page.locator('select[data-owner="in-2"][data-link="count"]').inputValue()==='4');
@@ -387,9 +396,9 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     // 0.33 — 제품정보 글래스 디자인(rt-pg-*)으로 목록·상세 마크업이 바뀌었다.
     await page.click('a[data-view-tab="products"]');
     await page.waitForSelector('.rt-pg-gridcard');
-    check('제품정보 탭을 누르면 구성기를 숨기고 제품 32종 목록(0.64 SPX-TX/RX, 0.72 XDM-PSU, 0.121 HD-D102U Rack마운트, 0.157 SPX-R6 포함)을 표시',await page.locator('.rt-configurator-view').isHidden()&&await page.locator('.rt-pg-gridcard').count()===32);
+    check('제품정보 탭을 누르면 구성기를 숨기고 제품 33종 목록(0.64 SPX-TX/RX, 0.72 XDM-PSU, 0.121 HD-D102U Rack마운트, 0.157 SPX-R6, 0.223 XDM-MR4S 포함)을 표시',await page.locator('.rt-configurator-view').isHidden()&&await page.locator('.rt-pg-gridcard').count()===33);
     await page.click('[data-product-filter="extender"]');
-    check('전송기 분류는 15종(0.64 SPX-TX/RX, 0.72 XDM-PSU, 0.157 SPX-R6 포함)',await page.locator('.rt-pg-gridcard').count()===15);
+    check('전송기 분류는 16종(0.64 SPX-TX/RX, 0.72 XDM-PSU, 0.157 SPX-R6, 0.223 XDM-MR4S 포함)',await page.locator('.rt-pg-gridcard').count()===16);
     await page.click('[data-product-filter="all"]');
     await page.fill('[data-product-search]','QMS');
     check('검색어 QMS로 일체형 매트릭스 2종이 남음',await page.locator('.rt-pg-gridcard').count()===2);
@@ -414,7 +423,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await page.goBack();
     await page.waitForSelector('.rt-pg-gridcard');
     check('제품정보 목록의 첫 카드는 XDM(0.125, 사용자 요청 "XDM이 처음으로 나오게해")',(await page.locator('.rt-pg-gridcard').first().getAttribute('href'))==='#products/xdm');
-    check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-pg-gridcard').count()===32);
+    check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-pg-gridcard').count()===33);
     // 0.154 제품정보 프레임 정면·후면 팝업: 위아래로 쌓일 때 두 그림의 가로폭이 같아야 한다(사용자 요청 2026-09-29).
     await page.goto(`${home}#products/spx`,{waitUntil:'networkidle'});
     await page.click('[data-pg-frame="SPX-M1620"]');
@@ -581,12 +590,17 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     // 0.200 SPX-R6 03 Signal Flow: TX 구성(기본)·RX 구성 버튼으로 바꿔 보고, RX 구성은 소스 → SPX-TX 6대 → 모듈 CAT IN → HDMI OUT → 디스플레이로 그린다.
     const r6Flow=await page.evaluate(()=>{const box=document.querySelector('.rt-pg-flow-modes');const face=k=>box?.querySelector(`[data-pm-face="${k}"]`);const before={tx:!face('tx')?.hidden,rx:!face('rx')?.hidden};box?.querySelector('[data-pm-side="rx"]')?.click();const rxText=face('rx')?.querySelector('svg')?.textContent||'';return {before,after:{tx:!face('tx')?.hidden,rx:!face('rx')?.hidden},tx:(rxText.match(/SPX-TX/g)||[]).length,catIn:rxText.includes('CAT IN → HDMI OUT'),pressed:box?.querySelector('[data-pm-side="rx"]')?.getAttribute('aria-pressed'),overflow:document.documentElement.scrollWidth>innerWidth}});
     check('SPX-R6 03 Signal Flow는 TX 구성이 기본이고 RX 구성 버튼을 누르면 SPX-TX 6대 → 모듈 CAT IN → HDMI OUT 그림으로 바뀜',r6Flow.before.tx&&!r6Flow.before.rx&&!r6Flow.after.tx&&r6Flow.after.rx&&r6Flow.tx>=6&&r6Flow.catIn&&r6Flow.pressed==='true'&&!r6Flow.overflow,JSON.stringify(r6Flow));
+    // 0.223 XDM-MR4S: 사용자 제공 실물 사진(앞면·뒷면) 단자 지도와 장착 카드(XDM-CTR100·XDM-FT101/FR101) 관련 제품 연결(사용자 요청 2026-10-16).
+    await page.goto(`${home}#products/xdm-mr4s`,{waitUntil:'networkidle'});
+    await page.waitForSelector('#rt-pg-title');
+    const mr4=await page.evaluate(()=>{const s=[...document.querySelectorAll('section')].find(s=>/Port Map/i.test(s.querySelector('h2')?.textContent||''));const links=[...document.querySelectorAll('a[href*="#products/"]')].map(a=>a.getAttribute('href'));return {title:document.querySelector('#rt-pg-title')?.textContent,front:!!s?.innerHTML.includes('xdm-mr4s-front.webp'),rear:!!s?.innerHTML.includes('xdm-mr4s-rear.webp'),ports:[...(s?.querySelectorAll('.rt-pg-ports')||[])].map(x=>x.children.length),ctr:links.some(h=>h.endsWith('#products/xdm-ctr100')),ft:links.some(h=>h.endsWith('#products/xdm-ft101-fr101')),broken:[...document.images].filter(i=>i.complete&&!i.naturalWidth).length,overflow:document.documentElement.scrollWidth>innerWidth}});
+    check('XDM-MR4S 상세에 앞면·뒷면 실물 사진 단자 지도(번호 5·5개)와 XDM-CTR100·XDM-FT101/FR101 관련 제품 링크가 나오고 깨진 사진이 없음',/XDM-MR4S/.test(mr4.title||'')&&mr4.front&&mr4.rear&&mr4.ports.join()==='5,5'&&mr4.ctr&&mr4.ft&&!mr4.broken&&!mr4.overflow,JSON.stringify(mr4));
     // 0.201 SPX-TX/RX 03 Signal Flow 범례: 실효 전송 거리에 Belden 케이블 조건(7814A·10GXE02)이 남는다(사용자 요청 2026-10-04).
     await page.goto(`${home}#products/spx-rx-tx`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-legend');
     const txrxLegend=await page.evaluate(()=>document.querySelector('.rt-pg-legend')?.textContent||'');
     check('SPX-TX/RX 신호 흐름 범례의 실효 전송 거리에 Belden 7814A·10GXE02 조건이 보임',txrxLegend.includes('UTP CAT6 50m (Belden 7814A)')&&txrxLegend.includes('S/FTP CAT6A 70m (Belden 10GXE02)'),txrxLegend.slice(0,200));
-    // 0.202 XDM 07 화면 연출 시뮬레이터(WOS100 월 오버레이): 기본 프리셋 커맨드가 가이드 문법으로 나오고, 창을 끌면 X 좌표와 커맨드가 함께 바뀐다.
+    // 0.224 XDM 07 화면 연출 시뮬레이터(WOS100 월 오버레이): 기본 프리셋 커맨드가 가이드 문법으로 나오고, 창을 끌면 X 좌표와 커맨드가 함께 바뀐다.
     await page.goto(`${home}#products/xdm`,{waitUntil:'networkidle'});
     await page.waitForSelector('#rt-layout-sim .rt-ls-canvas');
     await page.evaluate(()=>{try{localStorage.removeItem('rtcom.layoutSim.v1')}catch(e){}});
@@ -654,6 +668,39 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await page.click('dialog.rt-doc-zoom [data-zoom-close]');
     // 0.151(#205)에서 XDM 카탈로그를 전송기 쪽까지 넣은 4~12쪽(9쪽)으로 늘렸다.
     check('XDM 카탈로그 팝업이 9쪽 그림(xdm-catalog-p1~p9.webp)으로 나옴',xdmCat.join()===[1,2,3,4,5,6,7,8,9].map(n=>`xdm-catalog-p${n}.webp`).join(),JSON.stringify(xdmCat));
+    // 0.205(사용자 요청 2026-10-12): 제품정보 XDM 04 카드 상세(WOS100·HOS100)와 02 신호 구성 그림의 WOS100·HOS100 칸에서 기능 팝업이 열리고,
+    // HOS100 팝업에는 레이아웃 6종과 레이어 2개(1·2번, 3·4번 짝)·4개일 때 쓸 수 없는 포트가 보이며, HOS100 카드 사양표에 "멀티뷰 포트 제한" 행이 있다.
+    {
+      const openCount=()=>page.locator('dialog[open]').count();
+      // 0.209 XDM 커맨드 가이드(알티컴 1013판, 사용자 결정 2026-10-13 "공개 진행"): 제품 상세 문서 버튼에 "커맨드 가이드 보기 | 다운로드"가 있다.
+      const xdmDocs=await page.evaluate(()=>[...document.querySelectorAll('.rt-pg-doc[data-doc="Manual"] .rt-pg-doc-open')].map(b=>(b.querySelector('b')||b).textContent.trim()+'>'+(b.dataset.docPreview||'')).join('|'));
+      check('XDM 제품 상세 문서 버튼에 매뉴얼과 커맨드 가이드(PDF.js 팝업·다운로드)가 함께 있음',xdmDocs==='매뉴얼 보기>output/design/assets/docs/xdm-manual.pdf|커맨드 가이드 보기>output/design/assets/docs/xdm-command-guide.pdf'&&await page.locator('.rt-pg-doc-save[download="xdm-command-guide.pdf"]').count()===1,xdmDocs);
+      await page.click('[data-pg-card="XDM-WOS100"]');
+      const wosCta=await page.locator('dialog[open] .rt-feature-cta [data-card-feature="layer-compare"]').count();
+      await page.click('dialog[open] [data-card-feature="layer-compare"]');
+      const wosOpen={n:await openCount(),title:await page.locator('dialog[open] h3').last().textContent()};
+      // 0.207(사용자 요청 2026-10-12 "wos 출력1개에 4K60 소스 4개를 VP처럼 레이어링", "선도 꼬여 있어"): 가로(PC)·세로(휴대폰) 그림 모두 디스플레이 1대에 레이어 창 4개,
+      // 신호선은 한 방향 직선(가로 그림 H, 세로 그림 V)뿐이라 서로 교차하지 않는다. WOS100 사양표에 "레이어" 행이 있다.
+      // 0.214(사용자 요청 2026-10-13 "출력 디스플레이를 4K 네 판으로 표시하고 레이어 4개를 연출한 화면으로 해줘"): 그림은 WOS100 카드 4장 → 4K 디스플레이 4대(2×2)이고 신호선은 16개다.
+      // 같은 날 "HOS100카드와 컨셉과 아날로그웨이 브로셔와 잘 믹싱해봐": 핵심 수치 띠 4칸, 포트 조건 안내 상자, HOS100식 배치 예시 6종(모니터 그림)이 있다.
+      const wosFig=await page.evaluate(()=>{const d=[...document.querySelectorAll('dialog[open]')].pop();const r={};for(const svg of d.querySelectorAll('.rt-layer-figure svg')){const want=svg.classList.contains('rt-layer-svg-wide')?'H':'V';const ds=[...svg.querySelectorAll('path.rt-layer-route')].map(p=>p.getAttribute('d'));r[want]={wins:svg.querySelectorAll('.rt-layer-win').length,cards:svg.querySelectorAll('.rt-wos-card').length,panels:svg.querySelectorAll('.rt-wall-panel').length,routes:ds.length,straight:ds.every(x=>new RegExp('^M[\\d.]+ [\\d.]+ '+want+'[\\d.]+$').test(x)),visible:getComputedStyle(svg).display!=='none'}}r.keys=d.querySelectorAll('.rt-wos-keys li').length;r.layouts=[...d.querySelectorAll('.rt-wos-layout strong')].map(e=>e.textContent).join();r.monitors=d.querySelectorAll('.rt-wos-layout .rt-hos-fig svg').length;r.cells=d.querySelectorAll('.rt-wos-layout .rt-wos-cell').length;r.warn=d.querySelector('.rt-wos-warn')?.textContent||'';r.guide=d.querySelector('[data-cmd-guide]')?.getAttribute('href')||'';r.led=/LED 모드/.test(d.querySelector('.rt-wos-feats')?.textContent||'');r.chips=[...d.querySelectorAll('.rt-wos-ports')].map(ol=>[...ol.children].map(li=>li.className.replace('rt-hos-port-','')).join('/')).join(' ');r.spec=[...document.querySelectorAll('dialog[open]')][0].querySelector('th')&&[...[...document.querySelectorAll('dialog[open]')][0].querySelectorAll('th')].some(th=>th.textContent==='레이어');r.wosSync=(d.querySelector('.rt-wos-sync')||{}).textContent||'';r.syncRow=[...[...document.querySelectorAll('dialog[open]')][0].querySelectorAll('th')].some(th=>th.textContent==='출력 동기');return r});
+      await page.keyboard.press('Escape');await page.keyboard.press('Escape');
+      await page.click('[data-pg-card="XDM-HOS100"]');
+      const hosInfo=await page.evaluate(()=>{const d=[...document.querySelectorAll('dialog[open]')].pop();return {sync:[...d.querySelectorAll('th')].some(th=>th.textContent==='출력 동기'),row:[...d.querySelectorAll('th')].some(th=>th.textContent==='멀티뷰 포트 제한'),cta:!!d.querySelector('.rt-feature-cta [data-card-feature="hos-multiview"]')}});
+      await page.click('dialog[open] [data-card-feature="hos-multiview"]');
+      const hosPopup=await page.evaluate(()=>{const d=[...document.querySelectorAll('dialog[open]')].pop();return {syncNote:(d.querySelector('.rt-hos-sync')||{}).textContent||'',title:d.querySelector('h3').textContent,layouts:[...d.querySelectorAll('.rt-hos-layout strong')].map(e=>e.textContent).join(),warn:d.querySelector('.rt-hos-warn').textContent,pip:[...d.querySelectorAll('.rt-hos-layout')].find(li=>li.querySelector('strong').textContent==='PIP').querySelectorAll('.rt-hos-port-off').length,quadDup:[...d.querySelectorAll('.rt-hos-layout')].find(li=>li.querySelector('strong').textContent==='Quad').querySelectorAll('.rt-hos-port-dup').length,monitors:d.querySelectorAll('.rt-hos-fig svg').length,cmdRows:d.querySelectorAll('.rt-hos-cmd tbody tr').length,guide:d.querySelector('[data-cmd-guide]')?.getAttribute('href')||'',cells:d.querySelectorAll('.rt-hos-fig .rt-hos-cell').length}});
+      await page.keyboard.press('Escape');await page.keyboard.press('Escape');
+      const sig=page.locator('svg [data-card-feature="hos-multiview"]');
+      const sigInfo={wos:await page.locator('svg [data-card-feature="layer-compare"][role="button"][tabindex="0"]').count(),hos:await sig.count(),legend:await page.locator('.rt-pg-legend-feature').count()};
+      await sig.click();const sigClick=await page.locator('dialog[open] h3').last().textContent();await page.keyboard.press('Escape');
+      await page.locator('svg [data-card-feature="layer-compare"]').focus();await page.keyboard.press('Enter');const sigKey=await page.locator('dialog[open] h3').last().textContent();await page.keyboard.press('Escape');
+      check('제품정보 XDM: WOS100 카드 상세에 레이어 팝업 버튼, HOS100 카드 상세에 멀티뷰 포트 제한 행과 멀티뷰 팝업 버튼(카드 팝업 위로 겹쳐 열림)',wosCta===1&&wosOpen.n===2&&/WOS100 레이어/.test(wosOpen.title)&&hosInfo.row&&hosInfo.cta,JSON.stringify({wosCta,wosOpen,hosInfo}));
+      check('WOS100 레이어 팝업: WOS100 카드 4장이 4K 디스플레이 4대(2×2 비디오 월, 화면 표시 4개)에 4K/60 레이어 창 4개를 나눠 냄(0.214, 가로·세로 그림), 신호선 16개가 모두 한 방향 직선이라 교차 없음, 화면 폭에 맞는 그림 하나만 보임, 사양표 레이어 행, 핵심 수치 4칸·포트 조건 안내·배치 예시 6종(HOS100과 같은 모니터 그림 6장·칸 22개)·레이어를 쓰면 카드 4포트가 같은 화면(0.210 알티컴 확인) 안내와 포트 칩(6종 모두 1번 합성·2~4번 1번 동일)',wosFig.H?.wins===4&&wosFig.V?.wins===4&&wosFig.H.cards===4&&wosFig.V.cards===4&&wosFig.H.panels===4&&wosFig.V.panels===4&&wosFig.H.routes===16&&wosFig.V.routes===16&&wosFig.H.straight&&wosFig.V.straight&&wosFig.H.visible!==wosFig.V.visible&&wosFig.spec&&wosFig.keys===4&&wosFig.layouts==='자유 배치,배경 + PIP 3,PBP + PIP + 로고,쿼드,L자형,배경 + 하단 띠'&&wosFig.monitors===6&&wosFig.cells===22&&/레이어를 1개만 써도 2~4번 포트에 1번과 같은 합성 화면/.test(wosFig.warn)&&/HOS100\(레이어 2개면 짝 포트만 사용 불가\)과 다릅니다/.test(wosFig.warn)&&!/확인되지 않/.test(wosFig.warn)&&wosFig.chips===Array(6).fill('main/dup/dup/dup').join(' ')&&wosFig.guide.endsWith('xdm-command-guide.pdf#page=45')&&wosFig.led,JSON.stringify(wosFig));
+      check('HOS100 멀티뷰 팝업: 레이아웃 6종(매뉴얼 KV08, QMS 06과 같은 모니터 그림 6장·칸 17개)·커맨드 레이아웃 14종 표(11행)·커맨드 가이드 26쪽 링크(0.209)과 레이어 2개면 짝 포트(2·4번) 불가·4개면 2~4번 1번과 같은 화면 안내',hosPopup.layouts==='Full 1~4,Quad,Bottom,Right,PIP,PBP'&&/1번을 분할하면 2번, 3번을 분할하면 4번을 사용할 수 없습니다/.test(hosPopup.warn)&&/2~4번 포트에 1번과 같은 화면/.test(hosPopup.warn)&&hosPopup.pip===2&&hosPopup.quadDup===3&&hosPopup.monitors===6&&hosPopup.cells===17&&hosPopup.cmdRows===11&&hosPopup.guide.endsWith('xdm-command-guide.pdf#page=26'),JSON.stringify(hosPopup));
+      // 0.211 WOS100과 HOS100의 가장 큰 차이는 출력 동기(싱크): HOS100은 레이어를 만들 수 있으나 동기가 맞지 않아 LED 적용이 어렵고, WOS100은 2~3장으로 LED S-BOX 1·2에 나눠 보낼 때 카드 사이 동기가 맞는다(알티컴 확인, 사용자 전달 2026-10-13).
+      check('WOS100·HOS100 출력 동기 차이(0.211): WOS100 LED 상자에 출력 동기 안내, 두 카드 사양에 "출력 동기" 행, HOS100 멀티뷰 팝업에 "LED 화면에는 WOS100" 안내 상자',/출력 동기\(싱크\)가 맞아 LED 화면에 씁니다/.test(wosFig.wosSync)&&wosFig.syncRow&&hosInfo.sync&&/LED 화면에는 WOS100을 씁니다/.test(hosPopup.syncNote)&&/2~3장으로 LED S-BOX 1·2/.test(hosPopup.syncNote)&&/2~3장으로 LED S-BOX 1·2/.test(wosFig.wosSync)&&/출력 동기\(싱크\)가 맞지 않아 LED/.test(hosPopup.syncNote),JSON.stringify({wosSync:wosFig.wosSync,syncRow:wosFig.syncRow,hosSync:hosInfo.sync,syncNote:hosPopup.syncNote}));
+      check('제품정보 XDM 02 신호 구성: WOS100·HOS100 칸이 버튼(role·tabindex)이고 누르거나 Enter로 팝업이 열리며 범례에 안내가 있음',sigInfo.wos===1&&sigInfo.hos===1&&sigInfo.legend===1&&/HOS100 멀티뷰/.test(sigClick)&&/WOS100 레이어/.test(sigKey),JSON.stringify({sigInfo,sigClick,sigKey}));
+    }
     await page.goto(`${home}#products/vdm`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-toolbar');
     const vdmStart=Date.now();
@@ -1216,7 +1263,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       check('끌어 놓기 버튼 12개가 모두 판넬 사진 타일이고, 장착한 XDM-HOS100에만 × 1 수량이 붙음',tiles.count===12&&tiles.withImg===12&&tiles.hos==='× 1'&&tiles.hi==='',JSON.stringify(tiles));
       // 0.167(시안 A, 사용자 선택 "이거 좋다 한번 해보자"): 색은 신호 배지 하나에만 쓴다. 타일·후면 장착 슬롯·범례·내 구성에 같은 배지, 내 구성 행은 "배지 · 모델명 · 장착 위치 · × N".
       const sig=await p3.evaluate(()=>{const bg=el=>el&&getComputedStyle(el).backgroundColor,tile=id=>document.querySelector(`.rt-palette-tile[data-palette-card="${id}"]`);const row=document.querySelector('.rt-config-summary .rt-summary-card[data-card-info="XDM-HOS100"]');return {hdmi:bg(tile('XDM-HIS100').querySelector('.rt-sig-badge')),sdi:bg(tile('XDM-SIS100').querySelector('.rt-sig-badge')),fiber:bg(tile('XDM-FIS100').querySelector('.rt-sig-badge')),tileBg:bg(tile('XDM-SIS100')),slot:document.querySelector('.rt-rack-slot[data-slot="out-1"] .rt-slot-tag')?.textContent.replace(/\s+/g,' ').trim()||'',slotBg:bg(document.querySelector('.rt-rack-slot[data-slot="out-1"] .rt-slot-tag-s')),legend:[...document.querySelectorAll('.rt-sig-legend .rt-sig-badge')].map(b=>b.textContent).join(','),rowText:row?.textContent.replace(/\s+/g,' ').trim(),rowImg:!!row?.querySelector('img')}});
-      check('신호 배지 색이 신호마다 다르고 타일 바탕은 흰색, 후면 장착 슬롯 태그(OUT 1 | HOS100, HDMI 색)·범례·내 구성 행("HDMI XDM-HOS100 OUT 1 × 1")에 같은 신호 색이 보임',new Set([sig.hdmi,sig.sdi,sig.fiber]).size===3&&sig.tileBg==='rgb(255, 255, 255)'&&/^OUT 1 ?HOS100$/.test(sig.slot)&&sig.slotBg===sig.hdmi&&sig.legend==='HDMI,DP,HDBT,FIBER,SDI'&&/^HDMI ?XDM-HOS100 ?OUT 1 ?× 1$/.test(sig.rowText)&&!sig.rowImg,JSON.stringify(sig));
+      check('신호 배지 색이 신호마다 다르고 타일 바탕은 흰색, 후면 장착 슬롯 태그(OUT 1 | HOS100 | CH 1–4, HDMI 색)·범례·내 구성 행("HDMI XDM-HOS100 OUT 1 × 1")에 같은 신호 색이 보임',new Set([sig.hdmi,sig.sdi,sig.fiber]).size===3&&sig.tileBg==='rgb(255, 255, 255)'&&/^OUT 1 ?HOS100 ?CH 1–4$/.test(sig.slot)&&sig.slotBg===sig.hdmi&&sig.legend==='HDMI,DP,HDBT,FIBER,SDI'&&/^HDMI ?XDM-HOS100 ?OUT 1 ?× 1$/.test(sig.rowText)&&!sig.rowImg,JSON.stringify(sig));
       await p3.locator('button.rt-card-info-chip[data-palette-card="XDM-HIS100"]').click();
       const infoOpen=await p3.locator('dialog.rt-card-info-modal[open]').count();await p3.keyboard.press('Escape');
       check('끌 수 있는 카드 정보 버튼도 누르면 카드 상세 정보가 열림',infoOpen===1,String(infoOpen));
