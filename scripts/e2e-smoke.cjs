@@ -628,6 +628,33 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       const over=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
       check(`${id} 설정 명령 패널: ${steps.map(x=>x[1]).join(' · ')}${id==='qms-88ux'?' · 값 직접 입력 *255OSO04O08H09!':''} 가 만들어지고 가로 넘침 없음`,seen.every(x=>x[1])&&(id!=='qms-88ux'||edited.includes('*255OSO04O08H09!'))&&!over,JSON.stringify({seen,edited,over}).slice(0,260));
     }
+    // 0.235 모듈러 매트릭스 시리즈(XDM·SPX·VDM) AMX 커맨드 카드: 명령 묶음 선택, 예시 명령, VDM 번호 자릿수(2·3자리), SPX 문장형(Enter 없음).
+    for(const [id,idx,steps] of [
+      ['xdm','08',[['conn','*255CI002O001-005!'],['osdi','*255IDI001M01S"Camera 1"!'],['os','*255OSO001O002H11!'],['sys','*255?SID!']]],
+      ['spx','07',[['conn','*255CI001O001-007!'],['ow','*255OWO001-004M09H02V02O001O002O003O004!'],['t_av','s in 1 av out 2!'],['t_wall','s wall 2 hdiv 3 vdiv 3 time 13 out 13!']]],
+      ['vdm','07',[['c','*255CI01O01-07!'],['stat','*255?O07!'],['ot','*255OTO01-09T05P05!'],['oz','*255OZO01,O02!']]]]){
+      await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
+      await page.waitForSelector('#rt-control [data-ce-bsel]');
+      const seen=[];
+      for(const [bid,expect] of steps){
+        await page.selectOption('#rt-control [data-ce-bsel]',bid);
+        const text=(await page.locator('#rt-control [data-ce-bout] .rt-ce-cmd').first().innerText()).replace(/\s+/g,' ');
+        seen.push([bid,text.includes(expect)]);
+      }
+      let extra='';
+      if(id==='vdm'){
+        await page.selectOption('#rt-control [data-ce-bvariant]','3');
+        await page.selectOption('#rt-control [data-ce-bsel]','stat');
+        extra=(await page.locator('#rt-control [data-ce-bout] .rt-ce-cmd').first().innerText()).replace(/\s+/g,' ');
+      }
+      if(id==='spx'){
+        await page.selectOption('#rt-control [data-ce-bsel]','t_av');
+        extra=await page.locator('#rt-control [data-ce-bout] .rt-ce-hex').innerText();
+      }
+      const info=await page.evaluate(()=>({idx:document.querySelector('#rt-control .rt-pg-idx').textContent,btn:!!document.querySelector('[data-scroll-to="rt-control"]'),sim:!!document.querySelector('#rt-layout-sim'),over:document.documentElement.scrollWidth>innerWidth,groups:document.querySelectorAll('#rt-control [data-ce-bsel] optgroup').length}));
+      const extraOk=id==='vdm'?extra.includes('*255?O007!'):id==='spx'?/Enter가 적혀 있지 않아/.test(extra):true;
+      check(`${id} AMX 커맨드 카드(${idx}): 명령 ${steps.map(x=>x[0]).join('·')} 예시 일치${id==='vdm'?' · 3자리 번호 *255?O007!':''}${id==='spx'?' · 문장형은 Enter 없음':''} · 묶음 선택·가로 넘침 없음`,seen.every(x=>x[1])&&extraOk&&info.idx===idx&&info.btn&&info.groups>=1&&!info.over&&(id!=='xdm'||info.sim),JSON.stringify({seen,extra:extra.slice(0,80),info}).slice(0,300));
+    }
     // 0.62 HDS-21U·HDS-42MU 딥 스위치 칸 순서: ON이 왼쪽, OFF가 오른쪽(dipSwitch.order, 사용자 요청 2026-09-27). HD-210U는 OFF → ON 그대로.
     for(const [id,first] of [['hds-21u','ON'],['hds-42mu','ON'],['hd-210u','OFF']]){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
