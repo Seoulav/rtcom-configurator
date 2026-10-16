@@ -17,7 +17,7 @@
        디스플레이마다 카드 1장을 두고, 그 카드의 포트 1~4를 그 디스플레이 위 창(레이어) 자원으로 쓴다(디스플레이 1대에 창 4개까지).
      - 'guide': 가이드 46~47쪽 Wall Port Connection 그림대로 카드 1장(포트 4개) = 디스플레이 2×2 블록. 가이드 예제 1~8이 이 배치로 적혀 있다.
      두 배치가 서로 달라 어느 쪽이 맞는지는 알티컴 확인 대기(docs/handoff/OPEN_ITEMS.md).
-   현장 설정 값(특정 현장의 좌표·EDID 번호)은 0.209 사용자 결정대로 넣지 않는다. 비율 예시는 22:9 레터박스를 계산한 일반 값이다.
+   현장 메모 값(출력 9~12번 모니터링 커맨드, HPD·EDID·Genlock 참고 커맨드)은 0.209 결정으로 빼 두었다가 0.229에서 사용자 결정(2026-10-16 "2안으로 전부 공개해")대로 공개한다(FIELD_NOTES).
    순수 함수(geometry·portMapFor·assignPorts·commandFor·coverageFor·PRESETS)는 Node 테스트(tests/layout-sim.test.cjs)에서도 쓰므로 DOM을 건드리지 않는다.
    mount()·mountAll()은 브라우저에서 제품정보(XDM 시리즈) 화면의 "07 화면 연출 시뮬레이터" 카드 안에만 그린다(src/products.js). */
 (function(scope,factory){
@@ -303,17 +303,21 @@
       return {index:i,input:win.input,label:win.label,cells};
     });
   }
-  // 프리셋: 알티컴 확인 배치(card)의 기본 예시, 가이드 예제(guide 배치, 쪽 번호), 비율 계산 예시. expected는 가이드에 적힌 커맨드 원문 또는 규칙으로 계산한 값(테스트 기준).
+  // 프리셋: 알티컴 확인 배치(card)의 기본 예시, 현장 메모 원문 3개(0.229, 사용자 결정 2026-10-16 "2안으로 전부 공개해": 0.209의 현장 값 비공개를 이 항목에 한해 되돌림), 가이드 예제(guide 배치, 쪽 번호).
+  // expected는 가이드·메모에 적힌 커맨드 원문 또는 규칙으로 계산한 값(테스트 기준).
   const PRESETS=[
     {id:'card-2x2-pip',name:'기본 · 4K 디스플레이 4대(2×2, 카드 4장) 전체 입력 1 + 오른쪽 아래 PIP 입력 2',source:'알티컴 확인 배치(0.214 구성도)',
       state:{mapping:'card',cols:2,rows:2,timing:14,startPort:1,priority:'4321',clear:'list',windows:[{input:1,label:'',x:0,y:0,w:7680,h:4320},{input:2,label:'',x:5760,y:3240,w:1920,h:1080}]},
       expected:'*255OWO001-016W14H02V02P4321O001O002O003O004O005O006O007O008O009O010O011O012O013O014O015O016X0Y0W0H0I001O001O005O009O013X0Y0W7680H4320I002O014X5760Y3240W1920H1080!'},
-    {id:'card-1x1-22x9x2',name:'비율 예시 · 4K 디스플레이 1대에 22:9 입력 2개 나란히(레터박스 계산)',source:'폭 1920씩 둘, 높이는 22:9 한 화면 높이(3840×9/22≈1571)에 맞춰 위아래 295 여백',
-      state:{mapping:'card',cols:1,rows:1,timing:14,startPort:1,priority:'4321',clear:'o000',windows:[{input:1,label:'',x:0,y:295,w:1920,h:1571},{input:2,label:'',x:1920,y:295,w:1920,h:1571}]},
-      expected:'*255OWO001-004W14H01V01P4321O000I001O001X0Y295W1920H1571I002O002X1920Y295W1920H1571!'},
-    {id:'card-1x1-22x9',name:'비율 예시 · 4K 디스플레이 1대에 22:9 입력 1개(3840×1571, 위아래 295 여백)',source:'22:9 레터박스 계산: 3840×9/22≈1571, (2160−1571)/2≈295',
-      state:{mapping:'card',cols:1,rows:1,timing:14,startPort:1,priority:'4321',clear:'o000',windows:[{input:1,label:'',x:0,y:295,w:3840,h:1571}]},
-      expected:'*255OWO001-004W14H01V01P4321O000I001O001X0Y295W3840H1571!'},
+    {id:'memo-22x9x2',name:'현장 메모 · 4K 16:9 모니터(출력 9~12번 카드)에 22:9 입력 1·2 나란히',source:'알티컴 기술 회신(2026-10-13) · 사용자 메모 2026-10-16',
+      state:{mapping:'card',cols:1,rows:1,timing:14,startPort:9,priority:'4321',clear:'o000',windows:[{input:1,label:'',x:0,y:295,w:1920,h:1571},{input:2,label:'',x:1920,y:295,w:1920,h:1571}]},
+      expected:'*255OWO009-012W14H01V01P4321O000I001O009X0Y295W1920H1571I002O010X1920Y295W1920H1571!'},
+    {id:'memo-16x9',name:'현장 메모 · 4K 16:9 모니터(출력 9~12번 카드)에 16:9 입력 3 전체 화면',source:'알티컴 기술 회신(2026-10-13) · 사용자 메모 2026-10-16',
+      state:{mapping:'card',cols:1,rows:1,timing:14,startPort:9,priority:'4321',clear:'o000',windows:[{input:3,label:'',x:0,y:0,w:3840,h:2160}]},
+      expected:'*255OWO009-012W14H01V01P4321O000I003O009X0Y0W3840H2160!'},
+    {id:'memo-22x9',name:'현장 메모 · 4K 16:9 모니터(출력 9~12번 카드)에 22:9 입력 7 한 화면',source:'알티컴 기술 회신(2026-10-13) · 사용자 메모 2026-10-16',
+      state:{mapping:'card',cols:1,rows:1,timing:14,startPort:9,priority:'4321',clear:'o000',windows:[{input:7,label:'',x:0,y:295,w:3840,h:1571}]},
+      expected:'*255OWO009-012W14H01V01P4321O000I007O009X0Y295W3840H1571!'},
     {id:'guide-2',name:'가이드 예제 2 · 4×2 월(1080p), 가운데 2×2에 입력 1',source:'Command Guide 48쪽 · 가이드 연결 그림 배치',
       state:{mapping:'guide',cols:4,rows:2,timing:10,startPort:1,priority:'4321',clear:'list',windows:[{input:1,label:'',x:1920,y:0,w:3840,h:2160}]},
       expected:'*255OWO001-008W10H04V02P4321O001O002O003O004O005O006O007O008X0Y0W0H0I001O001O005X1920Y0W3840H2160!'},
@@ -328,6 +332,16 @@
         {input:4,label:'',x:0,y:2160,w:1920,h:1080},{input:5,label:'',x:1920,y:2160,w:1920,h:1080},{input:6,label:'',x:3840,y:2160,w:1920,h:1080},
         {input:7,label:'',x:5760,y:2160,w:1920,h:1080},{input:8,label:'',x:7680,y:2160,w:1920,h:1080},{input:9,label:'',x:9600,y:2160,w:1920,h:1080}]}}
   ];
+
+  // 0.229 알티컴 기술 회신(2026-10-13, 사용자 메모 2026-10-16) 참고 커맨드. 가이드 본문에 없는 값(IV M03, IE M18·M19, Genlock 해상도)이라 "현장 확인값"으로 표시한다.
+  const FIELD_NOTES=[
+    {title:'입력 카드 Genlock(2112x1728·3072x1728)',lines:['XDM-HIS100 입력 카드 MCU 옆 딥 스위치 1번을 ON으로 두면 입력 카드가 Genlock 모드로 바뀝니다.']},
+    {title:'출력 카드 Genlock(2112x1728)',lines:['전면 터치 Genlock 설정(I/O config)에서 해상도 2112x1728을 고른 뒤 해당 출력 카드를 선택합니다.']},
+    {title:'입력 카드 HPD 끄기·켜기(2112x1728·3072x1728 선택 시)',commands:[['*255IVI001I002I003M03!','입력 1·2·3번 HPD Disable'],['(수백 ms 기다린 뒤)',''],['*255IVI001I002M00!','입력 1·2번 HPD Enable, 3번은 Disable 유지'],['*255IVI003M00!','또는 입력 3번만 Enable(1·2번 Disable)']],note:'가이드 17쪽 IV 커맨드는 M00(Normal)·M01(Freeze)·M02(Black)까지만 적혀 있고 M03은 알티컴 회신에만 있습니다.'},
+    {title:'입력 카드 EDID 설정(3840x1571·3072x1728)',commands:[['*255IEI009M18!','입력 9번 EDID를 3840x1571로'],['*255IEI009M19!','입력 9번 EDID를 3072x1728로']],note:'가이드 EDID 표에 없는 번호입니다. 표준 펌웨어에 들어 있는지 알티컴에 확인 중입니다(제조사 질의서 §5 2번).'},
+    {title:'16:9 4K 모니터 모니터링(출력 9~12번 카드)',lines:['WOS100 모드 프리셋 "현장 메모" 3개로 불러올 수 있습니다: 22:9 입력 2개 나란히 · 16:9 입력 전체 · 22:9 입력 한 화면.']}
+  ];
+  const fieldNotesHtml=()=>`<details class="rt-pg-flow-desc rt-ls-notes"><summary>알티컴 기술 회신 참고 커맨드(2026-10-13) · 가이드 본문에 없는 현장 확인값</summary><ul>${FIELD_NOTES.map(n=>`<li><b>${esc(n.title)}</b>${(n.lines||[]).map(l=>`<br>${esc(l)}`).join('')}${n.commands?`<ul class="rt-ls-notes-cmds">${n.commands.map(([c,d])=>`<li>${c.startsWith('*')?`<code>${esc(c)}</code>`:esc(c)}${d?` — ${esc(d)}`:''}</li>`).join('')}</ul>`:''}${n.note?`<br><small>${esc(n.note)}</small>`:''}</li>`).join('')}</ul><p class="rt-pg-hint">사용자 결정 2026-10-16("2안으로 전부 공개해")으로 공개합니다. 특정 현장의 설정값이므로 다른 현장에서는 해상도·입력 번호를 맞춰 쓰세요.</p></details>`;
 
   // ---------------- 브라우저 UI ----------------
   const STORE_KEY='rtcom.layoutSim.v1';
@@ -362,7 +376,7 @@
       <div class="rt-ls-cmd-head"><h3>전체 커맨드</h3><button type="button" class="rt-pg-btn" data-ls-copy${c.lines.length?'':' disabled'}>전부 복사</button><span class="rt-ls-copied" data-ls-copied aria-live="polite"></span>${c.overlap?`<button type="button" class="rt-pg-btn" data-ls-hos-port="${c.nextFreePort}">HOS100 시작 포트를 ${c.nextFreePort}번으로</button>`:''}</div>
       <pre class="rt-ls-cmd" data-ls-cmd>${c.lines.length?c.lines.map((l,i)=>`<span class="rt-ls-cmdline"><small>${i+1}. ${esc(l.label)}</small>${esc(l.text)}</span>`).join('\n'):'<span class="rt-ls-cmdline"><small>포함한 카드가 없습니다.</small></span>'}</pre>
       <p class="rt-pg-hint">순서대로 한 줄씩 보내고 각 줄 끝에 Ctrl+Enter(0x0D)를 붙입니다. HOS100은 입력 연결(C) 뒤에 레이아웃(OQ)을 보냅니다. 두 카드는 서로 다른 출력 슬롯에 꽂혀 있어야 하므로 출력 포트 범위가 겹치면 안 됩니다.</p>
-      ${c.warnings.length?`<ul class="rt-ls-warn">${c.warnings.map(w=>`<li>${esc(w)}</li>`).join('')}</ul>`:''}`;
+      ${c.warnings.length?`<ul class="rt-ls-warn">${c.warnings.map(w=>`<li>${esc(w)}</li>`).join('')}</ul>`:''}${fieldNotesHtml()}`;
     };
     const tokens=parts=>parts.map(p=>`<span class="rt-ls-tok rt-ls-tok-${p.kind}"${p.kind==='window'?` style="--rt-ls-color:${colorOf(p.window)}"`:''} title="${esc(p.title)}">${esc(p.text)}</span>`).join('');
     // ---- HOS100 화면 ----
@@ -384,22 +398,24 @@
       <div class="rt-ls-stage"><div class="rt-ls-canvas" data-ls-canvas style="aspect-ratio:${t.w} / ${t.h}" role="application" aria-label="HOS100 출력 화면. 사용자 배치·PIP에서 창을 끌어 옮기고 오른쪽 아래 모서리로 크기를 바꿉니다.">
         <div class="rt-ls-cell" style="left:0;top:0;width:100%;height:100%"><span>출력 ${hos.startPort}</span><small>${t.label}</small></div>
         ${(()=>{const zOf=i=>{const w=r.windows[i];return L.code==='L00'?(hos.priority==='4321'?w.n:5-w.n):i+1};
-          return r.windows.map((w,i)=>w.w>0&&w.h>0?`<div class="rt-ls-win${w.free?'':' is-fixed'}${w.n-1===selected&&w.free?' is-selected':''}" data-ls-win="${w.n-1}"${w.free?' tabindex="0"':''} style="left:${(w.x/t.w)*100}%;top:${(w.y/t.h)*100}%;width:${(w.w/t.w)*100}%;height:${(w.h/t.h)*100}%;z-index:${zOf(i)};--rt-ls-color:${colorOf(w.n-1)}" aria-label="창 ${w.n} 입력 ${w.input}"><span class="rt-ls-win-tag">창 ${w.n} · 입력 ${w.input}${w.label?` · ${esc(w.label)}`:''}</span><span class="rt-ls-win-meta">${w.w}×${w.h} @ ${w.x},${w.y} · 포트 ${hos.startPort+w.n-1}</span>${w.free?'<i class="rt-ls-resize" data-ls-resize aria-hidden="true"></i>':''}</div>`:'').join('')})()}
+          // 레이어 번호(사용자 요청 2026-10-16 "최상단을 1번에"): 보이는 창을 겹침 순서대로 세어 맨 위가 1. 고정 레이아웃은 겹치지 않아 표시하지 않는다.
+          const ranked=(L.code==='L00'||L.code==='L09')?[...r.windows.keys()].filter(i=>r.windows[i].w>0&&r.windows[i].h>0).sort((a,b)=>zOf(b)-zOf(a)):[];const layerOf=i=>ranked.indexOf(i)+1;
+          return r.windows.map((w,i)=>w.w>0&&w.h>0?`<div class="rt-ls-win${w.free?'':' is-fixed'}${w.n-1===selected&&w.free?' is-selected':''}" data-ls-win="${w.n-1}"${w.free?' tabindex="0"':''} style="left:${(w.x/t.w)*100}%;top:${(w.y/t.h)*100}%;width:${(w.w/t.w)*100}%;height:${(w.h/t.h)*100}%;z-index:${zOf(i)};--rt-ls-color:${colorOf(w.n-1)}" aria-label="창 ${w.n} 입력 ${w.input}">${layerOf(i)?`<span class="rt-ls-win-layer${layerOf(i)===1?' is-top':''}" title="겹침 순서 · 1이 맨 위">레이어 ${layerOf(i)}</span>`:''}<span class="rt-ls-win-tag">창 ${w.n} · 입력 ${w.input}${w.label?` · ${esc(w.label)}`:''}</span><span class="rt-ls-win-meta">${w.w}×${w.h} @ ${w.x},${w.y} · 포트 ${hos.startPort+w.n-1}</span>${w.free?'<i class="rt-ls-resize" data-ls-resize aria-hidden="true"></i>':''}</div>`:'').join('')})()}
       </div></div>
-      <div class="rt-ls-table-wrap"><table class="rt-ls-table"><thead><tr><th>창</th><th>포트</th><th>입력</th><th>이름</th><th>X</th><th>Y</th><th>너비</th><th>높이</th><th>포트 상태</th>${L.code==='L00'?'<th>겹침</th>':''}</tr></thead><tbody>
+      <div class="rt-ls-table-wrap"><table class="rt-ls-table"><thead><tr><th>창</th><th>포트</th><th>입력</th><th>이름</th><th>X</th><th>Y</th><th>너비</th><th>높이</th><th>포트 상태</th>${L.code==='L00'?'<th>레이어(1 = 맨 위)</th>':''}</tr></thead><tbody>
         ${hos.windows.map((w,i)=>{const on=editable.includes(i)&&!(L.code==='L09'&&i===0);const shown=r.windows.find(x=>x.n===i+1);const topIdx=hos.priority==='4321'?3:0;const rank=hos.priority==='4321'?4-i:i+1;return `<tr data-ls-row="${i}"${i===selected?' class="is-selected"':''}><td><i class="rt-ls-dot" style="background:${colorOf(i)}"></i>${i+1}</td><td class="rt-ls-ports">O${pad3(hos.startPort+i)}</td>
           <td><input type="number" min="1" max="999" data-ls-hos-win="input" data-ls-win-index="${i}" value="${w.input}" aria-label="창 ${i+1} 입력 번호"></td>
           <td><input type="text" maxlength="24" placeholder="예: PC" data-ls-hos-win="label" data-ls-win-index="${i}" value="${esc(w.label)}" aria-label="창 ${i+1} 이름"></td>
           ${['x','y','w','h'].map(k=>`<td>${on?`<input type="number" min="0" step="10" data-ls-hos-win="${k}" data-ls-win-index="${i}" value="${w[k]}" aria-label="창 ${i+1} ${k.toUpperCase()}">`:`<span class="rt-ls-fixedval">${shown?shown[k]:'—'}</span>`}</td>`).join('')}
-          <td class="rt-ls-portstat">${r.ports[i]}</td>${L.code==='L00'?`<td class="rt-ls-stack">${i===topIdx?'<b>맨 위</b>':`위에서 ${rank}번째 <button type="button" class="rt-ls-top" data-ls-hos-top="${i}" title="이 창의 입력·좌표를 맨 위 자리(포트 ${hos.startPort+topIdx})로 옮깁니다">맨 위로</button>`}</td>`:''}</tr>`}).join('')}
+          <td class="rt-ls-portstat">${r.ports[i]}</td>${L.code==='L00'?`<td class="rt-ls-stack"><b>레이어 ${rank}</b>${i===topIdx?' · 맨 위':` <button type="button" class="rt-ls-top" data-ls-hos-top="${i}" title="이 창의 입력·좌표를 맨 위 자리(포트 ${hos.startPort+topIdx})로 옮깁니다">맨 위로</button>`}</td>`:''}</tr>`}).join('')}
       </tbody></table></div>
       <div class="rt-ls-cmd-head"><h3>커맨드</h3><button type="button" class="rt-pg-btn" data-ls-copy>복사</button><span class="rt-ls-copied" data-ls-copied aria-live="polite"></span></div>
       <pre class="rt-ls-cmd" data-ls-cmd>${r.switching?`<span class="rt-ls-cmdline"><small>① 입력 → 포트 연결</small>${esc(r.switching)}</span>
 `:''}<span class="rt-ls-cmdline"><small>② 멀티뷰 레이아웃</small>${tokens(r.parts)}</span>
 <span class="rt-ls-cmdline rt-ls-cmdline-off"><small>멀티뷰 끄기(일반 스위칭으로)</small>${esc(r.off)}</span></pre>
-      <p class="rt-pg-hint">①은 창 n에 나올 입력을 카드의 포트 n에 연결하는 스위칭 커맨드(가이드 12쪽)이고, ②가 화면 배치입니다. 각 줄 끝에 Ctrl+Enter(0x0D)를 붙여 보냅니다. 복사 버튼은 ①·② 두 줄을 복사합니다.${L.code==='L00'?` 겹침 순서는 <code>P${hos.priority}</code>(${hos.priority==='4321'?'창 4가 맨 위':'창 1이 맨 위'})이며, "맨 위로"는 그 창의 입력·좌표를 맨 위 자리로 옮깁니다(입력 연결 커맨드도 함께 바뀜).`:L.code==='L09'?' PIP(창 2)는 항상 창 1 위에 나옵니다.':''}</p>
+      <p class="rt-pg-hint">①은 창 n에 나올 입력을 카드의 포트 n에 연결하는 스위칭 커맨드(가이드 12쪽)이고, ②가 화면 배치입니다. 각 줄 끝에 Ctrl+Enter(0x0D)를 붙여 보냅니다. 복사 버튼은 ①·② 두 줄을 복사합니다.${L.code==='L00'?` 겹침 순서는 <code>P${hos.priority}</code>(${hos.priority==='4321'?'창 4가 맨 위':'창 1이 맨 위'})이며, 레이어 번호는 1이 맨 위입니다. "맨 위로"는 그 창의 입력·좌표를 맨 위 자리로 옮깁니다(입력 연결 커맨드도 함께 바뀜).`:L.code==='L09'?' PIP(창 2)는 항상 창 1 위에 나옵니다.':''}</p>
       ${r.warnings.length?`<ul class="rt-ls-warn">${r.warnings.map(w=>`<li>${esc(w)}</li>`).join('')}</ul>`:''}
-      <p class="rt-pg-hint">근거: 알티컴 <a href="${GUIDE_PDF}#page=26" target="_blank" rel="noopener">XDM 시리즈 Command Guide 25쪽부터([OQ] Quad view 커맨드)</a>, 레이아웃 14종은 27쪽 표. 좌표·크기는 출력 해상도 안의 픽셀이며 4자리로 적습니다(W0000·H0000은 창 끄기). 포트 상태(레이어 4개면 2~4번은 1번과 같은 화면, 2개면 2번 사용 불가·3·4번 따로 스위칭)는 서울영상테크 확인(2026-10-12)입니다. L13(1~4번 PIP 사용자 배치)은 가이드의 좌표 묶음 수가 분명하지 않아 넣지 않았습니다.</p>`;
+      <p class="rt-pg-hint">근거: 알티컴 <a href="${GUIDE_PDF}#page=26" target="_blank" rel="noopener">XDM 시리즈 Command Guide 25쪽부터([OQ] Quad view 커맨드)</a>, 레이아웃 14종은 27쪽 표. 좌표·크기는 출력 해상도 안의 픽셀이며 4자리로 적습니다(W0000·H0000은 창 끄기). 포트 상태(레이어 4개면 2~4번은 1번과 같은 화면, 2개면 2번 사용 불가·3·4번 따로 스위칭)는 서울영상테크 확인(2026-10-12)입니다. L13(1~4번 PIP 사용자 배치)은 가이드의 좌표 묶음 수가 분명하지 않아 넣지 않았습니다.</p>${fieldNotesHtml()}`;
     };
     const render=()=>{
       if(card==='ALL'){renderAll();return}
@@ -428,10 +444,10 @@
             // 캔버스 겹침은 실제 장비 순서(stackOrder: P와 포트 번호)대로 보여 준다. 가려진 창은 표의 "맨 위로"로 올리거나 숫자로 고친다.
             const order=stackOrder(state);
             const zOf=i=>order.length-order.indexOf(i);
-            return state.windows.map((win,i)=>{const a=result.assigned[i];return `<div class="rt-ls-win${i===selected?' is-selected':''}" data-ls-win="${i}" tabindex="0" style="left:${(win.x/geo.width)*100}%;top:${(win.y/geo.height)*100}%;width:${(win.w/geo.width)*100}%;height:${(win.h/geo.height)*100}%;z-index:${zOf(i)};--rt-ls-color:${colorOf(i)}" aria-label="창 ${i+1} 입력 ${win.input}"><span class="rt-ls-win-tag">입력 ${win.input}${win.label?` · ${esc(win.label)}`:''}</span><span class="rt-ls-win-meta">${win.w}×${win.h} @ ${win.x},${win.y}${a.ports.length?` · 포트 ${a.ports.join('·')}`:''}</span><i class="rt-ls-resize" data-ls-resize aria-hidden="true"></i></div>`}).join('')})()}
+            return state.windows.map((win,i)=>{const a=result.assigned[i];return `<div class="rt-ls-win${i===selected?' is-selected':''}" data-ls-win="${i}" tabindex="0" style="left:${(win.x/geo.width)*100}%;top:${(win.y/geo.height)*100}%;width:${(win.w/geo.width)*100}%;height:${(win.h/geo.height)*100}%;z-index:${zOf(i)};--rt-ls-color:${colorOf(i)}" aria-label="창 ${i+1} 입력 ${win.input}"><span class="rt-ls-win-layer${order.indexOf(i)===0?' is-top':''}" title="겹침 순서 · 1이 맨 위">레이어 ${order.indexOf(i)+1}</span><span class="rt-ls-win-tag">창 ${i+1} · 입력 ${win.input}${win.label?` · ${esc(win.label)}`:''}</span><span class="rt-ls-win-meta">${win.w}×${win.h} @ ${win.x},${win.y}${a.ports.length?` · 포트 ${a.ports.join('·')}`:''}</span><i class="rt-ls-resize" data-ls-resize aria-hidden="true"></i></div>`}).join('')})()}
         </div>
       </div>
-      <div class="rt-ls-table-wrap"><table class="rt-ls-table"><thead><tr><th>창</th><th>입력</th><th>이름</th><th>X</th><th>Y</th><th>너비</th><th>높이</th><th>출력 포트</th><th>겹침</th><th></th></tr></thead><tbody>
+      <div class="rt-ls-table-wrap"><table class="rt-ls-table"><thead><tr><th>창</th><th>입력</th><th>이름</th><th>X</th><th>Y</th><th>너비</th><th>높이</th><th>출력 포트</th><th>레이어(1 = 맨 위)</th><th></th></tr></thead><tbody>
         ${state.windows.length?(()=>{const order=stackOrder(state);return state.windows.map((win,i)=>`<tr data-ls-row="${i}"${i===selected?' class="is-selected"':''}><td><i class="rt-ls-dot" style="background:${colorOf(i)}"></i>${i+1}</td>
           <td><input type="number" min="1" max="999" data-ls-win-field="input" data-ls-win-index="${i}" value="${win.input}" aria-label="창 ${i+1} 입력 번호"></td>
           <td><input type="text" maxlength="24" placeholder="예: PC" data-ls-win-field="label" data-ls-win-index="${i}" value="${esc(win.label)}" aria-label="창 ${i+1} 이름"></td>
@@ -440,15 +456,15 @@
           <td><input type="number" min="0" step="10" data-ls-win-field="w" data-ls-win-index="${i}" value="${win.w}" aria-label="창 ${i+1} 너비"></td>
           <td><input type="number" min="0" step="10" data-ls-win-field="h" data-ls-win-index="${i}" value="${win.h}" aria-label="창 ${i+1} 높이"></td>
           <td class="rt-ls-ports">${result.assigned[i].ports.length?result.assigned[i].ports.map(p=>`O${pad3(p)}`).join(' '):'—'}</td>
-          <td class="rt-ls-stack">${order.indexOf(i)===0?'<b>맨 위</b>':`위에서 ${order.indexOf(i)+1}번째`}${order.indexOf(i)===0?'':` <button type="button" class="rt-ls-top" data-ls-top="${i}" title="이 창이 맨 위 포트를 받도록 순서를 바꿉니다">맨 위로</button>`}</td>
+          <td class="rt-ls-stack"><b>레이어 ${order.indexOf(i)+1}</b>${order.indexOf(i)===0?' · 맨 위':''}${order.indexOf(i)===0?'':` <button type="button" class="rt-ls-top" data-ls-top="${i}" title="이 창이 맨 위 포트를 받도록 순서를 바꿉니다">맨 위로</button>`}</td>
           <td><button type="button" class="rt-ls-del" data-ls-del="${i}" aria-label="창 ${i+1} 삭제">×</button></td></tr>`).join('')})():'<tr><td colspan="10" class="rt-ls-empty">아직 창이 없습니다. "+ 창 추가"를 누르거나 프리셋을 불러오세요.</td></tr>'}
       </tbody></table></div>
       <div class="rt-ls-cmd-head"><h3>커맨드</h3><button type="button" class="rt-pg-btn" data-ls-copy>복사</button><span class="rt-ls-copied" data-ls-copied aria-live="polite"></span></div>
       <pre class="rt-ls-cmd" data-ls-cmd>${result.parts.map(p=>`<span class="rt-ls-tok rt-ls-tok-${p.kind}"${p.kind==='window'?` style="--rt-ls-color:${colorOf(p.window)}"`:''} title="${esc(p.title)}">${esc(p.text)}</span>`).join('')}</pre>
-      <p class="rt-pg-hint">RS-232 또는 LAN으로 보낼 때 끝에 Ctrl+Enter(0x0D)를 붙입니다. 성공하면 장비가 <code>*${state.id}sOW…!</code>로 응답합니다. 토막 위에 마우스를 올리면 뜻이 보입니다. 겹침 순서는 우선순위 <code>P${state.priority}</code>와 창이 받은 포트 번호로 정해지며(${state.priority==='4321'?'큰 포트 번호가 위':'작은 포트 번호가 위'}), 표의 "맨 위로"를 누르면 그 창이 맨 위 포트를 받도록 순서를 바꿉니다. 캔버스도 같은 순서로 겹쳐 보입니다.</p>
+      <p class="rt-pg-hint">RS-232 또는 LAN으로 보낼 때 끝에 Ctrl+Enter(0x0D)를 붙입니다. 성공하면 장비가 <code>*${state.id}sOW…!</code>로 응답합니다. 토막 위에 마우스를 올리면 뜻이 보입니다. 겹침 순서는 우선순위 <code>P${state.priority}</code>와 창이 받은 포트 번호로 정해지며(${state.priority==='4321'?'큰 포트 번호가 위':'작은 포트 번호가 위'}), 레이어 번호는 1이 맨 위입니다. 표의 "맨 위로"를 누르면 그 창이 맨 위 포트를 받도록 순서를 바꿉니다. 캔버스도 같은 순서로 겹쳐 보입니다.</p>
       ${result.warnings.length?`<ul class="rt-ls-warn">${result.warnings.map(w=>`<li>${esc(w)}</li>`).join('')}</ul>`:''}
       <details class="rt-pg-flow-desc" open><summary>화면별 표출 영역</summary><ul>${cover.length?cover.map(cv=>`<li><i class="rt-ls-dot" style="background:${colorOf(cv.index)}"></i><b>창 ${cv.index+1} · 입력 ${cv.input}${cv.label?`(${esc(cv.label)})`:''}</b>: ${cv.cells.length?cv.cells.map(cell=>`출력 ${cell.port}(${cell.row}행 ${cell.col}열) ${cell.full?'전체':`${cell.w}×${cell.h} @ ${cell.x},${cell.y}`}`).join(' · '):'표시되는 디스플레이 없음'}</li>`).join(''):'<li>창을 추가하면 디스플레이마다 어느 영역이 나오는지 여기에 적힙니다.</li>'}</ul></details>
-      <p class="rt-pg-hint">근거: 알티컴 <a href="${GUIDE_PDF}#page=45" target="_blank" rel="noopener">XDM 시리즈 Command Guide 44쪽부터(WOS100 Wall Overlay Command)</a>. 창 하나는 걸치는 카드마다 남은 포트 중 가장 작은 번호를 쓰고, 카드 1장에는 창 4개까지 둘 수 있습니다.<br>포트 배치 <b>"카드 1장 = 디스플레이 1대"</b>는 알티컴 확인(레이어를 쓰면 WOS100 카드 4포트가 모두 같은 화면, 0.210)과 레이어 구성도(0.214)를 따른 기본값이고, <b>"카드 1장 = 디스플레이 2×2"</b>는 가이드 46~47쪽 연결 그림과 예제 1~8의 배치입니다. 두 배치가 서로 달라 어느 쪽이 실제 장비와 맞는지 알티컴 확인을 기다리고 있습니다. 실제 포트 연결이 다르면 커맨드의 O 번호를 현장에 맞게 바꾸세요.</p>`;
+      <p class="rt-pg-hint">근거: 알티컴 <a href="${GUIDE_PDF}#page=45" target="_blank" rel="noopener">XDM 시리즈 Command Guide 44쪽부터(WOS100 Wall Overlay Command)</a>. 창 하나는 걸치는 카드마다 남은 포트 중 가장 작은 번호를 쓰고, 카드 1장에는 창 4개까지 둘 수 있습니다.<br>포트 배치 <b>"카드 1장 = 디스플레이 1대"</b>는 알티컴 확인(레이어를 쓰면 WOS100 카드 4포트가 모두 같은 화면, 0.210)과 레이어 구성도(0.214)를 따른 기본값이고, <b>"카드 1장 = 디스플레이 2×2"</b>는 가이드 46~47쪽 연결 그림과 예제 1~8의 배치입니다. 두 배치가 서로 달라 어느 쪽이 실제 장비와 맞는지 알티컴 확인을 기다리고 있습니다. 실제 포트 연결이 다르면 커맨드의 O 번호를 현장에 맞게 바꾸세요.</p>${fieldNotesHtml()}`;
     };
     const updateHos=patch=>{hos=normalizeHos({...hos,...patch});saveKey(HOS_KEY,hos);render()};
     const setHosWindow=(i,patch)=>{updateHos({windows:hos.windows.map((w,k)=>k===i?{...w,...patch}:w)})};
@@ -550,5 +566,5 @@
   }
   function mountAll(scopeEl){(scopeEl||document).querySelectorAll('[data-layout-sim-root]').forEach(mount)}
 
-  return {TIMINGS,CLEAR_MODES,MAPPINGS,PRESETS,HOS_LAYOUTS,HOS_PRESETS,GUIDE_PDF,MAX_COLS,MAX_ROWS,MAX_WINDOWS,normalize,geometry,portMapFor,assignPorts,commandFor,coverageFor,stackOrder,bringToFront,normalizeHos,hosWindows,hosCommandFor,hosPortStatus,hosBringToFront,combinedCommands,mount,mountAll};
+  return {TIMINGS,CLEAR_MODES,MAPPINGS,PRESETS,HOS_LAYOUTS,HOS_PRESETS,GUIDE_PDF,MAX_COLS,MAX_ROWS,MAX_WINDOWS,normalize,geometry,portMapFor,assignPorts,commandFor,coverageFor,stackOrder,bringToFront,normalizeHos,hosWindows,hosCommandFor,hosPortStatus,hosBringToFront,combinedCommands,FIELD_NOTES,mount,mountAll};
 });
