@@ -141,7 +141,9 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     check('깨진 이미지 없음',broken.length===0,broken.join(', '));
     check('주소가 바뀌지 않음(상대경로 이미지 보호)',page.url()===home,page.url());
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
-    check('390px 화면에서 페이지 가로 넘침 없음',overflow<=0,`${overflow}px`);
+    // 0.227: 넘침이 생기면 원인 요소를 바로 알 수 있게 가로 스크롤 상자 밖에서 화면 오른쪽을 넘은 요소를 함께 적는다(검사 기준은 그대로).
+    const overflowCulprits=overflow>0?await page.evaluate(()=>{const w=innerWidth,clipped=el=>{for(let p=el.parentElement;p&&p!==document.body;p=p.parentElement){const o=getComputedStyle(p).overflowX;if(o==='auto'||o==='scroll'||o==='hidden'||o==='clip')return true}return false};return [...document.querySelectorAll('body *')].filter(el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return r.width&&r.right>w+0.5&&!clipped(el)&&s.display!=='none'&&s.visibility!=='hidden'}).slice(0,8).map(el=>`${typeof el.className==='string'?el.className:el.tagName} right=${el.getBoundingClientRect().right.toFixed(1)} fs=${getComputedStyle(el).fontSize} ws=${getComputedStyle(el).whiteSpace} "${(el.textContent||'').trim().slice(0,20)}"`)}):[];
+    check('390px 화면에서 페이지 가로 넘침 없음',overflow<=0,`${overflow}px${overflowCulprits.length?` · 원인 후보: ${JSON.stringify(overflowCulprits)}`:''}`);
 
     await page.reload({waitUntil:'networkidle'});
     check('새로고침 후 자동 저장 복원',await page.locator('.rt-rack-slot-filled img.rt-faceplate').count()===placed+1);
