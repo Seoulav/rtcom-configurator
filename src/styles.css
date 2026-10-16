@@ -1847,3 +1847,216 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-ce-chips{margin:8px 0 0;font:600 12px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--pg-ink);word-break:break-word}
 #rtcom-design .rt-ce-tok-sep{color:var(--rt-fg-9aa3b2)}
 @media (max-width:480px){#rtcom-design .rt-ce-cell-mini{min-height:30px;font-size:12px}#rtcom-design .rt-ce-grid-matrix{gap:3px}#rtcom-design .rt-ce-grid-matrix .rt-ce-rowhead{font-size:12px}}
+
+/* ==== 0.234 다크 값(자동 생성: scripts/tools/dark_tokens.cjs) 시작 ==== */
+/* 기기 설정이 다크일 때만 적용한다(screen 한정: 인쇄는 항상 라이트). 라이트 화면은 이 블록의 영향을 받지 않는다.
+   사진 판넬(--rt-photo, 카드 판넬 사진 받침)과 그림 판·보고서 미리보기는 밝게 유지한다. 손으로 정한 값은 이 도구에 있다. */
+@media screen and (prefers-color-scheme:dark){
+  :root{color-scheme:dark}
+  html{background:#000}
+  body{background:radial-gradient(circle at 8% 0,#0b1a33 0,transparent 34%),radial-gradient(circle at 92% 4%,#1f1433 0,transparent 32%),linear-gradient(135deg,#000,#07070a);background-attachment:fixed}
+  #rtcom-design{
+    color-scheme:dark;
+    --rt-bg:#1C1C1E;--rt-soft:#2C2C2E;--rt-ink:#F5F5F7;--rt-muted:#8E8E93;--rt-line:rgba(84,84,88,.42);--rt-accent:#409CFF;--rt-tint:rgba(10,132,255,.18);--rt-cta-ink:#fff;
+    --pg-paper:#000;--pg-ink:#F5F5F7;--pg-ink-2:#D1D1D6;--pg-muted:#8E8E93;--pg-line:rgba(84,84,88,.42);--pg-line-2:rgba(84,84,88,.65);
+    --pg-accent:#0A84FF;--pg-accent-2:#409CFF;--pg-accent-tint:rgba(10,132,255,.18);--pg-purple-ink:#DA8FFF;--pg-purple-tint:rgba(191,90,242,.16);
+    --pg-glass-fill:rgba(44,44,46,.58);--pg-glass-stroke:rgba(255,255,255,.08);--pg-field-fill:rgba(118,118,128,.24);--pg-seg-track:rgba(118,118,128,.32);
+    --pg-shadow-card:0 1px 2px rgba(0,0,0,.4),0 18px 48px -20px rgba(0,0,0,.7);
+    --rt-bg-c5cfdd:#3A3A3C;
+    --rt-bg-c9ced6:#3A3A3C;
+    --rt-bg-dfeaff:#18233A;
+    --rt-bg-e2e8f1:#2C2C2E;
+    --rt-bg-e3e9f2:#2C2C2E;
+    --rt-bg-e3ebf7:#18253A;
+    --rt-bg-e6ebf3:#2C2C2E;
+    --rt-bg-e6f0ff:#18253A;
+    --rt-bg-e7edf6:#2C2C2E;
+    --rt-bg-e8eef8:#2C2C2E;
+    --rt-bg-e8f0ff:#18243A;
+    --rt-bg-e9f6fd:#182E3A;
+    --rt-bg-eaf0fa:#2C2C2E;
+    --rt-bg-eaf2ff:#18253A;
+    --rt-bg-edf2f8:#2C2C2E;
+    --rt-bg-edf4ff:#18253A;
+    --rt-bg-eef1f5:#2C2C2E;
+    --rt-bg-eef1f6:#2C2C2E;
+    --rt-bg-eef2f7:#2C2C2E;
+    --rt-bg-eef2f8:#2C2C2E;
+    --rt-bg-eef2ff:#2C2C2E;
+    --rt-bg-eef3fb:#2C2C2E;
+    --rt-bg-eef4ff:#2C2C2E;
+    --rt-bg-eef5ff:#2C2C2E;
+    --rt-bg-eef6fd:#2C2C2E;
+    --rt-bg-efe8ff:#22183A;
+    --rt-bg-f0f4fa:#2C2C2E;
+    --rt-bg-f1f3f7:#2C2C2E;
+    --rt-bg-f2f5fa:#2C2C2E;
+    --rt-bg-f3e8ff:#28183A;
+    --rt-bg-f3eefe:#2C2C2E;
+    --rt-bg-f3efff:#2C2C2E;
+    --rt-bg-f3f1ff:#2C2C2E;
+    --rt-bg-f3f6fa:#2C2C2E;
+    --rt-bg-f3f6fb:#2C2C2E;
+    --rt-bg-f3f7ff:#2C2C2E;
+    --rt-bg-f4f0ff:#2C2C2E;
+    --rt-bg-f4f6fa:#2C2C2E;
+    --rt-bg-f4f8ff:#2C2C2E;
+    --rt-bg-f5f8fc:#2C2C2E;
+    --rt-bg-f5f9ff:#2C2C2E;
+    --rt-bg-f7f9fd:#2C2C2E;
+    --rt-bg-f7faff:#2C2C2E;
+    --rt-bg-fafbfd:#1C1C1E;
+    --rt-bg-fbfcfe:#1C1C1E;
+    --rt-bg-fde8e8:#3A1818;
+    --rt-bg-ffe4ca:#503821;
+    --rt-bg-fff:#1C1C1E;
+    --rt-bg-fff3d8:#3A2F18;
+    --rt-bg-fff3e3:#3A2B18;
+    --rt-bg-fff4e5:#3A2B18;
+    --rt-bg-fff4e8:#3A2A18;
+    --rt-bg-fff6e5:#3A2E18;
+    --rt-bg-fff7cc:#3A3518;
+    --rt-bg-fff7e6:#3A2F18;
+    --rt-bg-fff8e6:#3A3018;
+    --rt-bg-ffffffa6:rgba(44,44,46,0.65);
+    --rt-bg-ffffffb3:rgba(44,44,46,0.70);
+    --rt-bg-ffffffd9:rgba(44,44,46,0.85);
+    --rt-bg-fffffff2:rgba(44,44,46,0.92);
+    --rt-bg-fffffff5:rgba(44,44,46,0.92);
+    --rt-fg-0057d8:#409CFF;
+    --rt-fg-007aff:#409CFF;
+    --rt-fg-177a41:#7EE7AB;
+    --rt-fg-183a6b:#82AAE3;
+    --rt-fg-1b6e3d:#84E1AA;
+    --rt-fg-1c4f8a:#80AFE5;
+    --rt-fg-1c86b8:#7AC7EB;
+    --rt-fg-1d4fb8:#7B9FEA;
+    --rt-fg-1e9e52:#7EE7A9;
+    --rt-fg-1f2532:#F5F5F7;
+    --rt-fg-1f2a3d:#F5F5F7;
+    --rt-fg-202634:#F5F5F7;
+    --rt-fg-2448a8:#819CE4;
+    --rt-fg-2563c9:#7EA6E7;
+    --rt-fg-2748a8:#839BE2;
+    --rt-fg-2d4c82:#88A7DD;
+    --rt-fg-2f5fd0:#829FE3;
+    --rt-fg-2f63c8:#83A3E2;
+    --rt-fg-326bd5:#80A3E5;
+    --rt-fg-333d52:#F5F5F7;
+    --rt-fg-34835b:#88DDB2;
+    --rt-fg-376cd0:#83A4E2;
+    --rt-fg-3a2a06:#F5F5F7;
+    --rt-fg-3a3a3c:#F5F5F7;
+    --rt-fg-3a4458:#D1D1D6;
+    --rt-fg-3a4f70:#D1D1D6;
+    --rt-fg-3b4658:#D1D1D6;
+    --rt-fg-3b4660:#D1D1D6;
+    --rt-fg-415069:#D1D1D6;
+    --rt-fg-456181:#D1D1D6;
+    --rt-fg-475569:#D1D1D6;
+    --rt-fg-48607f:#D1D1D6;
+    --rt-fg-4d5d75:#D1D1D6;
+    --rt-fg-56627a:#D1D1D6;
+    --rt-fg-5a4110:#E8C47D;
+    --rt-fg-5b6679:#D1D1D6;
+    --rt-fg-5b6b85:#98989D;
+    --rt-fg-687386:#98989D;
+    --rt-fg-687892:#98989D;
+    --rt-fg-6b21a8:#B77FE6;
+    --rt-fg-6b3b13:#E8AE7D;
+    --rt-fg-6b3fd1:#A084E1;
+    --rt-fg-6b5412:#E9CD7C;
+    --rt-fg-6b7280:#98989D;
+    --rt-fg-778194:#98989D;
+    --rt-fg-7a5b00:#F7D46E;
+    --rt-fg-7b8799:#98989D;
+    --rt-fg-7e5a39:#DDB188;
+    --rt-fg-8792a3:#98989D;
+    --rt-fg-8793a8:#98989D;
+    --rt-fg-8a5a00:#F7C76E;
+    --rt-fg-8a5a12:#EDBE78;
+    --rt-fg-8a8a8e:#98989D;
+    --rt-fg-8a94a6:#98989D;
+    --rt-fg-9ccc3c:#C1DF86;
+    --rt-fg-a4570f:#F2B073;
+    --rt-fg-b42318:#ED8078;
+    --rt-fg-c2410c:#F6966F;
+    --rt-fg-c64545:#DD8888;
+    --rt-fg-c7590a:#F7A76E;
+    --rt-fg-d70015:#F76E7B;
+    --rt-fg-ff9f0a:#F7C16E;
+    --rt-ln-c9ced6:#48484A;
+    --rt-ln-c9d3e2:#48484A;
+    --rt-ln-c9d6ea:#374862;
+    --rt-ln-c9d9f6:#374662;
+    --rt-ln-c9e3f3:#375262;
+    --rt-ln-cfd8e6:#48484A;
+    --rt-ln-cfdcf0:#374862;
+    --rt-ln-cfdcff:#374362;
+    --rt-ln-d6e4f5:#374A62;
+    --rt-ln-d7e2f8:#374562;
+    --rt-ln-d8e0ec:#38383A;
+    --rt-ln-d8e2f2:#38383A;
+    --rt-ln-dbe3ef:#38383A;
+    --rt-ln-dce6fa:#38383A;
+    --rt-ln-dedfdf:#48484A;
+    --rt-ln-dfe6f0:#38383A;
+    --rt-ln-e0e7f1:#38383A;
+    --rt-ln-e2e8f1:#38383A;
+    --rt-ln-e3e9f2:#38383A;
+    --rt-ln-e3e9f3:#38383A;
+    --rt-ln-e4eaf3:#38383A;
+    --rt-ln-e8edf5:#38383A;
+    --rt-ln-edf1f6:#38383A;
+    --rt-ln-edf1f7:#38383A;
+    --rt-ln-fff:#38383A;
+    --rt-ln-ffffff59:rgba(255,255,255,.12);
+  }
+  /* 직접 적힌 색 덮어쓰기(자동, 선언 41개) */
+  #rtcom-design .rt-mr4s-notice{background:linear-gradient(135deg,#18263A,#18223A)}
+  #rtcom-design .rt-config-summary li{background:#2C2C2E}
+  #rtcom-design .rt-card-qty{background:#2C2C2E}
+  #rtcom-design .rt-confirm{border:1px solid rgba(255,255,255,.12);background:rgba(44,44,46,0.92)}
+  #rtcom-design .rt-link-card{border:1px solid #38383A;background:#1C1C1E}
+  #rtcom-design .rt-view-tabs{background:#2C2C2E}
+  #rtcom-design .rt-product-diagram{background:#2C2C2E}
+  #rtcom-design .rt-product-diagram-canvas.rt-has-more::after{background:linear-gradient(to right,rgba(247,249,253,0),#2C2C2E 80%)}
+  #rtcom-design .rt-product-spec-note{color:#98989D}
+  #rtcom-design .rt-product-diagram-photo{background:#1C1C1E}
+  #rtcom-design .rt-product-diagram-caption{color:#98989D}
+  #rtcom-design .rt-pg-doc-card{background:rgba(44,44,46,0.78)}
+  #rtcom-design .rt-doc-zoom{background:#1C1C1E}
+  #rtcom-design .rt-doc-resize::after{background:#3A3A3C}
+  #rtcom-design .rt-pg-face{border:1px solid rgba(84,84,88,.42)}
+  #rtcom-design .rt-pg-flow-desc{border-top:1px solid rgba(84,84,88,.42)}
+  #rtcom-design .rt-step{border-bottom:3px solid rgba(84,84,88,.42)}
+  #rtcom-design .rt-step:disabled{color:#98989D}
+  #rtcom-design .rt-cg-row{background:rgba(44,44,46,0.72)}
+  #rtcom-design .rt-cg-chips em{background:rgba(44,44,46,0.85)}
+  #rtcom-design .rt-rack-canvas{background:linear-gradient(180deg,#2C2C2E,#2C2C2E)}
+  #rtcom-design .rt-slot-legend{color:#98989D}
+  #rtcom-design .rt-slot-done-banner{color:#7EE7AB}
+  #rtcom-design .rt-completion-dot-blank{background:#3A3A3C}
+  #rtcom-design .rt-card-choice-blank{background:#2C2C2E}
+  #rtcom-design .rt-rack-scroll:has(.rt-rack-photo){background:#1C1C1E}
+  #rtcom-design .rt-cg-link-group{border:1px solid #38383A;background:#1C1C1E}
+  #rtcom-design .rt-rack-slot.rt-rack-slot-empty,#rtcom-design .rt-rack-photo .rt-rack-slot.rt-rack-slot-empty{border:1px solid #48484A}
+  #rtcom-design .rt-card-choice-foot{border-top:1px dashed #38383A}
+  #rtcom-design .rt-card-choice-ext{border-top:1px dashed #38383A}
+  #rtcom-design .rt-signal-name input:not(:placeholder-shown){border-color:#374862}
+  #rtcom-design .rt-avb{border:1px solid #374662;background:#2C2C2E}
+  #rtcom-design .rt-cmd-guide{color:#D1D1D6}
+  #rtcom-design .rt-wos-feats p.rt-wos-sync{color:#80AFE5}
+  #rtcom-design .rt-completion-slots i.rt-seg-blank{background:#3A3A3C}
+  #rtcom-design .rt-ls-cell{border:1px dashed rgba(255,255,255,.12)}
+  #rtcom-design .rt-ls-mini i{border:1px dashed rgba(255,255,255,.12)}
+  /* 그림 판(밝게 유지) */
+  #rtcom-design .rt-pg-svg-wrap>svg,#rtcom-design svg.rt-pg-layout-matrix,#rtcom-design .rt-pg-dip-state svg,#rtcom-design .rt-pg-rotary svg,#rtcom-design svg.rt-layer-svg-wide,#rtcom-design svg.rt-layer-svg-tall,#rtcom-design .rt-flow-zoom-canvas svg{color-scheme:light;background:#fff;border-radius:12px;--rt-bg:#fff;--rt-soft:#f3f6fb;--rt-ink:#1f2532;--rt-muted:#687386;--rt-line:#dfe6f0;--rt-accent:#0057D8;--rt-tint:#edf4ff;--pg-paper:#EEF1F6;--pg-ink:#1C1C1E;--pg-ink-2:#3A3A3C;--pg-muted:#6A6A6F;--pg-line:rgba(60,60,67,.12);--pg-line-2:rgba(60,60,67,.20);--pg-accent:#007AFF;--pg-accent-2:#0057D8;--pg-accent-tint:rgba(0,122,255,.12);--pg-purple-ink:#8944AB;--pg-purple-tint:rgba(137,68,171,.09);--pg-glass-fill:rgba(255,255,255,.62);--pg-glass-stroke:rgba(255,255,255,.7);--pg-field-fill:rgba(118,118,128,.10);--pg-seg-track:rgba(118,118,128,.14);--rt-bg-c5cfdd:#c5cfdd;--rt-bg-c9ced6:#c9ced6;--rt-bg-dfeaff:#dfeaff;--rt-bg-e2e8f1:#e2e8f1;--rt-bg-e3e9f2:#e3e9f2;--rt-bg-e3ebf7:#e3ebf7;--rt-bg-e6ebf3:#e6ebf3;--rt-bg-e6f0ff:#e6f0ff;--rt-bg-e7edf6:#e7edf6;--rt-bg-e8eef8:#e8eef8;--rt-bg-e8f0ff:#e8f0ff;--rt-bg-e9f6fd:#e9f6fd;--rt-bg-eaf0fa:#eaf0fa;--rt-bg-eaf2ff:#eaf2ff;--rt-bg-edf2f8:#edf2f8;--rt-bg-edf4ff:#edf4ff;--rt-bg-eef1f5:#eef1f5;--rt-bg-eef1f6:#eef1f6;--rt-bg-eef2f7:#eef2f7;--rt-bg-eef2f8:#eef2f8;--rt-bg-eef2ff:#eef2ff;--rt-bg-eef3fb:#eef3fb;--rt-bg-eef4ff:#eef4ff;--rt-bg-eef5ff:#eef5ff;--rt-bg-eef6fd:#eef6fd;--rt-bg-efe8ff:#efe8ff;--rt-bg-f0f4fa:#f0f4fa;--rt-bg-f1f3f7:#f1f3f7;--rt-bg-f2f5fa:#f2f5fa;--rt-bg-f3e8ff:#f3e8ff;--rt-bg-f3eefe:#f3eefe;--rt-bg-f3efff:#f3efff;--rt-bg-f3f1ff:#f3f1ff;--rt-bg-f3f6fa:#f3f6fa;--rt-bg-f3f6fb:#f3f6fb;--rt-bg-f3f7ff:#f3f7ff;--rt-bg-f4f0ff:#f4f0ff;--rt-bg-f4f6fa:#f4f6fa;--rt-bg-f4f8ff:#f4f8ff;--rt-bg-f5f8fc:#f5f8fc;--rt-bg-f5f9ff:#f5f9ff;--rt-bg-f7f9fd:#f7f9fd;--rt-bg-f7faff:#f7faff;--rt-bg-fafbfd:#fafbfd;--rt-bg-fbfcfe:#fbfcfe;--rt-bg-fde8e8:#fde8e8;--rt-bg-ffe4ca:#ffe4ca;--rt-bg-fff:#fff;--rt-bg-fff3d8:#fff3d8;--rt-bg-fff3e3:#fff3e3;--rt-bg-fff4e5:#fff4e5;--rt-bg-fff4e8:#fff4e8;--rt-bg-fff6e5:#fff6e5;--rt-bg-fff7cc:#fff7cc;--rt-bg-fff7e6:#fff7e6;--rt-bg-fff8e6:#fff8e6;--rt-bg-ffffff1f:#ffffff1f;--rt-bg-ffffff28:#ffffff28;--rt-bg-ffffff30:#ffffff30;--rt-bg-ffffff33:#ffffff33;--rt-bg-ffffffa6:#ffffffa6;--rt-bg-ffffffb3:#ffffffb3;--rt-bg-ffffffd9:#ffffffd9;--rt-bg-fffffff2:#fffffff2;--rt-bg-fffffff5:#fffffff5;--rt-fg-0057d8:#0057d8;--rt-fg-007aff:#007aff;--rt-fg-177a41:#177a41;--rt-fg-183a6b:#183a6b;--rt-fg-1b6e3d:#1b6e3d;--rt-fg-1c4f8a:#1c4f8a;--rt-fg-1c86b8:#1c86b8;--rt-fg-1d4fb8:#1d4fb8;--rt-fg-1e9e52:#1e9e52;--rt-fg-1f2532:#1f2532;--rt-fg-1f2a3d:#1f2a3d;--rt-fg-202634:#202634;--rt-fg-2448a8:#2448a8;--rt-fg-2563c9:#2563c9;--rt-fg-2748a8:#2748a8;--rt-fg-2d4c82:#2d4c82;--rt-fg-2f5fd0:#2f5fd0;--rt-fg-2f63c8:#2f63c8;--rt-fg-326bd5:#326bd5;--rt-fg-333d52:#333d52;--rt-fg-34835b:#34835b;--rt-fg-376cd0:#376cd0;--rt-fg-3a2a06:#3a2a06;--rt-fg-3a3a3c:#3a3a3c;--rt-fg-3a4458:#3a4458;--rt-fg-3a4f70:#3a4f70;--rt-fg-3b4658:#3b4658;--rt-fg-3b4660:#3b4660;--rt-fg-415069:#415069;--rt-fg-456181:#456181;--rt-fg-475569:#475569;--rt-fg-48607f:#48607f;--rt-fg-4d5d75:#4d5d75;--rt-fg-56627a:#56627a;--rt-fg-5a4110:#5a4110;--rt-fg-5b6679:#5b6679;--rt-fg-5b6b85:#5b6b85;--rt-fg-687386:#687386;--rt-fg-687892:#687892;--rt-fg-6b21a8:#6b21a8;--rt-fg-6b3b13:#6b3b13;--rt-fg-6b3fd1:#6b3fd1;--rt-fg-6b5412:#6b5412;--rt-fg-6b7280:#6b7280;--rt-fg-6ca6ff:#6ca6ff;--rt-fg-6fb7ff:#6fb7ff;--rt-fg-778194:#778194;--rt-fg-7a5b00:#7a5b00;--rt-fg-7b8799:#7b8799;--rt-fg-7e5a39:#7e5a39;--rt-fg-7fa6f5:#7fa6f5;--rt-fg-7fd6a0:#7fd6a0;--rt-fg-8792a3:#8792a3;--rt-fg-8793a8:#8793a8;--rt-fg-8a5a00:#8a5a00;--rt-fg-8a5a12:#8a5a12;--rt-fg-8a8a8e:#8a8a8e;--rt-fg-8a94a6:#8a94a6;--rt-fg-8ab4ff:#8ab4ff;--rt-fg-8fb3ff:#8fb3ff;--rt-fg-9aa1ac:#9aa1ac;--rt-fg-9aa3b2:#9aa3b2;--rt-fg-9aa6b8:#9aa6b8;--rt-fg-9cc3ff:#9cc3ff;--rt-fg-9cc4ff:#9cc4ff;--rt-fg-9ccc3c:#9ccc3c;--rt-fg-9fd8f2:#9fd8f2;--rt-fg-a4570f:#a4570f;--rt-fg-aab4c3:#aab4c3;--rt-fg-aeb8c7:#aeb8c7;--rt-fg-b42318:#b42318;--rt-fg-b7bdc6:#b7bdc6;--rt-fg-b8c2d3:#b8c2d3;--rt-fg-bf5af2:#bf5af2;--rt-fg-c2410c:#c2410c;--rt-fg-c64545:#c64545;--rt-fg-c7590a:#c7590a;--rt-fg-c7ccd6:#c7ccd6;--rt-fg-c9a8ff:#c9a8ff;--rt-fg-c9d3e6:#c9d3e6;--rt-fg-c9d6e8:#c9d6e8;--rt-fg-cfd6e4:#cfd6e4;--rt-fg-d6deea:#d6deea;--rt-fg-d70015:#d70015;--rt-fg-ff9f0a:#ff9f0a;--rt-fg-ff9f7a:#ff9f7a;--rt-fg-ffa596:#ffa596;--rt-fg-ffd166:#ffd166;--rt-fg-ffd479:#ffd479;--rt-ln-c9ced6:#c9ced6;--rt-ln-c9d3e2:#c9d3e2;--rt-ln-c9d6ea:#c9d6ea;--rt-ln-c9d9f6:#c9d9f6;--rt-ln-c9e3f3:#c9e3f3;--rt-ln-cfd8e6:#cfd8e6;--rt-ln-cfdcf0:#cfdcf0;--rt-ln-cfdcff:#cfdcff;--rt-ln-d6e4f5:#d6e4f5;--rt-ln-d7e2f8:#d7e2f8;--rt-ln-d8e0ec:#d8e0ec;--rt-ln-d8e2f2:#d8e2f2;--rt-ln-dbe3ef:#dbe3ef;--rt-ln-dce6fa:#dce6fa;--rt-ln-dedfdf:#dedfdf;--rt-ln-dfe6f0:#dfe6f0;--rt-ln-e0e7f1:#e0e7f1;--rt-ln-e2e8f1:#e2e8f1;--rt-ln-e3e9f2:#e3e9f2;--rt-ln-e3e9f3:#e3e9f3;--rt-ln-e4eaf3:#e4eaf3;--rt-ln-e8edf5:#e8edf5;--rt-ln-edf1f6:#edf1f6;--rt-ln-edf1f7:#edf1f7;--rt-ln-f1dfa8:#f1dfa8;--rt-ln-fff:#fff;--rt-ln-ffffff59:#ffffff59;}
+  #rtcom-design .rt-report-paper{color-scheme:light;background:#fff;color:#1d2433;--rt-bg:#fff;--rt-soft:#f3f6fb;--rt-ink:#1f2532;--rt-muted:#687386;--rt-line:#dfe6f0;--rt-accent:#0057D8;--rt-tint:#edf4ff;--pg-paper:#EEF1F6;--pg-ink:#1C1C1E;--pg-ink-2:#3A3A3C;--pg-muted:#6A6A6F;--pg-line:rgba(60,60,67,.12);--pg-line-2:rgba(60,60,67,.20);--pg-accent:#007AFF;--pg-accent-2:#0057D8;--pg-accent-tint:rgba(0,122,255,.12);--pg-purple-ink:#8944AB;--pg-purple-tint:rgba(137,68,171,.09);--pg-glass-fill:rgba(255,255,255,.62);--pg-glass-stroke:rgba(255,255,255,.7);--pg-field-fill:rgba(118,118,128,.10);--pg-seg-track:rgba(118,118,128,.14);--rt-bg-c5cfdd:#c5cfdd;--rt-bg-c9ced6:#c9ced6;--rt-bg-dfeaff:#dfeaff;--rt-bg-e2e8f1:#e2e8f1;--rt-bg-e3e9f2:#e3e9f2;--rt-bg-e3ebf7:#e3ebf7;--rt-bg-e6ebf3:#e6ebf3;--rt-bg-e6f0ff:#e6f0ff;--rt-bg-e7edf6:#e7edf6;--rt-bg-e8eef8:#e8eef8;--rt-bg-e8f0ff:#e8f0ff;--rt-bg-e9f6fd:#e9f6fd;--rt-bg-eaf0fa:#eaf0fa;--rt-bg-eaf2ff:#eaf2ff;--rt-bg-edf2f8:#edf2f8;--rt-bg-edf4ff:#edf4ff;--rt-bg-eef1f5:#eef1f5;--rt-bg-eef1f6:#eef1f6;--rt-bg-eef2f7:#eef2f7;--rt-bg-eef2f8:#eef2f8;--rt-bg-eef2ff:#eef2ff;--rt-bg-eef3fb:#eef3fb;--rt-bg-eef4ff:#eef4ff;--rt-bg-eef5ff:#eef5ff;--rt-bg-eef6fd:#eef6fd;--rt-bg-efe8ff:#efe8ff;--rt-bg-f0f4fa:#f0f4fa;--rt-bg-f1f3f7:#f1f3f7;--rt-bg-f2f5fa:#f2f5fa;--rt-bg-f3e8ff:#f3e8ff;--rt-bg-f3eefe:#f3eefe;--rt-bg-f3efff:#f3efff;--rt-bg-f3f1ff:#f3f1ff;--rt-bg-f3f6fa:#f3f6fa;--rt-bg-f3f6fb:#f3f6fb;--rt-bg-f3f7ff:#f3f7ff;--rt-bg-f4f0ff:#f4f0ff;--rt-bg-f4f6fa:#f4f6fa;--rt-bg-f4f8ff:#f4f8ff;--rt-bg-f5f8fc:#f5f8fc;--rt-bg-f5f9ff:#f5f9ff;--rt-bg-f7f9fd:#f7f9fd;--rt-bg-f7faff:#f7faff;--rt-bg-fafbfd:#fafbfd;--rt-bg-fbfcfe:#fbfcfe;--rt-bg-fde8e8:#fde8e8;--rt-bg-ffe4ca:#ffe4ca;--rt-bg-fff:#fff;--rt-bg-fff3d8:#fff3d8;--rt-bg-fff3e3:#fff3e3;--rt-bg-fff4e5:#fff4e5;--rt-bg-fff4e8:#fff4e8;--rt-bg-fff6e5:#fff6e5;--rt-bg-fff7cc:#fff7cc;--rt-bg-fff7e6:#fff7e6;--rt-bg-fff8e6:#fff8e6;--rt-bg-ffffff1f:#ffffff1f;--rt-bg-ffffff28:#ffffff28;--rt-bg-ffffff30:#ffffff30;--rt-bg-ffffff33:#ffffff33;--rt-bg-ffffffa6:#ffffffa6;--rt-bg-ffffffb3:#ffffffb3;--rt-bg-ffffffd9:#ffffffd9;--rt-bg-fffffff2:#fffffff2;--rt-bg-fffffff5:#fffffff5;--rt-fg-0057d8:#0057d8;--rt-fg-007aff:#007aff;--rt-fg-177a41:#177a41;--rt-fg-183a6b:#183a6b;--rt-fg-1b6e3d:#1b6e3d;--rt-fg-1c4f8a:#1c4f8a;--rt-fg-1c86b8:#1c86b8;--rt-fg-1d4fb8:#1d4fb8;--rt-fg-1e9e52:#1e9e52;--rt-fg-1f2532:#1f2532;--rt-fg-1f2a3d:#1f2a3d;--rt-fg-202634:#202634;--rt-fg-2448a8:#2448a8;--rt-fg-2563c9:#2563c9;--rt-fg-2748a8:#2748a8;--rt-fg-2d4c82:#2d4c82;--rt-fg-2f5fd0:#2f5fd0;--rt-fg-2f63c8:#2f63c8;--rt-fg-326bd5:#326bd5;--rt-fg-333d52:#333d52;--rt-fg-34835b:#34835b;--rt-fg-376cd0:#376cd0;--rt-fg-3a2a06:#3a2a06;--rt-fg-3a3a3c:#3a3a3c;--rt-fg-3a4458:#3a4458;--rt-fg-3a4f70:#3a4f70;--rt-fg-3b4658:#3b4658;--rt-fg-3b4660:#3b4660;--rt-fg-415069:#415069;--rt-fg-456181:#456181;--rt-fg-475569:#475569;--rt-fg-48607f:#48607f;--rt-fg-4d5d75:#4d5d75;--rt-fg-56627a:#56627a;--rt-fg-5a4110:#5a4110;--rt-fg-5b6679:#5b6679;--rt-fg-5b6b85:#5b6b85;--rt-fg-687386:#687386;--rt-fg-687892:#687892;--rt-fg-6b21a8:#6b21a8;--rt-fg-6b3b13:#6b3b13;--rt-fg-6b3fd1:#6b3fd1;--rt-fg-6b5412:#6b5412;--rt-fg-6b7280:#6b7280;--rt-fg-6ca6ff:#6ca6ff;--rt-fg-6fb7ff:#6fb7ff;--rt-fg-778194:#778194;--rt-fg-7a5b00:#7a5b00;--rt-fg-7b8799:#7b8799;--rt-fg-7e5a39:#7e5a39;--rt-fg-7fa6f5:#7fa6f5;--rt-fg-7fd6a0:#7fd6a0;--rt-fg-8792a3:#8792a3;--rt-fg-8793a8:#8793a8;--rt-fg-8a5a00:#8a5a00;--rt-fg-8a5a12:#8a5a12;--rt-fg-8a8a8e:#8a8a8e;--rt-fg-8a94a6:#8a94a6;--rt-fg-8ab4ff:#8ab4ff;--rt-fg-8fb3ff:#8fb3ff;--rt-fg-9aa1ac:#9aa1ac;--rt-fg-9aa3b2:#9aa3b2;--rt-fg-9aa6b8:#9aa6b8;--rt-fg-9cc3ff:#9cc3ff;--rt-fg-9cc4ff:#9cc4ff;--rt-fg-9ccc3c:#9ccc3c;--rt-fg-9fd8f2:#9fd8f2;--rt-fg-a4570f:#a4570f;--rt-fg-aab4c3:#aab4c3;--rt-fg-aeb8c7:#aeb8c7;--rt-fg-b42318:#b42318;--rt-fg-b7bdc6:#b7bdc6;--rt-fg-b8c2d3:#b8c2d3;--rt-fg-bf5af2:#bf5af2;--rt-fg-c2410c:#c2410c;--rt-fg-c64545:#c64545;--rt-fg-c7590a:#c7590a;--rt-fg-c7ccd6:#c7ccd6;--rt-fg-c9a8ff:#c9a8ff;--rt-fg-c9d3e6:#c9d3e6;--rt-fg-c9d6e8:#c9d6e8;--rt-fg-cfd6e4:#cfd6e4;--rt-fg-d6deea:#d6deea;--rt-fg-d70015:#d70015;--rt-fg-ff9f0a:#ff9f0a;--rt-fg-ff9f7a:#ff9f7a;--rt-fg-ffa596:#ffa596;--rt-fg-ffd166:#ffd166;--rt-fg-ffd479:#ffd479;--rt-ln-c9ced6:#c9ced6;--rt-ln-c9d3e2:#c9d3e2;--rt-ln-c9d6ea:#c9d6ea;--rt-ln-c9d9f6:#c9d9f6;--rt-ln-c9e3f3:#c9e3f3;--rt-ln-cfd8e6:#cfd8e6;--rt-ln-cfdcf0:#cfdcf0;--rt-ln-cfdcff:#cfdcff;--rt-ln-d6e4f5:#d6e4f5;--rt-ln-d7e2f8:#d7e2f8;--rt-ln-d8e0ec:#d8e0ec;--rt-ln-d8e2f2:#d8e2f2;--rt-ln-dbe3ef:#dbe3ef;--rt-ln-dce6fa:#dce6fa;--rt-ln-dedfdf:#dedfdf;--rt-ln-dfe6f0:#dfe6f0;--rt-ln-e0e7f1:#e0e7f1;--rt-ln-e2e8f1:#e2e8f1;--rt-ln-e3e9f2:#e3e9f2;--rt-ln-e3e9f3:#e3e9f3;--rt-ln-e4eaf3:#e4eaf3;--rt-ln-e8edf5:#e8edf5;--rt-ln-edf1f6:#edf1f6;--rt-ln-edf1f7:#edf1f7;--rt-ln-f1dfa8:#f1dfa8;--rt-ln-fff:#fff;--rt-ln-ffffff59:#ffffff59;}
+  /* 손 규칙: 신호 배지는 SDI(검정)·HDMI(남색)가 어두운 면에 묻히지 않게 옅은 테두리를 둔다. */
+  #rtcom-design .rt-sig-badge{box-shadow:0 0 0 1px rgba(255,255,255,.28)}
+  /* 손 규칙: 카드 판넬 사진(검은 몸체) 받침은 0.178 결정대로 옅은 회색을 유지한다. */
+  #rtcom-design .rt-palette-tile img,#rtcom-design .rt-link-flow-node img[src*="assets/cards/"]{background:#eef1f5}
+  #rtcom-design .rt-card-info-plate{background:#f2f5fa}
+}
+/* ==== 0.234 다크 값 끝 ==== */
