@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// 0.237 다크 모드 B단계 ②: 0.232에서 모은 --rt-bg-*/--rt-fg-*/--rt-ln-* 변수에 다크 값을 계산해 붙인다.
+// 0.238 다크 모드 B단계 ②: 0.232에서 모은 --rt-bg-*/--rt-fg-*/--rt-ln-* 변수에 다크 값을 계산해 붙인다.
 // 사용법: node scripts/tools/dark_tokens.cjs          (점검: 바뀔 블록을 출력만 함)
 //         node scripts/tools/dark_tokens.cjs --check  (styles.css의 다크 블록이 최신인지 확인, 다르면 exit 1)
 //         node scripts/tools/dark_tokens.cjs --apply  (src/styles.css 맨 끝의 다크 블록을 새로 씀)
@@ -8,8 +8,8 @@
 const fs=require('node:fs');
 const path=require('node:path');
 const CSS=path.join(__dirname,'..','..','src','styles.css');
-const START='/* ==== 0.237 다크 값(자동 생성: scripts/tools/dark_tokens.cjs) 시작 ==== */';
-const END='/* ==== 0.237 다크 값 끝 ==== */';
+const START='/* ==== 0.238 다크 값(자동 생성: scripts/tools/dark_tokens.cjs) 시작 ==== */';
+const END='/* ==== 0.238 다크 값 끝 ==== */';
 
 const toHsl=(r,g,b,a)=>{
   const max=Math.max(r,g,b),min=Math.min(r,g,b),l=(max+min)/2;

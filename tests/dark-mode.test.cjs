@@ -1,4 +1,4 @@
-// 0.237 다크 모드 B단계 ②: 다크 값 블록이 최신이고, 화면(screen)·다크 조건 안에만 있으며, 라이트·인쇄 값을 건드리지 않는지 확인한다.
+// 0.238 다크 모드 B단계 ②: 다크 값 블록이 최신이고, 화면(screen)·다크 조건 안에만 있으며, 라이트·인쇄 값을 건드리지 않는지 확인한다.
 const test=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
@@ -7,8 +7,8 @@ const {execFileSync}=require('node:child_process');
 
 const root=path.resolve(__dirname,'..');
 const css=fs.readFileSync(path.join(root,'src','styles.css'),'utf8');
-const START='/* ==== 0.237 다크 값(자동 생성: scripts/tools/dark_tokens.cjs) 시작 ==== */';
-const END='/* ==== 0.237 다크 값 끝 ==== */';
+const START='/* ==== 0.238 다크 값(자동 생성: scripts/tools/dark_tokens.cjs) 시작 ==== */';
+const END='/* ==== 0.238 다크 값 끝 ==== */';
 const block=css.slice(css.indexOf(START),css.indexOf(END)+END.length);
 
 test('다크 블록이 생성 도구 결과와 같음(--check)',()=>{
