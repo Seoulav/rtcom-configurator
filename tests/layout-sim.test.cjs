@@ -124,3 +124,22 @@ test('0.225: "맨 위로"는 그 창이 맨 위 포트를 받도록 순서를 �
   assert.deepEqual(L.stackOrder(front),[1,0]);
   assert.deepEqual(L.stackOrder({...front,priority:'1234'}),[0,1]);
 });
+
+// 0.226 두 카드를 한 구성에(사용자 설명 2026-10-16 "HOS 카드로 인풋 2개·4개 연출 … WOS 카드는 디스플레이 4개에 걸쳐서 레이어 연출 … 둘 다 사용하는 경우").
+test('0.226: 전체 커맨드는 포함한 카드의 커맨드를 순서대로 모으고 출력 포트가 겹치면 경고한다',()=>{
+  const wos=L.PRESETS[0].state;
+  const both=L.combinedCommands(wos,{startPort:1},{wos:true,hos:true});
+  assert.deepEqual(both.lines.map(l=>l.card),['WOS100','HOS100','HOS100']);
+  assert.equal(both.lines[0].text,L.PRESETS[0].expected);
+  assert.match(both.lines[1].text,/^\*255CI001O001,I002O002,I003O003,I004O004!$/);
+  assert.ok(both.overlap&&both.warnings.some(w=>/출력 포트가 겹칩니다.*17번으로 옮기세요/.test(w)));
+  assert.equal(both.nextFreePort,17);
+  const apart=L.combinedCommands(wos,{startPort:17},{wos:true,hos:true});
+  assert.ok(!apart.overlap);
+  assert.match(apart.lines[1].text,/O017,I002O018,I003O019,I004O020!$/);
+  assert.match(apart.lines[2].text,/^\*255OQO017M14L00P4321O017X/);
+  const only=L.combinedCommands(wos,{startPort:1},{wos:false,hos:true});
+  assert.deepEqual(only.lines.map(l=>l.card),['HOS100','HOS100']);
+  assert.ok(!only.overlap);
+  assert.ok(L.combinedCommands(wos,{},{wos:false,hos:false}).warnings.some(w=>/포함한 카드가 없습니다/.test(w)));
+});
