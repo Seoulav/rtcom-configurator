@@ -17,7 +17,7 @@
        디스플레이마다 카드 1장을 두고, 그 카드의 포트 1~4를 그 디스플레이 위 창(레이어) 자원으로 쓴다(디스플레이 1대에 창 4개까지).
      - 'guide': 가이드 46~47쪽 Wall Port Connection 그림대로 카드 1장(포트 4개) = 디스플레이 2×2 블록. 가이드 예제 1~8이 이 배치로 적혀 있다.
      두 배치가 서로 달라 어느 쪽이 맞는지는 알티컴 확인 대기(docs/handoff/OPEN_ITEMS.md).
-   현장 메모 값(출력 9~12번 모니터링 커맨드, HPD·EDID·Genlock 참고 커맨드)은 0.209 결정으로 빼 두었다가 0.231에서 사용자 결정(2026-10-16 "2안으로 전부 공개해")대로 공개한다(FIELD_NOTES).
+   현장 메모 값(출력 9~12번 모니터링 커맨드, HPD·EDID·Genlock 참고 커맨드)은 0.209 결정으로 빼 두었다가 0.232에서 사용자 결정(2026-10-16 "2안으로 전부 공개해")대로 공개한다(FIELD_NOTES).
    순수 함수(geometry·portMapFor·assignPorts·commandFor·coverageFor·PRESETS)는 Node 테스트(tests/layout-sim.test.cjs)에서도 쓰므로 DOM을 건드리지 않는다.
    mount()·mountAll()은 브라우저에서 제품정보(XDM 시리즈) 화면의 "07 화면 연출 시뮬레이터" 카드 안에만 그린다(src/products.js). */
 (function(scope,factory){
@@ -303,7 +303,7 @@
       return {index:i,input:win.input,label:win.label,cells};
     });
   }
-  // 프리셋: 알티컴 확인 배치(card)의 기본 예시, 현장 메모 원문 3개(0.231, 사용자 결정 2026-10-16 "2안으로 전부 공개해": 0.209의 현장 값 비공개를 이 항목에 한해 되돌림), 가이드 예제(guide 배치, 쪽 번호).
+  // 프리셋: 알티컴 확인 배치(card)의 기본 예시, 현장 메모 원문 3개(0.232, 사용자 결정 2026-10-16 "2안으로 전부 공개해": 0.209의 현장 값 비공개를 이 항목에 한해 되돌림), 가이드 예제(guide 배치, 쪽 번호).
   // expected는 가이드·메모에 적힌 커맨드 원문 또는 규칙으로 계산한 값(테스트 기준).
   const PRESETS=[
     {id:'card-2x2-pip',name:'기본 · 4K 디스플레이 4대(2×2, 카드 4장) 전체 입력 1 + 오른쪽 아래 PIP 입력 2',source:'알티컴 확인 배치(0.214 구성도)',
@@ -333,7 +333,7 @@
         {input:7,label:'',x:5760,y:2160,w:1920,h:1080},{input:8,label:'',x:7680,y:2160,w:1920,h:1080},{input:9,label:'',x:9600,y:2160,w:1920,h:1080}]}}
   ];
 
-  // 0.231 알티컴 기술 회신(2026-10-13, 사용자 메모 2026-10-16) 참고 커맨드. 가이드 본문에 없는 값(IV M03, IE M18·M19, Genlock 해상도)이라 "현장 확인값"으로 표시한다.
+  // 0.232 알티컴 기술 회신(2026-10-13, 사용자 메모 2026-10-16) 참고 커맨드. 가이드 본문에 없는 값(IV M03, IE M18·M19, Genlock 해상도)이라 "현장 확인값"으로 표시한다.
   const FIELD_NOTES=[
     {title:'입력 카드 Genlock(2112x1728·3072x1728)',lines:['XDM-HIS100 입력 카드 MCU 옆 딥 스위치 1번을 ON으로 두면 입력 카드가 Genlock 모드로 바뀝니다.']},
     {title:'출력 카드 Genlock(2112x1728)',lines:['전면 터치 Genlock 설정(I/O config)에서 해상도 2112x1728을 고른 뒤 해당 출력 카드를 선택합니다.']},
@@ -417,7 +417,7 @@
       ${r.warnings.length?`<ul class="rt-ls-warn">${r.warnings.map(w=>`<li>${esc(w)}</li>`).join('')}</ul>`:''}
       <p class="rt-pg-hint">근거: 알티컴 <a href="${GUIDE_PDF}#page=26" target="_blank" rel="noopener">XDM 시리즈 Command Guide 25쪽부터([OQ] Quad view 커맨드)</a>, 레이아웃 14종은 27쪽 표. 좌표·크기는 출력 해상도 안의 픽셀이며 4자리로 적습니다(W0000·H0000은 창 끄기). 포트 상태(레이어 4개면 2~4번은 1번과 같은 화면, 2개면 2번 사용 불가·3·4번 따로 스위칭)는 서울영상테크 확인(2026-10-12)입니다. L13(1~4번 PIP 사용자 배치)은 가이드의 좌표 묶음 수가 분명하지 않아 넣지 않았습니다.</p>${fieldNotesHtml()}`;
     };
-    // 다시 그리면 DOM이 바뀌어 창의 포커스가 사라지므로, 창에 포커스가 있었으면 선택한 창으로 되돌린다(Delete·화살표 키가 이어서 먹도록, 0.231).
+    // 다시 그리면 DOM이 바뀌어 창의 포커스가 사라지므로, 창에 포커스가 있었으면 선택한 창으로 되돌린다(Delete·화살표 키가 이어서 먹도록, 0.232).
     const render=()=>{const had=!!(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('[data-ls-win]')&&root.contains(document.activeElement));renderView();if(had&&selected>=0){const el=root.querySelector(`[data-ls-win="${selected}"]`);if(el&&el.tabIndex>=0)el.focus({preventScroll:true})}};
     const renderView=()=>{
       if(card==='ALL'){renderAll();return}
