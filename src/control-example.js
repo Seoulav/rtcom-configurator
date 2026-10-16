@@ -1,4 +1,4 @@
-/* 0.188 — 제품정보 "AMX 통합 제어 커맨드 예시" 카드(HDS-42MU 먼저, 이어서 HDS-21U·일체형·모듈러 매트릭스로 확장).
+/* 0.229 — 제품정보 "AMX 통합 제어 커맨드 예시" 카드(HDS-42MU 먼저, 이어서 HDS-21U·일체형·모듈러 매트릭스로 확장).
    입력·출력 번호나 볼륨을 고르면 RS-232 커맨드(문자열·HEX)와 AMX NetLinx 예제 코드가 바로 만들어진다.
    근거: 사용자 제공 HDS-42MU 사용자 매뉴얼 9쪽 "RS-232C Control"(output/design/assets/docs/hds-42mu-manual.pdf)
      - 통신속도 9600bps, 형식 * + 제품 ID(000) + C + Ixx(입력) + Oxx(출력) + ! + Enter(0x0D)

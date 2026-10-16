@@ -141,7 +141,9 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     check('깨진 이미지 없음',broken.length===0,broken.join(', '));
     check('주소가 바뀌지 않음(상대경로 이미지 보호)',page.url()===home,page.url());
     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
-    check('390px 화면에서 페이지 가로 넘침 없음',overflow<=0,`${overflow}px`);
+    // 0.227: 넘침이 생기면 원인 요소를 바로 알 수 있게 가로 스크롤 상자 밖에서 화면 오른쪽을 넘은 요소를 함께 적는다(검사 기준은 그대로).
+    const overflowCulprits=overflow>0?await page.evaluate(()=>{const w=innerWidth,clipped=el=>{for(let p=el.parentElement;p&&p!==document.body;p=p.parentElement){const o=getComputedStyle(p).overflowX;if(o==='auto'||o==='scroll'||o==='hidden'||o==='clip')return true}return false};return [...document.querySelectorAll('body *')].filter(el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return r.width&&r.right>w+0.5&&!clipped(el)&&s.display!=='none'&&s.visibility!=='hidden'}).slice(0,8).map(el=>`${typeof el.className==='string'?el.className:el.tagName} right=${el.getBoundingClientRect().right.toFixed(1)} fs=${getComputedStyle(el).fontSize} ws=${getComputedStyle(el).whiteSpace} "${(el.textContent||'').trim().slice(0,20)}"`)}):[];
+    check('390px 화면에서 페이지 가로 넘침 없음',overflow<=0,`${overflow}px${overflowCulprits.length?` · 원인 후보: ${JSON.stringify(overflowCulprits)}`:''}`);
 
     await page.reload({waitUntil:'networkidle'});
     check('새로고침 후 자동 저장 복원',await page.locator('.rt-rack-slot-filled img.rt-faceplate').count()===placed+1);
@@ -570,7 +572,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       const clipped=await page.evaluate(()=>{const svg=[...document.querySelectorAll('.rt-pg-svg-wrap svg')].find(s=>s.textContent.includes('HDMI IN'));if(!svg)return ['svg 없음'];const vb=svg.viewBox.baseVal;return [...svg.querySelectorAll('text,rect')].filter(el=>{const bb=el.getBBox();return bb.x<vb.x-1||bb.y<vb.y-1||bb.x+bb.width>vb.x+vb.width+1||bb.y+bb.height>vb.y+vb.height+1}).map(el=>(el.textContent||el.tagName).slice(0,20))});
       check(`${id} 신호 흐름 그림 요소가 틀 밖으로 잘리지 않음`,clipped.length===0,JSON.stringify(clipped));
     }
-    // 0.188 HDS-42MU "AMX 통합 제어 커맨드 예시": 매뉴얼 9쪽 예시(*000CI02O02!, *000V54!)가 처음에 나오고, 입력·출력·볼륨을 바꾸면 커맨드와 AMX 코드가 바뀐다.
+    // 0.229 HDS-42MU "AMX 통합 제어 커맨드 예시": 매뉴얼 9쪽 예시(*000CI02O02!, *000V54!)가 처음에 나오고, 입력·출력·볼륨을 바꾸면 커맨드와 AMX 코드가 바뀐다.
     await page.goto(`${home}#products/hds-42mu`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-control .rt-ce-cmd');
     const ceText=sel=>page.locator(`.rt-pg-control [data-ce-text="${sel}"]`).innerText();
@@ -587,7 +589,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     check('HDS-42MU AMX 커맨드 카드: 입력·출력 드롭다운을 바꾸면 표의 선택 칸과 커맨드(*000CI03O02!)가 같이 바뀜',ce2.sel==='3,2'&&/\*000CI03O02!/.test(ce2.sw),JSON.stringify(ce2));
     const ceOver=await page.evaluate(()=>({overflow:document.documentElement.scrollWidth>innerWidth,idx:document.querySelector('.rt-pg-control .rt-pg-idx')?.textContent}));
     check('HDS-42MU AMX 커맨드 카드 번호는 08이고 가로 넘침이 없음',ceOver.idx==='08'&&!ceOver.overflow,JSON.stringify(ceOver));
-    // 0.228 HDS-21U 같은 카드: 입력 2×출력 1 표 2칸, 매뉴얼 예시 *000CI02O01!, 뮤트 *000V00!(표의 Mute 칸 값 0), AMX 버튼 3개.
+    // 0.229 HDS-21U 같은 카드: 입력 2×출력 1 표 2칸, 매뉴얼 예시 *000CI02O01!, 뮤트 *000V00!(표의 Mute 칸 값 0), AMX 버튼 3개.
     await page.goto(`${home}#products/hds-21u`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-control .rt-ce-cmd');
     const ce21={cells:await page.locator('.rt-pg-control .rt-ce-cell').count(),sw:(await ceText('sw')).replace(/\s+/g,' '),mute:(await ceText('mute')).replace(/\s+/g,' '),amx:await ceText('amx'),idx:await page.locator('.rt-pg-control .rt-pg-idx').innerText(),overflow:await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth)};

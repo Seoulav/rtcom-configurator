@@ -1130,7 +1130,7 @@
       const sorted=[...rows,...combos].sort((x,y)=>x[0]-y[0]).map(entry=>entry[1]).join('');
       return `<section class="rt-pg-card rt-pg-dip" style="margin-top:18px"><h2><span class="rt-pg-idx">${idx}</span>딥 스위치 설정 <span class="rt-pg-note">— ${esc(ds.place||'전면')} ${esc(ds.label||'딥 스위치')} · ${ds.onUp!==false?'위쪽':'아래쪽'}이 ON</span></h2><div class="rt-pg-dip-rows">${sorted}</div>${ds.apply?`<p class="rt-pg-hint">※ ${esc(ds.apply)}</p>`:''}${ds.note?`<p class="rt-pg-hint">※ ${esc(ds.note)}</p>`:''}</section>`;
     }
-    // 0.188 "AMX 통합 제어 커맨드 예시" 카드(제품 JSON의 controlExample, 그리기·문자열 생성은 src/control-example.js). 번호는 딥 스위치 카드 다음이다.
+    // 0.229 "AMX 통합 제어 커맨드 예시" 카드(제품 JSON의 controlExample, 그리기·문자열 생성은 src/control-example.js). 번호는 딥 스위치 카드 다음이다.
     function controlExampleSection(item){
       const ce=item.controlExample;
       if(!ce)return '';
