@@ -526,5 +526,22 @@
     "mode": "select",
     "source": "U"
   },
-  "issues": []
+  "issues": [],
+  "controlExample": {
+    "productId": "000",
+    "inputs": 4,
+    "outputs": 2,
+    "volume": {
+      "zeroCode": 50,
+      "stepDb": 0.5,
+      "minCode": 0,
+      "maxCode": 99
+    },
+    "serial": {
+      "baud": 9600
+    },
+    "amxDevice": "dvHDS42MU",
+    "lead": "AMX 같은 통합 제어 시스템이 RS-232로 보내는 문자열 예시입니다. 입력 선택과 오디오 볼륨 두 가지를 매뉴얼 9쪽 형식 그대로 만들고, 같은 문자열을 보내는 NetLinx 코드까지 함께 보여 줍니다.",
+    "source": "HDS-42MU 사용자 매뉴얼 9쪽 RS-232C Control"
+  }
 }
