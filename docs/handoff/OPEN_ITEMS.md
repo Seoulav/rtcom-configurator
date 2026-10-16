@@ -24,6 +24,13 @@
 검토 40행은 2026-10-14 사용자 결정으로 모두 정리했습니다(`docs/implementation/TERMS_REVIEW_DECISIONS_0.218.md`: 믹스 → 병합, Touch Screen → 터치스크린, 짧은 영문 원문 유지).
 - 영문 분류명(1x4 HDMI 18Gbps Splitter 등)과 모델명 축약(CTR100 등)은 사용자 "pass"로 그대로 둡니다. 다시 정할 때 이 항목에서 시작합니다.
 
+## AMX 통합 제어 커맨드 예시 확장(0.228) — 제품별 자료·확인 대기
+
+`docs/implementation/CONTROL_EXAMPLE_0.228.md`. HDS-42MU는 0.228에 반영했습니다. 사용자 지시 순서대로 확장합니다.
+- [ ] HDS-21U: 같은 프로토콜(매뉴얼 `*000CI02O01!`, `*000V54!`)이라 `data/products/hds-21u.json`에 `controlExample`(입력 2·출력 1)만 더하면 됩니다. 다음 작업으로 진행
+- [ ] 일체형 매트릭스(QMS-44UX·QMS-88UX), 모듈러 매트릭스(XDM·SPX·VDM): RS-232/Telnet 명령 가이드가 필요합니다(XDM은 `XDM Command Guide 1013`을 시뮬레이터에 이미 사용). 명령 문법이 다르므로 제품별 생성기를 추가합니다
+- [ ] HDS-42MU 뮤트 명령: 매뉴얼 9쪽에는 입력 선택·볼륨만 있고, 딥 스위치 카드 note에는 "뮤트할 수 있다"고 적혀 있습니다. RT컴에 뮤트 명령 유무와 데이터 비트·패리티·스톱 비트, 볼륨 허용 범위를 확인
+
 ## AI 검색 사내 베타(0.142) — 사용자 설정 대기
 
 `docs/implementation/AI_SEARCH_BETA.md` §5 절차를 사용자가 직접 합니다. Claude는 API 키·비밀값을 받지 않습니다.

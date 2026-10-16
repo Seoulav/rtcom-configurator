@@ -97,6 +97,7 @@
       const all=range(spec.inputs).flatMap(i=>range(spec.outputs).map(o=>switchCommand(spec,i,o).text));
       root.innerHTML=`
       <div class="rt-ce-block"><div class="rt-ce-head"><h3>입력 → 출력 라우팅 (${spec.inputs}×${spec.outputs} = ${all.length}가지)</h3><button type="button" class="rt-pg-btn" data-ce-copy="all">전체 ${all.length}개 복사</button><span class="rt-ce-copied" data-ce-note="all" aria-live="polite"></span></div>
+        <div class="rt-ce-controls"><label>입력<select data-ce-field="input">${range(spec.inputs).map(n=>`<option value="${n}"${n===st.input?' selected':''}>입력 ${n}번</option>`).join('')}</select></label><label>출력<select data-ce-field="output">${range(spec.outputs).map(n=>`<option value="${n}"${n===st.output?' selected':''}>출력 ${n}번</option>`).join('')}</select></label></div>
         ${grid}
         <pre data-ce-text="all" hidden>${esc(all.join('\n'))}</pre></div>
       <div class="rt-ce-block"><div class="rt-ce-head"><h3>선택한 경로 · IN ${sel.input} → OUT ${sel.output}</h3><button type="button" class="rt-pg-btn" data-ce-copy="sw">복사</button><span class="rt-ce-copied" data-ce-note="sw" aria-live="polite"></span></div>
@@ -112,8 +113,13 @@
       <p class="rt-pg-hint">※ 매뉴얼에 적혀 있지 않아 넣지 않은 것: 데이터 비트·패리티·스톱 비트(코드의 8N1은 일반값), 뮤트 명령, 볼륨 허용 범위(코드 ${pad2(v.min)}~${pad2(v.max)}는 두 자리 형식에서 계산한 값). AMX 장치 번호와 버튼 번호는 현장에 맞게 바꾸세요.</p>`;
     }
     root.addEventListener('change',event=>{
-      const field=event.target.closest('[data-ce-field="db"]');if(!field)return;
-      st.db=clamp(Number(field.value)||0,dbMin,dbMax);save();render();
+      const field=event.target.closest('[data-ce-field]');if(!field)return;
+      const name=field.dataset.ceField;
+      if(name==='db')st.db=clamp(Number(field.value)||0,dbMin,dbMax);
+      else if(name==='input')st.input=clamp(Number(field.value)||1,1,spec.inputs);
+      else if(name==='output')st.output=clamp(Number(field.value)||1,1,spec.outputs);
+      else return;
+      save();render();
     });
     root.addEventListener('click',event=>{
       const cell=event.target.closest('[data-ce-cell]');
