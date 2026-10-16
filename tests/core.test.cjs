@@ -386,3 +386,26 @@ test('AV 빌더용 구성도는 매트릭스 1대와 04에서 연결한 채널�
   assert.equal(d.nodes.find(n=>n.id==='rtcom_in-1_1_tx').data.inputs[0].label,'HDMI In · PC');
   assert.deepEqual(core.avBuilder({...core.initial(),model:'XDM-12',slot:'in-1'}).nodes,[]);
 });
+
+test('0.226: XDM-MR4S 랙 장착을 켜면 CTR100·FT101·FR101 4대당 MR4S 1대를 넣고 XDM-PSU는 세지 않는다',()=>{
+  const off=configured();
+  assert.equal(off.mr4s,false,'기본값은 꺼짐');
+  assert.ok(!core.bom(off).some(row=>row.model.startsWith('XDM-MR4S')),'꺼져 있으면 BOM에 MR4S가 없다');
+  assert.deepEqual(core.mr4sUnits(off),{units:5,frames:0});
+  const on={...configured(),mr4s:true};
+  const rows=core.bom(on);
+  assert.equal(rows.find(row=>row.model.startsWith('XDM-MR4S')).quantity,2,'CTR100 TX 2 + RX 3 = 5대 → ceil(5/4) = 2대');
+  assert.ok(!rows.some(row=>/^XDM-(PSU|POH|PHX)/.test(row.model)),'MR4S의 CTR100은 원격 전원 공급이 안 되므로 XDM-PSU·POH·PHX를 넣지 않는다');
+  const issues=core.validate(on).issues;
+  assert.match(issues.find(issue=>issue.code==='XDM_MR4S').message,/원격 전원 공급이 되지 않으므로/);
+  assert.ok(!issues.some(issue=>issue.code==='CTR_POWER_REQUIRED'));
+  const restored=core.parse(JSON.stringify(core.document(on)));
+  assert.equal(restored.mr4s,true,'저장·불러오기에서 켜짐이 유지된다');
+  const legacy=JSON.parse(JSON.stringify(core.document(off)));delete legacy.state.mr4s;
+  assert.equal(core.parse(JSON.stringify(legacy)).mr4s,false,'mr4s가 없는 예전 파일은 꺼짐으로 읽는다');
+  assert.throws(()=>core.checkState({...configured(),mr4s:'yes'}),/XDM-MR4S 설정 형식/);
+  assert.equal(core.checkState({...core.initial(),family:'SPX',mr4s:true}).mr4s,false,'XDM이 아닌 제품군에서는 늘 꺼짐');
+  const fiber={...core.initial(),model:'XDM-12',step:4,maxStep:4,slot:'in-1',mr4s:true,placements:{'in-1':'XDM-FIS100','out-1':'XDM-FOS100'},links:{'in-1':{device:'XDM-FT101',count:4,distance:'300'},'out-1':{device:'XDM-FR101',count:4,distance:'300'}}};
+  fiber.portAssignments=core.syncPorts(fiber);
+  assert.equal(core.bom(fiber).find(row=>row.model.startsWith('XDM-MR4S')).quantity,2,'FT101 4 + FR101 4 = 8대 → 2대');
+});
