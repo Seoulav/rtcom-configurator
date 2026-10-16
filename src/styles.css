@@ -1501,3 +1501,89 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-summary-link .rt-summary-link-arrow{color:#C7590A;font-weight:800}
 #rtcom-design .rt-config-summary li.rt-summary-link strong{min-width:0;overflow:hidden;font-size:12px;text-overflow:ellipsis;white-space:nowrap}
 #rtcom-design .rt-config-summary li.rt-summary-link b{color:#1f2a3d;font-size:13px;font-weight:800;white-space:nowrap}
+/* 0.224 XDM "07 화면 연출 시뮬레이터"(src/layout-sim.js). 모든 클래스는 rt-ls-* 접두사, 제품정보 화면 안에서만 쓴다. */
+#rtcom-design .rt-products-view .rt-pg-layout-sim .rt-pg-lead code{font:600 12px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--pg-field-fill);padding:2px 6px;border-radius:6px}
+#rtcom-design .rt-ls-controls{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:flex-end;margin:0 0 12px}
+#rtcom-design .rt-ls-controls label{display:flex;flex-direction:column;gap:5px;font:600 11.5px/1.2 var(--pg-sans);color:var(--pg-muted);min-width:0}
+#rtcom-design .rt-ls-controls select,#rtcom-design .rt-ls-controls input[type=number]{font:600 13px/1.2 var(--pg-sans);color:var(--pg-ink);background:var(--pg-field-fill);border:1px solid transparent;border-radius:12px;padding:8px 12px;min-height:36px;margin:0}
+#rtcom-design .rt-ls-controls input[type=number]{width:84px}
+#rtcom-design .rt-ls-controls .rt-ls-check{flex-direction:row;align-items:center;gap:8px;color:var(--pg-ink);min-height:36px;font-size:12.5px}
+#rtcom-design .rt-ls-controls .rt-ls-check input{margin:0;width:16px;height:16px;accent-color:var(--pg-accent)}
+#rtcom-design .rt-ls-controls .rt-pg-btn{min-height:36px}
+#rtcom-design .rt-ls-summary{font-size:12.5px;color:var(--pg-muted);margin:0 0 10px}
+#rtcom-design .rt-ls-summary b{color:var(--pg-ink)}
+#rtcom-design .rt-ls-stage{border-radius:var(--pg-r-inner);background:#0f1115;padding:10px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+#rtcom-design .rt-ls-canvas{position:relative;width:100%;max-height:520px;margin:0 auto;background:#1b1f27;border-radius:10px;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}
+#rtcom-design .rt-ls-cell{position:absolute;box-sizing:border-box;border:1px dashed rgba(255,255,255,.28);display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;padding:6px 8px;color:rgba(255,255,255,.55);font:700 11px/1.2 var(--pg-sans);pointer-events:none}
+#rtcom-design .rt-ls-cell small{font-weight:500;font-size:10px;opacity:.75}
+#rtcom-design .rt-ls-win{position:absolute;box-sizing:border-box;border:2px solid var(--rt-ls-color);background:color-mix(in srgb,var(--rt-ls-color) 38%,transparent);border-radius:6px;cursor:grab;color:#fff;display:flex;flex-direction:column;justify-content:space-between;padding:6px 8px;min-width:14px;min-height:14px;outline:none;transition:box-shadow .12s}
+#rtcom-design .rt-ls-win:focus-visible,#rtcom-design .rt-ls-win.is-selected{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--rt-ls-color)}
+#rtcom-design .rt-ls-win:active{cursor:grabbing}
+#rtcom-design .rt-ls-win-tag{font:800 12px/1.2 var(--pg-sans);text-shadow:0 1px 2px rgba(0,0,0,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#rtcom-design .rt-ls-win-meta{font:600 10px/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;opacity:.9;text-shadow:0 1px 2px rgba(0,0,0,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#rtcom-design .rt-ls-resize{position:absolute;right:-2px;bottom:-2px;width:18px;height:18px;border-radius:6px 0 6px 0;background:var(--rt-ls-color);cursor:nwse-resize;box-shadow:0 0 0 2px rgba(255,255,255,.85)}
+#rtcom-design .rt-ls-table-wrap{overflow-x:auto;margin-top:12px}
+#rtcom-design .rt-ls-table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:620px}
+#rtcom-design .rt-ls-table th{font-weight:700;color:var(--pg-muted);text-align:left;padding:6px 8px;border-bottom:1px solid var(--pg-line);white-space:nowrap}
+#rtcom-design .rt-ls-table td{padding:5px 8px;border-bottom:1px solid var(--pg-line);vertical-align:middle;white-space:nowrap}
+#rtcom-design .rt-ls-table tr.is-selected td{background:var(--pg-accent-tint)}
+#rtcom-design .rt-ls-table input{font:600 12.5px/1.2 var(--pg-sans);color:var(--pg-ink);background:var(--pg-field-fill);border:1px solid transparent;border-radius:9px;padding:6px 8px;margin:0;width:78px;min-height:32px}
+#rtcom-design .rt-ls-table input[type=text]{width:110px}
+#rtcom-design .rt-ls-ports{font:600 12px/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--pg-ink)}
+#rtcom-design .rt-ls-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+#rtcom-design .rt-ls-del{border:0;background:var(--pg-field-fill);color:var(--pg-muted);width:28px;height:28px;border-radius:50%;font:700 15px/1 var(--pg-sans);cursor:pointer}
+#rtcom-design .rt-ls-del:hover{background:rgba(255,55,95,.14);color:#D70015}
+#rtcom-design .rt-ls-empty{color:var(--pg-muted);text-align:center;padding:14px 8px!important;white-space:normal!important}
+#rtcom-design .rt-ls-cmd-head{display:flex;align-items:center;gap:10px;margin-top:16px}
+#rtcom-design .rt-ls-cmd-head h3{font:700 13px/1.2 var(--pg-sans);letter-spacing:.04em;text-transform:uppercase;color:var(--pg-muted);margin:0}
+#rtcom-design .rt-ls-copied{font-size:12px;color:#1E9E52;font-weight:600}
+#rtcom-design .rt-ls-cmd{margin:8px 0 0;padding:12px 14px;border-radius:var(--pg-r-inner);background:#0f1115;color:#e8ebf2;font:600 13px/1.7 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap;word-break:break-all;user-select:all;-webkit-user-select:all}
+#rtcom-design .rt-ls-tok{border-radius:4px;padding:1px 2px}
+#rtcom-design .rt-ls-tok-head{color:#9ccc3c}
+#rtcom-design .rt-ls-tok-range{color:#8ab4ff}
+#rtcom-design .rt-ls-tok-timing{color:#ffd166}
+#rtcom-design .rt-ls-tok-grid{color:#ff9f0a}
+#rtcom-design .rt-ls-tok-priority{color:#bf5af2}
+#rtcom-design .rt-ls-tok-clear{color:#9aa3b2;text-decoration:underline dotted}
+#rtcom-design .rt-ls-tok-window{color:#fff;background:color-mix(in srgb,var(--rt-ls-color) 55%,#0f1115)}
+#rtcom-design .rt-ls-tok-end{color:#9ccc3c}
+#rtcom-design .rt-ls-warn{margin:10px 0 0;padding:10px 14px 10px 30px;border-radius:12px;background:rgba(255,159,10,.12);color:#8a5a00;font-size:12.5px;line-height:1.5}
+@media (prefers-color-scheme:dark){#rtcom-design .rt-ls-warn{color:#ffd166}}
+@media (max-width:720px){
+  #rtcom-design .rt-ls-controls label{flex:1 1 44%}
+  #rtcom-design .rt-ls-controls .rt-pg-btn{flex:1 1 100%}
+  #rtcom-design .rt-ls-canvas{max-height:none}
+  #rtcom-design .rt-ls-cell span{font-size:10px}
+  #rtcom-design .rt-ls-cell small{display:none}
+  #rtcom-design .rt-ls-win{padding:4px 6px}
+  #rtcom-design .rt-ls-win-meta{display:none}
+  #rtcom-design .rt-ls-resize{width:24px;height:24px}
+}
+/* 0.225 HOS100 멀티뷰 모드: 카드 전환 버튼, 고정 레이아웃 창, 커맨드 두 줄 */
+#rtcom-design .rt-ls-cardseg{display:flex;margin:0 0 14px}
+#rtcom-design .rt-ls-cardseg .rt-pg-seg{max-width:100%;flex-wrap:wrap}
+#rtcom-design .rt-ls-cardseg .rt-pg-seg button{font-size:12.5px;padding:8px 14px}
+#rtcom-design .rt-ls-win.is-fixed{cursor:default;border-style:dashed}
+#rtcom-design .rt-ls-cmdline{display:block}
+#rtcom-design .rt-ls-cmdline small{display:block;font:600 10.5px/1.4 var(--pg-sans);color:#9aa3b2;letter-spacing:.02em;margin-top:6px}
+#rtcom-design .rt-ls-cmdline:first-child small{margin-top:0}
+#rtcom-design .rt-ls-cmdline-off{color:#9aa3b2}
+#rtcom-design .rt-ls-fixedval{font:600 12px/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--pg-muted)}
+#rtcom-design .rt-ls-portstat{font-size:11.5px;color:var(--pg-muted);white-space:nowrap}
+#rtcom-design .rt-ls-stack{font-size:11.5px;color:var(--pg-muted);white-space:nowrap}
+#rtcom-design .rt-ls-stack b{color:var(--pg-ink)}
+#rtcom-design .rt-ls-top{border:1px solid transparent;background:var(--pg-field-fill);color:var(--pg-accent);font:600 11px/1 var(--pg-sans);padding:5px 9px;border-radius:var(--pg-r-pill);cursor:pointer;margin-left:4px}
+/* 0.226 전체 커맨드(두 카드) 보기 */
+#rtcom-design .rt-ls-cardseg{flex-wrap:wrap;gap:8px 14px;align-items:center}
+#rtcom-design .rt-ls-include{font:600 12.5px/1.2 var(--pg-sans);color:var(--pg-ink);display:inline-flex;align-items:center;gap:6px}
+#rtcom-design .rt-ls-include input{margin:0;width:16px;height:16px;accent-color:var(--pg-accent)}
+#rtcom-design .rt-ls-allgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0 0 14px}
+#rtcom-design .rt-ls-allcard{border:1px solid var(--pg-line);border-radius:var(--pg-r-inner);padding:12px;display:flex;flex-direction:column;gap:10px;min-width:0}
+#rtcom-design .rt-ls-allcard.is-off{opacity:.45}
+#rtcom-design .rt-ls-allcard h4{margin:0;font:700 13px/1.2 var(--pg-sans);color:var(--pg-ink)}
+#rtcom-design .rt-ls-allcard .rt-pg-btn{align-self:flex-start}
+#rtcom-design .rt-ls-mini{position:relative;width:100%;background:#1b1f27;border-radius:8px;overflow:hidden}
+#rtcom-design .rt-ls-mini i{position:absolute;box-sizing:border-box;border:1px dashed rgba(255,255,255,.28);font:700 10px/1 var(--pg-sans);color:rgba(255,255,255,.55)}
+#rtcom-design .rt-ls-mini i span{position:absolute;left:5px;top:5px}
+#rtcom-design .rt-ls-mini b{position:absolute;box-sizing:border-box;border:2px solid var(--rt-ls-color);background:color-mix(in srgb,var(--rt-ls-color) 38%,transparent);border-radius:4px;color:#fff;font:800 10px/1.2 var(--pg-sans);padding:3px 5px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+@media (max-width:720px){#rtcom-design .rt-ls-allgrid{grid-template-columns:1fr}}

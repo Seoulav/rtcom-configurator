@@ -553,6 +553,11 @@
       "relation": "WORKS_WITH",
       "target": "xdm",
       "note": "XDM-FIS100(FT101)·XDM-FOS100(FR101) 카드"
+    },
+    {
+      "relation": "WORKS_WITH",
+      "target": "xdm-mr4s",
+      "note": "XDM-MR4S 프레임에 카드 형태로 장착"
     }
   ],
   "sources": [
