@@ -91,7 +91,11 @@ function darkOf(kind,c){
 }
 
 const css=fs.readFileSync(CSS,'utf8');
-const base=(()=>{const i=css.indexOf(START),j=css.indexOf(END);return i>=0&&j>i?css.slice(0,i)+css.slice(j+END.length):css})();
+// 표지의 버전 번호가 바뀌어도(병합 직전 번호 재지정) 예전 다크 블록을 찾도록 번호와 상관없이 찾는다.
+const BLOCK_RE=/\/\* ==== 0\.\d+ 다크 값\(자동 생성: scripts\/tools\/dark_tokens\.cjs\) 시작 ==== \*\/[\s\S]*?\/\* ==== 0\.\d+ 다크 값 끝 ==== \*\//g;
+const found=css.match(BLOCK_RE)||[];
+if(found.length>1){console.error(`다크 블록이 ${found.length}개 있습니다. 하나만 남기세요.`);process.exit(1)}
+const base=css.replace(BLOCK_RE,'');
 const tokenRe=/^\s*--rt-(bg|fg|ln)-([0-9a-f]+):#[0-9a-f]+;$/gm;
 const pairs=[];let m;
 while((m=tokenRe.exec(base)))pairs.push([m[1],m[2]]);
@@ -189,13 +193,12 @@ function EXTRA(){
 
 console.log(`직접 적힌 색 덮어쓰기: 선언 ${lits.n}개`);
 console.log(`다크 값: 면 ${changed.bg}·글자 ${changed.fg}·선 ${changed.ln}개 연결, 그대로 둔 변수 면 ${kept.bg}·글자 ${kept.fg}·선 ${kept.ln}개`);
-const i=css.indexOf(START),j=css.indexOf(END);
 if(process.argv.includes('--check')){
-  const ok=i>=0&&j>i&&css.slice(i,j+END.length)===block;
+  const ok=found.length===1&&found[0]===block;
   console.log(ok?'다크 블록이 최신입니다.':'다크 블록이 도구 결과와 다릅니다. node scripts/tools/dark_tokens.cjs --apply 로 다시 쓰세요.');
   process.exit(ok?0:1);
 }
 if(!process.argv.includes('--apply')){console.log(block);process.exit(0)}
-const next=i>=0&&j>i?css.slice(0,i)+block+css.slice(j+END.length):css.replace(/\s*$/,'\n\n')+block+'\n';
+const next=found.length?css.replace(BLOCK_RE,()=>block):css.replace(/\s*$/,'\n\n')+block+'\n';
 fs.writeFileSync(CSS,next);
 console.log('src/styles.css에 다크 블록을 썼습니다.');

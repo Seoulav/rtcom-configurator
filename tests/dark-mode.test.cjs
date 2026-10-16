@@ -18,6 +18,7 @@ test('다크 블록이 생성 도구 결과와 같음(--check)',()=>{
 
 test('다크 블록은 파일에 하나뿐이고 screen + prefers-color-scheme:dark 안에만 있음(인쇄는 항상 라이트)',()=>{
   assert.equal(css.split(START).length,2);
+  assert.equal((css.match(/==== 0\.\d+ 다크 값\(자동 생성/g)||[]).length,1,'번호가 다른 예전 다크 블록이 남아 있으면 안 됨');
   assert.ok(block.includes('@media screen and (prefers-color-scheme:dark){'));
   const body=block.slice(block.indexOf('*/')+2);
   assert.ok(!/@media print/.test(body),'다크 블록 안에 인쇄 규칙이 없어야 함');
