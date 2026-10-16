@@ -1,6 +1,6 @@
 # AMX LAN(TCP) 제어 알티컴 회신 반영 (0.241)
 
-> **0.243 정정(사용자 확인 2026-10-16 "HDS-42MU, 21U는 시리얼 제어만 가능해")**: 아래 "7개 제품" 중 HDS-42MU·HDS-21U는 LAN이 없어 LAN 값을 뺐습니다. LAN 값은 XDM·VDM·SPX·QMS-44UX·QMS-88UX 5개 제품에만 있습니다(`docs/implementation/LAN_SERIAL_ONLY_0.243.md`).
+> **0.244 정정(사용자 확인 2026-10-16 "HDS-42MU, 21U는 시리얼 제어만 가능해")**: 아래 "7개 제품" 중 HDS-42MU·HDS-21U는 LAN이 없어 LAN 값을 뺐습니다. LAN 값은 XDM·VDM·SPX·QMS-44UX·QMS-88UX 5개 제품에만 있습니다(`docs/implementation/LAN_SERIAL_ONLY_0.244.md`).
 
 사용자 전달 2026-10-16(알티컴 회신, 질문 목록의 번호에 맞춰 답함): "17. 23 포트 / 18. RS232 와 동일하게 전송 / 19. 동시접속 수 1, 자동으로 끊기지 않음". 질문은 `docs/handoff/RTCOM_QUESTIONS_2026-10-16.md`입니다.
 
