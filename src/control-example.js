@@ -76,7 +76,7 @@
       `${dev} = 5001:1:0   // RS-232 포트 장치 번호는 현장에 맞게 변경`,
       ``,
       `DEFINE_START`,
-      `SEND_COMMAND ${dev},'SET BAUD ${baud},N,8,1 485 DISABLE'   // ${baud}bps, 데이터·패리티·스톱 비트는 현장 확인`
+      `SEND_COMMAND ${dev},'SET BAUD ${baud},${spec.serial?.parity||'N'},${spec.serial?.dataBits||8},${spec.serial?.stopBits||1} 485 DISABLE'   // ${spec.serial?.confirmed?`${baud}bps ${spec.serial.confirmed}`:`${baud}bps, 데이터·패리티·스톱 비트는 현장 확인`}`
     ];
     commands.forEach((c,i)=>{
       const item=typeof c==='string'?{label:'',text:c}:c;
@@ -84,10 +84,74 @@
     });
     return lines.join('\n');
   }
+  // ---- 매트릭스 제품(QMS-44UX·QMS-88UX, spec.kind === 'matrix') ----
+  // 근거: 사용자 매뉴얼 QMS-44UX 25·28쪽, QMS-88UX 14·28·31·36·37쪽. 형식은 * + 제품 ID + 명령 + 데이터 + ! + Enter(CR 0x0D).
+  //   연결 C: Ixx Oyy 쌍을 콤마로 이어 한 번에 여러 개, 같은 입력의 출력은 하이픈 범위(예: *255CI01O01-10!)
+  //   44UX 1 Input All Output A: *01AI01!, 88UX 연결 해제 D: *255DI04O01!, 88UX 프리셋 PC·PS·PR 01~20: *255PC01!
+  // routes는 [입력 번호, 출력 번호](1부터, spec.inputCodes·outputCodes의 순서) 목록이다.
+  const mStart=()=>({kind:'start',text:'*',title:'Start · 명령 시작'});
+  const mId=spec=>({kind:'id',text:spec.productId,title:`Product ID · 제품 ID ${spec.productId}`});
+  const mEnd=()=>({kind:'end',text:'!',title:'End · 명령 끝(이어서 Enter 0x0D)'});
+  const inCode=(spec,i)=>spec.inputCodes[i-1],outCode=(spec,o)=>spec.outputCodes[o-1];
+  function uniqueRoutes(spec,routes){
+    const seen=new Set(),list=[];
+    for(const r of routes||[]){
+      const i=Math.round(r[0]),o=Math.round(r[1]);
+      if(i<1||i>spec.inputCodes.length||o<1||o>spec.outputCodes.length)continue;
+      const k=`${i},${o}`;if(seen.has(k))continue;seen.add(k);list.push([i,o]);
+    }
+    return list;
+  }
+  // 같은 입력은 처음 나온 순서대로 묶고, 그 입력의 출력은 오름차순으로 정렬해 3개 이상 이어진 구간만 범위(O01-08)로 줄인다.
+  function routeItems(spec,list){
+    const order=[],byIn=new Map();
+    for(const [i,o] of list){if(!byIn.has(i)){byIn.set(i,[]);order.push(i)}byIn.get(i).push(o)}
+    const items=[];
+    for(const i of order){
+      const outs=byIn.get(i).sort((x,y)=>x-y);
+      let k=0;
+      while(k<outs.length){
+        let e=k;while(e+1<outs.length&&outs[e+1]===outs[e]+1)e++;
+        if(e-k+1>=3)items.push({i,from:outs[k],to:outs[e]});
+        else for(let n=k;n<=e;n++)items.push({i,from:outs[n],to:outs[n]});
+        k=e+1;
+      }
+    }
+    return items;
+  }
+  function routeCommand(spec,routes,action){
+    const list=uniqueRoutes(spec,routes);
+    if(!list.length)return null;
+    const act=action==='D'&&spec.commands?.disconnect?'D':'C';
+    const ins=new Set(list.map(r=>r[0]));
+    // 1 Input All Output(A): 한 입력이 모든 출력에 이어질 때(해당 명령이 있는 제품만)
+    if(act==='C'&&spec.commands?.oneToAll&&ins.size===1&&list.length===spec.outputCodes.length){
+      const i=list[0][0];
+      const parts=[mStart(),mId(spec),{kind:'cmd',text:'A',title:'Command · 한 입력을 모든 출력에 연결'},{kind:'in',text:`I${inCode(spec,i)}`,title:`Input No. · 입력 ${inCode(spec,i)}`},mEnd()];
+      return {text:textOf(parts),parts,action:'A',count:list.length,routes:list};
+    }
+    const parts=[mStart(),mId(spec),{kind:'cmd',text:act,title:act==='C'?'Command · 영상 연결':'Command · 영상 연결 해제'}];
+    routeItems(spec,list).forEach((it,n)=>{
+      if(n)parts.push({kind:'sep',text:',',title:'구분 기호'});
+      parts.push({kind:'in',text:`I${inCode(spec,it.i)}`,title:`Input No. · 입력 ${inCode(spec,it.i)}`});
+      parts.push({kind:'out',text:it.from===it.to?`O${outCode(spec,it.from)}`:`O${outCode(spec,it.from)}-${outCode(spec,it.to)}`,title:it.from===it.to?`Output No. · 출력 ${outCode(spec,it.from)}`:`Output No. · 출력 ${outCode(spec,it.from)}~${outCode(spec,it.to)}(범위)`});
+    });
+    parts.push(mEnd());
+    return {text:textOf(parts),parts,action:act,count:list.length,routes:list};
+  }
+  const PRESET_CODES={call:['PC','Preset Call · 저장한 프리셋 불러오기'],save:['PS','Preset Save · 현재 구성을 프리셋에 저장'],clear:['PR','Preset Clear · 프리셋 삭제']};
+  function presetCommand(spec,kind,n){
+    const def=PRESET_CODES[kind],max=spec.commands?.preset?.max;
+    if(!def||!max)return null;
+    const num=clamp(Math.round(n),1,max);
+    const parts=[mStart(),mId(spec),{kind:'cmd',text:def[0],title:def[1]},{kind:'vol',text:pad2(num),title:`Preset Number · 프리셋 ${num}번(01~${pad2(max)})`},mEnd()];
+    return {text:textOf(parts),parts,number:num};
+  }
   const tokens=parts=>parts.map(p=>`<span class="rt-ce-tok rt-ce-tok-${p.kind}" title="${esc(p.title)}">${esc(p.text)}</span>`).join('');
   const range=(n,from=1)=>Array.from({length:n},(_,i)=>from+i);
 
   function mount(root,spec){
+    if(spec.kind==='matrix')return mountMatrix(root,spec);
     let st={input:2,output:2,db:2};
     const key=`rtcom.controlExample.${spec.id||'x'}`;
     try{const v=JSON.parse(localStorage.getItem(key)||'null');if(v&&typeof v==='object')st={...st,...v}}catch{}
@@ -150,10 +214,83 @@
     });
     render();
   }
+  function mountMatrix(root,spec){
+    const key=`rtcom.controlExample.${spec.id||'x'}`;
+    const manual=(spec.defaultRoutes||[[4,1],[2,2]]).map(r=>[...r]);
+    let st={routes:manual,action:'C',preset:1};
+    try{const v=JSON.parse(localStorage.getItem(key)||'null');if(v&&Array.isArray(v.routes))st={...st,...v}}catch{}
+    const save=()=>{try{localStorage.setItem(key,JSON.stringify(st))}catch{}};
+    st.routes=uniqueRoutes(spec,st.routes);
+    if(st.action==='D'&&!spec.commands?.disconnect)st.action='C';
+    const nIn=spec.inputCodes.length,nOut=spec.outputCodes.length,presetMax=spec.commands?.preset?.max||0;
+    const has=(i,o)=>st.routes.some(r=>r[0]===i&&r[1]===o);
+    function render(){
+      const cmd=routeCommand(spec,st.routes,st.action);
+      const grid=`<div class="rt-ce-grid rt-ce-grid-matrix" role="group" aria-label="입력·출력 라우팅 표" style="--rt-ce-cols:${nOut}">
+        <span class="rt-ce-corner">입력 / 출력</span>${range(nOut).map(o=>`<b class="rt-ce-colhead">${esc(spec.outputCodes[o-1])}</b>`).join('')}
+        ${range(nIn).map(i=>`<b class="rt-ce-rowhead">IN ${esc(spec.inputCodes[i-1])}</b>${range(nOut).map(o=>{const on=has(i,o);return `<button type="button" class="rt-ce-cell rt-ce-cell-mini${on?' is-sel':''}" data-ce-cell="${i},${o}" aria-pressed="${on}" aria-label="입력 ${esc(spec.inputCodes[i-1])} → 출력 ${esc(spec.outputCodes[o-1])}" title="I${esc(spec.inputCodes[i-1])}O${esc(spec.outputCodes[o-1])}">${on?'●':''}</button>`}).join('')}`).join('')}
+      </div>`;
+      const act=spec.commands?.disconnect?`<label>동작<select data-ce-field="action"><option value="C"${st.action==='C'?' selected':''}>연결 (C)</option><option value="D"${st.action==='D'?' selected':''}>연결 해제 (D)</option></select></label>`:'';
+      const all=`<label>한 입력을 모든 출력에<select data-ce-field="allIn">${range(nIn).map(i=>`<option value="${i}">입력 ${esc(spec.inputCodes[i-1])}</option>`).join('')}</select></label><button type="button" class="rt-pg-btn" data-ce-act="all">모든 출력에 연결</button>`;
+      const chips=st.routes.length?st.routes.map(r=>`I${esc(spec.inputCodes[r[0]-1])}→O${esc(spec.outputCodes[r[1]-1])}`).join(' · '):'선택한 경로가 없습니다. 표의 칸을 눌러 경로를 고르세요.';
+      const presetBlocks=presetMax?['call','save','clear'].map(k=>{const c=presetCommand(spec,k,st.preset);const nm={call:'프리셋 불러오기',save:'프리셋 저장',clear:'프리셋 삭제'}[k];return `<div class="rt-ce-block"><div class="rt-ce-head"><h3>${nm} (${c.parts[2].text})</h3><button type="button" class="rt-pg-btn" data-ce-copy="preset-${k}">복사</button><span class="rt-ce-copied" data-ce-note="preset-${k}" aria-live="polite"></span></div>
+        <pre class="rt-ce-cmd" data-ce-text="preset-${k}"><span class="rt-ce-line"><small>프리셋 ${c.number}번</small>${tokens(c.parts)}<span class="rt-ce-cr" title="Enter · 0x0D">⏎</span></span></pre>
+        <p class="rt-ce-hex">HEX <code>${esc(toHex(c.text))}</code></p></div>`}).join(''):'';
+      const amxList=[];
+      if(cmd)amxList.push({label:`${cmd.action==='D'?'연결 해제':cmd.action==='A'?'한 입력 → 모든 출력':'연결'} ${cmd.count}개 경로`,text:cmd.text});
+      if(presetMax)amxList.push({label:`프리셋 ${st.preset}번 불러오기`,text:presetCommand(spec,'call',st.preset).text});
+      root.innerHTML=`
+      <div class="rt-ce-block"><div class="rt-ce-head"><h3>입력 → 출력 라우팅 (${nIn}×${nOut})</h3><span class="rt-ce-copied" aria-live="polite"></span></div>
+        <p class="rt-ce-hint-inline">칸을 눌러 경로를 켜고 끕니다. 여러 경로를 고르면 명령 한 줄로 합쳐집니다.</p>
+        <div class="rt-ce-controls">${act}${all}<button type="button" class="rt-pg-btn" data-ce-act="clear">선택 지우기</button><button type="button" class="rt-pg-btn" data-ce-act="example">매뉴얼 예시</button></div>
+        ${grid}
+        <p class="rt-ce-chips">${chips}</p></div>
+      <div class="rt-ce-block"><div class="rt-ce-head"><h3>${st.action==='D'?'연결 해제':'연결'} 커맨드${cmd?` · ${cmd.count}개 경로`:''}</h3><button type="button" class="rt-pg-btn" data-ce-copy="route"${cmd?'':' disabled'}>복사</button><span class="rt-ce-copied" data-ce-note="route" aria-live="polite"></span></div>
+        ${cmd?`<pre class="rt-ce-cmd" data-ce-text="route"><span class="rt-ce-line"><small>${cmd.action==='A'?'한 입력을 모든 출력에(A)':cmd.action==='D'?'선택한 경로 연결 해제(D)':'선택한 경로 연결(C)'}</small>${tokens(cmd.parts)}<span class="rt-ce-cr" title="Enter · 0x0D">⏎</span></span></pre>
+        <p class="rt-ce-hex">HEX <code>${esc(toHex(cmd.text))}</code></p>`:'<pre class="rt-ce-cmd" data-ce-text="route"><span class="rt-ce-line"><small>경로를 선택하면 커맨드가 만들어집니다.</small></span></pre>'}</div>
+      ${presetMax?`<div class="rt-ce-controls"><label>프리셋 번호<input type="number" data-ce-field="preset" value="${st.preset}" min="1" max="${presetMax}" step="1"></label></div>${presetBlocks}`:''}
+      <div class="rt-ce-block"><div class="rt-ce-head"><h3>AMX NetLinx 예제 (${presetMax?'경로 · 프리셋 불러오기':'선택한 경로'})</h3><button type="button" class="rt-pg-btn" data-ce-copy="amx"${amxList.length?'':' disabled'}>복사</button><span class="rt-ce-copied" data-ce-note="amx" aria-live="polite"></span></div>
+        <pre class="rt-ce-cmd rt-ce-code" data-ce-text="amx">${amxList.length?esc(amxCode(spec,amxList)):'경로를 선택하면 코드가 만들어집니다.'}</pre></div>
+      <p class="rt-pg-hint">※ 근거: ${esc(spec.source)}. 통신 ${spec.serial?.baud}bps ${esc(spec.serial?.confirmed||'')}. 문장 끝에 Enter(CR 0x0D)를 붙입니다. 제품 ID는 매뉴얼 예시의 ${esc(spec.productId)}입니다(${esc(spec.productIdNote||'')}).</p>
+      <p class="rt-pg-hint">※ ${esc(spec.limits||'')} AMX 장치 번호와 버튼 번호는 현장에 맞게 바꾸세요.</p>`;
+    }
+    root.addEventListener('change',event=>{
+      const f=event.target.closest('[data-ce-field]');if(!f)return;
+      const name=f.dataset.ceField;
+      if(name==='action')st.action=f.value==='D'?'D':'C';
+      else if(name==='preset')st.preset=clamp(Number(f.value)||1,1,presetMax||1);
+      else return;
+      save();render();
+    });
+    root.addEventListener('click',event=>{
+      const cell=event.target.closest('[data-ce-cell]');
+      if(cell){
+        const [i,o]=cell.dataset.ceCell.split(',').map(Number);
+        st.routes=has(i,o)?st.routes.filter(r=>!(r[0]===i&&r[1]===o)):[...st.routes,[i,o]];
+        save();render();root.querySelector(`[data-ce-cell="${i},${o}"]`)?.focus({preventScroll:true});return;
+      }
+      const act=event.target.closest('[data-ce-act]');
+      if(act){
+        const k=act.dataset.ceAct;
+        if(k==='clear')st.routes=[];
+        else if(k==='example')st.routes=manual.map(r=>[...r]);
+        else if(k==='all'){const i=Number(root.querySelector('[data-ce-field="allIn"]')?.value)||1;st.routes=range(nOut).map(o=>[i,o])}
+        save();render();return;
+      }
+      const btn=event.target.closest('[data-ce-copy]');if(!btn)return;
+      const k=btn.dataset.ceCopy,pre=root.querySelector(`[data-ce-text="${k}"]`),note=root.querySelector(`[data-ce-note="${k}"]`);
+      if(!pre)return;
+      const text=k==='amx'?pre.textContent:[...pre.querySelectorAll('.rt-ce-line')].map(line=>[...line.querySelectorAll('.rt-ce-tok')].map(t=>t.textContent).join('')).join('\n');
+      const done=()=>{if(note){note.textContent='복사했습니다';setTimeout(()=>{note.textContent=''},1800)}};
+      if(navigator.clipboard?.writeText)navigator.clipboard.writeText(text).then(done,()=>{if(note)note.textContent='복사하지 못했습니다. 직접 선택해 복사하세요.'});
+      else{const r=document.createRange();r.selectNodeContents(pre);const sl=getSelection();sl.removeAllRanges();sl.addRange(r);done()}
+    });
+    render();
+  }
   function mountAll(body){
     body.querySelectorAll('[data-control-example]').forEach(el=>{
       try{mount(el,JSON.parse(el.dataset.controlExample))}catch{el.textContent='커맨드 예시를 불러오지 못했습니다.'}
     });
   }
-  return {switchCommand,volumeCommand,muteCommand,volumeCode,dbOf,toHex,amxCode,mount,mountAll};
+  return {routeCommand,presetCommand,switchCommand,volumeCommand,muteCommand,volumeCode,dbOf,toHex,amxCode,mount,mountAll};
 });
