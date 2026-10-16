@@ -628,7 +628,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
   --pg-glass-fill:rgba(255,255,255,.62);--pg-glass-stroke:rgba(255,255,255,.7);--pg-glass-blur:saturate(180%) blur(30px);--pg-field-fill:rgba(118,118,128,.10);--pg-seg-track:rgba(118,118,128,.14);
   --pg-shadow-card:0 1px 2px rgba(20,26,40,.04),0 18px 48px -20px rgba(20,26,40,.28);--pg-r-card:24px;--pg-r-inner:16px;--pg-r-pill:980px;
   --pg-sans:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"SF Pro Display","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
-  /* 신호 종류별 색(신호 구성도·범례 공통). 0.239부터 구성기 신호 배지·사용자 구성도 범례(2026-10-16 제공)와 같은 값: HDMI 빨강·DP 짙은 주황·SDI 검정·CAT 초록·광 하늘색 */
+  /* 신호 종류별 색(신호 구성도·범례 공통). 0.240부터 구성기 신호 배지·사용자 구성도 범례(2026-10-16 제공)와 같은 값: HDMI 빨강·DP 짙은 주황·SDI 검정·CAT 초록·광 하늘색 */
   --pg-sig-hdmi:#E5242B;--pg-sig-dp:#C55A11;--pg-sig-sdi:#000000;--pg-sig-cat:#00B050;--pg-sig-fiber:#00B0F0;--pg-sig-quad:#BF5AF2;
   /* 다크 모드는 이번 6-A에서는 적용하지 않는다(사이트 전체가 color-scheme:light). 값만 참고용으로 남긴다.
      dark: --pg-paper:#000;--pg-ink:#F2F2F7;--pg-muted:#8E8E93;--pg-glass-fill:rgba(28,28,30,.62); */
@@ -1254,9 +1254,9 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 /* 0.167 신호 배지(시안 A): 색은 이 배지 하나에만 쓴다. 카드 트레이·후면 슬롯·범례·내 구성이 같은 색 */
 /* 0.170 회사 범례 색(사용자 제공 2026-09-29 "우리 회사 범례 색상이야": 광 하늘색, SDI 검정, LAN 초록, DP/HDMI 빨강, A.AUDIO 보라 #7030A0, USB 파랑 #0000FF).
    HDBaseT·CATx는 LAN 초록. 광은 0.168 OM3 아쿠아 대신 회사 범례 하늘색 */
-/* 0.239 사용자 구성도 범례(2026-10-16)대로 HDMI는 빨강, DP는 짙은 주황(사용자 선택 "1번으로 진행해줘": HDMI #E5242B 흰 글자 대비 4.55:1, DP #C55A11 4.33:1, 범례 접점 주황 #E97132와 구별). 제품정보 --pg-sig-*도 같은 값 */
+/* 0.240 사용자 구성도 범례(2026-10-16)대로 HDMI는 빨강, DP는 짙은 주황(사용자 선택 "1번으로 진행해줘": HDMI #E5242B 흰 글자 대비 4.55:1, DP #C55A11 4.33:1, 범례 접점 주황 #E97132와 구별). 제품정보 --pg-sig-*도 같은 값 */
 #rtcom-design [data-sig="dp"]{--rt-sig:#C55A11}
-/* HDMI: 0.170~0.238은 남색 #002060(사용자 요청 2026-09-29, DP 빨강과 구별용). 0.239부터 DP가 주황이 되어 범례대로 빨강 */
+/* HDMI: 0.170~0.239는 남색 #002060(사용자 요청 2026-09-29, DP 빨강과 구별용). 0.240부터 DP가 주황이 되어 범례대로 빨강 */
 #rtcom-design [data-sig="hdmi"]{--rt-sig:#E5242B}
 #rtcom-design [data-sig="hdbt"],#rtcom-design [data-sig="catx"]{--rt-sig:#00B050}
 #rtcom-design [data-sig="fiber"]{--rt-sig:#00B0F0}
@@ -1826,6 +1826,35 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-ce-cr{margin-left:6px;color:var(--rt-fg-9aa3b2);font-weight:500}
 #rtcom-design .rt-ce-hex{margin:6px 0 0;font:500 12px/1.5 var(--pg-sans);color:var(--pg-muted)}
 #rtcom-design .rt-ce-hex code{font:600 12px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--pg-ink);word-break:break-word}
+/* 0.239 AMX 통신 방식 막대(LAN 기본 / RS-232, IP·포트 입력) */
+#rtcom-design .rt-ce-comm{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 14px;margin:10px 0 0}
+#rtcom-design .rt-ce-comm label{display:flex;flex-direction:column;gap:4px;font:600 12px/1.2 var(--pg-sans);color:var(--pg-muted)}
+#rtcom-design .rt-ce-comm .rt-ce-comm-lan{display:flex;flex-wrap:wrap;gap:10px 14px}
+#rtcom-design .rt-ce-comm .rt-ce-comm-lan[hidden]{display:none}
+#rtcom-design .rt-ce-comm select,#rtcom-design .rt-ce-comm input{min-height:36px;padding:0 12px;border-radius:10px;border:1px solid var(--pg-line,rgba(120,120,128,.45));background:var(--pg-card,transparent);color:var(--pg-ink);font:500 14px/1.2 var(--pg-sans)}
+#rtcom-design .rt-ce-comm input{width:160px}
+#rtcom-design .rt-ce-comm input[data-ce-comm="port"]{width:96px}
+#rtcom-design .rt-ce-comm .rt-pg-hint{flex:1 1 100%;margin:0}
+@media (max-width:640px){#rtcom-design .rt-ce-comm label,#rtcom-design .rt-ce-comm select,#rtcom-design .rt-ce-comm input,#rtcom-design .rt-ce-comm input[data-ce-comm="port"]{width:100%}}
+/* 0.239 AMX 코드 잠금 상자: 비밀번호를 넣으면 AMX 코드가 열린다(커맨드 문자열·HEX는 잠그지 않음) */
+#rtcom-design .rt-ce-lock{margin-top:10px;padding:14px 16px;border-radius:14px;border:1px dashed var(--pg-line,rgba(120,120,128,.45));background:var(--pg-field-bg,rgba(120,120,128,.12))}
+#rtcom-design .rt-ce-lock-msg{margin:0 0 10px;font:500 13px/1.6 var(--pg-sans);color:var(--pg-ink)}
+#rtcom-design .rt-ce-lockform{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+#rtcom-design .rt-ce-lockform label{display:flex;align-items:center;gap:8px;font:600 12px/1.2 var(--pg-sans);color:var(--pg-muted)}
+#rtcom-design .rt-ce-lockform input{min-height:36px;min-width:180px;padding:0 12px;border-radius:10px;border:1px solid var(--pg-line,rgba(120,120,128,.45));background:var(--pg-card,transparent);color:var(--pg-ink);font:500 14px/1.2 var(--pg-sans)}
+@media (max-width:640px){#rtcom-design .rt-ce-lockform label,#rtcom-design .rt-ce-lockform input{width:100%}#rtcom-design .rt-ce-lockform label{flex-direction:column;align-items:flex-start}}
+/* 0.239 내 AMX 구성(장바구니): 시뮬레이터·설정 명령에서 담은 커맨드를 버튼 순서대로 보여 준다 */
+#rtcom-design .rt-ce-basket .rt-ce-head{flex-wrap:wrap}
+#rtcom-design .rt-ce-bklist{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+#rtcom-design .rt-ce-bklist li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:6px 12px;align-items:center;padding:10px 12px;border-radius:14px;background:var(--pg-field-bg,rgba(120,120,128,.12))}
+#rtcom-design .rt-ce-bkno{font:700 12px/1.2 var(--pg-sans);color:var(--pg-muted);white-space:nowrap}
+#rtcom-design .rt-ce-bkbody{display:flex;flex-direction:column;gap:2px;min-width:0}
+#rtcom-design .rt-ce-bkbody b{font:700 13px/1.35 var(--pg-sans);color:var(--pg-ink)}
+#rtcom-design .rt-ce-bkbody code{font:500 12px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--pg-ink);word-break:break-all}
+#rtcom-design .rt-ce-bksrc{grid-column:2;font:600 12px/1.2 var(--pg-sans);color:var(--pg-muted)}
+#rtcom-design .rt-ce-bkact{grid-column:3;grid-row:1 / span 2;display:flex;gap:6px}
+#rtcom-design .rt-ce-bkact .rt-pg-btn{min-height:32px;min-width:36px;padding:0 10px}
+@media (max-width:640px){#rtcom-design .rt-ce-bklist li{grid-template-columns:minmax(0,1fr);}#rtcom-design .rt-ce-bksrc,#rtcom-design .rt-ce-bkact{grid-column:1;grid-row:auto}}
 @media (max-width:640px){#rtcom-design .rt-ce-controls label,#rtcom-design .rt-ce-controls select{width:100%}#rtcom-design .rt-ce-controls input[type=number]{width:100%}}
 #rtcom-design .rt-ce-grid{display:grid;grid-template-columns:auto repeat(var(--rt-ce-cols,2),minmax(0,1fr));gap:8px;margin-top:10px;align-items:stretch}
 #rtcom-design .rt-ce-corner{font:600 12px/1.2 var(--pg-sans);color:var(--pg-muted);align-self:center}

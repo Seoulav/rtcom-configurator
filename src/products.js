@@ -1137,7 +1137,7 @@
       if(!ce)return '';
       const idx=idxOverride||String(6+(item.videoModes?1:0)+(item.edidSwitch?.table?.length?1:0)+(item.audioMux?.modes?.length?1:0)+(item.dipSwitch?.rows?.length?1:0)).padStart(2,'0');
       const spec={...ce,id:item.id};
-      return `<section class="rt-pg-card rt-pg-control" id="rt-control" style="margin-top:18px"><h2><span class="rt-pg-idx">${idx}</span>AMX 통합 제어 커맨드 예시 <span class="rt-pg-note">— RS-232 · ${esc(ce.serial?.baud||9600)}bps · ${ce.kind==='builders'?'명령을 고르고 값을 넣으면 커맨드가 만들어집니다':'입력·출력을 고르면 커맨드가 바뀝니다'}</span></h2>${ce.lead?`<p class="rt-pg-lead">${esc(ce.lead)}</p>`:''}<div data-control-example="${esc(JSON.stringify(spec))}"></div></section>`;
+      return `<section class="rt-pg-card rt-pg-control" id="rt-control" style="margin-top:18px"><h2><span class="rt-pg-idx">${idx}</span>AMX 통합 제어 커맨드 예시 <span class="rt-pg-note">— 커맨드는 RS-232 ${esc(ce.serial?.baud||9600)}bps 기준 · AMX 코드는 LAN(TCP)·RS-232 선택 · ${ce.kind==='builders'?'명령을 고르고 값을 넣으면 커맨드가 만들어집니다':'입력·출력을 고르면 커맨드가 바뀝니다'}</span></h2>${ce.lead?`<p class="rt-pg-lead">${esc(ce.lead)}</p>`:''}<div data-control-example="${esc(JSON.stringify(spec))}"></div></section>`;
     }
     // ---- 오디오 설정(병합 MUX·추출 DEMUX 중 선택, HD-13U). 매뉴얼 문장을 "이럴 때·연결·소리가 나오는 곳·확인 방법"으로 풀어 두 칸으로 보여준다 ----
     // HDS-21U·HDS-42MU는 딥 스위치 1번으로 고르므로 이 카드 대신 딥 스위치 설정 카드에서 함께 설명한다(사용자 요청 2026-09-27).
