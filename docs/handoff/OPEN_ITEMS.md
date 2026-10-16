@@ -30,9 +30,9 @@
 검토 40행은 2026-10-14 사용자 결정으로 모두 정리했습니다(`docs/implementation/TERMS_REVIEW_DECISIONS_0.218.md`: 믹스 → 병합, Touch Screen → 터치스크린, 짧은 영문 원문 유지).
 - 영문 분류명(1x4 HDMI 18Gbps Splitter 등)과 모델명 축약(CTR100 등)은 사용자 "pass"로 그대로 둡니다. 다시 정할 때 이 항목에서 시작합니다.
 
-## AMX 통합 제어 커맨드 예시 확장(0.229·0.230) — 제품별 자료·확인 대기
+## AMX 통합 제어 커맨드 예시 확장(0.229·0.231) — 제품별 자료·확인 대기
 
-`docs/implementation/CONTROL_EXAMPLE_0.229.md`(HDS-42MU·HDS-21U), `docs/implementation/CONTROL_EXAMPLE_QMS_0.230.md`(QMS-44UX·QMS-88UX). 사용자 지시 순서대로 확장합니다.
+`docs/implementation/CONTROL_EXAMPLE_0.229.md`(HDS-42MU·HDS-21U), `docs/implementation/CONTROL_EXAMPLE_QMS_0.231.md`(QMS-44UX·QMS-88UX). 사용자 지시 순서대로 확장합니다.
 - [ ] 모듈러 매트릭스(XDM·SPX·VDM): XDM은 `XDM Command Guide 1013`(시뮬레이터에 이미 사용, `OW`·`OQ`·`C` 커맨드), SPX·VDM은 RS-232/Telnet 명령 가이드가 필요합니다. 카드 슬롯 구성에 따라 출력이 바뀌므로 구성기 연동을 함께 정해야 합니다
 - [ ] QMS 나머지 명령(멀티뷰 Q·월·화면 모드·해상도·OSD): 이번 카드에는 연결·프리셋만 넣었습니다. 필요하면 다음 단계로 진행
 - [ ] QMS-44UX 연결 해제·프리셋 명령 유무(28쪽 예시에서 확인 못 함), QMS-88UX 입력 Q1·Q2 표기(`IQ1`)와 콤마 앞 공백 허용 여부를 RT컴에 확인

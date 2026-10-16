@@ -1,4 +1,4 @@
-# QMS-44UX·QMS-88UX AMX 통합 제어 커맨드 예시 카드 (0.230)
+# QMS-44UX·QMS-88UX AMX 통합 제어 커맨드 예시 카드 (0.231)
 
 사용자 요청 2026-10-16: "QMS 시리즈도 다 진행해줘"(0.229 HDS-42MU·HDS-21U 카드의 확장, `docs/implementation/CONTROL_EXAMPLE_0.229.md`).
 
@@ -42,7 +42,7 @@
 
 - `tests/control-example.test.cjs` 15개(기존 10 + QMS 5: 매뉴얼 예시 일치, 범위 묶기, 프리셋, 44UX A 명령, 통신 설정).
 - `scripts/e2e-smoke.cjs`: 두 제품에서 예시 경로, 칸 추가, "모든 출력에 연결"(88UX `*255CI01O01-10!`, 44UX `*01AI01!`), 프리셋 3종(88UX만), AMX 115200, 가로 넘침 없음.
-- 화면: `docs/qa/control-example-0.230/`(PC·휴대폰 390px).
+- 화면: `docs/qa/control-example-0.231/`(PC·휴대폰 390px).
 
 ## 5. 되돌리기
 
