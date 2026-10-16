@@ -995,5 +995,850 @@
       "title": "HDBaseT 3.0 권장 케이블을 차폐형(S/FTP)으로 정정",
       "detail": "XDM-CIS100·XDM-COS100 카드 소개 문구의 \"CAT6a/CAT7\" 표기가 UTP(비차폐)로 오인될 수 있어, XDM-CTR100·XDM-CT103/CR103과 동등 사양 기준으로 \"CAT6A S/FTP\"로 정정했다(사용자 요청 2026-09-28 \"UTP는 절대 안돼\")."
     }
-  ]
+  ],
+  "controlExample": {
+    "kind": "builders",
+    "docLabel": "가이드",
+    "productId": "255",
+    "productIdNote": "제품 ID 초기값 255, 범용 ID 999(가이드 3쪽)",
+    "serial": {
+      "baud": 115200,
+      "parity": "N",
+      "dataBits": 8,
+      "stopBits": 1,
+      "confirmed": "패리티 None·스톱 1비트는 가이드 67쪽 RS-232 정보 응답 예시, 데이터 비트 8은 가이드에 없어 일반값으로 적음, 통신 속도 변경은 SRB 명령(R01~R05)"
+    },
+    "amxDevice": "dvXDM",
+    "lead": "AMX 같은 통합 제어 시스템이 RS-232로 보내는 문자열 예시입니다. 연결·해제·프리셋, 입력·출력 설정, OSD 자막 같은 명령을 아래 \"설정 명령\"에서 값을 골라 만듭니다. 월 오버레이(OW)와 멀티뷰(OQ) 같은 화면 연출 명령은 바로 위 \"화면 연출 시뮬레이터\"에서 만듭니다.",
+    "source": "XDM 시리즈 Command Guide 1013(국문) 2~19·20~22·67~69쪽",
+    "limits": "XDM-12X~216X 모든 프레임은 세 자리 번호(I001·O001)를 씁니다. 이 카드에 넣지 않은 명령: 출력 오디오(OA)·RS-232+(OP·OPC)·쿼드뷰(OQ)·월(OW·OB)·리셋·CEC·이미지 편집(OL) 등(가이드 22~66쪽, 화면 연출은 시뮬레이터 참고), LAN·RS-232 설정(SN·SRB·SL). 번호 목록에서 이어지지 않는 번호는 O를 반복해 적습니다(가이드 OS 예시 방식).",
+    "builders": [
+      {
+        "id": "conn",
+        "title": "연결(영상·음성)",
+        "page": "13쪽",
+        "summary": "입력 1개를 출력 여러 개에 연결합니다. 3개 이상 이어진 출력은 범위(O001-005)로 줄입니다.",
+        "group": "스위칭",
+        "params": [
+          {
+            "id": "inp",
+            "label": "입력 번호",
+            "type": "number",
+            "min": 1,
+            "max": 216,
+            "default": 2,
+            "pad": 3,
+            "kind": "vol"
+          },
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 216,
+            "default": "1-5",
+            "prefix": "O",
+            "pad": 3,
+            "kind": "out",
+            "style": "range"
+          }
+        ],
+        "route": {
+          "cmd": "C"
+        }
+      },
+      {
+        "id": "disc",
+        "title": "연결 해제",
+        "page": "13쪽",
+        "summary": "출력의 연결을 끊습니다(입력 I000).",
+        "group": "스위칭",
+        "cmd": "D",
+        "order": [
+          {
+            "lit": "I",
+            "num": 0,
+            "pad": 3,
+            "kind": "in",
+            "title": "I000 · 연결 해제"
+          },
+          "out"
+        ],
+        "params": [
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 216,
+            "default": "1-5",
+            "prefix": "O",
+            "pad": 3,
+            "kind": "out",
+            "style": "range"
+          }
+        ]
+      },
+      {
+        "id": "preset",
+        "title": "프리셋 불러오기",
+        "page": "13쪽",
+        "summary": "저장된 비디오 스위칭 프리셋(1~20)을 불러옵니다.",
+        "group": "스위칭",
+        "cmd": "PC",
+        "order": [
+          "n"
+        ],
+        "params": [
+          {
+            "id": "n",
+            "label": "프리셋 번호",
+            "type": "number",
+            "min": 1,
+            "max": 20,
+            "default": 2,
+            "pad": 2,
+            "kind": "vol"
+          }
+        ]
+      },
+      {
+        "id": "status",
+        "title": "연결 상태 확인",
+        "page": "14쪽",
+        "summary": "출력에 연결된 입력을 확인합니다(O000 = 전체).",
+        "group": "스위칭",
+        "cmd": "?V",
+        "order": [
+          "out"
+        ],
+        "params": [
+          {
+            "id": "out",
+            "label": "출력 번호(0=전체)",
+            "type": "number",
+            "min": 0,
+            "max": 216,
+            "default": 5,
+            "pad": 3,
+            "kind": "out",
+            "prefix": "O"
+          }
+        ]
+      },
+      {
+        "id": "inftime",
+        "title": "입력 영상 타이밍 확인",
+        "page": "15쪽",
+        "summary": "입력 포트의 영상 타이밍을 확인합니다(I000 = 전체 입력).",
+        "group": "입력 설정",
+        "cmd": "?IF",
+        "order": [
+          "inp"
+        ],
+        "params": [
+          {
+            "id": "inp",
+            "label": "입력 번호",
+            "type": "list",
+            "min": 0,
+            "max": 216,
+            "default": "1-4",
+            "prefix": "I",
+            "pad": 3,
+            "kind": "in",
+            "style": "range"
+          }
+        ]
+      },
+      {
+        "id": "inf",
+        "title": "입력 정보 확인",
+        "page": "16쪽",
+        "summary": "입력 슬롯·EDID·영상·음성 정보를 확인합니다.",
+        "group": "입력 설정",
+        "cmd": "IF",
+        "order": [
+          "inp"
+        ],
+        "params": [
+          {
+            "id": "inp",
+            "label": "입력 번호",
+            "type": "number",
+            "min": 1,
+            "max": 216,
+            "default": 1,
+            "pad": 3,
+            "kind": "in",
+            "prefix": "I"
+          }
+        ]
+      },
+      {
+        "id": "ia",
+        "title": "입력 오디오 모드",
+        "page": "16쪽",
+        "summary": "HDMI 음성(H) 또는 Dante 음성(D)의 소스를 정합니다(00 소스 음성, 01 아날로그).",
+        "group": "입력 설정",
+        "cmd": "IA",
+        "order": [
+          "inp",
+          "mode"
+        ],
+        "params": [
+          {
+            "id": "inp",
+            "label": "입력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 216,
+            "default": "1-3",
+            "prefix": "I",
+            "pad": 3,
+            "kind": "in",
+            "style": "range"
+          },
+          {
+            "id": "mode",
+            "label": "오디오 모드",
+            "type": "select",
+            "options": [
+              [
+                "H00",
+                "H00 · HDMI 소스 음성(기본)"
+              ],
+              [
+                "H01",
+                "H01 · HDMI 아날로그 음성"
+              ],
+              [
+                "D00",
+                "D00 · Dante 소스 음성(기본)"
+              ],
+              [
+                "D01",
+                "D01 · Dante 아날로그 음성"
+              ]
+            ],
+            "default": "H01",
+            "kind": "vol"
+          }
+        ]
+      },
+      {
+        "id": "iv",
+        "title": "입력 영상 스트림",
+        "page": "17쪽",
+        "summary": "입력 영상을 일반·정지·검정으로 바꿉니다.",
+        "group": "입력 설정",
+        "cmd": "IV",
+        "order": [
+          "inp",
+          "m"
+        ],
+        "params": [
+          {
+            "id": "inp",
+            "label": "입력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 216,
+            "default": "1-5",
+            "prefix": "I",
+            "pad": 3,
+            "kind": "in",
+            "style": "range"
+          },
+          {
+            "id": "m",
+            "label": "영상 스트림",
+            "type": "select",
+            "options": [
+              [
+                "M00",
+                "M00 · Normal(기본)"
+              ],
+              [
+                "M01",
+                "M01 · Freeze"
+              ],
+              [
+                "M02",
+                "M02 · Black"
+              ]
+            ],
+            "default": "M02",
+            "kind": "vol"
+          }
+        ]
+      },
+      {
+        "id": "it",
+        "title": "입력 테스트 패턴",
+        "page": "17쪽",
+        "summary": "입력 포트에 테스트 패턴을 내보냅니다.",
+        "group": "입력 설정",
+        "cmd": "IT",
+        "order": [
+          "inp",
+          "m"
+        ],
+        "params": [
+          {
+            "id": "inp",
+            "label": "입력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 216,
+            "default": "1-4",
+            "prefix": "I",
+            "pad": 3,
+            "kind": "in",
+            "style": "range"
+          },
+          {
+            "id": "m",
+            "label": "테스트 패턴",
+            "type": "select",
+            "options": [
+              [
+                "M00",
+                "M00 · OFF(기본)"
+              ],
+              [
+                "M01",
+                "M01 · Black"
+              ],
+              [
+                "M02",
+                "M02 · Colorbar"
+              ],
+              [
+                "M03",
+                "M03 · Cross"
+              ],
+              [
+                "M04",
+                "M04 · Gray"
+              ]
+            ],
+            "default": "M04",
+            "kind": "vol"
+          }
+        ]
+      },
+      {
+        "id": "ir",
+        "title": "입력 리셋",
+        "page": "18쪽",
+        "summary": "입력 포트를 리셋합니다.",
+        "group": "입력 설정",
+        "cmd": "IR",
+        "order": [
+          "inp"
+        ],
+        "params": [
+          {
+            "id": "inp",
+            "label": "입력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 216,
+            "default": "1-4",
+            "prefix": "I",
+            "pad": 3,
+            "kind": "in",
+            "style": "range"
+          }
+        ]
+      },
+      {
+        "id": "osdi",
+        "title": "입력 OSD 자막",
+        "page": "68·69쪽",
+        "summary": "입력 화면 위에 자막을 띄웁니다(M00 끄기, M01·02·03 글자 크기 1·2·4배, 최대 20자).",
+        "group": "입력 설정",
+        "cmd": "ID",
+        "order": [
+          "inp",
+          "m",
+          "text"
+        ],
+        "params": [
+          {
+            "id": "inp",
+            "label": "입력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 216,
+            "default": "1",
+            "prefix": "I",
+            "pad": 3,
+            "kind": "in",
+            "style": "range"
+          },
+          {
+            "id": "m",
+            "label": "OSD 모드",
+            "type": "select",
+            "options": [
+              [
+                "M00",
+                "M00 · OSD OFF"
+              ],
+              [
+                "M01",
+                "M01 · OSD ON 1배"
+              ],
+              [
+                "M02",
+                "M02 · OSD ON 2배"
+              ],
+              [
+                "M03",
+                "M03 · OSD ON 4배"
+              ],
+              [
+                "M11",
+                "M11 · 타임코드 1배"
+              ],
+              [
+                "M12",
+                "M12 · 타임코드 2배"
+              ],
+              [
+                "M13",
+                "M13 · 타임코드 4배"
+              ]
+            ],
+            "default": "M01",
+            "kind": "vol"
+          },
+          {
+            "id": "text",
+            "label": "자막",
+            "type": "text",
+            "default": "Camera 1",
+            "prefix": "S",
+            "maxLen": 20,
+            "kind": "vol"
+          }
+        ]
+      },
+      {
+        "id": "of",
+        "title": "출력 정보 확인",
+        "page": "19쪽",
+        "summary": "출력 슬롯·싱크 EDID·출력 모드·타이밍 정보를 확인합니다.",
+        "group": "출력 설정",
+        "cmd": "OF",
+        "order": [
+          "out"
+        ],
+        "params": [
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "number",
+            "min": 1,
+            "max": 216,
+            "default": 1,
+            "pad": 3,
+            "kind": "out",
+            "prefix": "O"
+          }
+        ]
+      },
+      {
+        "id": "os",
+        "title": "출력 해상도(HDMI)",
+        "page": "20쪽",
+        "summary": "HDMI 출력 스케일러 타이밍을 정합니다(H00 AUTO ~ H17).",
+        "group": "출력 설정",
+        "cmd": "OS",
+        "order": [
+          "out",
+          "h"
+        ],
+        "params": [
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 216,
+            "default": "1-2",
+            "prefix": "O",
+            "pad": 3,
+            "kind": "out",
+            "style": "range"
+          },
+          {
+            "id": "h",
+            "label": "출력 해상도",
+            "type": "select",
+            "options": [
+              [
+                "H00",
+                "H00 · AUTO"
+              ],
+              [
+                "H01",
+                "H01 · 720x480 @ 60Hz"
+              ],
+              [
+                "H02",
+                "H02 · 720x576 @ 50Hz"
+              ],
+              [
+                "H03",
+                "H03 · 1280x720 @ 29Hz"
+              ],
+              [
+                "H04",
+                "H04 · 1280x720 @ 50Hz"
+              ],
+              [
+                "H05",
+                "H05 · 1280x720 @ 59Hz"
+              ],
+              [
+                "H06",
+                "H06 · 1280x720 @ 60Hz"
+              ],
+              [
+                "H07",
+                "H07 · 1920x1080 @ 29Hz"
+              ],
+              [
+                "H08",
+                "H08 · 1920x1080 @ 50Hz"
+              ],
+              [
+                "H09",
+                "H09 · 1920x1080 @ 59Hz"
+              ],
+              [
+                "H10",
+                "H10 · 1920x1080 @ 60Hz"
+              ],
+              [
+                "H11",
+                "H11 · 3840x2160 @ 29Hz"
+              ],
+              [
+                "H12",
+                "H12 · 3840x2160 @ 50Hz"
+              ],
+              [
+                "H13",
+                "H13 · 3840x2160 @ 59Hz"
+              ],
+              [
+                "H14",
+                "H14 · 3840x2160 @ 60Hz"
+              ],
+              [
+                "H15",
+                "H15 · 1024x768 @ 60Hz"
+              ],
+              [
+                "H16",
+                "H16 · 1280x1024 @ 60Hz"
+              ],
+              [
+                "H17",
+                "H17 · 1920x1200 @ 60Hz"
+              ]
+            ],
+            "default": "H11",
+            "kind": "vol"
+          }
+        ]
+      },
+      {
+        "id": "ov",
+        "title": "출력 영상 스트림",
+        "page": "21쪽",
+        "summary": "출력 영상을 일반·정지·검정·출력 끄기로 바꿉니다.",
+        "group": "출력 설정",
+        "cmd": "OV",
+        "order": [
+          "out",
+          "m"
+        ],
+        "params": [
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 216,
+            "default": "1-3",
+            "prefix": "O",
+            "pad": 3,
+            "kind": "out",
+            "style": "range"
+          },
+          {
+            "id": "m",
+            "label": "영상 스트림",
+            "type": "select",
+            "options": [
+              [
+                "M00",
+                "M00 · Normal(기본)"
+              ],
+              [
+                "M01",
+                "M01 · Freeze"
+              ],
+              [
+                "M02",
+                "M02 · Black"
+              ],
+              [
+                "M03",
+                "M03 · Output disable"
+              ]
+            ],
+            "default": "M02",
+            "kind": "vol"
+          }
+        ]
+      },
+      {
+        "id": "ot",
+        "title": "출력 테스트 패턴",
+        "page": "21쪽",
+        "summary": "출력 포트에 테스트 패턴을 내보냅니다.",
+        "group": "출력 설정",
+        "cmd": "OT",
+        "order": [
+          "out",
+          "m"
+        ],
+        "params": [
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 216,
+            "default": "1-3",
+            "prefix": "O",
+            "pad": 3,
+            "kind": "out",
+            "style": "range"
+          },
+          {
+            "id": "m",
+            "label": "테스트 패턴",
+            "type": "select",
+            "options": [
+              [
+                "M00",
+                "M00 · OFF(기본)"
+              ],
+              [
+                "M01",
+                "M01 · BLACK"
+              ],
+              [
+                "M02",
+                "M02 · COLORBAR"
+              ],
+              [
+                "M03",
+                "M03 · CROSS"
+              ],
+              [
+                "M04",
+                "M04 · GRAY"
+              ]
+            ],
+            "default": "M01",
+            "kind": "vol"
+          }
+        ]
+      },
+      {
+        "id": "og",
+        "title": "출력 화질(밝기·색조·채도·대비)",
+        "page": "22쪽",
+        "summary": "B 밝기, H 색조, S 채도, C 대비를 0~255로 정합니다(기본 128).",
+        "group": "출력 설정",
+        "cmd": "OG",
+        "order": [
+          "out",
+          "k",
+          "v"
+        ],
+        "params": [
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 216,
+            "default": "1",
+            "prefix": "O",
+            "pad": 3,
+            "kind": "out",
+            "style": "range"
+          },
+          {
+            "id": "k",
+            "label": "조정 항목",
+            "type": "select",
+            "options": [
+              [
+                "B",
+                "B · 밝기"
+              ],
+              [
+                "H",
+                "H · 색조"
+              ],
+              [
+                "S",
+                "S · 채도"
+              ],
+              [
+                "C",
+                "C · 대비"
+              ]
+            ],
+            "default": "C",
+            "kind": "vol"
+          },
+          {
+            "id": "v",
+            "label": "값(0~255)",
+            "type": "number",
+            "min": 0,
+            "max": 255,
+            "default": 128,
+            "pad": 3,
+            "kind": "vol"
+          }
+        ]
+      },
+      {
+        "id": "osdo",
+        "title": "출력 OSD 자막",
+        "page": "68·69쪽",
+        "summary": "출력 화면 위에 자막이나 타임코드를 띄웁니다(최대 20자).",
+        "group": "출력 설정",
+        "cmd": "OD",
+        "order": [
+          "out",
+          "m",
+          "text"
+        ],
+        "params": [
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 216,
+            "default": "3",
+            "prefix": "O",
+            "pad": 3,
+            "kind": "out",
+            "style": "range"
+          },
+          {
+            "id": "m",
+            "label": "OSD 모드",
+            "type": "select",
+            "options": [
+              [
+                "M00",
+                "M00 · OSD OFF"
+              ],
+              [
+                "M01",
+                "M01 · OSD ON 1배"
+              ],
+              [
+                "M02",
+                "M02 · OSD ON 2배"
+              ],
+              [
+                "M03",
+                "M03 · OSD ON 4배"
+              ],
+              [
+                "M11",
+                "M11 · 타임코드 1배"
+              ],
+              [
+                "M12",
+                "M12 · 타임코드 2배"
+              ],
+              [
+                "M13",
+                "M13 · 타임코드 4배"
+              ]
+            ],
+            "default": "M12",
+            "kind": "vol"
+          },
+          {
+            "id": "text",
+            "label": "자막·타임코드",
+            "type": "text",
+            "default": "01:05:45",
+            "prefix": "S",
+            "maxLen": 20,
+            "kind": "vol"
+          }
+        ]
+      },
+      {
+        "id": "sys",
+        "title": "시스템 조회",
+        "page": "67·70쪽",
+        "summary": "제품 ID·LAN·RS-232 정보와 연결 상태, 펌웨어 버전을 확인합니다.",
+        "group": "시스템",
+        "order": [
+          "q"
+        ],
+        "params": [
+          {
+            "id": "q",
+            "label": "조회",
+            "type": "select",
+            "options": [
+              [
+                "?SID",
+                "?SID · 제품 ID 확인"
+              ],
+              [
+                "?SNA",
+                "?SNA · LAN 정보 확인"
+              ],
+              [
+                "?SRA",
+                "?SRA · RS-232 정보 확인"
+              ],
+              [
+                "H000",
+                "H000 · RS-232 연결 확인"
+              ],
+              [
+                "?VERSION",
+                "?VERSION · 펌웨어 버전 확인"
+              ]
+            ],
+            "default": "?SID",
+            "kind": "cmd"
+          }
+        ]
+      }
+    ]
+  }
 }

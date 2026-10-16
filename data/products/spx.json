@@ -549,5 +549,1371 @@
       "scope": "사용자 답변(2026-10-13, 알티컴 질문 6~11번·XDM-288 보드 수를 단계별로 확인) — SPX-HIS8 오디오 출력 커넥터는 3.5mm 스테레오 잭"
     }
   ],
-  "issues": []
+  "issues": [],
+  "controlExample": {
+    "kind": "builders",
+    "productId": "255",
+    "productIdNote": "제품 ID 초기값 255, 범용 ID 999(매뉴얼 29쪽)",
+    "serial": {
+      "baud": 115200,
+      "parity": "N",
+      "dataBits": 8,
+      "stopBits": 1,
+      "confirmed": "8N1은 매뉴얼 20쪽 RS-232 화면 사진에서 선택된 값"
+    },
+    "amxDevice": "dvSPX",
+    "lead": "AMX 같은 통합 제어 시스템이 RS-232로 보내는 문자열 예시입니다. SPX 매뉴얼에는 명령 방식이 두 가지(1: *255…! 형식, 2: s in 1 av out 2! 같은 문장형 API)라 둘 다 묶음으로 나눠 두었습니다. 명령을 고르고 값을 넣으면 매뉴얼 형식의 문자열이 만들어집니다.",
+    "source": "SPX 사용자 매뉴얼 20·28~51쪽(커맨드 1: 28~45쪽, 커맨드 2: 46~51쪽)",
+    "limits": "커맨드 1의 번호는 3자리(I001·O001)를 씁니다. 커맨드 2(문장형)는 매뉴얼에 Enter가 적혀 있지 않아 붙이지 않았고, 입력·출력 번호 범위는 매뉴얼에 적힌 값(입력 1~16, 출력 0~16)을 따랐습니다. 이 카드에 넣지 않은 명령: 재부팅(s reboot)·공장 초기화(s reset)·네트워크 조회 일부·출력 스트림(s hdmi … stream) 등(매뉴얼 46~48쪽). 커맨드 1의 이어지지 않는 번호는 O를 반복해 적습니다(매뉴얼 OS 예시 방식). 한 명령 줄에는 한 명령만 보낼 수 있습니다.",
+    "builders": [
+      {
+        "id": "conn",
+        "title": "연결(영상·음성)",
+        "page": "34쪽",
+        "summary": "입력 1개를 출력 여러 개에 연결합니다.",
+        "group": "커맨드 1 (*255…! 형식)",
+        "params": [
+          {
+            "id": "inp",
+            "label": "입력 번호",
+            "type": "number",
+            "min": 1,
+            "max": 24,
+            "default": 1,
+            "pad": 3,
+            "kind": "vol"
+          },
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 120,
+            "default": "1-7",
+            "prefix": "O",
+            "pad": 3,
+            "kind": "out",
+            "style": "range"
+          }
+        ],
+        "route": {
+          "cmd": "C"
+        }
+      },
+      {
+        "id": "disc",
+        "title": "연결 해제",
+        "page": "34쪽",
+        "summary": "출력의 연결을 끊습니다(입력 I000).",
+        "group": "커맨드 1 (*255…! 형식)",
+        "cmd": "D",
+        "order": [
+          {
+            "lit": "I",
+            "num": 0,
+            "pad": 3,
+            "kind": "in",
+            "title": "I000 · 연결 해제"
+          },
+          "out"
+        ],
+        "params": [
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 120,
+            "default": "1-5",
+            "prefix": "O",
+            "pad": 3,
+            "kind": "out",
+            "style": "range"
+          }
+        ]
+      },
+      {
+        "id": "preset",
+        "title": "비디오 프리셋 불러오기",
+        "page": "35쪽",
+        "summary": "저장된 비디오 프리셋을 불러옵니다(번호 범위는 매뉴얼에 없음).",
+        "group": "커맨드 1 (*255…! 형식)",
+        "cmd": "PC",
+        "order": [
+          "n"
+        ],
+        "params": [
+          {
+            "id": "n",
+            "label": "프리셋 번호",
+            "type": "number",
+            "min": 1,
+            "max": 99,
+            "default": 2,
+            "pad": 2,
+            "kind": "vol"
+          }
+        ]
+      },
+      {
+        "id": "status",
+        "title": "연결 상태 확인",
+        "page": "35쪽",
+        "summary": "출력에 연결된 입력을 확인합니다(O000 = 전체).",
+        "group": "커맨드 1 (*255…! 형식)",
+        "cmd": "?V",
+        "order": [
+          "out"
+        ],
+        "params": [
+          {
+            "id": "out",
+            "label": "출력 번호(0=전체)",
+            "type": "number",
+            "min": 0,
+            "max": 120,
+            "default": 5,
+            "pad": 3,
+            "kind": "out",
+            "prefix": "O"
+          }
+        ]
+      },
+      {
+        "id": "inf",
+        "title": "입력 정보 확인",
+        "page": "36쪽",
+        "summary": "입력 채널 정보를 확인합니다.",
+        "group": "커맨드 1 (*255…! 형식)",
+        "cmd": "IF",
+        "order": [
+          "inp"
+        ],
+        "params": [
+          {
+            "id": "inp",
+            "label": "입력 번호",
+            "type": "number",
+            "min": 1,
+            "max": 24,
+            "default": 1,
+            "pad": 3,
+            "kind": "in",
+            "prefix": "I"
+          }
+        ]
+      },
+      {
+        "id": "ia",
+        "title": "입력 오디오 볼륨",
+        "page": "36쪽",
+        "summary": "입력 스테레오 오디오 볼륨입니다(V50 = 0dB, 0.5dB 단계, V70 = +10dB, V10 = 뮤트).",
+        "group": "커맨드 1 (*255…! 형식)",
+        "cmd": "IA",
+        "order": [
+          "inp",
+          "v"
+        ],
+        "params": [
+          {
+            "id": "inp",
+            "label": "입력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 24,
+            "default": "1",
+            "prefix": "I",
+            "pad": 3,
+            "kind": "in",
+            "style": "range"
+          },
+          {
+            "id": "v",
+            "label": "볼륨 코드(10~70)",
+            "type": "number",
+            "min": 10,
+            "max": 70,
+            "default": 51,
+            "pad": 2,
+            "kind": "vol",
+            "prefix": "V"
+          }
+        ]
+      },
+      {
+        "id": "of",
+        "title": "출력 정보 확인",
+        "page": "37쪽",
+        "summary": "출력 채널 정보를 확인합니다.",
+        "group": "커맨드 1 (*255…! 형식)",
+        "cmd": "OF",
+        "order": [
+          "out"
+        ],
+        "params": [
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "number",
+            "min": 1,
+            "max": 120,
+            "default": 1,
+            "pad": 3,
+            "kind": "out",
+            "prefix": "O"
+          }
+        ]
+      },
+      {
+        "id": "os",
+        "title": "출력 해상도",
+        "page": "38쪽",
+        "summary": "출력 스케일링 타이밍을 정합니다(H01 Auto ~ H16).",
+        "group": "커맨드 1 (*255…! 형식)",
+        "cmd": "OS",
+        "order": [
+          "out",
+          "h"
+        ],
+        "params": [
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 120,
+            "default": "2-6",
+            "prefix": "O",
+            "pad": 3,
+            "kind": "out",
+            "style": "range"
+          },
+          {
+            "id": "h",
+            "label": "출력 해상도",
+            "type": "select",
+            "options": [
+              [
+                "H01",
+                "H01 · Auto"
+              ],
+              [
+                "H02",
+                "H02 · 720x480 @ 60Hz"
+              ],
+              [
+                "H03",
+                "H03 · 720x576 @ 50Hz"
+              ],
+              [
+                "H04",
+                "H04 · 1280x720 @ 50Hz"
+              ],
+              [
+                "H05",
+                "H05 · 1280x720 @ 59Hz"
+              ],
+              [
+                "H06",
+                "H06 · 1280x720 @ 60Hz"
+              ],
+              [
+                "H07",
+                "H07 · 1920x1080 @ 50Hz"
+              ],
+              [
+                "H08",
+                "H08 · 1920x1080 @ 59Hz"
+              ],
+              [
+                "H09",
+                "H09 · 1920x1080 @ 60Hz"
+              ],
+              [
+                "H10",
+                "H10 · 3840x2160 @ 30Hz"
+              ],
+              [
+                "H11",
+                "H11 · 3840x2160 @ 50Hz"
+              ],
+              [
+                "H12",
+                "H12 · 3840x2160 @ 59Hz"
+              ],
+              [
+                "H13",
+                "H13 · 3840x2160 @ 60Hz"
+              ],
+              [
+                "H14",
+                "H14 · 1024x768 @ 60Hz"
+              ],
+              [
+                "H15",
+                "H15 · 1280x1024 @ 60Hz"
+              ],
+              [
+                "H16",
+                "H16 · 1920x1200 @ 60Hz"
+              ]
+            ],
+            "default": "H09",
+            "kind": "vol"
+          }
+        ]
+      },
+      {
+        "id": "ov",
+        "title": "출력 영상 스트림",
+        "page": "39쪽",
+        "summary": "출력 영상을 일반·정지·검정으로 바꿉니다.",
+        "group": "커맨드 1 (*255…! 형식)",
+        "cmd": "OV",
+        "order": [
+          "out",
+          "m"
+        ],
+        "params": [
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 120,
+            "default": "1",
+            "prefix": "O",
+            "pad": 3,
+            "kind": "out",
+            "style": "range"
+          },
+          {
+            "id": "m",
+            "label": "영상 스트림",
+            "type": "select",
+            "options": [
+              [
+                "M00",
+                "M00 · Normal"
+              ],
+              [
+                "M01",
+                "M01 · Freeze"
+              ],
+              [
+                "M02",
+                "M02 · Black"
+              ]
+            ],
+            "default": "M01",
+            "kind": "vol"
+          }
+        ]
+      },
+      {
+        "id": "og",
+        "title": "출력 화질(밝기·색조·채도·대비)",
+        "page": "40쪽",
+        "summary": "B 밝기, H 색조, S 채도, C 대비를 0~255로 정합니다(기본 128).",
+        "group": "커맨드 1 (*255…! 형식)",
+        "cmd": "OG",
+        "order": [
+          "out",
+          "k",
+          "v"
+        ],
+        "params": [
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 120,
+            "default": "1",
+            "prefix": "O",
+            "pad": 3,
+            "kind": "out",
+            "style": "range"
+          },
+          {
+            "id": "k",
+            "label": "조정 항목",
+            "type": "select",
+            "options": [
+              [
+                "B",
+                "B · 밝기"
+              ],
+              [
+                "H",
+                "H · 색조"
+              ],
+              [
+                "S",
+                "S · 채도"
+              ],
+              [
+                "C",
+                "C · 대비"
+              ]
+            ],
+            "default": "C",
+            "kind": "vol"
+          },
+          {
+            "id": "v",
+            "label": "값(0~255)",
+            "type": "number",
+            "min": 0,
+            "max": 255,
+            "default": 128,
+            "pad": 3,
+            "kind": "vol"
+          }
+        ]
+      },
+      {
+        "id": "oq",
+        "title": "출력 쿼드뷰",
+        "page": "40·41쪽",
+        "summary": "쿼드뷰 출력 타이밍(M)과 레이어(L)를 정합니다(M00 끄기). 쿼드뷰는 출력 슬롯의 1·5·9번 포트에서 시작합니다.",
+        "group": "커맨드 1 (*255…! 형식)",
+        "cmd": "OQ",
+        "order": [
+          "out",
+          "m",
+          "l"
+        ],
+        "params": [
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 120,
+            "default": "1",
+            "prefix": "O",
+            "pad": 3,
+            "kind": "out",
+            "style": "range"
+          },
+          {
+            "id": "m",
+            "label": "쿼드뷰 타이밍",
+            "type": "select",
+            "options": [
+              [
+                "M00",
+                "M00 · OFF"
+              ],
+              [
+                "M02",
+                "M02 · 720x480 @ 60Hz"
+              ],
+              [
+                "M03",
+                "M03 · 720x576 @ 50Hz"
+              ],
+              [
+                "M04",
+                "M04 · 1280x720 @ 50Hz"
+              ],
+              [
+                "M05",
+                "M05 · 1280x720 @ 59Hz"
+              ],
+              [
+                "M06",
+                "M06 · 1280x720 @ 60Hz"
+              ],
+              [
+                "M07",
+                "M07 · 1920x1080 @ 50Hz"
+              ],
+              [
+                "M08",
+                "M08 · 1920x1080 @ 59Hz"
+              ],
+              [
+                "M09",
+                "M09 · 1920x1080 @ 60Hz"
+              ],
+              [
+                "M10",
+                "M10 · 3840x2160 @ 30Hz"
+              ],
+              [
+                "M11",
+                "M11 · 3840x2160 @ 50Hz"
+              ],
+              [
+                "M12",
+                "M12 · 3840x2160 @ 59Hz"
+              ],
+              [
+                "M13",
+                "M13 · 3840x2160 @ 60Hz"
+              ],
+              [
+                "M14",
+                "M14 · 1024x768 @ 60Hz"
+              ],
+              [
+                "M15",
+                "M15 · 1280x1024 @ 60Hz"
+              ],
+              [
+                "M16",
+                "M16 · 1920x1200 @ 60Hz"
+              ]
+            ],
+            "default": "M13",
+            "kind": "vol"
+          },
+          {
+            "id": "l",
+            "label": "레이어",
+            "type": "number",
+            "min": 1,
+            "max": 15,
+            "default": 5,
+            "pad": 2,
+            "kind": "vol",
+            "prefix": "L"
+          }
+        ]
+      },
+      {
+        "id": "ow",
+        "title": "비디오 월 만들기",
+        "page": "41·42쪽",
+        "summary": "월에 쓸 출력 범위, 타이밍, 가로(H)·세로(V) 칸 수, 월에 포함할 출력을 차례로 적습니다.",
+        "group": "커맨드 1 (*255…! 형식)",
+        "cmd": "OW",
+        "order": [
+          "range",
+          "m",
+          "h",
+          "v",
+          "members"
+        ],
+        "params": [
+          {
+            "id": "range",
+            "label": "월 출력 범위",
+            "type": "list",
+            "min": 1,
+            "max": 120,
+            "default": "1-4",
+            "prefix": "O",
+            "pad": 3,
+            "kind": "out",
+            "style": "range"
+          },
+          {
+            "id": "m",
+            "label": "월 타이밍",
+            "type": "select",
+            "options": [
+              [
+                "M02",
+                "M02 · 720x480 @ 60Hz"
+              ],
+              [
+                "M03",
+                "M03 · 720x576 @ 50Hz"
+              ],
+              [
+                "M04",
+                "M04 · 1280x720 @ 50Hz"
+              ],
+              [
+                "M05",
+                "M05 · 1280x720 @ 59Hz"
+              ],
+              [
+                "M06",
+                "M06 · 1280x720 @ 60Hz"
+              ],
+              [
+                "M07",
+                "M07 · 1920x1080 @ 50Hz"
+              ],
+              [
+                "M08",
+                "M08 · 1920x1080 @ 59Hz"
+              ],
+              [
+                "M09",
+                "M09 · 1920x1080 @ 60Hz"
+              ],
+              [
+                "M10",
+                "M10 · 3840x2160 @ 30Hz"
+              ],
+              [
+                "M11",
+                "M11 · 3840x2160 @ 50Hz"
+              ],
+              [
+                "M12",
+                "M12 · 3840x2160 @ 59Hz"
+              ],
+              [
+                "M13",
+                "M13 · 3840x2160 @ 60Hz"
+              ],
+              [
+                "M14",
+                "M14 · 1024x768 @ 60Hz"
+              ],
+              [
+                "M15",
+                "M15 · 1280x1024 @ 60Hz"
+              ],
+              [
+                "M16",
+                "M16 · 1920x1200 @ 60Hz"
+              ]
+            ],
+            "default": "M09",
+            "kind": "vol"
+          },
+          {
+            "id": "h",
+            "label": "수평 칸 수(H)",
+            "type": "number",
+            "min": 1,
+            "max": 12,
+            "default": 2,
+            "pad": 2,
+            "kind": "vol",
+            "prefix": "H"
+          },
+          {
+            "id": "v",
+            "label": "수직 칸 수(V)",
+            "type": "number",
+            "min": 1,
+            "max": 12,
+            "default": 2,
+            "pad": 2,
+            "kind": "vol",
+            "prefix": "V"
+          },
+          {
+            "id": "members",
+            "label": "월에 포함된 출력",
+            "type": "list",
+            "min": 1,
+            "max": 120,
+            "default": "1-4",
+            "prefix": "O",
+            "pad": 3,
+            "kind": "out",
+            "style": "explicit"
+          }
+        ]
+      },
+      {
+        "id": "owoff",
+        "title": "비디오 월 끄기",
+        "page": "42쪽",
+        "summary": "월 모드를 끄고 일반 스위칭으로 돌립니다(M00).",
+        "group": "커맨드 1 (*255…! 형식)",
+        "cmd": "OW",
+        "order": [
+          "range",
+          {
+            "lit": "M00",
+            "title": "M00 · Wall OFF"
+          }
+        ],
+        "params": [
+          {
+            "id": "range",
+            "label": "월 출력 범위",
+            "type": "list",
+            "min": 1,
+            "max": 120,
+            "default": "1-9",
+            "prefix": "O",
+            "pad": 3,
+            "kind": "out",
+            "style": "range"
+          }
+        ]
+      },
+      {
+        "id": "ob",
+        "title": "월 베젤",
+        "page": "43쪽",
+        "summary": "월의 가로(H)·세로(V) 베젤 보정 값을 정합니다.",
+        "group": "커맨드 1 (*255…! 형식)",
+        "cmd": "OB",
+        "order": [
+          "out",
+          "h",
+          "v"
+        ],
+        "params": [
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 120,
+            "default": "1-4",
+            "prefix": "O",
+            "pad": 3,
+            "kind": "out",
+            "style": "range"
+          },
+          {
+            "id": "h",
+            "label": "가로 베젤(H)",
+            "type": "number",
+            "min": 0,
+            "max": 99,
+            "default": 2,
+            "pad": 2,
+            "kind": "vol",
+            "prefix": "H"
+          },
+          {
+            "id": "v",
+            "label": "세로 베젤(V)",
+            "type": "number",
+            "min": 0,
+            "max": 99,
+            "default": 1,
+            "pad": 2,
+            "kind": "vol",
+            "prefix": "V"
+          }
+        ]
+      },
+      {
+        "id": "oc",
+        "title": "출력 CEC 전원",
+        "page": "44쪽",
+        "summary": "출력에 연결된 디스플레이 전원을 켜고 끕니다(M01 켜기, M00 끄기).",
+        "group": "커맨드 1 (*255…! 형식)",
+        "cmd": "OC",
+        "order": [
+          "out",
+          "m"
+        ],
+        "params": [
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 120,
+            "default": "1-4",
+            "prefix": "O",
+            "pad": 3,
+            "kind": "out",
+            "style": "range"
+          },
+          {
+            "id": "m",
+            "label": "CEC 전원",
+            "type": "select",
+            "options": [
+              [
+                "M01",
+                "M01 · 켜기"
+              ],
+              [
+                "M00",
+                "M00 · 끄기"
+              ]
+            ],
+            "default": "M01",
+            "kind": "vol"
+          }
+        ]
+      },
+      {
+        "id": "oa",
+        "title": "출력 오디오 볼륨",
+        "page": "45쪽",
+        "summary": "출력 스테레오 오디오 볼륨입니다(V50 = 0dB, 0.5dB 단계, V70 = +10dB, V10 = 뮤트).",
+        "group": "커맨드 1 (*255…! 형식)",
+        "cmd": "OA",
+        "order": [
+          "out",
+          "v"
+        ],
+        "params": [
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 120,
+            "default": "1",
+            "prefix": "O",
+            "pad": 3,
+            "kind": "out",
+            "style": "range"
+          },
+          {
+            "id": "v",
+            "label": "볼륨 코드(10~70)",
+            "type": "number",
+            "min": 10,
+            "max": 70,
+            "default": 51,
+            "pad": 2,
+            "kind": "vol",
+            "prefix": "V"
+          }
+        ]
+      },
+      {
+        "id": "oacheck",
+        "title": "출력 오디오 볼륨 확인",
+        "page": "45쪽",
+        "summary": "출력의 볼륨 값을 확인합니다(O000 = 전체).",
+        "group": "커맨드 1 (*255…! 형식)",
+        "cmd": "?OA",
+        "order": [
+          "out",
+          {
+            "lit": "V",
+            "kind": "vol"
+          }
+        ],
+        "params": [
+          {
+            "id": "out",
+            "label": "출력 번호(0=전체)",
+            "type": "number",
+            "min": 0,
+            "max": 120,
+            "default": 1,
+            "pad": 3,
+            "kind": "out",
+            "prefix": "O"
+          }
+        ]
+      },
+      {
+        "id": "ver",
+        "title": "펌웨어 버전 확인",
+        "page": "45쪽",
+        "summary": "라우터의 펌웨어 버전을 확인합니다.",
+        "group": "커맨드 1 (*255…! 형식)",
+        "cmd": "?version"
+      },
+      {
+        "id": "t_av",
+        "title": "입력 → 출력 연결",
+        "page": "47쪽",
+        "summary": "입력 x를 출력 y에 연결합니다(매뉴얼 범위: 입력 1~16, 출력 0~16, 0 = 전체).",
+        "group": "커맨드 2 (문장형 API)",
+        "params": [
+          {
+            "id": "x",
+            "label": "입력 번호",
+            "type": "number",
+            "min": 1,
+            "max": 16,
+            "default": 1,
+            "pad": 2,
+            "kind": "in"
+          },
+          {
+            "id": "y",
+            "label": "출력 번호(0=전체)",
+            "type": "number",
+            "min": 0,
+            "max": 16,
+            "default": 2,
+            "pad": 2,
+            "kind": "out"
+          }
+        ],
+        "template": "s in {x} av out {y}!",
+        "enter": false
+      },
+      {
+        "id": "t_save",
+        "title": "프리셋 저장",
+        "page": "47쪽",
+        "summary": "입력·출력 스위칭 상태를 프리셋 z(1~8)에 저장합니다.",
+        "group": "커맨드 2 (문장형 API)",
+        "params": [
+          {
+            "id": "z",
+            "label": "프리셋 번호",
+            "type": "number",
+            "min": 1,
+            "max": 8,
+            "default": 1,
+            "pad": 2,
+            "kind": "vol"
+          }
+        ],
+        "template": "s save preset {z}!",
+        "enter": false
+      },
+      {
+        "id": "t_recall",
+        "title": "프리셋 불러오기",
+        "page": "47쪽",
+        "summary": "저장한 프리셋 z(1~8)를 불러옵니다.",
+        "group": "커맨드 2 (문장형 API)",
+        "params": [
+          {
+            "id": "z",
+            "label": "프리셋 번호",
+            "type": "number",
+            "min": 1,
+            "max": 8,
+            "default": 1,
+            "pad": 2,
+            "kind": "vol"
+          }
+        ],
+        "template": "s recall preset {z}!",
+        "enter": false
+      },
+      {
+        "id": "t_clear",
+        "title": "프리셋 삭제",
+        "page": "47쪽",
+        "summary": "저장한 프리셋 z(1~8)를 지웁니다.",
+        "group": "커맨드 2 (문장형 API)",
+        "params": [
+          {
+            "id": "z",
+            "label": "프리셋 번호",
+            "type": "number",
+            "min": 1,
+            "max": 8,
+            "default": 1,
+            "pad": 2,
+            "kind": "vol"
+          }
+        ],
+        "template": "s clear preset {z}!",
+        "enter": false
+      },
+      {
+        "id": "t_wall",
+        "title": "비디오 월 만들기",
+        "page": "49·50쪽",
+        "summary": "월 번호 v(1~30), 가로·세로 칸 수, 출력 해상도 코드 time y, 시작 출력 z를 정합니다. 시작 출력은 슬롯의 1·5·9번이어야 하고 최대 4×3입니다. 매뉴얼의 형식 줄에는 set이 있고 예제에는 없어 둘 중 고를 수 있게 했습니다(장비에서 확인 필요).",
+        "group": "커맨드 2 (문장형 API)",
+        "params": [
+          {
+            "id": "v",
+            "label": "월 번호(1~30)",
+            "type": "number",
+            "min": 1,
+            "max": 30,
+            "default": 2,
+            "pad": 2,
+            "kind": "vol"
+          },
+          {
+            "id": "w",
+            "label": "수평 칸 수(hdiv)",
+            "type": "number",
+            "min": 1,
+            "max": 12,
+            "default": 3,
+            "pad": 2,
+            "kind": "vol"
+          },
+          {
+            "id": "x",
+            "label": "수직 칸 수(vdiv)",
+            "type": "number",
+            "min": 1,
+            "max": 12,
+            "default": 3,
+            "pad": 2,
+            "kind": "vol"
+          },
+          {
+            "id": "y",
+            "label": "월 출력 해상도",
+            "type": "select",
+            "options": [
+              [
+                "2",
+                "2 · 720x480 @ 60Hz"
+              ],
+              [
+                "3",
+                "3 · 720x576 @ 50Hz"
+              ],
+              [
+                "4",
+                "4 · 1280x720 @ 50Hz"
+              ],
+              [
+                "5",
+                "5 · 1280x720 @ 59Hz"
+              ],
+              [
+                "6",
+                "6 · 1280x720 @ 60Hz"
+              ],
+              [
+                "7",
+                "7 · 1920x1080 @ 50Hz"
+              ],
+              [
+                "8",
+                "8 · 1920x1080 @ 59Hz"
+              ],
+              [
+                "9",
+                "9 · 1920x1080 @ 60Hz"
+              ],
+              [
+                "10",
+                "10 · 3840x2160 @ 30Hz"
+              ],
+              [
+                "11",
+                "11 · 3840x2160 @ 50Hz"
+              ],
+              [
+                "12",
+                "12 · 3840x2160 @ 59Hz"
+              ],
+              [
+                "13",
+                "13 · 3840x2160 @ 60Hz"
+              ],
+              [
+                "14",
+                "14 · 1024x768 @ 60Hz"
+              ],
+              [
+                "15",
+                "15 · 1280x1024 @ 60Hz"
+              ],
+              [
+                "16",
+                "16 · 1920x1200 @ 60Hz"
+              ]
+            ],
+            "default": "13",
+            "kind": "vol"
+          },
+          {
+            "id": "z",
+            "label": "시작 출력 포트",
+            "type": "number",
+            "min": 1,
+            "max": 120,
+            "default": 13,
+            "pad": 2,
+            "kind": "out"
+          },
+          {
+            "id": "set",
+            "label": "set 키워드",
+            "type": "select",
+            "options": [
+              [
+                "",
+                "생략 · 매뉴얼 예제 형식"
+              ],
+              [
+                "set ",
+                "set 포함 · 매뉴얼 형식 줄"
+              ]
+            ],
+            "default": "",
+            "kind": "cmd"
+          }
+        ],
+        "template": "s wall {v} {set}hdiv {w} vdiv {x} time {y} out {z}!",
+        "enter": false
+      },
+      {
+        "id": "t_wallsw",
+        "title": "월 입력 전환",
+        "page": "50쪽",
+        "summary": "월 번호 y의 입력 소스를 x로 거의 동시에 전환합니다.",
+        "group": "커맨드 2 (문장형 API)",
+        "params": [
+          {
+            "id": "x",
+            "label": "입력 소스",
+            "type": "number",
+            "min": 1,
+            "max": 24,
+            "default": 2,
+            "pad": 2,
+            "kind": "in"
+          },
+          {
+            "id": "y",
+            "label": "월 번호",
+            "type": "number",
+            "min": 1,
+            "max": 30,
+            "default": 2,
+            "pad": 2,
+            "kind": "vol"
+          }
+        ],
+        "template": "s in {x} wall out {y}!",
+        "enter": false
+      },
+      {
+        "id": "t_walloff",
+        "title": "비디오 월 끄기",
+        "page": "50쪽",
+        "summary": "월 번호 x의 월 모드를 끄고 일반 스위칭으로 돌립니다.",
+        "group": "커맨드 2 (문장형 API)",
+        "params": [
+          {
+            "id": "x",
+            "label": "월 번호",
+            "type": "number",
+            "min": 1,
+            "max": 30,
+            "default": 2,
+            "pad": 2,
+            "kind": "vol"
+          }
+        ],
+        "template": "s wall {x} off!",
+        "enter": false
+      },
+      {
+        "id": "t_quad",
+        "title": "쿼드뷰 켜기",
+        "page": "51쪽",
+        "summary": "쿼드뷰 레이어 x(1~3), 해상도 y, 출력 포트 z(슬롯의 1·5·9번)를 정합니다.",
+        "group": "커맨드 2 (문장형 API)",
+        "params": [
+          {
+            "id": "x",
+            "label": "레이어(1~3)",
+            "type": "number",
+            "min": 1,
+            "max": 3,
+            "default": 1,
+            "pad": 2,
+            "kind": "vol"
+          },
+          {
+            "id": "y",
+            "label": "쿼드뷰 해상도",
+            "type": "select",
+            "options": [
+              [
+                "2",
+                "2 · 720x480 @ 60Hz"
+              ],
+              [
+                "3",
+                "3 · 720x576 @ 50Hz"
+              ],
+              [
+                "4",
+                "4 · 1280x720 @ 50Hz"
+              ],
+              [
+                "5",
+                "5 · 1280x720 @ 59Hz"
+              ],
+              [
+                "6",
+                "6 · 1280x720 @ 60Hz"
+              ],
+              [
+                "7",
+                "7 · 1920x1080 @ 50Hz"
+              ],
+              [
+                "8",
+                "8 · 1920x1080 @ 59Hz"
+              ],
+              [
+                "9",
+                "9 · 1920x1080 @ 60Hz"
+              ],
+              [
+                "10",
+                "10 · 3840x2160 @ 30Hz"
+              ],
+              [
+                "11",
+                "11 · 3840x2160 @ 50Hz"
+              ],
+              [
+                "12",
+                "12 · 3840x2160 @ 59Hz"
+              ],
+              [
+                "13",
+                "13 · 3840x2160 @ 60Hz"
+              ],
+              [
+                "14",
+                "14 · 1024x768 @ 60Hz"
+              ],
+              [
+                "15",
+                "15 · 1280x1024 @ 60Hz"
+              ],
+              [
+                "16",
+                "16 · 1920x1200 @ 60Hz"
+              ]
+            ],
+            "default": "9",
+            "kind": "vol"
+          },
+          {
+            "id": "z",
+            "label": "출력 포트",
+            "type": "number",
+            "min": 1,
+            "max": 120,
+            "default": 1,
+            "pad": 2,
+            "kind": "out"
+          }
+        ],
+        "template": "s quad on layer {x} time {y} out {z}!",
+        "enter": false
+      },
+      {
+        "id": "t_quadoff",
+        "title": "쿼드뷰 끄기",
+        "page": "51쪽",
+        "summary": "쿼드뷰 출력 포트 x를 일반 스위칭으로 돌립니다.",
+        "group": "커맨드 2 (문장형 API)",
+        "params": [
+          {
+            "id": "x",
+            "label": "출력 포트",
+            "type": "number",
+            "min": 1,
+            "max": 120,
+            "default": 1,
+            "pad": 2,
+            "kind": "out"
+          }
+        ],
+        "template": "s quad off out {x}!",
+        "enter": false
+      },
+      {
+        "id": "t_cec",
+        "title": "출력 CEC 전원",
+        "page": "51쪽",
+        "summary": "Rx 익스텐더에 연결된 디스플레이 전원을 켜고 끕니다(y = 0 은 전체 출력).",
+        "group": "커맨드 2 (문장형 API)",
+        "params": [
+          {
+            "id": "y",
+            "label": "출력 포트(0=전체)",
+            "type": "number",
+            "min": 0,
+            "max": 120,
+            "default": 1,
+            "pad": 2,
+            "kind": "out"
+          },
+          {
+            "id": "m",
+            "label": "전원",
+            "type": "select",
+            "options": [
+              [
+                "on",
+                "on · 켜기"
+              ],
+              [
+                "off",
+                "off · 끄기"
+              ]
+            ],
+            "default": "on",
+            "kind": "vol"
+          }
+        ],
+        "template": "s cec hdmi out {y} {m}!",
+        "enter": false
+      },
+      {
+        "id": "t_edid",
+        "title": "입력 EDID 지정",
+        "page": "48쪽",
+        "summary": "입력 x(0 = 전체)의 EDID를 기본 EDID z(1~39)로 지정합니다. z 24~39는 HDMI 출력 1~16의 EDID 복사입니다.",
+        "group": "커맨드 2 (문장형 API)",
+        "params": [
+          {
+            "id": "x",
+            "label": "입력 번호(0=전체)",
+            "type": "number",
+            "min": 0,
+            "max": 16,
+            "default": 1,
+            "pad": 2,
+            "kind": "in"
+          },
+          {
+            "id": "z",
+            "label": "EDID 번호(1~39)",
+            "type": "number",
+            "min": 1,
+            "max": 39,
+            "default": 1,
+            "pad": 2,
+            "kind": "vol"
+          }
+        ],
+        "template": "s edid in {x} from {z}!",
+        "enter": false
+      },
+      {
+        "id": "t_q",
+        "title": "조회(읽기 전용)",
+        "page": "46쪽",
+        "summary": "장비 모델, 펌웨어 버전, IP 설정을 확인합니다.",
+        "group": "커맨드 2 (문장형 API)",
+        "params": [
+          {
+            "id": "q",
+            "label": "조회",
+            "type": "select",
+            "options": [
+              [
+                "r type",
+                "r type · 장비 모델"
+              ],
+              [
+                "r fw version",
+                "r fw version · 펌웨어 버전"
+              ],
+              [
+                "r ipconfig",
+                "r ipconfig · IP 설정"
+              ]
+            ],
+            "default": "r type",
+            "kind": "cmd"
+          }
+        ],
+        "template": "{q}!",
+        "enter": false
+      }
+    ]
+  }
 }

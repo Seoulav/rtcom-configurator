@@ -152,3 +152,23 @@ test('0.226: 전체 커맨드는 포함한 카드의 커맨드를 순서대로 �
   assert.ok(!only.overlap);
   assert.ok(L.combinedCommands(wos,{},{wos:false,hos:false}).warnings.some(w=>/포함한 카드가 없습니다/.test(w)));
 });
+
+// 0.235 카드별 레이어 사용량(사용자 질문 2026-10-16 "중간 분할 점에 레이어를 배치하면 어떻게 레이어 카운팅이 되는거야?").
+test('0.235: 카드 경계에 걸친 창은 걸친 카드마다 레이어 1개씩 쓰고 카드별 남은 레이어를 센다',()=>{
+  const base={cols:2,rows:2,mapping:'card',windows:[{input:1,x:0,y:0,w:7680,h:4320},{input:2,x:2880,y:1620,w:1920,h:1080},{input:3,x:100,y:100,w:800,h:600}]};
+  const usage=L.cardUsage(L.normalize(base));
+  assert.equal(usage.length,4);
+  assert.deepEqual(usage.map(c=>c.used),[3,2,2,2]);
+  assert.deepEqual(usage.map(c=>c.free),[1,2,2,2]);
+  assert.deepEqual(usage[0].windows,[1,2,3]);
+  assert.deepEqual(usage[1].windows,[1,2]);
+  // 창 1(월 전체)과 창 2(중앙)는 카드 4장을 모두 걸치므로 각각 레이어 4개를 쓴다.
+  const all=L.assignPorts(L.normalize(base));
+  assert.equal(all[0].ports.length,4);assert.equal(all[1].ports.length,4);assert.equal(all[2].ports.length,1);
+  // 한 카드에 창 5개를 올리면 5번째 창은 배정되지 못하고 overflow로 알려 준다.
+  const five={cols:1,rows:1,windows:Array.from({length:5},(_,i)=>({input:i+1,x:i*10,y:0,w:1920,h:1080}))};
+  const u5=L.cardUsage(L.normalize(five));
+  assert.equal(u5[0].used,4);assert.equal(u5[0].free,0);assert.deepEqual(u5[0].overflow,[5]);
+  // 너비·높이가 0인 창은 레이어를 쓰지 않는다.
+  assert.equal(L.cardUsage(L.normalize({cols:1,rows:1,windows:[{input:1,x:0,y:0,w:0,h:0}]}))[0].used,0);
+});

@@ -948,5 +948,1125 @@
       "scope": "사용자 답변(2026-10-13, 알티컴 질문 6~11번·XDM-288 보드 수를 단계별로 확인) — SIS4-U는 매뉴얼 KV07의 VDM-SIS4와 같은 카드, SOS4는 매뉴얼대로 스테레오 입·출력 4포트, HOS4S-UW USB 2포트는 현장에서 쓰지 않아 공개 데이터에서 뺌, VDM-288X는 주문 생산·입출력 보드 각 72장(카드 1장 = 4채널), 카드 호환은 \"VDM카드 VDM에 XDM은 XDM에\"(사용자 확인 2026-10-13)라 VDM 카드 10종을 VDM-288X에도 장착"
     }
   ],
-  "issues": []
+  "issues": [],
+  "controlExample": {
+    "kind": "builders",
+    "productId": "255",
+    "productIdNote": "제품 ID 초기값 255, 범용 ID 999(매뉴얼 68쪽)",
+    "variants": [
+      {
+        "id": "2",
+        "label": "2자리 번호(대부분의 VDM)",
+        "pad": 2
+      },
+      {
+        "id": "3",
+        "label": "3자리 번호(VDM-128X·256X)",
+        "pad": 3
+      }
+    ],
+    "variantLabel": "번호 자릿수",
+    "serial": {
+      "baud": 19200,
+      "parity": "N",
+      "dataBits": 8,
+      "stopBits": 1,
+      "confirmed": "8N1 공장 출고값, 전면 RS-232 메뉴에서 변경 가능(매뉴얼 53쪽)"
+    },
+    "amxDevice": "dvVDM",
+    "lead": "AMX 같은 통합 제어 시스템이 RS-232로 보내는 문자열 예시입니다. 연결·해제·상태 확인, 입력·출력 설정, 테스트 패턴, 쿼드뷰, 오디오 매트릭스 볼륨 명령을 아래 \"설정 명령\"에서 값을 골라 만듭니다. 매뉴얼은 VDM-128X·256X만 번호를 세 자리로 쓰므로 번호 자릿수를 먼저 고르세요.",
+    "source": "VDM 사용자 매뉴얼 53쪽·4.2 Command Line Operation(RS-232C) 67~84쪽",
+    "limits": "이 카드에 넣지 않은 명령: 입력·출력 익스텐더 제어(IE·OE·IP·OP 포트 열기·닫기), 네트워크 설정(N), 연결 상태 확인의 입력·출력 목록 조합 등(매뉴얼 74~85쪽). 매뉴얼의 일부 예시는 출력 범위에 \"~\"를 쓰지만 일반 규칙(하이픈)을 따라 \"-\"로 만듭니다. 쿼드뷰 명령은 쿼드뷰 출력 보드에만 적용됩니다.",
+    "builders": [
+      {
+        "id": "c",
+        "title": "연결(영상+음성)",
+        "page": "67~71쪽",
+        "summary": "입력 1개를 출력 여러 개에 연결합니다. 3개 이상 이어진 출력은 범위(O01-07)로 줄입니다.",
+        "group": "스위칭",
+        "params": [
+          {
+            "id": "inp",
+            "label": "입력 번호",
+            "type": "number",
+            "min": 1,
+            "max": 256,
+            "default": 1,
+            "pad": 2,
+            "kind": "vol",
+            "padVar": true
+          },
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 256,
+            "default": "1-7",
+            "prefix": "O",
+            "pad": 2,
+            "kind": "out",
+            "style": "range",
+            "padVar": true
+          }
+        ],
+        "route": {
+          "cmd": "C"
+        }
+      },
+      {
+        "id": "vc",
+        "title": "영상만 연결",
+        "page": "70쪽",
+        "summary": "영상만 연결합니다(VC).",
+        "group": "스위칭",
+        "params": [
+          {
+            "id": "inp",
+            "label": "입력 번호",
+            "type": "number",
+            "min": 1,
+            "max": 256,
+            "default": 1,
+            "pad": 2,
+            "kind": "vol",
+            "padVar": true
+          },
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 256,
+            "default": "1-7",
+            "prefix": "O",
+            "pad": 2,
+            "kind": "out",
+            "style": "range",
+            "padVar": true
+          }
+        ],
+        "route": {
+          "cmd": "VC"
+        }
+      },
+      {
+        "id": "ac",
+        "title": "음성만 연결",
+        "page": "70쪽",
+        "summary": "음성만 연결합니다(AC).",
+        "group": "스위칭",
+        "params": [
+          {
+            "id": "inp",
+            "label": "입력 번호",
+            "type": "number",
+            "min": 1,
+            "max": 256,
+            "default": 1,
+            "pad": 2,
+            "kind": "vol",
+            "padVar": true
+          },
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 256,
+            "default": "1-7",
+            "prefix": "O",
+            "pad": 2,
+            "kind": "out",
+            "style": "range",
+            "padVar": true
+          }
+        ],
+        "route": {
+          "cmd": "AC"
+        }
+      },
+      {
+        "id": "d",
+        "title": "연결 해제(영상+음성)",
+        "page": "69·71쪽",
+        "summary": "입력 I00(전체)이면 출력의 연결을 모두 해제합니다.",
+        "group": "스위칭",
+        "params": [
+          {
+            "id": "inp",
+            "label": "입력 번호(0=전체)",
+            "type": "number",
+            "min": 0,
+            "max": 256,
+            "default": 0,
+            "pad": 2,
+            "kind": "vol",
+            "padVar": true
+          },
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 256,
+            "default": "3-5",
+            "prefix": "O",
+            "pad": 2,
+            "kind": "out",
+            "style": "range",
+            "padVar": true
+          }
+        ],
+        "route": {
+          "cmd": "D"
+        }
+      },
+      {
+        "id": "vd",
+        "title": "영상만 해제",
+        "page": "71쪽",
+        "summary": "영상 연결만 해제합니다(VD).",
+        "group": "스위칭",
+        "params": [
+          {
+            "id": "inp",
+            "label": "입력 번호(0=전체)",
+            "type": "number",
+            "min": 0,
+            "max": 256,
+            "default": 0,
+            "pad": 2,
+            "kind": "vol",
+            "padVar": true
+          },
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 256,
+            "default": "3-5",
+            "prefix": "O",
+            "pad": 2,
+            "kind": "out",
+            "style": "range",
+            "padVar": true
+          }
+        ],
+        "route": {
+          "cmd": "VD"
+        }
+      },
+      {
+        "id": "ad",
+        "title": "음성만 해제",
+        "page": "71쪽",
+        "summary": "음성 연결만 해제합니다(AD).",
+        "group": "스위칭",
+        "params": [
+          {
+            "id": "inp",
+            "label": "입력 번호(0=전체)",
+            "type": "number",
+            "min": 0,
+            "max": 256,
+            "default": 0,
+            "pad": 2,
+            "kind": "vol",
+            "padVar": true
+          },
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 256,
+            "default": "3-5",
+            "prefix": "O",
+            "pad": 2,
+            "kind": "out",
+            "style": "range",
+            "padVar": true
+          }
+        ],
+        "route": {
+          "cmd": "AD"
+        }
+      },
+      {
+        "id": "dall",
+        "title": "전체 연결 해제",
+        "page": "71쪽",
+        "summary": "모든 입력과 출력의 연결을 해제합니다(D·VD·AD + ALLIO).",
+        "group": "스위칭",
+        "order": [
+          "k",
+          {
+            "lit": "ALLIO",
+            "kind": "out",
+            "title": "ALLIO · 모든 입력·출력"
+          }
+        ],
+        "params": [
+          {
+            "id": "k",
+            "label": "해제 범위",
+            "type": "select",
+            "options": [
+              [
+                "D",
+                "D · 영상+음성"
+              ],
+              [
+                "VD",
+                "VD · 영상만"
+              ],
+              [
+                "AD",
+                "AD · 음성만"
+              ]
+            ],
+            "default": "D",
+            "kind": "cmd"
+          }
+        ]
+      },
+      {
+        "id": "stat",
+        "title": "연결 상태 확인(입력·출력별)",
+        "page": "72쪽",
+        "summary": "입력 또는 출력 번호의 연결 상태를 확인합니다(? 영상, A? 음성).",
+        "group": "스위칭",
+        "order": [
+          "k",
+          "dir",
+          "n"
+        ],
+        "params": [
+          {
+            "id": "k",
+            "label": "확인 대상",
+            "type": "select",
+            "options": [
+              [
+                "?",
+                "? · 영상"
+              ],
+              [
+                "A?",
+                "A? · 음성"
+              ]
+            ],
+            "default": "?",
+            "kind": "cmd"
+          },
+          {
+            "id": "dir",
+            "label": "입력/출력",
+            "type": "select",
+            "options": [
+              [
+                "I",
+                "I · 입력"
+              ],
+              [
+                "O",
+                "O · 출력"
+              ]
+            ],
+            "default": "O",
+            "kind": "out"
+          },
+          {
+            "id": "n",
+            "label": "번호",
+            "type": "number",
+            "min": 1,
+            "max": 256,
+            "default": 7,
+            "pad": 2,
+            "kind": "vol",
+            "padVar": true
+          }
+        ]
+      },
+      {
+        "id": "statall",
+        "title": "연결 상태 확인(전체)",
+        "page": "72쪽",
+        "summary": "모든 입력·출력의 연결 상태를 확인합니다.",
+        "group": "스위칭",
+        "order": [
+          "k",
+          {
+            "lit": "ALLIO",
+            "kind": "out",
+            "title": "ALLIO · 모든 입력·출력"
+          }
+        ],
+        "params": [
+          {
+            "id": "k",
+            "label": "확인 대상",
+            "type": "select",
+            "options": [
+              [
+                "?",
+                "? · 영상"
+              ],
+              [
+                "A?",
+                "A? · 음성"
+              ]
+            ],
+            "default": "?",
+            "kind": "cmd"
+          }
+        ]
+      },
+      {
+        "id": "iv",
+        "title": "입력 영상 소스",
+        "page": "73쪽",
+        "summary": "입력 영상 소스를 정합니다(A 자동, M HDMI/SDI, S DVI/CATx/Fiber).",
+        "group": "입력 설정",
+        "cmd": "IV",
+        "order": [
+          "inp",
+          "m"
+        ],
+        "params": [
+          {
+            "id": "inp",
+            "label": "입력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 256,
+            "default": "1-9",
+            "prefix": "I",
+            "pad": 2,
+            "kind": "in",
+            "style": "range",
+            "padVar": true
+          },
+          {
+            "id": "m",
+            "label": "영상 소스",
+            "type": "select",
+            "options": [
+              [
+                "A",
+                "A · Auto"
+              ],
+              [
+                "M",
+                "M · HDMI/SDI"
+              ],
+              [
+                "S",
+                "S · DVI/CATx/Fiber"
+              ]
+            ],
+            "default": "M",
+            "kind": "vol"
+          }
+        ]
+      },
+      {
+        "id": "ia",
+        "title": "입력 오디오 소스",
+        "page": "73쪽",
+        "summary": "입력 오디오를 정합니다(A 자동, M 임베디드, S 3.5mm 스테레오).",
+        "group": "입력 설정",
+        "cmd": "IA",
+        "order": [
+          "inp",
+          "m"
+        ],
+        "params": [
+          {
+            "id": "inp",
+            "label": "입력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 256,
+            "default": "1-9",
+            "prefix": "I",
+            "pad": 2,
+            "kind": "in",
+            "style": "range",
+            "padVar": true
+          },
+          {
+            "id": "m",
+            "label": "오디오 소스",
+            "type": "select",
+            "options": [
+              [
+                "A",
+                "A · Auto"
+              ],
+              [
+                "M",
+                "M · Embedded Audio"
+              ],
+              [
+                "S",
+                "S · 3.5mm Stereo"
+              ]
+            ],
+            "default": "M",
+            "kind": "vol"
+          }
+        ]
+      },
+      {
+        "id": "im",
+        "title": "입력 모니터링(미리보기)",
+        "page": "73쪽",
+        "summary": "모니터링할 입력을 정합니다(I00 = 미리보기 끔).",
+        "group": "입력 설정",
+        "cmd": "IM",
+        "order": [
+          "inp"
+        ],
+        "params": [
+          {
+            "id": "inp",
+            "label": "입력 번호(0=끔)",
+            "type": "number",
+            "min": 0,
+            "max": 256,
+            "default": 2,
+            "pad": 2,
+            "kind": "in",
+            "prefix": "I",
+            "padVar": true
+          }
+        ]
+      },
+      {
+        "id": "if",
+        "title": "입력 정보 확인",
+        "page": "73쪽",
+        "summary": "입력 채널 정보를 확인합니다.",
+        "group": "입력 설정",
+        "cmd": "IF",
+        "order": [
+          "inp"
+        ],
+        "params": [
+          {
+            "id": "inp",
+            "label": "입력 번호",
+            "type": "number",
+            "min": 1,
+            "max": 256,
+            "default": 1,
+            "pad": 2,
+            "kind": "in",
+            "prefix": "I",
+            "padVar": true
+          }
+        ]
+      },
+      {
+        "id": "om",
+        "title": "HDMI/SDI 출력 오디오",
+        "page": "78쪽",
+        "summary": "HDMI/SDI 출력 포트의 오디오를 정합니다.",
+        "group": "출력 설정",
+        "cmd": "OM",
+        "order": [
+          "out",
+          "m"
+        ],
+        "params": [
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 256,
+            "default": "1-9",
+            "prefix": "O",
+            "pad": 2,
+            "kind": "out",
+            "style": "range",
+            "padVar": true
+          },
+          {
+            "id": "m",
+            "label": "오디오",
+            "type": "select",
+            "options": [
+              [
+                "A",
+                "A · Auto"
+              ],
+              [
+                "M",
+                "M · Embedded Audio"
+              ],
+              [
+                "S",
+                "S · 3.5mm Stereo"
+              ]
+            ],
+            "default": "M",
+            "kind": "vol"
+          }
+        ]
+      },
+      {
+        "id": "os",
+        "title": "CATx/Fiber 출력 오디오",
+        "page": "79쪽",
+        "summary": "CATx/Fiber 포트의 출력 오디오를 정합니다.",
+        "group": "출력 설정",
+        "cmd": "OS",
+        "order": [
+          "out",
+          "m"
+        ],
+        "params": [
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 256,
+            "default": "1-9",
+            "prefix": "O",
+            "pad": 2,
+            "kind": "out",
+            "style": "range",
+            "padVar": true
+          },
+          {
+            "id": "m",
+            "label": "오디오",
+            "type": "select",
+            "options": [
+              [
+                "A",
+                "A · Auto"
+              ],
+              [
+                "M",
+                "M · Embedded Audio"
+              ],
+              [
+                "S",
+                "S · 3.5mm Stereo"
+              ]
+            ],
+            "default": "M",
+            "kind": "vol"
+          }
+        ]
+      },
+      {
+        "id": "ot",
+        "title": "출력 테스트 패턴",
+        "page": "79·80쪽",
+        "summary": "출력 번호, 해상도(T), 패턴(P)을 정합니다(T00·P00 = 끄기). 매뉴얼 예시 설명 1건이 표와 달라 표를 기준으로 했습니다.",
+        "group": "출력 설정",
+        "cmd": "OT",
+        "order": [
+          "out",
+          "t",
+          "p"
+        ],
+        "params": [
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 256,
+            "default": "1-9",
+            "prefix": "O",
+            "pad": 2,
+            "kind": "out",
+            "style": "range",
+            "padVar": true
+          },
+          {
+            "id": "t",
+            "label": "해상도(T)",
+            "type": "select",
+            "options": [
+              [
+                "T00",
+                "T00 · 끄기"
+              ],
+              [
+                "T01",
+                "T01 · 1024x768"
+              ],
+              [
+                "T02",
+                "T02 · 1920x1200"
+              ],
+              [
+                "T03",
+                "T03 · 720x480"
+              ],
+              [
+                "T04",
+                "T04 · 1280x720"
+              ],
+              [
+                "T05",
+                "T05 · 1920x1080"
+              ]
+            ],
+            "default": "T05",
+            "kind": "vol"
+          },
+          {
+            "id": "p",
+            "label": "패턴(P)",
+            "type": "select",
+            "options": [
+              [
+                "P00",
+                "P00 · 끄기"
+              ],
+              [
+                "P01",
+                "P01 · Color Bars"
+              ],
+              [
+                "P02",
+                "P02 · Cross Hatch"
+              ],
+              [
+                "P03",
+                "P03 · 16 Gray"
+              ],
+              [
+                "P04",
+                "P04 · 256 Gray"
+              ],
+              [
+                "P05",
+                "P05 · 4 Color Gray"
+              ]
+            ],
+            "default": "P05",
+            "kind": "vol"
+          }
+        ]
+      },
+      {
+        "id": "of",
+        "title": "출력 정보 확인",
+        "page": "80쪽",
+        "summary": "출력 채널 정보를 확인합니다.",
+        "group": "출력 설정",
+        "cmd": "OF",
+        "order": [
+          "out"
+        ],
+        "params": [
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "number",
+            "min": 1,
+            "max": 256,
+            "default": 2,
+            "pad": 2,
+            "kind": "out",
+            "prefix": "O",
+            "padVar": true
+          }
+        ]
+      },
+      {
+        "id": "oqt",
+        "title": "쿼드뷰 출력 타이밍",
+        "page": "82쪽",
+        "summary": "쿼드뷰 출력 보드의 스케일러 타이밍을 정합니다(T00 Auto ~ T24).",
+        "group": "출력 설정",
+        "cmd": "OQ",
+        "order": [
+          "out",
+          "t"
+        ],
+        "params": [
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 256,
+            "default": "1",
+            "prefix": "O",
+            "pad": 2,
+            "kind": "out",
+            "style": "range",
+            "padVar": true
+          },
+          {
+            "id": "t",
+            "label": "타이밍",
+            "type": "select",
+            "options": [
+              [
+                "T00",
+                "T00 · Auto"
+              ],
+              [
+                "T01",
+                "T01 · 480p (60Hz)"
+              ],
+              [
+                "T02",
+                "T02 · 576p (50Hz)"
+              ],
+              [
+                "T03",
+                "T03 · 720p (50Hz)"
+              ],
+              [
+                "T04",
+                "T04 · 720p (59Hz)"
+              ],
+              [
+                "T05",
+                "T05 · 720p (60Hz)"
+              ],
+              [
+                "T06",
+                "T06 · 1080i (50Hz)"
+              ],
+              [
+                "T07",
+                "T07 · 1080i (59Hz)"
+              ],
+              [
+                "T08",
+                "T08 · 1080i (60Hz)"
+              ],
+              [
+                "T09",
+                "T09 · 1080p (50Hz)"
+              ],
+              [
+                "T10",
+                "T10 · 1080p (59Hz)"
+              ],
+              [
+                "T11",
+                "T11 · 1080p (60Hz)"
+              ],
+              [
+                "T12",
+                "T12 · SVGA (800x600 @ 60Hz)"
+              ],
+              [
+                "T13",
+                "T13 · SVGA (800x600 @ 75Hz)"
+              ],
+              [
+                "T14",
+                "T14 · XGA (1024x768 @ 60Hz)"
+              ],
+              [
+                "T15",
+                "T15 · XGA (1024x768 @ 75Hz)"
+              ],
+              [
+                "T16",
+                "T16 · XGA (1024x768 @ 85Hz)"
+              ],
+              [
+                "T17",
+                "T17 · SXGA (1280x1024 @ 60Hz)"
+              ],
+              [
+                "T18",
+                "T18 · SXGA (1280x1024 @ 75Hz)"
+              ],
+              [
+                "T19",
+                "T19 · SXGA (1280x1024 @ 85Hz)"
+              ],
+              [
+                "T20",
+                "T20 · UXGA (1600x1200 @ 60Hz)"
+              ],
+              [
+                "T21",
+                "T21 · 1360x768 @ 60Hz"
+              ],
+              [
+                "T22",
+                "T22 · 1366x768 @ 60Hz"
+              ],
+              [
+                "T23",
+                "T23 · 1440x900 @ 60Hz"
+              ],
+              [
+                "T24",
+                "T24 · 1920x1200 @ 60Hz"
+              ]
+            ],
+            "default": "T17",
+            "kind": "vol"
+          }
+        ]
+      },
+      {
+        "id": "oql",
+        "title": "쿼드뷰 레이아웃",
+        "page": "82·83쪽",
+        "summary": "쿼드뷰 출력의 화면 배치를 정합니다(L1~L4 채널 1~4 단독, L5 쿼드뷰, L6 왼쪽 1·오른쪽 3, L7 좌우, L8 위 1·아래 3).",
+        "group": "출력 설정",
+        "cmd": "OQ",
+        "order": [
+          "out",
+          "l"
+        ],
+        "params": [
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 256,
+            "default": "1",
+            "prefix": "O",
+            "pad": 2,
+            "kind": "out",
+            "style": "range",
+            "padVar": true
+          },
+          {
+            "id": "l",
+            "label": "레이아웃",
+            "type": "select",
+            "options": [
+              [
+                "L01",
+                "L01 · Channel 1 View"
+              ],
+              [
+                "L02",
+                "L02 · Channel 2 View"
+              ],
+              [
+                "L03",
+                "L03 · Channel 3 View"
+              ],
+              [
+                "L04",
+                "L04 · Channel 4 View"
+              ],
+              [
+                "L05",
+                "L05 · Quad view"
+              ],
+              [
+                "L06",
+                "L06 · 왼쪽 1 · 오른쪽 3"
+              ],
+              [
+                "L07",
+                "L07 · Side by Side"
+              ],
+              [
+                "L08",
+                "L08 · 위 1 · 아래 3"
+              ]
+            ],
+            "default": "L05",
+            "kind": "vol"
+          }
+        ]
+      },
+      {
+        "id": "oz",
+        "title": "출력 신호 리셋",
+        "page": "83쪽",
+        "summary": "출력 포트의 신호를 리셋합니다(번호마다 쉼표로 적습니다).",
+        "group": "출력 설정",
+        "cmd": "OZ",
+        "order": [
+          "out"
+        ],
+        "params": [
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 256,
+            "default": "1-2",
+            "prefix": "O",
+            "pad": 2,
+            "kind": "out",
+            "style": "comma",
+            "padVar": true
+          }
+        ]
+      },
+      {
+        "id": "av",
+        "title": "출력 볼륨(오디오 매트릭스)",
+        "page": "83쪽",
+        "summary": "출력 볼륨을 1.0dB 단위로 줄입니다(V00 = 0dB, V01 = -1dB … V98 = -98dB, V99 = 음소거).",
+        "group": "오디오 매트릭스 볼륨",
+        "cmd": "AV",
+        "order": [
+          "out",
+          "v"
+        ],
+        "params": [
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "list",
+            "min": 1,
+            "max": 256,
+            "default": "1-9",
+            "prefix": "O",
+            "pad": 2,
+            "kind": "out",
+            "style": "range",
+            "padVar": true
+          },
+          {
+            "id": "v",
+            "label": "감쇠 코드(0~99)",
+            "type": "number",
+            "min": 0,
+            "max": 99,
+            "default": 99,
+            "pad": 2,
+            "kind": "vol",
+            "prefix": "V"
+          }
+        ]
+      },
+      {
+        "id": "af",
+        "title": "출력 볼륨 확인",
+        "page": "84쪽",
+        "summary": "오디오 매트릭스 출력의 볼륨 정보를 확인합니다.",
+        "group": "오디오 매트릭스 볼륨",
+        "cmd": "AF",
+        "order": [
+          "out"
+        ],
+        "params": [
+          {
+            "id": "out",
+            "label": "출력 번호",
+            "type": "number",
+            "min": 1,
+            "max": 256,
+            "default": 1,
+            "pad": 2,
+            "kind": "out",
+            "prefix": "O",
+            "padVar": true
+          }
+        ]
+      },
+      {
+        "id": "baud",
+        "title": "RS-232 보레이트",
+        "page": "84쪽",
+        "summary": "매트릭스의 통신 속도를 바꿉니다. 바꾼 뒤에는 제어기의 통신 속도도 같게 맞춰야 합니다.",
+        "group": "시스템",
+        "cmd": "@",
+        "order": [
+          "r"
+        ],
+        "params": [
+          {
+            "id": "r",
+            "label": "보레이트",
+            "type": "select",
+            "options": [
+              [
+                "001",
+                "001 · 19200"
+              ],
+              [
+                "002",
+                "002 · 38400"
+              ],
+              [
+                "003",
+                "003 · 57600"
+              ],
+              [
+                "004",
+                "004 · 115200"
+              ]
+            ],
+            "default": "001",
+            "kind": "vol"
+          }
+        ]
+      },
+      {
+        "id": "touch",
+        "title": "터치 잠금",
+        "page": "84쪽",
+        "summary": "전면 터치 패널을 잠그거나 풀고 상태를 확인합니다.",
+        "group": "시스템",
+        "order": [
+          "k"
+        ],
+        "params": [
+          {
+            "id": "k",
+            "label": "터치 잠금",
+            "type": "select",
+            "options": [
+              [
+                "KON",
+                "KON · 잠금"
+              ],
+              [
+                "KOFF",
+                "KOFF · 해제"
+              ],
+              [
+                "KST",
+                "KST · 상태 확인"
+              ]
+            ],
+            "default": "KST",
+            "kind": "cmd"
+          }
+        ]
+      },
+      {
+        "id": "conn",
+        "title": "RS-232 연결 확인",
+        "page": "84쪽",
+        "summary": "통신이 되는지 확인합니다.",
+        "group": "시스템",
+        "cmd": "H000"
+      },
+      {
+        "id": "ver",
+        "title": "펌웨어 버전 확인",
+        "page": "84쪽",
+        "summary": "라우터의 펌웨어 버전을 확인합니다(범용 ID 999 사용).",
+        "group": "시스템",
+        "cmd": "?version",
+        "productId": "999"
+      }
+    ]
+  }
 }
