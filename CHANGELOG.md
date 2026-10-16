@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.234.0 배포 기록**: `docs/qa/DEPLOYMENT_0.234_2026-10-16.md`(PR #362 → main 병합, Pages 배포 run 38912888832, 공개 QMS 설정 명령 빌더 데이터 확인)
 - **0.233.0 배포 기록**: `docs/qa/DEPLOYMENT_0.233_2026-10-16.md`(PR #354 → main 병합 `ea5d37a`, Pages 배포 run 38910325950 success, 공개 `CATALOG BASED · 0.233`·`layout-sim.js` 해시 일치·`CLAUDE.md` 404, 0.229 → 0.233 재번호 경위 포함)
 - **0.232.0 배포 기록**: `docs/qa/DEPLOYMENT_0.232_2026-10-16.md`(PR #359 → main 병합, Pages 배포 run 38909807341, 공개 `src/styles.css`의 `--rt-*` 변수 반영 확인)
 - **0.231.0 배포 기록**: `docs/qa/DEPLOYMENT_0.231_2026-10-16.md`(PR #357 → main 병합, Pages 배포 run 38908619438, 공개 QMS-44UX·QMS-88UX 카드 데이터·`mountMatrix` 확인)
@@ -84,6 +85,15 @@
 - **0.146.0 배포 기록**: `docs/qa/DEPLOYMENT_0.146_2026-09-29.md`(PR #195 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.145.0 배포 기록**: `docs/qa/DEPLOYMENT_0.145_2026-09-29.md`(PR #194 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.144.0 배포 기록**: `docs/qa/DEPLOYMENT_0.144_2026-09-29.md`(PR #192 → main 병합, Pages 배포 run 162, 공개 파일 337/338 일치, `.nojekyll` 제외)
+
+## 0.236.0
+
+사용자 요청 2026-10-16("1~2번 진행해", 0.231 보고의 다음 단계 2번 "모듈러 매트릭스 진행", 사용자 확인 "SPX·VDM 메뉴얼 보면 커맨드 방법이 안내되어 있어"):
+
+- **XDM·SPX·VDM 시리즈 "AMX 통합 제어 커맨드 예시" 카드:** 제품정보 시리즈 페이지 맨 아래(XDM 08, SPX·VDM 07)에 0.234의 명령 빌더로 만든 카드를 더했습니다. 명령을 묶음별로 고르고 값을 넣으면 매뉴얼 형식의 명령·HEX·AMX `SEND_STRING`이 만들어지고, 통신 설정과 AMX 시작 코드를 함께 보여 줍니다. 헤더에 "AMX 커맨드 예시" 이동 버튼도 있습니다.
+- **XDM 18종**(Command Guide 1013): 연결·해제·프리셋·상태, 입력 설정(`?IF`·`IF`·`IA`·`IV`·`IT`·`IR`·OSD), 출력 설정(`OF`·`OS`·`OV`·`OT`·`OG`·OSD), 시스템 조회. **SPX 30종**: 커맨드 1(`*255…!`) 16종과 커맨드 2(문장형 `s in 1 av out 2!`, Enter 없음) 14종. **VDM 26종**: 연결·해제·상태, 입력·출력 설정, 테스트 패턴, 쿼드뷰, 볼륨, 보레이트, 터치 잠금, 펌웨어 확인(번호 2자리·VDM-128X·256X 3자리 선택).
+- 매뉴얼 예시 약 100개와 글자까지 일치하는 테스트를 더했고, 매뉴얼 안의 불일치(SPX 월 생성 `set` 유무, VDM 테스트 패턴 표와 예시, VDM 범위 `~`)는 화면에 밝혔습니다.
+- 근거·한계·되돌리기: `docs/implementation/CONTROL_EXAMPLE_MODULAR_0.236.md`, 화면: `docs/qa/control-example-0.236/`
 
 ## 0.235.0
 
