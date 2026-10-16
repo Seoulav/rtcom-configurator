@@ -521,6 +521,13 @@
       "stopBits": 1,
       "confirmed": "8N1 공장 출고값, 전면 LCD RS-232 메뉴에서 변경 가능(매뉴얼 14쪽)"
     },
+    "lan": {
+      "port": 23,
+      "connections": 1,
+      "autoDisconnect": false,
+      "confirmed": true,
+      "source": "알티컴 회신(사용자 전달 2026-10-16)"
+    },
     "amxDevice": "dvQMS88UX",
     "manualExample": "*255CI04O01, I02O02!",
     "lead": "AMX 같은 통합 제어 시스템이 RS-232로 보내는 문자열 예시입니다. 표에서 경로를 여러 개 고르면 명령 한 줄로 합치고, 연결 해제·프리셋, 그리고 출력 해상도·테스트 패턴·비디오 월·멀티뷰 같은 설정 명령은 아래 \"설정 명령\"에서 값을 골라 만듭니다. 모두 같은 문자열을 보내는 NetLinx 코드와 함께 보여 줍니다.",

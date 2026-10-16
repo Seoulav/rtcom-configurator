@@ -414,29 +414,38 @@ test('0.239: 저장소의 AMX_LOCK은 비밀번호 원문 없이 변환값 또�
 });
 
 // 0.239 AMX 통신 방식: LAN(TCP) 기본 화면, RS-232 선택. 포트는 매뉴얼 값만 쓰고 없으면 0과 "확인 필요"
-test('0.239: LAN 코드는 IP_CLIENT_OPEN과 DATA_EVENT를 만들고 SPX는 매뉴얼의 Telnet 포트 23을 쓴다',()=>{
-  assert.equal(spx.controlExample?.lan?.port??spx.lan?.port,23,'SPX 매뉴얼 46쪽 Telnet 포트');
+test('0.239·0.241: LAN 코드는 IP_CLIENT_OPEN과 DATA_EVENT를 만들고 알티컴 회신(포트 23·동시 접속 1·자동 끊김 없음)을 담는다',()=>{
+  // 알티컴 회신(사용자 전달 2026-10-16, 질문 17~19번): 포트 23, RS-232와 동일하게 전송, 동시 접속 1개, 자동으로 끊기지 않음
+  const names={xdm,vdm,spx,hds42:JSON.parse(fs.readFileSync('data/products/hds-42mu.json','utf8')).controlExample,hds21:JSON.parse(fs.readFileSync('data/products/hds-21u.json','utf8')).controlExample,q44:JSON.parse(fs.readFileSync('data/products/qms-44ux.json','utf8')).controlExample,q88:JSON.parse(fs.readFileSync('data/products/qms-88ux.json','utf8')).controlExample};
+  for(const [k,s] of Object.entries(names)){
+    assert.deepEqual({port:s.lan?.port,connections:s.lan?.connections,autoDisconnect:s.lan?.autoDisconnect,confirmed:s.lan?.confirmed},{port:23,connections:1,autoDisconnect:false,confirmed:true},`${k} lan`);
+    assert.match(s.lan.source,/알티컴 회신/);
+  }
   const code=ce.amxCode(spx,[{label:'연결',text:'*255CI001O001!'}],{mode:'lan',ip:'192.168.10.75'});
   assert.match(code,/dvSPX = 0:3:0/);
   assert.match(code,/CHAR cDeviceIp\[\] = '192\.168\.10\.75'/);
-  assert.match(code,/LONG nDevicePort = 23 +\/\/ TCP 포트 — SPX 매뉴얼 46쪽/);
-  assert.match(code,/IP_CLIENT_OPEN\(dvSPX\.PORT, cDeviceIp, nDevicePort, IP_TCP\)/);
+  assert.match(code,/LONG nDevicePort = 23 +\/\/ TCP 포트 — 알티컴 회신/);
+  assert.match(code,/IP_CLIENT_OPEN\(dvSPX\.PORT, cDeviceIp, nDevicePort, IP_TCP\) +\/\/ 장비에 TCP 연결\(장비는 동시 접속 1개/);
+  assert.match(code,/OFFLINE: \{ \} +\/\/ 연결이 끊김\(장비는 연결을 자동으로 끊지 않음/);
   assert.match(code,/DATA_EVENT\[dvSPX\][\s\S]*ONLINE[\s\S]*OFFLINE[\s\S]*ONERROR/);
   assert.match(code,/BUTTON_EVENT\[dvTP,1\][\s\S]*SEND_STRING dvSPX,"'\*255CI001O001!',\$0D"/);
   assert.doesNotMatch(code,/SET BAUD/);
   assert.match(code,/DEFINE_EVENT[\s\S]*BUTTON_EVENT/,'BUTTON_EVENT는 DEFINE_EVENT 아래');
+  // XDM도 같은 포트 23이 기본으로 들어간다
+  assert.match(ce.amxCode(xdm,[],{mode:'lan'}),/LONG nDevicePort = 23 +\/\/ TCP 포트 — 알티컴 회신/);
 });
-test('0.239: 포트가 매뉴얼에 없는 제품은 0과 확인 필요 주석, 직접 입력한 포트와 IP가 우선, 잘못된 값은 걸러낸다',()=>{
-  const none=ce.amxCode(xdm,[],{mode:'lan'});
+test('0.239: lan 항목이 없는 제품은 포트 0과 확인 필요 주석, 직접 입력한 포트와 IP가 우선, 잘못된 값은 걸러낸다',()=>{
+  const bare={amxDevice:'dvXDM',serial:{baud:115200}};
+  const none=ce.amxCode(bare,[],{mode:'lan'});
   assert.match(none,/LONG nDevicePort = 0 +\/\/ TCP 포트 번호를 입력하세요\(이 제품은 매뉴얼에 없어 알티컴 확인 필요\)/);
   assert.match(none,/'192\.168\.1\.100'.*예시/);
-  const own=ce.amxCode(xdm,[],{mode:'lan',ip:'10.1.2.3',port:'4001'});
+  assert.doesNotMatch(none,/동시 접속 1개|자동으로 끊지 않음/);
+  const own=ce.amxCode(bare,[],{mode:'lan',ip:'10.1.2.3',port:'4001'});
   assert.match(own,/'10\.1\.2\.3'/);assert.match(own,/LONG nDevicePort = 4001 +\/\/ TCP 포트 \(직접 입력한 값\)/);
-  const spxOwn=ce.amxCode(spx,[],{mode:'lan',port:'2323'});
-  assert.match(spxOwn,/nDevicePort = 2323/);
-  // 코드 주입·범위 밖 값 차단
+  assert.match(ce.amxCode(xdm,[],{mode:'lan',port:'2323'}),/nDevicePort = 2323 +\/\/ TCP 포트 \(직접 입력한 값\)/);
+  // 코드 주입·범위 밖 값 차단: 잘못된 포트는 제품 기본값(23)으로 돌아간다
   const bad=ce.amxCode(xdm,[],{mode:'lan',ip:"10.0.0.1'; evil",port:'99999'});
-  assert.doesNotMatch(bad,/evil/);assert.match(bad,/'192\.168\.1\.100'/);assert.match(bad,/nDevicePort = 0/);
+  assert.doesNotMatch(bad,/evil/);assert.match(bad,/'192\.168\.1\.100'/);assert.match(bad,/nDevicePort = 23\b/);
   assert.doesNotMatch(ce.amxCode(xdm,[],{mode:'lan',ip:'999.1.1.1'}),/999\.1\.1\.1/);
 });
 test('0.239: RS-232를 고르면 기존 직렬 코드(SET BAUD)가 나오고, 옵션이 없으면 직렬이 기본(기존 호출 호환)',()=>{
