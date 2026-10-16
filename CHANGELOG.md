@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.235.0 배포 기록**: `docs/qa/DEPLOYMENT_0.235_2026-10-16.md`(PR #363 → main 병합 `07a1c07`, Pages 배포 run 38913897451 success, 공개 `CATALOG BASED · 0.235`·`layout-sim.js` 해시 일치, 번호 0.234 → 0.235 재정리 경위)
 - **0.233.0 배포 기록**: `docs/qa/DEPLOYMENT_0.233_2026-10-16.md`(PR #354 → main 병합 `ea5d37a`, Pages 배포 run 38910325950 success, 공개 `CATALOG BASED · 0.233`·`layout-sim.js` 해시 일치·`CLAUDE.md` 404, 0.229 → 0.233 재번호 경위 포함)
 - **0.232.0 배포 기록**: `docs/qa/DEPLOYMENT_0.232_2026-10-16.md`(PR #359 → main 병합, Pages 배포 run 38909807341, 공개 `src/styles.css`의 `--rt-*` 변수 반영 확인)
 - **0.231.0 배포 기록**: `docs/qa/DEPLOYMENT_0.231_2026-10-16.md`(PR #357 → main 병합, Pages 배포 run 38908619438, 공개 QMS-44UX·QMS-88UX 카드 데이터·`mountMatrix` 확인)
