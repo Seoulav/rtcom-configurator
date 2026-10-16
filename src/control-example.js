@@ -64,8 +64,9 @@
     return {text:textOf(parts),parts,code,db:dbOf(spec,code)};
   }
   // 문자열 뒤에 Enter(0x0D)를 붙인 바이트열을 "2A 30 30 30 …" 형태의 HEX로 보여 준다.
-  function toHex(text){
-    return [...text].map(ch=>ch.charCodeAt(0).toString(16).toUpperCase().padStart(2,'0')).concat('0D').join(' ');
+  function toHex(text,cr=true){
+    const bytes=[...text].map(ch=>ch.charCodeAt(0).toString(16).toUpperCase().padStart(2,'0'));
+    return (cr===false?bytes:bytes.concat('0D')).join(' ');
   }
   // AMX NetLinx: 직렬 포트 설정 한 줄 + 명령마다 터치 패널 버튼 하나씩 SEND_STRING. commands는 문자열 또는 {label,text}.
   // 데이터 비트·패리티는 매뉴얼에 없어 일반값(8N1)으로 적고 현장 확인을 안내한다.
@@ -148,11 +149,15 @@
     return {text:textOf(parts),parts,number:num};
   }
   // ---- 명령 빌더(제품 JSON의 builders): 매개변수를 고르면 매뉴얼 형식의 명령이 만들어진다 ----
-  // builder: {id,title,cmd,page,summary,order:[매개변수 id 또는 {lit,kind}],params:[{id,label,type:'select'|'number'|'list',prefix,pad,min,max,default,options,optional,style,kind}]}
+  // builder: {id,title,cmd,page,summary,group,order:[매개변수 id 또는 {lit,num,padVar,kind}],params:[...],route,template,enter,productId}
   //  - select: 옵션 값 앞에 prefix를 붙인다(예: H + 09). optional이면 빈 값("생략")을 고를 수 있다.
-  //  - number: min~max 정수, pad 자리 0 채움(예: V + 03).
-  //  - list: "1-4,8" 같은 번호 목록. style 'range'는 3개 이상 이어진 번호를 범위(O01-04)로, 'explicit'은 번호마다 적는다(O01O02O03).
-  //  - lit: 고정 글자(예: 멀티뷰의 S, 화면 모드의 M01).
+  //  - number: min~max 정수, pad 자리 0 채움(예: V + 03). padVar이면 제품의 자릿수 선택(spec.variants, VDM 2·3자리)을 따른다.
+  //  - list: "1-4,8" 같은 번호 목록. style 'range'는 3개 이상 이어진 번호를 범위(O01-04)로, 'explicit'은 번호마다(O01O02O03), 'comma'는 번호마다 쉼표로(O01,O02) 적는다.
+  //  - text: 따옴표로 감싸는 문자열(OSD 자막, prefix S + "…"), maxLen까지.
+  //  - lit: 고정 글자(예: 멀티뷰의 S). num이 있으면 그 숫자를 자릿수에 맞춰 붙인다(예: I + 000).
+  //  - route: {cmd}가 있으면 입력 번호 1개와 출력 목록으로 연결 쌍(I001O001-007, I001O009)을 쉼표로 이은 연결·해제 명령을 만든다.
+  //  - template: "s in {in} av out {out}!"처럼 * 제품 ID 없이 문장형으로 만드는 명령(SPX 커맨드 2). enter가 false이면 Enter(0x0D)를 붙이지 않는다.
+  //  - productId: 이 명령만 쓰는 제품 ID(예: 펌웨어 확인 *999?version!).
   function parseNumList(text,min,max){
     const nums=new Set();
     for(const part of String(text??'').split(/[,\s]+/).filter(Boolean)){
@@ -174,31 +179,101 @@
     return out;
   }
   function builderDefaults(b){const v={};for(const p of b.params||[])v[p.id]=p.default??'';return v}
-  function buildCommand(spec,b,values){
+  const variantPad=(spec,ctx)=>ctx?.pad||spec.variants?.[0]?.pad||2;
+  const padOf=(spec,p,ctx)=>p.padVar?variantPad(spec,ctx):(p.pad||2);
+  function buildCommand(spec,b,values,ctx){
     const vals={...builderDefaults(b),...(values||{})};
-    const parts=[mStart(),mId(spec)];
-    if(b.cmd)parts.push({kind:'cmd',text:b.cmd,title:`Command · ${b.title}`});
-    for(const item of b.order||[]){
-      if(typeof item==='object'&&item.lit!==undefined){parts.push({kind:item.kind||'cmd',text:item.lit,title:item.title||'고정 글자'});continue}
-      const p=(b.params||[]).find(x=>x.id===item);if(!p)continue;
+    const idText=b.productId||spec.productId;
+    const idPart={kind:'id',text:idText,title:`Product ID · 제품 ID ${idText}`};
+    const paramText=(p)=>{
       const raw=vals[p.id],prefix=p.prefix||'',kind=p.kind||'vol';
       if(p.type==='select'){
-        if(raw===''||raw===undefined||raw===null){if(p.optional)continue;return {error:`${p.label}을(를) 고르세요.`}}
+        if(raw===''||raw===undefined||raw===null){if(p.optional)return {skip:true};return {error:`${p.label}을(를) 고르세요.`}}
         const opt=(p.options||[]).find(o=>String(o[0])===String(raw));
         if(!opt)return {error:`${p.label} 값이 올바르지 않습니다.`};
-        parts.push({kind,text:`${prefix}${opt[0]}`,title:`${p.label} · ${opt[1]}`});
-      }else if(p.type==='number'){
-        const n=clamp(Math.round(Number(raw)),p.min??0,p.max??99);
-        if(!Number.isFinite(n))return {error:`${p.label}을(를) 입력하세요.`};
-        parts.push({kind,text:`${prefix}${String(n).padStart(p.pad||2,'0')}`,title:`${p.label} · ${n}`});
-      }else if(p.type==='list'){
-        const nums=parseNumList(raw,p.min??1,p.max??99);
-        if(!nums.length)return {error:`${p.label}을(를) 입력하세요(예: 1-4,8, 범위 ${p.min??1}~${p.max??99}).`};
-        for(const it of formatNumList(nums,prefix,p.pad||2,p.style))parts.push({kind,text:it.text,title:it.from===it.to?`${p.label} · ${it.from}`:`${p.label} · ${it.from}~${it.to}(범위)`});
+        return {pieces:[{kind,text:`${prefix}${opt[0]}`,title:`${p.label} · ${opt[1]}`}]};
       }
+      if(p.type==='number'){
+        const n=Math.round(Number(raw));
+        if(!Number.isFinite(n))return {error:`${p.label}을(를) 입력하세요.`};
+        const v=clamp(n,p.min??0,p.max??99);
+        return {pieces:[{kind,text:`${prefix}${String(v).padStart(padOf(spec,p,ctx),'0')}`,title:`${p.label} · ${v}`}],num:v};
+      }
+      if(p.type==='text'){
+        const t=String(raw??'').replace(/"/g,'').slice(0,p.maxLen||20);
+        if(!t)return {error:`${p.label}을(를) 입력하세요(최대 ${p.maxLen||20}자).`};
+        return {pieces:[{kind,text:`${prefix}"${t}"`,title:`${p.label} · ${t}`}]};
+      }
+      const pad=padOf(spec,p,ctx);
+      const nums=parseNumList(raw,p.min??1,p.max??99);
+      if(!nums.length)return {error:`${p.label}을(를) 입력하세요(예: 1-4,8, 범위 ${p.min??1}~${p.max??99}).`};
+      const pieces=[];
+      const items=formatNumList(nums,prefix,pad,p.style);
+      items.forEach((it,i)=>{
+        if(p.style==='comma'&&i)pieces.push({kind:'sep',text:',',title:'구분 기호'});
+        pieces.push({kind,text:it.text,title:it.from===it.to?`${p.label} · ${it.from}`:`${p.label} · ${it.from}~${it.to}(범위)`});
+      });
+      return {pieces,nums};
+    };
+    // 문장형 템플릿(SPX 커맨드 2): 제품 ID·시작 글자 없이 "s in 1 av out 2!"처럼 만든다.
+    if(b.template){
+      const parts=[];
+      for(const piece of b.template.split(/(\{\w+\})/).filter(Boolean)){
+        const m=piece.match(/^\{(\w+)\}$/);
+        if(!m){
+          const endBang=piece.endsWith('!');
+          const lit=endBang?piece.slice(0,-1):piece;
+          if(lit)parts.push({kind:'cmd',text:lit,title:`명령 · ${b.title}`});
+          if(endBang)parts.push(mEnd());
+          continue;
+        }
+        const p=(b.params||[]).find(x=>x.id===m[1]);if(!p)continue;
+        const raw=vals[p.id];
+        if(p.type==='select'){
+          const opt=(p.options||[]).find(o=>String(o[0])===String(raw));
+          if(!opt)return {error:`${p.label} 값이 올바르지 않습니다.`};
+          if(String(opt[0])!=='')parts.push({kind:p.kind||'vol',text:String(opt[0]),title:`${p.label} · ${opt[1]}`});
+        }else{
+          const n=Math.round(Number(raw));
+          if(!Number.isFinite(n))return {error:`${p.label}을(를) 입력하세요.`};
+          const v=clamp(n,p.min??0,p.max??99);
+          parts.push({kind:p.kind||'vol',text:String(v),title:`${p.label} · ${v}`});
+        }
+      }
+      return {text:textOf(parts),parts,enter:b.enter!==false};
+    }
+    const parts=[mStart(),idPart];
+    // 연결·해제 쌍 명령: 입력 1개 × 출력 목록 → I001O001-007,I001O009
+    if(b.route){
+      const pin=(b.params||[]).find(x=>x.id==='inp'),pout=(b.params||[]).find(x=>x.id==='out');
+      const ri=paramText(pin);if(ri.error)return {error:ri.error};
+      const ro=paramText({...pout,style:'range',prefix:''});if(ro.error)return {error:ro.error};
+      const pad=padOf(spec,pout,ctx),inTxt=ri.pieces[0].text;
+      parts.push({kind:'cmd',text:b.route.cmd,title:`Command · ${b.title}`});
+      let first=true;
+      for(const it of formatNumList(ro.nums,'',pad,'range')){
+        if(!first)parts.push({kind:'sep',text:',',title:'구분 기호'});
+        first=false;
+        parts.push({kind:'in',text:`I${inTxt.slice(pin.prefix?pin.prefix.length:0)}`,title:`${pin.label} · ${ri.num}`});
+        parts.push({kind:'out',text:`O${it.text}`,title:it.from===it.to?`${pout.label} · ${it.from}`:`${pout.label} · ${it.from}~${it.to}(범위)`});
+      }
+      parts.push(mEnd());
+      return {text:textOf(parts),parts,enter:b.enter!==false};
+    }
+    if(b.cmd)parts.push({kind:'cmd',text:b.cmd,title:`Command · ${b.title}`});
+    for(const item of b.order||[]){
+      if(typeof item==='object'&&item.lit!==undefined){
+        const text=item.num!==undefined?`${item.lit}${String(item.num).padStart(item.padVar?variantPad(spec,ctx):(item.pad||2),'0')}`:item.lit;
+        parts.push({kind:item.kind||'cmd',text,title:item.title||'고정 글자'});continue;
+      }
+      const p=(b.params||[]).find(x=>x.id===item);if(!p)continue;
+      const r=paramText(p);
+      if(r.error)return {error:r.error};
+      if(r.skip)continue;
+      parts.push(...r.pieces);
     }
     parts.push(mEnd());
-    return {text:textOf(parts),parts};
+    return {text:textOf(parts),parts,enter:b.enter!==false};
   }
   const tokens=parts=>parts.map(p=>`<span class="rt-ce-tok rt-ce-tok-${p.kind}" title="${esc(p.title)}">${esc(p.text)}</span>`).join('');
   const range=(n,from=1)=>Array.from({length:n},(_,i)=>from+i);
@@ -273,9 +348,11 @@
   function createBuilderPanel(spec){
     const list=spec.builders||[];
     const key=`rtcom.controlExample.${spec.id||'x'}.builder`;
-    let st={sel:list[0]?.id,values:{}};
+    let st={sel:list[0]?.id,values:{},variant:spec.variants?.[0]?.id};
     try{const v=JSON.parse(localStorage.getItem(key)||'null');if(v&&typeof v==='object')st={...st,...v,values:{...(v.values||{})}}}catch{}
     if(!list.some(b=>b.id===st.sel))st.sel=list[0]?.id;
+    if(spec.variants&&!spec.variants.some(x=>x.id===st.variant))st.variant=spec.variants[0].id;
+    const ctxOf=()=>({pad:spec.variants?.find(x=>x.id===st.variant)?.pad});
     const save=()=>{try{localStorage.setItem(key,JSON.stringify(st))}catch{}};
     const cur=()=>list.find(b=>b.id===st.sel)||list[0];
     const valuesOf=b=>({...builderDefaults(b),...(st.values[b.id]||{})});
@@ -284,24 +361,33 @@
       const val=v[p.id];
       if(p.type==='select')return `<label>${esc(p.label)}<select data-ce-bp="${esc(p.id)}">${p.optional?`<option value=""${val===''?' selected':''}>(생략)</option>`:''}${(p.options||[]).map(o=>`<option value="${esc(o[0])}"${String(o[0])===String(val)?' selected':''}>${esc(o[1])}</option>`).join('')}</select></label>`;
       if(p.type==='number')return `<label>${esc(p.label)}<input type="number" data-ce-bp="${esc(p.id)}" value="${esc(val)}" min="${p.min??0}" max="${p.max??99}" step="1"></label>`;
+      if(p.type==='text')return `<label>${esc(p.label)}<input type="text" data-ce-bp="${esc(p.id)}" value="${esc(val)}" maxlength="${p.maxLen||20}" placeholder="자막(최대 ${p.maxLen||20}자)" autocomplete="off"></label>`;
       return `<label>${esc(p.label)}<input type="text" data-ce-bp="${esc(p.id)}" value="${esc(val)}" placeholder="예: 1-4,8" autocomplete="off"></label>`;
     };
     function output(b){
-      const r=buildCommand(spec,b,valuesOf(b));
+      const r=buildCommand(spec,b,valuesOf(b),ctxOf());
       if(r.error){lastText='';return `<p class="rt-ce-warn">${esc(r.error)}</p>`}
       lastText=r.text;
       const dev=spec.amxDevice||'dvSwitcher';
-      return `<div class="rt-ce-head"><h3>${esc(b.title)}${b.cmd?` (${esc(b.cmd)})`:''}</h3><button type="button" class="rt-pg-btn" data-ce-bcopy>복사</button><span class="rt-ce-copied" data-ce-bnote aria-live="polite"></span></div>
-        <pre class="rt-ce-cmd"><span class="rt-ce-line"><small>${esc(b.title)} · 매뉴얼 ${esc(b.page)}</small>${tokens(r.parts)}<span class="rt-ce-cr" title="Enter · 0x0D">⏎</span></span></pre>
-        <p class="rt-ce-hex">HEX <code>${esc(toHex(r.text))}</code></p>
-        <pre class="rt-ce-cmd rt-ce-code rt-ce-oneline">SEND_STRING ${esc(dev)},"'${esc(r.text)}',$0D"</pre>`;
+      return `<div class="rt-ce-head"><h3>${esc(b.title)}${cmdOf(b)?` (${esc(cmdOf(b))})`:''}</h3><button type="button" class="rt-pg-btn" data-ce-bcopy>복사</button><span class="rt-ce-copied" data-ce-bnote aria-live="polite"></span></div>
+        <pre class="rt-ce-cmd"><span class="rt-ce-line"><small>${esc(b.title)} · ${esc(spec.docLabel||'매뉴얼')} ${esc(b.page)}</small>${tokens(r.parts)}${r.enter===false?'':'<span class="rt-ce-cr" title="Enter · 0x0D">⏎</span>'}</span></pre>
+        <p class="rt-ce-hex">HEX <code>${esc(toHex(r.text,r.enter!==false))}</code>${r.enter===false?' · 이 형식은 매뉴얼에 Enter가 적혀 있지 않아 붙이지 않았습니다':''}</p>
+        <pre class="rt-ce-cmd rt-ce-code rt-ce-oneline">SEND_STRING ${esc(dev)},"'${esc(r.text)}'${r.enter===false?'':',$0D'}"</pre>`;
+    }
+    const cmdOf=x=>x.cmd||x.route?.cmd||'';
+    const optHtml=(x,b)=>`<option value="${esc(x.id)}"${x.id===b.id?' selected':''}>${esc(x.title)}${cmdOf(x)?` (${esc(cmdOf(x))})`:''}</option>`;
+    function selectOptions(b){
+      if(!list.some(x=>x.group))return list.map(x=>optHtml(x,b)).join('');
+      const groups=[];
+      for(const x of list){const g=x.group||'기타';let e=groups.find(y=>y.name===g);if(!e){e={name:g,items:[]};groups.push(e)}e.items.push(x)}
+      return groups.map(g=>`<optgroup label="${esc(g.name)}">${g.items.map(x=>optHtml(x,b)).join('')}</optgroup>`).join('');
     }
     function render(el){
       const b=cur();if(!b){el.innerHTML='';return}
       const v=valuesOf(b);
       el.innerHTML=`<div class="rt-ce-block"><div class="rt-ce-head"><h3>설정 명령 · ${list.length}종</h3></div>
-        <div class="rt-ce-controls"><label>명령<select data-ce-bsel>${list.map(x=>`<option value="${esc(x.id)}"${x.id===b.id?' selected':''}>${esc(x.title)}${x.cmd?` (${esc(x.cmd)})`:''}</option>`).join('')}</select></label></div>
-        <p class="rt-ce-hint-inline">${esc(b.summary||'')} <span class="rt-ce-page">매뉴얼 ${esc(b.page)}</span></p>
+        <div class="rt-ce-controls">${spec.variants?`<label>${esc(spec.variantLabel||'번호 자릿수')}<select data-ce-bvariant>${spec.variants.map(x=>`<option value="${esc(x.id)}"${x.id===st.variant?' selected':''}>${esc(x.label)}</option>`).join('')}</select></label>`:''}<label>명령<select data-ce-bsel>${selectOptions(b)}</select></label></div>
+        <p class="rt-ce-hint-inline">${esc(b.summary||'')} <span class="rt-ce-page">${esc(spec.docLabel||'매뉴얼')} ${esc(b.page)}</span></p>
         <div class="rt-ce-controls">${(b.params||[]).map(p=>control(b,p,v)).join('')}</div>
         <div data-ce-bout>${output(b)}</div></div>`;
     }
@@ -311,6 +397,8 @@
       el.addEventListener('change',event=>{
         const sel=event.target.closest('[data-ce-bsel]');
         if(sel){st.sel=sel.value;save();render(el);return}
+        const vr=event.target.closest('[data-ce-bvariant]');
+        if(vr){st.variant=vr.value;save();render(el);return}
         const f=event.target.closest('[data-ce-bp]');if(!f)return;
         const b=cur();st.values[b.id]={...(st.values[b.id]||{}),[f.dataset.ceBp]:f.value};save();
         el.querySelector('[data-ce-bout]').innerHTML=output(b);

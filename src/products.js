@@ -1131,12 +1131,13 @@
       return `<section class="rt-pg-card rt-pg-dip" style="margin-top:18px"><h2><span class="rt-pg-idx">${idx}</span>딥 스위치 설정 <span class="rt-pg-note">— ${esc(ds.place||'전면')} ${esc(ds.label||'딥 스위치')} · ${ds.onUp!==false?'위쪽':'아래쪽'}이 ON</span></h2><div class="rt-pg-dip-rows">${sorted}</div>${ds.apply?`<p class="rt-pg-hint">※ ${esc(ds.apply)}</p>`:''}${ds.note?`<p class="rt-pg-hint">※ ${esc(ds.note)}</p>`:''}</section>`;
     }
     // 0.229 "AMX 통합 제어 커맨드 예시" 카드(제품 JSON의 controlExample, 그리기·문자열 생성은 src/control-example.js). 번호는 딥 스위치 카드 다음이다.
-    function controlExampleSection(item){
+    // idxOverride: 시리즈 페이지(XDM·SPX·VDM)는 위 카드 번호가 정해져 있어 번호를 직접 넘긴다(XDM은 07 시뮬레이터 다음 08, SPX·VDM은 07).
+    function controlExampleSection(item,idxOverride){
       const ce=item.controlExample;
       if(!ce)return '';
-      const idx=String(6+(item.videoModes?1:0)+(item.edidSwitch?.table?.length?1:0)+(item.audioMux?.modes?.length?1:0)+(item.dipSwitch?.rows?.length?1:0)).padStart(2,'0');
+      const idx=idxOverride||String(6+(item.videoModes?1:0)+(item.edidSwitch?.table?.length?1:0)+(item.audioMux?.modes?.length?1:0)+(item.dipSwitch?.rows?.length?1:0)).padStart(2,'0');
       const spec={...ce,id:item.id};
-      return `<section class="rt-pg-card rt-pg-control" style="margin-top:18px"><h2><span class="rt-pg-idx">${idx}</span>AMX 통합 제어 커맨드 예시 <span class="rt-pg-note">— RS-232 · ${esc(ce.serial?.baud||9600)}bps · 입력·출력을 고르면 커맨드가 바뀝니다</span></h2>${ce.lead?`<p class="rt-pg-lead">${esc(ce.lead)}</p>`:''}<div data-control-example="${esc(JSON.stringify(spec))}"></div></section>`;
+      return `<section class="rt-pg-card rt-pg-control" id="rt-control" style="margin-top:18px"><h2><span class="rt-pg-idx">${idx}</span>AMX 통합 제어 커맨드 예시 <span class="rt-pg-note">— RS-232 · ${esc(ce.serial?.baud||9600)}bps · ${ce.kind==='builders'?'명령을 고르고 값을 넣으면 커맨드가 만들어집니다':'입력·출력을 고르면 커맨드가 바뀝니다'}</span></h2>${ce.lead?`<p class="rt-pg-lead">${esc(ce.lead)}</p>`:''}<div data-control-example="${esc(JSON.stringify(spec))}"></div></section>`;
     }
     // ---- 오디오 설정(병합 MUX·추출 DEMUX 중 선택, HD-13U). 매뉴얼 문장을 "이럴 때·연결·소리가 나오는 곳·확인 방법"으로 풀어 두 칸으로 보여준다 ----
     // HDS-21U·HDS-42MU는 딥 스위치 1번으로 고르므로 이 카드 대신 딥 스위치 설정 카드에서 함께 설명한다(사용자 요청 2026-09-27).
@@ -1252,7 +1253,7 @@
       const legendKeys=[...new Set([...inCards,...outCards].map(card=>card[3]))];
       const featureCards=outCards.filter(card=>globalThis.RtCardFeature?.cards?.[card[0]]); // 0.205 02 신호 구성에서 눌러 기능 팝업을 여는 카드(WOS100·HOS100)
       const arch=seriesSignalSvg(item.name||family,inCards,outCards,SIG_COLOR);
-      return `${headerBlock({icon:GROUP_ICON.series,title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,docs:docButtons(item),official:officialButton(item),cta:`${family==='XDM'?'<button type="button" class="rt-pg-btn" data-scroll-to="rt-layout-sim">화면 연출 시뮬레이터</button>':''}<a class="rt-pg-btn rt-pg-primary" href="#matrix-configurator" data-configure-family="${esc(family)}">${esc(family)} 구성기에서 구성하기 →</a>`})}
+      return `${headerBlock({icon:GROUP_ICON.series,title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,docs:docButtons(item),official:officialButton(item),cta:`${family==='XDM'?'<button type="button" class="rt-pg-btn" data-scroll-to="rt-layout-sim">화면 연출 시뮬레이터</button>':''}${item.controlExample?'<button type="button" class="rt-pg-btn" data-scroll-to="rt-control">AMX 커맨드 예시</button>':''}<a class="rt-pg-btn rt-pg-primary" href="#matrix-configurator" data-configure-family="${esc(family)}">${esc(family)} 구성기에서 구성하기 →</a>`})}
       <div class="rt-pg-cols">
         <div class="rt-pg-col">
           <section class="rt-pg-card rt-pg-col-mobile-1"><h2><span class="rt-pg-idx">01</span>한눈에 보기</h2><p class="rt-pg-lead">${leadFor(item)}</p>${factsList(facts)}</section>
@@ -1265,7 +1266,7 @@
           <section class="rt-pg-card rt-pg-col-mobile-4"><h2><span class="rt-pg-idx">04</span>카드 라인업 <span class="rt-pg-note">— 입력 ${inCards.length} · 출력 ${outCards.length} · 카드를 누르면 상세 정보</span></h2><div class="rt-pg-cards2"><div class="rt-pg-cardcol"><h3>입력</h3>${inCards.map(card=>cardRow(card,false)).join('')}</div><div class="rt-pg-cardcol"><h3>출력</h3>${outCards.map(card=>cardRow(card,true)).join('')}</div></div></section>
           ${recordSection(item,null,null)}
         </div>
-      </div>${layoutSimSection(family)}`;
+      </div>${layoutSimSection(family)}${controlExampleSection(item,family==='XDM'?'08':'07')}`;
     }
     // 0.224 XDM 시리즈 "07 화면 연출 시뮬레이터"(XDM-WOS100 월 오버레이): 그리기·커맨드 생성은 src/layout-sim.js(RtLayoutSim)가 맡고,
     // 여기서는 카드 틀만 둔다. show()가 화면을 그린 뒤 RtLayoutSim.mountAll(body)로 채운다. 근거: 사용자 제공 XDM Command Guide 1013(44~55쪽).

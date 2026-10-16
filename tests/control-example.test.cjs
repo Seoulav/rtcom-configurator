@@ -172,3 +172,174 @@ test('빌더 정의는 모두 기본값으로 명령이 만들어지고 매뉴�
     assert.match(b.page,/쪽/);
   }
 });
+
+// ---- 모듈러 매트릭스(XDM 가이드 12~22·67~69쪽, SPX 매뉴얼 34~51쪽, VDM 매뉴얼 67~84쪽): 매뉴얼 예시와 글자까지 같아야 한다 ----
+const xdm=JSON.parse(fs.readFileSync('data/products/xdm.json','utf8')).controlExample;
+const spx=JSON.parse(fs.readFileSync('data/products/spx.json','utf8')).controlExample;
+const vdm=JSON.parse(fs.readFileSync('data/products/vdm.json','utf8')).controlExample;
+const T2={pad:2},T3={pad:3};
+const mk=(spec,ctx)=>(id,values)=>{const b=spec.builders.find(x=>x.id===id);assert.ok(b,`빌더 ${id} 없음`);const r=ce.buildCommand(spec,b,values,ctx);assert.ok(r.text,`${id}: ${r.error}`);return r.text};
+
+test('XDM 연결·해제·프리셋·상태는 가이드 12~14쪽 예시와 같다(3자리 번호)',()=>{
+  const x=mk(xdm);
+  assert.equal(x('conn',{inp:1,out:'12'}),'*255CI001O012!');
+  assert.equal(x('conn',{inp:2,out:'1-5'}),'*255CI002O001-005!');
+  assert.equal(x('disc',{out:'12'}),'*255DI000O012!');
+  assert.equal(x('disc',{out:'1-5'}),'*255DI000O001-005!');
+  assert.equal(x('preset',{n:2}),'*255PC02!');
+  assert.equal(x('preset',{n:12}),'*255PC12!');
+  assert.equal(x('status',{out:5}),'*255?VO005!');
+  assert.equal(x('status',{out:0}),'*255?VO000!');
+});
+
+test('XDM 입력 설정 명령은 가이드 15~18쪽 예시와 같다',()=>{
+  const x=mk(xdm);
+  assert.equal(x('inftime',{inp:'0'}),'*255?IFI000!');
+  assert.equal(x('inftime',{inp:'1-4'}),'*255?IFI001-004!');
+  assert.equal(x('inftime',{inp:'1,5'}),'*255?IFI001I005!');
+  assert.equal(x('inf',{inp:1}),'*255IFI001!');
+  assert.equal(x('ia',{inp:'1',mode:'H01'}),'*255IAI001H01!');
+  assert.equal(x('ia',{inp:'1-3',mode:'H01'}),'*255IAI001-003H01!');
+  assert.equal(x('ia',{inp:'1,4',mode:'D01'}),'*255IAI001I004D01!');
+  assert.equal(x('iv',{inp:'1',m:'M01'}),'*255IVI001M01!');
+  assert.equal(x('iv',{inp:'1-5',m:'M02'}),'*255IVI001-005M02!');
+  assert.equal(x('it',{inp:'1',m:'M01'}),'*255ITI001M01!');
+  assert.equal(x('it',{inp:'1-4',m:'M04'}),'*255ITI001-004M04!');
+  assert.equal(x('ir',{inp:'1-4'}),'*255IRI001-004!');
+});
+
+test('XDM 출력 설정·OSD·시스템 조회는 가이드 19~22·67~69쪽 예시와 같다',()=>{
+  const x=mk(xdm);
+  assert.equal(x('of',{out:1}),'*255OFO001!');
+  assert.equal(x('os',{out:'1,2',h:'H11'}),'*255OSO001O002H11!');
+  assert.equal(x('ov',{out:'1',m:'M01'}),'*255OVO001M01!');
+  assert.equal(x('ov',{out:'1-3',m:'M02'}),'*255OVO001-003M02!');
+  assert.equal(x('ov',{out:'1,4',m:'M00'}),'*255OVO001O004M00!');
+  assert.equal(x('ot',{out:'1',m:'M02'}),'*255OTO001M02!');
+  assert.equal(x('ot',{out:'1-3',m:'M01'}),'*255OTO001-003M01!');
+  assert.equal(x('og',{out:'1',k:'C',v:128}),'*255OGO001C128!');
+  assert.equal(x('og',{out:'1-4',k:'S',v:0}),'*255OGO001-004S000!');
+  assert.equal(x('og',{out:'1,3',k:'H',v:100}),'*255OGO001O003H100!');
+  assert.equal(x('osdi',{inp:'1',m:'M01',text:'Camera 1'}),'*255IDI001M01S"Camera 1"!');
+  assert.equal(x('osdo',{out:'3',m:'M12',text:'01:05:45'}),'*255ODO003M12S"01:05:45"!');
+  assert.equal(x('sys',{q:'?SID'}),'*255?SID!');
+  assert.equal(x('sys',{q:'H000'}),'*255H000!');
+});
+
+test('SPX 커맨드 1(*255…!)은 매뉴얼 34~45쪽 예시와 같다',()=>{
+  const x=mk(spx);
+  assert.equal(x('conn',{inp:1,out:'1'}),'*255CI001O001!');
+  assert.equal(x('conn',{inp:1,out:'1-7'}),'*255CI001O001-007!');
+  assert.equal(x('disc',{out:'12'}),'*255DI000O012!');
+  assert.equal(x('disc',{out:'1-5'}),'*255DI000O001-005!');
+  assert.equal(x('preset',{n:2}),'*255PC02!');
+  assert.equal(x('preset',{n:12}),'*255PC12!');
+  assert.equal(x('status',{out:5}),'*255?VO005!');
+  assert.equal(x('status',{out:0}),'*255?VO000!');
+  assert.equal(x('inf',{inp:12}),'*255IFI012!');
+  assert.equal(x('ia',{inp:'1',v:51}),'*255IAI001V51!');
+  assert.equal(x('of',{out:12}),'*255OFO012!');
+  assert.equal(x('os',{out:'1',h:'H01'}),'*255OSO001H01!');
+  assert.equal(x('os',{out:'2-6',h:'H09'}),'*255OSO002-006H09!');
+  assert.equal(x('os',{out:'1,4',h:'H13'}),'*255OSO001O004H13!');
+  assert.equal(x('ov',{out:'1',m:'M01'}),'*255OVO001M01!');
+  assert.equal(x('ov',{out:'1-4',m:'M02'}),'*255OVO001-004M02!');
+  assert.equal(x('ov',{out:'1,4',m:'M02'}),'*255OVO001O004M02!');
+  assert.equal(x('og',{out:'1',k:'C',v:128}),'*255OGO001C128!');
+  assert.equal(x('og',{out:'1-4',k:'B',v:100}),'*255OGO001-004B100!');
+  assert.equal(x('og',{out:'1,4',k:'B',v:100}),'*255OGO001O004B100!');
+  assert.equal(x('oq',{out:'1',m:'M13',l:5}),'*255OQO001M13L05!');
+  assert.equal(x('ob',{out:'1',h:1,v:1}),'*255OBO001H01V01!');
+  assert.equal(x('ob',{out:'1,5',h:1,v:1}),'*255OBO001O005H01V01!');
+  assert.equal(x('ob',{out:'1-4',h:2,v:1}),'*255OBO001-004H02V01!');
+  assert.equal(x('oc',{out:'1-4',m:'M01'}),'*255OCO001-004M01!');
+  assert.equal(x('oa',{out:'1',v:51}),'*255OAO001V51!');
+  assert.equal(x('oacheck',{out:1}),'*255?OAO001V!');
+  assert.equal(x('oacheck',{out:0}),'*255?OAO000V!');
+  assert.equal(x('ver',{}),'*255?version!');
+});
+
+test('SPX 비디오 월(OW) 생성·끄기는 매뉴얼 41·42쪽 예시와 같다',()=>{
+  const x=mk(spx);
+  assert.equal(x('ow',{range:'1-9',m:'M09',h:3,v:3,members:'1-9'}),'*255OWO001-009M09H03V03O001O002O003O004O005O006O007O008O009!');
+  assert.equal(x('ow',{range:'1-4',m:'M09',h:2,v:2,members:'1-4'}),'*255OWO001-004M09H02V02O001O002O003O004!');
+  assert.equal(x('ow',{range:'1-4',m:'M09',h:1,v:1,members:'1-4'}),'*255OWO001-004M09H01V01O001O002O003O004!');
+  assert.equal(x('owoff',{range:'1-9'}),'*255OWO001-009M00!');
+});
+
+test('SPX 커맨드 2(문장형)는 매뉴얼 46~51쪽 예시와 같고 Enter를 붙이지 않는다',()=>{
+  const x=mk(spx);
+  assert.equal(x('t_av',{x:1,y:2}),'s in 1 av out 2!');
+  assert.equal(x('t_save',{z:1}),'s save preset 1!');
+  assert.equal(x('t_recall',{z:1}),'s recall preset 1!');
+  assert.equal(x('t_clear',{z:1}),'s clear preset 1!');
+  assert.equal(x('t_wall',{v:2,w:3,x:3,y:'13',z:13,set:''}),'s wall 2 hdiv 3 vdiv 3 time 13 out 13!');
+  assert.equal(x('t_wall',{v:2,w:3,x:3,y:'13',z:13,set:'set '}),'s wall 2 set hdiv 3 vdiv 3 time 13 out 13!');
+  assert.equal(x('t_wallsw',{x:2,y:2}),'s in 2 wall out 2!');
+  assert.equal(x('t_walloff',{x:2}),'s wall 2 off!');
+  assert.equal(x('t_quad',{x:1,y:'9',z:1}),'s quad on layer 1 time 9 out 1!');
+  assert.equal(x('t_quadoff',{x:1}),'s quad off out 1!');
+  assert.equal(x('t_cec',{y:0,m:'on'}),'s cec hdmi out 0 on!');
+  assert.equal(x('t_edid',{x:1,z:1}),'s edid in 1 from 1!');
+  assert.equal(x('t_edid',{x:0,z:1}),'s edid in 0 from 1!');
+  assert.equal(x('t_q',{q:'r type'}),'r type!');
+  const b=spx.builders.find(y=>y.id==='t_av');
+  assert.equal(ce.buildCommand(spx,b,{x:1,y:2}).enter,false);
+  assert.equal(ce.toHex('s in 1 av out 2!',false).endsWith('21'),true);
+});
+
+test('VDM 2자리 번호 명령은 매뉴얼 67~84쪽 예시와 같다',()=>{
+  const x=mk(vdm,T2);
+  assert.equal(x('c',{inp:1,out:'1'}),'*255CI01O01!');
+  assert.equal(x('c',{inp:1,out:'1-7'}),'*255CI01O01-07!');
+  assert.equal(x('vc',{inp:1,out:'1'}),'*255VCI01O01!');
+  assert.equal(x('ac',{inp:1,out:'1-7'}),'*255ACI01O01-07!');
+  assert.equal(x('d',{inp:1,out:'1'}),'*255DI01O01!');
+  assert.equal(x('dall',{k:'D'}),'*255DALLIO!');
+  assert.equal(x('dall',{k:'VD'}),'*255VDALLIO!');
+  assert.equal(x('dall',{k:'AD'}),'*255ADALLIO!');
+  assert.equal(x('stat',{k:'?',dir:'I',n:1}),'*255?I01!');
+  assert.equal(x('stat',{k:'?',dir:'O',n:7}),'*255?O07!');
+  assert.equal(x('stat',{k:'A?',dir:'O',n:7}),'*255A?O07!');
+  assert.equal(x('statall',{k:'?'}),'*255?ALLIO!');
+  assert.equal(x('statall',{k:'A?'}),'*255A?ALLIO!');
+  assert.equal(x('iv',{inp:'1-9',m:'M'}),'*255IVI01-09M!');
+  assert.equal(x('ia',{inp:'1-9',m:'M'}),'*255IAI01-09M!');
+  assert.equal(x('im',{inp:2}),'*255IMI02!');
+  assert.equal(x('im',{inp:0}),'*255IMI00!');
+  assert.equal(x('if',{inp:1}),'*255IFI01!');
+  assert.equal(x('om',{out:'1-9',m:'M'}),'*255OMO01-09M!');
+  assert.equal(x('os',{out:'1-9',m:'M'}),'*255OSO01-09M!');
+  assert.equal(x('ot',{out:'1-9',t:'T05',p:'P05'}),'*255OTO01-09T05P05!');
+  assert.equal(x('of',{out:2}),'*255OFO02!');
+  assert.equal(x('oqt',{out:'1',t:'T00'}),'*255OQO01T00!');
+  assert.equal(x('oqt',{out:'2',t:'T17'}),'*255OQO02T17!');
+  assert.equal(x('oql',{out:'1',l:'L05'}),'*255OQO01L05!');
+  assert.equal(x('oql',{out:'2',l:'L07'}),'*255OQO02L07!');
+  assert.equal(x('oz',{out:'1,2'}),'*255OZO01,O02!');
+  assert.equal(x('av',{out:'1-9',v:99}),'*255AVO01-09V99!');
+  assert.equal(x('af',{out:1}),'*255AFO01!');
+  assert.equal(x('baud',{r:'004'}),'*255@004!');
+  assert.equal(x('touch',{k:'KON'}),'*255KON!');
+  assert.equal(x('conn',{}),'*255H000!');
+  assert.equal(x('ver',{}),'*999?version!');
+});
+
+test('VDM-128X·256X는 3자리 번호로 만든다(매뉴얼 68쪽 예시)',()=>{
+  const x=mk(vdm,T3);
+  assert.equal(x('c',{inp:1,out:'1'}),'*255CI001O001!');
+  assert.equal(x('c',{inp:1,out:'1-7'}),'*255CI001O001-007!');
+  assert.equal(x('vc',{inp:1,out:'1-7'}),'*255VCI001O001-007!');
+  assert.equal(x('stat',{k:'?',dir:'O',n:7}),'*255?O007!');
+  assert.equal(x('d',{inp:0,out:'3-5'}),'*255DI000O003-005!');
+});
+
+test('모듈러 빌더는 모두 기본값으로 명령이 만들어지고 매뉴얼 쪽 근거를 갖는다',()=>{
+  for(const [spec,ctxs] of [[xdm,[undefined]],[spx,[undefined]],[vdm,[T2,T3]]])for(const ctx of ctxs)for(const b of spec.builders){
+    const r=ce.buildCommand(spec,b,ce.builderDefaults(b),ctx);
+    assert.ok(r.text,`${b.id}: ${r.error}`);
+    assert.match(b.page,/쪽/);
+    assert.ok(b.group,`${b.id}: 묶음 이름 없음`);
+  }
+  for(const spec of [xdm,spx,vdm])assert.equal(new Set(spec.builders.map(b=>b.id)).size,spec.builders.length);
+});
