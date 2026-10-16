@@ -1,6 +1,6 @@
 # 알티컴 확인 요청 질문 목록 (2026-10-16)
 
-알티컴에 아직 답을 받지 못한 질문만 모은 문서입니다. 번호는 `docs/RTCOM_MANUFACTURER_DATA_REQUEST.md` §5 표의 번호와 같습니다(1~14번은 답을 받아 반영 완료). 답을 받으면 §5 표 "답" 칸에 날짜와 함께 적고, 사이트에 반영한 뒤 `docs/handoff/OPEN_ITEMS.md`의 해당 항목을 지웁니다.
+알티컴에 아직 답을 받지 못한 질문만 모은 문서입니다(15번은 2026-10-16 사용자 확인으로 답이 정해져 뺐습니다). 번호는 `docs/RTCOM_MANUFACTURER_DATA_REQUEST.md` §5 표의 번호와 같습니다(1~15번은 답을 받아 반영 완료). 답을 받으면 §5 표 "답" 칸에 날짜와 함께 적고, 사이트에 반영한 뒤 `docs/handoff/OPEN_ITEMS.md`의 해당 항목을 지웁니다.
 
 ## 보내는 방법
 
@@ -38,7 +38,6 @@ RTCOM 제품정보 사이트(XDM·SPX·VDM·QMS·HDS 제어 예시 포함)를 �
 
 | 번호 | 대상 | 질문 | 지금 상태 |
 |---|---|---|---|
-| 15 | XDM-WOS100 오버레이 | 커맨드 가이드 46~47쪽 Wall Port Connection 그림은 WOS100 카드 1장의 포트 1~4가 디스플레이 2×2 각각에 연결되는데, 지난 회신은 "레이어를 쓰면 카드 4포트가 모두 같은 화면"입니다. `OW` 오버레이로 월을 만들 때 실제 배치는 어느 쪽입니까(카드 1장 = 디스플레이 1대 / 카드 1장 = 디스플레이 2×2)? | 시뮬레이터에 두 배치를 모두 두고 "카드 1장 = 디스플레이 1대"를 기본값으로 두었습니다. |
 | 16 | XDM-HOS100 `L13` | 가이드 25쪽 `*255OQOxxxMxxL13XxxxxYxxxxWxxxxHxxxxXxxxxYxxxxWxxxxHxxxx!`(1~4번 PIP 사용자 배치)에는 좌표 묶음이 2개만 적혀 있습니다. 창 2·3·4 각각의 좌표를 3묶음으로 보내는 것입니까, 다른 규칙입니까? | 시뮬레이터에서 L13을 뺐습니다. |
 | 27 | XDM-MR4S | 크기·무게·전원 어댑터 규격(전압·전류), POWER 1·2 **전원 이중화 여부**, 매뉴얼·카탈로그 PDF를 받을 수 있습니까? | 사진만으로 등록해 사양 칸이 비어 있습니다. |
 | 28 | FT101-U / FR101-U | 정정해 주신 매뉴얼 Ver.1.4의 4쪽 TX 입력이 "HDMI 2 Ports"로 남아 있습니다(사진·설명은 1개). 오기이면 정정본을 받을 수 있습니까? | 사이트는 카탈로그 기준(HDMI 입력 1개)으로 적었습니다. |
@@ -51,7 +50,7 @@ RTCOM 제품정보 사이트(XDM·SPX·VDM·QMS·HDS 제어 예시 포함)를 �
 | 21~23 | `data/products/spx.json`·`vdm.json`·`xdm.json`의 `controlExample.builders`·`serial`, 테스트의 매뉴얼 예시 비교 |
 | 24·25 | `data/products/qms-44ux.json`·`qms-88ux.json` 설정 명령 |
 | 26 | `data/products/hds-42mu.json`·`hds-21u.json`의 `controlExample.volume`·`serial` |
-| 15·16 | `src/layout-sim.js`의 포트 배치 기본값, HOS100 L13 |
+| 16 | HOS100 L13(`src/layout-sim.js`) |
 | 27·28 | `data/products/xdm-mr4s.json` 04 제품 사양, 문서 버튼, FT101-U 매뉴얼 PDF |
 
 이전 일반 질문(`docs/RTCOM_MANUFACTURER_DATA_REQUEST.md` §3 Q1~Q5·Q7: 판매·단종 제품, 사진·매뉴얼 게시 허용 범위, 문서 최신 버전, 카드 허용표, 공식 최대 거리·전원 조건, 기본 포함품과 SKU)는 회신 여부가 이 저장소에 기록되어 있지 않습니다. 이미 답을 받았다면 §3 표에 날짜와 함께 적어 주세요.
