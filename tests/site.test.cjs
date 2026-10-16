@@ -685,3 +685,20 @@ test('0.201: SPX-TX/RX 03 Signal Flow 범례의 실효 전송 거리에 Belden �
   const legend=value.split('\n').map(line=>line.replace(/\s*\(([^)]*)\)/g,(all,inner)=>{const belden=inner.match(/Belden\s*[A-Z0-9]+/i);return belden?` (${belden[0]})`:''}).trim()).join(' · ');
   assert.equal(legend,'UTP CAT6 50m (Belden 7814A) · S/FTP CAT6A 70m (Belden 10GXE02)');
 });
+
+test('0.220: FT101-U/FR101-U 정정 매뉴얼 기준 값과 구성기 전송기 전원 문구',()=>{
+  const ft=JSON.parse(read('data/products/ft101-u-fr101-u.json'));
+  const spec=(name)=>ft.specifications.filter(s=>s.name===name);
+  assert.equal(spec('전원')[0].value,'DC +12V 1A 이상');
+  assert.deepEqual(spec('규격').map(s=>s.value),['DVI 1.0, HDMI 1.4']);
+  assert.deepEqual(spec('무게').map(s=>[s.condition,s.value]),[['FT101-U','0.24'],['FR101-U','0.23']]);
+  assert.equal(ft.io.filter(r=>r.connector==='Mini USB').length,2,'송·수신기 펌웨어 포트');
+  assert.equal(ft.io.filter(r=>r.signal==='RS-232'&&r.connector==='피닉스 3핀').length,2);
+  assert.doesNotMatch(JSON.stringify(ft.documents),/FT103/,'매뉴얼 설명에서 FT103 사양표 안내 삭제');
+  const app=read('src/app.js');
+  for(const model of ['CT104-U','CR104-U','FT101-U','FR101-U']){
+    const line=app.split('\n').find(l=>l.includes(`'${model}':{model:'${model}'`));
+    assert.match(line,/전원: DC 12V 1A 이상/,model);
+    assert.doesNotMatch(line,/HDMI 1\.4b/,model);
+  }
+});
