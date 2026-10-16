@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.223.0 배포 기록**: `docs/qa/DEPLOYMENT_0.223_2026-10-16.md`(PR #341 → main 병합, Pages 배포 run 38891534069, 공개 제품 33종·XDM-MR4S 사진 확인)
 - **0.221.0 배포 기록**: `docs/qa/DEPLOYMENT_0.221_2026-10-16.md`(PR #337 → main 병합, Pages 배포 run 38870746400, 공개 JSON 무게 0.65kg 확인)
 - **0.220.0 배포 기록**: `docs/qa/DEPLOYMENT_0.220_2026-10-16.md`(PR #335 → main 병합, Pages 배포 run 38868950087, 공개 매뉴얼 PDF·JSON 새 값 확인)
 - **0.219.0 배포 기록**: `docs/qa/DEPLOYMENT_0.219_2026-10-14.md`(PR #333 → main 병합, Pages 배포 run 38651453487, 공개 시안 C 코드 확인)
