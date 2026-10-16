@@ -16,7 +16,7 @@
      - 'card'(기본): 카드 1장 = 디스플레이 1대(OUT 1). 알티컴 확인(사용자 전달 2026-10-13, 0.210·0.214 구성도): 레이어를 쓰면 WOS100 카드 4포트가 모두 같은 화면을 내므로
        디스플레이마다 카드 1장을 두고, 그 카드의 포트 1~4를 그 디스플레이 위 창(레이어) 자원으로 쓴다(디스플레이 1대에 창 4개까지).
      - 'guide': 가이드 46~47쪽 Wall Port Connection 그림대로 카드 1장(포트 4개) = 디스플레이 2×2 블록. 가이드 예제 1~8이 이 배치로 적혀 있다.
-     두 배치가 서로 달라 어느 쪽이 맞는지는 알티컴 확인 대기(docs/handoff/OPEN_ITEMS.md).
+     사용자 확인(2026-10-16, 제조사 질의서 §5 15번): 현재 기본값 'card'(카드 1장 = 디스플레이 1대)가 실제 배치다. 'guide'는 가이드 예제 1~8 커맨드를 그대로 다시 만들 때만 쓴다.
    현장 메모 값(출력 9~12번 모니터링 커맨드, HPD·EDID·Genlock 참고 커맨드)은 0.209 결정으로 빼 두었다가 0.233에서 사용자 결정(2026-10-16 "2안으로 전부 공개해")대로 공개한다(FIELD_NOTES).
    순수 함수(geometry·portMapFor·assignPorts·commandFor·coverageFor·PRESETS)는 Node 테스트(tests/layout-sim.test.cjs)에서도 쓰므로 DOM을 건드리지 않는다.
    mount()·mountAll()은 브라우저에서 제품정보(XDM 시리즈) 화면의 "07 화면 연출 시뮬레이터" 카드 안에만 그린다(src/products.js). */
@@ -53,7 +53,7 @@
   ];
   const MAPPINGS=[
     {id:'card',label:'카드 1장 = 디스플레이 1대 · OUT 1 (알티컴 확인)'},
-    {id:'guide',label:'카드 1장 = 디스플레이 2×2 (가이드 연결 그림)'}
+    {id:'guide',label:'카드 1장 = 디스플레이 2×2 (가이드 예제 재현용)'}
   ];
   const GUIDE_PDF='output/design/assets/docs/xdm-command-guide.pdf'; // 0.209 공개본. 인쇄 쪽 번호 + 1 = PDF 쪽(docs/implementation/XDM_COMMAND_GUIDE_0.209.md)
   // HOS100 OQ 레이아웃(가이드 27쪽 표). cells: 미리보기 칸 [창 번호, x%, y%, w%, h%](고정 레이아웃은 가이드 그림을 보고 대략 잡은 배치), free: 끌 수 있는 창 번호.
@@ -509,7 +509,7 @@
       <p class="rt-pg-hint">RS-232 또는 LAN으로 보낼 때 끝에 Ctrl+Enter(0x0D)를 붙입니다. 성공하면 장비가 <code>*${state.id}sOW…!</code>로 응답합니다. 토막 위에 마우스를 올리면 뜻이 보입니다. 겹침 순서는 우선순위 <code>P${state.priority}</code>와 창이 받은 포트 번호로 정해지며(${state.priority==='4321'?'큰 포트 번호가 위':'작은 포트 번호가 위'}), 레이어 번호는 1이 맨 위입니다. 표의 "맨 위로"를 누르면 그 창이 맨 위 포트를 받도록 순서를 바꿉니다. 캔버스도 같은 순서로 겹쳐 보입니다. 창을 누른 뒤 <kbd>Delete</kbd> 키를 누르면 그 창을 지웁니다(화살표 키는 10px, Shift와 함께 100px 이동).</p>
       ${result.warnings.length?`<ul class="rt-ls-warn">${result.warnings.map(w=>`<li>${esc(w)}</li>`).join('')}</ul>`:''}
       <details class="rt-pg-flow-desc" open><summary>화면별 표출 영역</summary><ul>${cover.length?cover.map(cv=>`<li><i class="rt-ls-dot" style="background:${colorOf(cv.index)}"></i><b>창 ${cv.index+1} · 입력 ${cv.input}${cv.label?`(${esc(cv.label)})`:''}</b>: ${cv.cells.length?cv.cells.map(cell=>`출력 ${cell.port}(${cell.row}행 ${cell.col}열) ${cell.full?'전체':`${cell.w}×${cell.h} @ ${cell.x},${cell.y}`}`).join(' · '):'표시되는 디스플레이 없음'}</li>`).join(''):'<li>창을 추가하면 디스플레이마다 어느 영역이 나오는지 여기에 적힙니다.</li>'}</ul></details>
-      <p class="rt-pg-hint">근거: 알티컴 <a href="${GUIDE_PDF}#page=45" target="_blank" rel="noopener">XDM 시리즈 Command Guide 44쪽부터(WOS100 Wall Overlay Command)</a>. 창 하나는 걸치는 카드마다 남은 포트 중 가장 작은 번호를 쓰고, 카드 1장에는 창 4개까지 둘 수 있습니다.<br>포트 배치 <b>"카드 1장 = 디스플레이 1대"</b>는 알티컴 확인(레이어를 쓰면 WOS100 카드 4포트가 모두 같은 화면, 0.210)과 레이어 구성도(0.214)를 따른 기본값이고, <b>"카드 1장 = 디스플레이 2×2"</b>는 가이드 46~47쪽 연결 그림과 예제 1~8의 배치입니다. 두 배치가 서로 달라 어느 쪽이 실제 장비와 맞는지 알티컴 확인을 기다리고 있습니다. 실제 포트 연결이 다르면 커맨드의 O 번호를 현장에 맞게 바꾸세요.</p>${fieldNotesHtml()}`;
+      <p class="rt-pg-hint">근거: 알티컴 <a href="${GUIDE_PDF}#page=45" target="_blank" rel="noopener">XDM 시리즈 Command Guide 44쪽부터(WOS100 Wall Overlay Command)</a>. 창 하나는 걸치는 카드마다 남은 포트 중 가장 작은 번호를 쓰고, 카드 1장에는 창 4개까지 둘 수 있습니다.<br>포트 배치 <b>"카드 1장 = 디스플레이 1대"</b>는 알티컴 확인(레이어를 쓰면 WOS100 카드 4포트가 모두 같은 화면, 0.210)과 레이어 구성도(0.214)를 따른 기본값이고, <b>"카드 1장 = 디스플레이 2×2"</b>는 가이드 46~47쪽 연결 그림과 예제 1~8의 배치입니다. 두 배치는 서로 다르며, 실제 장비는 "카드 1장 = 디스플레이 1대"가 맞습니다(서울영상테크 확인 2026-10-16). 가이드 연결 그림 배치는 가이드 예제 1~8의 커맨드를 그대로 다시 만들 때만 쓰세요. 실제 포트 연결이 다르면 커맨드의 O 번호를 현장에 맞게 바꾸세요.</p>${fieldNotesHtml()}`;
     };
     const updateHos=patch=>{hos=normalizeHos({...hos,...patch});saveKey(HOS_KEY,hos);render()};
     const setHosWindow=(i,patch)=>{updateHos({windows:hos.windows.map((w,k)=>k===i?{...w,...patch}:w)})};

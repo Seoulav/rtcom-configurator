@@ -632,7 +632,7 @@ const patchAmxLock=async()=>{
       await page.goto(`${home}#products/spx`,{waitUntil:'networkidle'});
       await page.waitForSelector('#rt-control [data-ce-text="amx"]');
       const spxLan=await page.locator('#rt-control [data-ce-text="amx"]').innerText();
-      check('AMX 통신 방식: LAN이 기본(IP_CLIENT_OPEN)이고 XDM은 포트 확인 필요, IP·포트 입력이 그 자리에서 코드에 반영되고 포커스 유지, 내 AMX 구성과 동기, RS-232 선택 시 SET BAUD, SPX는 Telnet 포트 23',/IP_CLIENT_OPEN\(dvXDM\.PORT/.test(lan0)&&/nDevicePort = 0 .*알티컴 확인 필요/.test(lan0)&&/'10\.1\.2\.3'/.test(lan1)&&/nDevicePort = 4001/.test(lan1)&&focused==='port'&&synced==='10.1.2.3'&&/nDevicePort = 4001/.test(bk)&&/SET BAUD 115200,N,8,1/.test(ser)&&!/IP_CLIENT_OPEN/.test(ser)&&hidden&&/nDevicePort = 23 .*SPX 매뉴얼 46쪽/.test(spxLan),JSON.stringify({lan0:lan0.slice(0,60),focused,synced,hidden,spx:spxLan.includes('= 23')}));
+      check('AMX 통신 방식: LAN이 기본(IP_CLIENT_OPEN)이고 XDM은 알티컴 회신 포트 23·동시 접속 1개 안내, IP·포트 입력이 그 자리에서 코드에 반영되고 포커스 유지, 내 AMX 구성과 동기, RS-232 선택 시 SET BAUD, SPX도 포트 23',/IP_CLIENT_OPEN\(dvXDM\.PORT/.test(lan0)&&/nDevicePort = 23 .*알티컴 회신/.test(lan0)&&/동시 접속 1개/.test(lan0)&&/'10\.1\.2\.3'/.test(lan1)&&/nDevicePort = 4001/.test(lan1)&&focused==='port'&&synced==='10.1.2.3'&&/nDevicePort = 4001/.test(bk)&&/SET BAUD 115200,N,8,1/.test(ser)&&!/IP_CLIENT_OPEN/.test(ser)&&hidden&&/nDevicePort = 23 .*알티컴 회신.*SPX 매뉴얼 46쪽/.test(spxLan),JSON.stringify({lan0:lan0.slice(0,60),focused,synced,hidden,spx:spxLan.includes('= 23')}));
       await page.evaluate(()=>{try{localStorage.removeItem('rtcom.amxBasket.xdm.v1')}catch{}});
     }
     // 0.229 HDS-42MU "AMX 통합 제어 커맨드 예시": 매뉴얼 9쪽 예시(*000CI02O02!, *000V54!)가 처음에 나오고, 입력·출력·볼륨을 바꾸면 커맨드와 AMX 코드가 바뀐다.

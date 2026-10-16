@@ -91,13 +91,13 @@
         `LONG nDevicePort = ${port}   // TCP 포트${port?(fromSpec?` — ${spec.lan?.source||'매뉴얼 값'}`:' (직접 입력한 값)'):' 번호를 입력하세요(이 제품은 매뉴얼에 없어 알티컴 확인 필요)'}`,
         ``,
         `DEFINE_START`,
-        `IP_CLIENT_OPEN(${dev}.PORT, cDeviceIp, nDevicePort, IP_TCP)   // 장비에 TCP 연결`,
+        `IP_CLIENT_OPEN(${dev}.PORT, cDeviceIp, nDevicePort, IP_TCP)   // 장비에 TCP 연결${spec.lan?.connections===1?'(장비는 동시 접속 1개: 다른 PC·컨트롤러가 이미 접속 중이면 연결되지 않음)':''}`,
         ``,
         `DEFINE_EVENT`,
         `DATA_EVENT[${dev}]`,
         `{`,
         `  ONLINE:  { }   // 연결됨`,
-        `  OFFLINE: { }   // 연결이 끊김 → 필요하면 IP_CLIENT_OPEN을 다시 호출`,
+        `  OFFLINE: { }   // 연결이 끊김${spec.lan?.autoDisconnect===false?'(장비는 연결을 자동으로 끊지 않음, 케이블·전원·다른 접속이 원인)':''} → 필요하면 IP_CLIENT_OPEN을 다시 호출`,
         `  ONERROR: { }   // 연결 오류 → IP 주소·포트·LAN 케이블 확인`,
         `}`
       ];
@@ -179,7 +179,7 @@
   function commBarHtml(spec){
     const c=commOf(spec),id=esc(spec.id||'x');
     const note=spec.lan?.port?`TCP 포트 ${spec.lan.port}: ${spec.lan.source||'매뉴얼'}`:'이 제품의 LAN(TCP) 포트는 매뉴얼에 없어 알티컴 확인이 필요합니다. 아는 포트 번호를 직접 넣으세요.';
-    return `<div class="rt-ce-comm" data-ce-commbar="${id}"><label>통신 방식<select data-ce-comm="mode"><option value="lan"${c.mode==='lan'?' selected':''}>LAN (TCP/IP)</option><option value="serial"${c.mode==='serial'?' selected':''}>RS-232 (직렬)</option></select></label><span class="rt-ce-comm-lan"${c.mode==='lan'?'':' hidden'}><label>장비 IP 주소<input type="text" inputmode="decimal" data-ce-comm="ip" value="${esc(c.ip)}" placeholder="192.168.1.xxx" autocomplete="off" maxlength="15"></label><label>TCP 포트<input type="text" inputmode="numeric" data-ce-comm="port" value="${esc(c.port)}" placeholder="${esc(spec.lan?.port||'확인 필요')}" autocomplete="off" maxlength="5"></label></span><p class="rt-pg-hint">${esc(note)} LAN으로 보내는 커맨드 문자열은 RS-232와 같다고 보고 만든 예시이며, 제품별 확인 내용은 알티컴에 문의하세요.</p></div>`;
+    return `<div class="rt-ce-comm" data-ce-commbar="${id}"><label>통신 방식<select data-ce-comm="mode"><option value="lan"${c.mode==='lan'?' selected':''}>LAN (TCP/IP)</option><option value="serial"${c.mode==='serial'?' selected':''}>RS-232 (직렬)</option></select></label><span class="rt-ce-comm-lan"${c.mode==='lan'?'':' hidden'}><label>장비 IP 주소<input type="text" inputmode="decimal" data-ce-comm="ip" value="${esc(c.ip)}" placeholder="192.168.1.xxx" autocomplete="off" maxlength="15"></label><label>TCP 포트<input type="text" inputmode="numeric" data-ce-comm="port" value="${esc(c.port)}" placeholder="${esc(spec.lan?.port||'확인 필요')}" autocomplete="off" maxlength="5"></label></span><p class="rt-pg-hint">${esc(note)} ${spec.lan?.confirmed?'LAN으로 보내는 커맨드 문자열은 RS-232와 같습니다. 장비는 동시 접속이 1개이고 연결을 자동으로 끊지 않습니다(알티컴 회신).':'LAN으로 보내는 커맨드 문자열은 RS-232와 같다고 보고 만든 예시이며, 제품별 확인 내용은 알티컴에 문의하세요.'}</p></div>`;
   }
   // AMX 코드 <pre>: 항목 목록을 속성에 담아 두면 통신 방식·IP·포트가 바뀔 때 화면을 다시 그리지 않고 그 자리에서 글만 바꾼다(입력 칸 포커스 유지).
   function amxPre(spec,items,extra=''){
