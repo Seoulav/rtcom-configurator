@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.237.0 배포 기록**: `docs/qa/DEPLOYMENT_0.237_2026-10-16.md`(PR #369 → main 병합 `c9abf7e`, Pages 배포 run 38975011080 success, 공개 `CATALOG BASED · 0.237`·`layout-sim.js` 해시 일치)
 - **0.236.0 배포 기록**: `docs/qa/DEPLOYMENT_0.236_2026-10-16.md`(PR #365 → main 병합 `56c35a8`, Pages 배포 run 38915324453 success, 공개 `CATALOG BASED · 0.236`·XDM·SPX·VDM `controlExample` 확인)
 - **0.235.0 배포 기록**: `docs/qa/DEPLOYMENT_0.235_2026-10-16.md`(PR #363 → main 병합 `07a1c07`, Pages 배포 run 38913897451 success, 공개 `CATALOG BASED · 0.235`·`layout-sim.js` 해시 일치, 번호 0.234 → 0.235 재정리 경위)
 - **0.234.0 배포 기록**: `docs/qa/DEPLOYMENT_0.234_2026-10-16.md`(PR #362 → main 병합, Pages 배포 run 38912888832, 공개 QMS 설정 명령 빌더 데이터 확인)
