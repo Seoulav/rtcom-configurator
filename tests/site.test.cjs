@@ -154,7 +154,7 @@ test('public product data (0.19) is valid, brochure-level only and listed in ind
   assert.equal(read('data/products/index.json'),text,'run node scripts/build-product-index.cjs');
   assert.equal(index.schema,'rtcom.products.v1');
   const count=group=>index.products.filter(product=>product.group===group).length;
-  assert.deepEqual({series:count('series'),integrated:count('integrated'),distribution:count('distribution'),extender:count('extender'),cable:count('cable')},{series:3,integrated:2,distribution:8,extender:15,cable:4});
+  assert.deepEqual({series:count('series'),integrated:count('integrated'),distribution:count('distribution'),extender:count('extender'),cable:count('cable')},{series:3,integrated:2,distribution:8,extender:16,cable:4});
   for(const model of EXCLUDED)assert.equal(index.products.some(product=>product.model===model),false,`${model} is excluded like AV Portal`);
   for(const model of ['HD-104U','HD-108U','QMS-44UX','MR-4S'])assert.ok(index.products.some(product=>product.model===model),`missing ${model}`);
   for(const product of index.products)assert.ok(product.cardImage,`${product.id} needs a card image`);
@@ -710,4 +710,20 @@ test('0.220: FT101-U/FR101-U 정정 매뉴얼 기준 값과 구성기 전송기 
     assert.match(line,/전원: DC 12V 1A 이상/,model);
     assert.doesNotMatch(line,/HDMI 1\.4b/,model);
   }
+});
+
+test('0.223: XDM-MR4S를 별도 제품으로 추가하고 XDM 전송기 카드와 잇는다',()=>{
+  const mr=JSON.parse(read('data/products/xdm-mr4s.json'));
+  assert.equal(mr.group,'extender');
+  assert.deepEqual(mr.images.map(image=>[image.role,image.file]),[['Front','xdm-mr4s-front.webp'],['Rear','xdm-mr4s-rear.webp']]);
+  for(const image of mr.images)assert.ok(fs.existsSync(`output/design/assets/products/${image.file}`),image.file);
+  assert.equal(mr.specifications.find(s=>s.name==='장착 카드').value,'XDM-CTR100(HDBaseT), XDM-FT101·XDM-FR101(광)');
+  assert.ok(!mr.specifications.some(s=>/크기|무게|전원 이중화/.test(s.name)),'사용자 결정 "사진으로 확인되는 것만": 크기·무게·이중화는 자료를 받은 뒤 적는다');
+  assert.deepEqual(mr.portMap.map(map=>[map.image,map.items.length]),[['Front',5],['Rear',5]]);
+  for(const id of ['xdm-ctr100','xdm-ft101-fr101','mr-4s']){
+    assert.ok(mr.related.some(link=>link.target===id),id);
+    assert.ok(JSON.parse(read(`data/products/${id}.json`)).related.some(link=>link.target==='xdm-mr4s'),`${id} → xdm-mr4s`);
+  }
+  assert.ok(!JSON.stringify(JSON.parse(read('data/products/mr-4s.json')).specifications).includes('XDM'),'MR-4S 사양에는 XDM 호환 문구를 넣지 않는다');
+  assert.equal(JSON.parse(read('data/products/index.json')).products.length,33);
 });

@@ -193,6 +193,11 @@
       "relation": "WORKS_WITH",
       "target": "ft101-u-fr101-u",
       "note": "MR-4S에 장착하는 광 모듈"
+    },
+    {
+      "relation": "WORKS_WITH",
+      "target": "xdm-mr4s",
+      "note": "XDM 전송기(XDM-CTR100·XDM-FT101/FR101)를 장착하는 XDM-MR4S"
     }
   ],
   "portMap": {
