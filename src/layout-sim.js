@@ -413,11 +413,13 @@
       <pre class="rt-ls-cmd" data-ls-cmd>${r.switching?`<span class="rt-ls-cmdline"><small>① 입력 → 포트 연결</small>${esc(r.switching)}</span>
 `:''}<span class="rt-ls-cmdline"><small>② 멀티뷰 레이아웃</small>${tokens(r.parts)}</span>
 <span class="rt-ls-cmdline rt-ls-cmdline-off"><small>멀티뷰 끄기(일반 스위칭으로)</small>${esc(r.off)}</span></pre>
-      <p class="rt-pg-hint">①은 창 n에 나올 입력을 카드의 포트 n에 연결하는 스위칭 커맨드(가이드 12쪽)이고, ②가 화면 배치입니다. 각 줄 끝에 Ctrl+Enter(0x0D)를 붙여 보냅니다. 복사 버튼은 ①·② 두 줄을 복사합니다.${L.code==='L00'?` 겹침 순서는 <code>P${hos.priority}</code>(${hos.priority==='4321'?'창 4가 맨 위':'창 1이 맨 위'})이며, 레이어 번호는 1이 맨 위입니다. "맨 위로"는 그 창의 입력·좌표를 맨 위 자리로 옮깁니다(입력 연결 커맨드도 함께 바뀜).`:L.code==='L09'?' PIP(창 2)는 항상 창 1 위에 나옵니다.':''}</p>
+      <p class="rt-pg-hint">①은 창 n에 나올 입력을 카드의 포트 n에 연결하는 스위칭 커맨드(가이드 12쪽)이고, ②가 화면 배치입니다. 각 줄 끝에 Ctrl+Enter(0x0D)를 붙여 보냅니다. 복사 버튼은 ①·② 두 줄을 복사합니다.${L.code==='L00'?` 겹침 순서는 <code>P${hos.priority}</code>(${hos.priority==='4321'?'창 4가 맨 위':'창 1이 맨 위'})이며, 레이어 번호는 1이 맨 위입니다. "맨 위로"는 그 창의 입력·좌표를 맨 위 자리로 옮깁니다(입력 연결 커맨드도 함께 바뀜). 창을 누른 뒤 <kbd>Delete</kbd> 키를 누르면 그 창을 끕니다(W0 H0, 표의 너비·높이에 값을 넣으면 다시 켜짐).`:L.code==='L09'?' PIP(창 2)는 항상 창 1 위에 나옵니다. PIP 창을 누른 뒤 <kbd>Delete</kbd> 키를 누르면 끕니다(W0 H0).':''}</p>
       ${r.warnings.length?`<ul class="rt-ls-warn">${r.warnings.map(w=>`<li>${esc(w)}</li>`).join('')}</ul>`:''}
       <p class="rt-pg-hint">근거: 알티컴 <a href="${GUIDE_PDF}#page=26" target="_blank" rel="noopener">XDM 시리즈 Command Guide 25쪽부터([OQ] Quad view 커맨드)</a>, 레이아웃 14종은 27쪽 표. 좌표·크기는 출력 해상도 안의 픽셀이며 4자리로 적습니다(W0000·H0000은 창 끄기). 포트 상태(레이어 4개면 2~4번은 1번과 같은 화면, 2개면 2번 사용 불가·3·4번 따로 스위칭)는 서울영상테크 확인(2026-10-12)입니다. L13(1~4번 PIP 사용자 배치)은 가이드의 좌표 묶음 수가 분명하지 않아 넣지 않았습니다.</p>${fieldNotesHtml()}`;
     };
-    const render=()=>{
+    // 다시 그리면 DOM이 바뀌어 창의 포커스가 사라지므로, 창에 포커스가 있었으면 선택한 창으로 되돌린다(Delete·화살표 키가 이어서 먹도록, 0.229).
+    const render=()=>{const had=!!(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('[data-ls-win]')&&root.contains(document.activeElement));renderView();if(had&&selected>=0){const el=root.querySelector(`[data-ls-win="${selected}"]`);if(el&&el.tabIndex>=0)el.focus({preventScroll:true})}};
+    const renderView=()=>{
       if(card==='ALL'){renderAll();return}
       if(card==='HOS100'){renderHos();return}
       const result=commandFor(state),geo=result.geometry,map=portMapFor(state),cover=coverageFor(state);
@@ -461,7 +463,7 @@
       </tbody></table></div>
       <div class="rt-ls-cmd-head"><h3>커맨드</h3><button type="button" class="rt-pg-btn" data-ls-copy>복사</button><span class="rt-ls-copied" data-ls-copied aria-live="polite"></span></div>
       <pre class="rt-ls-cmd" data-ls-cmd>${result.parts.map(p=>`<span class="rt-ls-tok rt-ls-tok-${p.kind}"${p.kind==='window'?` style="--rt-ls-color:${colorOf(p.window)}"`:''} title="${esc(p.title)}">${esc(p.text)}</span>`).join('')}</pre>
-      <p class="rt-pg-hint">RS-232 또는 LAN으로 보낼 때 끝에 Ctrl+Enter(0x0D)를 붙입니다. 성공하면 장비가 <code>*${state.id}sOW…!</code>로 응답합니다. 토막 위에 마우스를 올리면 뜻이 보입니다. 겹침 순서는 우선순위 <code>P${state.priority}</code>와 창이 받은 포트 번호로 정해지며(${state.priority==='4321'?'큰 포트 번호가 위':'작은 포트 번호가 위'}), 레이어 번호는 1이 맨 위입니다. 표의 "맨 위로"를 누르면 그 창이 맨 위 포트를 받도록 순서를 바꿉니다. 캔버스도 같은 순서로 겹쳐 보입니다.</p>
+      <p class="rt-pg-hint">RS-232 또는 LAN으로 보낼 때 끝에 Ctrl+Enter(0x0D)를 붙입니다. 성공하면 장비가 <code>*${state.id}sOW…!</code>로 응답합니다. 토막 위에 마우스를 올리면 뜻이 보입니다. 겹침 순서는 우선순위 <code>P${state.priority}</code>와 창이 받은 포트 번호로 정해지며(${state.priority==='4321'?'큰 포트 번호가 위':'작은 포트 번호가 위'}), 레이어 번호는 1이 맨 위입니다. 표의 "맨 위로"를 누르면 그 창이 맨 위 포트를 받도록 순서를 바꿉니다. 캔버스도 같은 순서로 겹쳐 보입니다. 창을 누른 뒤 <kbd>Delete</kbd> 키를 누르면 그 창을 지웁니다(화살표 키는 10px, Shift와 함께 100px 이동).</p>
       ${result.warnings.length?`<ul class="rt-ls-warn">${result.warnings.map(w=>`<li>${esc(w)}</li>`).join('')}</ul>`:''}
       <details class="rt-pg-flow-desc" open><summary>화면별 표출 영역</summary><ul>${cover.length?cover.map(cv=>`<li><i class="rt-ls-dot" style="background:${colorOf(cv.index)}"></i><b>창 ${cv.index+1} · 입력 ${cv.input}${cv.label?`(${esc(cv.label)})`:''}</b>: ${cv.cells.length?cv.cells.map(cell=>`출력 ${cell.port}(${cell.row}행 ${cell.col}열) ${cell.full?'전체':`${cell.w}×${cell.h} @ ${cell.x},${cell.y}`}`).join(' · '):'표시되는 디스플레이 없음'}</li>`).join(''):'<li>창을 추가하면 디스플레이마다 어느 영역이 나오는지 여기에 적힙니다.</li>'}</ul></details>
       <p class="rt-pg-hint">근거: 알티컴 <a href="${GUIDE_PDF}#page=45" target="_blank" rel="noopener">XDM 시리즈 Command Guide 44쪽부터(WOS100 Wall Overlay Command)</a>. 창 하나는 걸치는 카드마다 남은 포트 중 가장 작은 번호를 쓰고, 카드 1장에는 창 4개까지 둘 수 있습니다.<br>포트 배치 <b>"카드 1장 = 디스플레이 1대"</b>는 알티컴 확인(레이어를 쓰면 WOS100 카드 4포트가 모두 같은 화면, 0.210)과 레이어 구성도(0.214)를 따른 기본값이고, <b>"카드 1장 = 디스플레이 2×2"</b>는 가이드 46~47쪽 연결 그림과 예제 1~8의 배치입니다. 두 배치가 서로 달라 어느 쪽이 실제 장비와 맞는지 알티컴 확인을 기다리고 있습니다. 실제 포트 연결이 다르면 커맨드의 O 번호를 현장에 맞게 바꾸세요.</p>${fieldNotesHtml()}`;
@@ -560,8 +562,28 @@
       const i=Number(winEl.dataset.lsWin),step=event.shiftKey?100:10,geo=hosMode?{width:t.w,height:t.h}:geometry(state),w=hosMode?hos.windows[i]:state.windows[i];if(!w)return;
       const move={ArrowLeft:[-step,0],ArrowRight:[step,0],ArrowUp:[0,-step],ArrowDown:[0,step]}[event.key];
       if(move){event.preventDefault();selected=i;const patch={x:clamp(w.x+move[0],0,Math.max(0,geo.width-w.w)),y:clamp(w.y+move[1],0,Math.max(0,geo.height-w.h))};if(hosMode)setHosWindow(i,patch);else setWindow(i,patch);root.querySelector(`[data-ls-win="${i}"]`)?.focus()}
-      else if(!hosMode&&(event.key==='Delete'||event.key==='Backspace')){event.preventDefault();const windows=state.windows.filter((_,k)=>k!==i);selected=Math.min(i,windows.length-1);update({windows},false)}
     });
+    // Delete·Backspace로 선택한 창 지우기(사용자 요청 2026-10-16 "입력레이어 선택 후 delete가 가능하게"). 창을 누르거나 표 행을 눌러 고른 뒤 누르면
+    // WOS100은 창을 지우고, HOS100(L00·PIP 창 2)은 창을 끈다(W0 H0). 입력 칸·버튼에 포커스가 있을 때와 이 카드 밖을 마지막으로 누른 뒤에는 동작하지 않는다.
+    const deleteSelected=i=>{
+      if(card==='ALL'||i<0)return false;
+      if(card==='HOS100'){const L=hosLayout(hos.layout),w=hos.windows[i];const ok=w&&w.w>0&&w.h>0&&(L.code==='L00'||(L.code==='L09'&&i===1));if(!ok)return false;selected=i;setHosWindow(i,{w:0,h:0});return true}
+      if(!state.windows[i])return false;const windows=state.windows.filter((_,k)=>k!==i);selected=Math.min(i,windows.length-1);update({windows},false);return true;
+    };
+    let armed=false;
+    const onDocPointer=event=>{armed=root.isConnected&&root.contains(event.target)&&!!(event.target.closest&&event.target.closest('[data-ls-canvas],[data-ls-row]'))};
+    const onDocKey=event=>{
+      if(event.key!=='Delete'&&event.key!=='Backspace')return;
+      if(!root.isConnected){document.removeEventListener('pointerdown',onDocPointer,true);document.removeEventListener('keydown',onDocKey);return}
+      const t=event.target;if(t&&t.closest&&t.closest('input,select,textarea,button,[contenteditable="true"]'))return;
+      const winEl=t&&t.closest&&t.closest('[data-ls-win]');const inWin=!!winEl&&root.contains(winEl);
+      if(!inWin&&!armed)return;
+      const i=inWin?Number(winEl.dataset.lsWin):selected;
+      if(deleteSelected(i))event.preventDefault();
+    };
+    if(document.__rtLayoutSimKey){document.removeEventListener('pointerdown',document.__rtLayoutSimKey.p,true);document.removeEventListener('keydown',document.__rtLayoutSimKey.k)}
+    document.__rtLayoutSimKey={p:onDocPointer,k:onDocKey};
+    document.addEventListener('pointerdown',onDocPointer,true);document.addEventListener('keydown',onDocKey);
     render();
   }
   function mountAll(scopeEl){(scopeEl||document).querySelectorAll('[data-layout-sim-root]').forEach(mount)}

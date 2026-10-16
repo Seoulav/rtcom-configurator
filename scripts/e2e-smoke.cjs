@@ -638,6 +638,24 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await page.click('#rt-layout-sim [data-ls-top="0"]');
     const topCmd=await page.evaluate(()=>document.querySelector('#rt-layout-sim [data-ls-cmd]').textContent);
     check('XDM 07 시뮬레이터 "맨 위로": 창 1을 맨 위로 올리면 포트 배정과 커맨드 순서가 바뀜',/I002O013X5760Y3240W1920H1080I001O001O005O009O014X0Y0W7680H4320!$/.test(topCmd),topCmd.slice(-90));
+    // 0.229 Delete 키(사용자 요청 2026-10-16): 창을 누른 뒤(끌지 않고) Delete → WOS100은 창을 지우고, HOS100 L00은 창을 끈다(W0000 H0000).
+    await page.evaluate(()=>{try{localStorage.removeItem('rtcom.layoutSim.v1')}catch(e){}});
+    await page.reload({waitUntil:'networkidle'});
+    await page.waitForSelector('#rt-layout-sim [data-ls-win="1"]');
+    await page.locator('#rt-layout-sim [data-ls-win="1"]').scrollIntoViewIfNeeded();
+    await page.locator('#rt-layout-sim [data-ls-win="1"]').click();
+    await page.keyboard.press('Delete');
+    const delWos=await page.evaluate(()=>({wins:document.querySelectorAll('#rt-layout-sim .rt-ls-win').length,cmd:document.querySelector('#rt-layout-sim [data-ls-cmd]').textContent}));
+    await page.click('#rt-layout-sim [data-ls-card="HOS100"]');
+    await page.waitForSelector('#rt-layout-sim [data-ls-win="3"]');
+    await page.locator('#rt-layout-sim [data-ls-win="3"]').scrollIntoViewIfNeeded();
+    await page.locator('#rt-layout-sim [data-ls-win="3"]').click();
+    await page.keyboard.press('Delete');
+    const delHos=await page.evaluate(()=>({wins:document.querySelectorAll('#rt-layout-sim .rt-ls-win').length,cmd:document.querySelector('#rt-layout-sim [data-ls-cmd]').textContent,hint:document.querySelector('#rt-layout-sim .rt-pg-hint')?.textContent||''}));
+    check('XDM 07 시뮬레이터 Delete 키: 창을 누른 뒤 Delete → WOS100은 PIP 창 삭제(창 1개·I001만), HOS100 L00은 창 4 끄기(W0000H0000·창 3개)',delWos.wins===1&&/I001O001O005O009O013X0Y0W7680H4320!$/.test(delWos.cmd)&&!/I002/.test(delWos.cmd)&&delHos.wins===3&&/O004X\d{4}Y\d{4}W0000H0000/.test(delHos.cmd),JSON.stringify({wos:delWos,hosCmd:delHos.cmd.slice(-60),hosWins:delHos.wins}));
+    await page.evaluate(()=>{try{localStorage.removeItem('rtcom.layoutSim.v1');localStorage.removeItem('rtcom.layoutSim.hos.v1');localStorage.removeItem('rtcom.layoutSim.card.v1')}catch(e){}});
+    await page.reload({waitUntil:'networkidle'});
+    await page.waitForSelector('#rt-layout-sim [data-ls-preset]');
     // 0.229 현장 메모 공개(사용자 결정 2026-10-16 "2안으로 전부 공개해"): 프리셋 원문과 참고 커맨드 접이식 칸.
     await page.selectOption('#rt-layout-sim [data-ls-preset]','memo-22x9x2');
     const memo=await page.evaluate(()=>({cmd:document.querySelector('#rt-layout-sim [data-ls-cmd]').textContent,notes:document.querySelector('#rt-layout-sim .rt-ls-notes')?.textContent||''}));
