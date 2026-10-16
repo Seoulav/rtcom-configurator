@@ -691,7 +691,7 @@ test('0.220: FT101-U/FR101-U 정정 매뉴얼 기준 값과 구성기 전송기 
   const spec=(name)=>ft.specifications.filter(s=>s.name===name);
   assert.equal(spec('전원')[0].value,'DC +12V 1A 이상');
   assert.deepEqual(spec('규격').map(s=>s.value),['DVI 1.0, HDMI 1.4']);
-  assert.deepEqual(spec('무게').map(s=>[s.condition,s.value]),[['FT101-U','0.24'],['FR101-U','0.23']]);
+  assert.deepEqual(spec('무게').map(s=>[s.condition,s.value,s.source]),[['FT101-U','0.65','C']],'0.221 사용자 결정: 무게는 카탈로그 기준');
   assert.equal(ft.io.filter(r=>r.connector==='Mini USB').length,2,'송·수신기 펌웨어 포트');
   assert.equal(ft.io.filter(r=>r.signal==='RS-232'&&r.connector==='피닉스 3핀').length,2);
   assert.doesNotMatch(JSON.stringify(ft.documents),/FT103/,'매뉴얼 설명에서 FT103 사양표 안내 삭제');
