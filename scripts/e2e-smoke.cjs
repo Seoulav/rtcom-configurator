@@ -607,11 +607,12 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await page.reload({waitUntil:'networkidle'});
     await page.waitForSelector('#rt-layout-sim [data-ls-win="1"]');
     const simBefore=await page.locator('#rt-layout-sim [data-ls-cmd]').innerText();
+    await page.locator('#rt-layout-sim [data-ls-win="1"]').scrollIntoViewIfNeeded();
     const simWin=await page.locator('#rt-layout-sim [data-ls-win="1"]').boundingBox();
     await page.mouse.move(simWin.x+simWin.width/2,simWin.y+simWin.height/2);await page.mouse.down();
     await page.mouse.move(simWin.x+simWin.width/2-240,simWin.y+simWin.height/2,{steps:6});await page.mouse.up();
     const sim=await page.evaluate(()=>({cmd:document.querySelector('#rt-layout-sim [data-ls-cmd]').textContent,x:Number(document.querySelector('#rt-layout-sim [data-ls-win-field="x"][data-ls-win-index="1"]').value),cells:document.querySelectorAll('#rt-layout-sim .rt-ls-cell').length,btn:!!document.querySelector('[data-scroll-to="rt-layout-sim"]'),warn:document.querySelectorAll('#rt-layout-sim .rt-ls-warn li').length,overflow:document.documentElement.scrollWidth>innerWidth}));
-    check('XDM 07 화면 연출 시뮬레이터: 기본 커맨드가 가이드 예제 1 형식이고 창 2를 끌면 X와 커맨드가 바뀜',simBefore==='*255OWO001-008W10H03V02P4321O001O002O003O004O005O006O007O008X0Y0W0H0I001O001X0Y0W2880H2160I002O002O005X2880Y0W2880H2160!'&&sim.x<2880&&sim.cmd.includes(`X${sim.x}Y0W2880H2160!`)&&sim.cells===6&&sim.btn&&!sim.overflow,JSON.stringify({before:simBefore.slice(-60),x:sim.x,cells:sim.cells,btn:sim.btn,warn:sim.warn}));
+    check('XDM 07 화면 연출 시뮬레이터: 기본 커맨드(2×2 월 전체 + PIP)가 가이드 OW 문법이고 PIP 창을 끌면 X와 커맨드가 바뀜',simBefore==='*255OWO001-016W14H02V02P4321O001O002O003O004O005O006O007O008O009O010O011O012O013O014O015O016X0Y0W0H0I001O001O005O009O013X0Y0W7680H4320I002O014X5760Y3240W1920H1080!'&&sim.x<5760&&sim.cmd.includes(`X${sim.x}Y3240W1920H1080!`)&&sim.cells===4&&sim.btn&&!sim.overflow,JSON.stringify({before:simBefore.slice(-60),x:sim.x,cells:sim.cells,btn:sim.btn,warn:sim.warn}));
     await page.evaluate(()=>{try{localStorage.removeItem('rtcom.layoutSim.v1')}catch(e){}});
     // 0.64 OBUX-1C Tx Mode 딥 스위치(매뉴얼 Ver.2.2): 검은 몸체 4핀, 1번 오디오 + 2·3·4번 EDID 조합 5칸(Through-pass EDID Fix 포함).
     await page.goto(`${home}#products/obux-1c`,{waitUntil:'networkidle'});
