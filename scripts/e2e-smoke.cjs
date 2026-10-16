@@ -36,7 +36,7 @@ const results=[];
 const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${ok?'PASS':'FAIL'} ${name}${detail?` — ${detail}`:''}`)};
 // 0.173 03 카드 슬롯은 ① 카드 장착 → ② 신호 입력 → 04 전송기 순서다(카드가 있을 때). 04로 가는 검사는 이 도우미로 두 화면을 차례로 넘긴다.
 const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.locator('[data-signal-count]').count())await pg.click('[data-action="next"]');await pg.waitForLoadState('networkidle')};
-// 0.238 AMX 코드 잠금 검사용: dist의 control-example.js에 있는 AMX_LOCK을 테스트 비밀번호 변환값으로 바꾼다(dist는 빌드 산출물이며 배포하지 않는다).
+// 0.239 AMX 코드 잠금 검사용: dist의 control-example.js에 있는 AMX_LOCK을 테스트 비밀번호 변환값으로 바꾼다(dist는 빌드 산출물이며 배포하지 않는다).
 const AMX_TEST_PASSWORD='e2e-amx-pass-0238';
 const patchAmxLock=async()=>{
   const ce=require('../src/control-example.js');
@@ -584,7 +584,7 @@ const patchAmxLock=async()=>{
       const clipped=await page.evaluate(()=>{const svg=[...document.querySelectorAll('.rt-pg-svg-wrap svg')].find(s=>s.textContent.includes('HDMI IN'));if(!svg)return ['svg 없음'];const vb=svg.viewBox.baseVal;return [...svg.querySelectorAll('text,rect')].filter(el=>{const bb=el.getBBox();return bb.x<vb.x-1||bb.y<vb.y-1||bb.x+bb.width>vb.x+vb.width+1||bb.y+bb.height>vb.y+vb.height+1}).map(el=>(el.textContent||el.tagName).slice(0,20))});
       check(`${id} 신호 흐름 그림 요소가 틀 밖으로 잘리지 않음`,clipped.length===0,JSON.stringify(clipped));
     }
-    // 0.238 AMX 코드 잠금: 잠겨 있을 때는 커맨드 문자열·HEX가 보이고 AMX 코드(SEND_STRING·NetLinx)는 없다. 틀린 비밀번호는 거절하고 맞으면 열리며 다시 잠글 수 있다.
+    // 0.239 AMX 코드 잠금: 잠겨 있을 때는 커맨드 문자열·HEX가 보이고 AMX 코드(SEND_STRING·NetLinx)는 없다. 틀린 비밀번호는 거절하고 맞으면 열리며 다시 잠글 수 있다.
     {
       await page.goto(`${home}#products/hds-42mu`,{waitUntil:'networkidle'});
       await page.waitForSelector('.rt-pg-control .rt-ce-cmd');
@@ -616,7 +616,7 @@ const patchAmxLock=async()=>{
       await page.waitForSelector('#rt-control [data-ce-bkcode]');
       const xdmOpen=await page.evaluate(()=>({boxes:document.querySelectorAll('#rt-control [data-ce-lockbox]').length,start:!!document.querySelector('#rt-control [data-ce-text="amx"]'),line:/SEND_STRING dvXDM/.test(document.querySelector('#rt-control [data-ce-bout]').textContent),dl:!!document.querySelector('#rt-control [data-ce-bk="download"]')}));
       check('XDM AMX 코드 잠금 해제: 시작 코드·SEND_STRING 줄·내 AMX 구성 코드·복사·파일 저장이 한꺼번에 열림',xdmOpen.boxes===0&&xdmOpen.start&&xdmOpen.line&&xdmOpen.dl,JSON.stringify(xdmOpen));
-      // 0.238 통신 방식: LAN이 기본(IP_CLIENT_OPEN), 포트가 매뉴얼에 없는 XDM은 "확인 필요", IP·포트를 입력하면 그 자리에서 코드가 바뀌고 포커스가 유지되며, RS-232를 고르면 SET BAUD가 나온다.
+      // 0.239 통신 방식: LAN이 기본(IP_CLIENT_OPEN), 포트가 매뉴얼에 없는 XDM은 "확인 필요", IP·포트를 입력하면 그 자리에서 코드가 바뀌고 포커스가 유지되며, RS-232를 고르면 SET BAUD가 나온다.
       const lan0=await page.locator('#rt-control [data-ce-text="amx"]').innerText();
       await page.locator('#rt-control [data-ce-start] [data-ce-comm="ip"]').fill('10.1.2.3');
       await page.locator('#rt-control [data-ce-start] [data-ce-comm="port"]').focus();
@@ -720,7 +720,7 @@ const patchAmxLock=async()=>{
       const extraOk=id==='vdm'?extra.includes('*255?O007!'):id==='spx'?/Enter가 적혀 있지 않아/.test(extra):true;
       check(`${id} AMX 커맨드 카드(${idx}): 명령 ${steps.map(x=>x[0]).join('·')} 예시 일치${id==='vdm'?' · 3자리 번호 *255?O007!':''}${id==='spx'?' · 문장형은 Enter 없음':''} · 묶음 선택·가로 넘침 없음`,seen.every(x=>x[1])&&extraOk&&info.idx===idx&&info.btn&&info.groups>=1&&!info.over&&(id!=='xdm'||info.sim),JSON.stringify({seen,extra:extra.slice(0,80),info}).slice(0,300));
     }
-    // 0.237 XDM "내 AMX 구성": 07 시뮬레이터 커맨드와 08 설정 명령을 담아 한 개의 AMX 코드로 만들고, 순서 바꾸기·저장·파일 저장을 확인한다.
+    // 0.239 XDM "내 AMX 구성": 07 시뮬레이터 커맨드와 08 설정 명령을 담아 한 개의 AMX 코드로 만들고, 순서 바꾸기·저장·파일 저장을 확인한다.
     {
       await page.goto(`${home}#products/xdm`,{waitUntil:'networkidle'});
       await page.evaluate(()=>{try{localStorage.removeItem('rtcom.amxBasket.xdm.v1')}catch{}});
@@ -811,6 +811,16 @@ const patchAmxLock=async()=>{
     await page.click('#rt-layout-sim [data-ls-top="0"]');
     const topCmd=await page.evaluate(()=>document.querySelector('#rt-layout-sim [data-ls-cmd]').textContent);
     check('XDM 07 시뮬레이터 "맨 위로": 창 1을 맨 위로 올리면 포트 배정과 커맨드 순서가 바뀜',/I002O013X5760Y3240W1920H1080I001O001O005O009O014X0Y0W7680H4320!$/.test(topCmd),topCmd.slice(-90));
+    // 0.237 창 정렬: 창을 고르지 않으면 버튼이 꺼져 있고, PIP(창 2)를 고른 뒤 "월 가운데"를 누르면 분할점 위(X1920Y1080W3840H2160)로 옮겨 카드 4장에 걸침 안내가 나온다.
+    await page.evaluate(()=>{try{localStorage.removeItem('rtcom.layoutSim.v1')}catch(e){}});
+    await page.reload({waitUntil:'networkidle'});
+    await page.waitForSelector('#rt-layout-sim [data-ls-win="1"]');
+    await page.locator('#rt-layout-sim [data-ls-win="1"]').scrollIntoViewIfNeeded();
+    await page.locator('#rt-layout-sim [data-ls-win="1"]').click();
+    const alignBefore=await page.evaluate(()=>({n:document.querySelectorAll('#rt-layout-sim [data-ls-align]').length,disabled:[...document.querySelectorAll('#rt-layout-sim [data-ls-align]')].filter(b=>b.disabled).length}));
+    await page.click('#rt-layout-sim [data-ls-align="center"]');
+    const alignAfter=await page.evaluate(()=>({cmd:document.querySelector('#rt-layout-sim [data-ls-cmd]').textContent,span:document.querySelector('#rt-layout-sim .rt-ls-span')?.textContent||'',chips:[...document.querySelectorAll('#rt-layout-sim .rt-ls-card')].map(e=>e.textContent.replace(/\s+/g,' ').trim()),overflow:document.documentElement.scrollWidth>innerWidth}));
+    check('XDM 07 시뮬레이터 창 정렬: 창을 고르면 버튼 3개가 켜지고, "월 가운데"는 PIP를 분할점 위(X1920Y1080W3840H2160)에 놓아 카드 4장에 걸침',alignBefore.n===3&&alignBefore.disabled===0&&/I002O\d{3}O\d{3}O\d{3}O\d{3}X1920Y1080W3840H2160/.test(alignAfter.cmd)&&alignAfter.span.includes('창 2은 카드 1·2·3·4에 걸쳐 레이어 4개')&&alignAfter.chips.every(c=>/2\/4 사용/.test(c))&&!alignAfter.overflow,JSON.stringify({alignBefore,cmd:alignAfter.cmd.slice(-90),span:alignAfter.span,chips:alignAfter.chips}));
     // 0.233 Delete 키(사용자 요청 2026-10-16): 창을 누른 뒤(끌지 않고) Delete → WOS100은 창을 지우고, HOS100 L00은 창을 끈다(W0000 H0000).
     await page.evaluate(()=>{try{localStorage.removeItem('rtcom.layoutSim.v1')}catch(e){}});
     await page.reload({waitUntil:'networkidle'});

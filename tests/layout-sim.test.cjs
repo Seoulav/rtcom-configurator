@@ -173,7 +173,7 @@ test('0.235: 카드 경계에 걸친 창은 걸친 카드마다 레이어 1개�
   assert.equal(L.cardUsage(L.normalize({cols:1,rows:1,windows:[{input:1,x:0,y:0,w:0,h:0}]}))[0].used,0);
 });
 
-test('0.237: AMX 구성에 담을 항목은 시뮬레이터가 만든 커맨드 문자열 그대로다',()=>{
+test('0.239: AMX 구성에 담을 항목은 시뮬레이터가 만든 커맨드 문자열 그대로다',()=>{
   const wos=L.PRESETS[0].state,hos=L.HOS_PRESETS[0].state;
   const w=L.amxItems('WOS100',wos,hos,{});
   assert.equal(w.length,1);assert.equal(w[0].text,L.commandFor(wos).command);
@@ -185,4 +185,30 @@ test('0.237: AMX 구성에 담을 항목은 시뮬레이터가 만든 커맨드 
   assert.deepEqual(L.amxItems('ALL',wos,hos,{wos:false,hos:true}).map(x=>x.text),[hr.switching,hr.command]);
   assert.deepEqual(L.amxItems('ALL',wos,hos,{wos:false,hos:false}),[]);
   assert.ok(all.every(x=>x.source==='07 시뮬레이터'&&x.label));
+});
+
+// 0.237 창 정렬 버튼(사용자 선택 2026-10-16 "1번과 2번만 하자": 중간 분할점 연출을 마우스 조작 없이 재현).
+test('0.237: 창 정렬은 월 전체·월 가운데(분할점 걸침)·디스플레이 1칸으로 위치와 크기를 맞춘다',()=>{
+  const base={cols:2,rows:2,windows:[{input:1,x:0,y:0,w:7680,h:4320},{input:2,x:5760,y:3240,w:1920,h:1080}]};
+  const n=L.normalize(base);
+  // 월 가운데: 디스플레이 1칸(3840×2160)을 월 한가운데에 놓아 2×2 월의 분할점 위에 걸친다 → 카드 4장 모두 사용.
+  const center=L.alignWindow(n,1,'center');
+  assert.deepEqual({x:center.windows[1].x,y:center.windows[1].y,w:center.windows[1].w,h:center.windows[1].h},{x:1920,y:1080,w:3840,h:2160});
+  assert.equal(L.assignPorts(center)[1].slots.length,4);
+  assert.equal(L.commandFor(center).command.includes('I002'),true);
+  assert.ok(L.commandFor(center).command.includes('X1920Y1080W3840H2160'));
+  // 월 전체
+  const wall=L.alignWindow(n,1,'wall');
+  assert.deepEqual([wall.windows[1].x,wall.windows[1].y,wall.windows[1].w,wall.windows[1].h],[0,0,7680,4320]);
+  // 디스플레이 1칸: 창 중심이 있는 칸(오른쪽 아래)을 가득 채워 카드 1장만 쓴다.
+  const cell=L.alignWindow(n,1,'cell');
+  assert.deepEqual([cell.windows[1].x,cell.windows[1].y,cell.windows[1].w,cell.windows[1].h],[3840,2160,3840,2160]);
+  assert.equal(L.assignPorts(cell)[1].slots.length,1);
+  // 다른 창은 그대로, 범위를 벗어난 번호나 알 수 없는 방식은 원본을 돌려준다.
+  assert.deepEqual(center.windows[0],n.windows[0]);
+  assert.deepEqual(L.alignWindow(n,5,'wall').windows,n.windows);
+  assert.deepEqual(L.alignWindow(n,0,'none').windows,n.windows);
+  // 가로 1대 월에서는 가운데가 디스플레이 안쪽이라 분할점에 걸치지 않는다.
+  const one=L.alignWindow(L.normalize({cols:1,rows:1,windows:[{input:1,x:0,y:0,w:100,h:100}]}),0,'center');
+  assert.deepEqual([one.windows[0].x,one.windows[0].y,one.windows[0].w,one.windows[0].h],[0,0,3840,2160]);
 });

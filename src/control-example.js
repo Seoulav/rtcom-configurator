@@ -69,7 +69,7 @@
     return (cr===false?bytes:bytes.concat('0D')).join(' ');
   }
   // AMX NetLinx: 통신 설정 + 명령마다 터치 패널 버튼 하나씩 SEND_STRING. commands는 문자열 또는 {label,text,enter}.
-  // opts.mode: 'serial'(RS-232, 기본) | 'lan'(TCP/IP). 0.238 사용자 확인 2026-10-16 "amx로 알티컴 제어시 rs232는 잘 사용안하고 lan제어를 많이해" → 화면은 LAN이 기본이다.
+  // opts.mode: 'serial'(RS-232, 기본) | 'lan'(TCP/IP). 0.239 사용자 확인 2026-10-16 "amx로 알티컴 제어시 rs232는 잘 사용안하고 lan제어를 많이해" → 화면은 LAN이 기본이다.
   //   LAN: IP_CLIENT_OPEN(dev.PORT, IP, 포트, IP_TCP)로 장비에 TCP 연결한 뒤 같은 커맨드 문자열을 SEND_STRING으로 보낸다(NetLinx 표준 문법).
   //   포트는 매뉴얼에 적힌 값(spec.lan.port, SPX 매뉴얼 46쪽 Telnet 23)만 기본으로 쓰고, 없으면 0과 "확인 필요" 주석을 적는다. 값을 만들어 넣지 않는다.
   //   IP는 형식이 맞는 값만 쓰고(코드 주입 방지), 비어 있으면 예시 주소를 적고 현장에서 바꾸도록 주석을 단다.
@@ -118,7 +118,7 @@
     });
     return lines.join('\n');
   }
-  // ---- 0.237 "내 AMX 구성"(장바구니): 07 화면 연출 시뮬레이터와 설정 명령에서 만든 커맨드를 담아 한 개의 AMX 코드로 묶는다 ----
+  // ---- 0.239 "내 AMX 구성"(장바구니): 07 화면 연출 시뮬레이터와 설정 명령에서 만든 커맨드를 담아 한 개의 AMX 코드로 묶는다 ----
   // 항목은 {label,text,enter,source}. 같은 문자열은 한 번만 담고, 최대 60개. 저장은 이 브라우저에만(rtcom.amxBasket.<시리즈 id>.v1).
   // 장바구니 코드는 amxCode와 같은 규칙(명령마다 터치 패널 버튼 하나, 담은 순서대로)이라 새 문법을 만들어 넣지 않는다.
   const BASKET_MAX=60;
@@ -161,7 +161,7 @@
     move(id,index,delta){return basket.set(id,basketMove(basket.get(id),index,delta))},
     clear(id){return basket.set(id,[])}
   };
-  // ---- 0.238 AMX 통신 방식(LAN 기본 / RS-232): 선택·IP·포트는 이 브라우저에만 기억하고(rtcom.amxComm.<제품 id>.v1), 화면의 모든 AMX 코드가 입력하는 즉시 바뀐다 ----
+  // ---- 0.239 AMX 통신 방식(LAN 기본 / RS-232): 선택·IP·포트는 이 브라우저에만 기억하고(rtcom.amxComm.<제품 id>.v1), 화면의 모든 AMX 코드가 입력하는 즉시 바뀐다 ----
   const commMemory={};
   const specRegistry={};
   const commKey=id=>`rtcom.amxComm.${id}.v1`;
@@ -204,7 +204,7 @@
     document.addEventListener('input',onEdit);document.addEventListener('change',onEdit);
   }
   installCommHandlers();
-  // ---- 0.238 AMX 코드 잠금(사용자 요청 2026-10-16 "AMX코드 짜주는건 기능을 비번을 걸어서 잠그고, 알티컴 장비 커맨드 제어 예시는 그냥 보여 주게") ----
+  // ---- 0.239 AMX 코드 잠금(사용자 요청 2026-10-16 "AMX코드 짜주는건 기능을 비번을 걸어서 잠그고, 알티컴 장비 커맨드 제어 예시는 그냥 보여 주게") ----
   // 잠그는 것: AMX NetLinx 코드(통신 설정·시작 코드, 명령마다 SEND_STRING 줄, HDS·QMS의 AMX 예제, "내 AMX 구성"의 코드·복사·파일 저장).
   // 그냥 보이는 것: 커맨드 문자열·토큰 설명·HEX·복사 버튼·시뮬레이터 커맨드·"담기" 버튼과 담은 커맨드 목록. AMX 말고 다른 컨트롤러에서도 같은 문자열을 보내 쓸 수 있다.
   // 이 잠금은 브라우저에서 비밀번호를 비교하는 "잠금 스티커"다. 사이트가 정적(GitHub Pages)이라 코드 파일이 공개되어 있어 개발자 도구를 아는 사람은 우회할 수 있다.

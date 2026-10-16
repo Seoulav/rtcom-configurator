@@ -1,4 +1,4 @@
-# XDM "내 AMX 구성"(커맨드 장바구니) (0.237)
+# XDM "내 AMX 구성"(커맨드 장바구니) (0.239)
 
 사용자 요청 2026-10-16: "2번 진행하자 쉽게 설명해줘"(0.236 보고의 다음 단계 2번 "XDM 설정 명령과 07 화면 연출 시뮬레이터 명령을 한 구성으로 묶어 AMX 코드로 내보내기").
 
@@ -20,7 +20,7 @@
 - 시뮬레이터 담기는 XDM 시리즈에만 있습니다(SPX·VDM에는 시뮬레이터가 없음). 설정 명령 담기와 "내 AMX 구성"은 같은 빌더를 쓰는 SPX·VDM에도 함께 생겼습니다.
 - QMS-44UX·QMS-88UX 카드(설정 명령 패널은 있지만 "내 AMX 구성"은 없음)에는 담기 버튼을 넣지 않았습니다.
 
-## 3. AMX 코드 잠금과 LAN 기본 통신(같은 0.237에 포함)
+## 3. AMX 코드 잠금과 LAN 기본 통신(같은 0.239에 포함)
 
 병합 전에 사용자가 두 가지를 더 요청해 같은 묶음에 넣었습니다(그대로 병합되면 AMX 코드가 공개로 나가므로 따로 나누지 않았습니다).
 
@@ -57,8 +57,8 @@
 - `tests/layout-sim.test.cjs`: `amxItems`가 WOS100·HOS100·전체 커맨드에서 시뮬레이터 문자열과 같은 항목을 만드는지.
 - `scripts/e2e-smoke.cjs`: XDM 페이지에서 시뮬레이터 담기 → 설정 명령 담기 → 목록 2개와 `BUTTON_EVENT[dvTP,2]` → ↓ 순서 바꿈 → 파일 저장 → 새로고침 후 유지 → 비우기, 가로 넘침 없음.
 - 잠금: 변환값 확인·상태·`AMX_LOCK` 형식 테스트, e2e에서 잠금 상태(코드 없음·커맨드 있음)·틀린 비밀번호 거절·해제·다시 잠그기, XDM 목록은 보이고 코드·복사·저장만 잠김. 통신 방식: `amxCode`의 LAN·직렬·포트 없음·잘못된 IP·포트 주입 차단 테스트, e2e에서 LAN 기본·IP/포트 입력 즉시 반영과 포커스 유지·RS-232 전환·SPX 포트 23.
-- 화면: `docs/qa/control-example-0.237/`(잠긴 HDS 카드, 잠긴·열린 "내 AMX 구성", LAN 코드; PC·휴대폰 390px)
+- 화면: `docs/qa/control-example-0.239/`(잠긴 HDS 카드, 잠긴·열린 "내 AMX 구성", LAN 코드; PC·휴대폰 390px)
 
 ## 6. 되돌리기
 
-`src/control-example.js`의 장바구니 함수(`basketClean`·`basketAdd`·`basketRemove`·`basketMove`·`basketCode`·`basket`)와 `createBuilderPanel`의 `opts.basket`·`mountBuilders`의 "내 AMX 구성" 블록, `src/layout-sim.js`의 `amxItems`·`amxBtn`·`[data-ls-amx]` 클릭 처리, `src/styles.css`의 `.rt-ce-bk*`·`.rt-ce-lock*`·`.rt-ce-comm*`, 잠금(`AMX_LOCK`·`lock`·`gated`)과 통신 방식(`commOf`·`commBarHtml`·`amxPre`) 코드, `scripts/tools/set-amx-password.cjs`, `spx.json`의 `lan`, 테스트 3개 파일의 0.237 항목을 지우면 0.236 상태로 돌아갑니다. 저장 데이터·schema 3·`rtcom.configuration.v1`은 건드리지 않았습니다. `amxCode`의 `item.enter===false` 처리는 기존 호출에서 동작이 같습니다.
+`src/control-example.js`의 장바구니 함수(`basketClean`·`basketAdd`·`basketRemove`·`basketMove`·`basketCode`·`basket`)와 `createBuilderPanel`의 `opts.basket`·`mountBuilders`의 "내 AMX 구성" 블록, `src/layout-sim.js`의 `amxItems`·`amxBtn`·`[data-ls-amx]` 클릭 처리, `src/styles.css`의 `.rt-ce-bk*`·`.rt-ce-lock*`·`.rt-ce-comm*`, 잠금(`AMX_LOCK`·`lock`·`gated`)과 통신 방식(`commOf`·`commBarHtml`·`amxPre`) 코드, `scripts/tools/set-amx-password.cjs`, `spx.json`의 `lan`, 테스트 3개 파일의 0.239 항목을 지우면 0.236 상태로 돌아갑니다. 저장 데이터·schema 3·`rtcom.configuration.v1`은 건드리지 않았습니다. `amxCode`의 `item.enter===false` 처리는 기존 호출에서 동작이 같습니다.

@@ -183,7 +183,7 @@
     if(!lines.length)warnings.push('포함한 카드가 없습니다. WOS100 또는 HOS100을 구성에 포함하세요.');
     return {lines,warnings,overlap:!!(wosRange&&hosRange&&hosRange[0]<=wosRange[1]&&hosRange[1]>=wosRange[0]),nextFreePort:wosRange?wosRange[1]+1:1};
   }
-  // 0.237 "내 AMX 구성"에 담을 항목(src/control-example.js의 장바구니). card: 지금 보는 화면(WOS100·HOS100·ALL).
+  // 0.239 "내 AMX 구성"에 담을 항목(src/control-example.js의 장바구니). card: 지금 보는 화면(WOS100·HOS100·ALL).
   // WOS100은 OW 한 줄, HOS100은 입력 연결(C)과 OQ 레이아웃 두 줄, ALL은 포함한 카드의 줄 전부. 시뮬레이터가 만든 문자열을 그대로 쓴다.
   function amxItems(card,wos,hos,include){
     const source='07 시뮬레이터';
@@ -306,6 +306,20 @@
     const win=s.windows[index],rest=s.windows.filter((_,i)=>i!==index);
     return {...s,windows:s.priority==='4321'?[...rest,win]:[win,...rest]};
   }
+  // 창 정렬(0.237): 선택한 창의 위치·크기를 한 번에 맞춘다. wall = 월 전체, center = 월 한가운데(디스플레이 1칸 크기, 가로·세로가 2의 배수이면 분할점 위에 놓여 모든 카드에 걸침),
+  // cell = 창 중심이 있는 디스플레이 1칸 가득. 월 바깥으로 나가지 않게 맞추고 좌표는 10px 단위로 내린다.
+  function alignWindow(state,index,mode){
+    const s=normalize(state);if(index<0||index>=s.windows.length)return s;
+    const geo=geometry(s),win=s.windows[index];
+    let rect;
+    if(mode==='wall')rect={x:0,y:0,w:geo.width,h:geo.height};
+    else if(mode==='center'){const w=Math.min(geo.outW,geo.width),h=Math.min(geo.outH,geo.height);rect={x:Math.floor((geo.width-w)/2/10)*10,y:Math.floor((geo.height-h)/2/10)*10,w,h}}
+    else if(mode==='cell'){
+      const col=Math.min(geo.cols-1,Math.max(0,Math.floor((win.x+win.w/2)/geo.outW))),row=Math.min(geo.rows-1,Math.max(0,Math.floor((win.y+win.h/2)/geo.outH)));
+      rect={x:col*geo.outW,y:row*geo.outH,w:geo.outW,h:geo.outH};
+    }else return s;
+    return {...s,windows:s.windows.map((w,i)=>i===index?{...w,...rect}:w)};
+  }
   // 창마다 어느 디스플레이(출력 포트)에 어느 영역이 나오는지(디스플레이 안 좌표 기준).
   function coverageFor(state){
     const s=normalize(state),geo=geometry(s),map=portMapFor(s);
@@ -381,7 +395,7 @@
     const option=(v,label,cur,disabled)=>`<option value="${esc(v)}"${String(v)===String(cur)?' selected':''}${disabled?' disabled':''}>${esc(label)}</option>`;
     const cardSeg=()=>`<div class="rt-ls-cardseg"><span class="rt-pg-seg" role="group" aria-label="출력 카드 선택"><button type="button" class="${card==='WOS100'?'rt-pg-on':''}" data-ls-card="WOS100" aria-pressed="${card==='WOS100'}">XDM-WOS100 · 월 오버레이(OW)</button><button type="button" class="${card==='HOS100'?'rt-pg-on':''}" data-ls-card="HOS100" aria-pressed="${card==='HOS100'}">XDM-HOS100 · 한 화면 멀티뷰(OQ)</button><button type="button" class="${card==='ALL'?'rt-pg-on':''}" data-ls-card="ALL" aria-pressed="${card==='ALL'}">전체 커맨드(두 카드)</button></span>
       ${card==='ALL'?`<label class="rt-ls-check rt-ls-include" title="전체 커맨드에 WOS100 커맨드를 넣을지 정합니다"><input type="checkbox" data-ls-include="wos"${include.wos?' checked':''}> WOS100 포함</label><label class="rt-ls-check rt-ls-include" title="전체 커맨드에 HOS100 커맨드를 넣을지 정합니다"><input type="checkbox" data-ls-include="hos"${include.hos?' checked':''}> HOS100 포함</label>`:''}</div>`;
-    // 0.237: 장바구니(RtControlExample.basket)가 있을 때만 "AMX 구성에 담기" 버튼을 보여 준다. 담은 항목은 아래 08 카드 "내 AMX 구성"에서 한 개의 AMX 코드가 된다.
+    // 0.239: 장바구니(RtControlExample.basket)가 있을 때만 "AMX 구성에 담기" 버튼을 보여 준다. 담은 항목은 아래 08 카드 "내 AMX 구성"에서 한 개의 AMX 코드가 된다.
     const canBasket=()=>!!(globalThis.RtControlExample&&globalThis.RtControlExample.basket);
     const amxBtn=disabled=>canBasket()?`<button type="button" class="rt-pg-btn rt-pg-primary" data-ls-amx${disabled?' disabled':''} title="이 커맨드를 아래 AMX 통합 제어 카드의 &quot;내 AMX 구성&quot;에 담습니다">AMX 구성에 담기</button>`:'';
     // ---- 전체 커맨드(두 카드) ----
@@ -467,6 +481,7 @@
       </div>
       <p class="rt-ls-summary">월 전체 <b>${geo.width}×${geo.height}</b>px · 출력 ${geo.timing.label} × ${geo.cols}×${geo.rows} · 출력 포트 ${geo.startPort}~${geo.endPort}번(WOS100 ${geo.slots}장) · 창 ${state.windows.length}개${state.mapping==='guide'?' · <b>가이드 연결 그림 배치</b>':''}</p>
       ${cardUsageHtml(state,result.assigned)}
+      <div class="rt-ls-align" role="group" aria-label="선택한 창 배치"><span>선택한 창 배치</span>${[['wall','월 전체','창을 월 전체 크기로 펼칩니다'],['center','월 가운데','디스플레이 1칸 크기로 월 한가운데(분할점 위)에 놓습니다. 2×2 월이면 카드 4장에 걸칩니다'],['cell','디스플레이 1칸','창 중심이 있는 디스플레이 1칸을 가득 채웁니다']].map(([m,t,d])=>`<button type="button" class="rt-pg-btn" data-ls-align="${m}" title="${d}"${state.windows[selected]?'':' disabled'}>${t}</button>`).join('')}${state.windows[selected]?'':'<small>캔버스나 표에서 창을 먼저 고르세요.</small>'}</div>
       <div class="rt-ls-stage">
         <div class="rt-ls-canvas" data-ls-canvas style="aspect-ratio:${geo.width} / ${geo.height};--rt-ls-cols:${geo.cols};--rt-ls-rows:${geo.rows}" role="application" aria-label="디스플레이 월 캔버스. 창을 끌어 옮기고 오른쪽 아래 모서리로 크기를 바꿉니다. 선택한 창은 방향키로 10px, Shift와 함께 100px 움직입니다.">
           ${map.map((row,r)=>row.map((port,c)=>`<div class="rt-ls-cell" style="left:${(c/geo.cols)*100}%;top:${(r/geo.rows)*100}%;width:${100/geo.cols}%;height:${100/geo.rows}%"><span>출력 ${port}</span><small>${r+1}행 ${c+1}열</small></div>`).join('')).join('')}
@@ -540,6 +555,8 @@
         const win={input:n+1,label:'',x:Math.min(geo.width-w,(n%geo.cols)*geo.outW),y:Math.min(geo.height-h,Math.floor(n/geo.cols)%geo.rows*geo.outH),w,h};
         selected=n;update({windows:[...state.windows,win]});return;
       }
+      const alignBtn=event.target.closest('[data-ls-align]');
+      if(alignBtn){if(state.windows[selected]){const next=alignWindow(state,selected,alignBtn.dataset.lsAlign);state=next;save(state);render()}return}
       const topBtn=event.target.closest('[data-ls-top]');
       if(topBtn){const i=Number(topBtn.dataset.lsTop);const next=bringToFront(state,i);selected=next.windows.indexOf(state.windows[i]);state=next;save(state);render();return}
       const hosOff=event.target.closest('[data-ls-hos-off]');
@@ -626,5 +643,5 @@
   }
   function mountAll(scopeEl){(scopeEl||document).querySelectorAll('[data-layout-sim-root]').forEach(mount)}
 
-  return {TIMINGS,CLEAR_MODES,MAPPINGS,PRESETS,HOS_LAYOUTS,HOS_PRESETS,GUIDE_PDF,MAX_COLS,MAX_ROWS,MAX_WINDOWS,normalize,geometry,portMapFor,assignPorts,cardUsage,commandFor,coverageFor,stackOrder,bringToFront,normalizeHos,hosWindows,hosCommandFor,hosPortStatus,hosBringToFront,combinedCommands,amxItems,FIELD_NOTES,mount,mountAll};
+  return {TIMINGS,CLEAR_MODES,MAPPINGS,PRESETS,HOS_LAYOUTS,HOS_PRESETS,GUIDE_PDF,MAX_COLS,MAX_ROWS,MAX_WINDOWS,normalize,geometry,portMapFor,assignPorts,cardUsage,commandFor,coverageFor,stackOrder,bringToFront,alignWindow,normalizeHos,hosWindows,hosCommandFor,hosPortStatus,hosBringToFront,combinedCommands,amxItems,FIELD_NOTES,mount,mountAll};
 });

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// 0.238 AMX 코드 잠금 비밀번호 설정 도구.
+// 0.239 AMX 코드 잠금 비밀번호 설정 도구.
 // 사용: node scripts/tools/set-amx-password.cjs "<비밀번호>"   (비밀번호를 바꿀 때마다 다시 실행)
 // src/control-example.js의 `const AMX_LOCK=...;` 한 줄을 PBKDF2-SHA256 변환값(salt·iterations·hash)으로 바꿔 쓴다.
 // 비밀번호 원문은 어디에도 저장하지 않는다. 확인만 하려면: node scripts/tools/set-amx-password.cjs --check "<비밀번호>"

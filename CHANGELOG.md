@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.237.0 배포 기록**: `docs/qa/DEPLOYMENT_0.237_2026-10-16.md`(PR #369 → main 병합 `c9abf7e`, Pages 배포 run 38975011080 success, 공개 `CATALOG BASED · 0.237`·`layout-sim.js` 해시 일치)
 - **0.236.0 배포 기록**: `docs/qa/DEPLOYMENT_0.236_2026-10-16.md`(PR #365 → main 병합 `56c35a8`, Pages 배포 run 38915324453 success, 공개 `CATALOG BASED · 0.236`·XDM·SPX·VDM `controlExample` 확인)
 - **0.235.0 배포 기록**: `docs/qa/DEPLOYMENT_0.235_2026-10-16.md`(PR #363 → main 병합 `07a1c07`, Pages 배포 run 38913897451 success, 공개 `CATALOG BASED · 0.235`·`layout-sim.js` 해시 일치, 번호 0.234 → 0.235 재정리 경위)
 - **0.234.0 배포 기록**: `docs/qa/DEPLOYMENT_0.234_2026-10-16.md`(PR #362 → main 병합, Pages 배포 run 38912888832, 공개 QMS 설정 명령 빌더 데이터 확인)
@@ -88,7 +89,7 @@
 - **0.145.0 배포 기록**: `docs/qa/DEPLOYMENT_0.145_2026-09-29.md`(PR #194 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.144.0 배포 기록**: `docs/qa/DEPLOYMENT_0.144_2026-09-29.md`(PR #192 → main 병합, Pages 배포 run 162, 공개 파일 337/338 일치, `.nojekyll` 제외)
 
-## 0.237.0
+## 0.239.0
 
 사용자 요청 2026-10-16("2번 진행하자 쉽게 설명해줘", 0.236 보고의 다음 단계 2번):
 
@@ -97,7 +98,23 @@
 - 담은 목록은 이 브라우저에만 저장되고(같은 문자열은 한 번만, 최대 60개) 저장 파일 형식·`rtcom.configuration.v1`은 그대로입니다.
 - **AMX 코드 비밀번호 잠금**(사용자 요청 "AMX코드 짜주는건 기능을 비번을 걸어서 잠그고 … 커멘드제어 예시는 그냥 보여 주게해줘"): 통신 설정·AMX 시작 코드, HDS·QMS AMX 예제, 설정 명령의 AMX 코드 한 줄, "내 AMX 구성"의 코드·복사·파일 저장은 비밀번호를 넣어야 열리고, 커맨드 문자열·HEX·시뮬레이터 커맨드·담기·담은 목록은 잠금 없이 보입니다. 브라우저에서 확인하는 "잠금 스티커"이며 비밀번호 원문은 저장소에 없고 변환값만 둡니다(`scripts/tools/set-amx-password.cjs`).
 - **AMX 코드는 LAN(TCP)이 기본**(사용자 전달 "amx로 알티컴 제어시 rs232는 잘 사용안하고 lan제어를 많이해"): 통신 방식(LAN / RS-232)·장비 IP·TCP 포트를 넣으면 `IP_CLIENT_OPEN` 코드가 즉시 바뀝니다. 포트는 매뉴얼에 있는 SPX Telnet 23만 기본값이고 나머지 제품은 "알티컴 확인 필요"로 비워 둡니다.
-- 근거·한계·되돌리기: `docs/implementation/CONTROL_EXAMPLE_BASKET_0.237.md`, 화면: `docs/qa/control-example-0.237/`
+- 근거·한계·되돌리기: `docs/implementation/CONTROL_EXAMPLE_BASKET_0.239.md`, 화면: `docs/qa/control-example-0.239/`
+
+## 0.238.0
+
+다크 모드 B단계 ②(사용자 결정 2026-10-16 "계획대로 시작", `docs/implementation/DARK_MODE_0.238.md`):
+
+- **다크 값 연결**: 기기 설정이 다크일 때(`@media screen and (prefers-color-scheme:dark)`) 페이지 `#000`, 카드 `#1C1C1E`, 안쪽 면 `#2C2C2E`, 글자 `#F5F5F7`, 보조 글자 `#8E8E93`, 강조 글자 `#409CFF`, 유리 면 `rgba(44,44,46,.58)`과 어두운 배경 그라데이션으로 바뀝니다. 0.232 변수 150개와 변수로 모으지 못한 직접 적힌 색 41곳을 `scripts/tools/dark_tokens.cjs`가 계산해 `src/styles.css` 맨 끝 블록에 씁니다(`--check`로 최신 여부 확인).
+- **밝게 유지**: 제품 사진 판넬, 카드 판넬 사진 받침(0.178 결정), SVG에 색이 직접 적힌 그림(제품 상세 그림·화면 구성 미리보기·딥 스위치·로터리·WOS100 레이어 팝업·크게 보기 창, B③에서 그림별로 정리), 구성 보고서 미리보기는 다크에서도 흰 판입니다. 신호 배지에는 다크에서만 옅은 테두리를 둡니다.
+- 라이트 화면과 인쇄는 바뀌지 않습니다(블록이 screen 조건 안에만 있음, 라이트 11개 화면 픽셀 비교). 단위 테스트 `tests/dark-mode.test.cjs` 5개를 더했습니다.
+
+## 0.237.0
+
+사용자 선택 2026-10-16("1번과 2번만 하자", 0.235 보고의 다음 단계 제안 1번):
+
+- **WOS100 "선택한 창 배치" 버튼**: 캔버스나 표에서 창을 고른 뒤 `월 전체`·`월 가운데`·`디스플레이 1칸`을 누르면 그 창의 위치·크기가 한 번에 맞춰집니다. `월 가운데`는 디스플레이 1칸 크기를 월 한가운데(2×2 월이면 분할점 위)에 놓아 카드 4장에 걸친 연출(0.235의 카드별 레이어 사용량 칩이 바로 확인)을 마우스 조작 없이 재현합니다. 창을 고르지 않으면 버튼이 꺼지고 안내 글이 나옵니다. 계산 함수 `RtLayoutSim.alignWindow(state, index, mode)`를 새로 두었습니다.
+- 2번(알티컴 회신 반영)은 제조사 질의서 §5 15번(WOS100 포트 배치)·16번(L13) 답이 아직 없어 이번 묶음에 반영하지 않았습니다. `docs/handoff/OPEN_ITEMS.md`에 그대로 남겨 둡니다.
+- 근거: `docs/implementation/LAYOUT_SIM_HOS100_0.225.md` §10
 
 ## 0.236.0
 
