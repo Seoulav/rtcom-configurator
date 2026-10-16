@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.232.0 배포 기록**: `docs/qa/DEPLOYMENT_0.232_2026-10-16.md`(PR #359 → main 병합, Pages 배포 run 38909807341, 공개 `src/styles.css`의 `--rt-*` 변수 반영 확인)
 - **0.231.0 배포 기록**: `docs/qa/DEPLOYMENT_0.231_2026-10-16.md`(PR #357 → main 병합, Pages 배포 run 38908619438, 공개 QMS-44UX·QMS-88UX 카드 데이터·`mountMatrix` 확인)
 - **0.230.0 배포 기록**: `docs/qa/DEPLOYMENT_0.230_2026-10-16.md`(PR #355 → main 병합, 카드 정보 타일 모델명 잘림 개선)
 - **0.229.0 배포 기록**: `docs/qa/DEPLOYMENT_0.229_2026-10-16.md`(PR #351 → main 병합, Pages 배포 run 38905585107, 공개 `src/control-example.js`·HDS-42MU·HDS-21U 데이터 일치)
