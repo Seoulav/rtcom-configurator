@@ -1136,6 +1136,25 @@ const patchAmxLock=async()=>{
     const dual=await dualCard.evaluate(card=>({chips:[...card.querySelectorAll('[data-layout-chip]')].map(b=>b.textContent),name:card.querySelector('[data-layout-name]')?.textContent,rects:card.querySelectorAll('[data-layout-preview] svg rect.rt-pg-cell').length,text:card.querySelector('p')?.textContent||''}));
     const quadName=await page.locator('.rt-pg-vmode-card',{hasText:'QUAD'}).first().evaluate(card=>card.querySelector('[data-layout-name]')?.textContent);
     check('QMS-88UX 06 DUAL 카드에 PBP·PIP 레이아웃 3종이 있고 Vertical PBP를 누르면 2칸 도해로 바뀌며 QUAD 카드 미리보기는 그대로임',dual.chips.join('|')==='Horizontal PBP|Vertical PBP|Quad PBP, PIP'&&dual.name==='Vertical PBP'&&dual.rects===2&&/출력 9·10번/.test(dual.text)&&quadName==='8분할(비율무시)',JSON.stringify({dual,quadName}));
+    // 0.242 — QMS-88UX 쿼드 뷰·듀얼 카드의 입력 그룹 전환(매뉴얼 KV.04 22쪽: Q1 = 입력 1~4번, Q2 = 입력 5~8번). Q2를 누르면 도해 칸 번호가 5~8로 바뀐다.
+    const cellLabels=card=>[...card.querySelectorAll('[data-layout-preview] svg text')].map(t=>t.textContent).join(',');
+    await quadCard88.locator('[data-layout-chip]',{hasText:/^QUAD$/}).click();
+    const q1Labels=await quadCard88.evaluate(cellLabels);
+    await quadCard88.locator('[data-layout-group-btn="2"]').click();
+    const q2=await quadCard88.evaluate(card=>({labels:[...card.querySelectorAll('[data-layout-preview] svg text')].map(t=>t.textContent).join(','),note:card.querySelector('[data-layout-group-note]')?.textContent||'',pressed:card.querySelector('[data-layout-group-btn="2"]').getAttribute('aria-pressed'),on:card.querySelector('.rt-pg-vmode-chips .on')?.textContent}));
+    await quadCard88.locator('[data-layout-chip]',{hasText:'8분할(비율무시)'}).click();
+    const split8Group=await quadCard88.evaluate(card=>({hidden:card.querySelector('[data-layout-groups]').hidden,labels:[...card.querySelectorAll('[data-layout-preview] svg text')].map(t=>t.textContent).join(',')}));
+    await quadCard88.locator('[data-layout-chip]',{hasText:'3-SIDE RIGHT'}).click();
+    const keepQ2=await quadCard88.evaluate(card=>({hidden:card.querySelector('[data-layout-groups]').hidden,labels:[...card.querySelectorAll('[data-layout-preview] svg text')].map(t=>t.textContent).join(',')}));
+    await quadCard88.locator('[data-layout-group-btn="1"]').click();
+    const backQ1=await quadCard88.evaluate(cellLabels);
+    await dualCard.locator('[data-layout-group-btn="2"]').click();
+    const dualQ2=await dualCard.evaluate(card=>[...card.querySelectorAll('[data-layout-preview] svg text')].map(t=>t.textContent).join(','));
+    const wallHas=await page.locator('.rt-pg-vmode-card',{hasText:'WALL'}).first().evaluate(card=>!!card.querySelector('[data-layout-groups]'));
+    await quadCard88.locator('[data-layout-chip]',{hasText:'8분할(비율무시)'}).click();
+    check('QMS-88UX 쿼드 뷰·듀얼에서 Q2 버튼을 누르면 칸 번호가 입력 5~8번으로 바뀌고(8분할은 버튼 숨김·번호 1~8 그대로) Q1로 돌아오면 1~4이며 WALL 카드에는 버튼이 없음',
+      q1Labels==='1,2,3,4'&&q2.labels==='5,6,7,8'&&/입력 5~8/.test(q2.note)&&q2.pressed==='true'&&q2.on==='QUAD'&&split8Group.hidden===true&&split8Group.labels==='1,2,3,4,5,6,7,8'&&keepQ2.hidden===false&&keepQ2.labels==='5,6,7,8'&&backQ1==='1,2,3,4'&&dualQ2==='5,6'&&wallHas===false,
+      JSON.stringify({q1Labels,q2,split8Group,keepQ2,backQ1,dualQ2,wallHas}));
     // 0.152 — QMS-88UX WALL 요약이 "최대 3×3"뿐이었다(매뉴얼 KV.04 19쪽: 2×2 월 최대 2개, 월 1개면 최대 3×3·2×5).
     // 0.155(사용자 요청 2026-09-29 "QMS-44 비디오월 기능을 88에도 동일한 컨셉으로 만들어줘"): 0.152에서 두지 않았던 WALL 칩을 44UX처럼 넣었다. 2×2 + 2×2는 월 2개(8칸, 출력 1~8), 2×5는 10칸.
     const wallCard88=page.locator('.rt-pg-vmode-card',{hasText:'WALL'}).first();

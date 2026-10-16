@@ -943,7 +943,7 @@
     // 칸 사각형에만 rt-pg-cell 클래스를 붙인다(e2e가 칸 수를 센다). 화면 바탕은 검정이라, 칸이 덮지 않은 곳은 매뉴얼처럼 검은 여백으로 보인다.
     const LAYOUT_COLORS=['#2f7cf6','#f08c1a','#1fb45a','#9b51e0','#e5484d','#12a594','#e0409b','#5b5bd6'];
     let layoutSvgSeq=0;
-    function layoutShapeSvg(name,productId,modeName){
+    function layoutShapeSvg(name,productId,modeName,group=1){
       const own=LAYOUT_SHAPES_BY_PRODUCT[productId];
       const key=String(name||'').trim().toUpperCase();
       if(own?.noDrawing?.has(key))return '<div class="rt-pg-layout-missing" data-layout-nodrawing>매뉴얼에 배치 그림 없음</div>';
@@ -985,8 +985,12 @@
       const minX=Math.min(...cells.map(c=>c[1])),minY=Math.min(...cells.map(c=>c[2]));
       const maxX=Math.max(...cells.map(c=>c[1]+c[3])),maxY=Math.max(...cells.map(c=>c[2]+c[4]));
       const letterbox=minX>0.5||minY>0.5||maxX<99.5||maxY<99.5||(own?.shapes[key]?own.black.has(key):key==='USER MODE 2');
-      return monitorLayoutSvg(cells,{id,label,letterbox});
+      // 0.242(사용자 요청 2026-10-16 "다음 단계 진행해줘"): QMS-88UX 멀티뷰는 Q1이 입력 1~4번, Q2가 입력 5~8번으로 구성된 4분할 세트다(매뉴얼 KV.04 22쪽).
+      // Q2를 고르면 도해 칸 번호 1~4를 실제 입력 5~8번으로 바꿔 그린다. 8분할 레이아웃은 칸 번호가 이미 입력 1~8번이라 그대로 둔다.
+      const labels=group===2&&!isEightSplit(key)?Object.fromEntries([1,2,3,4].map(n=>[n,n+4])):undefined;
+      return monitorLayoutSvg(cells,{id,label,letterbox,labels});
     }
+    function isEightSplit(key){return /^8분할/.test(String(key||''))}
     // 한 화면 분할 모니터 그림: 모니터 200×134(베젤 6, 화면 188×106 ≈ 16:9, 스탠드). 칸 [번호, x, y, 폭, 높이(0~100), 글자 x, 글자 y]를 화면 크기로 늘린다.
     // 0.206(사용자 요청 2026-10-12 "분할 구성예시를 QMS-88UX 분할예시와 같은 디자인 컨셉으로 진행해줘"): XDM-HOS100 멀티뷰 팝업(src/app.js)도 같은 그림을 쓰도록
     // globalThis.RtMonitorLayoutSvg로 내보낸다. opts.cellClass는 칸 사각형 클래스(06 화면 구성 모드는 e2e가 세는 rt-pg-cell), opts.labels는 칸 번호 대신 쓸 글자.
@@ -1020,6 +1024,11 @@
       route.forEach((inp,o)=>{const x=mx,y=iy(o);outs+=`<rect x="${x}" y="${y}" width="${mw+6}" height="${mh+6}" rx="3" fill="#1f2532"/><rect class="rt-pg-cell" x="${x+3}" y="${y+3}" width="${mw}" height="${mh}" fill="${col(inp)}"/><path d="M${x+3} ${y+3+mh}V${y+3+mh*0.75}Q${x+3+mw*0.3} ${y+3+mh*0.55} ${x+3+mw*0.55} ${y+3+mh*0.72}T${x+3+mw} ${y+3+mh*0.66}V${y+3+mh}Z" fill="#fff" fill-opacity=".18"/><text x="${x+3+mw/2}" y="${y+3+mh/2}" font-size="${big?10:12}" font-weight="800" fill="#fff" text-anchor="middle" dominant-baseline="central">${inp}</text><text x="${x+mw+14}" y="${y+3+mh/2}" font-size="10" font-weight="800" fill="#6b7280" dominant-baseline="central">OUT ${o+1}</text>`});
       return `<div class="rt-pg-layout-preview rt-pg-matrix-preview"><svg class="rt-pg-layout-matrix" viewBox="0 0 ${W} ${H}" role="img" aria-label="입력 ${N} → 출력 ${N} 크로스포인트 예시">${lines}${ins}${outs}</svg></div>`;
     }
+    // QMS-88UX 쿼드 뷰·듀얼 카드의 입력 그룹 전환(0.242). Q1 = 입력 1~4번, Q2 = 입력 5~8번(매뉴얼 KV.04 22쪽).
+    function multiviewGroupToggle(productId,modeName){
+      if(productId!=='qms-88ux'||(modeName!=='QUAD'&&modeName!=='DUAL'))return '';
+      return `<div class="rt-pg-group-toggle" data-layout-groups role="group" aria-label="멀티뷰 입력 그룹"><button type="button" class="rt-pg-layout-chip on" data-layout-group-btn="1" aria-pressed="true">Q1 · 입력 1~4</button><button type="button" class="rt-pg-layout-chip" data-layout-group-btn="2" aria-pressed="false">Q2 · 입력 5~8</button><small>도해 칸 번호를 입력 번호로 바꿔 봅니다.</small></div>`;
+    }
     function videoModesSection(item){
       const vm=item.videoModes;
       if(!vm||!vm.modes?.length)return '';
@@ -1031,7 +1040,7 @@
           <div class="rt-pg-vmode-cards">${modes.map(mode=>`<div class="rt-pg-vmode-card">
             <div class="rt-pg-vmode-card-head">${VMODE_ICON[mode.name]||''}<div><b>${esc(VMODE_NAME_KO[mode.name]||mode.name)}</b><small>${esc(mode.name)}</small></div></div>
             <p>${esc(mode.summary)}${mode.detail?` ${esc(mode.detail)}`:''}</p>
-            ${mode.layouts?.length?`<span class="rt-pg-vmode-count">레이아웃 ${mode.layouts.length}종</span><div class="rt-pg-vmode-chips">${mode.layouts.map((layout,index)=>`<button type="button" class="rt-pg-layout-chip${index===0?' on':''}" data-layout-chip data-layout="${esc(layout)}">${esc(layout)}</button>`).join('')}</div><div class="rt-pg-layout-preview" data-layout-preview data-layout-product="${esc(item.id)}" data-layout-mode="${esc(mode.name)}">${layoutShapeSvg(mode.layouts[0],item.id,mode.name)}<small data-layout-name>${esc(mode.layouts[0])}</small></div>`:''}${mode.name==='MATRIX'&&!mode.layouts?.length?matrixCrosspointSvg(item.id):''}
+            ${mode.layouts?.length?`<span class="rt-pg-vmode-count">레이아웃 ${mode.layouts.length}종</span><div class="rt-pg-vmode-chips">${mode.layouts.map((layout,index)=>`<button type="button" class="rt-pg-layout-chip${index===0?' on':''}" data-layout-chip data-layout="${esc(layout)}">${esc(layout)}</button>`).join('')}</div>${multiviewGroupToggle(item.id,mode.name)}<div class="rt-pg-layout-preview" data-layout-preview data-layout-product="${esc(item.id)}" data-layout-mode="${esc(mode.name)}" data-layout-group="1">${layoutShapeSvg(mode.layouts[0],item.id,mode.name)}<small data-layout-name>${esc(mode.layouts[0])}</small></div>`:''}${mode.name==='MATRIX'&&!mode.layouts?.length?matrixCrosspointSvg(item.id):''}
           </div>`).join('')}</div>
         </div>
       </section>`;
@@ -1440,12 +1449,21 @@
       const moreBtn=event.target.closest('[data-more-features]');
       if(moreBtn){const more=body.querySelector('[data-feature-more]');if(more){more.hidden=false;moreBtn.hidden=true}return}
       const layoutChip=event.target.closest('[data-layout-chip]');
-      if(layoutChip){
-        const chips=layoutChip.parentElement;
-        chips.querySelectorAll('[data-layout-chip]').forEach(btn=>btn.classList.toggle('on',btn===layoutChip));
-        const preview=chips.nextElementSibling;
+      const groupBtn=event.target.closest('[data-layout-group-btn]');
+      if(layoutChip||groupBtn){
+        const card=(layoutChip||groupBtn).closest('.rt-pg-vmode-card');
+        const preview=card?.querySelector('[data-layout-preview]');
+        if(layoutChip&&!groupBtn){card.querySelectorAll('[data-layout-chip]:not([data-layout-group-btn])').forEach(btn=>btn.classList.toggle('on',btn===layoutChip))}
+        if(groupBtn){
+          card.querySelectorAll('[data-layout-group-btn]').forEach(btn=>{const on=btn===groupBtn;btn.classList.toggle('on',on);btn.setAttribute('aria-pressed',String(on))});
+          if(preview)preview.dataset.layoutGroup=groupBtn.dataset.layoutGroupBtn;
+        }
         if(preview?.matches('[data-layout-preview]')){
-          preview.innerHTML=`${layoutShapeSvg(layoutChip.dataset.layout,preview.dataset.layoutProduct,preview.dataset.layoutMode)}<small data-layout-name>${esc(layoutChip.dataset.layout)}</small>`;
+          const layout=card.querySelector('.rt-pg-vmode-chips .rt-pg-layout-chip.on')?.dataset.layout||'';
+          const toggle=card.querySelector('[data-layout-groups]');
+          if(toggle)toggle.hidden=isEightSplit(layout);
+          const group=toggle&&!toggle.hidden?Number(preview.dataset.layoutGroup||1):1;
+          preview.innerHTML=`${layoutShapeSvg(layout,preview.dataset.layoutProduct,preview.dataset.layoutMode,group)}<small data-layout-name>${esc(layout)}</small>${group===2?'<small data-layout-group-note>Q2 그룹: 칸 1~4 = 입력 5~8번</small>':''}`;
         }
         return;
       }
