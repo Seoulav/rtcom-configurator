@@ -66,6 +66,12 @@
       ]
     }
   ],
+  "officialLinks": [
+    {
+      "label": "AHOC",
+      "url": "http://rtcomav.com/kor/bbs/board.php?bo_table=pro04_01_1&wr_id=8"
+    }
+  ],
   "features": [
     {
       "text": "High Speed HDMI Active Optical Cable",

@@ -41,6 +41,14 @@ function validate(product,file,ids){
   if(forbidden)fail(`내부 정보로 보이는 단어: ${forbidden[0]}`);
   for(const image of product.images||[])if(!fs.existsSync(path.join(IMAGE_DIR,image.file||'')))fail(`이미지 없음: ${image.file}`);
   for(const link of product.related||[])if(!ids.has(link.target))fail(`related 대상 없음: ${link.target}`);
+  // 0.198 알티컴 공식 홈페이지 제품 글 링크: 이름이 있고 주소는 rtcomav.com 한국어 게시판 글만 허용한다.
+  if('officialLinks' in product){
+    if(!Array.isArray(product.officialLinks)||!product.officialLinks.length)fail('officialLinks는 1개 이상 배열이어야 함');
+    for(const link of product.officialLinks||[]){
+      if(!link||!String(link.label||'').trim())fail('officialLinks.label 없음');
+      if(!/^http:\/\/rtcomav\.com\/kor\/bbs\/board\.php\?bo_table=[a-z0-9_]+&wr_id=\d+$/.test(link&&link.url||''))fail(`officialLinks.url 형식(rtcomav.com 게시판 글): ${link&&link.url}`);
+    }
+  }
   // 제조사 문서 PDF(사용자 결정 2026-09-28): file이 있으면 공개 배포되므로 형식·존재·크기·표기를 확인한다.
   const published=(product.documents||[]).filter(doc=>'file' in doc);
   const files=new Set();
@@ -137,6 +145,45 @@ function validate(product,file,ids){
     }
   }
   for(const entry of product.lineup||[])if('rackUnits' in entry&&(typeof entry.rackUnits!=='number'||entry.rackUnits<=0))fail(`lineup[].rackUnits는 양수여야 함(${entry.model})`);
+  // 0.208 모듈형 장비 슬롯·카드(AV Portal·AV System Builder 요청 2026-10-13, docs/handoff/AV_PORTAL_MODULAR_SLOTS.md):
+  // 메인프레임 lineup과 SPX-R6 최상위의 slots, 카드 lineup의 slotType·compatibleFrames·io를 검사한다. 기존 키는 건드리지 않고 새 키만 확인한다.
+  const SLOT_KEYS=['input','output','shared','source','verification','note'],ROW_VERIFY=['VERIFIED','FOUND','REVIEW REQUIRED'];
+  const checkSlots=(slots,where)=>{
+    if(!slots||typeof slots!=='object'||Array.isArray(slots)){fail(`${where}.slots는 객체여야 함`);return}
+    for(const key of Object.keys(slots))if(!SLOT_KEYS.includes(key))fail(`${where}.slots에 정하지 않은 키: ${key}`);
+    const counts=['input','output','shared'].filter(key=>key in slots);
+    if(!counts.length)fail(`${where}.slots에 input·output·shared 중 하나는 있어야 함`);
+    for(const key of counts)if(!Number.isInteger(slots[key])||slots[key]<0)fail(`${where}.slots.${key}는 0 이상 정수여야 함`);
+    if(!codes.has(slots.source))fail(`${where}.slots.source(${slots.source})가 sources에 없음`);
+    if(!ROW_VERIFY.includes(slots.verification))fail(`${where}.slots.verification 값: ${slots.verification}`);
+    if('note' in slots&&(typeof slots.note!=='string'||!slots.note.trim()))fail(`${where}.slots.note는 비어 있지 않은 문자열이어야 함`);
+  };
+  if('slots' in product)checkSlots(product.slots,product.id);
+  const frames=new Set((product.lineup||[]).filter(entry=>entry.kind==='메인프레임').map(entry=>entry.model));
+  for(const entry of product.lineup||[]){
+    const where=`lineup ${entry.model}`;
+    if('slots' in entry){if(entry.kind!=='메인프레임')fail(`${where}: slots는 메인프레임에만 씀`);checkSlots(entry.slots,where)}
+    const card=entry.kind==='입력 카드'||entry.kind==='출력 카드',added=['slotType','compatibleFrames','io'].filter(key=>key in entry);
+    if(!card){if(added.length)fail(`${where}: ${added.join('·')}는 입력·출력 카드에만 씀`);continue}
+    if(added.length&&added.length<3)fail(`${where}: slotType·compatibleFrames·io는 함께 넣어야 함`);
+    if(!added.length)continue;
+    if(entry.slotType!==(entry.kind==='입력 카드'?'input':'output'))fail(`${where}: slotType(${entry.slotType})이 kind(${entry.kind})와 맞지 않음`);
+    if(!Array.isArray(entry.compatibleFrames)||!entry.compatibleFrames.length)fail(`${where}: compatibleFrames는 1개 이상 배열이어야 함`);
+    for(const model of entry.compatibleFrames||[]){
+      if(!frames.has(model))fail(`${where}: compatibleFrames의 ${model}이 같은 시리즈 메인프레임에 없음`);
+      else if(!(product.lineup.find(item=>item.model===model).slots?.[entry.slotType]>0))fail(`${where}: ${model}에 ${entry.slotType} 슬롯이 없음`);
+    }
+    if(new Set(entry.compatibleFrames||[]).size!==(entry.compatibleFrames||[]).length)fail(`${where}: compatibleFrames 중복`);
+    if(!Array.isArray(entry.io)||!entry.io.length)fail(`${where}: io는 1행 이상이어야 함`);
+    for(const row of entry.io||[]){
+      for(const key of ['group','connector','signal','direction','quantity','protocol','condition','source','verification'])if(typeof row[key]!=='string')fail(`${where}: io 행 ${key}는 문자열이어야 함`);
+      if(!['IN','OUT','BIDIR'].includes(row.direction))fail(`${where}: io direction 값: ${row.direction}`);
+      if(row.quantity!==''&&!/^[1-9]\d*$/.test(row.quantity))fail(`${where}: io quantity는 카드 1장 기준 숫자이거나 빈 문자열: ${row.quantity}`);
+      if(!codes.has(row.source))fail(`${where}: io 출처 코드 ${row.source}가 sources에 없음`);
+      if(!ROW_VERIFY.includes(row.verification))fail(`${where}: io verification 값: ${row.verification}`);
+      if(row.quantity===''&&row.verification==='VERIFIED')fail(`${where}: 수량을 모르는 행(${row.connector})은 VERIFIED로 둘 수 없음`);
+    }
+  }
   // dipSwitch: 전면 딥 스위치 번호별 OFF·ON 설명(HDS-21U·HDS-42MU, 0.58). 그림은 count개 스위치를 그리고 rows의 번호만 또렷하게 그린다.
   if('dipSwitch' in product){
     const ds=product.dipSwitch;
@@ -198,6 +245,14 @@ function validate(product,file,ids){
         if('led' in mode&&!['blink','steady'].includes(mode.led))fail(`audioMux.modes[].led는 "blink" 또는 "steady"여야 함(${mode.name})`);
       }
     }
+  }
+  // 0.194 audioOutFlow: Signal Flow "오디오 추출" 묶음의 짧은 표기(tag)·설명(caption). 입출력 표의 오디오 출력 조건을 줄인 것이며 근거(source)가 있어야 한다(QMS-88UX QD1·QD2).
+  if('audioOutFlow' in product){
+    const ao=product.audioOutFlow;
+    if(!ao||typeof ao.caption!=='string'||!ao.caption)fail('audioOutFlow.caption은 비어 있지 않은 문자열이어야 함');
+    else if(!codes.has(ao.source))fail(`audioOutFlow.source(${ao&&ao.source})가 sources에 없음`);
+    if(ao&&'tag' in ao&&(typeof ao.tag!=='string'||!ao.tag))fail('audioOutFlow.tag는 비어 있지 않은 문자열이어야 함');
+    if(ao&&!(product.io||[]).some(port=>port.direction==='OUT'&&port.group==='Audio'))fail('audioOutFlow는 입출력 표에 오디오 출력(OUT·Audio)이 있는 제품에만 씀');
   }
   if('videoModes' in product){
     const vm=product.videoModes;

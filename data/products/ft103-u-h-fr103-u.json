@@ -85,7 +85,19 @@
       "status": "FOUND",
       "title": "FT-103-U-H / FR-103-U 사용자 매뉴얼 Ver.1.4",
       "language": "ko",
-      "note": "4–11쪽 · 사용자 제공, 배포 제외"
+      "note": "알티컴 사용자 매뉴얼 PDF(사용자가 Word에서 저장해 제공 2026-10-14) 공개본, 문서 속성의 작성자·프로그램 정보 삭제 · 2026-10-07 개정판, 기존 근거 M1과 같은 값",
+      "file": "ft103-u-h-fr103-u-manual.pdf",
+      "preview": "pdfjs"
+    }
+  ],
+  "officialLinks": [
+    {
+      "label": "FT103-U-H",
+      "url": "http://rtcomav.com/kor/bbs/board.php?bo_table=pro03_01_1&wr_id=5"
+    },
+    {
+      "label": "FR103-U",
+      "url": "http://rtcomav.com/kor/bbs/board.php?bo_table=pro03_01_1&wr_id=6"
     }
   ],
   "features": [
@@ -179,19 +191,10 @@
     },
     {
       "group": "Transmission",
-      "name": "최대 전송거리",
-      "value": "2",
-      "unit": "km",
-      "condition": "Single Mode Fiber · 4K/30",
-      "source": "M1",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "Transmission",
-      "name": "최대 전송거리",
-      "value": "500",
-      "unit": "m",
-      "condition": "Multi Mode Fiber · 4K/30",
+      "name": "최대 전송 거리",
+      "value": "싱글모드 2km\n멀티모드 500m",
+      "unit": "",
+      "condition": "4K/30",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -209,7 +212,7 @@
       "name": "EDID",
       "value": "EDID 마인더(외부 EDID 저장·내장 EDID 선택)",
       "unit": "",
-      "condition": "FT103-U-H 앞면 MODE 로터리",
+      "condition": "FT103-U-H 앞면 MODE 로터리 스위치",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -234,10 +237,10 @@
     {
       "group": "Power",
       "name": "전원",
-      "value": "DC +12V 2A",
+      "value": "DC +12V 1A 이상",
       "unit": "",
-      "condition": "DC +12V 1A 이상",
-      "source": "C",
+      "condition": "",
+      "source": "M1",
       "verification": "VERIFIED"
     },
     {
@@ -300,7 +303,7 @@
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
-      "condition": "FT103-U-H · 3p Phoenix(RS-232)",
+      "condition": "FT103-U-H · 3p 피닉스(RS-232)",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -344,7 +347,7 @@
       "direction": "BIDIR",
       "quantity": "1",
       "protocol": "",
-      "condition": "FR103-U · 3p Phoenix(RS-232)",
+      "condition": "FR103-U · 3p 피닉스(RS-232)",
       "source": "M1",
       "verification": "VERIFIED"
     }
@@ -384,7 +387,7 @@
         {
           "n": 2,
           "label": "AUDIO IN",
-          "desc": "3.5mm · 로터리 E + SET으로 HDMI에 병합",
+          "desc": "3.5mm · 로터리 스위치 E + SET으로 HDMI에 병합",
           "side": "right",
           "x": 648,
           "y1": 312,
@@ -411,7 +414,7 @@
         {
           "n": 6,
           "label": "SET 토글",
-          "desc": "MODE 로터리 설정 실행(EDID·외부 오디오·자동 스위칭)",
+          "desc": "MODE 로터리 스위치 설정 실행(EDID·외부 오디오·자동 스위칭)",
           "x1": 330,
           "x2": 372,
           "side": "top",

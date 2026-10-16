@@ -144,8 +144,8 @@
       const allowed=choices(value.cardId);
       if (value.assignedDevice.length>120) fail('연결 대상 장비 이름이 너무 깁니다.');
       if ((value.tx&&!allowed.includes(value.tx))||(value.rx&&!allowed.includes(value.rx))) fail('포트의 TX/RX와 카드 허용 관계가 일치하지 않습니다.');
-      if (value.direction==='input'&&value.rx) fail('입력 포트에는 RX를 배정할 수 없습니다.');
-      if (value.direction==='output'&&value.tx) fail('출력 포트에는 TX를 배정할 수 없습니다.');
+      if (value.direction==='input'&&value.rx) fail('입력 포트에는 수신기를 배정할 수 없습니다.');
+      if (value.direction==='output'&&value.tx) fail('출력 포트에는 송신기를 배정할 수 없습니다.');
       result.portAssignments[key]=value;
     }
     for (const field of ['step','maxStep']) {
@@ -267,13 +267,14 @@
     const status=issues.some(issue=>issue.level==='ERROR')?'ERROR':issues.some(issue=>issue.level==='UNVERIFIED')?'UNVERIFIED':issues.some(issue=>issue.level==='WARNING')?'WARNING':'VALID';
     return {status,exportStatus:'UNVERIFIED_DRAFT',canFinalize:status==='VALID',summary:requirementSummary(state),issues};
   }
-  // 0.72 XDM-PSU 수량(사용자 결정 2026-09-28): XDM-POH = CIS100에 연결한 CTR100(Tx) 대수, XDM-PHX = CTR100(Rx)을 연결한 COS100 카드 장수, XDM-PSU = 모듈 16칸당 1대.
+  // 0.72 XDM-PSU 수량(사용자 결정 2026-09-28): XDM-POH = CIS100에 연결한 CTR100(Tx) 대수, XDM-PSU = 모듈 16칸당 1대.
+  // 0.210 XDM-PHX = COS100에 연결한 CTR100(Rx) 대수(COS100 출력마다 PHX 전원 연결, 알티컴 확인 2026-10-13). 0.72~0.209는 COS100 카드 장수로 셌다.
   function ctrPower(state) {
     let poh=0,phx=0;
     for (const [slot,link] of Object.entries(state.links||{})) {
       if (!link?.count) continue;
       if (link.device==='XDM-CTR100 · TX'&&state.placements?.[slot]==='XDM-CIS100') poh+=link.count;
-      if (link.device==='XDM-CTR100 · RX'&&state.placements?.[slot]==='XDM-COS100') phx+=1;
+      if (link.device==='XDM-CTR100 · RX'&&state.placements?.[slot]==='XDM-COS100') phx+=link.count;
     }
     return {poh,phx,psu:Math.ceil((poh+phx)/16)};
   }

@@ -19,7 +19,7 @@
   "catalogPages": "10",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03, 48쪽판) 10쪽의 XDM-CTR100·XDM-CTR100 PSE 소개와 제품사양 표에서 확인했고, 새 카탈로그(46쪽판) 10쪽과 줄 단위로 재대조했다(차이 없음). 0.47에서 XDM-CTR100 PSE를 별도 제품(xdm-ctr100-pse)으로 나눴다(사용자 요청).",
   "packageStatus": "VERIFIED",
-  "overview": "XDM-CTR100은 HDBaseT 3.0 기술이 적용되어 압축하지 않은 True 4K 3840x2160 @ 60Hz 4:4:4 해상도의 HDMI 신호를 케이블에 따라 최대 100m까지 전송하는 HDMI 송·수신기다. 하나의 기기에서 설정으로 송신기 또는 수신기 역할을 바꿀 수 있으며, 송신기로 쓰면 XDM-CIS100, 수신기로 쓰면 XDM-COS100과 호환된다. RS-232+ 기능으로 XDM 매트릭스의 커맨드를 통해 XDM-CTR100의 RS-232에 연결된 외부기기를 제어할 수 있다.\n\nXDM-CTR100 PSE(별도 제품)와 함께 쓰면 XDM-CTR100은 PD(Powered Devices) 모드로 동작해 전원 케이블 없이 사용할 수 있다. XDM-CIS100·COS100 카드에 직접 연결할 때는 XDM-PSU(16채널 모듈형 전원 장치)로 전원을 공급해 CTR100에 전원 어댑터를 따로 연결하지 않는다. 케이블별 최대 사용 거리는 제조사 문의 사항으로 적혀 있다.",
+  "overview": "XDM-CTR100은 HDBaseT 3.0 기술이 적용되어 압축하지 않은 True 4K 3840x2160 @ 60Hz 4:4:4 해상도의 HDMI 신호를 케이블에 따라 최대 100m까지 전송하는 HDMI 송수신기다. 하나의 기기에서 설정으로 송신기 또는 수신기 역할을 바꿀 수 있으며, 송신기로 쓰면 XDM-CIS100, 수신기로 쓰면 XDM-COS100과 호환된다. RS-232+ 기능으로 XDM 매트릭스의 커맨드를 통해 XDM-CTR100의 RS-232에 연결된 외부기기를 제어할 수 있다.\n\nXDM-CTR100 PSE(별도 제품)와 함께 쓰면 XDM-CTR100은 PD(Powered Devices) 모드로 동작해 전원 케이블 없이 사용할 수 있다. XDM-CIS100·COS100 카드에 직접 연결할 때는 XDM-PSU(16채널 모듈형 전원 장치)로 전원을 공급해 CTR100에 전원 어댑터를 따로 연결하지 않는다. 케이블별 최대 사용 거리는 제조사 문의 사항으로 적혀 있다.",
   "images": [
     {
       "role": "Main",
@@ -106,6 +106,12 @@
       "preview": "pdfjs"
     }
   ],
+  "officialLinks": [
+    {
+      "label": "XDM-CTR100",
+      "url": "http://rtcomav.com/kor/bbs/board.php?bo_table=pro03_01_2&wr_id=12"
+    }
+  ],
   "features": [
     {
       "text": "HDBaseT 3.0 무압축 True 4K(3840x2160 @ 60Hz 4:4:4) 최대 100m 전송 지원",
@@ -144,7 +150,7 @@
     },
     {
       "group": "Transmission",
-      "name": "최대 전송거리",
+      "name": "최대 전송 거리",
       "value": "100",
       "unit": "m",
       "condition": "*S/FTP CAT6A 필수",
@@ -218,7 +224,7 @@
   "io": [
     {
       "group": "Video",
-      "connector": "Female HDMI connector",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "IN",
       "quantity": "1",
@@ -229,7 +235,7 @@
     },
     {
       "group": "Video",
-      "connector": "Female HDMI connector",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "OUT",
       "quantity": "1",
@@ -240,7 +246,7 @@
     },
     {
       "group": "Transmission",
-      "connector": "Female RJ45",
+      "connector": "RJ45",
       "signal": "HDBaseT",
       "direction": "BIDIR",
       "quantity": "1",
@@ -251,7 +257,7 @@
     },
     {
       "group": "Control",
-      "connector": "Female Phoenix connector 5p",
+      "connector": "피닉스 5핀",
       "signal": "RS-232 / Audio",
       "direction": "BIDIR",
       "quantity": "1",
@@ -262,7 +268,7 @@
     },
     {
       "group": "Audio",
-      "connector": "Female Phoenix connector 5p(RS-232와 공용, L·R·접지)",
+      "connector": "피닉스 5핀(RS-232와 공용, L·R·접지)",
       "signal": "Analog Stereo Audio",
       "direction": "OUT",
       "quantity": "1",
@@ -297,6 +303,11 @@
       "relation": "WORKS_WITH",
       "target": "xdm-psu",
       "note": "CIS100·COS100에 직결할 때 XDM-PSU로 전원 공급(개별 어댑터 불필요)"
+    },
+    {
+      "relation": "WORKS_WITH",
+      "target": "xdm-mr4s",
+      "note": "XDM-MR4S 프레임에 카드 형태로 장착"
     }
   ],
   "portMap": {
@@ -397,7 +408,7 @@
       "code": "U2",
       "name": "서울영상테크 SI사업본부 확인",
       "page": "",
-      "scope": "사용자 결정(2026-09-28) — \"최대 전송거리100 m ... ==> 최대 전송거리100 m (*S/FTP CAT6A필수) 변경해줘\": 4K60Hz 조건·케이블별 상이 범위·Long Reach 모드 설명을 줄이고 100m 달성 조건(S/FTP CAT6A 케이블 필수)만 남김"
+      "scope": "사용자 결정(2026-09-28) — \"최대 전송 거리100 m ... ==> 최대 전송 거리100 m (*S/FTP CAT6A필수) 변경해줘\": 4K60Hz 조건·케이블별 상이 범위·Long Reach 모드 설명을 줄이고 100m 달성 조건(S/FTP CAT6A 케이블 필수)만 남김"
     },
     {
       "code": "S1",

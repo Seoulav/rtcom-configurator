@@ -5,7 +5,7 @@
   "productName": "SPX Series",
   "model": "SPX Series",
   "series": "Signal Processing eXpert",
-  "seriesNote": "메인프레임 5종과 8포트 입력·10~12포트 출력 보드, SPX-RX/TX 전송기로 구성한다.",
+  "seriesNote": "메인프레임 5종과 8포트 입력·10~12포트 출력 카드, SPX-RX/TX 전송기로 구성한다.",
   "itemType": "SERIES",
   "categories": [
     "영상",
@@ -13,13 +13,13 @@
     "Modular Matrix"
   ],
   "english": "Signal Processing eXpert — 4K/60 @ 4:4:4 18Gbps HDMI/CATx modular matrix with independent per-output scaling, video wall and quad view.",
-  "korean": "8포트 입력 보드와 10~12포트 출력 보드로 4K/60 @ 4:4:4 신호를 분배하고 출력별 독립 스케일링을 지원하는 모듈형 매트릭스 스위처다.",
+  "korean": "8포트 입력 카드와 10~12포트 출력 카드로 4K/60 @ 4:4:4 신호를 분배하고 출력별 독립 스케일링을 지원하는 모듈형 매트릭스 스위처다.",
   "subtitle": "Signal Processing eXpert · 출력별 독립 스케일링 매트릭스",
-  "lead": "8포트 입력 보드와 10~12포트 출력 보드로 **출력마다 독립 스케일링**을 하는 4K/60 분배형 매트릭스입니다. 입력보다 출력이 많은 스포츠 바·레스토랑·회의실·통제실에 맞춰 설계됐습니다.",
+  "lead": "8포트 입력 카드와 10~12포트 출력 카드로 **출력마다 독립 스케일링**을 하는 4K/60 분배형 매트릭스입니다. 입력보다 출력이 많은 스포츠 바·레스토랑·회의실·통제실에 맞춰 설계됐습니다.",
   "catalogPages": "13–16",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 13~16쪽의 제품 구상도·소개·LINE-UP·주요기능·I/O 보드 공통 기능·제품사양·보드 및 전송기 사양에서 확인했다. SPX-M2472·M24120 깊이는 사용자 결정(2026-09-29)에 따라 SPX 국문 사용자 매뉴얼(250805) 7~9쪽과 SPX 카탈로그(2023) 값 443.7mm로 바로잡았다(종합 카탈로그 2026 표기 433.7mm).",
   "packageStatus": "VERIFIED",
-  "overview": "SPX(Signal Processing eXpert) 매트릭스 시리즈는 4K/60 @ 4:4:4 18Gbps 고해상도 신호를 분배하거나 다양한 해상도를 선택할 수 있는 매트릭스 스위처다. 8포트 입력 카드와 10~12포트 출력 카드를 갖추고, 심리스 스위칭과 비디오월 기능을 적용했으며, 5가지로 세분화한 메인프레임으로 Sports Bar, 레스토랑, 회의실, 보안 통제실 등 다양한 현장에 대응한다.\n\n전면 터치패널, 웹 UI, RS-232, LAN 등 제어 방식을 환경에 맞게 선택할 수 있다. 디스플레이마다 독립적인 Scaling 출력과 CEC 컨트롤 기능을 제공하고, Hot-swap 기능으로 전원을 끄지 않고 슬롯 카드를 장착·교체할 수 있다.\n\n카탈로그는 SPX 시리즈를 심플하지만 강력한 미디어 분산 솔루션으로 소개한다. 13쪽 제품 구상도는 SPX-M810(HDMI SLOT)에 셋톱박스 최대 8대와 4개 존의 비디오·오디오를 연결하는 예를 보여 준다.",
+  "overview": "SPX(Signal Processing eXpert) 매트릭스 시리즈는 4K/60 @ 4:4:4 18Gbps 고해상도 신호를 분배하거나 다양한 해상도를 선택할 수 있는 매트릭스 스위처다. 8포트 입력 카드와 10~12포트 출력 카드를 갖추고, 심리스 스위칭과 비디오 월 기능을 적용했으며, 5가지로 세분화한 메인프레임으로 Sports Bar, 레스토랑, 회의실, 보안 통제실 등 다양한 현장에 대응한다.\n\n전면 터치 패널, 웹 UI, RS-232, LAN 등 제어 방식을 환경에 맞게 선택할 수 있다. 디스플레이마다 독립적인 스케일링 출력과 CEC 컨트롤 기능을 제공하고, 핫스왑 기능으로 전원을 끄지 않고 슬롯 카드를 장착·교체할 수 있다.\n\n카탈로그는 SPX 시리즈를 심플하지만 강력한 미디어 분산 솔루션으로 소개한다. 13쪽 제품 구상도는 SPX-M810(HDMI SLOT)에 셋톱박스 최대 8대와 4개 존의 비디오·오디오를 연결하는 예를 보여 준다.",
   "images": [
     {
       "role": "Main",
@@ -112,17 +112,23 @@
       "preview": "pdfjs"
     }
   ],
+  "officialLinks": [
+    {
+      "label": "SPX",
+      "url": "http://rtcomav.com/kor/bbs/board.php?bo_table=pro_01_01_3&wr_id=1"
+    }
+  ],
   "features": [
     {
       "text": "모든 출력 포트 독립 스케일링 지원",
       "source": "C"
     },
     {
-      "text": "최대 12개의 디스플레이로 구현 가능한 비디오월 기능(2x2, 3x3, 3x4) 지원",
+      "text": "최대 12개의 디스플레이로 구현 가능한 비디오 월 기능(2×2, 3×3, 3×4) 지원",
       "source": "C"
     },
     {
-      "text": "멀티 뷰(쿼드 뷰) 기능 지원",
+      "text": "멀티뷰(쿼드뷰) 기능 지원",
       "source": "C"
     },
     {
@@ -134,11 +140,11 @@
       "source": "C"
     },
     {
-      "text": "Hot-Swap 지원(슬롯·FAN 모듈 교체)",
+      "text": "핫스왑 지원(슬롯·FAN 모듈 교체)",
       "source": "C"
     },
     {
-      "text": "전면 Touch Screen으로 쉽게 제어",
+      "text": "전면 터치스크린으로 쉽게 제어",
       "source": "C"
     },
     {
@@ -172,7 +178,7 @@
     {
       "group": "General",
       "name": "입·출력 구성",
-      "value": "8x10, 16x20, 32x36, 24x72, 24x120",
+      "value": "8×10, 16×20, 32×36, 24×72, 24×120",
       "unit": "",
       "condition": "",
       "source": "C",
@@ -183,7 +189,7 @@
       "name": "입력 신호",
       "value": "HDMI",
       "unit": "",
-      "condition": "입력 보드는 SPX-HIS8(HDMI)",
+      "condition": "입력 카드는 SPX-HIS8(HDMI)",
       "source": "J",
       "verification": "VERIFIED"
     },
@@ -243,10 +249,10 @@
     },
     {
       "group": "Video",
-      "name": "HDMI 인터페이스 보드 규격",
+      "name": "HDMI 인터페이스 카드 규격",
       "value": "HDMI 2.0b",
       "unit": "",
-      "condition": "I/O 보드 공통 기능",
+      "condition": "I/O 카드 공통 기능",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -255,7 +261,7 @@
       "name": "데이터 전송 속도",
       "value": "18",
       "unit": "Gbps",
-      "condition": "최대 · I/O 보드 공통 기능",
+      "condition": "최대 · I/O 카드 공통 기능",
       "source": "C",
       "verification": "VERIFIED"
     },
@@ -264,13 +270,13 @@
       "name": "HDCP",
       "value": "HDCP 2.2 지원",
       "unit": "",
-      "condition": "I/O 보드 공통 기능",
+      "condition": "I/O 카드 공통 기능",
       "source": "C",
       "verification": "VERIFIED"
     },
     {
       "group": "Transmission",
-      "name": "CATx 보드 전송 거리",
+      "name": "CATx 카드 전송 거리",
       "value": "1080p 60m\n4K 50m",
       "unit": "",
       "condition": "CAT 6 기준",
@@ -283,52 +289,190 @@
     {
       "model": "SPX-M810",
       "kind": "메인프레임",
-      "summary": "최대 8x10 I/O · 입력 슬롯 1 · 출력 슬롯 1 · 4.3\" Touch Screen · 483×355×88.1mm(2U)",
-      "rackUnits": 2
+      "summary": "최대 8×10 I/O · 입력 슬롯 1 · 출력 슬롯 1 · 4.3\" 터치스크린 · 483×355×88.1mm(2U)",
+      "rackUnits": 2,
+      "slots": {
+        "input": 1,
+        "output": 1,
+        "source": "M1",
+        "verification": "VERIFIED",
+        "note": "매뉴얼(250805) 7쪽: 입력 카드 최대 1 · 출력 카드 최대 1 · 가로 배치 · 위 입력, 아래 출력 · 출력은 SPX-HOS10·HOS12·COS12 중 1장(3쪽)"
+      }
     },
     {
       "model": "SPX-M1620",
       "kind": "메인프레임",
-      "summary": "최대 16x20 I/O · 입력 슬롯 2 · 출력 슬롯 2 · 7\" Touch Screen · 483×355×177mm(4U)",
-      "rackUnits": 4
+      "summary": "최대 16×20 I/O · 입력 슬롯 2 · 출력 슬롯 2 · 7\" 터치스크린 · 483×355×177mm(4U)",
+      "rackUnits": 4,
+      "slots": {
+        "input": 2,
+        "output": 2,
+        "source": "M1",
+        "verification": "VERIFIED",
+        "note": "매뉴얼(250805) 8쪽: 입력 카드 최대 2 · 출력 카드 최대 2 · 가로 배치 · 위 입력, 아래 출력 · 출력은 SPX-HOS10·HOS12·COS12 중 최대 2장(3쪽)"
+      }
     },
     {
       "model": "SPX-M3236",
       "kind": "메인프레임",
-      "summary": "최대 32x36 I/O · 입력 슬롯 4 · 출력 슬롯 3 · 7\" Touch Screen · 483×355×310.3mm(7U)",
-      "rackUnits": 7
+      "summary": "최대 32×36 I/O · 입력 슬롯 4 · 출력 슬롯 3 · 7\" 터치스크린 · 483×355×310.3mm(7U)",
+      "rackUnits": 7,
+      "slots": {
+        "input": 4,
+        "output": 3,
+        "source": "M1",
+        "verification": "VERIFIED",
+        "note": "매뉴얼(250805) 8쪽: 입력 카드 최대 4 · 출력 카드 최대 3 · 가로 배치 · 위 입력, 아래 출력 · 출력은 SPX-HOS12·COS12만(HOS10 불가, 3쪽)"
+      }
     },
     {
       "model": "SPX-M2472",
       "kind": "메인프레임",
-      "summary": "최대 24x72 I/O · 입력 슬롯 3 · 출력 슬롯 6 · 7\" Touch Screen · 483×443.7×365mm(8U)",
-      "rackUnits": 8
+      "summary": "최대 24×72 I/O · 입력 슬롯 3 · 출력 슬롯 6 · 7\" 터치스크린 · 483×443.7×365mm(8U)",
+      "rackUnits": 8,
+      "slots": {
+        "input": 3,
+        "output": 6,
+        "source": "M1",
+        "verification": "VERIFIED",
+        "note": "매뉴얼(250805) 9쪽: 입력 카드 최대 3 · 출력 카드 최대 6 · 세로 배치 · 왼쪽 입력, 오른쪽 출력 · 출력은 SPX-HOS12·COS12만(HOS10 불가, 3쪽)"
+      }
     },
     {
       "model": "SPX-M24120",
       "kind": "메인프레임",
-      "summary": "최대 24x120 I/O · 입력 슬롯 3 · 출력 슬롯 10 · 7\" Touch Screen · 483×443.7×365mm(8U)",
-      "rackUnits": 8
+      "summary": "최대 24×120 I/O · 입력 슬롯 3 · 출력 슬롯 10 · 7\" 터치스크린 · 483×443.7×365mm(8U)",
+      "rackUnits": 8,
+      "slots": {
+        "input": 3,
+        "output": 10,
+        "source": "M1",
+        "verification": "VERIFIED",
+        "note": "매뉴얼(250805) 9쪽: 입력 카드 최대 3 · 출력 카드 최대 10 · 세로 배치 · 왼쪽 입력, 오른쪽 출력 · 출력은 SPX-HOS12·COS12만(HOS10 불가, 3쪽)"
+      }
     },
     {
       "model": "SPX-HIS8",
-      "kind": "입력 보드",
-      "summary": "HDMI 2.0b 입력 8포트 · 3840x2160 @ 60Hz · 스테레오 오디오 출력(추출) 8"
+      "kind": "입력 카드",
+      "summary": "HDMI 2.0b 입력 8포트 · 3840x2160 @ 60Hz · 스테레오 오디오 출력(추출) 8",
+      "slotType": "input",
+      "compatibleFrames": [
+        "SPX-M810",
+        "SPX-M1620",
+        "SPX-M3236",
+        "SPX-M2472",
+        "SPX-M24120"
+      ],
+      "io": [
+        {
+          "group": "Video",
+          "connector": "HDMI",
+          "signal": "HDMI",
+          "direction": "IN",
+          "quantity": "8",
+          "protocol": "HDMI 2.0b",
+          "condition": "3840x2160 @ 60Hz · 매뉴얼 10쪽",
+          "source": "M2",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "3.5mm stereo",
+          "signal": "Stereo Audio",
+          "direction": "OUT",
+          "quantity": "8",
+          "protocol": "",
+          "condition": "포트마다 1개 · 오디오 추출 · 수량은 매뉴얼 10쪽·카탈로그 16쪽, 커넥터는 서울영상테크 확인(2026-10-13)",
+          "source": "U3",
+          "verification": "VERIFIED"
+        }
+      ]
     },
     {
       "model": "SPX-HOS10",
-      "kind": "출력 보드",
-      "summary": "HDMI 2.0b 출력 10포트 · 3-pin phoenix 오디오 2포트 · 3840x2160 @ 60Hz"
+      "kind": "출력 카드",
+      "summary": "HDMI 2.0b 출력 10포트 · 3-pin 피닉스 오디오 2포트 · 3840x2160 @ 60Hz",
+      "slotType": "output",
+      "compatibleFrames": [
+        "SPX-M810",
+        "SPX-M1620"
+      ],
+      "io": [
+        {
+          "group": "Video",
+          "connector": "HDMI",
+          "signal": "HDMI",
+          "direction": "OUT",
+          "quantity": "10",
+          "protocol": "HDMI 2.0b",
+          "condition": "3840x2160 @ 60Hz · SPX-M810·M1620 전용(매뉴얼 3쪽) · 매뉴얼 10쪽",
+          "source": "M2",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "피닉스 3핀",
+          "signal": "Stereo Audio",
+          "direction": "OUT",
+          "quantity": "2",
+          "protocol": "",
+          "condition": "오디오 추출 · 1번 출력과 10번 출력의 음성 · 매뉴얼 10쪽",
+          "source": "M2",
+          "verification": "VERIFIED"
+        }
+      ]
     },
     {
       "model": "SPX-HOS12",
-      "kind": "출력 보드",
-      "summary": "HDMI 2.0b 출력 12포트 · 3840x2160 @ 60Hz"
+      "kind": "출력 카드",
+      "summary": "HDMI 2.0b 출력 12포트 · 3840x2160 @ 60Hz",
+      "slotType": "output",
+      "compatibleFrames": [
+        "SPX-M810",
+        "SPX-M1620",
+        "SPX-M3236",
+        "SPX-M2472",
+        "SPX-M24120"
+      ],
+      "io": [
+        {
+          "group": "Video",
+          "connector": "HDMI",
+          "signal": "HDMI",
+          "direction": "OUT",
+          "quantity": "12",
+          "protocol": "HDMI 2.0b",
+          "condition": "3840x2160 @ 60Hz · SPX-M810·M1620에 장착하면 11·12번은 10번 영상을 나눠 내보내는 분배 포트 · 매뉴얼 11쪽",
+          "source": "M2",
+          "verification": "VERIFIED"
+        }
+      ]
     },
     {
       "model": "SPX-COS12",
-      "kind": "출력 보드",
-      "summary": "CATx 출력 12포트 · SPX-RX와 사용 · 3840x2160 @ 60Hz"
+      "kind": "출력 카드",
+      "summary": "CATx 출력 12포트 · SPX-RX와 사용 · 3840x2160 @ 60Hz",
+      "slotType": "output",
+      "compatibleFrames": [
+        "SPX-M810",
+        "SPX-M1620",
+        "SPX-M3236",
+        "SPX-M2472",
+        "SPX-M24120"
+      ],
+      "io": [
+        {
+          "group": "Transmission",
+          "connector": "RJ45",
+          "signal": "CATx",
+          "direction": "OUT",
+          "quantity": "12",
+          "protocol": "",
+          "condition": "SPX-RX와 사용 · 4K/60 @ 4:4:4 50m · PoC로 SPX-RX 전원 공급(4쪽) · SPX-M810·M1620에 장착하면 11·12번은 10번 영상을 나눠 내보내는 분배 포트 · 매뉴얼 11쪽",
+          "source": "M2",
+          "verification": "VERIFIED"
+        }
+      ]
     },
     {
       "model": "SPX-RX/TX",
@@ -340,7 +484,7 @@
     {
       "relation": "WORKS_WITH",
       "target": "spx-rx-tx",
-      "note": "SPX-COS12(CATx 출력 보드) ↔ SPX-RX, 전송기 SPX-TX/RX"
+      "note": "SPX-COS12(CATx 출력 카드) ↔ SPX-RX, 전송기 SPX-TX/RX"
     }
   ],
   "sources": [
@@ -391,6 +535,18 @@
       "name": "서울영상테크 SI사업본부 확인",
       "page": "",
       "scope": "사용자 결정(2026-09-29) — SPX-M2472·M24120 깊이는 종합 카탈로그 2026(433.7mm) 대신 매뉴얼·2023 카탈로그 값 443.7mm로 표기"
+    },
+    {
+      "code": "M2",
+      "name": "SPX 시리즈 국문 사용자 매뉴얼(250805)",
+      "page": "3–4, 10–12",
+      "scope": "제조사 공식 출처 — 공개본 spx-manual.pdf. 프레임별 장착 가능 보드(3쪽), CAT 슬롯 PoC(4쪽), 입출력 보드 단자 구성(10–12쪽)"
+    },
+    {
+      "code": "U3",
+      "name": "서울영상테크 SI사업본부 확인",
+      "page": "",
+      "scope": "사용자 답변(2026-10-13, 알티컴 질문 6~11번·XDM-288 보드 수를 단계별로 확인) — SPX-HIS8 오디오 출력 커넥터는 3.5mm 스테레오 잭"
     }
   ],
   "issues": []

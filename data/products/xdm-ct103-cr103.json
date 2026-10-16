@@ -126,6 +126,12 @@
       "preview": "pdfjs"
     }
   ],
+  "officialLinks": [
+    {
+      "label": "XDM-CT103",
+      "url": "http://rtcomav.com/kor/bbs/board.php?bo_table=pro03_01_2&wr_id=13"
+    }
+  ],
   "features": [
     {
       "text": "HDBaseT 3.0 무압축 True 4K(3840x2160 @ 60Hz 4:4:4) 최대 100m 전송 지원",
@@ -200,20 +206,11 @@
     },
     {
       "group": "Transmission",
-      "name": "최대 전송거리",
-      "value": "100",
-      "unit": "m",
-      "condition": "4K/60 @ 4:4:4, S/FTP CAT6A 필수(BELDEN 10GXE02 기준), 케이블별 상이",
+      "name": "최대 전송 거리",
+      "value": "4K/60 @ 4:4:4 100m\n1080p 150m (Long Reach, CT103 딥 스위치 2번 ON)",
+      "unit": "",
+      "condition": "S/FTP CAT6A 필수 (BELDEN 10GXE02 기준)",
       "source": "C",
-      "verification": "VERIFIED"
-    },
-    {
-      "group": "Transmission",
-      "name": "최대 전송거리",
-      "value": "150",
-      "unit": "m",
-      "condition": "Long Reach 모드(딥 스위치 2번 ON), 1920x1080 · XDM-CT103",
-      "source": "M1",
       "verification": "VERIFIED"
     },
     {
@@ -266,7 +263,7 @@
       "name": "전원(어댑터)",
       "value": "DC +12V 1A 이상",
       "unit": "",
-      "condition": "전용 카드(CIS100/COS100)나 XDM-CTR100 PSE와 연결하면 PoE로 전원을 받아 연결하지 않음 · 그 밖에는 어댑터 연결",
+      "condition": "전용 카드(CIS100/COS100)+XDM-PSU 또는 XDM-CTR100 PSE와 연결하면 PoE로 전원을 받아 연결하지 않음 · 그 밖에는 어댑터 연결",
       "source": "U",
       "verification": "VERIFIED"
     },
@@ -319,7 +316,7 @@
   "io": [
     {
       "group": "TX · Video",
-      "connector": "Female HDMI connector",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "IN",
       "quantity": "1",
@@ -330,7 +327,7 @@
     },
     {
       "group": "TX · Transmission",
-      "connector": "Female RJ45",
+      "connector": "RJ45",
       "signal": "HDBaseT",
       "direction": "OUT",
       "quantity": "1",
@@ -341,7 +338,7 @@
     },
     {
       "group": "TX · Audio",
-      "connector": "Female Phoenix connector 3p",
+      "connector": "피닉스 3핀",
       "signal": "Audio",
       "direction": "IN",
       "quantity": "1",
@@ -352,7 +349,7 @@
     },
     {
       "group": "RX · Video",
-      "connector": "Female HDMI connector",
+      "connector": "HDMI",
       "signal": "HDMI",
       "direction": "OUT",
       "quantity": "1",
@@ -363,7 +360,7 @@
     },
     {
       "group": "RX · Transmission",
-      "connector": "Female RJ45",
+      "connector": "RJ45",
       "signal": "HDBaseT",
       "direction": "IN",
       "quantity": "1",
@@ -451,7 +448,7 @@
         {
           "n": 6,
           "label": "DC IN",
-          "desc": "DC 12V 1A 이상 · XDM-CIS100이나 XDM-CTR100 PSE와 쓰면 연결하지 않음",
+          "desc": "DC 12V 1A 이상 · XDM-CIS100+XDM-PSU 또는 XDM-CTR100 PSE와 쓰면 연결하지 않음",
           "x1": 555,
           "x2": 637,
           "side": "bottom",
@@ -512,7 +509,7 @@
         {
           "n": 5,
           "label": "DC IN",
-          "desc": "DC 12V 1A 이상 · XDM-COS100이나 XDM-CTR100 PSE와 쓰면 연결하지 않음",
+          "desc": "DC 12V 1A 이상 · XDM-COS100+XDM-PSU 또는 XDM-CTR100 PSE와 쓰면 연결하지 않음",
           "x1": 305,
           "x2": 345,
           "side": "bottom",

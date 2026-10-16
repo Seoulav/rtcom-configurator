@@ -56,7 +56,7 @@ test('round-trip preserves TX/RX roles and combines purchasing quantities',()=>{
   assert.equal(core.bom(state).find(row=>row.model==='XDM-CTR100').quantity,5);
   assert.equal(core.bom(state).find(row=>row.model==='XDM-PSU').quantity,1);
   assert.equal(core.bom(state).find(row=>row.model.startsWith('XDM-POH')).quantity,2,'POH는 CIS100에 연결한 CTR100(Tx) 1대당 1개');
-  assert.equal(core.bom(state).find(row=>row.model.startsWith('XDM-PHX')).quantity,1,'PHX는 CTR100(Rx)을 연결한 COS100 1장당 1개');
+  assert.equal(core.bom(state).find(row=>row.model.startsWith('XDM-PHX')).quantity,3,'0.210 PHX는 COS100 출력마다 1개(CTR100 Rx 3대 → 3개, 알티컴 확인)');
   assert(core.validate(state).issues.some(issue=>issue.code==='CTR_POWER_REQUIRED'));
   assert.equal(doc.validation.canFinalize,false);
 });

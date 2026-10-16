@@ -19,7 +19,7 @@
   "catalogPages": "4–12",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03, 48쪽판) 4~12쪽의 소개·LINE-UP·주요기능·제품사양·크기 및 무게·입출력 슬롯·전송기 사양에서 확인했고, 새 카탈로그(46쪽판) 4~12쪽과 줄 단위로 재대조해 메인프레임 범위 표기·HDBaseT 3.0 표기·카드 라인업을 재검증했다.",
   "packageStatus": "VERIFIED",
-  "overview": "XDM(eXtreme Digital Matrix) 시리즈는 HDMI v2.0, DisplayPort v1.2, 12G-SDI, HDBaseT 3.0, DANTE 등 상용화 또는 표준화된 고대역폭 디지털 인터페이스의 입력과 출력을 제어해 자유로운 입출력 선택과 분배를 수행하는 고성능 크로스 플랫폼 매트릭스 스위처다. 심리스 스위칭으로 화상회의처럼 끊김 없는 전환이 필요한 곳에 딜레이 없는 빠른 전환을 제공하고, 비디오월 기능으로 화면을 원하는 크기로 확대·축소할 수 있다.\n\n전면 LCD 패널에서 파워와 쿨링 상태를 실시간으로 확인하고, 입력 포트에 저장된 EDID와 입력 소스 해상도, 출력 포트에 연결된 디스플레이의 EDID와 출력 상태를 확인해 최적 해상도로 출력할 수 있다.\n\n듀얼 리던던트 파워를 적용해 한 파워모듈에 장애가 생겨도 다른 모듈로 전원을 공급하며, 파워 핫스왑으로 전원을 끄지 않고 장애 모듈을 교체할 수 있다. 메인프레임은 XDM-12부터 XDM-288까지 LINE-UP에 올라 있다.",
+  "overview": "XDM(eXtreme Digital Matrix) 시리즈는 HDMI v2.0, DisplayPort v1.2, 12G-SDI, HDBaseT 3.0, DANTE 등 상용화 또는 표준화된 고대역폭 디지털 인터페이스의 입력과 출력을 제어해 자유로운 입출력 선택과 분배를 수행하는 고성능 크로스 플랫폼 매트릭스 스위처다. 심리스 스위칭으로 화상회의처럼 끊김 없는 전환이 필요한 곳에 딜레이 없는 빠른 전환을 제공하고, 비디오 월 기능으로 화면을 원하는 크기로 확대·축소할 수 있다.\n\n전면 LCD 패널에서 파워와 쿨링 상태를 실시간으로 확인하고, 입력 포트에 저장된 EDID와 입력 소스 해상도, 출력 포트에 연결된 디스플레이의 EDID와 출력 상태를 확인해 최적 해상도로 출력할 수 있다.\n\n듀얼 이중화 전원를 적용해 한 파워모듈에 장애가 생겨도 다른 모듈로 전원을 공급하며, 파워 핫스왑으로 전원을 끄지 않고 장애 모듈을 교체할 수 있다. 메인프레임은 XDM-12부터 XDM-216까지 6종이며, XDM-216이 가장 큰 프레임이다.",
   "images": [
     {
       "role": "Main",
@@ -92,7 +92,24 @@
       "language": "ko",
       "note": "사용자 제공 매뉴얼 공개본(2026-09-28, 사용자 결정 \"1번\" — 매뉴얼 전부 공개)",
       "file": "xdm-manual.pdf",
+      "preview": "pdfjs",
+      "label": "매뉴얼"
+    },
+    {
+      "type": "Manual",
+      "status": "FOUND",
+      "title": "XDM 시리즈 Command Guide(국문, 1013판)",
+      "language": "ko",
+      "note": "알티컴 제공 커맨드 가이드 공개본(2026-10-13 사용자 결정 \"공개 진행\", 문서 속성의 작성자 정보 삭제)",
+      "file": "xdm-command-guide.pdf",
+      "label": "커맨드 가이드",
       "preview": "pdfjs"
+    }
+  ],
+  "officialLinks": [
+    {
+      "label": "XDM",
+      "url": "http://rtcomav.com/kor/bbs/board.php?bo_table=pro01_01_1&wr_id=19"
     }
   ],
   "features": [
@@ -101,7 +118,7 @@
       "source": "C"
     },
     {
-      "text": "HDMI, DisplayPort, SDI, HDBaseT 3.0, Fiber Optic 신호 등 다양한 신호변환 기능 지원",
+      "text": "HDMI, DisplayPort, SDI, HDBaseT 3.0, 광 신호 등 다양한 신호변환 기능 지원",
       "source": "C2"
     },
     {
@@ -109,7 +126,7 @@
       "source": "C"
     },
     {
-      "text": "화면 확대/축소를 위한 비디오월 기능 지원",
+      "text": "화면 확대/축소를 위한 비디오 월 기능 지원",
       "source": "C"
     },
     {
@@ -121,11 +138,11 @@
       "source": "C"
     },
     {
-      "text": "전면 LCD 터치패널, RS-232, LAN(TCP/IP) 3가지 제어방식 지원",
+      "text": "전면 LCD 터치 패널, RS-232, LAN(TCP/IP) 3가지 제어방식 지원",
       "source": "C"
     },
     {
-      "text": "전면 LCD 터치패널로 장비 상태를 파악하고 영상신호 감지 후 자동알림 기능 지원",
+      "text": "전면 LCD 터치 패널로 장비 상태를 파악하고 영상신호 감지 후 자동알림 기능 지원",
       "source": "C"
     },
     {
@@ -137,15 +154,15 @@
       "source": "C"
     },
     {
-      "text": "전원 이중화 및 Hot-Swap 지원",
+      "text": "전원 이중화 및 핫스왑 지원",
       "source": "C"
     },
     {
-      "text": "입출력 슬롯 및 팬모듈 Hot-Swap 지원",
+      "text": "입출력 슬롯 및 팬모듈 핫스왑 지원",
       "source": "C"
     },
     {
-      "text": "매트릭스에서 송수신기 전원을 공급하는 Power over Ethernet(POE) 기능 지원",
+      "text": "매트릭스에서 송·수신기 전원을 공급하는 Power over Ethernet(POE) 기능 지원",
       "source": "C"
     },
     {
@@ -163,6 +180,38 @@
     {
       "text": "EDID, HDCP 2.2 지원",
       "source": "C"
+    },
+    {
+      "text": "커스텀 EDID 출고 지원(발주 시 EDID 파일을 보내면 저장해 출고)",
+      "source": "U5"
+    },
+    {
+      "text": "입출력 Genlock 지원(입력: XDM-HIS100 딥 스위치 1번, 출력: 전면 메뉴 Genlock에서 타이밍·출력 포트 선택)",
+      "source": "U4"
+    },
+    {
+      "text": "입력·출력 OSD 자막 지원(포트마다 최대 20자 문자·타임코드, 글자 크기 1·2·4배, 커맨드)",
+      "source": "G"
+    },
+    {
+      "text": "XDM-HOS100 멀티뷰 레이아웃 14종(쿼드뷰·PIP·PBP 16:9·사용자 배치) 커맨드 지원",
+      "source": "G"
+    },
+    {
+      "text": "XDM-WOS100 LED 모드 지원(출력 포트마다 LED 픽셀을 지정해 비표준 해상도 LED 화면 구동), 로고 이미지 출력",
+      "source": "G"
+    },
+    {
+      "text": "LED 화면은 XDM-WOS100 사용(2~3장으로 LED S-BOX 1·2에 나눠 보낼 때 카드 사이 출력 동기), XDM-HOS100은 레이어 구성은 가능하나 출력 동기가 맞지 않아 LED 적용 어려움",
+      "source": "U6"
+    },
+    {
+      "text": "출력 화질(밝기·색조·채도·명암)·화면 크롭과 확대·비디오 월 베젤 보정 지원(커맨드)",
+      "source": "G"
+    },
+    {
+      "text": "입출력 프리즈·블랙·출력 끄기, CEC 디스플레이 전원 제어, 스위칭 프리셋 20개, 시스템 잠금 지원(커맨드)",
+      "source": "G"
     }
   ],
   "specifications": [
@@ -205,7 +254,7 @@
     {
       "group": "Video",
       "name": "입력 신호",
-      "value": "HDMI2.0, DisplayPort, 12G-SDI, HDBaseT 3.0, Fiber, DANTE",
+      "value": "HDMI2.0, DisplayPort, 12G-SDI, HDBaseT 3.0, 광, DANTE",
       "unit": "",
       "condition": "",
       "source": "C",
@@ -214,7 +263,7 @@
     {
       "group": "Video",
       "name": "출력 신호",
-      "value": "HDMI2.0, DisplayPort, 12G-SDI, HDBaseT 3.0, Fiber, DANTE",
+      "value": "HDMI2.0, DisplayPort, 12G-SDI, HDBaseT 3.0, 광, DANTE",
       "unit": "",
       "condition": "",
       "source": "C",
@@ -272,102 +321,535 @@
       "model": "XDM-12",
       "kind": "메인프레임",
       "summary": "12×12 · 482.6×369.5×177mm(W×D×H) · 10kg · 4U",
-      "rackUnits": 4
+      "rackUnits": 4,
+      "slots": {
+        "input": 3,
+        "output": 3,
+        "source": "M",
+        "verification": "VERIFIED",
+        "note": "매뉴얼 KV08 7쪽: 입출력 보드 각 3장 · 가로 배치 · 왼쪽 입력, 오른쪽 출력"
+      }
     },
     {
       "model": "XDM-20",
       "kind": "메인프레임",
       "summary": "20×20 · 482.6×369.5×399.2mm · 15kg · 9U",
-      "rackUnits": 9
+      "rackUnits": 9,
+      "slots": {
+        "input": 5,
+        "output": 5,
+        "source": "M",
+        "verification": "VERIFIED",
+        "note": "매뉴얼 KV08 8쪽: 입출력 보드 각 5장 · 세로 배치 · 왼쪽 입력, 오른쪽 출력"
+      }
     },
     {
       "model": "XDM-36",
       "kind": "메인프레임",
       "summary": "36×36 · 482.6×402×399.2mm · 19kg · 9U",
-      "rackUnits": 9
+      "rackUnits": 9,
+      "slots": {
+        "input": 9,
+        "output": 9,
+        "source": "M",
+        "verification": "VERIFIED",
+        "note": "매뉴얼 KV08 8쪽: 입출력 보드 각 9장 · 세로 배치 · 왼쪽 입력, 오른쪽 출력"
+      }
     },
     {
       "model": "XDM-72",
       "kind": "메인프레임",
       "summary": "72×72 · 482.6×462.5×710.4mm · 47kg · 16U",
-      "rackUnits": 16
+      "rackUnits": 16,
+      "slots": {
+        "input": 18,
+        "output": 18,
+        "source": "M",
+        "verification": "VERIFIED",
+        "note": "매뉴얼 KV08 9쪽: 입출력 보드 각 18장 · 세로 배치 · 위 입력, 아래 출력 · DANTE I/O 슬롯은 별도 옵션"
+      }
     },
     {
       "model": "XDM-144",
       "kind": "메인프레임",
       "summary": "144×144 · 482.6×400×1288.2mm · 70kg · 29U",
-      "rackUnits": 29
+      "rackUnits": 29,
+      "slots": {
+        "input": 36,
+        "output": 36,
+        "source": "M",
+        "verification": "VERIFIED",
+        "note": "매뉴얼 KV08 10쪽: 입출력 보드 각 36장 · 세로 배치 · 위 입력, 아래 출력 · DANTE 슬롯 2개는 별도 옵션"
+      }
     },
     {
       "model": "XDM-216",
       "kind": "메인프레임",
       "summary": "216×216 · 482.6×452×1777.2mm · 110kg · 40U",
-      "rackUnits": 40
-    },
-    {
-      "model": "XDM-288",
-      "kind": "메인프레임",
-      "summary": "LINE-UP 표기만 있음 · 채널·크기·무게 사양 미수록"
+      "rackUnits": 40,
+      "slots": {
+        "input": 54,
+        "output": 54,
+        "source": "M",
+        "verification": "VERIFIED",
+        "note": "매뉴얼 KV08 11쪽: 입출력 보드 각 54장 · 세로 배치 · 위 입력, 아래 출력"
+      }
     },
     {
       "model": "XDM-HIS100",
       "kind": "입력 카드",
-      "summary": "HDMI v2.0 입력 4포트 · 오디오 병합/추출 4 · 4K/60 @ 4:4:4"
+      "summary": "HDMI v2.0 입력 4포트 · 오디오 병합/추출 4 · 4K/60 @ 4:4:4",
+      "slotType": "input",
+      "compatibleFrames": [
+        "XDM-12",
+        "XDM-20",
+        "XDM-36",
+        "XDM-72",
+        "XDM-144",
+        "XDM-216"
+      ],
+      "io": [
+        {
+          "group": "Video",
+          "connector": "HDMI",
+          "signal": "HDMI",
+          "direction": "IN",
+          "quantity": "4",
+          "protocol": "HDMI v2.0",
+          "condition": "4K/60 @ 4:4:4 · 매뉴얼 KV08 12쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "피닉스 5핀",
+          "signal": "Analog Audio",
+          "direction": "BIDIR",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "포트마다 1개 · 오디오 병합(입력)·추출(출력) 겸용 · 매뉴얼 KV08 12쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        }
+      ]
     },
     {
       "model": "XDM-HI100",
       "kind": "입력 카드",
-      "summary": "HDMI v2.0 입력 4포트(Non-Scaler) · 오디오 병합/추출 4 · 4K/60 @ 4:4:4"
+      "summary": "HDMI v2.0 입력 4포트(Non-Scaler) · 오디오 병합/추출 4 · 4K/60 @ 4:4:4",
+      "slotType": "input",
+      "compatibleFrames": [
+        "XDM-12",
+        "XDM-20",
+        "XDM-36",
+        "XDM-72",
+        "XDM-144",
+        "XDM-216"
+      ],
+      "io": [
+        {
+          "group": "Video",
+          "connector": "HDMI",
+          "signal": "HDMI",
+          "direction": "IN",
+          "quantity": "4",
+          "protocol": "HDMI v2.0",
+          "condition": "4K/60 @ 4:4:4 · Non-Scaler · 매뉴얼 KV08 12쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "피닉스 5핀",
+          "signal": "Analog Audio",
+          "direction": "BIDIR",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "포트마다 1개 · 오디오 병합(입력)·추출(출력) 겸용 · 매뉴얼 KV08 12쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        }
+      ]
     },
     {
       "model": "XDM-DPI100",
       "kind": "입력 카드",
-      "summary": "DisplayPort v1.2 입력 4포트 · 오디오 병합/추출 4 · 4K/60 @ 4:4:4"
+      "summary": "DisplayPort v1.2 입력 4포트 · 오디오 병합/추출 4 · 4K/60 @ 4:4:4",
+      "slotType": "input",
+      "compatibleFrames": [
+        "XDM-12",
+        "XDM-20",
+        "XDM-36",
+        "XDM-72",
+        "XDM-144",
+        "XDM-216"
+      ],
+      "io": [
+        {
+          "group": "Video",
+          "connector": "DisplayPort",
+          "signal": "DisplayPort",
+          "direction": "IN",
+          "quantity": "4",
+          "protocol": "DisplayPort v1.2",
+          "condition": "4K/60 @ 4:4:4 · 매뉴얼 KV08 13쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "피닉스 5핀",
+          "signal": "Analog Audio",
+          "direction": "BIDIR",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "포트마다 1개 · 오디오 병합(입력)·추출(출력) 겸용 · 매뉴얼 KV08 13쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        }
+      ]
     },
     {
       "model": "XDM-FIS100",
       "kind": "입력 카드",
-      "summary": "광(1 LC) 입력 4포트 · 싱글모드 2km/멀티모드 300m · 4K/60 @ 4:4:4 · RS-232+ 제어·패스스루(XDM-FT101)"
+      "summary": "광(1 LC) 입력 4포트 · 싱글모드 2km/멀티모드 300m · 4K/60 @ 4:4:4 · RS-232+ 제어·패스스루(XDM-FT101)",
+      "slotType": "input",
+      "compatibleFrames": [
+        "XDM-12",
+        "XDM-20",
+        "XDM-36",
+        "XDM-72",
+        "XDM-144",
+        "XDM-216"
+      ],
+      "io": [
+        {
+          "group": "Transmission",
+          "connector": "LC",
+          "signal": "Fiber",
+          "direction": "IN",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "1 LC · 싱글모드 2km · 멀티모드 300m · XDM-FT101 송신기와 연결(HDMI·오디오·RS-232+를 같은 선으로 전송, 별도 RS-232 단자 없음) · 매뉴얼 KV08 14쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "피닉스 5핀",
+          "signal": "Analog Audio",
+          "direction": "BIDIR",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "포트마다 1개 · 오디오 병합(입력)·추출(출력) 겸용 · 매뉴얼 KV08 14쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        }
+      ]
     },
     {
       "model": "XDM-SIS100",
       "kind": "입력 카드",
-      "summary": "12G-SDI(BNC) 입력 4포트 · 4K/60 @ 4:2:2"
+      "summary": "12G-SDI(BNC) 입력 4포트 · 4K/60 @ 4:2:2",
+      "slotType": "input",
+      "compatibleFrames": [
+        "XDM-12",
+        "XDM-20",
+        "XDM-36",
+        "XDM-72",
+        "XDM-144",
+        "XDM-216"
+      ],
+      "io": [
+        {
+          "group": "Video",
+          "connector": "BNC",
+          "signal": "12G-SDI",
+          "direction": "IN",
+          "quantity": "4",
+          "protocol": "12G-SDI",
+          "condition": "4K/60 @ 4:2:2 · SMPTE 292M·259M·424M · 매뉴얼 KV08 14쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "피닉스 5핀",
+          "signal": "Analog Audio",
+          "direction": "BIDIR",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "포트마다 1개 · 오디오 병합(입력)·추출(출력) 겸용 · 매뉴얼 KV08 14쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        }
+      ]
     },
     {
       "model": "XDM-CIS100",
       "kind": "입력 카드",
-      "summary": "HDBaseT 3.0(RJ45) 입력 4포트 · 100m(S/FTP CAT6A 필수) · 4K/60 @ 4:4:4 · RS-232+ 제어·패스스루(XDM-CTR100)"
+      "summary": "HDBaseT 3.0(RJ45) 입력 4포트 · 100m(S/FTP CAT6A 필수) · 4K/60 @ 4:4:4 · RS-232+ 제어·패스스루(XDM-CTR100)",
+      "slotType": "input",
+      "compatibleFrames": [
+        "XDM-12",
+        "XDM-20",
+        "XDM-36",
+        "XDM-72",
+        "XDM-144",
+        "XDM-216"
+      ],
+      "io": [
+        {
+          "group": "Transmission",
+          "connector": "RJ45",
+          "signal": "HDBaseT",
+          "direction": "IN",
+          "quantity": "4",
+          "protocol": "HDBaseT 3.0",
+          "condition": "4K/60 @ 4:4:4 100m · S/FTP CAT6A 필수 · XDM-CTR100·XDM-CT103 송신기와 연결(HDMI·오디오·RS-232+를 같은 선으로 전송, 별도 RS-232 단자 없음) · 매뉴얼 KV08 13쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "피닉스 5핀",
+          "signal": "Analog Audio",
+          "direction": "BIDIR",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "포트마다 1개 · 오디오 병합(입력)·추출(출력) 겸용 · 매뉴얼 KV08 13쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        }
+      ]
     },
     {
       "model": "XDM-HOS100",
       "kind": "출력 카드",
-      "summary": "HDMI v2.0 출력 4포트 · 오디오 추출 4 · Video Wall, Quad-Viewer 전환 가능"
+      "summary": "HDMI v2.0 출력 4포트 · 오디오 추출 4 · 비디오 월, 쿼드뷰 전환 가능 · 출력 동기가 맞지 않아 LED 적용 어려움",
+      "slotType": "output",
+      "compatibleFrames": [
+        "XDM-12",
+        "XDM-20",
+        "XDM-36",
+        "XDM-72",
+        "XDM-144",
+        "XDM-216"
+      ],
+      "io": [
+        {
+          "group": "Video",
+          "connector": "HDMI",
+          "signal": "HDMI",
+          "direction": "OUT",
+          "quantity": "4",
+          "protocol": "HDMI v2.0",
+          "condition": "4K/60 @ 4:4:4 · 비디오 월 · 쿼드뷰 전환 가능 · 매뉴얼 KV08 15쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "피닉스 3핀",
+          "signal": "Analog Audio",
+          "direction": "OUT",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "포트마다 1개 · 오디오 추출 · 매뉴얼 KV08 15쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        }
+      ]
     },
     {
       "model": "XDM-DPOS100",
       "kind": "출력 카드",
-      "summary": "DisplayPort v1.2 출력 4포트 · 오디오 추출 4 · 4K/60 @ 4:4:4"
+      "summary": "DisplayPort v1.2 출력 4포트 · 오디오 추출 4 · 4K/60 @ 4:4:4",
+      "slotType": "output",
+      "compatibleFrames": [
+        "XDM-12",
+        "XDM-20",
+        "XDM-36",
+        "XDM-72",
+        "XDM-144",
+        "XDM-216"
+      ],
+      "io": [
+        {
+          "group": "Video",
+          "connector": "DisplayPort",
+          "signal": "DisplayPort",
+          "direction": "OUT",
+          "quantity": "4",
+          "protocol": "DisplayPort v1.2",
+          "condition": "4K/60 @ 4:4:4 · 매뉴얼 KV08 15쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "피닉스 3핀",
+          "signal": "Analog Audio",
+          "direction": "OUT",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "포트마다 1개 · 오디오 추출 · 매뉴얼 KV08 15쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        }
+      ]
     },
     {
       "model": "XDM-COS100",
       "kind": "출력 카드",
-      "summary": "HDBaseT 3.0(RJ45) 출력 4포트 · 오디오 추출·POE · 100m(S/FTP CAT6A 필수) · RS-232+ 제어·패스스루(XDM-CTR100)"
+      "summary": "HDBaseT 3.0(RJ45) 출력 4포트 · 오디오 추출·POE · 100m(S/FTP CAT6A 필수) · RS-232+ 제어·패스스루(XDM-CTR100)",
+      "slotType": "output",
+      "compatibleFrames": [
+        "XDM-12",
+        "XDM-20",
+        "XDM-36",
+        "XDM-72",
+        "XDM-144",
+        "XDM-216"
+      ],
+      "io": [
+        {
+          "group": "Transmission",
+          "connector": "RJ45",
+          "signal": "HDBaseT",
+          "direction": "OUT",
+          "quantity": "4",
+          "protocol": "HDBaseT 3.0",
+          "condition": "4K/60 @ 4:4:4 100m · S/FTP CAT6A 필수 · XDM-CTR100·XDM-CR103 수신기와 연결(HDMI·오디오·RS-232+를 같은 선으로 전송, 별도 RS-232 단자 없음) · 매뉴얼 KV08 16쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "피닉스 5핀",
+          "signal": "Analog Audio",
+          "direction": "OUT",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "포트마다 1개 · 오디오 추출 · 같은 5핀 단자에 PoE 전원 핀이 있음(5p Audio·POE) · 매뉴얼 KV08 16쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Power",
+          "connector": "피닉스 5핀(오디오 단자와 공용)",
+          "signal": "DC 전원(PoE 공급용)",
+          "direction": "IN",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "포트마다 1개 · 출력마다 XDM-PSU의 XDM-PHX 모듈 1개에서 2핀 전원선으로 받아 CAT로 XDM-CTR100(RX)에 전원을 함께 보냄",
+          "source": "U5",
+          "verification": "VERIFIED"
+        }
+      ]
     },
     {
       "model": "XDM-FOS100",
       "kind": "출력 카드",
-      "summary": "광(1 LC) 출력 4포트 · 싱글모드 2km/멀티모드 300m · 4K/60 @ 4:4:4 · RS-232+ 제어·패스스루(XDM-FR101)"
+      "summary": "광(1 LC) 출력 4포트 · 싱글모드 2km/멀티모드 300m · 4K/60 @ 4:4:4 · RS-232+ 제어·패스스루(XDM-FR101)",
+      "slotType": "output",
+      "compatibleFrames": [
+        "XDM-12",
+        "XDM-20",
+        "XDM-36",
+        "XDM-72",
+        "XDM-144",
+        "XDM-216"
+      ],
+      "io": [
+        {
+          "group": "Transmission",
+          "connector": "LC",
+          "signal": "Fiber",
+          "direction": "OUT",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "1 LC · 싱글모드 2km · 멀티모드 300m · XDM-FR101 수신기와 연결(HDMI·오디오·RS-232+를 같은 선으로 전송, 별도 RS-232 단자 없음) · 매뉴얼 KV08 16쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "피닉스 3핀",
+          "signal": "Analog Audio",
+          "direction": "OUT",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "포트마다 1개 · 오디오 추출 · 매뉴얼 KV08 16쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        }
+      ]
     },
     {
       "model": "XDM-SOS100",
       "kind": "출력 카드",
-      "summary": "12G-SDI(BNC) 출력 4포트 · 오디오 추출 4 · 4K/60 @ 4:2:2"
+      "summary": "12G-SDI(BNC) 출력 4포트 · 오디오 추출 4 · 4K/60 @ 4:2:2",
+      "slotType": "output",
+      "compatibleFrames": [
+        "XDM-12",
+        "XDM-20",
+        "XDM-36",
+        "XDM-72",
+        "XDM-144",
+        "XDM-216"
+      ],
+      "io": [
+        {
+          "group": "Video",
+          "connector": "BNC",
+          "signal": "12G-SDI",
+          "direction": "OUT",
+          "quantity": "4",
+          "protocol": "12G-SDI",
+          "condition": "4K/60 @ 4:2:2 · SMPTE 292M·259M·424M · 매뉴얼 KV08 17쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        },
+        {
+          "group": "Audio",
+          "connector": "피닉스 3핀",
+          "signal": "Analog Audio",
+          "direction": "OUT",
+          "quantity": "4",
+          "protocol": "",
+          "condition": "포트마다 1개 · 오디오 추출 · 매뉴얼 KV08 17쪽",
+          "source": "M",
+          "verification": "VERIFIED"
+        }
+      ]
     },
     {
       "model": "XDM-WOS100",
       "kind": "출력 카드",
-      "summary": "HDMI(Wall Overlay) 출력 4포트 · Video Wall, 커맨드 중첩 기능"
+      "summary": "HDMI(Wall Overlay) 출력 4포트 · 비디오 월 · 출력 1개에 4K/60 소스 4레이어 중첩(커맨드) · 카드 사이 출력 동기(LED S-BOX 적용)",
+      "slotType": "output",
+      "compatibleFrames": [
+        "XDM-12",
+        "XDM-20",
+        "XDM-36",
+        "XDM-72",
+        "XDM-144",
+        "XDM-216"
+      ],
+      "io": [
+        {
+          "group": "Video",
+          "connector": "HDMI",
+          "signal": "HDMI",
+          "direction": "OUT",
+          "quantity": "4",
+          "protocol": "HDMI v2.0",
+          "condition": "4K/60 @ 4:4:4 · 비디오 월 · 커맨드 중첩(레이어를 쓰면 4포트 모두 같은 화면) · 매뉴얼 KV08에는 없고 카탈로그 9쪽 기준 · 오디오 출력 없음(알티컴 확인 2026-10-13)",
+          "source": "C",
+          "verification": "VERIFIED"
+        }
+      ]
     },
     {
       "model": "XDM-CTR100",
@@ -462,6 +944,48 @@
       "name": "서울영상테크 SI사업본부 확인",
       "page": "",
       "scope": "사용자 확인(2026-09-28) — XDM-CIS100·COS100 카드 케이블 표기를 CAT6A S/FTP(차폐)로 정정, UTP(비차폐)는 사용하지 않음"
+    },
+    {
+      "code": "M",
+      "name": "XDM 시리즈 국문 사용자 매뉴얼 KV08(250902)",
+      "page": "7–17",
+      "scope": "제조사 공식 출처 — 공개본 xdm-manual.pdf, 인쇄 쪽 번호 기준. 프레임별 입출력 보드 수(7–11쪽), 카드 단자 구성(12–17쪽)"
+    },
+    {
+      "code": "U3",
+      "name": "서울영상테크 SI사업본부 확인",
+      "page": "",
+      "scope": "사용자 확인(2026-09-28 \"COS PHNIX픽에 전원연결\") — XDM-COS100 피닉스 단자로 XDM-PSU의 XDM-PHX 전원을 받음(PHX 수량은 0.210부터 U5: COS100 출력마다 1개)"
+    },
+    {
+      "code": "U4",
+      "name": "알티컴 기술 회신",
+      "page": "",
+      "scope": "알티컴 회신(2026-10-13) — XDM-HIS100 딥 스위치 1번 입력 Genlock, 출력 Genlock 설정 위치(전면 메뉴), 멀티뷰·레이어 커맨드(레이어마다 입력·위치·크기·겹침 순서·출력 포트 자원 지정)"
+    },
+    {
+      "code": "U5",
+      "name": "알티컴 확인(사용자 전달)",
+      "page": "",
+      "scope": "사용자 전달(2026-10-13) — XDM-WOS100은 레이어를 쓰면(1개라도) 카드 4포트 모두 같은 화면 출력·오디오 출력 없음, XDM-COS100은 출력마다 XDM-PHX 전원 연결, 발주 시 커스텀 EDID를 보내면 저장해 출고, XDM-288은 주문 생산 · 0.214 사용자 확인(2026-10-13 \"xdm-216프레임이 가장 큰거야 더 이상은 없어\"): XDM-288은 공개 라인업·카드 호환 프레임에서 뺌"
+    },
+    {
+      "code": "U6",
+      "name": "알티컴 확인(사용자 전달)",
+      "page": "",
+      "scope": "사용자 전달(2026-10-13, \"라고하네\") — XDM-WOS100과 XDM-HOS100의 가장 큰 차이는 출력 동기(싱크). HOS100은 레이어를 만들 수 있으나 동기가 맞지 않아 LED 적용이 어려움. WOS100의 동기는 2~3장으로 LED S-BOX 1·2에 나눠 보낼 때 카드 사이 동기(사용자 확인 \"WOS100 2장 3장 사용 시 S-BOX 1,2 에대한 동기입니다\")"
+    },
+    {
+      "code": "U7",
+      "name": "서울영상테크 SI사업본부 확인",
+      "page": "",
+      "scope": "사용자 답변(2026-10-13, 알티컴 질문 6~11번·XDM-288 보드 수를 단계별로 확인) — XDM-288은 카드 1장 = 4채널이라 288 ÷ 4 = 입출력 보드 각 72장, 카드 호환은 \"VDM카드 VDM에 XDM은 XDM에\"(사용자 확인 2026-10-13)라 XDM 카드 12종을 XDM-288에도 장착 · 0.214 사용자 확인(2026-10-13 \"xdm-216프레임이 가장 큰거야 더 이상은 없어\"): XDM-288은 공개 라인업·카드 호환 프레임에서 뺌"
+    },
+    {
+      "code": "G",
+      "name": "XDM 시리즈 Command Guide(국문, 1013판)",
+      "page": "11~13·17~31·40~44·56~57·66~69",
+      "scope": "제조사 공식 출처 — 공개본 xdm-command-guide.pdf, 인쇄 쪽 번호 기준"
     }
   ],
   "issues": [
