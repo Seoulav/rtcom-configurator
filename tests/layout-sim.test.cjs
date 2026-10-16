@@ -153,8 +153,8 @@ test('0.226: 전체 커맨드는 포함한 카드의 커맨드를 순서대로 �
   assert.ok(L.combinedCommands(wos,{},{wos:false,hos:false}).warnings.some(w=>/포함한 카드가 없습니다/.test(w)));
 });
 
-// 0.234 카드별 레이어 사용량(사용자 질문 2026-10-16 "중간 분할 점에 레이어를 배치하면 어떻게 레이어 카운팅이 되는거야?").
-test('0.234: 카드 경계에 걸친 창은 걸친 카드마다 레이어 1개씩 쓰고 카드별 남은 레이어를 센다',()=>{
+// 0.235 카드별 레이어 사용량(사용자 질문 2026-10-16 "중간 분할 점에 레이어를 배치하면 어떻게 레이어 카운팅이 되는거야?").
+test('0.235: 카드 경계에 걸친 창은 걸친 카드마다 레이어 1개씩 쓰고 카드별 남은 레이어를 센다',()=>{
   const base={cols:2,rows:2,mapping:'card',windows:[{input:1,x:0,y:0,w:7680,h:4320},{input:2,x:2880,y:1620,w:1920,h:1080},{input:3,x:100,y:100,w:800,h:600}]};
   const usage=L.cardUsage(L.normalize(base));
   assert.equal(usage.length,4);

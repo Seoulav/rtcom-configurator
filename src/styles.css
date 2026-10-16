@@ -1710,7 +1710,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-ls-controls .rt-pg-btn{min-height:36px}
 #rtcom-design .rt-ls-summary{font-size:13px;color:var(--pg-muted);margin:0 0 10px}
 #rtcom-design .rt-ls-summary b{color:var(--pg-ink)}
-/* 0.234 WOS100 카드별 레이어 사용량 칩 */
+/* 0.235 WOS100 카드별 레이어 사용량 칩 */
 #rtcom-design .rt-ls-cards{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px;padding:0;list-style:none}
 #rtcom-design .rt-ls-card{font-size:12px;line-height:1.2;padding:6px 10px;border-radius:var(--pg-r-pill);background:var(--pg-field-fill);color:var(--pg-muted)}
 #rtcom-design .rt-ls-card b{color:var(--pg-ink)}
@@ -1855,3 +1855,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-ce-chips{margin:8px 0 0;font:600 12px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--pg-ink);word-break:break-word}
 #rtcom-design .rt-ce-tok-sep{color:var(--rt-fg-9aa3b2)}
 @media (max-width:480px){#rtcom-design .rt-ce-cell-mini{min-height:30px;font-size:12px}#rtcom-design .rt-ce-grid-matrix{gap:3px}#rtcom-design .rt-ce-grid-matrix .rt-ce-rowhead{font-size:12px}}
+#rtcom-design .rt-ce-warn{margin:8px 0 0;padding:10px 12px;border-radius:12px;background:var(--pg-field-fill);font:600 13px/1.5 var(--pg-sans);color:var(--pg-ink)}
+#rtcom-design .rt-ce-page{color:var(--pg-muted);white-space:nowrap}
+#rtcom-design .rt-ce-oneline{margin-top:8px;font-size:12px;white-space:pre-wrap;word-break:break-all}
+#rtcom-design .rt-ce-builder .rt-ce-controls input[type=text]{min-width:180px}

@@ -608,6 +608,26 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       const info=await page.evaluate(()=>({cells:document.querySelectorAll('.rt-pg-control .rt-ce-cell').length,presets:document.querySelectorAll('.rt-pg-control [data-ce-text^="preset-"]').length,pc:document.querySelector('.rt-pg-control [data-ce-text="preset-call"]')?.textContent.replace(/\s+/g,' ')||'',amx:document.querySelector('.rt-pg-control [data-ce-text="amx"]').textContent,idx:document.querySelector('.rt-pg-control .rt-pg-idx').textContent,overflow:document.documentElement.scrollWidth>innerWidth}));
       check(`${id} AMX 커맨드 카드: 매뉴얼 예시 ${first}, 칸 추가 ${after}, 모든 출력에 ${allCmd}, 프리셋 ${presets}개, 115200 AMX 코드, 가로 넘침 없음`,r0.includes(first)&&r1.includes(after)&&r2.includes(allCmd)&&info.presets===presets&&(presets?info.pc.includes('*255PC01!'):true)&&/SET BAUD 115200,N,8,1/.test(info.amx)&&info.cells>=16&&!info.overflow,JSON.stringify({r0,r1,r2,...info,amx:undefined}).slice(0,320));
     }
+    // 0.234 QMS 설정 명령 패널(명령 빌더): 명령을 고르고 값을 넣으면 매뉴얼 예시와 같은 명령이 만들어진다.
+    for(const [id,steps] of [['qms-88ux',[['res','*255OSO01-10H10!'],['wall','*255OWO01-06M13H02V03O01O02O03O04O05O06!'],['mv','*255QM13L01S00!'],['tp','*255OTO01-04M06!']]],['qms-44ux',[['wm','*01WM01!'],['wmw','*01WM02P21!'],['tc','*01TCO01S02!'],['baud','*01@05!']]]]){
+      await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
+      await page.waitForSelector('.rt-pg-control [data-ce-bsel]');
+      const seen=[];
+      for(const [bid,expect] of steps){
+        await page.selectOption('.rt-pg-control [data-ce-bsel]',bid);
+        const text=(await page.locator('.rt-pg-control [data-ce-bout] .rt-ce-cmd').first().innerText()).replace(/\s+/g,' ');
+        seen.push([bid,text.includes(expect)]);
+      }
+      let edited='';
+      if(id==='qms-88ux'){
+        await page.selectOption('.rt-pg-control [data-ce-bsel]','res');
+        await page.fill('.rt-pg-control [data-ce-bp="out"]','4,8');
+        await page.selectOption('.rt-pg-control [data-ce-bp="res"]','09');
+        edited=(await page.locator('.rt-pg-control [data-ce-bout] .rt-ce-cmd').first().innerText()).replace(/\s+/g,' ');
+      }
+      const over=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
+      check(`${id} 설정 명령 패널: ${steps.map(x=>x[1]).join(' · ')}${id==='qms-88ux'?' · 값 직접 입력 *255OSO04O08H09!':''} 가 만들어지고 가로 넘침 없음`,seen.every(x=>x[1])&&(id!=='qms-88ux'||edited.includes('*255OSO04O08H09!'))&&!over,JSON.stringify({seen,edited,over}).slice(0,260));
+    }
     // 0.62 HDS-21U·HDS-42MU 딥 스위치 칸 순서: ON이 왼쪽, OFF가 오른쪽(dipSwitch.order, 사용자 요청 2026-09-27). HD-210U는 OFF → ON 그대로.
     for(const [id,first] of [['hds-21u','ON'],['hds-42mu','ON'],['hd-210u','OFF']]){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
@@ -667,7 +687,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await page.mouse.move(simWin.x+simWin.width/2-240,simWin.y+simWin.height/2,{steps:6});await page.mouse.up();
     const sim=await page.evaluate(()=>({cmd:document.querySelector('#rt-layout-sim [data-ls-cmd]').textContent,x:Number(document.querySelector('#rt-layout-sim [data-ls-win-field="x"][data-ls-win-index="1"]').value),cells:document.querySelectorAll('#rt-layout-sim .rt-ls-cell').length,btn:!!document.querySelector('[data-scroll-to="rt-layout-sim"]'),warn:document.querySelectorAll('#rt-layout-sim .rt-ls-warn li').length,overflow:document.documentElement.scrollWidth>innerWidth}));
     check('XDM 07 화면 연출 시뮬레이터: 기본 커맨드(2×2 월 전체 + PIP)가 가이드 OW 문법이고 PIP 창을 끌면 X와 커맨드가 바뀌며 레이어 배지는 PIP가 1번',simBefore==='*255OWO001-016W14H02V02P4321O001O002O003O004O005O006O007O008O009O010O011O012O013O014O015O016X0Y0W0H0I001O001O005O009O013X0Y0W7680H4320I002O014X5760Y3240W1920H1080!'&&sim.x<5760&&sim.cmd.includes(`X${sim.x}Y3240W1920H1080!`)&&sim.cells===4&&sim.btn&&simLayers.layers.join(',')==='레이어 2,레이어 1'&&simLayers.top==='1'&&!sim.overflow,JSON.stringify({before:simBefore.slice(-60),x:sim.x,cells:sim.cells,btn:sim.btn,warn:sim.warn,layers:simLayers}));
-    // 0.234 카드별 레이어 사용량: 전체 창은 카드 4장을 모두 걸쳐 각 카드 1개씩, PIP는 카드 4에서 1개 더 → 카드 1~3은 1/4, 카드 4는 2/4.
+    // 0.235 카드별 레이어 사용량: 전체 창은 카드 4장을 모두 걸쳐 각 카드 1개씩, PIP는 카드 4에서 1개 더 → 카드 1~3은 1/4, 카드 4는 2/4.
     check('XDM 07 시뮬레이터 카드별 레이어 사용량: 카드 4장 칩(1/4·1/4·1/4·2/4)과 걸친 창 안내가 나옴',simLayers.chips.length===4&&simLayers.chips[0].startsWith('카드 1 1/4 사용 · 남음 3')&&simLayers.chips[3].startsWith('카드 4 2/4 사용 · 남음 2')&&simLayers.span.includes('창 1은 카드 1·2·3·4에 걸쳐 레이어 4개'),JSON.stringify(simLayers));
     // 0.225 "맨 위로": 전체 창(창 1)을 맨 위로 올리면 뒤로 가서 PIP가 포트 13, 전체 창이 1·5·9·14를 받는다(P4321).
     await page.evaluate(()=>{try{localStorage.removeItem('rtcom.layoutSim.v1')}catch(e){}});
@@ -691,7 +711,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await page.keyboard.press('Delete');
     const delHos=await page.evaluate(()=>({wins:document.querySelectorAll('#rt-layout-sim .rt-ls-win').length,cmd:document.querySelector('#rt-layout-sim [data-ls-cmd]').textContent,hint:document.querySelector('#rt-layout-sim .rt-pg-hint')?.textContent||''}));
     check('XDM 07 시뮬레이터 Delete 키: 창을 누른 뒤 Delete → WOS100은 PIP 창 삭제(창 1개·I001만), HOS100 L00은 창 4 끄기(W0000H0000·창 3개)',delWos.wins===1&&/I001O001O005O009O013X0Y0W7680H4320!$/.test(delWos.cmd)&&!/I002/.test(delWos.cmd)&&delHos.wins===3&&/O004X\d{4}Y\d{4}W0000H0000/.test(delHos.cmd),JSON.stringify({wos:delWos,hosCmd:delHos.cmd.slice(-60),hosWins:delHos.wins}));
-    // 0.234 HOS100 표의 "×"(창 끄기) 버튼: 키보드 없이도 창을 끈다(터치 화면용). 이미 꺼진 창 4는 버튼이 없고, 창 1을 누르면 W0000H0000이 된다.
+    // 0.235 HOS100 표의 "×"(창 끄기) 버튼: 키보드 없이도 창을 끈다(터치 화면용). 이미 꺼진 창 4는 버튼이 없고, 창 1을 누르면 W0000H0000이 된다.
     const offBtn=await page.evaluate(()=>({has4:!!document.querySelector('#rt-layout-sim [data-ls-hos-off="3"]'),has1:!!document.querySelector('#rt-layout-sim [data-ls-hos-off="0"]'),incl:document.querySelectorAll('#rt-layout-sim .rt-ls-include').length}));
     await page.click('#rt-layout-sim [data-ls-hos-off="0"]');
     const offHos=await page.evaluate(()=>({wins:document.querySelectorAll('#rt-layout-sim .rt-ls-win').length,cmd:document.querySelector('#rt-layout-sim [data-ls-cmd]').textContent}));

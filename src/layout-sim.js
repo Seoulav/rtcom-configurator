@@ -240,7 +240,7 @@
       return {index,slots,ports,missing};
     });
   }
-  // 카드별 레이어 사용량(0.234, 사용자 질문 2026-10-16 "중간 분할 점에 레이어를 배치하면 어떻게 레이어 카운팅이 되는거야?"):
+  // 카드별 레이어 사용량(0.235, 사용자 질문 2026-10-16 "중간 분할 점에 레이어를 배치하면 어떻게 레이어 카운팅이 되는거야?"):
   // 창 하나는 걸치는 카드마다 포트(레이어) 1개를 쓰므로, 카드마다 4개 중 몇 개를 어느 창이 쓰는지 센다. overflow는 포트가 없어 배정되지 못한 창 번호이다.
   function cardUsage(state){
     const s=normalize(state),geo=geometry(s),assigned=assignPorts(s);
@@ -427,7 +427,7 @@
       <p class="rt-pg-hint">근거: 알티컴 <a href="${GUIDE_PDF}#page=26" target="_blank" rel="noopener">XDM 시리즈 Command Guide 25쪽부터([OQ] Quad view 커맨드)</a>, 레이아웃 14종은 27쪽 표. 좌표·크기는 출력 해상도 안의 픽셀이며 4자리로 적습니다(W0000·H0000은 창 끄기). 포트 상태(레이어 4개면 2~4번은 1번과 같은 화면, 2개면 2번 사용 불가·3·4번 따로 스위칭)는 서울영상테크 확인(2026-10-12)입니다. L13(1~4번 PIP 사용자 배치)은 가이드의 좌표 묶음 수가 분명하지 않아 넣지 않았습니다.</p>${fieldNotesHtml()}`;
     };
     // 다시 그리면 DOM이 바뀌어 창의 포커스가 사라지므로, 창에 포커스가 있었으면 선택한 창으로 되돌린다(Delete·화살표 키가 이어서 먹도록, 0.233).
-    // 카드별 레이어 사용량 칩과 카드 경계에 걸친 창 안내(0.234).
+    // 카드별 레이어 사용량 칩과 카드 경계에 걸친 창 안내(0.235).
     const cardUsageHtml=(st,assigned)=>{
       const usage=cardUsage(st);if(!usage.length||!st.windows.length)return '';
       const chips=usage.map(c=>`<li class="rt-ls-card${c.overflow.length?' is-over':c.free===0?' is-full':''}" title="${esc(`카드 ${c.slot}(출력 ${c.firstPort}~${c.lastPort}번): ${c.used?`창 ${c.windows.join('·')}이 포트 ${c.ports.join('·')}를 사용`:'사용 중인 레이어 없음'}${c.overflow.length?` · 창 ${c.overflow.join('·')}은 남은 포트가 없어 배정 못 함`:''}`)}"><b>카드 ${c.slot}</b> ${c.used}/4 사용 · ${c.overflow.length?`<em>창 ${c.overflow.join('·')} 배정 못 함</em>`:`남음 ${c.free}`}</li>`).join('');
