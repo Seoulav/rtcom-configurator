@@ -655,6 +655,29 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       const extraOk=id==='vdm'?extra.includes('*255?O007!'):id==='spx'?/Enter가 적혀 있지 않아/.test(extra):true;
       check(`${id} AMX 커맨드 카드(${idx}): 명령 ${steps.map(x=>x[0]).join('·')} 예시 일치${id==='vdm'?' · 3자리 번호 *255?O007!':''}${id==='spx'?' · 문장형은 Enter 없음':''} · 묶음 선택·가로 넘침 없음`,seen.every(x=>x[1])&&extraOk&&info.idx===idx&&info.btn&&info.groups>=1&&!info.over&&(id!=='xdm'||info.sim),JSON.stringify({seen,extra:extra.slice(0,80),info}).slice(0,300));
     }
+    // 0.237 XDM "내 AMX 구성": 07 시뮬레이터 커맨드와 08 설정 명령을 담아 한 개의 AMX 코드로 만들고, 순서 바꾸기·저장·파일 저장을 확인한다.
+    {
+      await page.goto(`${home}#products/xdm`,{waitUntil:'networkidle'});
+      await page.evaluate(()=>{try{localStorage.removeItem('rtcom.amxBasket.xdm.v1')}catch{}});
+      await page.reload({waitUntil:'networkidle'});
+      await page.waitForSelector('#rt-control [data-ce-basket]');
+      const emptyOk=/아직 담은 명령이 없습니다/.test(await page.locator('#rt-control [data-ce-basket]').innerText());
+      await page.locator('#rt-layout-sim [data-ls-amx]').first().click();
+      await page.selectOption('#rt-control [data-ce-bsel]','conn');
+      await page.locator('#rt-control [data-ce-badd]').click();
+      const rows=await page.locator('#rt-control .rt-ce-bklist li').count();
+      const first=(await page.locator('#rt-control .rt-ce-bklist li code').first().innerText());
+      const code1=await page.locator('#rt-control [data-ce-bkcode]').innerText();
+      await page.locator('#rt-control [data-ce-bk="down"]').first().click();
+      const moved=(await page.locator('#rt-control .rt-ce-bklist li code').first().innerText());
+      const [dl]=await Promise.all([page.waitForEvent('download'),page.locator('#rt-control [data-ce-bk="download"]').click()]);
+      await page.reload({waitUntil:'networkidle'});
+      const keep=await page.locator('#rt-control .rt-ce-bklist li').count();
+      const over=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
+      await page.locator('#rt-control [data-ce-bk="clear"]').click();
+      const cleared=/아직 담은 명령이 없습니다/.test(await page.locator('#rt-control [data-ce-basket]').innerText());
+      check('XDM 내 AMX 구성: 시뮬레이터·설정 명령을 담아 버튼 순서대로 AMX 코드가 만들어지고, 순서 바꾸기·파일 저장·새로고침 유지·비우기가 된다',emptyOk&&rows===2&&first.startsWith('*255OW')&&/BUTTON_EVENT\[dvTP,2\]/.test(code1)&&/SEND_STRING dvXDM,"'\*255OW/.test(code1)&&moved.startsWith('*255C')&&/\.axs$/.test(dl.suggestedFilename())&&keep===2&&cleared&&!over,JSON.stringify({emptyOk,rows,first:first.slice(0,20),moved:moved.slice(0,20),file:dl.suggestedFilename(),keep,cleared,over}));
+    }
     // 0.62 HDS-21U·HDS-42MU 딥 스위치 칸 순서: ON이 왼쪽, OFF가 오른쪽(dipSwitch.order, 사용자 요청 2026-09-27). HD-210U는 OFF → ON 그대로.
     for(const [id,first] of [['hds-21u','ON'],['hds-42mu','ON'],['hd-210u','OFF']]){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});

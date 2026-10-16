@@ -343,3 +343,40 @@ test('모듈러 빌더는 모두 기본값으로 명령이 만들어지고 매�
   }
   for(const spec of [xdm,spx,vdm])assert.equal(new Set(spec.builders.map(b=>b.id)).size,spec.builders.length);
 });
+
+// 0.237 "내 AMX 구성"(장바구니): 담기·중복·순서·코드 생성
+test('0.237: 장바구니는 같은 문자열을 한 번만 담고 담은 순서대로 버튼 하나씩 AMX 코드를 만든다',()=>{
+  const items=[{label:'월 오버레이',text:'*255OWO001!',source:'07 시뮬레이터'},{label:'입력 연결',text:'*255CI001O001!'}];
+  let r=ce.basketAdd([],items);
+  assert.equal(r.added,2);assert.equal(r.dup,0);
+  r=ce.basketAdd(r.list,[items[0],{text:'*255CI002O002!'}]);
+  assert.equal(r.added,1);assert.equal(r.dup,1);assert.equal(r.list.length,3);
+  const code=ce.basketCode(xdm,r.list);
+  assert.match(code,/BUTTON_EVENT\[dvTP,1\][\s\S]*SEND_STRING dvXDM,"'\*255OWO001!',\$0D"/);
+  assert.match(code,/BUTTON_EVENT\[dvTP,3\][\s\S]*'\*255CI002O002!'/);
+  assert.match(code,/SET BAUD 115200,N,8,1/);
+  // 순서 바꾸기·빼기
+  const moved=ce.basketMove(r.list,2,-1);
+  assert.deepEqual(moved.map(x=>x.text),['*255OWO001!','*255CI002O002!','*255CI001O001!']);
+  assert.equal(ce.basketMove(r.list,0,-1)[0].text,'*255OWO001!','맨 위는 더 못 올라간다');
+  assert.deepEqual(ce.basketRemove(r.list,1).map(x=>x.text),['*255OWO001!','*255CI002O002!']);
+  // 빈 문자열·잘못된 값은 걸러낸다
+  assert.equal(ce.basketClean([null,{text:''},{text:'*255C!'}]).length,1);
+});
+
+test('0.237: 장바구니 상한(60개)을 넘기면 담지 않고 알린다, Enter 없는 문장 형식은 $0D를 붙이지 않는다',()=>{
+  const many=Array.from({length:ce.BASKET_MAX+3},(_,i)=>({text:`*255CI${String(i+1).padStart(3,'0')}O001!`}));
+  const r=ce.basketAdd([],many);
+  assert.equal(r.list.length,ce.BASKET_MAX);assert.equal(r.added,ce.BASKET_MAX);assert.equal(r.full,3);
+  const code=ce.basketCode(spx,[{label:'문장형',text:'s in 1 av out 2!',enter:false}]);
+  assert.match(code,/SEND_STRING dv\w+,"'s in 1 av out 2!'"/);
+  assert.doesNotMatch(code.split('BUTTON_EVENT')[1],/\$0D/);
+});
+
+test('0.237: 브라우저 저장소가 없어도(Node) 메모리에 담고 꺼낸다',()=>{
+  ce.basket.clear('xdm-test');
+  const r=ce.basket.add('xdm-test',[{text:'*255CI001O001!'}]);
+  assert.equal(r.added,1);assert.equal(ce.basket.get('xdm-test').length,1);
+  ce.basket.move('xdm-test',0,1);ce.basket.remove('xdm-test',0);
+  assert.equal(ce.basket.get('xdm-test').length,0);
+});

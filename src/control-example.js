@@ -81,10 +81,54 @@
     ];
     commands.forEach((c,i)=>{
       const item=typeof c==='string'?{label:'',text:c}:c;
-      lines.push(``,`// 터치 패널 버튼 ${i+1}번${item.label?` · ${item.label}`:''} (CR = $0D)`,`BUTTON_EVENT[dvTP,${i+1}]`,`{`,`  PUSH:`,`  {`,`    SEND_STRING ${dev},"'${item.text}',$0D"`,`  }`,`}`);
+      const enter=item.enter!==false;
+      lines.push(``,`// 터치 패널 버튼 ${i+1}번${item.label?` · ${item.label}`:''}${enter?' (CR = $0D)':''}`,`BUTTON_EVENT[dvTP,${i+1}]`,`{`,`  PUSH:`,`  {`,`    SEND_STRING ${dev},"'${item.text}'${enter?',$0D':''}"`,`  }`,`}`);
     });
     return lines.join('\n');
   }
+  // ---- 0.237 "내 AMX 구성"(장바구니): 07 화면 연출 시뮬레이터와 설정 명령에서 만든 커맨드를 담아 한 개의 AMX 코드로 묶는다 ----
+  // 항목은 {label,text,enter,source}. 같은 문자열은 한 번만 담고, 최대 60개. 저장은 이 브라우저에만(rtcom.amxBasket.<시리즈 id>.v1).
+  // 장바구니 코드는 amxCode와 같은 규칙(명령마다 터치 패널 버튼 하나, 담은 순서대로)이라 새 문법을 만들어 넣지 않는다.
+  const BASKET_MAX=60;
+  function basketClean(list,limit=BASKET_MAX){
+    return (Array.isArray(list)?list:[]).filter(x=>x&&typeof x.text==='string'&&x.text).slice(0,limit)
+      .map(x=>({label:String(x.label||'').slice(0,80),text:x.text,enter:x.enter!==false,source:String(x.source||'').slice(0,24)}));
+  }
+  function basketAdd(list,items){
+    const cur=basketClean(list);let added=0,dup=0,full=0;
+    for(const it of basketClean(items,Infinity)){
+      if(cur.some(c=>c.text===it.text&&c.enter===it.enter)){dup++;continue}
+      if(cur.length>=BASKET_MAX){full++;continue}
+      cur.push(it);added++;
+    }
+    return {list:cur,added,dup,full};
+  }
+  function basketRemove(list,index){const cur=basketClean(list);if(index>=0&&index<cur.length)cur.splice(index,1);return cur}
+  function basketMove(list,index,delta){
+    const cur=basketClean(list),to=index+delta;
+    if(index<0||index>=cur.length||to<0||to>=cur.length)return cur;
+    [cur[index],cur[to]]=[cur[to],cur[index]];return cur;
+  }
+  const basketCode=(spec,list)=>amxCode(spec,basketClean(list));
+  const basketNote=r=>r.added?`구성에 담았습니다(지금 ${r.list.length}개)`:r.full?`구성이 가득 찼습니다(최대 ${BASKET_MAX}개)`:'이미 담겨 있습니다';
+  const memoryBasket={};
+  const basketKey=id=>`rtcom.amxBasket.${id}.v1`;
+  const basket={
+    get(id){
+      try{const raw=localStorage.getItem(basketKey(id));if(raw)return basketClean(JSON.parse(raw))}catch{}
+      return basketClean(memoryBasket[id]);
+    },
+    set(id,list){
+      const clean=basketClean(list);memoryBasket[id]=clean;
+      try{localStorage.setItem(basketKey(id),JSON.stringify(clean))}catch{}
+      if(typeof document!=='undefined'&&typeof CustomEvent==='function')document.dispatchEvent(new CustomEvent('rt-amx-basket',{detail:{id}}));
+      return clean;
+    },
+    add(id,items){const r=basketAdd(basket.get(id),items);basket.set(id,r.list);return r},
+    remove(id,index){return basket.set(id,basketRemove(basket.get(id),index))},
+    move(id,index,delta){return basket.set(id,basketMove(basket.get(id),index,delta))},
+    clear(id){return basket.set(id,[])}
+  };
   // ---- 매트릭스 제품(QMS-44UX·QMS-88UX, spec.kind === 'matrix') ----
   // 근거: 사용자 매뉴얼 QMS-44UX 25·28쪽, QMS-88UX 14·28·31·36·37쪽. 형식은 * + 제품 ID + 명령 + 데이터 + ! + Enter(CR 0x0D).
   //   연결 C: Ixx Oyy 쌍을 콤마로 이어 한 번에 여러 개, 같은 입력의 출력은 하이픈 범위(예: *255CI01O01-10!)
@@ -345,7 +389,7 @@
   }
   // 설정 명령 패널(spec.builders): 명령을 고르고 매개변수를 넣으면 명령·HEX·AMX 한 줄이 바로 만들어진다.
   // 선택값은 이 브라우저에만 기억한다(rtcom.controlExample.<제품 id>.builder). 매트릭스 카드가 다시 그려져도 상태가 남도록 닫힘 변수로 둔다.
-  function createBuilderPanel(spec){
+  function createBuilderPanel(spec,opts={}){
     const list=spec.builders||[];
     const key=`rtcom.controlExample.${spec.id||'x'}.builder`;
     let st={sel:list[0]?.id,values:{},variant:spec.variants?.[0]?.id};
@@ -356,7 +400,7 @@
     const save=()=>{try{localStorage.setItem(key,JSON.stringify(st))}catch{}};
     const cur=()=>list.find(b=>b.id===st.sel)||list[0];
     const valuesOf=b=>({...builderDefaults(b),...(st.values[b.id]||{})});
-    let lastText='';
+    let lastText='',lastEnter=true;
     const control=(b,p,v)=>{
       const val=v[p.id];
       if(p.type==='select')return `<label>${esc(p.label)}<select data-ce-bp="${esc(p.id)}">${p.optional?`<option value=""${val===''?' selected':''}>(생략)</option>`:''}${(p.options||[]).map(o=>`<option value="${esc(o[0])}"${String(o[0])===String(val)?' selected':''}>${esc(o[1])}</option>`).join('')}</select></label>`;
@@ -366,10 +410,10 @@
     };
     function output(b){
       const r=buildCommand(spec,b,valuesOf(b),ctxOf());
-      if(r.error){lastText='';return `<p class="rt-ce-warn">${esc(r.error)}</p>`}
-      lastText=r.text;
+      if(r.error){lastText='';lastEnter=true;return `<p class="rt-ce-warn">${esc(r.error)}</p>`}
+      lastText=r.text;lastEnter=r.enter!==false;
       const dev=spec.amxDevice||'dvSwitcher';
-      return `<div class="rt-ce-head"><h3>${esc(b.title)}${cmdOf(b)?` (${esc(cmdOf(b))})`:''}</h3><button type="button" class="rt-pg-btn" data-ce-bcopy>복사</button><span class="rt-ce-copied" data-ce-bnote aria-live="polite"></span></div>
+      return `<div class="rt-ce-head"><h3>${esc(b.title)}${cmdOf(b)?` (${esc(cmdOf(b))})`:''}</h3><button type="button" class="rt-pg-btn" data-ce-bcopy>복사</button>${opts.basket?'<button type="button" class="rt-pg-btn rt-pg-primary" data-ce-badd title="이 명령을 아래 \"내 AMX 구성\"에 담습니다">+ 구성에 담기</button>':''}<span class="rt-ce-copied" data-ce-bnote aria-live="polite"></span></div>
         <pre class="rt-ce-cmd"><span class="rt-ce-line"><small>${esc(b.title)} · ${esc(spec.docLabel||'매뉴얼')} ${esc(b.page)}</small>${tokens(r.parts)}${r.enter===false?'':'<span class="rt-ce-cr" title="Enter · 0x0D">⏎</span>'}</span></pre>
         <p class="rt-ce-hex">HEX <code>${esc(toHex(r.text,r.enter!==false))}</code>${r.enter===false?' · 이 형식은 매뉴얼에 Enter가 적혀 있지 않아 붙이지 않았습니다':''}</p>
         <pre class="rt-ce-cmd rt-ce-code rt-ce-oneline">SEND_STRING ${esc(dev)},"'${esc(r.text)}'${r.enter===false?'':',$0D'}"</pre>`;
@@ -409,6 +453,12 @@
         el.querySelector('[data-ce-bout]').innerHTML=output(b);
       });
       el.addEventListener('click',event=>{
+        if(event.target.closest('[data-ce-badd]')&&opts.basket&&lastText){
+          const b=cur(),note=el.querySelector('[data-ce-bnote]');
+          const r=basket.add(spec.id||'x',[{label:`${b.title}${cmdOf(b)?` (${cmdOf(b)})`:''}`,text:lastText,enter:lastEnter,source:'설정 명령'}]);
+          if(note){note.textContent=basketNote(r);setTimeout(()=>{note.textContent=''},3500)}
+          return;
+        }
         if(!event.target.closest('[data-ce-bcopy]')||!lastText)return;
         const note=el.querySelector('[data-ce-bnote]');
         const done=()=>{if(note){note.textContent='복사했습니다';setTimeout(()=>{note.textContent=''},1800)}};
@@ -420,13 +470,48 @@
   }
   // 빌더만 있는 제품(모듈러 매트릭스 시리즈 등): 통신 설정과 AMX 시작 코드, 설정 명령 패널.
   function mountBuilders(root,spec){
-    const baud=spec.serial?.baud||9600;
+    const baud=spec.serial?.baud||9600,bid=spec.id||'x';
     root.innerHTML=`<div class="rt-ce-block"><div class="rt-ce-head"><h3>통신 설정과 AMX 시작 코드</h3><button type="button" class="rt-pg-btn" data-ce-copy="amx">복사</button><span class="rt-ce-copied" data-ce-note="amx" aria-live="polite"></span></div>
       <pre class="rt-ce-cmd rt-ce-code" data-ce-text="amx">${esc(amxCode(spec,[]))}</pre></div>
       <div data-ce-builders></div>
+      <div class="rt-ce-block rt-ce-basket" data-ce-basket></div>
       <p class="rt-pg-hint">※ 근거: ${esc(spec.source)}. 통신 ${baud}bps ${esc(spec.serial?.confirmed||'')}. 문장 끝에 Enter를 붙입니다. 제품 ID는 ${esc(spec.productId)}입니다(${esc(spec.productIdNote||'')}).</p>
       <p class="rt-pg-hint">※ ${esc(spec.limits||'')} AMX 장치 번호와 버튼 번호는 현장에 맞게 바꾸세요.</p>`;
-    createBuilderPanel(spec).mount(root.querySelector('[data-ce-builders]'));
+    createBuilderPanel(spec,{basket:true}).mount(root.querySelector('[data-ce-builders]'));
+    const box=root.querySelector('[data-ce-basket]');
+    const flash=text=>{const note=box.querySelector('[data-ce-bkmsg]');if(note){note.textContent=text;setTimeout(()=>{note.textContent=''},2500)}};
+    const renderBasket=()=>{
+      const list=basket.get(bid);
+      box.innerHTML=`<div class="rt-ce-head"><h3>내 AMX 구성 · ${list.length}개</h3>${list.length?'<button type="button" class="rt-pg-btn" data-ce-bk="copy">AMX 코드 복사</button><button type="button" class="rt-pg-btn" data-ce-bk="download">파일로 저장(.axs)</button><button type="button" class="rt-pg-btn" data-ce-bk="clear">전부 비우기</button>':''}<span class="rt-ce-copied" data-ce-bkmsg aria-live="polite"></span></div>
+      ${list.length?`<ol class="rt-ce-bklist">${list.map((x,i)=>`<li><span class="rt-ce-bkno">버튼 ${i+1}</span><span class="rt-ce-bkbody"><b>${esc(x.label||'명령')}</b><code>${esc(x.text)}</code></span>${x.source?`<span class="rt-ce-bksrc">${esc(x.source)}</span>`:''}<span class="rt-ce-bkact"><button type="button" class="rt-pg-btn" data-ce-bk="up" data-i="${i}" aria-label="버튼 ${i+1} 위로"${i===0?' disabled':''}>↑</button><button type="button" class="rt-pg-btn" data-ce-bk="down" data-i="${i}" aria-label="버튼 ${i+1} 아래로"${i===list.length-1?' disabled':''}>↓</button><button type="button" class="rt-pg-btn" data-ce-bk="del" data-i="${i}" aria-label="버튼 ${i+1} 빼기">×</button></span></li>`).join('')}</ol>
+      <pre class="rt-ce-cmd rt-ce-code" data-ce-bkcode>${esc(basketCode(spec,list))}</pre>`
+      :'<p class="rt-pg-hint">아직 담은 명령이 없습니다. 위 "화면 연출 시뮬레이터"의 <b>AMX 구성에 담기</b> 버튼이나, 이 카드 "설정 명령"의 <b>+ 구성에 담기</b> 버튼을 누르면 여기에 쌓이고, 담은 순서대로 터치 패널 버튼 하나씩 한 개의 AMX 코드가 만들어집니다.</p>'}
+      <p class="rt-pg-hint">담은 목록은 이 브라우저에만 저장됩니다. 버튼 번호는 담은 순서이며 ↑ ↓로 바꿀 수 있습니다. 파일의 한글 주석이 NetLinx Studio에서 깨져 보이면 주석 줄(//)만 지우고 쓰세요. 동작에는 영향이 없습니다.</p>`;
+    };
+    renderBasket();
+    const onBasket=event=>{
+      if(!root.isConnected){document.removeEventListener('rt-amx-basket',onBasket);return}
+      if(event.detail?.id===bid)renderBasket();
+    };
+    document.addEventListener('rt-amx-basket',onBasket);
+    box.addEventListener('click',event=>{
+      const btn=event.target.closest('[data-ce-bk]');if(!btn)return;
+      const act=btn.dataset.ceBk,i=Number(btn.dataset.i);
+      if(act==='up')basket.move(bid,i,-1);
+      else if(act==='down')basket.move(bid,i,1);
+      else if(act==='del')basket.remove(bid,i);
+      else if(act==='clear')basket.clear(bid);
+      else if(act==='copy'){
+        const code=basketCode(spec,basket.get(bid));
+        const done=()=>flash('복사했습니다');
+        if(navigator.clipboard?.writeText)navigator.clipboard.writeText(code).then(done,()=>flash('복사하지 못했습니다. 아래 코드를 직접 선택해 복사하세요.'));
+        else{const pre=box.querySelector('[data-ce-bkcode]');const r=document.createRange();r.selectNodeContents(pre);const sl=getSelection();sl.removeAllRanges();sl.addRange(r);done()}
+      }else if(act==='download'){
+        const blob=new Blob([basketCode(spec,basket.get(bid))+'\n'],{type:'text/plain;charset=utf-8'});
+        const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`rtcom-${bid}-amx.axs`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+        flash('파일로 저장했습니다');
+      }
+    });
     root.addEventListener('click',event=>{
       const btn=event.target.closest('[data-ce-copy]');if(!btn)return;
       const pre=root.querySelector('[data-ce-text="amx"]'),note=root.querySelector('[data-ce-note="amx"]');
@@ -515,5 +600,5 @@
       try{mount(el,JSON.parse(el.dataset.controlExample))}catch{el.textContent='커맨드 예시를 불러오지 못했습니다.'}
     });
   }
-  return {parseNumList,formatNumList,buildCommand,builderDefaults,routeCommand,presetCommand,switchCommand,volumeCommand,muteCommand,volumeCode,dbOf,toHex,amxCode,mount,mountAll};
+  return {parseNumList,formatNumList,buildCommand,builderDefaults,routeCommand,presetCommand,switchCommand,volumeCommand,muteCommand,volumeCode,dbOf,toHex,amxCode,basketClean,basketAdd,basketRemove,basketMove,basketCode,basket,BASKET_MAX,mount,mountAll};
 });

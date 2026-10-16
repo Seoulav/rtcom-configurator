@@ -172,3 +172,17 @@ test('0.235: 카드 경계에 걸친 창은 걸친 카드마다 레이어 1개�
   // 너비·높이가 0인 창은 레이어를 쓰지 않는다.
   assert.equal(L.cardUsage(L.normalize({cols:1,rows:1,windows:[{input:1,x:0,y:0,w:0,h:0}]}))[0].used,0);
 });
+
+test('0.237: AMX 구성에 담을 항목은 시뮬레이터가 만든 커맨드 문자열 그대로다',()=>{
+  const wos=L.PRESETS[0].state,hos=L.HOS_PRESETS[0].state;
+  const w=L.amxItems('WOS100',wos,hos,{});
+  assert.equal(w.length,1);assert.equal(w[0].text,L.commandFor(wos).command);
+  const h=L.amxItems('HOS100',wos,hos,{});
+  const hr=L.hosCommandFor(hos);
+  assert.deepEqual(h.map(x=>x.text),[hr.switching,hr.command]);
+  const all=L.amxItems('ALL',wos,hos,{wos:true,hos:true});
+  assert.equal(all.length,3);
+  assert.deepEqual(L.amxItems('ALL',wos,hos,{wos:false,hos:true}).map(x=>x.text),[hr.switching,hr.command]);
+  assert.deepEqual(L.amxItems('ALL',wos,hos,{wos:false,hos:false}),[]);
+  assert.ok(all.every(x=>x.source==='07 시뮬레이터'&&x.label));
+});

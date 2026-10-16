@@ -183,6 +183,14 @@
     if(!lines.length)warnings.push('포함한 카드가 없습니다. WOS100 또는 HOS100을 구성에 포함하세요.');
     return {lines,warnings,overlap:!!(wosRange&&hosRange&&hosRange[0]<=wosRange[1]&&hosRange[1]>=wosRange[0]),nextFreePort:wosRange?wosRange[1]+1:1};
   }
+  // 0.237 "내 AMX 구성"에 담을 항목(src/control-example.js의 장바구니). card: 지금 보는 화면(WOS100·HOS100·ALL).
+  // WOS100은 OW 한 줄, HOS100은 입력 연결(C)과 OQ 레이아웃 두 줄, ALL은 포함한 카드의 줄 전부. 시뮬레이터가 만든 문자열을 그대로 쓴다.
+  function amxItems(card,wos,hos,include){
+    const source='07 시뮬레이터';
+    if(card==='ALL')return combinedCommands(wos,hos,include).lines.map(l=>({label:l.label,text:l.text,source}));
+    if(card==='HOS100'){const r=hosCommandFor(hos);return [r.switching?{label:'XDM-HOS100 입력 → 포트 연결',text:r.switching,source}:null,{label:`XDM-HOS100 멀티뷰 레이아웃 ${r.layout.code}`,text:r.command,source}].filter(Boolean)}
+    return [{label:'XDM-WOS100 월 오버레이(OW)',text:commandFor(wos).command,source}];
+  }
   const HOS_PRESETS=[
     {id:'hos-guide-stairs',name:'가이드 예제 · 계단식 사용자 배치(창 4개, 4K/60)',source:'Command Guide 28쪽',
       state:{timing:14,startPort:1,layout:'L00',priority:'4321',windows:[{input:1,x:0,y:0,w:960,h:540},{input:2,x:960,y:540,w:960,h:540},{input:3,x:1920,y:1080,w:960,h:540},{input:4,x:2880,y:1620,w:960,h:540}]},
@@ -373,6 +381,9 @@
     const option=(v,label,cur,disabled)=>`<option value="${esc(v)}"${String(v)===String(cur)?' selected':''}${disabled?' disabled':''}>${esc(label)}</option>`;
     const cardSeg=()=>`<div class="rt-ls-cardseg"><span class="rt-pg-seg" role="group" aria-label="출력 카드 선택"><button type="button" class="${card==='WOS100'?'rt-pg-on':''}" data-ls-card="WOS100" aria-pressed="${card==='WOS100'}">XDM-WOS100 · 월 오버레이(OW)</button><button type="button" class="${card==='HOS100'?'rt-pg-on':''}" data-ls-card="HOS100" aria-pressed="${card==='HOS100'}">XDM-HOS100 · 한 화면 멀티뷰(OQ)</button><button type="button" class="${card==='ALL'?'rt-pg-on':''}" data-ls-card="ALL" aria-pressed="${card==='ALL'}">전체 커맨드(두 카드)</button></span>
       ${card==='ALL'?`<label class="rt-ls-check rt-ls-include" title="전체 커맨드에 WOS100 커맨드를 넣을지 정합니다"><input type="checkbox" data-ls-include="wos"${include.wos?' checked':''}> WOS100 포함</label><label class="rt-ls-check rt-ls-include" title="전체 커맨드에 HOS100 커맨드를 넣을지 정합니다"><input type="checkbox" data-ls-include="hos"${include.hos?' checked':''}> HOS100 포함</label>`:''}</div>`;
+    // 0.237: 장바구니(RtControlExample.basket)가 있을 때만 "AMX 구성에 담기" 버튼을 보여 준다. 담은 항목은 아래 08 카드 "내 AMX 구성"에서 한 개의 AMX 코드가 된다.
+    const canBasket=()=>!!(globalThis.RtControlExample&&globalThis.RtControlExample.basket);
+    const amxBtn=disabled=>canBasket()?`<button type="button" class="rt-pg-btn rt-pg-primary" data-ls-amx${disabled?' disabled':''} title="이 커맨드를 아래 AMX 통합 제어 카드의 &quot;내 AMX 구성&quot;에 담습니다">AMX 구성에 담기</button>`:'';
     // ---- 전체 커맨드(두 카드) ----
     const renderAll=()=>{
       const c=combinedCommands(state,hos,include),geo=geometry(state),hs=normalizeHos(hos),hl=hosLayout(hs.layout),ht=timingOf(hs.timing);
@@ -382,7 +393,7 @@
         <div class="rt-ls-allcard${include.wos?'':' is-off'}"><h4>XDM-WOS100 · 월 오버레이</h4><div class="rt-ls-mini" style="aspect-ratio:${geo.width} / ${geo.height}">${portMapFor(state).map((row,r)=>row.map((port,col)=>`<i style="left:${(col/geo.cols)*100}%;top:${(r/geo.rows)*100}%;width:${100/geo.cols}%;height:${100/geo.rows}%"><span>${port}</span></i>`).join('')).join('')}${state.windows.map((w,i)=>`<b style="left:${(w.x/geo.width)*100}%;top:${(w.y/geo.height)*100}%;width:${(w.w/geo.width)*100}%;height:${(w.h/geo.height)*100}%;--rt-ls-color:${colorOf(i)}">입력 ${w.input}</b>`).join('')}</div><button type="button" class="rt-pg-btn" data-ls-card="WOS100">WOS100 편집</button></div>
         <div class="rt-ls-allcard${include.hos?'':' is-off'}"><h4>XDM-HOS100 · 한 화면 멀티뷰</h4><div class="rt-ls-mini" style="aspect-ratio:${ht.w} / ${ht.h}"><i style="left:0;top:0;width:100%;height:100%"><span>${hs.startPort}</span></i>${hosWindows(hs).filter(w=>w.w>0&&w.h>0).map(w=>`<b style="left:${(w.x/ht.w)*100}%;top:${(w.y/ht.h)*100}%;width:${(w.w/ht.w)*100}%;height:${(w.h/ht.h)*100}%;--rt-ls-color:${colorOf(w.n-1)}">창 ${w.n} · 입력 ${w.input}</b>`).join('')}</div><button type="button" class="rt-pg-btn" data-ls-card="HOS100">HOS100 편집</button></div>
       </div>
-      <div class="rt-ls-cmd-head"><h3>전체 커맨드</h3><button type="button" class="rt-pg-btn" data-ls-copy${c.lines.length?'':' disabled'}>전부 복사</button><span class="rt-ls-copied" data-ls-copied aria-live="polite"></span>${c.overlap?`<button type="button" class="rt-pg-btn" data-ls-hos-port="${c.nextFreePort}">HOS100 시작 포트를 ${c.nextFreePort}번으로</button>`:''}</div>
+      <div class="rt-ls-cmd-head"><h3>전체 커맨드</h3><button type="button" class="rt-pg-btn" data-ls-copy${c.lines.length?'':' disabled'}>전부 복사</button>${amxBtn(!c.lines.length)}<span class="rt-ls-copied" data-ls-copied aria-live="polite"></span>${c.overlap?`<button type="button" class="rt-pg-btn" data-ls-hos-port="${c.nextFreePort}">HOS100 시작 포트를 ${c.nextFreePort}번으로</button>`:''}</div>
       <pre class="rt-ls-cmd" data-ls-cmd>${c.lines.length?c.lines.map((l,i)=>`<span class="rt-ls-cmdline"><small>${i+1}. ${esc(l.label)}</small>${esc(l.text)}</span>`).join('\n'):'<span class="rt-ls-cmdline"><small>포함한 카드가 없습니다.</small></span>'}</pre>
       <p class="rt-pg-hint">순서대로 한 줄씩 보내고 각 줄 끝에 Ctrl+Enter(0x0D)를 붙입니다. HOS100은 입력 연결(C) 뒤에 레이아웃(OQ)을 보냅니다. 두 카드는 서로 다른 출력 슬롯에 꽂혀 있어야 하므로 출력 포트 범위가 겹치면 안 됩니다.</p>
       ${c.warnings.length?`<ul class="rt-ls-warn">${c.warnings.map(w=>`<li>${esc(w)}</li>`).join('')}</ul>`:''}${fieldNotesHtml()}`;
@@ -418,7 +429,7 @@
           ${['x','y','w','h'].map(k=>`<td>${on?`<input type="number" min="0" step="10" data-ls-hos-win="${k}" data-ls-win-index="${i}" value="${w[k]}" aria-label="창 ${i+1} ${k.toUpperCase()}">`:`<span class="rt-ls-fixedval">${shown?shown[k]:'—'}</span>`}</td>`).join('')}
           <td class="rt-ls-portstat">${r.ports[i]}</td>${L.code==='L00'?`<td class="rt-ls-stack"><b>레이어 ${rank}</b>${i===topIdx?' · 맨 위':` <button type="button" class="rt-ls-top" data-ls-hos-top="${i}" title="이 창의 입력·좌표를 맨 위 자리(포트 ${hos.startPort+topIdx})로 옮깁니다">맨 위로</button>`}</td>`:''}${L.code==='L00'||L.code==='L09'?`<td>${w.w>0&&w.h>0&&(L.code==='L00'||i===1)?`<button type="button" class="rt-ls-del" data-ls-hos-off="${i}" title="창 ${i+1} 끄기(W0 H0). 너비·높이에 값을 넣으면 다시 켜집니다" aria-label="창 ${i+1} 끄기">×</button>`:''}</td>`:''}</tr>`}).join('')}
       </tbody></table></div>
-      <div class="rt-ls-cmd-head"><h3>커맨드</h3><button type="button" class="rt-pg-btn" data-ls-copy>복사</button><span class="rt-ls-copied" data-ls-copied aria-live="polite"></span></div>
+      <div class="rt-ls-cmd-head"><h3>커맨드</h3><button type="button" class="rt-pg-btn" data-ls-copy>복사</button>${amxBtn(false)}<span class="rt-ls-copied" data-ls-copied aria-live="polite"></span></div>
       <pre class="rt-ls-cmd" data-ls-cmd>${r.switching?`<span class="rt-ls-cmdline"><small>① 입력 → 포트 연결</small>${esc(r.switching)}</span>
 `:''}<span class="rt-ls-cmdline"><small>② 멀티뷰 레이아웃</small>${tokens(r.parts)}</span>
 <span class="rt-ls-cmdline rt-ls-cmdline-off"><small>멀티뷰 끄기(일반 스위칭으로)</small>${esc(r.off)}</span></pre>
@@ -478,7 +489,7 @@
           <td class="rt-ls-stack"><b>레이어 ${order.indexOf(i)+1}</b>${order.indexOf(i)===0?' · 맨 위':''}${order.indexOf(i)===0?'':` <button type="button" class="rt-ls-top" data-ls-top="${i}" title="이 창이 맨 위 포트를 받도록 순서를 바꿉니다">맨 위로</button>`}</td>
           <td><button type="button" class="rt-ls-del" data-ls-del="${i}" aria-label="창 ${i+1} 삭제">×</button></td></tr>`).join('')})():'<tr><td colspan="10" class="rt-ls-empty">아직 창이 없습니다. "+ 창 추가"를 누르거나 프리셋을 불러오세요.</td></tr>'}
       </tbody></table></div>
-      <div class="rt-ls-cmd-head"><h3>커맨드</h3><button type="button" class="rt-pg-btn" data-ls-copy>복사</button><span class="rt-ls-copied" data-ls-copied aria-live="polite"></span></div>
+      <div class="rt-ls-cmd-head"><h3>커맨드</h3><button type="button" class="rt-pg-btn" data-ls-copy>복사</button>${amxBtn(false)}<span class="rt-ls-copied" data-ls-copied aria-live="polite"></span></div>
       <pre class="rt-ls-cmd" data-ls-cmd>${result.parts.map(p=>`<span class="rt-ls-tok rt-ls-tok-${p.kind}"${p.kind==='window'?` style="--rt-ls-color:${colorOf(p.window)}"`:''} title="${esc(p.title)}">${esc(p.text)}</span>`).join('')}</pre>
       <p class="rt-pg-hint">RS-232 또는 LAN으로 보낼 때 끝에 Ctrl+Enter(0x0D)를 붙입니다. 성공하면 장비가 <code>*${state.id}sOW…!</code>로 응답합니다. 토막 위에 마우스를 올리면 뜻이 보입니다. 겹침 순서는 우선순위 <code>P${state.priority}</code>와 창이 받은 포트 번호로 정해지며(${state.priority==='4321'?'큰 포트 번호가 위':'작은 포트 번호가 위'}), 레이어 번호는 1이 맨 위입니다. 표의 "맨 위로"를 누르면 그 창이 맨 위 포트를 받도록 순서를 바꿉니다. 캔버스도 같은 순서로 겹쳐 보입니다. 창을 누른 뒤 <kbd>Delete</kbd> 키를 누르면 그 창을 지웁니다(화살표 키는 10px, Shift와 함께 100px 이동).</p>
       ${result.warnings.length?`<ul class="rt-ls-warn">${result.warnings.map(w=>`<li>${esc(w)}</li>`).join('')}</ul>`:''}
@@ -537,6 +548,14 @@
       if(hosTop){const i=Number(hosTop.dataset.lsHosTop);hos=hosBringToFront(hos,i);selected=hos.priority==='4321'?3:0;saveKey(HOS_KEY,hos);render();return}
       const del=event.target.closest('[data-ls-del]');
       if(del){const i=Number(del.dataset.lsDel);const windows=state.windows.filter((_,k)=>k!==i);selected=Math.min(i,windows.length-1);update({windows},false);return}
+      if(event.target.closest('[data-ls-amx]')){
+        const note=root.querySelector('[data-ls-copied]');
+        if(!canBasket())return;
+        const r=globalThis.RtControlExample.basket.add('xdm',amxItems(card,state,hos,include));
+        const text=r.added?`AMX 구성에 ${r.added}개 담았습니다${r.dup?`(이미 담긴 ${r.dup}개 제외)`:''}. 아래 "내 AMX 구성"에서 코드를 확인하세요`:r.full?'AMX 구성이 가득 찼습니다':'이미 담겨 있습니다';
+        if(note){note.textContent=text;setTimeout(()=>{note.textContent=''},4000)}
+        return;
+      }
       if(event.target.closest('[data-ls-copy]')){
         const text=card==='ALL'?combinedCommands(state,hos,include).lines.map(l=>l.text).join('\n'):card==='HOS100'?(r=>[r.switching,r.command].filter(Boolean).join('\n'))(hosCommandFor(hos)):commandFor(state).command,note=root.querySelector('[data-ls-copied]');
         const done=()=>{if(note){note.textContent='복사했습니다';setTimeout(()=>{note.textContent=''},1800)}};
@@ -607,5 +626,5 @@
   }
   function mountAll(scopeEl){(scopeEl||document).querySelectorAll('[data-layout-sim-root]').forEach(mount)}
 
-  return {TIMINGS,CLEAR_MODES,MAPPINGS,PRESETS,HOS_LAYOUTS,HOS_PRESETS,GUIDE_PDF,MAX_COLS,MAX_ROWS,MAX_WINDOWS,normalize,geometry,portMapFor,assignPorts,cardUsage,commandFor,coverageFor,stackOrder,bringToFront,normalizeHos,hosWindows,hosCommandFor,hosPortStatus,hosBringToFront,combinedCommands,FIELD_NOTES,mount,mountAll};
+  return {TIMINGS,CLEAR_MODES,MAPPINGS,PRESETS,HOS_LAYOUTS,HOS_PRESETS,GUIDE_PDF,MAX_COLS,MAX_ROWS,MAX_WINDOWS,normalize,geometry,portMapFor,assignPorts,cardUsage,commandFor,coverageFor,stackOrder,bringToFront,normalizeHos,hosWindows,hosCommandFor,hosPortStatus,hosBringToFront,combinedCommands,amxItems,FIELD_NOTES,mount,mountAll};
 });
