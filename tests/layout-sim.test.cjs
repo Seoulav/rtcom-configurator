@@ -6,12 +6,21 @@ const L=require('../src/layout-sim.js');
 // 0.224 XDM 화면 연출 시뮬레이터(WOS100 월 오버레이). 근거: 알티컴 XDM Command Guide 1013(44~55쪽, 0.209 공개본)과 알티컴 확인(0.210·0.214).
 // 가이드에 적힌 커맨드 원문이 글자 하나 다르지 않게 나와야 한다.
 
-test('0.224: 프리셋 커맨드가 가이드 예제 2·3 원문, 그리고 규칙으로 계산한 기본·비율 예시 값과 똑같다',()=>{
+test('0.224/0.233: 프리셋 커맨드가 가이드 예제 2·3 원문, 기본 예시 계산값, 현장 메모 원문 3개와 똑같다',()=>{
   const checked=L.PRESETS.filter(p=>p.expected);
-  assert.equal(checked.length,5);
+  assert.equal(checked.length,6);
   for(const p of checked)assert.equal(L.commandFor(p.state).command,p.expected,p.id);
   assert.equal(L.PRESETS[0].state.mapping,'card','기본 프리셋은 알티컴 확인 배치');
-  assert.ok(!JSON.stringify(L.PRESETS).includes('startPort":9'),'특정 현장의 포트 번호·배치값은 넣지 않는다(0.209 결정)');
+  // 0.233 사용자 결정 2026-10-16 "2안으로 전부 공개해": 현장 메모 원문(출력 9~12번) 3개를 그대로 둔다
+  const memo=L.PRESETS.filter(p=>p.id.startsWith('memo-'));
+  assert.deepEqual(memo.map(p=>p.expected),[
+    '*255OWO009-012W14H01V01P4321O000I001O009X0Y295W1920H1571I002O010X1920Y295W1920H1571!',
+    '*255OWO009-012W14H01V01P4321O000I003O009X0Y0W3840H2160!',
+    '*255OWO009-012W14H01V01P4321O000I007O009X0Y295W3840H1571!']);
+  // 참고 커맨드(가이드 본문에 없는 현장 확인값)도 함께 공개
+  const text=JSON.stringify(L.FIELD_NOTES);
+  for(const cmd of ['*255IVI001I002I003M03!','*255IVI001I002M00!','*255IVI003M00!','*255IEI009M18!','*255IEI009M19!'])assert.ok(text.includes(cmd),cmd);
+  assert.ok(/2112x1728/.test(text)&&/딥 스위치 1번/.test(text));
 });
 
 test('0.224: 포트 배치 — card는 디스플레이 1대 = 카드 1장(OUT 1), guide는 디스플레이 2×2 = 카드 1장(가이드 46~47쪽)',()=>{
