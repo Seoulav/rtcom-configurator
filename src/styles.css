@@ -1825,6 +1825,35 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-ce-cr{margin-left:6px;color:var(--rt-fg-9aa3b2);font-weight:500}
 #rtcom-design .rt-ce-hex{margin:6px 0 0;font:500 12px/1.5 var(--pg-sans);color:var(--pg-muted)}
 #rtcom-design .rt-ce-hex code{font:600 12px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--pg-ink);word-break:break-word}
+/* 0.239 AMX 통신 방식 막대(LAN 기본 / RS-232, IP·포트 입력) */
+#rtcom-design .rt-ce-comm{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 14px;margin:10px 0 0}
+#rtcom-design .rt-ce-comm label{display:flex;flex-direction:column;gap:4px;font:600 12px/1.2 var(--pg-sans);color:var(--pg-muted)}
+#rtcom-design .rt-ce-comm .rt-ce-comm-lan{display:flex;flex-wrap:wrap;gap:10px 14px}
+#rtcom-design .rt-ce-comm .rt-ce-comm-lan[hidden]{display:none}
+#rtcom-design .rt-ce-comm select,#rtcom-design .rt-ce-comm input{min-height:36px;padding:0 12px;border-radius:10px;border:1px solid var(--pg-line,rgba(120,120,128,.45));background:var(--pg-card,transparent);color:var(--pg-ink);font:500 14px/1.2 var(--pg-sans)}
+#rtcom-design .rt-ce-comm input{width:160px}
+#rtcom-design .rt-ce-comm input[data-ce-comm="port"]{width:96px}
+#rtcom-design .rt-ce-comm .rt-pg-hint{flex:1 1 100%;margin:0}
+@media (max-width:640px){#rtcom-design .rt-ce-comm label,#rtcom-design .rt-ce-comm select,#rtcom-design .rt-ce-comm input,#rtcom-design .rt-ce-comm input[data-ce-comm="port"]{width:100%}}
+/* 0.239 AMX 코드 잠금 상자: 비밀번호를 넣으면 AMX 코드가 열린다(커맨드 문자열·HEX는 잠그지 않음) */
+#rtcom-design .rt-ce-lock{margin-top:10px;padding:14px 16px;border-radius:14px;border:1px dashed var(--pg-line,rgba(120,120,128,.45));background:var(--pg-field-bg,rgba(120,120,128,.12))}
+#rtcom-design .rt-ce-lock-msg{margin:0 0 10px;font:500 13px/1.6 var(--pg-sans);color:var(--pg-ink)}
+#rtcom-design .rt-ce-lockform{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+#rtcom-design .rt-ce-lockform label{display:flex;align-items:center;gap:8px;font:600 12px/1.2 var(--pg-sans);color:var(--pg-muted)}
+#rtcom-design .rt-ce-lockform input{min-height:36px;min-width:180px;padding:0 12px;border-radius:10px;border:1px solid var(--pg-line,rgba(120,120,128,.45));background:var(--pg-card,transparent);color:var(--pg-ink);font:500 14px/1.2 var(--pg-sans)}
+@media (max-width:640px){#rtcom-design .rt-ce-lockform label,#rtcom-design .rt-ce-lockform input{width:100%}#rtcom-design .rt-ce-lockform label{flex-direction:column;align-items:flex-start}}
+/* 0.239 내 AMX 구성(장바구니): 시뮬레이터·설정 명령에서 담은 커맨드를 버튼 순서대로 보여 준다 */
+#rtcom-design .rt-ce-basket .rt-ce-head{flex-wrap:wrap}
+#rtcom-design .rt-ce-bklist{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+#rtcom-design .rt-ce-bklist li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:6px 12px;align-items:center;padding:10px 12px;border-radius:14px;background:var(--pg-field-bg,rgba(120,120,128,.12))}
+#rtcom-design .rt-ce-bkno{font:700 12px/1.2 var(--pg-sans);color:var(--pg-muted);white-space:nowrap}
+#rtcom-design .rt-ce-bkbody{display:flex;flex-direction:column;gap:2px;min-width:0}
+#rtcom-design .rt-ce-bkbody b{font:700 13px/1.35 var(--pg-sans);color:var(--pg-ink)}
+#rtcom-design .rt-ce-bkbody code{font:500 12px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--pg-ink);word-break:break-all}
+#rtcom-design .rt-ce-bksrc{grid-column:2;font:600 12px/1.2 var(--pg-sans);color:var(--pg-muted)}
+#rtcom-design .rt-ce-bkact{grid-column:3;grid-row:1 / span 2;display:flex;gap:6px}
+#rtcom-design .rt-ce-bkact .rt-pg-btn{min-height:32px;min-width:36px;padding:0 10px}
+@media (max-width:640px){#rtcom-design .rt-ce-bklist li{grid-template-columns:minmax(0,1fr);}#rtcom-design .rt-ce-bksrc,#rtcom-design .rt-ce-bkact{grid-column:1;grid-row:auto}}
 @media (max-width:640px){#rtcom-design .rt-ce-controls label,#rtcom-design .rt-ce-controls select{width:100%}#rtcom-design .rt-ce-controls input[type=number]{width:100%}}
 #rtcom-design .rt-ce-grid{display:grid;grid-template-columns:auto repeat(var(--rt-ce-cols,2),minmax(0,1fr));gap:8px;margin-top:10px;align-items:stretch}
 #rtcom-design .rt-ce-corner{font:600 12px/1.2 var(--pg-sans);color:var(--pg-muted);align-self:center}
