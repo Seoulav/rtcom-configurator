@@ -240,6 +240,15 @@
       return {index,slots,ports,missing};
     });
   }
+  // 카드별 레이어 사용량(0.235, 사용자 질문 2026-10-16 "중간 분할 점에 레이어를 배치하면 어떻게 레이어 카운팅이 되는거야?"):
+  // 창 하나는 걸치는 카드마다 포트(레이어) 1개를 쓰므로, 카드마다 4개 중 몇 개를 어느 창이 쓰는지 센다. overflow는 포트가 없어 배정되지 못한 창 번호이다.
+  function cardUsage(state){
+    const s=normalize(state),geo=geometry(s),assigned=assignPorts(s);
+    const cards=Array.from({length:geo.slots},(_,slot)=>({slot:slot+1,firstPort:geo.startPort+slot*4,lastPort:geo.startPort+slot*4+3,used:0,free:4,ports:[],windows:[],overflow:[]}));
+    assigned.forEach(a=>{let k=0;a.slots.forEach(slot=>{if(a.missing.includes(slot+1)){cards[slot].overflow.push(a.index+1);return}cards[slot].ports.push(a.ports[k++]);cards[slot].windows.push(a.index+1)})});
+    cards.forEach(c=>{c.used=c.ports.length;c.free=4-c.used});
+    return cards;
+  }
   function clearSegment(geo,mode){
     if(mode==='o000')return 'O000';
     if(mode==='none')return '';
@@ -363,7 +372,7 @@
     let selected=state.windows.length?0:-1;
     const option=(v,label,cur,disabled)=>`<option value="${esc(v)}"${String(v)===String(cur)?' selected':''}${disabled?' disabled':''}>${esc(label)}</option>`;
     const cardSeg=()=>`<div class="rt-ls-cardseg"><span class="rt-pg-seg" role="group" aria-label="출력 카드 선택"><button type="button" class="${card==='WOS100'?'rt-pg-on':''}" data-ls-card="WOS100" aria-pressed="${card==='WOS100'}">XDM-WOS100 · 월 오버레이(OW)</button><button type="button" class="${card==='HOS100'?'rt-pg-on':''}" data-ls-card="HOS100" aria-pressed="${card==='HOS100'}">XDM-HOS100 · 한 화면 멀티뷰(OQ)</button><button type="button" class="${card==='ALL'?'rt-pg-on':''}" data-ls-card="ALL" aria-pressed="${card==='ALL'}">전체 커맨드(두 카드)</button></span>
-      <label class="rt-ls-check rt-ls-include"><input type="checkbox" data-ls-include="wos"${include.wos?' checked':''}> WOS100 포함</label><label class="rt-ls-check rt-ls-include"><input type="checkbox" data-ls-include="hos"${include.hos?' checked':''}> HOS100 포함</label></div>`;
+      ${card==='ALL'?`<label class="rt-ls-check rt-ls-include" title="전체 커맨드에 WOS100 커맨드를 넣을지 정합니다"><input type="checkbox" data-ls-include="wos"${include.wos?' checked':''}> WOS100 포함</label><label class="rt-ls-check rt-ls-include" title="전체 커맨드에 HOS100 커맨드를 넣을지 정합니다"><input type="checkbox" data-ls-include="hos"${include.hos?' checked':''}> HOS100 포함</label>`:''}</div>`;
     // ---- 전체 커맨드(두 카드) ----
     const renderAll=()=>{
       const c=combinedCommands(state,hos,include),geo=geometry(state),hs=normalizeHos(hos),hl=hosLayout(hs.layout),ht=timingOf(hs.timing);
@@ -402,12 +411,12 @@
           const ranked=(L.code==='L00'||L.code==='L09')?[...r.windows.keys()].filter(i=>r.windows[i].w>0&&r.windows[i].h>0).sort((a,b)=>zOf(b)-zOf(a)):[];const layerOf=i=>ranked.indexOf(i)+1;
           return r.windows.map((w,i)=>w.w>0&&w.h>0?`<div class="rt-ls-win${w.free?'':' is-fixed'}${w.n-1===selected&&w.free?' is-selected':''}" data-ls-win="${w.n-1}"${w.free?' tabindex="0"':''} style="left:${(w.x/t.w)*100}%;top:${(w.y/t.h)*100}%;width:${(w.w/t.w)*100}%;height:${(w.h/t.h)*100}%;z-index:${zOf(i)};--rt-ls-color:${colorOf(w.n-1)}" aria-label="창 ${w.n} 입력 ${w.input}">${layerOf(i)?`<span class="rt-ls-win-layer${layerOf(i)===1?' is-top':''}" title="겹침 순서 · 1이 맨 위">레이어 ${layerOf(i)}</span>`:''}<span class="rt-ls-win-tag">창 ${w.n} · 입력 ${w.input}${w.label?` · ${esc(w.label)}`:''}</span><span class="rt-ls-win-meta">${w.w}×${w.h} @ ${w.x},${w.y} · 포트 ${hos.startPort+w.n-1}</span>${w.free?'<i class="rt-ls-resize" data-ls-resize aria-hidden="true"></i>':''}</div>`:'').join('')})()}
       </div></div>
-      <div class="rt-ls-table-wrap"><table class="rt-ls-table"><thead><tr><th>창</th><th>포트</th><th>입력</th><th>이름</th><th>X</th><th>Y</th><th>너비</th><th>높이</th><th>포트 상태</th>${L.code==='L00'?'<th>레이어(1 = 맨 위)</th>':''}</tr></thead><tbody>
+      <div class="rt-ls-table-wrap"><table class="rt-ls-table"><thead><tr><th>창</th><th>포트</th><th>입력</th><th>이름</th><th>X</th><th>Y</th><th>너비</th><th>높이</th><th>포트 상태</th>${L.code==='L00'?'<th>레이어(1 = 맨 위)</th>':''}${L.code==='L00'||L.code==='L09'?'<th></th>':''}</tr></thead><tbody>
         ${hos.windows.map((w,i)=>{const on=editable.includes(i)&&!(L.code==='L09'&&i===0);const shown=r.windows.find(x=>x.n===i+1);const topIdx=hos.priority==='4321'?3:0;const rank=hos.priority==='4321'?4-i:i+1;return `<tr data-ls-row="${i}"${i===selected?' class="is-selected"':''}><td><i class="rt-ls-dot" style="background:${colorOf(i)}"></i>${i+1}</td><td class="rt-ls-ports">O${pad3(hos.startPort+i)}</td>
           <td><input type="number" min="1" max="999" data-ls-hos-win="input" data-ls-win-index="${i}" value="${w.input}" aria-label="창 ${i+1} 입력 번호"></td>
           <td><input type="text" maxlength="24" placeholder="예: PC" data-ls-hos-win="label" data-ls-win-index="${i}" value="${esc(w.label)}" aria-label="창 ${i+1} 이름"></td>
           ${['x','y','w','h'].map(k=>`<td>${on?`<input type="number" min="0" step="10" data-ls-hos-win="${k}" data-ls-win-index="${i}" value="${w[k]}" aria-label="창 ${i+1} ${k.toUpperCase()}">`:`<span class="rt-ls-fixedval">${shown?shown[k]:'—'}</span>`}</td>`).join('')}
-          <td class="rt-ls-portstat">${r.ports[i]}</td>${L.code==='L00'?`<td class="rt-ls-stack"><b>레이어 ${rank}</b>${i===topIdx?' · 맨 위':` <button type="button" class="rt-ls-top" data-ls-hos-top="${i}" title="이 창의 입력·좌표를 맨 위 자리(포트 ${hos.startPort+topIdx})로 옮깁니다">맨 위로</button>`}</td>`:''}</tr>`}).join('')}
+          <td class="rt-ls-portstat">${r.ports[i]}</td>${L.code==='L00'?`<td class="rt-ls-stack"><b>레이어 ${rank}</b>${i===topIdx?' · 맨 위':` <button type="button" class="rt-ls-top" data-ls-hos-top="${i}" title="이 창의 입력·좌표를 맨 위 자리(포트 ${hos.startPort+topIdx})로 옮깁니다">맨 위로</button>`}</td>`:''}${L.code==='L00'||L.code==='L09'?`<td>${w.w>0&&w.h>0&&(L.code==='L00'||i===1)?`<button type="button" class="rt-ls-del" data-ls-hos-off="${i}" title="창 ${i+1} 끄기(W0 H0). 너비·높이에 값을 넣으면 다시 켜집니다" aria-label="창 ${i+1} 끄기">×</button>`:''}</td>`:''}</tr>`}).join('')}
       </tbody></table></div>
       <div class="rt-ls-cmd-head"><h3>커맨드</h3><button type="button" class="rt-pg-btn" data-ls-copy>복사</button><span class="rt-ls-copied" data-ls-copied aria-live="polite"></span></div>
       <pre class="rt-ls-cmd" data-ls-cmd>${r.switching?`<span class="rt-ls-cmdline"><small>① 입력 → 포트 연결</small>${esc(r.switching)}</span>
@@ -418,6 +427,13 @@
       <p class="rt-pg-hint">근거: 알티컴 <a href="${GUIDE_PDF}#page=26" target="_blank" rel="noopener">XDM 시리즈 Command Guide 25쪽부터([OQ] Quad view 커맨드)</a>, 레이아웃 14종은 27쪽 표. 좌표·크기는 출력 해상도 안의 픽셀이며 4자리로 적습니다(W0000·H0000은 창 끄기). 포트 상태(레이어 4개면 2~4번은 1번과 같은 화면, 2개면 2번 사용 불가·3·4번 따로 스위칭)는 서울영상테크 확인(2026-10-12)입니다. L13(1~4번 PIP 사용자 배치)은 가이드의 좌표 묶음 수가 분명하지 않아 넣지 않았습니다.</p>${fieldNotesHtml()}`;
     };
     // 다시 그리면 DOM이 바뀌어 창의 포커스가 사라지므로, 창에 포커스가 있었으면 선택한 창으로 되돌린다(Delete·화살표 키가 이어서 먹도록, 0.233).
+    // 카드별 레이어 사용량 칩과 카드 경계에 걸친 창 안내(0.235).
+    const cardUsageHtml=(st,assigned)=>{
+      const usage=cardUsage(st);if(!usage.length||!st.windows.length)return '';
+      const chips=usage.map(c=>`<li class="rt-ls-card${c.overflow.length?' is-over':c.free===0?' is-full':''}" title="${esc(`카드 ${c.slot}(출력 ${c.firstPort}~${c.lastPort}번): ${c.used?`창 ${c.windows.join('·')}이 포트 ${c.ports.join('·')}를 사용`:'사용 중인 레이어 없음'}${c.overflow.length?` · 창 ${c.overflow.join('·')}은 남은 포트가 없어 배정 못 함`:''}`)}"><b>카드 ${c.slot}</b> ${c.used}/4 사용 · ${c.overflow.length?`<em>창 ${c.overflow.join('·')} 배정 못 함</em>`:`남음 ${c.free}`}</li>`).join('');
+      const span=assigned.filter(a=>a.slots.length>1).map(a=>`창 ${a.index+1}은 카드 ${a.slots.map(k=>k+1).join('·')}에 걸쳐 레이어 ${a.slots.length}개`);
+      return `<ul class="rt-ls-cards" aria-label="WOS100 카드별 레이어 사용량">${chips}</ul>${span.length?`<p class="rt-pg-hint rt-ls-span">카드 경계에 걸친 창은 걸친 카드마다 레이어 1개씩 씁니다: ${span.join(' · ')}.</p>`:''}`;
+    };
     const render=()=>{const had=!!(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('[data-ls-win]')&&root.contains(document.activeElement));renderView();if(had&&selected>=0){const el=root.querySelector(`[data-ls-win="${selected}"]`);if(el&&el.tabIndex>=0)el.focus({preventScroll:true})}};
     const renderView=()=>{
       if(card==='ALL'){renderAll();return}
@@ -439,6 +455,7 @@
         <button type="button" class="rt-pg-btn rt-pg-primary" data-ls-add${state.windows.length>=MAX_WINDOWS?' disabled':''}>+ 창 추가</button>
       </div>
       <p class="rt-ls-summary">월 전체 <b>${geo.width}×${geo.height}</b>px · 출력 ${geo.timing.label} × ${geo.cols}×${geo.rows} · 출력 포트 ${geo.startPort}~${geo.endPort}번(WOS100 ${geo.slots}장) · 창 ${state.windows.length}개${state.mapping==='guide'?' · <b>가이드 연결 그림 배치</b>':''}</p>
+      ${cardUsageHtml(state,result.assigned)}
       <div class="rt-ls-stage">
         <div class="rt-ls-canvas" data-ls-canvas style="aspect-ratio:${geo.width} / ${geo.height};--rt-ls-cols:${geo.cols};--rt-ls-rows:${geo.rows}" role="application" aria-label="디스플레이 월 캔버스. 창을 끌어 옮기고 오른쪽 아래 모서리로 크기를 바꿉니다. 선택한 창은 방향키로 10px, Shift와 함께 100px 움직입니다.">
           ${map.map((row,r)=>row.map((port,c)=>`<div class="rt-ls-cell" style="left:${(c/geo.cols)*100}%;top:${(r/geo.rows)*100}%;width:${100/geo.cols}%;height:${100/geo.rows}%"><span>출력 ${port}</span><small>${r+1}행 ${c+1}열</small></div>`).join('')).join('')}
@@ -514,6 +531,8 @@
       }
       const topBtn=event.target.closest('[data-ls-top]');
       if(topBtn){const i=Number(topBtn.dataset.lsTop);const next=bringToFront(state,i);selected=next.windows.indexOf(state.windows[i]);state=next;save(state);render();return}
+      const hosOff=event.target.closest('[data-ls-hos-off]');
+      if(hosOff){deleteSelected(Number(hosOff.dataset.lsHosOff));return}
       const hosTop=event.target.closest('[data-ls-hos-top]');
       if(hosTop){const i=Number(hosTop.dataset.lsHosTop);hos=hosBringToFront(hos,i);selected=hos.priority==='4321'?3:0;saveKey(HOS_KEY,hos);render();return}
       const del=event.target.closest('[data-ls-del]');
@@ -588,5 +607,5 @@
   }
   function mountAll(scopeEl){(scopeEl||document).querySelectorAll('[data-layout-sim-root]').forEach(mount)}
 
-  return {TIMINGS,CLEAR_MODES,MAPPINGS,PRESETS,HOS_LAYOUTS,HOS_PRESETS,GUIDE_PDF,MAX_COLS,MAX_ROWS,MAX_WINDOWS,normalize,geometry,portMapFor,assignPorts,commandFor,coverageFor,stackOrder,bringToFront,normalizeHos,hosWindows,hosCommandFor,hosPortStatus,hosBringToFront,combinedCommands,FIELD_NOTES,mount,mountAll};
+  return {TIMINGS,CLEAR_MODES,MAPPINGS,PRESETS,HOS_LAYOUTS,HOS_PRESETS,GUIDE_PDF,MAX_COLS,MAX_ROWS,MAX_WINDOWS,normalize,geometry,portMapFor,assignPorts,cardUsage,commandFor,coverageFor,stackOrder,bringToFront,normalizeHos,hosWindows,hosCommandFor,hosPortStatus,hosBringToFront,combinedCommands,FIELD_NOTES,mount,mountAll};
 });
