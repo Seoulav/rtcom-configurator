@@ -723,6 +723,16 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await page.click('#rt-layout-sim [data-ls-top="0"]');
     const topCmd=await page.evaluate(()=>document.querySelector('#rt-layout-sim [data-ls-cmd]').textContent);
     check('XDM 07 시뮬레이터 "맨 위로": 창 1을 맨 위로 올리면 포트 배정과 커맨드 순서가 바뀜',/I002O013X5760Y3240W1920H1080I001O001O005O009O014X0Y0W7680H4320!$/.test(topCmd),topCmd.slice(-90));
+    // 0.237 창 정렬: 창을 고르지 않으면 버튼이 꺼져 있고, PIP(창 2)를 고른 뒤 "월 가운데"를 누르면 분할점 위(X1920Y1080W3840H2160)로 옮겨 카드 4장에 걸침 안내가 나온다.
+    await page.evaluate(()=>{try{localStorage.removeItem('rtcom.layoutSim.v1')}catch(e){}});
+    await page.reload({waitUntil:'networkidle'});
+    await page.waitForSelector('#rt-layout-sim [data-ls-win="1"]');
+    await page.locator('#rt-layout-sim [data-ls-win="1"]').scrollIntoViewIfNeeded();
+    await page.locator('#rt-layout-sim [data-ls-win="1"]').click();
+    const alignBefore=await page.evaluate(()=>({n:document.querySelectorAll('#rt-layout-sim [data-ls-align]').length,disabled:[...document.querySelectorAll('#rt-layout-sim [data-ls-align]')].filter(b=>b.disabled).length}));
+    await page.click('#rt-layout-sim [data-ls-align="center"]');
+    const alignAfter=await page.evaluate(()=>({cmd:document.querySelector('#rt-layout-sim [data-ls-cmd]').textContent,span:document.querySelector('#rt-layout-sim .rt-ls-span')?.textContent||'',chips:[...document.querySelectorAll('#rt-layout-sim .rt-ls-card')].map(e=>e.textContent.replace(/\s+/g,' ').trim()),overflow:document.documentElement.scrollWidth>innerWidth}));
+    check('XDM 07 시뮬레이터 창 정렬: 창을 고르면 버튼 3개가 켜지고, "월 가운데"는 PIP를 분할점 위(X1920Y1080W3840H2160)에 놓아 카드 4장에 걸침',alignBefore.n===3&&alignBefore.disabled===0&&/I002O\d{3}O\d{3}O\d{3}O\d{3}X1920Y1080W3840H2160/.test(alignAfter.cmd)&&alignAfter.span.includes('창 2은 카드 1·2·3·4에 걸쳐 레이어 4개')&&alignAfter.chips.every(c=>/2\/4 사용/.test(c))&&!alignAfter.overflow,JSON.stringify({alignBefore,cmd:alignAfter.cmd.slice(-90),span:alignAfter.span,chips:alignAfter.chips}));
     // 0.233 Delete 키(사용자 요청 2026-10-16): 창을 누른 뒤(끌지 않고) Delete → WOS100은 창을 지우고, HOS100 L00은 창을 끈다(W0000 H0000).
     await page.evaluate(()=>{try{localStorage.removeItem('rtcom.layoutSim.v1')}catch(e){}});
     await page.reload({waitUntil:'networkidle'});
