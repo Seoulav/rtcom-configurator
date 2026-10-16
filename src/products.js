@@ -684,11 +684,45 @@
       const seg=`<span class="rt-pg-seg" role="group" aria-label="모듈 구성 선택"><button type="button" class="rt-pg-on" data-pm-side="tx" aria-pressed="true">TX 구성(송신)</button><button type="button" data-pm-side="rx" aria-pressed="false">RX 구성(수신)</button></span>`;
       return `<div class="rt-pg-flow-modes">${seg}<div class="rt-pg-face" data-pm-face="tx">${rackExtenderDiagram(item,'tx')}</div><div class="rt-pg-face" data-pm-face="rx" hidden>${rackExtenderDiagram(item,'rx')}</div></div><p class="rt-pg-hint" style="text-align:center">TX 구성은 사양서 연결도 기준이고, RX 구성은 같은 연결을 수신 쪽으로 바꾼 그림입니다. 모듈 칸마다 TX·RX 모듈을 골라 꽂을 수 있으며, 현장에서는 TX 구성을 주로 씁니다. PoC로 송·수신기 중 한쪽에만 전원을 연결해도 됩니다. SPX-RX IR 기능(IR Blaster)은 현장에서는 잘 쓰지 않으며, 연결은 제조사 원본 다이어그램을 참고하세요.</p>`;
     }
+    // 0.226 XDM-MR4S 03 Signal Flow(사용자 요청 2026-10-16 "다음 제안대로 해"): 사진의 장착 예(FT101·FR101·CTR100 2장)대로
+    // 왼쪽 XDM 매트릭스 카드(FIS100·FOS100·CIS100·COS100) ↔ 케이블 ↔ MR4S 카드 4장 ↔ 소스·디스플레이를 한 줄씩 그린다.
+    // MR4S에 꽂은 CTR100은 원격 전원 공급이 되지 않아(사용자 확인 2026-10-16) 전원은 프레임 POWER 1·2에서만 받는다.
+    function mr4sDiagram(item){
+      const width=860,top=70,head=34,gap=56,rows=[
+        {card:'XDM-FIS100',slot:'XDM-FT101',role:'광 송신',tx:true,fiber:true},
+        {card:'XDM-FOS100',slot:'XDM-FR101',role:'광 수신',tx:false,fiber:true},
+        {card:'XDM-CIS100',slot:'XDM-CTR100',role:'TX 모드',tx:true,fiber:false},
+        {card:'XDM-COS100',slot:'XDM-CTR100',role:'RX 모드',tx:false,fiber:false}];
+      const mxX=40,mxW=180,frX=420,frW=230,endX=770,rowY=i=>top+head+20+i*gap,bottom=top+head+gap*rows.length+8,height=bottom+96;
+      let body=`<text x="${width/2}" y="24" text-anchor="middle" font-size="12" font-weight="700" fill="#687386">${svgEsc(`${item.model} 1대 = 카드 4장 · 뒷면 사진의 장착 예(XDM-FT101·XDM-FR101·XDM-CTR100 2장)`)}</text>`;
+      body+=`<rect x="${mxX}" y="${top}" width="${mxW}" height="${bottom-top}" rx="14" fill="#eef2f8" stroke="#c8d3e6" stroke-width="2"/><text x="${mxX+mxW/2}" y="${top+24}" text-anchor="middle" font-size="14" font-weight="800" fill="#1f2532">XDM 매트릭스</text>`;
+      body+=`<rect x="${frX}" y="${top}" width="${frW}" height="${bottom-top}" rx="14" fill="#eef2f8" stroke="#c8d3e6" stroke-width="2"/><text x="${frX+frW/2}" y="${top+24}" text-anchor="middle" font-size="14" font-weight="800" fill="#1f2532">${svgEsc(item.model)}</text>`;
+      rows.forEach((row,i)=>{
+        const y=rowY(i),color=row.fiber?COLOR_FIBER:COLOR_COPPER;
+        body+=`<rect x="${mxX+12}" y="${y-17}" width="${mxW-24}" height="34" rx="8" fill="#fff" stroke="#c8d3e6" stroke-width="1.5"/><text x="${mxX+24}" y="${y+4}" font-size="12" font-weight="750" fill="#1f2532">${svgEsc(row.card)}</text><text x="${mxX+mxW-22}" y="${y+4}" text-anchor="end" font-size="10" fill="#687386">${row.tx?'입력':'출력'}</text>`;
+        body+=`<rect x="${frX+12}" y="${y-17}" width="${frW-24}" height="34" rx="8" fill="#fff" stroke="#c8d3e6" stroke-width="1.5"/><text x="${frX+24}" y="${y+4}" font-size="12" font-weight="750" fill="#1f2532">${i+1} · ${svgEsc(row.slot)}</text><text x="${frX+frW-22}" y="${y+4}" text-anchor="end" font-size="10" fill="#687386">${svgEsc(row.role)}</text>`;
+        body+=`<path d="M${mxX+mxW} ${y}L${frX} ${y}" stroke="${color}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/>`;
+        body+=`<text x="${(mxX+mxW+frX)/2}" y="${y-7}" text-anchor="middle" font-size="10" font-weight="700" fill="${color}">${row.fiber?'FIBER':'HDBaseT'} ${row.tx?'←':'→'}</text>`;
+        body+=row.tx?arrow(endX-24,y,frX+frW+6,y,COLOR_IN)+monitorIcon(endX,y-4,'',0.8):arrow(frX+frW+6,y,endX-24,y,COLOR_OUT)+monitorIcon(endX,y-4,'',0.8);
+        body+=`<text x="${endX+24}" y="${y+2}" font-size="10" fill="#687386">${row.tx?'소스':'디스플레이'}</text>`;
+      });
+      body+=arrow(frX+frW/2,bottom+34,frX+frW/2,bottom+4,COLOR_POWER);
+      body+=`<text x="${frX+frW/2}" y="${bottom+52}" text-anchor="middle" font-size="11" fill="#687386">POWER 1·2 → 카드 4장 공급 (MR4S의 CTR100은 원격 전원 공급 불가)</text>`;
+      const captions=[[COLOR_IN,'입력(HDMI)'],[COLOR_FIBER,'광 전송','dash'],[COLOR_COPPER,'HDBaseT 전송(S/FTP CAT6A 필수)','dash'],[COLOR_POWER,'전원'],[COLOR_OUT,'출력(HDMI)']];
+      const steps=[
+        `구성: ${item.model} 1대에 XDM-CTR100·XDM-FT101·XDM-FR101 카드를 최대 4장 섞어 꽂습니다.`,
+        '송신: 소스 → XDM-FT101 → 광 전송 → XDM-FIS100, 또는 소스 → XDM-CTR100(TX 모드) → HDBaseT 전송 → XDM-CIS100',
+        '수신: XDM-FOS100 → 광 전송 → XDM-FR101 → 디스플레이, 또는 XDM-COS100 → HDBaseT 전송 → XDM-CTR100(RX 모드) → 디스플레이',
+        '전원: 프레임 POWER 1·2에서 카드 4장에 공급합니다. MR4S에 꽂은 XDM-CTR100은 원격 전원 공급이 되지 않습니다.'
+      ];
+      return diagramWrap(body,width,height,captions,{label:`${item.model} Signal Flow`,steps});
+    }
     function connectionDiagram(item){
       if(item.group==='cable')return cableDiagram(item);
       if(item.group==='distribution'||item.group==='integrated')return ioFlowDiagram(item);
       if(item.id==='xdm-psu')return psuDiagram(item);
       if(item.id==='spx-r6')return rackExtenderFlow(item);
+      if(item.id==='xdm-mr4s')return mr4sDiagram(item);
       if(item.group==='extender')return extenderDiagram(item);
       return null;
     }

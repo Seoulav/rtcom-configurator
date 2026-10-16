@@ -16,7 +16,9 @@
     placements:{},
     physicalSlots:{status:'unknown',slots:[]},
     portAssignments:{},
-    links:{},slot:'in-a',format:'PDF'
+    links:{},slot:'in-a',format:'PDF',
+    // 0.226 XDM-MR4S 랙 장착(사용자 결정 2026-10-16 "전송기 단계 선택 스위치"): 켜면 XDM 전송기(CTR100·FT101·FR101)를 MR4S 카드로 장착한다. 기본값 꺼짐.
+    mr4s:false
   });
   // 모델별 [입력 슬롯, 출력 슬롯]. XDM: 국문 매뉴얼 pp.7–11. SPX: 국문 사용자 매뉴얼(250805) pp.7–9.
   const slotPlans = {
@@ -156,6 +158,9 @@
     const selectedSlot=legacySlots[input.slot]||input.slot;
     if (!allowedSlots.has(selectedSlot)||!['PDF','CSV','JSON'].includes(input.format)) fail('화면 설정 형식이 잘못되었습니다.');
     result.slot=selectedSlot;result.format=input.format;
+    // 0.226 예전 파일에는 mr4s가 없으므로 꺼짐으로 읽는다. XDM이 아닌 제품군에서는 늘 꺼짐이다.
+    if (input.mr4s!==undefined&&typeof input.mr4s!=='boolean') fail('XDM-MR4S 설정 형식이 잘못되었습니다.');
+    result.mr4s=result.family==='XDM'&&input.mr4s===true;
     if (notice) result.notice=notice;
     return result;
   }
@@ -263,7 +268,10 @@
     if (spxRx) add('SPX_RX_POC','VALID',`SPX-RX ${spxRx}대는 메인프레임이 CAT 케이블로 전원을 공급(POC)하므로 별도 전원 연결이 필요 없습니다.`,'SPX 국문 사용자 매뉴얼(250805) p.7 · SPX 카탈로그 p.3');
     const ctrCount=Object.values(state.links).filter(link=>link.device?.startsWith('XDM-CTR100 · ')).reduce((sum,link)=>sum+link.count,0);
     // 0.72 XDM-PSU(사용자 결정 2026-09-28): CIS100·COS100에 연결한 CTR100은 XDM-PSU로 전원을 받아 개별 어댑터가 필요 없다. 코드 이름은 저장 파일 호환을 위해 그대로 둔다.
-    if (ctrCount) {const power=ctrPower(state);add('CTR_POWER_REQUIRED','VALID',`XDM-CTR100 ${ctrCount}대는 XDM-PSU로 전원을 공급하므로 CTR100에 전원 어댑터를 따로 연결하지 않습니다. XDM-PSU ${power.psu}대(XDM-POH ${power.poh}개 · XDM-PHX ${power.phx}개)를 BOM에 추가했습니다. 매트릭스 카드(CIS100·COS100)에 연결하는 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다.`,'사용자 결정(2026-09-28) · XDM-POE ASSY 도면 · 사용자 제공 XDM POE 구성도');}
+    const mr4s=mr4sUnits(state);
+    if (state.mr4s&&mr4s.units) add('XDM_MR4S','VALID',`XDM 전송기(CTR100·FT101·FR101) ${mr4s.units}대를 XDM-MR4S ${mr4s.frames}대에 카드로 장착합니다(프레임 1대에 4장). MR4S에 꽂은 XDM-CTR100은 원격 전원 공급이 되지 않으므로 XDM-PSU(POH·PHX)를 넣지 않고 프레임 전원(POWER 1·2)을 씁니다.`,'사용자 결정·확인(2026-10-16) · XDM-MR4S 실물 사진');
+    else if (state.mr4s) add('XDM_MR4S_EMPTY','WARNING','XDM-MR4S 랙 장착을 켰지만 연결한 XDM-CTR100·FT101·FR101이 없습니다.','사용자 결정(2026-10-16)');
+    if (ctrCount&&!state.mr4s) {const power=ctrPower(state);add('CTR_POWER_REQUIRED','VALID',`XDM-CTR100 ${ctrCount}대는 XDM-PSU로 전원을 공급하므로 CTR100에 전원 어댑터를 따로 연결하지 않습니다. XDM-PSU ${power.psu}대(XDM-POH ${power.poh}개 · XDM-PHX ${power.phx}개)를 BOM에 추가했습니다. 매트릭스 카드(CIS100·COS100)에 연결하는 구성에서는 XDM-CTR100 PSE를 사용할 수 없습니다.`,'사용자 결정(2026-09-28) · XDM-POE ASSY 도면 · 사용자 제공 XDM POE 구성도');}
     const status=issues.some(issue=>issue.level==='ERROR')?'ERROR':issues.some(issue=>issue.level==='UNVERIFIED')?'UNVERIFIED':issues.some(issue=>issue.level==='WARNING')?'WARNING':'VALID';
     return {status,exportStatus:'UNVERIFIED_DRAFT',canFinalize:status==='VALID',summary:requirementSummary(state),issues};
   }
@@ -271,12 +279,22 @@
   // 0.210 XDM-PHX = COS100에 연결한 CTR100(Rx) 대수(COS100 출력마다 PHX 전원 연결, 알티컴 확인 2026-10-13). 0.72~0.209는 COS100 카드 장수로 셌다.
   function ctrPower(state) {
     let poh=0,phx=0;
+    // 0.226 XDM-MR4S에 꽂은 CTR100 카드는 원격 전원 공급이 되지 않아(사용자 확인 2026-10-16) 프레임 전원(POWER 1·2)을 쓰고 XDM-PSU를 세지 않는다.
+    if (state.mr4s) return {poh,phx,psu:0};
     for (const [slot,link] of Object.entries(state.links||{})) {
       if (!link?.count) continue;
       if (link.device==='XDM-CTR100 · TX'&&state.placements?.[slot]==='XDM-CIS100') poh+=link.count;
       if (link.device==='XDM-CTR100 · RX'&&state.placements?.[slot]==='XDM-COS100') phx+=link.count;
     }
     return {poh,phx,psu:Math.ceil((poh+phx)/16)};
+  }
+  // 0.226 XDM-MR4S 수량: 포트에 배정한 XDM-CTR100·XDM-FT101·XDM-FR101 대수를 4로 나눈 올림값(프레임 1대에 카드 4장, 사용자 결정 2026-10-16).
+  // 벽부형 XDM-CT103·CR103과 HDMI 카드 PSE 쌍은 MR4S 카드가 아니므로 세지 않는다.
+  const mr4sDevices=['XDM-CTR100 · TX','XDM-CTR100 · RX','XDM-FT101','XDM-FR101'];
+  function mr4sUnits(state) {
+    let units=0;
+    for (const port of Object.values(state.portAssignments||{})) for (const device of [port.tx,port.rx]) if (device&&port.quantity&&mr4sDevices.includes(device)) units+=port.quantity;
+    return {units,frames:state.mr4s?Math.ceil(units/4):0};
   }
   function bom(input) {
     const state=checkState(input), rows=[];
@@ -294,6 +312,8 @@
         if (device.startsWith('XDM-CTR100 · ')) ctrQuantity+=port.quantity;
       }
     }
+    const mr4s=mr4sUnits(state);
+    if (mr4s.frames) add('전송기 프레임','XDM-MR4S (CTR100·FT101·FR101 카드 4장)',mr4s.frames);
     if (ctrQuantity) {const power=ctrPower(state);if(power.psu)add('전원 장비','XDM-PSU',power.psu);if(power.poh)add('전원 장비','XDM-POH (CIS용 전원 모듈)',power.poh);if(power.phx)add('전원 장비','XDM-PHX (COS용 전원 모듈)',power.phx)}
     return rows;
   }
@@ -397,5 +417,5 @@
     const cell=value=>'"'+String(value).replace(/^[=+@-]/,"'$&").replace(/"/g,'""')+'"';
     return csvRows(input).map(row=>row.map(cell).join(',')).join('\r\n');
   }
-  scope.RtCore={fillTargets,addTargets,avBuilder,moveCard,initial,checkState,choices,defaultLink,psePair,slotPlan,syncPorts,slotsFor,requirementSummary,validate,bom,document,parse,csv,csvRows,completionFor,fillBlanks,catalogVersion,schemaVersion,signalTypes};
+  scope.RtCore={mr4sUnits,fillTargets,addTargets,avBuilder,moveCard,initial,checkState,choices,defaultLink,psePair,slotPlan,syncPorts,slotsFor,requirementSummary,validate,bom,document,parse,csv,csvRows,completionFor,fillBlanks,catalogVersion,schemaVersion,signalTypes};
 })(globalThis);
