@@ -36,7 +36,19 @@ const results=[];
 const check=(name,ok,detail='')=>{results.push({name,ok,detail});console.log(`${ok?'PASS':'FAIL'} ${name}${detail?` — ${detail}`:''}`)};
 // 0.173 03 카드 슬롯은 ① 카드 장착 → ② 신호 입력 → 04 전송기 순서다(카드가 있을 때). 04로 가는 검사는 이 도우미로 두 화면을 차례로 넘긴다.
 const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.locator('[data-signal-count]').count())await pg.click('[data-action="next"]');await pg.waitForLoadState('networkidle')};
+// 0.238 AMX 코드 잠금 검사용: dist의 control-example.js에 있는 AMX_LOCK을 테스트 비밀번호 변환값으로 바꾼다(dist는 빌드 산출물이며 배포하지 않는다).
+const AMX_TEST_PASSWORD='e2e-amx-pass-0238';
+const patchAmxLock=async()=>{
+  const ce=require('../src/control-example.js');
+  const file=path.join(dist,'src','control-example.js');
+  const src=fs.readFileSync(file,'utf8');
+  const re=/^(\s*)const AMX_LOCK=.*;$/m;
+  if(!re.test(src))throw new Error('dist/src/control-example.js에서 AMX_LOCK 줄을 찾지 못했습니다');
+  const cfg=JSON.stringify(await ce.makeLock(AMX_TEST_PASSWORD,{iterations:1000}));
+  fs.writeFileSync(file,src.replace(re,(_,ind)=>`${ind}const AMX_LOCK=${cfg};`));
+};
 (async()=>{
+  await patchAmxLock();
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
   const origin=`http://127.0.0.1:${server.address().port}`,home=`${origin}${BASE}`;
   // 이 샌드박스는 /opt/pw-browsers/chromium에 크로미움을 미리 설치해 둔다(playwright install 실행 금지). CHROMIUM_PATH로 재정의할 수 있다.
@@ -572,6 +584,57 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       const clipped=await page.evaluate(()=>{const svg=[...document.querySelectorAll('.rt-pg-svg-wrap svg')].find(s=>s.textContent.includes('HDMI IN'));if(!svg)return ['svg 없음'];const vb=svg.viewBox.baseVal;return [...svg.querySelectorAll('text,rect')].filter(el=>{const bb=el.getBBox();return bb.x<vb.x-1||bb.y<vb.y-1||bb.x+bb.width>vb.x+vb.width+1||bb.y+bb.height>vb.y+vb.height+1}).map(el=>(el.textContent||el.tagName).slice(0,20))});
       check(`${id} 신호 흐름 그림 요소가 틀 밖으로 잘리지 않음`,clipped.length===0,JSON.stringify(clipped));
     }
+    // 0.238 AMX 코드 잠금: 잠겨 있을 때는 커맨드 문자열·HEX가 보이고 AMX 코드(SEND_STRING·NetLinx)는 없다. 틀린 비밀번호는 거절하고 맞으면 열리며 다시 잠글 수 있다.
+    {
+      await page.goto(`${home}#products/hds-42mu`,{waitUntil:'networkidle'});
+      await page.waitForSelector('.rt-pg-control .rt-ce-cmd');
+      const locked=await page.evaluate(()=>{const c=document.querySelector('.rt-pg-control');return {box:!!c.querySelector('[data-ce-lockbox]'),code:!!c.querySelector('[data-ce-text="amx"]'),send:/SEND_STRING|BUTTON_EVENT/.test(c.textContent),sw:/\*000CI02O02!/.test(c.textContent),hex:!!c.querySelector('.rt-ce-hex'),copy:!!c.querySelector('[data-ce-copy="sw"]')}});
+      await page.fill('.rt-pg-control [data-ce-lockform] input','틀린 비밀번호');
+      await page.click('.rt-pg-control [data-ce-lockform] button[type=submit]');
+      await page.waitForFunction(()=>/맞지 않습니다/.test(document.querySelector('.rt-pg-control [data-ce-lockmsg]')?.textContent||''));
+      const stillLocked=await page.locator('.rt-pg-control [data-ce-lockbox]').count()>0;
+      await page.fill('.rt-pg-control [data-ce-lockform] input',AMX_TEST_PASSWORD);
+      await page.click('.rt-pg-control [data-ce-lockform] button[type=submit]');
+      await page.waitForSelector('.rt-pg-control [data-ce-text="amx"]');
+      const opened=await page.evaluate(()=>({send:/SEND_STRING dvHDS42MU/.test(document.querySelector('.rt-pg-control [data-ce-text="amx"]').textContent),box:!!document.querySelector('.rt-pg-control [data-ce-lockbox]')}));
+      await page.click('.rt-pg-control [data-ce-relock]');
+      await page.waitForSelector('.rt-pg-control [data-ce-lockbox]');
+      const relocked=await page.locator('.rt-pg-control [data-ce-text="amx"]').count()===0;
+      check('AMX 코드 잠금: 잠겨 있으면 커맨드·HEX·복사만 보이고 SEND_STRING은 없음, 틀린 비밀번호는 거절, 맞으면 열리고 다시 잠글 수 있음',locked.box&&!locked.code&&!locked.send&&locked.sw&&locked.hex&&locked.copy&&stillLocked&&opened.send&&!opened.box&&relocked,JSON.stringify({locked,stillLocked,opened,relocked}));
+      // XDM: "내 AMX 구성"은 잠겨도 담기·목록은 되고, 코드·복사·파일 저장은 잠금 뒤에만 보인다. 설정 명령의 SEND_STRING 줄도 잠겨 있다.
+      await page.goto(`${home}#products/xdm`,{waitUntil:'networkidle'});
+      await page.evaluate(()=>{try{localStorage.removeItem('rtcom.amxBasket.xdm.v1')}catch{}});
+      await page.reload({waitUntil:'networkidle'});
+      await page.waitForSelector('#rt-control [data-ce-basket]');
+      await page.selectOption('#rt-control [data-ce-bsel]','conn');
+      await page.locator('#rt-control [data-ce-badd]').click();
+      const xdm=await page.evaluate(()=>{const c=document.querySelector('#rt-control');const b=c.querySelector('[data-ce-basket]');return {rows:b.querySelectorAll('.rt-ce-bklist li').length,boxes:c.querySelectorAll('[data-ce-lockbox]').length,code:!!b.querySelector('[data-ce-bkcode]'),copy:!!b.querySelector('[data-ce-bk="copy"],[data-ce-bk="download"]'),clear:!!b.querySelector('[data-ce-bk="clear"]'),send:/SEND_STRING|BUTTON_EVENT/.test(c.textContent),cmd:/\*255CI002O001-005!/.test(c.textContent),add:!!c.querySelector('[data-ce-badd]')}});
+      check('XDM AMX 코드 잠금: 담기·담은 목록·커맨드는 보이고, 시작 코드·SEND_STRING·내 AMX 구성 코드·복사·파일 저장은 잠김',xdm.rows===1&&xdm.boxes===3&&!xdm.code&&!xdm.copy&&xdm.clear&&!xdm.send&&xdm.cmd&&xdm.add,JSON.stringify(xdm));
+      // 이 탭에서 잠금을 열어 두면(sessionStorage) 아래 AMX 코드 검사가 그대로 이어진다.
+      await page.fill('#rt-control [data-ce-basket] [data-ce-lockform] input',AMX_TEST_PASSWORD);
+      await page.click('#rt-control [data-ce-basket] [data-ce-lockform] button[type=submit]');
+      await page.waitForSelector('#rt-control [data-ce-bkcode]');
+      const xdmOpen=await page.evaluate(()=>({boxes:document.querySelectorAll('#rt-control [data-ce-lockbox]').length,start:!!document.querySelector('#rt-control [data-ce-text="amx"]'),line:/SEND_STRING dvXDM/.test(document.querySelector('#rt-control [data-ce-bout]').textContent),dl:!!document.querySelector('#rt-control [data-ce-bk="download"]')}));
+      check('XDM AMX 코드 잠금 해제: 시작 코드·SEND_STRING 줄·내 AMX 구성 코드·복사·파일 저장이 한꺼번에 열림',xdmOpen.boxes===0&&xdmOpen.start&&xdmOpen.line&&xdmOpen.dl,JSON.stringify(xdmOpen));
+      // 0.238 통신 방식: LAN이 기본(IP_CLIENT_OPEN), 포트가 매뉴얼에 없는 XDM은 "확인 필요", IP·포트를 입력하면 그 자리에서 코드가 바뀌고 포커스가 유지되며, RS-232를 고르면 SET BAUD가 나온다.
+      const lan0=await page.locator('#rt-control [data-ce-text="amx"]').innerText();
+      await page.locator('#rt-control [data-ce-start] [data-ce-comm="ip"]').fill('10.1.2.3');
+      await page.locator('#rt-control [data-ce-start] [data-ce-comm="port"]').focus();
+      await page.keyboard.type('4001');
+      const lan1=await page.locator('#rt-control [data-ce-text="amx"]').innerText();
+      const focused=await page.evaluate(()=>document.activeElement?.dataset?.ceComm||'');
+      const synced=await page.locator('#rt-control [data-ce-basket] [data-ce-comm="ip"]').inputValue();
+      const bk=await page.locator('#rt-control [data-ce-bkcode]').innerText();
+      await page.selectOption('#rt-control [data-ce-start] [data-ce-comm="mode"]','serial');
+      const ser=await page.locator('#rt-control [data-ce-text="amx"]').innerText();
+      const hidden=await page.locator('#rt-control [data-ce-start] .rt-ce-comm-lan').evaluate(e=>e.hidden);
+      await page.selectOption('#rt-control [data-ce-start] [data-ce-comm="mode"]','lan');
+      await page.goto(`${home}#products/spx`,{waitUntil:'networkidle'});
+      await page.waitForSelector('#rt-control [data-ce-text="amx"]');
+      const spxLan=await page.locator('#rt-control [data-ce-text="amx"]').innerText();
+      check('AMX 통신 방식: LAN이 기본(IP_CLIENT_OPEN)이고 XDM은 포트 확인 필요, IP·포트 입력이 그 자리에서 코드에 반영되고 포커스 유지, 내 AMX 구성과 동기, RS-232 선택 시 SET BAUD, SPX는 Telnet 포트 23',/IP_CLIENT_OPEN\(dvXDM\.PORT/.test(lan0)&&/nDevicePort = 0 .*알티컴 확인 필요/.test(lan0)&&/'10\.1\.2\.3'/.test(lan1)&&/nDevicePort = 4001/.test(lan1)&&focused==='port'&&synced==='10.1.2.3'&&/nDevicePort = 4001/.test(bk)&&/SET BAUD 115200,N,8,1/.test(ser)&&!/IP_CLIENT_OPEN/.test(ser)&&hidden&&/nDevicePort = 23 .*SPX 매뉴얼 46쪽/.test(spxLan),JSON.stringify({lan0:lan0.slice(0,60),focused,synced,hidden,spx:spxLan.includes('= 23')}));
+      await page.evaluate(()=>{try{localStorage.removeItem('rtcom.amxBasket.xdm.v1')}catch{}});
+    }
     // 0.229 HDS-42MU "AMX 통합 제어 커맨드 예시": 매뉴얼 9쪽 예시(*000CI02O02!, *000V54!)가 처음에 나오고, 입력·출력·볼륨을 바꾸면 커맨드와 AMX 코드가 바뀐다.
     await page.goto(`${home}#products/hds-42mu`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-control .rt-ce-cmd');
@@ -606,7 +669,9 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       await page.click('.rt-pg-control [data-ce-act="all"]');
       const r2=await route();
       const info=await page.evaluate(()=>({cells:document.querySelectorAll('.rt-pg-control .rt-ce-cell').length,presets:document.querySelectorAll('.rt-pg-control [data-ce-text^="preset-"]').length,pc:document.querySelector('.rt-pg-control [data-ce-text="preset-call"]')?.textContent.replace(/\s+/g,' ')||'',amx:document.querySelector('.rt-pg-control [data-ce-text="amx"]').textContent,idx:document.querySelector('.rt-pg-control .rt-pg-idx').textContent,overflow:document.documentElement.scrollWidth>innerWidth}));
-      check(`${id} AMX 커맨드 카드: 매뉴얼 예시 ${first}, 칸 추가 ${after}, 모든 출력에 ${allCmd}, 프리셋 ${presets}개, 115200 AMX 코드, 가로 넘침 없음`,r0.includes(first)&&r1.includes(after)&&r2.includes(allCmd)&&info.presets===presets&&(presets?info.pc.includes('*255PC01!'):true)&&/SET BAUD 115200,N,8,1/.test(info.amx)&&info.cells>=16&&!info.overflow,JSON.stringify({r0,r1,r2,...info,amx:undefined}).slice(0,320));
+      await page.selectOption('.rt-pg-control [data-ce-comm="mode"]','serial');
+      const serialAmx=await page.locator('.rt-pg-control [data-ce-text="amx"]').innerText();
+      check(`${id} AMX 커맨드 카드: 매뉴얼 예시 ${first}, 칸 추가 ${after}, 모든 출력에 ${allCmd}, 프리셋 ${presets}개, AMX 코드는 LAN이 기본이고 RS-232 선택 시 115200, 가로 넘침 없음`,r0.includes(first)&&r1.includes(after)&&r2.includes(allCmd)&&info.presets===presets&&(presets?info.pc.includes('*255PC01!'):true)&&/IP_CLIENT_OPEN/.test(info.amx)&&/SET BAUD 115200,N,8,1/.test(serialAmx)&&info.cells>=16&&!info.overflow,JSON.stringify({r0,r1,r2,...info,amx:undefined}).slice(0,320));
     }
     // 0.234 QMS 설정 명령 패널(명령 빌더): 명령을 고르고 값을 넣으면 매뉴얼 예시와 같은 명령이 만들어진다.
     for(const [id,steps] of [['qms-88ux',[['res','*255OSO01-10H10!'],['wall','*255OWO01-06M13H02V03O01O02O03O04O05O06!'],['mv','*255QM13L01S00!'],['tp','*255OTO01-04M06!']]],['qms-44ux',[['wm','*01WM01!'],['wmw','*01WM02P21!'],['tc','*01TCO01S02!'],['baud','*01@05!']]]]){

@@ -20,7 +20,29 @@
 - 시뮬레이터 담기는 XDM 시리즈에만 있습니다(SPX·VDM에는 시뮬레이터가 없음). 설정 명령 담기와 "내 AMX 구성"은 같은 빌더를 쓰는 SPX·VDM에도 함께 생겼습니다.
 - QMS-44UX·QMS-88UX 카드(설정 명령 패널은 있지만 "내 AMX 구성"은 없음)에는 담기 버튼을 넣지 않았습니다.
 
-## 3. 규칙과 한계
+## 3. AMX 코드 잠금과 LAN 기본 통신(같은 0.237에 포함)
+
+병합 전에 사용자가 두 가지를 더 요청해 같은 묶음에 넣었습니다(그대로 병합되면 AMX 코드가 공개로 나가므로 따로 나누지 않았습니다).
+
+**① AMX 코드는 비밀번호로 잠금** (사용자 요청 2026-10-16 "AMX코드 짜주는건 기능을 비번을 걸어서 잠그고 제어 알티컴 장비 커멘드제어 예시는 그냥 보여 주게해줘", 선택: 브라우저 잠금·AMX 코드 전부)
+
+| 잠금(비밀번호 필요) | 그냥 보임 |
+|---|---|
+| 통신 설정과 AMX 시작 코드, HDS·QMS의 AMX NetLinx 예제, 설정 명령마다 나오는 AMX 코드 한 줄, "내 AMX 구성"의 코드·복사·파일 저장 | 커맨드 문자열·토큰 설명·HEX·복사 버튼, 시뮬레이터 커맨드, "담기" 버튼과 담은 커맨드 목록(AMX가 아닌 다른 컨트롤러에서도 쓸 수 있는 알티컴 제어 예시) |
+
+- 한 곳에서 비밀번호를 넣으면 같은 화면의 AMX 코드 칸이 모두 열립니다. 열린 상태는 그 탭이 열려 있는 동안만 유지되고(`sessionStorage`), "다시 잠그기" 버튼으로 바로 잠글 수 있습니다.
+- **한계(중요)**: 이 사이트는 GitHub Pages 정적 사이트라 비밀번호 확인이 브라우저 안에서 이뤄집니다. 코드 파일이 공개되어 있어 개발자 도구를 아는 사람은 우회할 수 있는 "잠금 스티커" 수준입니다(사용자 결정: 브라우저 잠금 선택). 진짜 잠금은 서버(Cloudflare Worker)에서 코드를 만들어 주는 방식이어야 하며, 필요하면 AI 검색 베타와 같은 방식으로 따로 진행할 수 있습니다.
+- 비밀번호 원문은 저장소에 두지 않고 PBKDF2-SHA256(20만 회) 변환값만 `src/control-example.js`의 `AMX_LOCK` 한 줄에 넣습니다. 설정·변경은 `node scripts/tools/set-amx-password.cjs "<비밀번호>"`(8자 이상, 확인은 `--check`)이며 `AMX_LOCK`이 `null`이면 아무도 열 수 없습니다.
+
+**② AMX 코드는 LAN(TCP)이 기본, RS-232 선택 가능** (사용자 전달 2026-10-16 "amx로 알티컴 제어시 rs232는 잘 사용안하고 lan제어를 많이해")
+
+- AMX 코드 칸 위에 "통신 방식(LAN / RS-232)·장비 IP 주소·TCP 포트" 입력이 생겼고, 입력하는 즉시 같은 화면의 모든 AMX 코드가 그 자리에서 바뀝니다(입력 칸 포커스 유지). 선택은 이 브라우저에 기억합니다(`rtcom.amxComm.<제품 id>.v1`).
+- LAN 코드: `IP_CLIENT_OPEN(dev.PORT, IP, 포트, IP_TCP)`로 장비에 TCP 연결하고 `DATA_EVENT`(ONLINE·OFFLINE·ONERROR)를 둔 뒤 같은 커맨드 문자열을 `SEND_STRING`으로 보냅니다(NetLinx 표준 문법). RS-232 코드는 이전과 같습니다. 두 코드 모두 `dvTP` 정의와 `DEFINE_EVENT` 구역 표기를 더했습니다.
+- **포트는 매뉴얼에 적힌 값만 기본으로 씁니다.** SPX는 매뉴얼 46쪽(7.1 System Setup Command)의 Telnet 포트 23을 `data/products/spx.json`의 `controlExample.lan`에 넣었습니다(같은 쪽에 `r tcp/ip port!` 예시 응답으로 80도 적혀 있어 확인이 필요합니다). XDM·VDM 매뉴얼의 LAN 항목은 웹 브라우저 접속(IP 설정) 방법만 있고, QMS·HDS는 LAN 제어 자료가 없어 **포트를 비워 두고** "알티컴 확인 필요" 주석과 입력 칸을 둡니다(값을 만들어 넣지 않음).
+- LAN으로 보내는 커맨드 문자열이 RS-232와 같은지는 SPX(Telnet) 외에는 자료가 없어 화면에 "같다고 보고 만든 예시"라고 밝혔습니다. 알티컴 확인 항목은 `docs/handoff/OPEN_ITEMS.md`에 올렸습니다.
+- IP는 형식이 맞는 값만 쓰고 포트는 1~65535만 받으며, 잘못된 값은 예시 주소·확인 필요 표기로 바뀌어 코드에 문자가 끼어들지 못합니다.
+
+## 4. 규칙과 한계
 
 - 새 명령 문법은 만들지 않았습니다. 시뮬레이터와 설정 명령이 만든 문자열을 그대로 담고, AMX 코드는 기존 `amxCode` 규칙(명령마다 `BUTTON_EVENT[dvTP,n]`와 `SEND_STRING`, 끝에 `$0D`)을 따릅니다.
 - 문장형 명령(SPX 커맨드 2처럼 매뉴얼에 Enter가 없는 형식)은 `enter:false`로 담겨 `$0D`를 붙이지 않습니다.
@@ -29,13 +51,14 @@
 - `.axs` 파일은 UTF-8입니다. 한글 주석이 NetLinx Studio에서 깨져 보이면 `//` 주석 줄만 지우면 되고 동작에는 영향이 없습니다. NetLinx Studio에서 직접 열어 확인한 것은 아닙니다.
 - AMX 장치 번호(`5001:1:0`)와 터치 패널 장치(`dvTP`)는 기존과 같은 일반 예시이며 현장에 맞게 바꿔야 합니다.
 
-## 4. 검증
+## 5. 검증
 
 - `tests/control-example.test.cjs`: 담기·중복 제외·순서 바꾸기·빼기, 담은 순서대로 버튼 하나씩 AMX 코드 생성, 상한 60개 초과 알림, Enter 없는 문장 형식, 저장소 없는 Node 환경 동작.
 - `tests/layout-sim.test.cjs`: `amxItems`가 WOS100·HOS100·전체 커맨드에서 시뮬레이터 문자열과 같은 항목을 만드는지.
 - `scripts/e2e-smoke.cjs`: XDM 페이지에서 시뮬레이터 담기 → 설정 명령 담기 → 목록 2개와 `BUTTON_EVENT[dvTP,2]` → ↓ 순서 바꿈 → 파일 저장 → 새로고침 후 유지 → 비우기, 가로 넘침 없음.
-- 화면: `docs/qa/control-example-0.237/`
+- 잠금: 변환값 확인·상태·`AMX_LOCK` 형식 테스트, e2e에서 잠금 상태(코드 없음·커맨드 있음)·틀린 비밀번호 거절·해제·다시 잠그기, XDM 목록은 보이고 코드·복사·저장만 잠김. 통신 방식: `amxCode`의 LAN·직렬·포트 없음·잘못된 IP·포트 주입 차단 테스트, e2e에서 LAN 기본·IP/포트 입력 즉시 반영과 포커스 유지·RS-232 전환·SPX 포트 23.
+- 화면: `docs/qa/control-example-0.237/`(잠긴 HDS 카드, 잠긴·열린 "내 AMX 구성", LAN 코드; PC·휴대폰 390px)
 
-## 5. 되돌리기
+## 6. 되돌리기
 
-`src/control-example.js`의 장바구니 함수(`basketClean`·`basketAdd`·`basketRemove`·`basketMove`·`basketCode`·`basket`)와 `createBuilderPanel`의 `opts.basket`·`mountBuilders`의 "내 AMX 구성" 블록, `src/layout-sim.js`의 `amxItems`·`amxBtn`·`[data-ls-amx]` 클릭 처리, `src/styles.css`의 `.rt-ce-bk*`, 테스트 3개 파일의 0.237 항목을 지우면 0.236 상태로 돌아갑니다. 저장 데이터·schema 3·`rtcom.configuration.v1`은 건드리지 않았습니다. `amxCode`의 `item.enter===false` 처리는 기존 호출에서 동작이 같습니다.
+`src/control-example.js`의 장바구니 함수(`basketClean`·`basketAdd`·`basketRemove`·`basketMove`·`basketCode`·`basket`)와 `createBuilderPanel`의 `opts.basket`·`mountBuilders`의 "내 AMX 구성" 블록, `src/layout-sim.js`의 `amxItems`·`amxBtn`·`[data-ls-amx]` 클릭 처리, `src/styles.css`의 `.rt-ce-bk*`·`.rt-ce-lock*`·`.rt-ce-comm*`, 잠금(`AMX_LOCK`·`lock`·`gated`)과 통신 방식(`commOf`·`commBarHtml`·`amxPre`) 코드, `scripts/tools/set-amx-password.cjs`, `spx.json`의 `lan`, 테스트 3개 파일의 0.237 항목을 지우면 0.236 상태로 돌아갑니다. 저장 데이터·schema 3·`rtcom.configuration.v1`은 건드리지 않았습니다. `amxCode`의 `item.enter===false` 처리는 기존 호출에서 동작이 같습니다.
