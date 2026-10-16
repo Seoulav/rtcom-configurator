@@ -1,5 +1,7 @@
 ## Unreleased
 
+- **0.231.0 배포 기록**: `docs/qa/DEPLOYMENT_0.231_2026-10-16.md`(PR #357 → main 병합, Pages 배포 run 38908619438, 공개 QMS-44UX·QMS-88UX 카드 데이터·`mountMatrix` 확인)
+- **0.230.0 배포 기록**: `docs/qa/DEPLOYMENT_0.230_2026-10-16.md`(PR #355 → main 병합, 카드 정보 타일 모델명 잘림 개선)
 - **0.229.0 배포 기록**: `docs/qa/DEPLOYMENT_0.229_2026-10-16.md`(PR #351 → main 병합, Pages 배포 run 38905585107, 공개 `src/control-example.js`·HDS-42MU·HDS-21U 데이터 일치)
 - **0.228.0 배포 기록**: `docs/qa/DEPLOYMENT_0.228_2026-10-16.md`(PR #348 → main 병합, Pages 배포 run 38904278900, 공개 `src/styles.css` 디자인 v2 반영 확인)
 - **0.227.0 배포 기록**: `docs/qa/DEPLOYMENT_0.227_2026-10-16.md`(PR #349 → main 병합, Pages 배포 run 38902444688, 공개 스위치·그림 코드와 MR-4S 전원 공급 값 확인)
@@ -81,7 +83,7 @@
 - **0.145.0 배포 기록**: `docs/qa/DEPLOYMENT_0.145_2026-09-29.md`(PR #194 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.144.0 배포 기록**: `docs/qa/DEPLOYMENT_0.144_2026-09-29.md`(PR #192 → main 병합, Pages 배포 run 162, 공개 파일 337/338 일치, `.nojekyll` 제외)
 
-## 0.232.0
+## 0.233.0
 
 사용자 결정 2026-10-16("2안으로 전부 공개해"):
 
@@ -91,6 +93,15 @@
 - 근거: `docs/implementation/LAYOUT_SIM_0.224.md` §5, `docs/implementation/XDM_COMMAND_GUIDE_0.209.md` 변경 주석
 - **Delete 키로 창 지우기**: 사용자 요청 2026-10-16("입력레이어 선택 후 delete가 가능하게 해줘")대로 캔버스의 창이나 표의 행을 눌러 고른 뒤 Delete(또는 Backspace) 키를 누르면 WOS100은 그 창을 지우고 HOS100(L00·PIP 창 2)은 그 창을 끕니다(W0 H0). 전에는 창에 키보드 포커스가 있을 때만 동작했고 창을 누르면 다시 그리면서 포커스가 사라져 공개 화면에서는 사실상 쓸 수 없었습니다. 다시 그린 뒤 포커스를 선택 창으로 되돌리고, 입력 칸·버튼에 포커스가 있거나 이 카드 밖을 마지막으로 눌렀을 때는 동작하지 않습니다.
 - 레이어 표기·Delete 키 근거: `docs/implementation/LAYOUT_SIM_HOS100_0.225.md` §8
+
+## 0.232.0
+
+사용자 결정 2026-10-16("계획대로 시작", 디자인 B단계 다크 모드 ① 색을 변수로 모으기):
+
+- **`src/styles.css`:** `#rtcom-design` 안에 직접 적혀 있던 면·글자·선 색 426곳을 `--rt-bg-*`·`--rt-fg-*`·`--rt-ln-*` 변수 182개로 바꿨습니다. 변수 값은 원래 색과 같아 **라이트 화면은 달라지지 않습니다**(다크 값은 0.233 이후).
+- **증명:** 변수를 원래 색으로 되돌리면 변경 전 CSS와 글자 하나까지 같습니다(`node scripts/tools/tokenize_colors.cjs --verify <원본>`). 인쇄·보고서 규칙과 `#rtcom-design` 밖 규칙은 건드리지 않았습니다.
+- **도구:** `scripts/tools/tokenize_colors.cjs`(점검·적용·증명 세 방식).
+- 근거·구조·되돌리기: `docs/implementation/COLOR_TOKENS_0.232.md`
 
 ## 0.231.0
 

@@ -659,7 +659,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await page.reload({waitUntil:'networkidle'});
     await page.waitForSelector('#rt-layout-sim [data-ls-win="1"]');
     const simBefore=await page.locator('#rt-layout-sim [data-ls-cmd]').innerText();
-    // 0.232 레이어 번호(1 = 맨 위, 사용자 요청 2026-10-16): 기본 배치(P4321, PIP가 포트 14)에서 PIP(창 2)가 레이어 1, 전체 창 1이 레이어 2. 끌기 전에 잰다(PIP를 다른 카드로 옮기면 받는 포트가 바뀌어 순서도 바뀜).
+    // 0.233 레이어 번호(1 = 맨 위, 사용자 요청 2026-10-16): 기본 배치(P4321, PIP가 포트 14)에서 PIP(창 2)가 레이어 1, 전체 창 1이 레이어 2. 끌기 전에 잰다(PIP를 다른 카드로 옮기면 받는 포트가 바뀌어 순서도 바뀜).
     const simLayers=await page.evaluate(()=>({layers:[...document.querySelectorAll('#rt-layout-sim .rt-ls-win-layer')].map(e=>e.textContent),top:document.querySelector('#rt-layout-sim .rt-ls-win-layer.is-top')?.closest('.rt-ls-win')?.dataset.lsWin}));
     await page.locator('#rt-layout-sim [data-ls-win="1"]').scrollIntoViewIfNeeded();
     const simWin=await page.locator('#rt-layout-sim [data-ls-win="1"]').boundingBox();
@@ -674,7 +674,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await page.click('#rt-layout-sim [data-ls-top="0"]');
     const topCmd=await page.evaluate(()=>document.querySelector('#rt-layout-sim [data-ls-cmd]').textContent);
     check('XDM 07 시뮬레이터 "맨 위로": 창 1을 맨 위로 올리면 포트 배정과 커맨드 순서가 바뀜',/I002O013X5760Y3240W1920H1080I001O001O005O009O014X0Y0W7680H4320!$/.test(topCmd),topCmd.slice(-90));
-    // 0.232 Delete 키(사용자 요청 2026-10-16): 창을 누른 뒤(끌지 않고) Delete → WOS100은 창을 지우고, HOS100 L00은 창을 끈다(W0000 H0000).
+    // 0.233 Delete 키(사용자 요청 2026-10-16): 창을 누른 뒤(끌지 않고) Delete → WOS100은 창을 지우고, HOS100 L00은 창을 끈다(W0000 H0000).
     await page.evaluate(()=>{try{localStorage.removeItem('rtcom.layoutSim.v1')}catch(e){}});
     await page.reload({waitUntil:'networkidle'});
     await page.waitForSelector('#rt-layout-sim [data-ls-win="1"]');
@@ -692,7 +692,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await page.evaluate(()=>{try{localStorage.removeItem('rtcom.layoutSim.v1');localStorage.removeItem('rtcom.layoutSim.hos.v1');localStorage.removeItem('rtcom.layoutSim.card.v1')}catch(e){}});
     await page.reload({waitUntil:'networkidle'});
     await page.waitForSelector('#rt-layout-sim [data-ls-preset]');
-    // 0.232 현장 메모 공개(사용자 결정 2026-10-16 "2안으로 전부 공개해"): 프리셋 원문과 참고 커맨드 접이식 칸.
+    // 0.233 현장 메모 공개(사용자 결정 2026-10-16 "2안으로 전부 공개해"): 프리셋 원문과 참고 커맨드 접이식 칸.
     await page.selectOption('#rt-layout-sim [data-ls-preset]','memo-22x9x2');
     const memo=await page.evaluate(()=>({cmd:document.querySelector('#rt-layout-sim [data-ls-cmd]').textContent,notes:document.querySelector('#rt-layout-sim .rt-ls-notes')?.textContent||''}));
     check('XDM 07 시뮬레이터 현장 메모 프리셋이 회신 원문(O009-012·O000·X0Y295W1920H1571)과 같고 참고 커맨드 칸에 IV·IE 커맨드가 있음',memo.cmd==='*255OWO009-012W14H01V01P4321O000I001O009X0Y295W1920H1571I002O010X1920Y295W1920H1571!'&&memo.notes.includes('*255IVI001I002I003M03!')&&memo.notes.includes('*255IEI009M18!'),JSON.stringify({cmd:memo.cmd.slice(-60),notes:memo.notes.length}));
