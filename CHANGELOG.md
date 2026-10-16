@@ -81,6 +81,15 @@
 - **0.145.0 배포 기록**: `docs/qa/DEPLOYMENT_0.145_2026-09-29.md`(PR #194 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.144.0 배포 기록**: `docs/qa/DEPLOYMENT_0.144_2026-09-29.md`(PR #192 → main 병합, Pages 배포 run 162, 공개 파일 337/338 일치, `.nojekyll` 제외)
 
+## 0.232.0
+
+사용자 결정 2026-10-16("계획대로 시작", 디자인 B단계 다크 모드 ① 색을 변수로 모으기):
+
+- **`src/styles.css`:** `#rtcom-design` 안에 직접 적혀 있던 면·글자·선 색 426곳을 `--rt-bg-*`·`--rt-fg-*`·`--rt-ln-*` 변수 182개로 바꿨습니다. 변수 값은 원래 색과 같아 **라이트 화면은 달라지지 않습니다**(다크 값은 0.233 이후).
+- **증명:** 변수를 원래 색으로 되돌리면 변경 전 CSS와 글자 하나까지 같습니다(`node scripts/tools/tokenize_colors.cjs --verify <원본>`). 인쇄·보고서 규칙과 `#rtcom-design` 밖 규칙은 건드리지 않았습니다.
+- **도구:** `scripts/tools/tokenize_colors.cjs`(점검·적용·증명 세 방식).
+- 근거·구조·되돌리기: `docs/implementation/COLOR_TOKENS_0.232.md`
+
 ## 0.231.0
 
 사용자 요청 2026-10-16("QMS 시리즈도 다 진행해줘", 0.229 HDS-42MU·HDS-21U "AMX 통합 제어 커맨드 예시" 카드의 확장):
