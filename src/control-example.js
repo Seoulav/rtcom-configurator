@@ -72,7 +72,7 @@
   // opts.mode: 'serial'(RS-232, 기본) | 'lan'(TCP/IP). 0.239 사용자 확인 2026-10-16 "amx로 알티컴 제어시 rs232는 잘 사용안하고 lan제어를 많이해" → 화면은 LAN이 기본이다.
   //   LAN: IP_CLIENT_OPEN(dev.PORT, IP, 포트, IP_TCP)로 장비에 TCP 연결한 뒤 같은 커맨드 문자열을 SEND_STRING으로 보낸다(NetLinx 표준 문법).
   //   포트는 매뉴얼에 적힌 값(spec.lan.port, SPX 매뉴얼 46쪽 Telnet 23)만 기본으로 쓰고, 없으면 0과 "확인 필요" 주석을 적는다. 값을 만들어 넣지 않는다.
-  //   IP는 형식이 맞는 값만 쓰고(코드 주입 방지), 비어 있으면 예시 주소를 적고 현장에서 바꾸도록 주석을 단다.
+  //   IP는 형식이 맞는 값만 쓰고(코드 주입 방지), 비어 있으면 예시 주소(192.168.1.100)를 적고 현장에서 바꾸도록 주석을 단다. 기본 대역은 192.168.1.xxx(사용자 확인 2026-10-16, SPX 매뉴얼 예시 192.168.1.72도 같은 대역).
   // 직렬은 데이터 비트·패리티가 매뉴얼에 없으면 일반값(8N1)으로 적고 현장 확인을 안내한다.
   const IPV4=/^(25[0-5]|2[0-4]\d|1?\d?\d)(\.(25[0-5]|2[0-4]\d|1?\d?\d)){3}$/;
   const portOf=(spec,opts)=>{const n=Number(String(opts?.port??'').trim());if(Number.isInteger(n)&&n>=1&&n<=65535)return n;const d=Number(spec.lan?.port);return Number.isInteger(d)&&d>=1&&d<=65535?d:0};
@@ -87,7 +87,7 @@
         `dvTP = 10001:1:0   // 터치 패널 장치 번호는 현장에 맞게 변경`,
         ``,
         `DEFINE_CONSTANT`,
-        `CHAR cDeviceIp[] = '${ip}'   // 장비 IP 주소${ipGiven?'':'(예시, 현장 IP로 변경)'}`,
+        `CHAR cDeviceIp[] = '${ip}'   // 장비 IP 주소${ipGiven?'':'(예시, 기본 대역은 192.168.1.xxx — 현장 IP로 변경)'}`,
         `LONG nDevicePort = ${port}   // TCP 포트${port?(fromSpec?` — ${spec.lan?.source||'매뉴얼 값'}`:' (직접 입력한 값)'):' 번호를 입력하세요(이 제품은 매뉴얼에 없어 알티컴 확인 필요)'}`,
         ``,
         `DEFINE_START`,
@@ -179,7 +179,7 @@
   function commBarHtml(spec){
     const c=commOf(spec),id=esc(spec.id||'x');
     const note=spec.lan?.port?`TCP 포트 ${spec.lan.port}: ${spec.lan.source||'매뉴얼'}`:'이 제품의 LAN(TCP) 포트는 매뉴얼에 없어 알티컴 확인이 필요합니다. 아는 포트 번호를 직접 넣으세요.';
-    return `<div class="rt-ce-comm" data-ce-commbar="${id}"><label>통신 방식<select data-ce-comm="mode"><option value="lan"${c.mode==='lan'?' selected':''}>LAN (TCP/IP)</option><option value="serial"${c.mode==='serial'?' selected':''}>RS-232 (직렬)</option></select></label><span class="rt-ce-comm-lan"${c.mode==='lan'?'':' hidden'}><label>장비 IP 주소<input type="text" inputmode="decimal" data-ce-comm="ip" value="${esc(c.ip)}" placeholder="예: 192.168.1.100" autocomplete="off" maxlength="15"></label><label>TCP 포트<input type="text" inputmode="numeric" data-ce-comm="port" value="${esc(c.port)}" placeholder="${esc(spec.lan?.port||'확인 필요')}" autocomplete="off" maxlength="5"></label></span><p class="rt-pg-hint">${esc(note)} LAN으로 보내는 커맨드 문자열은 RS-232와 같다고 보고 만든 예시이며, 제품별 확인 내용은 알티컴에 문의하세요.</p></div>`;
+    return `<div class="rt-ce-comm" data-ce-commbar="${id}"><label>통신 방식<select data-ce-comm="mode"><option value="lan"${c.mode==='lan'?' selected':''}>LAN (TCP/IP)</option><option value="serial"${c.mode==='serial'?' selected':''}>RS-232 (직렬)</option></select></label><span class="rt-ce-comm-lan"${c.mode==='lan'?'':' hidden'}><label>장비 IP 주소<input type="text" inputmode="decimal" data-ce-comm="ip" value="${esc(c.ip)}" placeholder="192.168.1.xxx" autocomplete="off" maxlength="15"></label><label>TCP 포트<input type="text" inputmode="numeric" data-ce-comm="port" value="${esc(c.port)}" placeholder="${esc(spec.lan?.port||'확인 필요')}" autocomplete="off" maxlength="5"></label></span><p class="rt-pg-hint">${esc(note)} LAN으로 보내는 커맨드 문자열은 RS-232와 같다고 보고 만든 예시이며, 제품별 확인 내용은 알티컴에 문의하세요.</p></div>`;
   }
   // AMX 코드 <pre>: 항목 목록을 속성에 담아 두면 통신 방식·IP·포트가 바뀔 때 화면을 다시 그리지 않고 그 자리에서 글만 바꾼다(입력 칸 포커스 유지).
   function amxPre(spec,items,extra=''){
