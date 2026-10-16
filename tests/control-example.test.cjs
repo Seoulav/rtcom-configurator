@@ -414,9 +414,9 @@ test('0.239: 저장소의 AMX_LOCK은 비밀번호 원문 없이 변환값 또�
 });
 
 // 0.239 AMX 통신 방식: LAN(TCP) 기본 화면, RS-232 선택. 포트는 매뉴얼 값만 쓰고 없으면 0과 "확인 필요"
-test('0.239·0.241: LAN 코드는 IP_CLIENT_OPEN과 DATA_EVENT를 만들고 알티컴 회신(포트 23·동시 접속 1·자동 끊김 없음)을 담는다',()=>{
+test('0.239·0.241·0.242: LAN 코드는 IP_CLIENT_OPEN과 DATA_EVENT를 만들고 알티컴 회신(포트 23·동시 접속 1·자동 끊김 없음)을 LAN 제품 5종에 담는다',()=>{
   // 알티컴 회신(사용자 전달 2026-10-16, 질문 17~19번): 포트 23, RS-232와 동일하게 전송, 동시 접속 1개, 자동으로 끊기지 않음
-  const names={xdm,vdm,spx,hds42:JSON.parse(fs.readFileSync('data/products/hds-42mu.json','utf8')).controlExample,hds21:JSON.parse(fs.readFileSync('data/products/hds-21u.json','utf8')).controlExample,q44:JSON.parse(fs.readFileSync('data/products/qms-44ux.json','utf8')).controlExample,q88:JSON.parse(fs.readFileSync('data/products/qms-88ux.json','utf8')).controlExample};
+  const names={xdm,vdm,spx,q44:JSON.parse(fs.readFileSync('data/products/qms-44ux.json','utf8')).controlExample,q88:JSON.parse(fs.readFileSync('data/products/qms-88ux.json','utf8')).controlExample};
   for(const [k,s] of Object.entries(names)){
     assert.deepEqual({port:s.lan?.port,connections:s.lan?.connections,autoDisconnect:s.lan?.autoDisconnect,confirmed:s.lan?.confirmed},{port:23,connections:1,autoDisconnect:false,confirmed:true},`${k} lan`);
     assert.match(s.lan.source,/알티컴 회신/);
@@ -463,4 +463,21 @@ test('0.239: 통신 방식 상태는 기본 LAN이고 저장소가 없어도 메
   ce.setComm(s,{mode:'serial',ip:'10.0.0.9',port:'23'});
   assert.deepEqual(ce.commOf(s),{mode:'serial',ip:'10.0.0.9',port:'23'});
   ce.setComm(s,{mode:'lan'});assert.equal(ce.commOf(s).mode,'lan');assert.equal(ce.commOf(s).ip,'10.0.0.9');
+});
+
+// 0.242 HDS-42MU·HDS-21U는 직렬 제어만 가능(사용자 확인 2026-10-16 "시리얼 제어만 가능해") → LAN 값 없음, AMX 코드는 항상 RS-232
+test('0.242: HDS-42MU·HDS-21U는 직렬 전용이라 lan 값이 없고 AMX 코드는 LAN을 골라도 RS-232로 나온다',()=>{
+  for(const id of ['hds-42mu','hds-21u']){
+    const s=JSON.parse(fs.readFileSync(`data/products/${id}.json`,'utf8')).controlExample;
+    assert.equal(s.serialOnly,true,id);assert.equal(s.lan,undefined,`${id}에는 LAN 값이 없어야 한다`);
+    assert.equal(ce.commOf(s).mode,'serial');
+    ce.setComm(s,{mode:'lan',ip:'192.168.1.50',port:'23'});
+    assert.equal(ce.commOf(s).mode,'serial','저장된 값이 LAN이어도 직렬로 나온다');
+    for(const code of [ce.amxCode(s,[{text:'*000CI02O02!'}],{mode:'lan'}),ce.amxCode(s,[{text:'*000CI02O02!'}],ce.commOf(s))]){
+      assert.match(code,/SET BAUD 9600/);assert.doesNotMatch(code,/IP_CLIENT_OPEN|nDevicePort/);
+      assert.match(code,/SEND_STRING dvHDS\w+,"'\*000CI02O02!',\$0D"/);
+    }
+  }
+  // LAN 제품 5종은 serialOnly가 없다
+  for(const s of [xdm,vdm,spx])assert.equal(s.serialOnly,undefined);
 });
