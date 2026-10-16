@@ -1,5 +1,7 @@
 ## Unreleased
 
+- **0.229.0 배포 기록**: `docs/qa/DEPLOYMENT_0.229_2026-10-16.md`(PR #351 → main 병합, Pages 배포 run 38905585107, 공개 `src/control-example.js`·HDS-42MU·HDS-21U 데이터 일치)
+- **0.228.0 배포 기록**: `docs/qa/DEPLOYMENT_0.228_2026-10-16.md`(PR #348 → main 병합, Pages 배포 run 38904278900, 공개 `src/styles.css` 디자인 v2 반영 확인)
 - **0.227.0 배포 기록**: `docs/qa/DEPLOYMENT_0.227_2026-10-16.md`(PR #349 → main 병합, Pages 배포 run 38902444688, 공개 스위치·그림 코드와 MR-4S 전원 공급 값 확인)
 - **0.226.0 배포 기록**: `docs/qa/DEPLOYMENT_0.226_2026-10-16.md`(PR #346 → main 병합, Pages 배포 run 38899767327, 공개 `src/layout-sim.js` 일치)
 - **0.225.0 배포 기록**: `docs/qa/DEPLOYMENT_0.225_2026-10-16.md`(PR #345 → main 병합, Pages 배포 run 38897820970, 공개 `src/layout-sim.js` 일치)
@@ -78,6 +80,16 @@
 - **0.146.0 배포 기록**: `docs/qa/DEPLOYMENT_0.146_2026-09-29.md`(PR #195 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.145.0 배포 기록**: `docs/qa/DEPLOYMENT_0.145_2026-09-29.md`(PR #194 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.144.0 배포 기록**: `docs/qa/DEPLOYMENT_0.144_2026-09-29.md`(PR #192 → main 병합, Pages 배포 run 162, 공개 파일 337/338 일치, `.nojekyll` 제외)
+
+## 0.229.0
+
+사용자 요청 2026-10-16("HDS-42MU 제품 정보페이지에 AMX 통합제어를 통해서 커맨드제어 예시 값을 나오게 하고 싶어 … 일단 HDS-42MU 먼저 하고 HDS-21U, 그다음 일체형 매트릭스, 모듈러 매트릭스까지 확장", "in4을 out1로 경우수를 라우팅했을때 명령어가 나오는 구조로"):
+
+- **HDS-21U도 같은 카드(입력 2 × 출력 1, 매뉴얼 9쪽 예시 `*000CI02O01!`):** 매뉴얼 표의 Mute 칸 값(0)으로 뮤트 커맨드 `*000V00!`을 추가하고 AMX 예제를 명령마다 버튼 하나씩으로 나눴습니다(사용자 요청 2026-10-16 "HDS-21U도 동일하게 만들어줘").
+- **HDS-42MU "08 AMX 통합 제어 커맨드 예시" 카드:** 입력 4 × 출력 2 라우팅 표 8칸마다 그 경로의 RS-232 명령어(예: IN 4 → OUT 1 = `*000CI04O01!`)를 보여 주고, 칸을 누르면 토큰 설명·HEX·복사와 AMX NetLinx `SEND_STRING` 예제 코드로 이어집니다. 오디오 볼륨(`*000Vxx!`, 50이 0dB, 코드 1당 0.5dB)도 dB 입력으로 만들어 줍니다.
+- 근거는 HDS-42MU 사용자 매뉴얼 9쪽 RS-232C Control(9600bps)입니다. 매뉴얼에 없는 데이터 비트·패리티, 뮤트 명령, 볼륨 허용 범위는 만들어 넣지 않고 화면에 밝혔습니다.
+- 제품 JSON `controlExample`과 `src/control-example.js`로 만들어 HDS-21U·일체형·모듈러 매트릭스로 확장할 수 있습니다.
+- 근거·구조·되돌리기: `docs/implementation/CONTROL_EXAMPLE_0.229.md`, 화면: `docs/qa/control-example-0.229/`
 
 ## 0.228.0
 

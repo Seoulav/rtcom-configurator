@@ -1130,6 +1130,14 @@
       const sorted=[...rows,...combos].sort((x,y)=>x[0]-y[0]).map(entry=>entry[1]).join('');
       return `<section class="rt-pg-card rt-pg-dip" style="margin-top:18px"><h2><span class="rt-pg-idx">${idx}</span>딥 스위치 설정 <span class="rt-pg-note">— ${esc(ds.place||'전면')} ${esc(ds.label||'딥 스위치')} · ${ds.onUp!==false?'위쪽':'아래쪽'}이 ON</span></h2><div class="rt-pg-dip-rows">${sorted}</div>${ds.apply?`<p class="rt-pg-hint">※ ${esc(ds.apply)}</p>`:''}${ds.note?`<p class="rt-pg-hint">※ ${esc(ds.note)}</p>`:''}</section>`;
     }
+    // 0.229 "AMX 통합 제어 커맨드 예시" 카드(제품 JSON의 controlExample, 그리기·문자열 생성은 src/control-example.js). 번호는 딥 스위치 카드 다음이다.
+    function controlExampleSection(item){
+      const ce=item.controlExample;
+      if(!ce)return '';
+      const idx=String(6+(item.videoModes?1:0)+(item.edidSwitch?.table?.length?1:0)+(item.audioMux?.modes?.length?1:0)+(item.dipSwitch?.rows?.length?1:0)).padStart(2,'0');
+      const spec={...ce,id:item.id};
+      return `<section class="rt-pg-card rt-pg-control" style="margin-top:18px"><h2><span class="rt-pg-idx">${idx}</span>AMX 통합 제어 커맨드 예시 <span class="rt-pg-note">— RS-232 · ${esc(ce.serial?.baud||9600)}bps · 입력·출력을 고르면 커맨드가 바뀝니다</span></h2>${ce.lead?`<p class="rt-pg-lead">${esc(ce.lead)}</p>`:''}<div data-control-example="${esc(JSON.stringify(spec))}"></div></section>`;
+    }
     // ---- 오디오 설정(병합 MUX·추출 DEMUX 중 선택, HD-13U). 매뉴얼 문장을 "이럴 때·연결·소리가 나오는 곳·확인 방법"으로 풀어 두 칸으로 보여준다 ----
     // HDS-21U·HDS-42MU는 딥 스위치 1번으로 고르므로 이 카드 대신 딥 스위치 설정 카드에서 함께 설명한다(사용자 요청 2026-09-27).
     // ---- 오디오 설정 순서 그림(0.61, 사용자 요청 "DIP 이미지처럼 불 켜짐", "분배기 로터리 이미지 그대로 활용해줘, 통일감이 없어") ----
@@ -1197,6 +1205,7 @@
       else if(hasAudioMux){belowCards=`${edidSwitchSection(item)}${audioMuxSection(item)}`}
       else{belowCards=edidSwitchSection(item)}
       belowCards+=dipSwitchSection(item);
+      belowCards+=controlExampleSection(item);
       // 휴대폰(1000px 이하)에서는 .rt-pg-col이 사라지고 rt-pg-col-mobile-N 순서로만 쌓이므로, sideCard도 순서 클래스가 있어야 05 다음(01~05, 06, 07 기록)으로 나온다(없으면 order:0이라 맨 앞으로 감).
       if(sideCard)sideCard=sideCard.replace('class="rt-pg-card', 'class="rt-pg-card rt-pg-col-mobile-6');
       return `${headerBlock({icon:PRODUCT_ICON[item.id]||GROUP_ICON[item.group],title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,docs:docButtons(item),official:officialButton(item),diagram:!!photo})}
@@ -1332,6 +1341,7 @@
         window.scrollTo({top:view.offsetTop-8});
         initDiagramScroll(body);
         window.RtLayoutSim?.mountAll(body);
+        window.RtControlExample?.mountAll(body);
       }):(body.innerHTML=`<div class="rt-pg-orbs"></div><div class="rt-pg-wrap">${listView()}</div>`))
         .catch(()=>{body.innerHTML=`<div class="rt-pg-wrap"><p class="rt-pg-empty">제품 정보를 불러오지 못했습니다. <a href="#products">목록으로</a></p></div>`});
     }
