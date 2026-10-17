@@ -716,6 +716,8 @@ const patchAmxLock=async()=>{
       const first={idx:await page.locator('#rt-quad-sim .rt-pg-idx').textContent(),n:await page.locator('#rt-quad-sim [data-qv-layout]').count(),cells:await cells(),cmd:await text(),btn:await page.locator('[data-scroll-to="rt-quad-sim"]').count()};
       await page.click('#rt-quad-sim [data-qv-layout="L07"]');
       const side={cells:await cells(),cmd:await text(),labels:await page.locator('#rt-quad-sim .rt-qv-preview svg text').allTextContents()};
+      const openAdvQ=async()=>{if(!await page.evaluate(()=>document.querySelector('#rt-quad-sim [data-qv-adv]').open))await page.click('#rt-quad-sim [data-qv-adv] summary')};
+      await openAdvQ();
       await page.locator('#rt-quad-sim [data-qv="out"]').fill('2');await page.locator('#rt-quad-sim [data-qv="out"]').blur();await page.selectOption('#rt-quad-sim [data-qv="timing"]','T17');
       const edited=await text();
       await page.locator('#rt-quad-sim [data-qv-in="1"]').fill('7');await page.locator('#rt-quad-sim [data-qv-in="1"]').blur();
@@ -737,6 +739,27 @@ const patchAmxLock=async()=>{
       const sigBtn=await page.locator('svg [data-card-feature="vdm-quadview"][role="button"]').count();
       check('VDM QOS4S-U 카드 상세·02 신호 구성에서 쿼드뷰 레이아웃 팝업(8종·도해 칸 18개·알티컴 확인 대기 안내)이 열리고 "커맨드 만들기"는 팝업을 닫고 시뮬레이터로 이동함',cta===1&&pop.title==='VDM-QOS4S-U 쿼드뷰 레이아웃'&&pop.layouts===8&&pop.figs===18&&pop.note&&pop.go&&closed===0&&sigBtn===1,JSON.stringify({cta,pop,closed,sigBtn}));
     }
+    // 0.247(사용자 지적 2026-10-17 "07 부분은 좀 이해가 안되 xdm처럼 개선해줘"): 07 분할 화면 시뮬레이터가 ①②③ 단계형이고(쿼드뷰·월 모두), 고급 설정은 접혀 있으며,
+    // index.html에서 두 스크립트 태그가 빠진 오래된 캐시 상황에서도 products.js가 모듈을 다시 불러와 화면을 채운다.
+    {
+      const freshCtx=await browser.newContext({viewport:{width:416,height:900}});
+      const fpage=await freshCtx.newPage();
+      await fpage.goto(`${home}#products/vdm`,{waitUntil:'networkidle'});
+      await fpage.waitForSelector('#rt-quad-sim [data-qv-layout]');
+      const q=await fpage.evaluate(()=>({steps:document.querySelectorAll('[data-sim-panel="quad"] .rt-sim-steps li').length,heads:[...document.querySelectorAll('[data-sim-panel="quad"] .rt-sim-h span')].map(e=>e.textContent).join(),thumbs:document.querySelectorAll('[data-sim-panel="quad"] .rt-qv-thumb').length,advOpen:document.querySelector('[data-sim-panel="quad"] [data-qv-adv]').open,inputs:document.querySelectorAll('[data-sim-panel="quad"] .rt-qv-inrow input').length,previews:document.querySelectorAll('[data-sim-panel="quad"] .rt-qv-preview').length}));
+      await fpage.click('#rt-quad-sim [data-sim-tab="wall"]');
+      const w=await fpage.evaluate(()=>({steps:document.querySelectorAll('[data-sim-panel="wall"] .rt-sim-steps li').length,heads:[...document.querySelectorAll('[data-sim-panel="wall"] .rt-sim-h span')].map(e=>e.textContent).join(),advOpen:document.querySelector('[data-sim-panel="wall"] [data-vw-adv]').open}));
+      check('VDM 07 분할 화면 시뮬레이터: 쿼드뷰·월 탭 모두 사용 순서 3칸과 ①②③ 단계 제목이 있고, 레이아웃은 작은 그림 8개 + 큰 미리보기 1개이며 칸 입력 4개, 고급 설정은 접혀 있음',q.steps===3&&q.heads==='1,2,3'&&q.thumbs===8&&q.previews===1&&q.inputs===4&&q.advOpen===false&&w.steps===3&&w.heads==='1,2,3'&&w.advOpen===false,JSON.stringify({q,w}));
+      await freshCtx.close();
+      // 오래된 index.html(스크립트 태그 없음)을 흉내: 두 파일 요청을 막고 index.html에서 태그를 지운 채 열면 products.js가 직접 불러온다.
+      const stale=await context.newPage();
+      await stale.route('**/index.html',async route=>{const res=await route.fetch();const body=(await res.text()).replace('<script src="src/quad-view.js"></script>','').replace('<script src="src/vdm-wall.js"></script>','');await route.fulfill({response:res,body})});
+      await stale.goto(`${home}#products/vdm`,{waitUntil:'networkidle'});
+      await stale.waitForSelector('#rt-quad-sim [data-qv-layout]',{timeout:15000}).catch(()=>{});
+      const lateOk=await stale.evaluate(()=>({thumbs:document.querySelectorAll('#rt-quad-sim [data-qv-layout]').length,hasModule:typeof window.RtQuadView==='object'}));
+      await stale.close();
+      check('오래된 index.html(quad-view.js·vdm-wall.js 태그 없음)에서도 products.js가 두 모듈을 다시 불러와 07 시뮬레이터를 채움',lateOk.thumbs===8&&lateOk.hasModule,JSON.stringify(lateOk));
+    }
     // 0.246(사용자 요청 2026-10-17 "VDM 월만"): VDM "07 분할 화면 시뮬레이터"의 비디오 월 탭. 매뉴얼 85~88쪽 예시(W11·W21·B01·B02)와 같은 명령, 프리셋, 베젤, AMX 구성 담기, 탭 전환.
     {
       await page.goto(`${home}#products/vdm`,{waitUntil:'networkidle'});
@@ -752,6 +775,7 @@ const patchAmxLock=async()=>{
       const three={cells:await cells(),cmd:await cmd('build')};
       await page.selectOption('#rt-quad-sim [data-vw-preset]','w4x3');
       const four={cells:await cells(),cmd:await cmd('build'),reset:await cmd('reset')};
+      if(!await page.evaluate(()=>document.querySelector('#rt-quad-sim [data-vw-adv]').open))await page.click('#rt-quad-sim [data-vw-adv] summary');
       await page.check('#rt-quad-sim [data-vw="withBezel"]');
       for(const k of ['l','r','u','d']){const f=page.locator(`#rt-quad-sim [data-vw-bz="${k}"]`);await f.fill('20');await f.blur()}
       const bezel=await cmd('build');
