@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.249.0 배포 기록**: `docs/qa/DEPLOYMENT_0.249_2026-10-17.md`(PR #391 → main 병합 `c23918b`, Pages 배포 run 39037003794 success, 공개 `CATALOG BASED · 0.249`·`products.js`·`qms-88ux.json`·`index.html`·`control-example.js` 해시 일치·`CLAUDE.md` 404)
 - **0.248.0 배포 기록**: `docs/qa/DEPLOYMENT_0.248_2026-10-17.md`(PR #389 → main 병합 `733f3fb`, Pages 배포 run 39035911370 success, 공개 `CATALOG BASED · 0.248`·`control-example.js`·`qms-88ux.json`·`index.html` 해시 일치·`CLAUDE.md` 404)
 - **0.247.0 배포 기록**: `docs/qa/DEPLOYMENT_0.247_2026-10-17.md`(PR #387 → main 병합 `8ce1412`, Pages 배포 run 39032777687 success, 공개 `CATALOG BASED · 0.247`·`quad-view.js` 등 5개 파일 해시 일치·`CLAUDE.md` 404, 첫 검사 실패 → 고급 설정 펼침 타이밍 수정 경위)
 - **0.246.0 배포 기록**: `docs/qa/DEPLOYMENT_0.246_2026-10-17.md`(PR #385 → main 병합 `8112e7b`, Pages 배포 run 39011335570 success, 공개 `CATALOG BASED · 0.246`·`vdm-wall.js` 등 3개 파일 해시 일치·`CLAUDE.md` 404)
