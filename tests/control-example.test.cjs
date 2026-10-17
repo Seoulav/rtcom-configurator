@@ -140,6 +140,36 @@ test('QMS-88UX 비디오 월(OW)은 매뉴얼 35쪽 예시 2개와 같고 해상
   assert.equal(build(q88,'wall',{range:'1-6',res:'',h:2,v:3,members:'1-6'}),'*255OWO01-06H02V03O01O02O03O04O05O06!');
 });
 
+test('QMS-88UX 비디오 월(OW)은 월 2개를 한 줄로 이어 만들 수 있고 매뉴얼 35쪽 첫 예시와 같다(0.248)',()=>{
+  const wall=(values)=>ce.buildCommand(q88,B(q88,'wall'),values);
+  const two={range:'1-10',res:'13',h:2,v:2,members:'1-4',h2:3,v2:2,members2:'5-10'};
+  assert.equal(wall(two).text,'*255OWO01-10M13H02V02O01O02O03O04H03V02O05O06O07O08O09O10!');
+  assert.equal(wall(two).warn,'','매뉴얼 예시는 경고가 없어야 한다');
+  assert.equal(build(q88,'wall',{range:'1-8',res:'13',h:2,v:2,members:'1-4',h2:2,v2:2,members2:'5-8'}),'*255OWO01-08M13H02V02O01O02O03O04H02V02O05O06O07O08!');
+  // 월 2를 비우면 기존 월 1개 명령과 같다
+  assert.equal(wall({range:'1-6',res:'13',h:2,v:3,members:'1-6'}).text,'*255OWO01-06M13H02V03O01O02O03O04O05O06!');
+  assert.equal(wall({range:'1-6',res:'13',h:2,v:3,members:'1-6'}).warn,'');
+});
+
+test('QMS-88UX 비디오 월(OW) 검사: 칸 수·범위·겹침 불일치는 경고, 월 2가 덜 채워지면 오류',()=>{
+  const wall=(values)=>ce.buildCommand(q88,B(q88,'wall'),values);
+  const cells=wall({range:'1-10',res:'13',h:2,v:2,members:'1-10'});
+  assert.ok(cells.text,'경고만 붙이고 명령은 만든다');
+  assert.match(cells.warn,/월 1: 가로 2 × 세로 2 = 4칸인데 포함 출력은 10개/);
+  const out=wall({range:'1-4',res:'13',h:2,v:2,members:'1-6'});
+  assert.match(out.warn,/출력 5·6번이 "월을 만들 출력 범위"에 없습니다/);
+  const idle=wall({range:'1-8',res:'13',h:2,v:2,members:'1-4'});
+  assert.match(idle.warn,/출력 5·6·7·8번이 어느 월에도 포함되지 않았습니다/);
+  const dup=wall({range:'1-8',res:'13',h:2,v:2,members:'1-6',h2:2,v2:2,members2:'5-8'});
+  assert.match(dup.warn,/출력 5·6번이 두 월에 모두 들어 있습니다/);
+  const part=wall({range:'1-8',res:'13',h:2,v:2,members:'1-4',h2:2,v2:'',members2:'5-8'});
+  assert.equal(part.text,undefined);
+  assert.match(part.error,/두 번째 월을 쓰려면 가로·세로 칸 수와 포함 출력을 모두 적고/);
+  // 9·10번이 들어간 월도 같은 규칙: 3×3 월(1~9번), 2×5 월(1~10번)
+  assert.equal(build(q88,'wall',{range:'1-9',res:'13',h:3,v:3,members:'1-9'}),'*255OWO01-09M13H03V03O01O02O03O04O05O06O07O08O09!');
+  assert.equal(wall({range:'1-10',res:'13',h:5,v:2,members:'1-10'}).warn,'');
+});
+
 test('QMS-88UX 멀티뷰(Q)는 매뉴얼 39쪽 예시 2개와 같다',()=>{
   assert.equal(build(q88,'mv',{res:'13',layer:'01',inopt:'0',outopt:'0'}),'*255QM13L01S00!');
   assert.equal(build(q88,'mv',{res:'10',layer:'07',inopt:'0',outopt:'2'}),'*255QM10L07S02!');
