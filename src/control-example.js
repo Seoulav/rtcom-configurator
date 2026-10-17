@@ -345,6 +345,8 @@
   //  - route: {cmd}가 있으면 입력 번호 1개와 출력 목록으로 연결 쌍(I001O001-007, I001O009)을 쉼표로 이은 연결·해제 명령을 만든다.
   //  - template: "s in {in} av out {out}!"처럼 * 제품 ID 없이 문장형으로 만드는 명령(SPX 커맨드 2). enter가 false이면 Enter(0x0D)를 붙이지 않는다.
   //  - productId: 이 명령만 쓰는 제품 ID(예: 펌웨어 확인 *999?version!).
+  //  - optional(number·list): 값을 비워 두면 그 매개변수를 명령에서 뺀다(QMS-88UX 월 2).
+  //  - walls·rangeParam: 비디오 월 명령의 일관성 검사. walls=[{h,v,members}] 매개변수 id, 둘째부터는 선택이며 셋 모두 적거나 모두 비워야 한다. 안 맞아도 명령은 만들고 경고(warn)만 붙인다(매뉴얼이 거부 규칙을 적지 않았다, 0.248).
   function parseNumList(text,min,max){
     const nums=new Set();
     for(const part of String(text??'').split(/[,\s]+/).filter(Boolean)){
@@ -368,12 +370,42 @@
   function builderDefaults(b){const v={};for(const p of b.params||[])v[p.id]=p.default??'';return v}
   const variantPad=(spec,ctx)=>ctx?.pad||spec.variants?.[0]?.pad||2;
   const padOf=(spec,p,ctx)=>p.padVar?variantPad(spec,ctx):(p.pad||2);
+  // 비디오 월 일관성 검사(QMS-88UX 월 2개까지). 오류(error)는 명령 자체가 어긋날 때, 경고(warn)는 매뉴얼이 거부 규칙을 적지 않은 불일치일 때.
+  function wallCheck(spec,b,vals){
+    const outMax=spec.outputCodes?.length||99;
+    const numOf=id=>{const t=String(vals[id]??'').trim();return t===''?null:Math.round(Number(t))};
+    const walls=(b.walls||[]).map((w,i)=>({n:i+1,h:numOf(w.h),v:numOf(w.v),members:parseNumList(vals[w.members],1,outMax),has:String(vals[w.members]??'').trim()!==''}));
+    for(const w of walls.slice(1)){
+      const given=[w.h!==null,w.v!==null,w.has].filter(Boolean).length;
+      if(given&&given<3)return {error:`${w.n===2?'두 번째':w.n+'번째'} 월을 쓰려면 가로·세로 칸 수와 포함 출력을 모두 적고, 쓰지 않으려면 모두 비워 두세요.`};
+    }
+    const used=walls.filter(w=>w.has);
+    const warns=[];
+    const list=a=>a.join('·');
+    for(const w of used){
+      if(w.h!==null&&w.v!==null&&w.h*w.v!==w.members.length)warns.push(`월 ${w.n}: 가로 ${w.h} × 세로 ${w.v} = ${w.h*w.v}칸인데 포함 출력은 ${w.members.length}개입니다.`);
+    }
+    const range=b.rangeParam?parseNumList(vals[b.rangeParam],1,outMax):[];
+    if(range.length){
+      const all=new Set(used.flatMap(w=>w.members));
+      const outside=[...all].filter(n=>!range.includes(n)),idle=range.filter(n=>!all.has(n));
+      if(outside.length)warns.push(`출력 ${list(outside)}번이 "월을 만들 출력 범위"에 없습니다.`);
+      if(idle.length)warns.push(`"월을 만들 출력 범위"의 출력 ${list(idle)}번이 어느 월에도 포함되지 않았습니다.`);
+    }
+    if(used.length>1){
+      const seen=new Map(),dup=new Set();
+      for(const w of used)for(const n of w.members){if(seen.has(n)&&seen.get(n)!==w.n)dup.add(n);seen.set(n,w.n)}
+      if(dup.size)warns.push(`출력 ${list([...dup].sort((x,y)=>x-y))}번이 두 월에 모두 들어 있습니다.`);
+    }
+    return {warn:warns.join(' ')};
+  }
   function buildCommand(spec,b,values,ctx){
     const vals={...builderDefaults(b),...(values||{})};
     const idText=b.productId||spec.productId;
     const idPart={kind:'id',text:idText,title:`Product ID · 제품 ID ${idText}`};
     const paramText=(p)=>{
       const raw=vals[p.id],prefix=p.prefix||'',kind=p.kind||'vol';
+      if(p.optional&&(p.type==='number'||p.type==='list'||p.type==='text'||p.type===undefined)&&String(raw??'').trim()==='')return {skip:true};
       if(p.type==='select'){
         if(raw===''||raw===undefined||raw===null){if(p.optional)return {skip:true};return {error:`${p.label}을(를) 고르세요.`}}
         const opt=(p.options||[]).find(o=>String(o[0])===String(raw));
@@ -460,7 +492,9 @@
       parts.push(...r.pieces);
     }
     parts.push(mEnd());
-    return {text:textOf(parts),parts,enter:b.enter!==false};
+    const wc=b.walls?wallCheck(spec,b,vals):null;
+    if(wc?.error)return {error:wc.error};
+    return {text:textOf(parts),parts,enter:b.enter!==false,warn:wc?.warn||''};
   }
   const tokens=parts=>parts.map(p=>`<span class="rt-ce-tok rt-ce-tok-${p.kind}" title="${esc(p.title)}">${esc(p.text)}</span>`).join('');
   const range=(n,from=1)=>Array.from({length:n},(_,i)=>from+i);
@@ -559,6 +593,7 @@
       const dev=spec.amxDevice||'dvSwitcher';
       return `<div class="rt-ce-head"><h3>${esc(b.title)}${cmdOf(b)?` (${esc(cmdOf(b))})`:''}</h3><button type="button" class="rt-pg-btn" data-ce-bcopy>복사</button>${opts.basket?'<button type="button" class="rt-pg-btn rt-pg-primary" data-ce-badd title="이 명령을 아래 \"내 AMX 구성\"에 담습니다">+ 구성에 담기</button>':''}<span class="rt-ce-copied" data-ce-bnote aria-live="polite"></span></div>
         <pre class="rt-ce-cmd"><span class="rt-ce-line"><small>${esc(b.title)} · ${esc(spec.docLabel||'매뉴얼')} ${esc(b.page)}</small>${tokens(r.parts)}${r.enter===false?'':'<span class="rt-ce-cr" title="Enter · 0x0D">⏎</span>'}</span></pre>
+        ${r.warn?`<p class="rt-ce-warn" data-ce-warn role="status">${esc(r.warn)}</p>`:''}
         <p class="rt-ce-hex">HEX <code>${esc(toHex(r.text,r.enter!==false))}</code>${r.enter===false?' · 이 형식은 매뉴얼에 Enter가 적혀 있지 않아 붙이지 않았습니다':''}</p>
         ${gated('AMX 코드 한 줄',()=>`<pre class="rt-ce-cmd rt-ce-code rt-ce-oneline">SEND_STRING ${esc(dev)},"'${esc(r.text)}'${r.enter===false?'':',$0D'}"</pre>`)}`;
     }

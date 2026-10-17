@@ -705,6 +705,27 @@ const patchAmxLock=async()=>{
       const over=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
       check(`${id} 설정 명령 패널: ${steps.map(x=>x[1]).join(' · ')}${id==='qms-88ux'?' · 값 직접 입력 *255OSO04O08H09!':''} 가 만들어지고 가로 넘침 없음`,seen.every(x=>x[1])&&(id!=='qms-88ux'||edited.includes('*255OSO04O08H09!'))&&!over,JSON.stringify({seen,edited,over}).slice(0,260));
     }
+    // 0.248 QMS-88UX 비디오 월(OW): 월 2개 이어 쓰기(매뉴얼 35쪽 첫 예시)와 불일치 경고(사용자 요청 2026-10-17 "1번 진행해줘")
+    {
+      await page.goto(`${home}#products/qms-88ux`,{waitUntil:'networkidle'});
+      await page.waitForSelector('.rt-pg-control [data-ce-bsel]');
+      await page.selectOption('.rt-pg-control [data-ce-bsel]','wall');
+      const cmdText=async()=>(await page.locator('.rt-pg-control [data-ce-bout] .rt-ce-cmd').first().innerText()).replace(/\s+/g,' ');
+      const setP=async(id,v)=>{await page.fill(`.rt-pg-control [data-ce-bp="${id}"]`,String(v))};
+      const warnOf=async()=>(await page.locator('.rt-pg-control [data-ce-bout] [data-ce-warn]').allInnerTexts()).join(' ');
+      const base={range:'1-6',h:2,v:3,members:'1-6'};
+      const one=await cmdText(),oneWarn=await warnOf();
+      for(const [id,v] of Object.entries({range:'1-10',h:2,v:2,members:'1-4',h2:3,v2:2,members2:'5-10'}))await setP(id,v);
+      const two=await cmdText(),twoWarn=await warnOf();
+      await setP('members','1-10');await setP('members2','');await setP('h2','');await setP('v2','');
+      const mismatch=await warnOf();
+      await setP('h2','2');
+      const partial=(await page.locator('.rt-pg-control [data-ce-bout] .rt-ce-warn').innerText());
+      const over=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
+      check('QMS-88UX 월 설정: 월 1개 기본 명령·경고 없음, 월 2개 매뉴얼 35쪽 첫 예시 *255OWO01-10M13H02V02O01O02O03O04H03V02O05O06O07O08O09O10!·경고 없음, 칸 수 불일치 경고, 월 2가 덜 채워지면 안내, 가로 넘침 없음',
+        one.includes('*255OWO01-06M13H02V03O01O02O03O04O05O06!')&&oneWarn===''&&two.includes('*255OWO01-10M13H02V02O01O02O03O04H03V02O05O06O07O08O09O10!')&&twoWarn===''&&/가로 2 × 세로 2 = 4칸인데 포함 출력은 10개/.test(mismatch)&&/두 번째 월을 쓰려면/.test(partial)&&!over,
+        JSON.stringify({one,oneWarn,two,twoWarn,mismatch,partial,over}).slice(0,420));
+    }
     // 0.245 VDM 시리즈 "07 쿼드뷰 시뮬레이터"(사용자 요청 2026-10-17 "VDM QOS4S-U 카드를 통해서 분할화면 연출이 가능한데 … 커맨드 제어와 화면 예시"): 레이아웃 8종 도해,
     // 레이아웃을 고르면 칸 수와 OQ 명령이 바뀌고(L07 → 2칸·*255OQO01L07!), 출력 번호·타이밍을 바꾸면 명령이 따라가며, 입력 연결 명령을 끌 수 있고,
     // AMX 구성에 담으면 아래 08 카드 "내 AMX 구성"에 쌓인다. QOS4S-U 카드 상세 팝업과 02 신호 구성 칸에서 레이아웃 팝업이 열린다.

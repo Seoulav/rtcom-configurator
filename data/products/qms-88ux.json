@@ -785,18 +785,21 @@
         "title": "비디오 월 설정",
         "cmd": "OW",
         "page": "35쪽",
-        "summary": "디스플레이 월을 만듭니다. 월에 쓸 출력 범위, 해상도(생략하면 레이아웃만 변경), 가로(H)·세로(V) 칸 수, 월에 포함할 출력을 차례로 적습니다.",
+        "summary": "디스플레이 월을 만듭니다. 월에 쓸 출력 범위, 해상도(생략하면 레이아웃만 변경), 가로(H)·세로(V) 칸 수, 월에 포함할 출력을 차례로 적습니다. 월은 2개까지 한 줄로 이어 만들 수 있습니다(매뉴얼 35쪽 첫 예시, 월 2는 비워 두면 월 1개).",
         "order": [
           "range",
           "res",
           "h",
           "v",
-          "members"
+          "members",
+          "h2",
+          "v2",
+          "members2"
         ],
         "params": [
           {
             "id": "range",
-            "label": "월을 만들 출력 범위",
+            "label": "월을 만들 출력 범위(월 전체)",
             "type": "list",
             "prefix": "O",
             "pad": 2,
@@ -882,7 +885,7 @@
           },
           {
             "id": "h",
-            "label": "수평 칸 수(H)",
+            "label": "월 1 수평 칸 수(H)",
             "type": "number",
             "prefix": "H",
             "pad": 2,
@@ -892,7 +895,7 @@
           },
           {
             "id": "v",
-            "label": "수직 칸 수(V)",
+            "label": "월 1 수직 칸 수(V)",
             "type": "number",
             "prefix": "V",
             "pad": 2,
@@ -902,7 +905,7 @@
           },
           {
             "id": "members",
-            "label": "월에 포함된 출력",
+            "label": "월 1에 포함된 출력",
             "type": "list",
             "prefix": "O",
             "pad": 2,
@@ -911,6 +914,54 @@
             "default": "1-6",
             "kind": "out",
             "style": "explicit"
+          },
+          {
+            "id": "h2",
+            "label": "월 2 수평 칸 수(H, 비우면 월 1개)",
+            "type": "number",
+            "prefix": "H",
+            "pad": 2,
+            "min": 1,
+            "max": 10,
+            "default": "",
+            "optional": true
+          },
+          {
+            "id": "v2",
+            "label": "월 2 수직 칸 수(V)",
+            "type": "number",
+            "prefix": "V",
+            "pad": 2,
+            "min": 1,
+            "max": 10,
+            "default": "",
+            "optional": true
+          },
+          {
+            "id": "members2",
+            "label": "월 2에 포함된 출력",
+            "type": "list",
+            "prefix": "O",
+            "pad": 2,
+            "min": 1,
+            "max": 10,
+            "default": "",
+            "kind": "out",
+            "style": "explicit",
+            "optional": true
+          }
+        ],
+        "rangeParam": "range",
+        "walls": [
+          {
+            "h": "h",
+            "v": "v",
+            "members": "members"
+          },
+          {
+            "h": "h2",
+            "v": "v2",
+            "members": "members2"
           }
         ]
       },
