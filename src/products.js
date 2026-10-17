@@ -1024,6 +1024,13 @@
       route.forEach((inp,o)=>{const x=mx,y=iy(o);outs+=`<rect x="${x}" y="${y}" width="${mw+6}" height="${mh+6}" rx="3" fill="#1f2532"/><rect class="rt-pg-cell" x="${x+3}" y="${y+3}" width="${mw}" height="${mh}" fill="${col(inp)}"/><path d="M${x+3} ${y+3+mh}V${y+3+mh*0.75}Q${x+3+mw*0.3} ${y+3+mh*0.55} ${x+3+mw*0.55} ${y+3+mh*0.72}T${x+3+mw} ${y+3+mh*0.66}V${y+3+mh}Z" fill="#fff" fill-opacity=".18"/><text x="${x+3+mw/2}" y="${y+3+mh/2}" font-size="${big?10:12}" font-weight="800" fill="#fff" text-anchor="middle" dominant-baseline="central">${inp}</text><text x="${x+mw+14}" y="${y+3+mh/2}" font-size="10" font-weight="800" fill="#6b7280" dominant-baseline="central">OUT ${o+1}</text>`});
       return `<div class="rt-pg-layout-preview rt-pg-matrix-preview"><svg class="rt-pg-layout-matrix" viewBox="0 0 ${W} ${H}" role="img" aria-label="입력 ${N} → 출력 ${N} 크로스포인트 예시">${lines}${ins}${outs}</svg></div>`;
     }
+    // 0.244(사용자 요청 2026-10-17 "QMS-44UX 쿼드 뷰 입력 번호 표시 … 진행해줘"): QMS-44UX 쿼드 뷰 도해의 칸 번호 안내 한 줄.
+    // 매뉴얼 21쪽: QUAD 모드의 화면 구성은 출력 기준(1번 출력 좌측 상단·2번 우측 상단·3번 좌측 하단·4번 우측 하단)이고, 입력은 화면의 [QUAD IN: 1 2 3 4]가 기본이다.
+    // 그래서 "칸 번호 = 입력 번호"는 기본 배정일 때만 맞고, 출력 n에 연결한 입력이 그 칸에 나온다(출력에 연결하는 입력 선택은 매트릭스 모드와 같은 방식, 매뉴얼 21쪽).
+    function quadCellNote(productId,modeName){
+      if(productId!=='qms-44ux'||modeName!=='QUAD')return '';
+      return '<p class="rt-pg-hint rt-pg-cellnote" data-layout-cellnote>칸 번호는 출력 번호 기준입니다(1 좌상 · 2 우상 · 3 좌하 · 4 우하). 입력을 바꾸지 않으면 칸 1~4 = 입력 1~4번입니다.</p>';
+    }
     // QMS-88UX 쿼드 뷰·듀얼 카드의 입력 그룹 전환(0.243). Q1 = 입력 1~4번, Q2 = 입력 5~8번(매뉴얼 KV.04 22쪽).
     function multiviewGroupToggle(productId,modeName){
       if(productId!=='qms-88ux'||(modeName!=='QUAD'&&modeName!=='DUAL'))return '';
@@ -1040,7 +1047,7 @@
           <div class="rt-pg-vmode-cards">${modes.map(mode=>`<div class="rt-pg-vmode-card">
             <div class="rt-pg-vmode-card-head">${VMODE_ICON[mode.name]||''}<div><b>${esc(VMODE_NAME_KO[mode.name]||mode.name)}</b><small>${esc(mode.name)}</small></div></div>
             <p>${esc(mode.summary)}${mode.detail?` ${esc(mode.detail)}`:''}</p>
-            ${mode.layouts?.length?`<span class="rt-pg-vmode-count">레이아웃 ${mode.layouts.length}종</span><div class="rt-pg-vmode-chips">${mode.layouts.map((layout,index)=>`<button type="button" class="rt-pg-layout-chip${index===0?' on':''}" data-layout-chip data-layout="${esc(layout)}">${esc(layout)}</button>`).join('')}</div>${multiviewGroupToggle(item.id,mode.name)}<div class="rt-pg-layout-preview" data-layout-preview data-layout-product="${esc(item.id)}" data-layout-mode="${esc(mode.name)}" data-layout-group="1">${layoutShapeSvg(mode.layouts[0],item.id,mode.name)}<small data-layout-name>${esc(mode.layouts[0])}</small></div>`:''}${mode.name==='MATRIX'&&!mode.layouts?.length?matrixCrosspointSvg(item.id):''}
+            ${mode.layouts?.length?`<span class="rt-pg-vmode-count">레이아웃 ${mode.layouts.length}종</span><div class="rt-pg-vmode-chips">${mode.layouts.map((layout,index)=>`<button type="button" class="rt-pg-layout-chip${index===0?' on':''}" data-layout-chip data-layout="${esc(layout)}">${esc(layout)}</button>`).join('')}</div>${multiviewGroupToggle(item.id,mode.name)}<div class="rt-pg-layout-preview" data-layout-preview data-layout-product="${esc(item.id)}" data-layout-mode="${esc(mode.name)}" data-layout-group="1">${layoutShapeSvg(mode.layouts[0],item.id,mode.name)}<small data-layout-name>${esc(mode.layouts[0])}</small></div>${quadCellNote(item.id,mode.name)}`:''}${mode.name==='MATRIX'&&!mode.layouts?.length?matrixCrosspointSvg(item.id):''}
           </div>`).join('')}</div>
         </div>
       </section>`;
@@ -1262,7 +1269,7 @@
       const legendKeys=[...new Set([...inCards,...outCards].map(card=>card[3]))];
       const featureCards=outCards.filter(card=>globalThis.RtCardFeature?.cards?.[card[0]]); // 0.205 02 신호 구성에서 눌러 기능 팝업을 여는 카드(WOS100·HOS100)
       const arch=seriesSignalSvg(item.name||family,inCards,outCards,SIG_COLOR);
-      return `${headerBlock({icon:GROUP_ICON.series,title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,docs:docButtons(item),official:officialButton(item),cta:`${family==='XDM'?'<button type="button" class="rt-pg-btn" data-scroll-to="rt-layout-sim">화면 연출 시뮬레이터</button>':''}${item.controlExample?'<button type="button" class="rt-pg-btn" data-scroll-to="rt-control">AMX 커맨드 예시</button>':''}<a class="rt-pg-btn rt-pg-primary" href="#matrix-configurator" data-configure-family="${esc(family)}">${esc(family)} 구성기에서 구성하기 →</a>`})}
+      return `${headerBlock({icon:GROUP_ICON.series,title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,docs:docButtons(item),official:officialButton(item),cta:`${family==='XDM'?'<button type="button" class="rt-pg-btn" data-scroll-to="rt-layout-sim">화면 연출 시뮬레이터</button>':''}${family==='VDM'?'<button type="button" class="rt-pg-btn" data-scroll-to="rt-quad-sim">쿼드뷰 시뮬레이터</button>':''}${item.controlExample?'<button type="button" class="rt-pg-btn" data-scroll-to="rt-control">AMX 커맨드 예시</button>':''}<a class="rt-pg-btn rt-pg-primary" href="#matrix-configurator" data-configure-family="${esc(family)}">${esc(family)} 구성기에서 구성하기 →</a>`})}
       <div class="rt-pg-cols">
         <div class="rt-pg-col">
           <section class="rt-pg-card rt-pg-col-mobile-1"><h2><span class="rt-pg-idx">01</span>한눈에 보기</h2><p class="rt-pg-lead">${leadFor(item)}</p>${factsList(facts)}</section>
@@ -1275,7 +1282,7 @@
           <section class="rt-pg-card rt-pg-col-mobile-4"><h2><span class="rt-pg-idx">04</span>카드 라인업 <span class="rt-pg-note">— 입력 ${inCards.length} · 출력 ${outCards.length} · 카드를 누르면 상세 정보</span></h2><div class="rt-pg-cards2"><div class="rt-pg-cardcol"><h3>입력</h3>${inCards.map(card=>cardRow(card,false)).join('')}</div><div class="rt-pg-cardcol"><h3>출력</h3>${outCards.map(card=>cardRow(card,true)).join('')}</div></div></section>
           ${recordSection(item,null,null)}
         </div>
-      </div>${layoutSimSection(family)}${controlExampleSection(item,family==='XDM'?'08':'07')}`;
+      </div>${layoutSimSection(family)}${quadViewSection(family)}${controlExampleSection(item,family==='XDM'||family==='VDM'?'08':'07')}`;
     }
     // 0.224 XDM 시리즈 "07 화면 연출 시뮬레이터"(XDM-WOS100 월 오버레이): 그리기·커맨드 생성은 src/layout-sim.js(RtLayoutSim)가 맡고,
     // 여기서는 카드 틀만 둔다. show()가 화면을 그린 뒤 RtLayoutSim.mountAll(body)로 채운다. 근거: 사용자 제공 XDM Command Guide 1013(44~55쪽).
@@ -1284,6 +1291,14 @@
       return `<section class="rt-pg-card rt-pg-layout-sim" id="rt-layout-sim" style="margin-top:18px"><h2><span class="rt-pg-idx">07</span>화면 연출 시뮬레이터 <span class="rt-pg-note">— XDM-WOS100 월 오버레이(OW) · XDM-HOS100 한 화면 멀티뷰(OQ) · 창을 끌어 놓으면 커맨드가 바뀝니다</span></h2>
       <p class="rt-pg-lead">출력 카드를 고르고 입력 영상 창을 끌어 놓으면, 그 위치·크기대로 영상을 띄우는 제어 커맨드가 아래에 바로 만들어집니다. WOS100은 디스플레이 월 위에 창을 겹치는 <code>OW</code>, HOS100은 디스플레이 1대 안에 창 1~4를 배치하는 <code>OQ</code> 커맨드입니다. 창의 오른쪽 아래 모서리를 끌면 크기가 바뀌고, 표에서 숫자로도 고칠 수 있습니다.</p>
       <div data-layout-sim-root></div></section>`;
+    }
+    // 0.244 VDM 시리즈 "07 쿼드뷰 시뮬레이터"(VDM-QOS4S-U): 레이아웃 8종 도해(L01~L08)와 입력 연결·타이밍·레이아웃 OQ 커맨드 생성은 src/quad-view.js(RtQuadView)가 맡고,
+    // 여기서는 카드 틀만 둔다. show()가 화면을 그린 뒤 RtQuadView.mountAll(body)로 채운다. 근거: 사용자 요청 2026-10-17, VDM 국문 매뉴얼 KV07 63쪽·82·83쪽.
+    function quadViewSection(family){
+      if(family!=='VDM')return '';
+      return `<section class="rt-pg-card rt-pg-quad-sim" id="rt-quad-sim" style="margin-top:18px"><h2><span class="rt-pg-idx">07</span>쿼드뷰 시뮬레이터 <span class="rt-pg-note">— VDM-QOS4S-U · 레이아웃 8종(L01~L08) · 입력 연결과 OQ 커맨드</span></h2>
+      <p class="rt-pg-lead">VDM-QOS4S-U는 매트릭스 입력 4개(C1~C4)를 한 화면에 합쳐 HDMI 2포트로 내는 쿼드뷰 출력 카드입니다(최대 3840x2160 @ 30Hz). 레이아웃을 고르고 C1~C4에 넣을 입력을 정하면, 입력을 연결하는 <code>C</code> 명령과 출력 타이밍·레이아웃을 정하는 <code>OQ</code> 명령이 아래에 바로 만들어집니다. 전면 터치스크린의 Multiview 설정과 같은 항목입니다.</p>
+      <div data-quad-view-root></div></section>`;
     }
     // 신호 구성 SVG(입력 카드 → 메인프레임 → 출력 카드). series-glass-style.html 시안의 배치 로직을 그대로 옮겼다.
     function seriesSignalSvg(name,ins,outs,sigColor){
@@ -1351,6 +1366,7 @@
         window.scrollTo({top:view.offsetTop-8});
         initDiagramScroll(body);
         window.RtLayoutSim?.mountAll(body);
+        window.RtQuadView?.mountAll(body);
         window.RtControlExample?.mountAll(body);
       }):(body.innerHTML=`<div class="rt-pg-orbs"></div><div class="rt-pg-wrap">${listView()}</div>`))
         .catch(()=>{body.innerHTML=`<div class="rt-pg-wrap"><p class="rt-pg-empty">제품 정보를 불러오지 못했습니다. <a href="#products">목록으로</a></p></div>`});
