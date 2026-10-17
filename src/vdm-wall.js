@@ -128,6 +128,8 @@
     let advOpen=false; // "고급 설정" 펼침 상태(화면을 다시 그려도 유지)
     // 0.247(사용자 지적 2026-10-17 "07 부분은 좀 이해가 안되 xdm처럼 개선해줘"): 쿼드뷰 탭과 같이 "① 월 크기 → ② 그림 확인 → ③ 커맨드" 단계형으로 나누고 번호 자릿수·베젤은 "고급 설정"으로 접는다.
     const render=()=>{
+      // 다시 그리기 직전에 화면의 실제 펼침 상태를 읽는다(toggle 이벤트는 늦게 오므로 그것만 믿으면 방금 연 상자가 닫힌 채로 다시 그려질 수 있다).
+      const curAdv=root.querySelector('[data-vw-adv]');if(curAdv)advOpen=curAdv.open;
       const r=commandsFor(st);
       last={lines:r.lines,reset:r.reset};
       const walls=st.walls;

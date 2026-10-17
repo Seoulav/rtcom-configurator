@@ -109,6 +109,8 @@
     // XDM 시뮬레이터처럼 "① 모양 고르기 → ② 칸마다 넣을 입력 → ③ 커맨드" 3단계로 나누고, 작은 그림 8개 + 큰 미리보기 1개로 줄이고, 잘 안 쓰는 설정은 "고급 설정"으로 접는다.
     const thumbsHtml=selected=>LAYOUTS.map(l=>`<li class="rt-qv-thumb${selected===l.code?' is-on':''}"><button type="button" data-qv-layout="${l.code}" aria-pressed="${selected===l.code}" aria-label="${esc(`${l.code} ${l.name}`)}"><span class="rt-qv-thumbfig">${figureHtml(l,{inputs:st.inputs})}</span><b>${l.code}</b><small>${esc(l.name)}</small></button></li>`).join('');
     const render=()=>{
+      // 다시 그리기 직전에 화면의 실제 펼침 상태를 읽는다(toggle 이벤트는 늦게 오므로 그것만 믿으면 방금 연 상자가 닫힌 채로 다시 그려질 수 있다).
+      const curAdv=root.querySelector('[data-qv-adv]');if(curAdv)advOpen=curAdv.open;
       const r=commandsFor(st),L=r.layout;
       lastLines=r.lines;
       root.innerHTML=`<ol class="rt-sim-steps" aria-label="사용 순서"><li><b>1</b>모양 고르기</li><li><b>2</b>칸마다 넣을 입력 정하기</li><li><b>3</b>커맨드 복사 또는 AMX 구성에 담기</li></ol>
