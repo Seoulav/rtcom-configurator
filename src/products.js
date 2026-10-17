@@ -1028,8 +1028,10 @@
     // 매뉴얼 21쪽: QUAD 모드의 화면 구성은 출력 기준(1번 출력 좌측 상단·2번 우측 상단·3번 좌측 하단·4번 우측 하단)이고, 입력은 화면의 [QUAD IN: 1 2 3 4]가 기본이다.
     // 그래서 "칸 번호 = 입력 번호"는 기본 배정일 때만 맞고, 출력 n에 연결한 입력이 그 칸에 나온다(출력에 연결하는 입력 선택은 매트릭스 모드와 같은 방식, 매뉴얼 21쪽).
     function quadCellNote(productId,modeName){
-      if(productId!=='qms-44ux'||modeName!=='QUAD')return '';
-      return '<p class="rt-pg-hint rt-pg-cellnote" data-layout-cellnote>칸 번호는 출력 번호 기준입니다(1 좌상 · 2 우상 · 3 좌하 · 4 우하). 입력을 바꾸지 않으면 칸 1~4 = 입력 1~4번입니다.</p>';
+      if(productId==='qms-44ux'&&modeName==='QUAD')return '<p class="rt-pg-hint rt-pg-cellnote" data-layout-cellnote>칸 번호는 출력 번호 기준입니다(1 좌상 · 2 우상 · 3 좌하 · 4 우하). 입력을 바꾸지 않으면 칸 1~4 = 입력 1~4번입니다.</p>';
+      // QMS-88UX(사용자 질문 2026-10-17 "QMS-88UX도 해야하는거 아니야?"): 칸 번호가 곧 입력 번호다. Q1은 입력 1~4번, Q2는 입력 5~8번으로 구성된 4분할 세트이고(매뉴얼 KV.04 22쪽), 8분할은 칸 1~8이 입력 1~8번이다.
+      if(productId==='qms-88ux'&&(modeName==='QUAD'||modeName==='DUAL'))return '<p class="rt-pg-hint rt-pg-cellnote" data-layout-cellnote>칸 번호 = 입력 번호입니다. Q1은 입력 1~4번, Q2는 입력 5~8번이며 위 버튼으로 바꿔 볼 수 있습니다(8분할은 칸 1~8 = 입력 1~8번).</p>';
+      return '';
     }
     // QMS-88UX 쿼드 뷰·듀얼 카드의 입력 그룹 전환(0.243). Q1 = 입력 1~4번, Q2 = 입력 5~8번(매뉴얼 KV.04 22쪽).
     function multiviewGroupToggle(productId,modeName){

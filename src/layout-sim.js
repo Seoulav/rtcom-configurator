@@ -105,6 +105,10 @@
   // ---- XDM-HOS100 한 화면 멀티뷰(OQ) ----
   const HOS_DEFAULTS={id:255,timing:14,startPort:1,layout:'L00',priority:'4321',snap:true,
     windows:[{input:1,label:'',x:0,y:0,w:1920,h:1080},{input:2,label:'',x:1920,y:0,w:1920,h:1080},{input:3,label:'',x:0,y:1080,w:1920,h:1080},{input:4,label:'',x:1920,y:1080,w:1920,h:1080}]};
+  // 0.245(사용자 요청 2026-10-17 "시뮬레이터 들어가면 디폴트로 hos100 선택되서 레이어 연출이 되게해줘"): 처음 들어오면 HOS100을 고른 상태이고, 창 4개가 겹쳐 레이어가 보이는 사용자 배치를 보여 준다.
+  // 창 1이 4K 전체 배경이고 창 2·3·4가 차례로 겹치며(P4321: 창 4가 맨 위 = 레이어 1), 저장해 둔 값이 없을 때만 쓴다. HOS_DEFAULTS(창 4개를 나란히 둔 기본값, 입력 보정·프리셋의 기준)는 그대로다.
+  const HOS_INITIAL={timing:14,startPort:1,layout:'L00',priority:'4321',
+    windows:[{input:1,x:0,y:0,w:3840,h:2160},{input:2,x:480,y:270,w:1920,h:1080},{input:3,x:1440,y:810,w:1920,h:1080},{input:4,x:2880,y:1620,w:960,h:540}]};
   const hosLayout=code=>HOS_LAYOUTS.find(l=>l.code===code)||HOS_LAYOUTS[0];
   function normalizeHos(input){
     const s={...HOS_DEFAULTS,...(input||{})};
@@ -376,7 +380,8 @@
 
   // ---------------- 브라우저 UI ----------------
   const STORE_KEY='rtcom.layoutSim.v1';
-  const CARD_KEY='rtcom.layoutSim.card.v1',HOS_KEY='rtcom.layoutSim.hos.v1',INCLUDE_KEY='rtcom.layoutSim.include.v1';
+  // 0.245: 카드 선택은 글자 그대로 저장되는데 loadKey가 JSON으로 읽어 새로고침 뒤에 유지되지 않던 문제를 JSON 문자열로 저장해 고쳤다(저장 형식이 달라져 키를 v2로 올림).
+  const CARD_KEY='rtcom.layoutSim.card.v2',HOS_KEY='rtcom.layoutSim.hos.v1',INCLUDE_KEY='rtcom.layoutSim.include.v1';
   const loadKey=(key,norm)=>{try{const raw=localStorage.getItem(key);return raw?norm(JSON.parse(raw)):null}catch(e){return null}};
   const saveKey=(key,value)=>{try{localStorage.setItem(key,typeof value==='string'?value:JSON.stringify(value))}catch(e){}};
   const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -388,8 +393,8 @@
     if(!root||root.dataset.layoutSimMounted)return;
     root.dataset.layoutSimMounted='1';
     let state=load()||normalize({...PRESETS[0].state});
-    let hos=loadKey(HOS_KEY,normalizeHos)||normalizeHos({});
-    let card=loadKey(CARD_KEY,v=>v==='HOS100'?'HOS100':v==='ALL'?'ALL':'WOS100')||'WOS100';
+    let hos=loadKey(HOS_KEY,normalizeHos)||normalizeHos(HOS_INITIAL);
+    let card=loadKey(CARD_KEY,v=>v==='WOS100'?'WOS100':v==='ALL'?'ALL':'HOS100')||'HOS100';
     let include=loadKey(INCLUDE_KEY,v=>({wos:v?.wos!==false,hos:v?.hos!==false}))||{wos:true,hos:true};
     let selected=state.windows.length?0:-1;
     const option=(v,label,cur,disabled)=>`<option value="${esc(v)}"${String(v)===String(cur)?' selected':''}${disabled?' disabled':''}>${esc(label)}</option>`;
@@ -546,7 +551,7 @@
     });
     root.addEventListener('click',event=>{
       const cardBtn=event.target.closest('[data-ls-card]');
-      if(cardBtn){card=['HOS100','ALL'].includes(cardBtn.dataset.lsCard)?cardBtn.dataset.lsCard:'WOS100';saveKey(CARD_KEY,card);selected=0;render();return}
+      if(cardBtn){card=['HOS100','ALL'].includes(cardBtn.dataset.lsCard)?cardBtn.dataset.lsCard:'WOS100';saveKey(CARD_KEY,JSON.stringify(card));selected=0;render();return}
       const portBtn=event.target.closest('[data-ls-hos-port]');
       if(portBtn){updateHos({startPort:Number(portBtn.dataset.lsHosPort)});return}
       if(event.target.closest('[data-ls-add]')){
