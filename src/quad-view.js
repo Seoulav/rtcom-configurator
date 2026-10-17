@@ -104,23 +104,33 @@
     const option=(v,label,cur)=>`<option value="${esc(v)}"${String(v)===String(cur)?' selected':''}>${esc(label)}</option>`;
     const canBasket=()=>!!(globalThis.RtControlExample&&globalThis.RtControlExample.basket);
     let lastLines=[];
+    let advOpen=false; // "고급 설정" 펼침 상태(화면을 다시 그려도 유지)
+    // 0.247(사용자 지적 2026-10-17 "07 부분은 좀 이해가 안되 xdm처럼 개선해줘"): 8장 큰 카드 + 입력칸 여러 개 + 명령이 한꺼번에 길게 이어져 알기 어려웠다.
+    // XDM 시뮬레이터처럼 "① 모양 고르기 → ② 칸마다 넣을 입력 → ③ 커맨드" 3단계로 나누고, 작은 그림 8개 + 큰 미리보기 1개로 줄이고, 잘 안 쓰는 설정은 "고급 설정"으로 접는다.
+    const thumbsHtml=selected=>LAYOUTS.map(l=>`<li class="rt-qv-thumb${selected===l.code?' is-on':''}"><button type="button" data-qv-layout="${l.code}" aria-pressed="${selected===l.code}" aria-label="${esc(`${l.code} ${l.name}`)}"><span class="rt-qv-thumbfig">${figureHtml(l,{inputs:st.inputs})}</span><b>${l.code}</b><small>${esc(l.name)}</small></button></li>`).join('');
     const render=()=>{
       const r=commandsFor(st),L=r.layout;
       lastLines=r.lines;
-      root.innerHTML=`<p class="rt-ls-summary">쿼드뷰 출력 <b>${esc(r.timing.label)}</b> · 레이아웃 <b>${L.code} ${esc(L.name)}</b> · 입력 ${L.channels.length}개(${L.channels.map(c=>`C${c}`).join('·')}). 아래에서 모양을 고르면 그 레이아웃에 맞는 커맨드가 만들어집니다.</p>
-      <ul class="rt-hos-grid rt-qv-grid" aria-label="쿼드뷰 레이아웃 8종">${layoutCardsHtml({button:true,selected:L.code,inputs:st.inputs})}</ul>
-      <div class="rt-qv-stage"><div class="rt-qv-preview" aria-live="polite">${figureHtml(L,{inputs:st.inputs,aria:true})}${channelLegendHtml(L,st.inputs)}</div>
-      <div class="rt-ls-controls rt-qv-controls">
-        <label>쿼드뷰 출력 번호<input type="number" min="1" max="256" data-qv="out" value="${st.out}"></label>
-        <label>출력 타이밍<select data-qv="timing">${TIMINGS.map(t=>option(t.code,`${t.code} · ${t.label}`,st.timing)).join('')}</select></label>
-        <label>번호 자릿수<select data-qv="pad">${option(2,'2자리(대부분의 VDM)',st.pad)}${option(3,'3자리(VDM-128X·256X)',st.pad)}</select></label>
-        <label class="rt-ls-check"><input type="checkbox" data-qv="withRoute"${st.withRoute?' checked':''}> 입력 연결(C) 명령도 만들기</label>
-        ${st.withRoute?`<label>카드 첫 출력 포트<input type="number" min="1" max="253" data-qv="firstPort" value="${st.firstPort}"></label>`:''}
-        ${[0,1,2,3].map(i=>`<label${L.channels.includes(i+1)?'':' class="is-off"'}>C${i+1}에 넣을 입력<input type="number" min="1" max="256" data-qv-in="${i}" value="${st.inputs[i]}"${L.channels.includes(i+1)?'':' disabled'}></label>`).join('')}
+      root.innerHTML=`<ol class="rt-sim-steps" aria-label="사용 순서"><li><b>1</b>모양 고르기</li><li><b>2</b>칸마다 넣을 입력 정하기</li><li><b>3</b>커맨드 복사 또는 AMX 구성에 담기</li></ol>
+      <h4 class="rt-sim-h"><span>1</span>모양을 고르세요 <small>누르면 아래 그림과 커맨드가 바뀝니다</small></h4>
+      <ul class="rt-qv-thumbs" aria-label="쿼드뷰 레이아웃 8종">${thumbsHtml(L.code)}</ul>
+      <div class="rt-qv-stage"><div class="rt-qv-preview" aria-live="polite"><p class="rt-qv-pname"><b>${L.code} · ${esc(L.name)}</b> <span>${esc(L.desc)}</span></p>${figureHtml(L,{inputs:st.inputs,aria:true})}${channelLegendHtml(L,st.inputs)}</div>
+      <div class="rt-qv-side">
+        <h4 class="rt-sim-h"><span>2</span>칸마다 넣을 입력 <small>입력 번호(1~256)</small></h4>
+        <div class="rt-qv-inputs">${L.channels.map(c=>`<label class="rt-qv-inrow"><i style="background:${COLORS[c-1]}"></i><span>C${c} 칸</span><input type="number" min="1" max="256" data-qv-in="${c-1}" value="${st.inputs[c-1]}" aria-label="C${c} 칸에 넣을 입력 번호"></label>`).join('')}</div>
+        <div class="rt-ls-controls rt-qv-controls"><label>출력 해상도(타이밍)<select data-qv="timing">${TIMINGS.map(t=>option(t.code,`${t.code} · ${t.label}`,st.timing)).join('')}</select></label></div>
+        <details class="rt-qv-adv" data-qv-adv${advOpen?' open':''}><summary>고급 설정 <small>출력 번호 · 번호 자릿수 · 입력 연결 명령</small></summary>
+          <div class="rt-ls-controls rt-qv-controls">
+            <label>쿼드뷰 출력 번호<input type="number" min="1" max="256" data-qv="out" value="${st.out}"></label>
+            <label>번호 자릿수<select data-qv="pad">${option(2,'2자리(대부분의 VDM)',st.pad)}${option(3,'3자리(VDM-128X·256X)',st.pad)}</select></label>
+            <label class="rt-ls-check"><input type="checkbox" data-qv="withRoute"${st.withRoute?' checked':''}> 입력 연결(C) 명령도 만들기</label>
+            ${st.withRoute?`<label>카드 첫 출력 포트<input type="number" min="1" max="253" data-qv="firstPort" value="${st.firstPort}"></label>`:''}
+          </div></details>
       </div></div>
-      <div class="rt-ls-cmd-head"><h3>쿼드뷰 커맨드</h3><button type="button" class="rt-pg-btn" data-qv-copy>전부 복사</button>${canBasket()?'<button type="button" class="rt-pg-btn rt-pg-primary" data-qv-amx title="이 커맨드를 아래 AMX 통합 제어 카드의 &quot;내 AMX 구성&quot;에 담습니다">AMX 구성에 담기</button>':''}<span class="rt-ls-copied" data-qv-note aria-live="polite"></span></div>
+      <h4 class="rt-sim-h"><span>3</span>커맨드 <small>${r.lines.length}줄 · 위에서 아래 순서로 보냅니다</small></h4>
+      <div class="rt-ls-cmd-head"><button type="button" class="rt-pg-btn" data-qv-copy>전부 복사</button>${canBasket()?'<button type="button" class="rt-pg-btn rt-pg-primary" data-qv-amx title="이 커맨드를 아래 AMX 통합 제어 카드의 &quot;내 AMX 구성&quot;에 담습니다">AMX 구성에 담기</button>':''}<span class="rt-ls-copied" data-qv-note aria-live="polite"></span></div>
       <pre class="rt-ls-cmd" data-qv-cmd>${r.lines.map((l,i)=>`<span class="rt-ls-cmdline"><small>${i+1}. ${esc(l.label)}</small>${esc(l.text)}</span>`).join('\n')}</pre>
-      <p class="rt-pg-hint">순서대로 한 줄씩 보내고 각 줄 끝에 Enter(0x0D)를 붙입니다. 제품 ID(${esc(st.id)})는 아래 AMX 카드와 같고, 번호 자릿수는 위에서 따로 고릅니다. 타이밍과 레이아웃은 매뉴얼 63쪽 설정 화면의 Timing·Format과 같은 항목입니다.</p>
+      <p class="rt-pg-hint">한 줄씩 보내고 각 줄 끝에 Enter(0x0D)를 붙입니다. 입력 연결(C)은 칸에 입력을 넣는 명령, 타이밍(OQ)은 출력 해상도, 레이아웃(OQ)은 위에서 고른 모양입니다. 제품 ID(${esc(st.id)})는 아래 AMX 카드와 같고, 번호 자릿수는 고급 설정에서 따로 고릅니다. 매뉴얼 63쪽 설정 화면의 Timing·Format과 같은 항목입니다.</p>
       ${r.warnings.length?`<ul class="rt-ls-warn">${r.warnings.map(w=>`<li>${esc(w)}</li>`).join('')}</ul>`:''}
       <p class="rt-pg-hint rt-qv-field">※ ${esc(FIELD_NOTE)}</p>`;
     };
@@ -140,6 +150,7 @@
         flash(res.added?`구성에 ${res.added}줄을 담았습니다(지금 ${res.list.length}개)`:res.full?'구성이 가득 찼습니다(최대 60개)':'이미 담겨 있습니다');
       }
     });
+    root.addEventListener('toggle',event=>{const d=event.target;if(d&&d.matches&&d.matches('[data-qv-adv]'))advOpen=d.open},true);
     root.addEventListener('change',event=>{
       const f=event.target.closest('[data-qv]'),inp=event.target.closest('[data-qv-in]');
       if(inp){const next=[...st.inputs];next[Number(inp.dataset.qvIn)]=inp.value;st=normalize({...st,inputs:next});save(st);render();return}

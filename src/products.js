@@ -1302,10 +1302,10 @@
       return `<section class="rt-pg-card rt-pg-quad-sim" id="rt-quad-sim" style="margin-top:18px"><h2><span class="rt-pg-idx">07</span>분할 화면 시뮬레이터 <span class="rt-pg-note">— 쿼드뷰(QOS4S-U) · 비디오 월(HOS4S-UW) · 화면 예시와 커맨드</span></h2>
       <span class="rt-pg-seg rt-vw-tabs" role="group" aria-label="분할 화면 종류"><button type="button" class="rt-pg-on" data-sim-tab="quad" aria-pressed="true">쿼드뷰 · QOS4S-U</button><button type="button" data-sim-tab="wall" aria-pressed="false">비디오 월 · HOS4S-UW</button></span>
       <div data-sim-panel="quad">
-      <p class="rt-pg-lead">VDM-QOS4S-U는 매트릭스 입력 4개(C1~C4)를 한 화면에 합쳐 HDMI 2포트로 내는 쿼드뷰 출력 카드입니다(최대 3840x2160 @ 30Hz). 레이아웃을 고르고 C1~C4에 넣을 입력을 정하면, 입력을 연결하는 <code>C</code> 명령과 출력 타이밍·레이아웃을 정하는 <code>OQ</code> 명령이 아래에 바로 만들어집니다. 전면 터치스크린의 Multiview 설정과 같은 항목입니다.</p>
+      <p class="rt-pg-lead">VDM-QOS4S-U는 매트릭스 입력 4개를 한 화면에 합쳐 HDMI 2포트로 내는 <b>쿼드뷰 출력 카드</b>입니다(최대 3840x2160 @ 30Hz). 모양을 고르고 칸마다 넣을 입력을 정하면 설정 커맨드가 만들어집니다.</p>
       <div data-quad-view-root></div></div>
       <div data-sim-panel="wall" hidden>
-      <p class="rt-pg-lead">VDM-HOS4S-UW(Video Wall HDMI Output 보드)의 출력 여러 개를 묶어 디스플레이 여러 대를 큰 화면 한 장처럼 쓰는 비디오 월입니다. 가로·세로 칸 수와 시작 출력을 고르면 디스플레이 배열 그림과, 월을 만드는 <code>W</code> 명령과 베젤을 보정하는 <code>B</code> 명령이 아래에 만들어집니다. 한 번에 월을 여러 개 만들 수도 있습니다(<code>W21</code>).</p>
+      <p class="rt-pg-lead">VDM-HOS4S-UW(Video Wall HDMI Output 보드)의 출력 여러 개를 묶어 디스플레이 여러 대를 <b>큰 화면 한 장처럼</b> 쓰는 비디오 월입니다. 가로·세로 칸 수와 시작 출력을 정하면 배열 그림과 월 설정 커맨드가 만들어집니다.</p>
       <div data-vdm-wall-root></div></div></section>`;
     }
     // 신호 구성 SVG(입력 카드 → 메인프레임 → 출력 카드). series-glass-style.html 시안의 배치 로직을 그대로 옮겼다.
@@ -1374,11 +1374,25 @@
         window.scrollTo({top:view.offsetTop-8});
         initDiagramScroll(body);
         window.RtLayoutSim?.mountAll(body);
-        window.RtQuadView?.mountAll(body);
-        window.RtVdmWall?.mountAll(body);
+        mountSplitSims(body);
         window.RtControlExample?.mountAll(body);
       }):(body.innerHTML=`<div class="rt-pg-orbs"></div><div class="rt-pg-wrap">${listView()}</div>`))
         .catch(()=>{body.innerHTML=`<div class="rt-pg-wrap"><p class="rt-pg-empty">제품 정보를 불러오지 못했습니다. <a href="#products">목록으로</a></p></div>`});
+    }
+    // 0.247(사용자 화면 2026-10-17: 07 분할 화면 시뮬레이터가 안내 문장만 보이고 안쪽이 비어 있었다): 오래된 index.html이 캐시에 남아 quad-view.js·vdm-wall.js 스크립트 태그가 없으면
+    // 두 모듈이 없어 카드 안이 비었다. 이 경우 모듈을 직접 불러와 그리고, 끝내 못 불러오면 새로고침 안내를 보여 준다.
+    function mountSplitSims(body){
+      const roots=[...body.querySelectorAll('[data-quad-view-root],[data-vdm-wall-root]')];
+      if(!roots.length)return;
+      const need=[['RtQuadView','src/quad-view.js'],['RtVdmWall','src/vdm-wall.js']];
+      const load=([name,file])=>window[name]?Promise.resolve():new Promise(done=>{
+        const el=document.createElement('script');el.src=`${file}?v=${Date.now()}`;el.onload=done;el.onerror=done;document.head.appendChild(el);
+      });
+      Promise.all(need.map(load)).then(()=>{
+        window.RtQuadView?.mountAll(body);
+        window.RtVdmWall?.mountAll(body);
+        roots.forEach(root=>{if(root.isConnected&&!root.children.length)root.innerHTML='<p class="rt-pg-hint rt-ls-warn">시뮬레이터를 불러오지 못했습니다. 페이지를 새로고침(Ctrl+Shift+R)한 뒤 다시 열어 주세요.</p>'});
+      });
     }
     // 0.143 제품정보 04 카드 라인업 카드 상세 팝업: 사양은 src/card-specs.js(RtCardSpecs), 용도 설명은 src/app.js(RtCardTips)를 읽는다. 연동 전송기 표기는 넣지 않는다.
     function openProductCardInfo(id,dir,family){

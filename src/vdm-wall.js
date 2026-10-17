@@ -125,26 +125,34 @@
     let last={lines:[],reset:[]};
     const block=(title,list,which,extra='')=>`<div class="rt-ls-cmd-head"><h3>${esc(title)}</h3><button type="button" class="rt-pg-btn" data-vw-copy="${which}">복사</button>${canBasket()?`<button type="button" class="rt-pg-btn${which==='build'?' rt-pg-primary':''}" data-vw-amx="${which}" title="이 커맨드를 아래 AMX 통합 제어 카드의 &quot;내 AMX 구성&quot;에 담습니다">AMX 구성에 담기</button>`:''}${extra}</div>
       <pre class="rt-ls-cmd" data-vw-cmd="${which}">${list.map((l,i)=>`<span class="rt-ls-cmdline"><small>${i+1}. ${esc(l.label)}</small>${esc(l.text)}</span>`).join('\n')}</pre>`;
+    let advOpen=false; // "고급 설정" 펼침 상태(화면을 다시 그려도 유지)
+    // 0.247(사용자 지적 2026-10-17 "07 부분은 좀 이해가 안되 xdm처럼 개선해줘"): 쿼드뷰 탭과 같이 "① 월 크기 → ② 그림 확인 → ③ 커맨드" 단계형으로 나누고 번호 자릿수·베젤은 "고급 설정"으로 접는다.
     const render=()=>{
       const r=commandsFor(st);
       last={lines:r.lines,reset:r.reset};
       const walls=st.walls;
-      root.innerHTML=`<div class="rt-ls-controls rt-vw-controls">
+      root.innerHTML=`<ol class="rt-sim-steps" aria-label="사용 순서"><li><b>1</b>월 크기 정하기</li><li><b>2</b>디스플레이 배열 확인</li><li><b>3</b>커맨드 복사 또는 AMX 구성에 담기</li></ol>
+      <h4 class="rt-sim-h"><span>1</span>월 크기를 정하세요 <small>프리셋을 고르면 매뉴얼 예제가 채워집니다</small></h4>
+      <div class="rt-ls-controls rt-vw-controls">
         <label>프리셋<select data-vw-preset><option value="">불러오기…</option>${PRESETS.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('')}</select></label>
         <label>월 개수<input type="number" min="1" max="4" data-vw="walls" value="${st.walls}"></label>
         <label>가로 칸 수(H)<input type="number" min="1" max="16" data-vw="h" value="${st.h}"></label>
         <label>세로 칸 수(V)<input type="number" min="1" max="16" data-vw="v" value="${st.v}"></label>
         <label>시작 출력<input type="number" min="1" max="${MAX_OUT}" data-vw="start" value="${st.start}"></label>
-        <label>번호 자릿수<select data-vw="pad">${option(2,'2자리(대부분의 VDM)',st.pad)}${option(3,'3자리(VDM-128X·256X)',st.pad)}</select></label>
-        <label class="rt-ls-check"><input type="checkbox" data-vw="withBezel"${st.withBezel?' checked':''}> 베젤 보정(B) 명령도 만들기</label>
-        ${st.withBezel?['l','r','u','d'].map((k,i)=>`<label>베젤 ${['좌','우','상','하'][i]}<input type="number" min="0" max="99" data-vw-bz="${k}" value="${st.bezel[k]}"></label>`).join(''):''}
       </div>
-      ${r.error?`<p class="rt-ls-warn rt-vw-error" role="alert">${esc(r.error)}</p>`:`<p class="rt-ls-summary">${walls===1?`가로 <b>${st.h}</b> × 세로 <b>${st.v}</b> 월 1개`:`가로 <b>${st.h}</b> × 세로 <b>${st.v}</b> 월 <b>${walls}</b>개를 가로로 나란히`} · 출력 <b>${st.start}~${r.end}</b>번 ${r.total}대 · 칸의 숫자는 출력 번호입니다(왼쪽 위부터 가로로 차례).</p>
+      <details class="rt-qv-adv" data-vw-adv${advOpen?' open':''}><summary>고급 설정 <small>번호 자릿수 · 베젤 보정</small></summary>
+        <div class="rt-ls-controls rt-vw-controls">
+          <label>번호 자릿수<select data-vw="pad">${option(2,'2자리(대부분의 VDM)',st.pad)}${option(3,'3자리(VDM-128X·256X)',st.pad)}</select></label>
+          <label class="rt-ls-check"><input type="checkbox" data-vw="withBezel"${st.withBezel?' checked':''}> 베젤 보정(B) 명령도 만들기</label>
+          ${st.withBezel?['l','r','u','d'].map((k,i)=>`<label>베젤 ${['좌','우','상','하'][i]}<input type="number" min="0" max="99" data-vw-bz="${k}" value="${st.bezel[k]}"></label>`).join(''):''}
+        </div></details>
+      ${r.error?`<p class="rt-ls-warn rt-vw-error" role="alert">${esc(r.error)}</p>`:`<h4 class="rt-sim-h"><span>2</span>디스플레이 배열 <small>${walls===1?`가로 ${st.h} × 세로 ${st.v} 월 1개`:`가로 ${st.h} × 세로 ${st.v} 월 ${walls}개를 가로로 나란히`} · 출력 ${st.start}~${r.end}번 ${r.total}대 · 숫자는 출력 번호(왼쪽 위부터 가로로 차례)</small></h4>
       <div class="rt-vw-fig" aria-live="polite">${wallSvg(st)}</div>
-      ${block('비디오 월 커맨드',r.lines,'build')}
+      <h4 class="rt-sim-h"><span>3</span>커맨드 <small>월 만들기 ${r.lines.length}줄 · 풀기 1줄</small></h4>
+      ${block('월 만들기',r.lines,'build')}
       ${block('월 풀기 · 1:1 복원',r.reset,'reset')}
       <p class="rt-ls-copied rt-vw-note" data-vw-note aria-live="polite"></p>
-      <p class="rt-pg-hint">순서대로 한 줄씩 보내고 각 줄 끝에 Enter(0x0D)를 붙입니다. 비디오 월은 VDM-HOS4S-UW 출력 카드(HDMI 4포트, 최대 1920x1080 @ 60Hz, 매뉴얼 44쪽)를 쓰며, 월 하나의 가로·세로 칸 수는 2~16이고 1은 1:1 복원에 씁니다. 제품 ID(${esc(st.id)})는 아래 AMX 카드와 같고, 번호 자릿수는 위에서 따로 고릅니다.</p>
+      <p class="rt-pg-hint">한 줄씩 보내고 각 줄 끝에 Enter(0x0D)를 붙입니다. 비디오 월은 VDM-HOS4S-UW 출력 카드(HDMI 4포트, 최대 1920x1080 @ 60Hz, 매뉴얼 44쪽)를 쓰며, 월 하나의 가로·세로 칸 수는 2~16이고 1은 1:1 복원에 씁니다. 제품 ID(${esc(st.id)})는 아래 AMX 카드와 같고, 번호 자릿수는 고급 설정에서 따로 고릅니다.</p>
       ${r.warnings.length?`<ul class="rt-ls-warn">${r.warnings.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}`}
       <p class="rt-pg-hint rt-qv-field">※ ${esc(FIELD_NOTE)}</p>`;
     };
@@ -163,6 +171,7 @@
         flash(res.added?`구성에 ${res.added}줄을 담았습니다(지금 ${res.list.length}개)`:res.full?'구성이 가득 찼습니다(최대 60개)':'이미 담겨 있습니다');
       }
     });
+    root.addEventListener('toggle',event=>{const d=event.target;if(d&&d.matches&&d.matches('[data-vw-adv]'))advOpen=d.open},true);
     root.addEventListener('change',event=>{
       const pre=event.target.closest('[data-vw-preset]');
       if(pre){const p=PRESETS.find(x=>x.id===pre.value);if(p){st=normalize({...st,...p.state,id:st.id});save(st);render()}return}
