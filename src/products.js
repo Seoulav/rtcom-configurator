@@ -1271,7 +1271,7 @@
       const legendKeys=[...new Set([...inCards,...outCards].map(card=>card[3]))];
       const featureCards=outCards.filter(card=>globalThis.RtCardFeature?.cards?.[card[0]]); // 0.205 02 신호 구성에서 눌러 기능 팝업을 여는 카드(WOS100·HOS100)
       const arch=seriesSignalSvg(item.name||family,inCards,outCards,SIG_COLOR);
-      return `${headerBlock({icon:GROUP_ICON.series,title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,docs:docButtons(item),official:officialButton(item),cta:`${family==='XDM'?'<button type="button" class="rt-pg-btn" data-scroll-to="rt-layout-sim">화면 연출 시뮬레이터</button>':''}${family==='VDM'?'<button type="button" class="rt-pg-btn" data-scroll-to="rt-quad-sim">쿼드뷰 시뮬레이터</button>':''}${item.controlExample?'<button type="button" class="rt-pg-btn" data-scroll-to="rt-control">AMX 커맨드 예시</button>':''}<a class="rt-pg-btn rt-pg-primary" href="#matrix-configurator" data-configure-family="${esc(family)}">${esc(family)} 구성기에서 구성하기 →</a>`})}
+      return `${headerBlock({icon:GROUP_ICON.series,title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,docs:docButtons(item),official:officialButton(item),cta:`${family==='XDM'?'<button type="button" class="rt-pg-btn" data-scroll-to="rt-layout-sim">화면 연출 시뮬레이터</button>':''}${family==='VDM'?'<button type="button" class="rt-pg-btn" data-scroll-to="rt-quad-sim">분할 화면 시뮬레이터</button>':''}${item.controlExample?'<button type="button" class="rt-pg-btn" data-scroll-to="rt-control">AMX 커맨드 예시</button>':''}<a class="rt-pg-btn rt-pg-primary" href="#matrix-configurator" data-configure-family="${esc(family)}">${esc(family)} 구성기에서 구성하기 →</a>`})}
       <div class="rt-pg-cols">
         <div class="rt-pg-col">
           <section class="rt-pg-card rt-pg-col-mobile-1"><h2><span class="rt-pg-idx">01</span>한눈에 보기</h2><p class="rt-pg-lead">${leadFor(item)}</p>${factsList(facts)}</section>
@@ -1296,11 +1296,17 @@
     }
     // 0.245 VDM 시리즈 "07 쿼드뷰 시뮬레이터"(VDM-QOS4S-U): 레이아웃 8종 도해(L01~L08)와 입력 연결·타이밍·레이아웃 OQ 커맨드 생성은 src/quad-view.js(RtQuadView)가 맡고,
     // 여기서는 카드 틀만 둔다. show()가 화면을 그린 뒤 RtQuadView.mountAll(body)로 채운다. 근거: 사용자 요청 2026-10-17, VDM 국문 매뉴얼 KV07 63쪽·82·83쪽.
+    // 0.246(사용자 요청 2026-10-17 "VDM 월만"): 같은 카드에 "비디오 월 · HOS4S-UW" 탭을 더했다(탭 연결은 src/vdm-wall.js). 카드 번호 07과 #rt-quad-sim 주소는 그대로다.
     function quadViewSection(family){
       if(family!=='VDM')return '';
-      return `<section class="rt-pg-card rt-pg-quad-sim" id="rt-quad-sim" style="margin-top:18px"><h2><span class="rt-pg-idx">07</span>쿼드뷰 시뮬레이터 <span class="rt-pg-note">— VDM-QOS4S-U · 레이아웃 8종(L01~L08) · 입력 연결과 OQ 커맨드</span></h2>
+      return `<section class="rt-pg-card rt-pg-quad-sim" id="rt-quad-sim" style="margin-top:18px"><h2><span class="rt-pg-idx">07</span>분할 화면 시뮬레이터 <span class="rt-pg-note">— 쿼드뷰(QOS4S-U) · 비디오 월(HOS4S-UW) · 화면 예시와 커맨드</span></h2>
+      <span class="rt-pg-seg rt-vw-tabs" role="group" aria-label="분할 화면 종류"><button type="button" class="rt-pg-on" data-sim-tab="quad" aria-pressed="true">쿼드뷰 · QOS4S-U</button><button type="button" data-sim-tab="wall" aria-pressed="false">비디오 월 · HOS4S-UW</button></span>
+      <div data-sim-panel="quad">
       <p class="rt-pg-lead">VDM-QOS4S-U는 매트릭스 입력 4개(C1~C4)를 한 화면에 합쳐 HDMI 2포트로 내는 쿼드뷰 출력 카드입니다(최대 3840x2160 @ 30Hz). 레이아웃을 고르고 C1~C4에 넣을 입력을 정하면, 입력을 연결하는 <code>C</code> 명령과 출력 타이밍·레이아웃을 정하는 <code>OQ</code> 명령이 아래에 바로 만들어집니다. 전면 터치스크린의 Multiview 설정과 같은 항목입니다.</p>
-      <div data-quad-view-root></div></section>`;
+      <div data-quad-view-root></div></div>
+      <div data-sim-panel="wall" hidden>
+      <p class="rt-pg-lead">VDM-HOS4S-UW(Video Wall HDMI Output 보드)의 출력 여러 개를 묶어 디스플레이 여러 대를 큰 화면 한 장처럼 쓰는 비디오 월입니다. 가로·세로 칸 수와 시작 출력을 고르면 디스플레이 배열 그림과, 월을 만드는 <code>W</code> 명령과 베젤을 보정하는 <code>B</code> 명령이 아래에 만들어집니다. 한 번에 월을 여러 개 만들 수도 있습니다(<code>W21</code>).</p>
+      <div data-vdm-wall-root></div></div></section>`;
     }
     // 신호 구성 SVG(입력 카드 → 메인프레임 → 출력 카드). series-glass-style.html 시안의 배치 로직을 그대로 옮겼다.
     function seriesSignalSvg(name,ins,outs,sigColor){
@@ -1369,6 +1375,7 @@
         initDiagramScroll(body);
         window.RtLayoutSim?.mountAll(body);
         window.RtQuadView?.mountAll(body);
+        window.RtVdmWall?.mountAll(body);
         window.RtControlExample?.mountAll(body);
       }):(body.innerHTML=`<div class="rt-pg-orbs"></div><div class="rt-pg-wrap">${listView()}</div>`))
         .catch(()=>{body.innerHTML=`<div class="rt-pg-wrap"><p class="rt-pg-empty">제품 정보를 불러오지 못했습니다. <a href="#products">목록으로</a></p></div>`});
