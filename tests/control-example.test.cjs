@@ -151,6 +151,19 @@ test('QMS-88UX 비디오 월(OW)은 월 2개를 한 줄로 이어 만들 수 있
   assert.equal(wall({range:'1-6',res:'13',h:2,v:3,members:'1-6'}).warn,'');
 });
 
+test('QMS-88UX QD 오디오 입력 선택(IS)은 매뉴얼 43쪽 예시 2개와 같고 표(S0~S3)대로 입력을 안내한다(0.249)',()=>{
+  assert.equal(build(q88,'qd',{qd:'Q1Q2',sel:'0'}),'*255ISQ1Q2S0!');
+  assert.equal(build(q88,'qd',{qd:'Q2',sel:'3'}),'*255ISQ2S3!');
+  assert.equal(build(q88,'qd',{qd:'Q1',sel:'2'}),'*255ISQ1S2!');
+  const b=B(q88,'qd');
+  assert.equal(b.cmd,'IS');
+  const sel=b.params.find(p=>p.id==='sel').options;
+  assert.deepEqual(sel.map(o=>o[0]),['0','1','2','3']);
+  assert.match(sel[3][1],/QD1 = 입력 4 \/ QD2 = 입력 8/,'S3은 표 기준 QD2 입력 8번');
+  assert.match(q88.limits,/ISQ2S3.*입력 5번.*S3 = 입력 8번/,'매뉴얼 예시와 표가 다른 점을 화면에 남긴다');
+  assert.equal(new Set(q88.builders.map(x=>x.id)).size,q88.builders.length);
+});
+
 test('QMS-88UX 비디오 월(OW) 검사: 칸 수·범위·겹침 불일치는 경고, 월 2가 덜 채워지면 오류',()=>{
   const wall=(values)=>ce.buildCommand(q88,B(q88,'wall'),values);
   const cells=wall({range:'1-10',res:'13',h:2,v:2,members:'1-10'});
