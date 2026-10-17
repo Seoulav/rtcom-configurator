@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.245.0 배포 기록**: `docs/qa/DEPLOYMENT_0.245_2026-10-17.md`(PR #383 → main 병합 `3740012`, Pages 배포 run 39001923501 success, 공개 `CATALOG BASED · 0.245`·`quad-view.js` 등 5개 파일 해시 일치·`CLAUDE.md` 404, 0.244 → 0.245 재번호 경위)
 - **알티컴 이메일 발송본 번호 기록**(문서만): 실제 발송한 메일의 번호 체계(A-1, B-1~6, C-1~3)와 저장소 질의서 번호(20, 21~26, 16·27·28) 대응표를 `docs/handoff/RTCOM_QUESTIONS_2026-10-16.md`에 적었습니다(발송 확인 사용자 전달 2026-10-17).
 - **0.244.0 배포 기록**: `docs/qa/DEPLOYMENT_0.244_2026-10-16.md`(PR #378 → main 병합 `622500e`, Pages 배포 run 38983315675 success, 공개 `CATALOG BASED · 0.244`·두 HDS 제품 `serialOnly`·`lan` 제거·비밀번호 원문 비노출 확인)
 - **알티컴 이메일 발송 기록**(문서만): 통합 질문 메일(10건, 질의서 16·20~28번)을 사용자가 알티컴에 보냈습니다(사용자 전달 2026-10-17). 회신 대기 상태를 `docs/handoff/RTCOM_QUESTIONS_2026-10-16.md`와 `docs/handoff/OPEN_ITEMS.md`에 적었습니다.
