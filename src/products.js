@@ -902,9 +902,13 @@
       '3CH-MODE1':[[1,0,0,65,100],[2,65,0,35,50],[3,65,50,35,50]],
       'USER MODE 3':[[3,0,0,30,100],[1,30,0,40,50],[2,30,50,40,50],[4,70,0,30,100]],
       // 0.66: QMS-88UX 출력 9·10번 Output Option 2·3(매뉴얼 22~23쪽) — Q1·Q2를 합쳐 비율을 유지하지 않고 그대로 8분할.
-      '8분할(비율무시)':[[1,0,0,25,50],[2,25,0,25,50],[3,50,0,25,50],[4,75,0,25,50],[5,0,50,25,50],[6,25,50,25,50],[7,50,50,25,50],[8,75,50,25,50]],
-      // 0.85: Output Option 5(매뉴얼 KV.04 23쪽) — 16:9 칸 8개를 4×2로 두고 위아래를 비움(Option 6은 2×4 세로 배치, 같은 16:9 비율).
-      '8분할(16:9 비율)':[[1,0,25,25,25],[2,25,25,25,25],[3,50,25,25,25],[4,75,25,25,25],[5,0,50,25,25],[6,25,50,25,25],[7,50,50,25,25],[8,75,50,25,25]]
+      // 0.249(사용자 요청 2026-10-17 "1·2번 진행해", 매뉴얼 KV.04 23쪽 도해 재대조): Q1(칸 1~4)과 Q2(칸 5~8)는 각각 2×2 묶음이다.
+      // 옵션 2·5는 좌우(Q1 왼쪽·Q2 오른쪽 → 윗줄 1 2 5 6, 아랫줄 3 4 7 8), 옵션 3·6은 상하(Q1 위·Q2 아래 → 2열 4행 1 2 / 3 4 / 5 6 / 7 8).
+      // 5·6은 같은 배치에 16:9 비율을 지켜 위아래(5) 또는 좌우(6)를 비운다. 이전(0.85)에는 옵션 2·3을 윗줄 1~4·아랫줄 5~8 한 장으로 합쳐 번호가 매뉴얼과 달랐다.
+      '8분할 좌우(비율무시)':[[1,0,0,25,50],[2,25,0,25,50],[5,50,0,25,50],[6,75,0,25,50],[3,0,50,25,50],[4,25,50,25,50],[7,50,50,25,50],[8,75,50,25,50]],
+      '8분할 상하(비율무시)':[[1,0,0,50,25],[2,50,0,50,25],[3,0,25,50,25],[4,50,25,50,25],[5,0,50,50,25],[6,50,50,50,25],[7,0,75,50,25],[8,50,75,50,25]],
+      '8분할 좌우(16:9 비율)':[[1,0,25,25,25],[2,25,25,25,25],[5,50,25,25,25],[6,75,25,25,25],[3,0,50,25,25],[4,25,50,25,25],[7,50,50,25,25],[8,75,50,25,25]],
+      '8분할 상하(16:9 비율)':[[1,25,0,25,25],[2,50,0,25,25],[3,25,25,25,25],[4,50,25,25,25],[5,25,50,25,25],[6,50,50,25,25],[7,25,75,25,25],[8,50,75,25,25]]
     };
     // 0.146(사용자 요청 2026-09-29 "QMS-44UX 매뉴얼에 나와 있는 분할이 다르다, 매뉴얼 읽어 보고 비교해서 찾아줘"): QMS-44UX 사용자 매뉴얼 21~22쪽 Quad Layout List 12종 도해를 그대로 옮긴 전용 도해.
     // 이름이 같아도 QMS-88UX 매뉴얼의 도해와 다른 레이아웃(3CH-MODE2·USER MODE 1·2)이 있어 제품별로 따로 둔다. 셀 끝의 [lx,ly]는 번호 글자 위치(없으면 셀 가운데), black은 매뉴얼처럼 검은 여백을 깔 레이아웃.
@@ -991,6 +995,9 @@
       return monitorLayoutSvg(cells,{id,label,letterbox,labels});
     }
     function isEightSplit(key){return /^8분할/.test(String(key||''))}
+    // 8분할 레이아웃이 매뉴얼의 어느 "출력 옵션"인지 보여 주는 한 줄(매뉴얼 KV.04 22~23쪽, 도해는 QUAD 레이아웃 기준 예시).
+    const EIGHT_SPLIT_OPTIONS={'8분할 좌우(비율무시)':'출력 옵션 2 · 왼쪽 Q1(입력 1~4)·오른쪽 Q2(입력 5~8)','8분할 상하(비율무시)':'출력 옵션 3 · 위 Q1(입력 1~4)·아래 Q2(입력 5~8)','8분할 좌우(16:9 비율)':'출력 옵션 5 · 옵션 2와 같고 16:9 비율(위아래가 비음)','8분할 상하(16:9 비율)':'출력 옵션 6 · 옵션 3과 같고 16:9 비율(좌우가 비음)'};
+    function eightSplitNote(key){const t=EIGHT_SPLIT_OPTIONS[String(key||'').trim()];return t?`<small data-layout-opt>${esc(t)}</small>`:''}
     // 한 화면 분할 모니터 그림: 모니터 200×134(베젤 6, 화면 188×106 ≈ 16:9, 스탠드). 칸 [번호, x, y, 폭, 높이(0~100), 글자 x, 글자 y]를 화면 크기로 늘린다.
     // 0.206(사용자 요청 2026-10-12 "분할 구성예시를 QMS-88UX 분할예시와 같은 디자인 컨셉으로 진행해줘"): XDM-HOS100 멀티뷰 팝업(src/app.js)도 같은 그림을 쓰도록
     // globalThis.RtMonitorLayoutSvg로 내보낸다. opts.cellClass는 칸 사각형 클래스(06 화면 구성 모드는 e2e가 세는 rt-pg-cell), opts.labels는 칸 번호 대신 쓸 글자.
@@ -1049,7 +1056,7 @@
           <div class="rt-pg-vmode-cards">${modes.map(mode=>`<div class="rt-pg-vmode-card">
             <div class="rt-pg-vmode-card-head">${VMODE_ICON[mode.name]||''}<div><b>${esc(VMODE_NAME_KO[mode.name]||mode.name)}</b><small>${esc(mode.name)}</small></div></div>
             <p>${esc(mode.summary)}${mode.detail?` ${esc(mode.detail)}`:''}</p>
-            ${mode.layouts?.length?`<span class="rt-pg-vmode-count">레이아웃 ${mode.layouts.length}종</span><div class="rt-pg-vmode-chips">${mode.layouts.map((layout,index)=>`<button type="button" class="rt-pg-layout-chip${index===0?' on':''}" data-layout-chip data-layout="${esc(layout)}">${esc(layout)}</button>`).join('')}</div>${multiviewGroupToggle(item.id,mode.name)}<div class="rt-pg-layout-preview" data-layout-preview data-layout-product="${esc(item.id)}" data-layout-mode="${esc(mode.name)}" data-layout-group="1">${layoutShapeSvg(mode.layouts[0],item.id,mode.name)}<small data-layout-name>${esc(mode.layouts[0])}</small></div>${quadCellNote(item.id,mode.name)}`:''}${mode.name==='MATRIX'&&!mode.layouts?.length?matrixCrosspointSvg(item.id):''}
+            ${mode.layouts?.length?`<span class="rt-pg-vmode-count">레이아웃 ${mode.layouts.length}종</span><div class="rt-pg-vmode-chips">${mode.layouts.map((layout,index)=>`<button type="button" class="rt-pg-layout-chip${index===0?' on':''}" data-layout-chip data-layout="${esc(layout)}">${esc(layout)}</button>`).join('')}</div>${multiviewGroupToggle(item.id,mode.name)}<div class="rt-pg-layout-preview" data-layout-preview data-layout-product="${esc(item.id)}" data-layout-mode="${esc(mode.name)}" data-layout-group="1">${layoutShapeSvg(mode.layouts[0],item.id,mode.name)}<small data-layout-name>${esc(mode.layouts[0])}</small>${eightSplitNote(mode.layouts[0])}</div>${quadCellNote(item.id,mode.name)}`:''}${mode.name==='MATRIX'&&!mode.layouts?.length?matrixCrosspointSvg(item.id):''}
           </div>`).join('')}</div>
         </div>
       </section>`;
@@ -1502,7 +1509,7 @@
           const toggle=card.querySelector('[data-layout-groups]');
           if(toggle)toggle.hidden=isEightSplit(layout);
           const group=toggle&&!toggle.hidden?Number(preview.dataset.layoutGroup||1):1;
-          preview.innerHTML=`${layoutShapeSvg(layout,preview.dataset.layoutProduct,preview.dataset.layoutMode,group)}<small data-layout-name>${esc(layout)}</small>${group===2?'<small data-layout-group-note>Q2 그룹: 칸 1~4 = 입력 5~8번</small>':''}`;
+          preview.innerHTML=`${layoutShapeSvg(layout,preview.dataset.layoutProduct,preview.dataset.layoutMode,group)}<small data-layout-name>${esc(layout)}</small>${eightSplitNote(layout)}${group===2?'<small data-layout-group-note>Q2 그룹: 칸 1~4 = 입력 5~8번</small>':''}`;
         }
         return;
       }

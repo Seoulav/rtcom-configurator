@@ -686,7 +686,7 @@ const patchAmxLock=async()=>{
       check(`${id} AMX 커맨드 카드: 매뉴얼 예시 ${first}, 칸 추가 ${after}, 모든 출력에 ${allCmd}, 프리셋 ${presets}개, AMX 코드는 LAN이 기본이고 RS-232 선택 시 115200, 가로 넘침 없음`,r0.includes(first)&&r1.includes(after)&&r2.includes(allCmd)&&info.presets===presets&&(presets?info.pc.includes('*255PC01!'):true)&&/IP_CLIENT_OPEN/.test(info.amx)&&/SET BAUD 115200,N,8,1/.test(serialAmx)&&info.cells>=16&&!info.overflow,JSON.stringify({r0,r1,r2,...info,amx:undefined}).slice(0,320));
     }
     // 0.234 QMS 설정 명령 패널(명령 빌더): 명령을 고르고 값을 넣으면 매뉴얼 예시와 같은 명령이 만들어진다.
-    for(const [id,steps] of [['qms-88ux',[['res','*255OSO01-10H10!'],['wall','*255OWO01-06M13H02V03O01O02O03O04O05O06!'],['mv','*255QM13L01S00!'],['tp','*255OTO01-04M06!']]],['qms-44ux',[['wm','*01WM01!'],['wmw','*01WM02P21!'],['tc','*01TCO01S02!'],['baud','*01@05!']]]]){
+    for(const [id,steps] of [['qms-88ux',[['res','*255OSO01-10H10!'],['wall','*255OWO01-06M13H02V03O01O02O03O04O05O06!'],['mv','*255QM13L01S00!'],['tp','*255OTO01-04M06!'],['qd','*255ISQ1Q2S0!']]],['qms-44ux',[['wm','*01WM01!'],['wmw','*01WM02P21!'],['tc','*01TCO01S02!'],['baud','*01@05!']]]]){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
       await page.waitForSelector('.rt-pg-control [data-ce-bsel]');
       const seen=[];
@@ -1270,23 +1270,40 @@ const patchAmxLock=async()=>{
     const afterLayout=await quadCard88.evaluate(card=>({name:card.querySelector('[data-layout-name]').textContent,on:card.querySelector('.rt-pg-layout-chip.on')?.textContent,rects:card.querySelector('[data-layout-preview]').querySelectorAll('svg rect.rt-pg-cell').length}));
     check('QMS-88UX 06 화면 구성 모드에서 레이아웃 버튼을 누르면 미리보기 도해가 바뀜',beforeLayout==='QUAD'&&afterLayout.name==='3-SIDE RIGHT'&&afterLayout.on==='3-SIDE RIGHT'&&afterLayout.rects===4,JSON.stringify({beforeLayout,afterLayout}));
     // 0.66 — QMS-88UX 출력 9번에 매뉴얼 22~23쪽 Output Option 2·3(비율 유지 없이 그대로 8분할)을 레이아웃 목록 13번째로 추가(사용자 요청 2026-09-27 "출력9에 비율무시8분할도 추가해줘").
-    await quadCard88.locator('[data-layout-chip]',{hasText:'8분할(비율무시)'}).click();
-    const split8=await quadCard88.evaluate(card=>({name:card.querySelector('[data-layout-name]').textContent,rects:card.querySelector('[data-layout-preview]').querySelectorAll('svg rect.rt-pg-cell').length}));
-    check('QMS-88UX 06 화면 구성 모드에 "8분할(비율무시)" 레이아웃이 있고 8칸 도해로 미리보기됨',split8.name==='8분할(비율무시)'&&split8.rects===8,JSON.stringify(split8));
+    // 0.249 — 매뉴얼 23쪽 도해 재대조(사용자 요청 2026-10-17 "1·2번 진행해"): 옵션 2·5는 좌우(윗줄 1 2 5 6 / 아랫줄 3 4 7 8), 옵션 3·6은 상하(2열 4행 1 2 / 3 4 / 5 6 / 7 8)로 4종이 되었다.
+    const gridOrder=async name=>{
+      await quadCard88.locator('[data-layout-chip]',{hasText:name}).click();
+      return quadCard88.evaluate(card=>{
+        const pv=card.querySelector('[data-layout-preview]');
+        const texts=[...pv.querySelectorAll('svg text')].map(t=>{const r=t.getBoundingClientRect();return {n:t.textContent,x:r.x+r.width/2,y:r.y+r.height/2}});
+        texts.sort((a,b)=>Math.abs(a.y-b.y)>3?a.y-b.y:a.x-b.x);
+        const rows=[];for(const t of texts){const last=rows[rows.length-1];if(last&&Math.abs(last.y-t.y)<=3)last.v.push(t.n);else rows.push({y:t.y,v:[t.n]})}
+        return {name:pv.querySelector('[data-layout-name]').textContent,rects:pv.querySelectorAll('svg rect.rt-pg-cell').length,rows:rows.map(r=>r.v.join(' ')).join(' / '),opt:pv.querySelector('[data-layout-opt]')?.textContent||''};
+      });
+    };
+    const split8={};
+    for(const name of ['8분할 좌우(비율무시)','8분할 상하(비율무시)','8분할 좌우(16:9 비율)','8분할 상하(16:9 비율)'])split8[name]=await gridOrder(name);
+    const s8=split8;
+    const gridOk=(name,rows,optNo)=>s8[name].rows===rows&&s8[name].rects===8&&s8[name].opt.startsWith(`출력 옵션 ${optNo}`);
+    check('QMS-88UX 06 화면 구성 모드 8분할 4종(좌우·상하 × 비율무시·16:9)이 매뉴얼 23쪽 번호 배치(좌우 1 2 5 6 / 3 4 7 8, 상하 1 2 / 3 4 / 5 6 / 7 8)와 출력 옵션 2·3·5·6 안내로 8칸 도해 미리보기됨',
+      gridOk('8분할 좌우(비율무시)','1 2 5 6 / 3 4 7 8',2)&&gridOk('8분할 상하(비율무시)','1 2 / 3 4 / 5 6 / 7 8',3)&&gridOk('8분할 좌우(16:9 비율)','1 2 5 6 / 3 4 7 8',5)&&gridOk('8분할 상하(16:9 비율)','1 2 / 3 4 / 5 6 / 7 8',6),
+      JSON.stringify(s8));
+    const quadChips=await quadCard88.evaluate(card=>[...card.querySelectorAll('.rt-pg-vmode-chips [data-layout-chip]')].map(b=>b.textContent));
+    check('QMS-88UX 06 QUAD 카드 레이아웃이 16종(기존 12종 + 8분할 4종)이고 이전 이름 "8분할(비율무시)"는 없음',quadChips.length===16&&quadChips.slice(-4).join('|')==='8분할 좌우(비율무시)|8분할 상하(비율무시)|8분할 좌우(16:9 비율)|8분할 상하(16:9 비율)'&&!quadChips.includes('8분할(비율무시)'),JSON.stringify(quadChips));
     // 0.90 — QMS-88UX DUAL 카드가 "듀얼 모드" 한 마디뿐이었다(사용자 질문 2026-09-28 "QMS-88Ux도 듀얼 출력되지 않아??"). 매뉴얼 KV.04 20~21쪽 근거로 2분할(PBP)·PIP 레이아웃 3종을 넣고, 카드 안에서만 미리보기가 바뀌는지 확인.
     const dualCard=page.locator('.rt-pg-vmode-card',{hasText:'DUAL'});
     await dualCard.locator('[data-layout-chip]',{hasText:'Vertical PBP'}).click();
     const dual=await dualCard.evaluate(card=>({chips:[...card.querySelectorAll('[data-layout-chip]')].map(b=>b.textContent),name:card.querySelector('[data-layout-name]')?.textContent,rects:card.querySelectorAll('[data-layout-preview] svg rect.rt-pg-cell').length,text:card.querySelector('p')?.textContent||''}));
     const quadName=await page.locator('.rt-pg-vmode-card',{hasText:'QUAD'}).first().evaluate(card=>card.querySelector('[data-layout-name]')?.textContent);
-    check('QMS-88UX 06 DUAL 카드에 PBP·PIP 레이아웃 3종이 있고 Vertical PBP를 누르면 2칸 도해로 바뀌며 QUAD 카드 미리보기는 그대로임',dual.chips.join('|')==='Horizontal PBP|Vertical PBP|Quad PBP, PIP'&&dual.name==='Vertical PBP'&&dual.rects===2&&/출력 9·10번/.test(dual.text)&&quadName==='8분할(비율무시)',JSON.stringify({dual,quadName}));
+    check('QMS-88UX 06 DUAL 카드에 PBP·PIP 레이아웃 3종이 있고 Vertical PBP를 누르면 2칸 도해로 바뀌며 QUAD 카드 미리보기는 그대로임',dual.chips.join('|')==='Horizontal PBP|Vertical PBP|Quad PBP, PIP'&&dual.name==='Vertical PBP'&&dual.rects===2&&/출력 9·10번/.test(dual.text)&&quadName==='8분할 상하(16:9 비율)',JSON.stringify({dual,quadName}));
     // 0.243 — QMS-88UX 쿼드 뷰·듀얼 카드의 입력 그룹 전환(매뉴얼 KV.04 22쪽: Q1 = 입력 1~4번, Q2 = 입력 5~8번). Q2를 누르면 도해 칸 번호가 5~8로 바뀐다.
     const cellLabels=card=>[...card.querySelectorAll('[data-layout-preview] svg text')].map(t=>t.textContent).join(',');
     await quadCard88.locator('[data-layout-chip]',{hasText:/^QUAD$/}).click();
     const q1Labels=await quadCard88.evaluate(cellLabels);
     await quadCard88.locator('[data-layout-group-btn="2"]').click();
     const q2=await quadCard88.evaluate(card=>({labels:[...card.querySelectorAll('[data-layout-preview] svg text')].map(t=>t.textContent).join(','),note:card.querySelector('[data-layout-group-note]')?.textContent||'',pressed:card.querySelector('[data-layout-group-btn="2"]').getAttribute('aria-pressed'),on:card.querySelector('.rt-pg-vmode-chips .on')?.textContent}));
-    await quadCard88.locator('[data-layout-chip]',{hasText:'8분할(비율무시)'}).click();
-    const split8Group=await quadCard88.evaluate(card=>({hidden:card.querySelector('[data-layout-groups]').hidden,labels:[...card.querySelectorAll('[data-layout-preview] svg text')].map(t=>t.textContent).join(',')}));
+    await quadCard88.locator('[data-layout-chip]',{hasText:'8분할 좌우(비율무시)'}).click();
+    const split8Group=await quadCard88.evaluate(card=>({hidden:card.querySelector('[data-layout-groups]').hidden,labels:[...card.querySelectorAll('[data-layout-preview] svg text')].map(t=>Number(t.textContent)).sort((a,b)=>a-b).join(',')}));
     await quadCard88.locator('[data-layout-chip]',{hasText:'3-SIDE RIGHT'}).click();
     const keepQ2=await quadCard88.evaluate(card=>({hidden:card.querySelector('[data-layout-groups]').hidden,labels:[...card.querySelectorAll('[data-layout-preview] svg text')].map(t=>t.textContent).join(',')}));
     await quadCard88.locator('[data-layout-group-btn="1"]').click();
@@ -1294,7 +1311,7 @@ const patchAmxLock=async()=>{
     await dualCard.locator('[data-layout-group-btn="2"]').click();
     const dualQ2=await dualCard.evaluate(card=>[...card.querySelectorAll('[data-layout-preview] svg text')].map(t=>t.textContent).join(','));
     const wallHas=await page.locator('.rt-pg-vmode-card',{hasText:'WALL'}).first().evaluate(card=>!!card.querySelector('[data-layout-groups]'));
-    await quadCard88.locator('[data-layout-chip]',{hasText:'8분할(비율무시)'}).click();
+    await quadCard88.locator('[data-layout-chip]',{hasText:'8분할 좌우(비율무시)'}).click();
     check('QMS-88UX 쿼드 뷰·듀얼에서 Q2 버튼을 누르면 칸 번호가 입력 5~8번으로 바뀌고(8분할은 버튼 숨김·번호 1~8 그대로) Q1로 돌아오면 1~4이며 WALL 카드에는 버튼이 없음',
       q1Labels==='1,2,3,4'&&q2.labels==='5,6,7,8'&&/입력 5~8/.test(q2.note)&&q2.pressed==='true'&&q2.on==='QUAD'&&split8Group.hidden===true&&split8Group.labels==='1,2,3,4,5,6,7,8'&&keepQ2.hidden===false&&keepQ2.labels==='5,6,7,8'&&backQ1==='1,2,3,4'&&dualQ2==='5,6'&&wallHas===false,
       JSON.stringify({q1Labels,q2,split8Group,keepQ2,backQ1,dualQ2,wallHas}));
