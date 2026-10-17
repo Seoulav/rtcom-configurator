@@ -14,7 +14,7 @@ RTCOM 제품정보 사이트(XDM·SPX·VDM·QMS·HDS 제어 예시 포함)를 �
 
 ## 1순위 · LAN(TCP/IP) 제어 (17~19번은 회신 반영 완료, 20번 남음)
 
-대상 제품: XDM, VDM, SPX, QMS-44UX, QMS-88UX, HDS-42MU, HDS-21U
+대상 제품: XDM, VDM, SPX, QMS-44UX, QMS-88UX(HDS-42MU·HDS-21U는 직렬 제어만 가능해 제외)
 
 | 번호 | 질문 | 왜 필요한지 |
 |---|---|---|
@@ -53,7 +53,7 @@ RTCOM 제품정보 사이트(XDM·SPX·VDM·QMS·HDS 제어 예시 포함)를 �
 
 [LAN 설정]
 20. 제품별 공장 기본 IP·서브넷·게이트웨이는 무엇입니까? (기본 대역이 192.168.1.xxx로 알고 있는데 제품마다 끝자리가 다릅니까?) DHCP를 지원합니까? IP를 커맨드로도 바꿀 수 있습니까?
-    대상: XDM, VDM, SPX, QMS-44UX, QMS-88UX, HDS-42MU, HDS-21U
+    대상: XDM, VDM, SPX, QMS-44UX, QMS-88UX
 
 [SPX]
 21. ① 월 생성 문장형 명령의 형식 줄은 `s wall v set hdiv …`인데 예제는 `s wall 2 hdiv 3 …`(set 없음)입니다. 어느 쪽이 맞습니까?
