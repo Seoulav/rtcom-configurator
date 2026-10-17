@@ -737,6 +737,36 @@ const patchAmxLock=async()=>{
       const sigBtn=await page.locator('svg [data-card-feature="vdm-quadview"][role="button"]').count();
       check('VDM QOS4S-U 카드 상세·02 신호 구성에서 쿼드뷰 레이아웃 팝업(8종·도해 칸 18개·알티컴 확인 대기 안내)이 열리고 "커맨드 만들기"는 팝업을 닫고 시뮬레이터로 이동함',cta===1&&pop.title==='VDM-QOS4S-U 쿼드뷰 레이아웃'&&pop.layouts===8&&pop.figs===18&&pop.note&&pop.go&&closed===0&&sigBtn===1,JSON.stringify({cta,pop,closed,sigBtn}));
     }
+    // 0.246(사용자 요청 2026-10-17 "VDM 월만"): VDM "07 분할 화면 시뮬레이터"의 비디오 월 탭. 매뉴얼 85~88쪽 예시(W11·W21·B01·B02)와 같은 명령, 프리셋, 베젤, AMX 구성 담기, 탭 전환.
+    {
+      await page.goto(`${home}#products/vdm`,{waitUntil:'networkidle'});
+      await page.waitForSelector('#rt-quad-sim [data-sim-tab="wall"]');
+      const tabs0=await page.evaluate(()=>({quadShown:!document.querySelector('[data-sim-panel="quad"]').hidden,wallHidden:document.querySelector('[data-sim-panel="wall"]').hidden,btn:document.querySelector('[data-scroll-to="rt-quad-sim"]').textContent}));
+      await page.click('#rt-quad-sim [data-sim-tab="wall"]');
+      await page.waitForSelector('#rt-quad-sim [data-vw-cmd="build"]');
+      const cmd=sel=>page.locator(`#rt-quad-sim [data-vw-cmd="${sel}"]`).innerText().then(t=>t.replace(/\s+/g,' '));
+      const cells=()=>page.locator('#rt-quad-sim .rt-vw-fig svg rect.rt-vw-cell').count();
+      const tabs1=await page.evaluate(()=>({quadHidden:document.querySelector('[data-sim-panel="quad"]').hidden,wallShown:!document.querySelector('[data-sim-panel="wall"]').hidden,on:document.querySelector('[data-sim-tab].rt-pg-on')?.dataset.simTab}));
+      const def={cells:await cells(),cmd:await cmd('build'),reset:await cmd('reset')};
+      await page.selectOption('#rt-quad-sim [data-vw-preset]','w3x2x2');
+      const three={cells:await cells(),cmd:await cmd('build')};
+      await page.selectOption('#rt-quad-sim [data-vw-preset]','w4x3');
+      const four={cells:await cells(),cmd:await cmd('build'),reset:await cmd('reset')};
+      await page.check('#rt-quad-sim [data-vw="withBezel"]');
+      for(const k of ['l','r','u','d']){const f=page.locator(`#rt-quad-sim [data-vw-bz="${k}"]`);await f.fill('20');await f.blur()}
+      const bezel=await cmd('build');
+      await page.click('#rt-quad-sim [data-vw-amx="build"]');
+      const basket=await page.locator('#rt-control [data-ce-basket]').innerText();
+      const over=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
+      await page.locator('#rt-quad-sim [data-vw="walls"]').fill('4');await page.locator('#rt-quad-sim [data-vw="walls"]').blur();
+      await page.locator('#rt-quad-sim [data-vw="h"]').fill('16');await page.locator('#rt-quad-sim [data-vw="h"]').blur();await page.locator('#rt-quad-sim [data-vw="v"]').fill('16');await page.locator('#rt-quad-sim [data-vw="v"]').blur();
+      const errText=await page.locator('#rt-quad-sim .rt-vw-error').innerText();
+      await page.click('#rt-quad-sim [data-sim-tab="quad"]');
+      const back=await page.evaluate(()=>({quadShown:!document.querySelector('[data-sim-panel="quad"]').hidden,wallHidden:document.querySelector('[data-sim-panel="wall"]').hidden}));
+      check('VDM "07 분할 화면 시뮬레이터": 쿼드뷰·비디오 월 탭이 있고 처음엔 쿼드뷰, 월 탭을 누르면 월 패널만 보이며 다시 쿼드뷰로 돌아옴',tabs0.quadShown&&tabs0.wallHidden&&/분할 화면 시뮬레이터/.test(tabs0.btn)&&tabs1.quadHidden&&tabs1.wallShown&&tabs1.on==='wall'&&back.quadShown&&back.wallHidden,JSON.stringify({tabs0,tabs1,back}));
+      check('VDM 비디오 월: 기본 2×2는 4칸·*255W11O0104H02V02!·복원 *255W11O0104H01V01!, 프리셋 4×3은 12칸·매뉴얼 85쪽 명령, 월 3개는 12칸·매뉴얼 87쪽 W21 명령과 글자까지 같음',def.cells===4&&def.cmd.includes('*255W11O0104H02V02!')&&def.reset.includes('*255W11O0104H01V01!')&&three.cells===12&&three.cmd.includes('*255W21H02V02O0101O0202O0703O0804H02V02O0301O0402O0903O1004H02V02O0501O0602O1103O1204!')&&four.cells===12&&four.cmd.includes('*255W11O0112H04V03!')&&four.reset.includes('*255W11O0112H01V01!'),JSON.stringify({def,three:three.cells,four}).slice(0,420));
+      check('VDM 비디오 월: 베젤 보정은 *255B02O0112D20202020!(매뉴얼 88쪽)이고, AMX 구성에 담으면 아래 "내 AMX 구성"에 쌓이며 가로 넘침이 없고, 출력이 256을 넘으면 오류 문구가 나옴',bezel.includes('*255B02O0112D20202020!')&&basket.includes('*255W11O0112H04V03!')&&basket.includes('*255B02O0112D20202020!')&&!over&&/256번을 넘습니다/.test(errText),JSON.stringify({bezel,basket:basket.slice(0,200),over,errText}));
+    }
     // 0.245(사용자 요청 2026-10-17 "QMS-44UX 쿼드 뷰 입력 번호 표시 … 진행해줘"): QMS-44UX QUAD 카드에 칸 번호 안내 한 줄(출력 기준, 기본 입력 1~4번). 88UX·듀얼에는 이 줄이 없다.
     {
       await page.goto(`${home}#products/qms-44ux`,{waitUntil:'networkidle'});

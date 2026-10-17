@@ -2127,3 +2127,10 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-qv-controls{margin:0}
 #rtcom-design .rt-qv-controls label.is-off{opacity:.45}
 #rtcom-design .rt-qv-field{margin-top:8px}
+
+/* 0.246 VDM 비디오 월 시뮬레이터: 탭(.rt-pg-seg 재사용)과 디스플레이 배열 그림 */
+#rtcom-design .rt-vw-tabs{margin:2px 0 14px}
+#rtcom-design .rt-vw-fig{margin:6px 0 4px}
+#rtcom-design .rt-vw-fig svg{display:block;width:100%;max-width:760px;height:auto;margin:0 auto;filter:drop-shadow(0 4px 10px rgba(31,37,50,.18))}
+#rtcom-design .rt-vw-controls label.rt-ls-check{align-self:flex-end}
+#rtcom-design .rt-vw-note{margin:6px 0 0}
