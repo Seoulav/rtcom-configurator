@@ -57,6 +57,9 @@ const patchAmxLock=async()=>{
   const browser=await chromium.launch(options);
   try{
     const context=await browser.newContext({viewport:{width:390,height:844}});
+    // 0.245: 시뮬레이터의 처음 화면이 HOS100으로 바뀌었다. 아래 기존 검사(WOS100 월 오버레이가 기본이라고 가정한 것)는 저장된 카드를 WOS100으로 두고 돌리고,
+    // "처음 들어오면 HOS100" 검사는 이 설정이 없는 새 브라우저 창(freshSim)에서 따로 한다.
+    await context.addInitScript(()=>{try{if(!localStorage.getItem('rtcom.layoutSim.card.v2'))localStorage.setItem('rtcom.layoutSim.card.v2','"WOS100"')}catch(e){}});
     const page=await context.newPage();
     const failed=[],errors=[];
     page.on('response',response=>{if(response.status()>=400&&!response.url().includes('/no-such-page/'))failed.push(`${response.status()} ${response.url().replace(origin,'')}`)});
@@ -388,6 +391,15 @@ const patchAmxLock=async()=>{
     // 슬롯 판과 후면 사진이 다 그려지기 전에 세면 가끔 실패했다(2026-09-27 한 번 재현). 슬롯 8칸과 사진 로딩을 기다린 뒤 검사한다.
     await page.waitForFunction(()=>{const image=document.querySelector('.rt-rack-photo-image');return document.querySelectorAll('.rt-rack-photo .rt-rack-slot').length>=8&&image&&image.complete&&image.naturalWidth>0},null,{timeout:10000}).catch(()=>{});
     check('VDM-16X는 후면 그림(0.119, 카드 없는 빈 슬롯) 위에 입력 4·출력 4 슬롯이 모두 빈 슬롯으로 표시됨(블랭크 자동 없음)',await page.$eval('.rt-rack-photo-image',image=>image.getAttribute('src').endsWith('vdm-16x-rear-art.webp'))&&await page.locator('.rt-rack-photo .rt-rack-slot-empty').count()===8&&await page.locator('.rt-rack-photo .rt-rack-slot-blank').count()===0&&await page.$eval('.rt-rack-photo-image',image=>image.naturalWidth>0));
+    // 0.245 VDM 출력 카드 선택 팝업 팁의 QOS4S-U 쿼드뷰 버튼(XDM HOS100 팁과 같은 방식): 레이아웃 팝업이 열리고 닫아도 카드 선택 팝업은 그대로 남는다.
+    await page.locator('button[data-slot="out-1"]').click();
+    const vdmTip=await page.$$eval('.rt-card-modal .rt-output-tips [data-card-feature]',els=>els.map(e=>e.dataset.cardFeature).join());
+    await page.click('.rt-card-modal .rt-output-tips [data-card-feature="vdm-quadview"]');
+    const vdmQv=await page.evaluate(()=>({n:document.querySelectorAll('dialog.rt-qv-modal[open]').length,layouts:document.querySelectorAll('dialog.rt-qv-modal .rt-qv-grid .rt-hos-layout').length}));
+    await page.keyboard.press('Escape');
+    const cardModalKept=await page.locator('.rt-card-modal[open]').count();
+    await page.keyboard.press('Escape');
+    check('VDM 출력 카드 선택 팝업 팁에 QOS4S-U 쿼드뷰 버튼이 있고, 레이아웃 팝업(8종)을 닫으면 카드 선택 팝업이 남음',vdmTip==='vdm-quadview'&&vdmQv.n===1&&vdmQv.layouts===8&&cardModalKept===1,JSON.stringify({vdmTip,vdmQv,cardModalKept}));
     await page.locator('button[data-slot="in-1"]').click();
     await page.locator('.rt-card-modal .rt-card-choice[data-card="HIS4-U"]').click();
     check('VDM 보드를 장착하면 실물 판넬 사진이 표시됨',await page.$eval('button[data-slot="in-1"] img.rt-faceplate',image=>image.naturalWidth>0&&image.getAttribute('src').endsWith('HIS4-U.webp')));
@@ -693,11 +705,54 @@ const patchAmxLock=async()=>{
       const over=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
       check(`${id} 설정 명령 패널: ${steps.map(x=>x[1]).join(' · ')}${id==='qms-88ux'?' · 값 직접 입력 *255OSO04O08H09!':''} 가 만들어지고 가로 넘침 없음`,seen.every(x=>x[1])&&(id!=='qms-88ux'||edited.includes('*255OSO04O08H09!'))&&!over,JSON.stringify({seen,edited,over}).slice(0,260));
     }
+    // 0.245 VDM 시리즈 "07 쿼드뷰 시뮬레이터"(사용자 요청 2026-10-17 "VDM QOS4S-U 카드를 통해서 분할화면 연출이 가능한데 … 커맨드 제어와 화면 예시"): 레이아웃 8종 도해,
+    // 레이아웃을 고르면 칸 수와 OQ 명령이 바뀌고(L07 → 2칸·*255OQO01L07!), 출력 번호·타이밍을 바꾸면 명령이 따라가며, 입력 연결 명령을 끌 수 있고,
+    // AMX 구성에 담으면 아래 08 카드 "내 AMX 구성"에 쌓인다. QOS4S-U 카드 상세 팝업과 02 신호 구성 칸에서 레이아웃 팝업이 열린다.
+    {
+      await page.goto(`${home}#products/vdm`,{waitUntil:'networkidle'});
+      await page.waitForSelector('#rt-quad-sim [data-qv-layout]');
+      const text=()=>page.locator('#rt-quad-sim [data-qv-cmd]').innerText().then(t=>t.replace(/\s+/g,' '));
+      const cells=()=>page.locator('#rt-quad-sim .rt-qv-preview svg rect.rt-qv-cell').count();
+      const first={idx:await page.locator('#rt-quad-sim .rt-pg-idx').textContent(),n:await page.locator('#rt-quad-sim [data-qv-layout]').count(),cells:await cells(),cmd:await text(),btn:await page.locator('[data-scroll-to="rt-quad-sim"]').count()};
+      await page.click('#rt-quad-sim [data-qv-layout="L07"]');
+      const side={cells:await cells(),cmd:await text(),labels:await page.locator('#rt-quad-sim .rt-qv-preview svg text').allTextContents()};
+      await page.locator('#rt-quad-sim [data-qv="out"]').fill('2');await page.locator('#rt-quad-sim [data-qv="out"]').blur();await page.selectOption('#rt-quad-sim [data-qv="timing"]','T17');
+      const edited=await text();
+      await page.locator('#rt-quad-sim [data-qv-in="1"]').fill('7');await page.locator('#rt-quad-sim [data-qv-in="1"]').blur();
+      const inputs=await text();
+      await page.uncheck('#rt-quad-sim [data-qv="withRoute"]');
+      const noRoute=await text();
+      await page.click('#rt-quad-sim [data-qv-amx]');
+      const basketText=await page.locator('#rt-control [data-ce-basket]').innerText();
+      const over=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
+      check('VDM "07 쿼드뷰 시뮬레이터": 레이아웃 8종·기본 쿼드뷰 4칸과 입력 연결 4줄+타이밍+레이아웃 6줄, 상단 버튼',first.idx==='07'&&first.n===8&&first.cells===4&&first.btn===1&&first.cmd.includes('*255CI01O05!')&&first.cmd.includes('*255OQO01T00!')&&first.cmd.includes('*255OQO01L05!'),JSON.stringify(first));
+      check('쿼드뷰 시뮬레이터: L07(좌우)을 고르면 2칸·입력 2줄·L07 명령이 나오고, 출력 2·타이밍 T17·C2 입력 7을 따라가며, 입력 연결을 끄면 OQ 2줄만 남음',side.cells===2&&side.labels.join()==='IN1,IN2'&&side.cmd.includes('*255OQO01L07!')&&!side.cmd.includes('CI03')&&edited.includes('*255OQO02T17!')&&edited.includes('*255OQO02L07!')&&inputs.includes('*255CI07O06!')&&!noRoute.includes('CI0')&&noRoute.includes('*255OQO02L07!'),JSON.stringify({side,edited:edited.slice(0,120),inputs:inputs.slice(0,120),noRoute}));
+      check('쿼드뷰 시뮬레이터: AMX 구성에 담으면 아래 "내 AMX 구성"에 OQ 명령이 쌓이고 가로 넘침이 없음',basketText.includes('*255OQO02L07!')&&basketText.includes('*255OQO02T17!')&&!over,JSON.stringify({basket:basketText.slice(0,160),over}));
+      await page.click('[data-pg-card="QOS4S-U"]');
+      const cta=await page.locator('dialog[open] .rt-feature-cta [data-card-feature="vdm-quadview"]').count();
+      await page.click('dialog[open] [data-card-feature="vdm-quadview"]');
+      const pop=await page.evaluate(()=>{const d=[...document.querySelectorAll('dialog[open]')].pop();return {title:d.querySelector('h3').textContent,layouts:d.querySelectorAll('.rt-qv-grid .rt-hos-layout').length,figs:d.querySelectorAll('.rt-qv-grid svg rect.rt-qv-cell').length,note:/알티컴 확인 대기/.test(d.textContent),go:!!d.querySelector('[data-qv-go]')}});
+      await page.click('dialog[open] [data-qv-go]');
+      const closed=await page.locator('dialog[open]').count();
+      const sigBtn=await page.locator('svg [data-card-feature="vdm-quadview"][role="button"]').count();
+      check('VDM QOS4S-U 카드 상세·02 신호 구성에서 쿼드뷰 레이아웃 팝업(8종·도해 칸 18개·알티컴 확인 대기 안내)이 열리고 "커맨드 만들기"는 팝업을 닫고 시뮬레이터로 이동함',cta===1&&pop.title==='VDM-QOS4S-U 쿼드뷰 레이아웃'&&pop.layouts===8&&pop.figs===18&&pop.note&&pop.go&&closed===0&&sigBtn===1,JSON.stringify({cta,pop,closed,sigBtn}));
+    }
+    // 0.245(사용자 요청 2026-10-17 "QMS-44UX 쿼드 뷰 입력 번호 표시 … 진행해줘"): QMS-44UX QUAD 카드에 칸 번호 안내 한 줄(출력 기준, 기본 입력 1~4번). 88UX·듀얼에는 이 줄이 없다.
+    {
+      await page.goto(`${home}#products/qms-44ux`,{waitUntil:'networkidle'});
+      await page.waitForSelector('[data-layout-cellnote]');
+      const note=await page.evaluate(()=>({n:document.querySelectorAll('[data-layout-cellnote]').length,inQuad:!!document.querySelector('.rt-pg-vmode-card [data-layout-cellnote]')&&/QUAD/.test(document.querySelector('[data-layout-cellnote]').closest('.rt-pg-vmode-card').textContent),text:document.querySelector('[data-layout-cellnote]').textContent}));
+      await page.goto(`${home}#products/qms-88ux`,{waitUntil:'networkidle'});
+      await page.waitForSelector('[data-layout-chip]');
+      const none=await page.locator('[data-layout-cellnote]').count();
+      const note88=await page.evaluate(()=>[...document.querySelectorAll('[data-layout-cellnote]')].map(n=>n.closest('.rt-pg-vmode-card').textContent.includes('QUAD')?'QUAD':n.closest('.rt-pg-vmode-card').textContent.includes('DUAL')?'DUAL':'?').join()+'|'+document.querySelector('[data-layout-cellnote]').textContent);
+      check('QMS-44UX QUAD 카드에는 "칸 번호는 출력 번호 기준·기본 입력 1~4번", QMS-88UX QUAD·DUAL 카드에는 "칸 번호 = 입력 번호(Q1 1~4, Q2 5~8)" 안내 한 줄이 있음',note.n===1&&note.inQuad&&/출력 번호 기준/.test(note.text)&&/입력 1~4번/.test(note.text)&&note88.startsWith('QUAD,DUAL|칸 번호 = 입력 번호')&&/Q2는 입력 5~8번/.test(note88),JSON.stringify({note,note88}));
+    }
     // 0.235 모듈러 매트릭스 시리즈(XDM·SPX·VDM) AMX 커맨드 카드: 명령 묶음 선택, 예시 명령, VDM 번호 자릿수(2·3자리), SPX 문장형(Enter 없음).
     for(const [id,idx,steps] of [
       ['xdm','08',[['conn','*255CI002O001-005!'],['osdi','*255IDI001M01S"Camera 1"!'],['os','*255OSO001O002H11!'],['sys','*255?SID!']]],
       ['spx','07',[['conn','*255CI001O001-007!'],['ow','*255OWO001-004M09H02V02O001O002O003O004!'],['t_av','s in 1 av out 2!'],['t_wall','s wall 2 hdiv 3 vdiv 3 time 13 out 13!']]],
-      ['vdm','07',[['c','*255CI01O01-07!'],['stat','*255?O07!'],['ot','*255OTO01-09T05P05!'],['oz','*255OZO01,O02!']]]]){
+      ['vdm','08',[['c','*255CI01O01-07!'],['stat','*255?O07!'],['ot','*255OTO01-09T05P05!'],['oz','*255OZO01,O02!']]]]){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
       await page.waitForSelector('#rt-control [data-ce-bsel]');
       const seen=[];
@@ -719,6 +774,19 @@ const patchAmxLock=async()=>{
       const info=await page.evaluate(()=>({idx:document.querySelector('#rt-control .rt-pg-idx').textContent,btn:!!document.querySelector('[data-scroll-to="rt-control"]'),sim:!!document.querySelector('#rt-layout-sim'),over:document.documentElement.scrollWidth>innerWidth,groups:document.querySelectorAll('#rt-control [data-ce-bsel] optgroup').length}));
       const extraOk=id==='vdm'?extra.includes('*255?O007!'):id==='spx'?/Enter가 적혀 있지 않아/.test(extra):true;
       check(`${id} AMX 커맨드 카드(${idx}): 명령 ${steps.map(x=>x[0]).join('·')} 예시 일치${id==='vdm'?' · 3자리 번호 *255?O007!':''}${id==='spx'?' · 문장형은 Enter 없음':''} · 묶음 선택·가로 넘침 없음`,seen.every(x=>x[1])&&extraOk&&info.idx===idx&&info.btn&&info.groups>=1&&!info.over&&(id!=='xdm'||info.sim),JSON.stringify({seen,extra:extra.slice(0,80),info}).slice(0,300));
+    }
+    // 0.245(사용자 요청 2026-10-17 "시뮬레이터 들어가면 디폴트로 hos100 선택되서 레이어 연출이 되게해줘"): 저장값이 없는 새 브라우저로 XDM 시뮬레이터에 들어가면
+    // HOS100이 골라져 있고, 창 4개가 겹친 사용자 배치(창 1 4K 배경 + 창 2·3·4가 차례로 겹침, 맨 위 창 4가 레이어 1)와 그 OQ 커맨드가 보인다.
+    {
+      const fresh=await browser.newContext({viewport:{width:1280,height:900}});
+      const fp=await fresh.newPage();
+      await fp.goto(`${home}#products/xdm`,{waitUntil:'networkidle'});
+      await fp.waitForSelector('#rt-layout-sim [data-ls-card]');
+      const def=await fp.evaluate(()=>({on:document.querySelector('#rt-layout-sim [data-ls-card][aria-pressed="true"]')?.dataset.lsCard,wins:document.querySelectorAll('#rt-layout-sim .rt-ls-win').length,layers:[...document.querySelectorAll('#rt-layout-sim .rt-ls-win')].map(w=>w.dataset.lsWin+':'+(w.querySelector('.rt-ls-win-layer')||{}).textContent).join(),cmd:document.querySelector('#rt-layout-sim [data-ls-cmd]').textContent.replace(/\s+/g,'')}));
+      await fp.click('#rt-layout-sim [data-ls-card="WOS100"]');await fp.reload({waitUntil:'networkidle'});await fp.waitForSelector('#rt-layout-sim [data-ls-card]');
+      const kept=await fp.evaluate(()=>document.querySelector('#rt-layout-sim [data-ls-card][aria-pressed="true"]')?.dataset.lsCard);
+      await fresh.close();
+      check('XDM 07 시뮬레이터: 처음 들어오면 HOS100이 선택되고 창 4개가 겹쳐 레이어 1~4가 보이며(창 4가 맨 위) 그 OQ 커맨드가 나오고, WOS100을 고르면 새로고침 뒤에도 유지됨',def.on==='HOS100'&&def.wins===4&&def.layers==='0:레이어 4,1:레이어 3,2:레이어 2,3:레이어 1'&&def.cmd.includes('*255OQO001M14L00P4321O001X0000Y0000W3840H2160O002X0480Y0270W1920H1080O003X1440Y0810W1920H1080O004X2880Y1620W0960H0540!')&&kept==='WOS100',JSON.stringify({def,kept}));
     }
     // 0.239 XDM "내 AMX 구성": 07 시뮬레이터 커맨드와 08 설정 명령을 담아 한 개의 AMX 코드로 만들고, 순서 바꾸기·저장·파일 저장을 확인한다.
     {
@@ -841,7 +909,7 @@ const patchAmxLock=async()=>{
     await page.click('#rt-layout-sim [data-ls-hos-off="0"]');
     const offHos=await page.evaluate(()=>({wins:document.querySelectorAll('#rt-layout-sim .rt-ls-win').length,cmd:document.querySelector('#rt-layout-sim [data-ls-cmd]').textContent}));
     check('XDM 07 시뮬레이터 HOS100 표 "×": 끈 창은 버튼이 없고, 창 1을 누르면 W0000H0000으로 꺼져 창 2개만 남음("포함" 체크박스는 전체 커맨드 보기에서만 보임)',!offBtn.has4&&offBtn.has1&&offBtn.incl===0&&offHos.wins===2&&/O001X\d{4}Y\d{4}W0000H0000/.test(offHos.cmd),JSON.stringify({offBtn,wins:offHos.wins,cmd:offHos.cmd.slice(-80)}));
-    await page.evaluate(()=>{try{localStorage.removeItem('rtcom.layoutSim.v1');localStorage.removeItem('rtcom.layoutSim.hos.v1');localStorage.removeItem('rtcom.layoutSim.card.v1')}catch(e){}});
+    await page.evaluate(()=>{try{localStorage.removeItem('rtcom.layoutSim.v1');localStorage.removeItem('rtcom.layoutSim.hos.v1');localStorage.setItem('rtcom.layoutSim.card.v2','"WOS100"')}catch(e){}});
     await page.reload({waitUntil:'networkidle'});
     await page.waitForSelector('#rt-layout-sim [data-ls-preset]');
     // 0.233 현장 메모 공개(사용자 결정 2026-10-16 "2안으로 전부 공개해"): 프리셋 원문과 참고 커맨드 접이식 칸.
@@ -856,7 +924,7 @@ const patchAmxLock=async()=>{
     const hosLayers=await page.evaluate(()=>({badges:[...document.querySelectorAll('#rt-layout-sim .rt-ls-win-layer')].map(e=>e.textContent),cells:[...document.querySelectorAll('#rt-layout-sim td.rt-ls-stack b')].map(e=>e.textContent)}));
     await page.selectOption('#rt-layout-sim [data-ls-hos-preset]','hos-guide-pip');
     const hosPip=await page.evaluate(()=>({cmd:document.querySelector('#rt-layout-sim [data-ls-cmd]').textContent,fixed:document.querySelectorAll('#rt-layout-sim .rt-ls-win.is-fixed').length,free:document.querySelectorAll('#rt-layout-sim .rt-ls-win:not(.is-fixed)').length,overflow:document.documentElement.scrollWidth>innerWidth}));
-    check('XDM 07 시뮬레이터 HOS100 모드: 사용자 배치(L00) 커맨드와 스위칭 커맨드가 나오고 PIP 프리셋이 가이드 원문과 같음',/\*255CI001O001,I002O002,I003O003,I004O004!/.test(hosDefault)&&/\*255OQO001M14L00P4321O001X0000Y0000W1920H1080/.test(hosDefault)&&hosPip.cmd.includes('*255OQO001M14L09X1920Y1080W1920H1080!')&&hosPip.fixed===1&&hosPip.free===1&&hosLayers.badges.join(',')==='레이어 4,레이어 3,레이어 2,레이어 1'&&hosLayers.cells.join(',')==='레이어 4,레이어 3,레이어 2,레이어 1'&&!hosPip.overflow,JSON.stringify({hosDefault:hosDefault.slice(0,120),fixed:hosPip.fixed,free:hosPip.free,layers:hosLayers}));
+    check('XDM 07 시뮬레이터 HOS100 모드: 사용자 배치(L00) 커맨드와 스위칭 커맨드가 나오고 PIP 프리셋이 가이드 원문과 같음',/\*255CI001O001,I002O002,I003O003,I004O004!/.test(hosDefault)&&/\*255OQO001M14L00P4321O001X0000Y0000W3840H2160O002X0480Y0270W1920H1080/.test(hosDefault)&&hosPip.cmd.includes('*255OQO001M14L09X1920Y1080W1920H1080!')&&hosPip.fixed===1&&hosPip.free===1&&hosLayers.badges.join(',')==='레이어 4,레이어 3,레이어 2,레이어 1'&&hosLayers.cells.join(',')==='레이어 4,레이어 3,레이어 2,레이어 1'&&!hosPip.overflow,JSON.stringify({hosDefault:hosDefault.slice(0,120),fixed:hosPip.fixed,free:hosPip.free,layers:hosLayers}));
     // 0.226 전체 커맨드(두 카드): WOS100·HOS100 커맨드가 번호 순으로 모이고, 포트가 겹치면 경고와 "시작 포트를 17번으로" 버튼이 나오며 누르면 경고가 사라진다.
     await page.click('#rt-layout-sim [data-ls-card="ALL"]');
     await page.waitForSelector('#rt-layout-sim .rt-ls-allgrid');
@@ -864,7 +932,7 @@ const patchAmxLock=async()=>{
     await page.click('#rt-layout-sim [data-ls-hos-port]');
     const allAfter=await page.evaluate(()=>({overlapBtn:!!document.querySelector('#rt-layout-sim [data-ls-hos-port]'),text:document.querySelector('#rt-layout-sim [data-ls-cmd]').textContent,overflow:document.documentElement.scrollWidth>innerWidth}));
     check('XDM 07 시뮬레이터 전체 커맨드: 두 카드 커맨드 3줄, 포트 겹침 경고 → 버튼으로 HOS100 시작 포트 17번',allBefore.lines===3&&allBefore.overlapBtn&&!allAfter.overlapBtn&&/\*255OQO017M14L09X1920Y1080W1920H1080!/.test(allAfter.text)&&/I001O017,I002O018!/.test(allAfter.text)&&!allAfter.overflow,JSON.stringify({before:allBefore,after:allAfter.text.slice(-80)}));
-    await page.evaluate(()=>{try{localStorage.removeItem('rtcom.layoutSim.v1');localStorage.removeItem('rtcom.layoutSim.hos.v1');localStorage.removeItem('rtcom.layoutSim.card.v1');localStorage.removeItem('rtcom.layoutSim.include.v1')}catch(e){}});
+    await page.evaluate(()=>{try{localStorage.removeItem('rtcom.layoutSim.v1');localStorage.removeItem('rtcom.layoutSim.hos.v1');localStorage.setItem('rtcom.layoutSim.card.v2','"WOS100"');localStorage.removeItem('rtcom.layoutSim.include.v1')}catch(e){}});
     await page.evaluate(()=>{try{localStorage.removeItem('rtcom.layoutSim.v1')}catch(e){}});
     // 0.64 OBUX-1C Tx Mode 딥 스위치(매뉴얼 Ver.2.2): 검은 몸체 4핀, 1번 오디오 + 2·3·4번 EDID 조합 5칸(Through-pass EDID Fix 포함).
     await page.goto(`${home}#products/obux-1c`,{waitUntil:'networkidle'});

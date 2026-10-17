@@ -120,7 +120,9 @@
     // 제품정보(src/products.js) 04 카드 상세·02 신호 구성 그림이 같은 버튼·같은 팝업을 쓴다. 누르면 아래 [data-card-feature] 처리기가 연다.
     const cardFeatures={
       'XDM-WOS100':{key:'layer-compare',tag:'4레이어',name:'레이어',hint:'출력 1개에 4K/60 소스 4개를 겹치는 레이어 구성도와 비디오 프로세서 레이어 수 비교표',label:'레이어 구성도 · 비교표 보기'},
-      'XDM-HOS100':{key:'hos-multiview',tag:'멀티뷰',name:'멀티뷰',hint:'4분할·2분할 등 레이어 구성과 구성별로 쓸 수 없게 되는 출력 포트',label:'멀티뷰 레이아웃 보기'}
+      'XDM-HOS100':{key:'hos-multiview',tag:'멀티뷰',name:'멀티뷰',hint:'4분할·2분할 등 레이어 구성과 구성별로 쓸 수 없게 되는 출력 포트',label:'멀티뷰 레이아웃 보기'},
+      // 0.245(사용자 요청 2026-10-17 "VDM QOS4S-U 카드를 통해서 분할화면 연출이 가능한데 그 부분도 커맨드 제어와 화면 예시가 있으면 좋겠어"): VDM 쿼드뷰 카드 레이아웃 8종 팝업
+      'QOS4S-U':{key:'vdm-quadview',tag:'쿼드뷰',name:'쿼드뷰',hint:'입력 4개를 한 화면에 합치는 레이아웃 8종(L01~L08)과 설정 커맨드',label:'쿼드뷰 레이아웃 보기'}
     };
     const featureIcon='<svg class="rt-feature-ico" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.8 14.5 5 8 8.2 1.5 5z" fill="currentColor"/><path d="M2.3 8.2 8 11l5.7-2.8M2.3 11 8 13.8l5.7-2.8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>';
     function featureButton(id,extraClass=''){const f=cardFeatures[id];return f?`<button type="button" class="rt-button rt-feature-open${extraClass?' '+extraClass:''}" data-card-feature="${f.key}">${featureIcon}<span>${f.label}</span><b aria-hidden="true">→</b></button>`:''}
@@ -229,6 +231,8 @@
       if(!slot)return '';
       const installed=state.placements[slot.id];
       const tips=slot.dir==='output'&&state.family==='XDM'?'<div class="rt-output-tips"><div class="rt-pro-tip rt-quad-tip"><span>최대 4분할</span><div><strong>XDM-HOS100 · 멀티뷰(4분할·2분할)</strong><p>일반 HDMI 4채널 출력 또는 원하는 레이어 구성에 활용합니다. 레이어 2개면 짝 포트(1번 분할 시 2번, 3번 분할 시 4번), 4개면 2~4번 포트를 쓸 수 없습니다. 출력 동기(싱크)가 맞지 않아 LED 화면에는 WOS100을 씁니다.</p>'+featureButton('XDM-HOS100','rt-feature-open-tip')+'</div></div><div class="rt-pro-tip"><span>활용 TIP</span><div><strong>XDM-WOS100 · 4레이어</strong><p>출력 1개에 4K/60 소스 4개를 레이어로 겹쳐 비디오 프로세서처럼 화면을 연출할 수 있습니다. 레이어를 1개만 써도 카드 4포트가 모두 같은 화면을 내므로 2~4번 포트를 따로 쓸 수 없습니다. 출력 동기(싱크)가 맞아 2~3장으로 LED S-BOX 1·2에 나눠 보낼 때도 동기가 맞습니다.</p>'+featureButton('XDM-WOS100','rt-feature-open-tip')+'</div></div></div>':'';
+      // 0.245 VDM 출력 카드 선택 팝업: QOS4S-U 쿼드뷰 안내와 레이아웃 팝업 버튼(XDM의 HOS100 TIP과 같은 방식).
+      const vdmTips=slot.dir==='output'&&state.family==='VDM'?'<div class="rt-output-tips"><div class="rt-pro-tip rt-quad-tip"><span>쿼드뷰</span><div><strong>VDM-QOS4S-U · 입력 4개를 한 화면에</strong><p>매트릭스 입력 4개를 4분할·좌우 2분할·1+3 분할 등 8가지 레이아웃으로 합쳐 HDMI 2포트로 냅니다(최대 3840x2160 @ 30Hz).</p>'+featureButton('QOS4S-U','rt-feature-open-tip')+'</div></div></div>':'';
       const dirWord=slot.dir==='input'?'입력':'출력';
       // 0.94 수량 UI가 사라지는 버그 수정(사용자 지적 "입력카드 다시 조정하려고 누르면 수량이 안보이고 장착됨이 보임", "출력카드는 수량선택이 안되는 버그"):
       // 같은 방향 슬롯이 이미 다 채워지면 fillTargets가 채울 수 있는 칸(qtyMax)을 1로 돌려주는데, 그 값 하나로 "카드별 수량" UI 노출 여부까지 정했다.
@@ -261,7 +265,7 @@
       const closeButton=fillQtyButton?'':'<button type="button" class="rt-button" data-modal-close>닫기</button>';
       const moveButton=tapMode()&&installed?`<button type="button" class="rt-button" data-tap-move="${slot.id}" title="이 카드를 같은 방향의 다른 슬롯으로 옮깁니다">이동</button>`:'';
       const sep=`<p class="rt-card-choice-sep">${slot.dir==='input'?'입력':'출력'} 카드 ${list.length}종 · ${list[0]?.[2]||4}채널</p>`;
-      return `<dialog class="rt-card-modal" aria-labelledby="rt-card-modal-title"><div class="rt-card-modal-head"><div><span class="rt-eyebrow">${slot.dir==='input'?'입력':'출력'} 카드 · ${esc(state.model)}</span><h3 id="rt-card-modal-title">${esc(slot.label)} 카드 선택</h3></div><button type="button" class="rt-card-modal-close" data-modal-close aria-label="카드 선택 닫기">×</button></div>${tips}${qtyBar}<div class="rt-card-choice-list">${blankChoice}${sep}${list.map(choice).join('')}</div><div class="rt-card-modal-foot"><button type="button" class="rt-button rt-quiet" data-action="remove" ${installed?'':'disabled'} title="키보드 Delete 키로도 비울 수 있습니다">슬롯 비우기 <kbd class="rt-kbd">Del</kbd></button>${moveButton}${fillQtyButton}${closeButton}</div></dialog>`;
+      return `<dialog class="rt-card-modal" aria-labelledby="rt-card-modal-title"><div class="rt-card-modal-head"><div><span class="rt-eyebrow">${slot.dir==='input'?'입력':'출력'} 카드 · ${esc(state.model)}</span><h3 id="rt-card-modal-title">${esc(slot.label)} 카드 선택</h3></div><button type="button" class="rt-card-modal-close" data-modal-close aria-label="카드 선택 닫기">×</button></div>${tips}${vdmTips}${qtyBar}<div class="rt-card-choice-list">${blankChoice}${sep}${list.map(choice).join('')}</div><div class="rt-card-modal-foot"><button type="button" class="rt-button rt-quiet" data-action="remove" ${installed?'':'disabled'} title="키보드 Delete 키로도 비울 수 있습니다">슬롯 비우기 <kbd class="rt-kbd">Del</kbd></button>${moveButton}${fillQtyButton}${closeButton}</div></dialog>`;
     }
     // 카드 상세 정보(사용자 요청 2026-09-28 "입력 출력카드 버튼을 만들어 해당 카드 상세정보가 나와야해"): 03 카드 슬롯 아래 입력·출력 카드 버튼과
     // 내 구성의 카드 행을 누르면 card-specs.js(카탈로그 46쪽판 근거) 사양을 대화상자로 보여준다. 화면 상태가 아니라서 실행 취소·자동 저장 대상이 아니다.
@@ -547,8 +551,39 @@
       root.appendChild(dialog);
       if(typeof dialog.showModal==='function'){dialog.showModal();dialog.querySelector('.rt-card-modal-close').focus()}else dialog.setAttribute('open','');
     }
+    // 0.245 VDM-QOS4S-U 쿼드뷰 레이아웃 팝업. 레이아웃 8종 도해는 매뉴얼 KV07 63쪽 설정 화면(Format C1~C4), 커맨드는 82·83쪽 OQ 커맨드를 따른다(src/quad-view.js).
+    // 제품정보 VDM 시리즈 페이지의 "07 쿼드뷰 시뮬레이터"에서는 입력·타이밍을 정해 커맨드를 바로 만든다. 이 팝업은 모양 비교용이라 같은 도해 카드만 보여 준다.
+    function openQuadView(){
+      const QV=globalThis.RtQuadView;
+      if(!QV)return;
+      const dialog=document.createElement('dialog');
+      dialog.className='rt-card-info-modal rt-layer-modal rt-hos-modal rt-qv-modal';
+      dialog.setAttribute('aria-labelledby','rt-qv-title');
+      dialog.innerHTML='<div class="rt-card-modal-head"><div><span class="rt-eyebrow">VDM 출력 카드 · 쿼드뷰</span><h3 id="rt-qv-title">VDM-QOS4S-U 쿼드뷰 레이아웃</h3><p class="rt-card-info-sub">HDMI Output Board for 4K Quad Viewer · HDMI 2포트 · 최대 3840x2160 @ 30Hz</p></div><button type="button" class="rt-card-modal-close" data-layer-close aria-label="쿼드뷰 레이아웃 팝업 닫기">×</button></div>'
+        +'<div class="rt-card-info-body"><p class="rt-card-info-tip">QOS4S-U는 VDM 매트릭스 입력 중 4개를 한 화면에 합쳐 내보내는 쿼드뷰 출력 카드입니다. 칸의 C1~C4는 이 카드에 넣는 입력 4개이고, 레이아웃에 따라 한 개를 전체 화면으로 쓰거나 2분할·4분할로 나눕니다.</p>'
+        +`<ul class="rt-hos-grid rt-qv-grid">${QV.layoutCardsHtml()}</ul>`
+        +'<h4 class="rt-layer-h">설정 순서와 커맨드</h4>'
+        +'<ul class="rt-layer-notes"><li>전면 터치스크린에서는 I/O Config → Multiview에서 쿼드뷰 출력 번호, Timing, 화면 레이아웃(Format)을 고르고 Enter를 누릅니다(매뉴얼 63쪽).</li><li>커맨드는 <code>OQ</code>로 보냅니다. 타이밍은 <code>*255OQO01T00!</code>(T00 Auto ~ T24), 레이아웃은 <code>*255OQO01L05!</code>(L01~L04 채널 1~4 단독, L05 쿼드뷰, L06 왼쪽 1·오른쪽 3, L07 좌우, L08 위 1·아래 3)입니다(매뉴얼 82·83쪽).</li><li>입력을 고르고 커맨드를 바로 만들려면 제품정보 VDM 페이지의 "07 쿼드뷰 시뮬레이터"를 쓰세요.</li></ul>'
+        +`<p class="rt-card-info-src">VDM 국문 사용자 매뉴얼 KV07 43쪽(카드 사양)·63쪽(Multiview 설정)·82·83쪽(OQ 커맨드) · ${esc(QV.FIELD_NOTE)}</p></div>`
+        +'<div class="rt-card-modal-foot"><a class="rt-button rt-primary" href="#products/vdm" data-qv-go>제품정보에서 커맨드 만들기</a><button type="button" class="rt-button" data-layer-close>닫기</button></div>';
+      const opener=document.activeElement;
+      const finish=()=>{if(dialog.open)dialog.close();dialog.remove();opener?.focus?.({preventScroll:true})};
+      dialog.addEventListener('click',event=>{
+        if(event.target===dialog||event.target.closest('[data-layer-close]')){finish();return}
+        if(event.target.closest('[data-qv-go]')){
+          // 이미 VDM 시리즈 페이지에 있으면 주소는 그대로 두고 시뮬레이터 카드로 내려간다.
+          const here=document.getElementById('rt-quad-sim');
+          const visible=!!(here&&here.getClientRects().length);
+          if(visible){event.preventDefault();root.querySelectorAll('dialog[open]').forEach(d=>{d.close();d.remove()});here.scrollIntoView({block:'start'});return}
+          finish();
+        }
+      });
+      dialog.addEventListener('cancel',event=>{event.preventDefault();finish()});
+      root.appendChild(dialog);
+      if(typeof dialog.showModal==='function'){dialog.showModal();dialog.querySelector('.rt-card-modal-close').focus()}else dialog.setAttribute('open','');
+    }
     // 기능 팝업 버튼([data-card-feature]): 구성기 버튼과 제품정보 02 신호 구성 그림의 WOS100·HOS100 칸(SVG, role=button)이 함께 쓴다.
-    const featureOpeners={'layer-compare':openLayerCompare,'hos-multiview':openHosMultiview};
+    const featureOpeners={'layer-compare':openLayerCompare,'hos-multiview':openHosMultiview,'vdm-quadview':openQuadView};
     root.addEventListener('click',event=>{const el=event.target.closest?.('[data-card-feature]');if(!el||!root.contains(el))return;event.preventDefault();featureOpeners[el.dataset.cardFeature]?.()});
     root.addEventListener('keydown',event=>{if(event.key!=='Enter'&&event.key!==' ')return;const el=event.target.closest?.('[data-card-feature]');if(!el||el.tagName==='BUTTON')return;event.preventDefault();featureOpeners[el.dataset.cardFeature]?.()});
     function configurationSummary(){
