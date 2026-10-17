@@ -388,7 +388,7 @@ const patchAmxLock=async()=>{
     // 슬롯 판과 후면 사진이 다 그려지기 전에 세면 가끔 실패했다(2026-09-27 한 번 재현). 슬롯 8칸과 사진 로딩을 기다린 뒤 검사한다.
     await page.waitForFunction(()=>{const image=document.querySelector('.rt-rack-photo-image');return document.querySelectorAll('.rt-rack-photo .rt-rack-slot').length>=8&&image&&image.complete&&image.naturalWidth>0},null,{timeout:10000}).catch(()=>{});
     check('VDM-16X는 후면 그림(0.119, 카드 없는 빈 슬롯) 위에 입력 4·출력 4 슬롯이 모두 빈 슬롯으로 표시됨(블랭크 자동 없음)',await page.$eval('.rt-rack-photo-image',image=>image.getAttribute('src').endsWith('vdm-16x-rear-art.webp'))&&await page.locator('.rt-rack-photo .rt-rack-slot-empty').count()===8&&await page.locator('.rt-rack-photo .rt-rack-slot-blank').count()===0&&await page.$eval('.rt-rack-photo-image',image=>image.naturalWidth>0));
-    // 0.244 VDM 출력 카드 선택 팝업 팁의 QOS4S-U 쿼드뷰 버튼(XDM HOS100 팁과 같은 방식): 레이아웃 팝업이 열리고 닫아도 카드 선택 팝업은 그대로 남는다.
+    // 0.245 VDM 출력 카드 선택 팝업 팁의 QOS4S-U 쿼드뷰 버튼(XDM HOS100 팁과 같은 방식): 레이아웃 팝업이 열리고 닫아도 카드 선택 팝업은 그대로 남는다.
     await page.locator('button[data-slot="out-1"]').click();
     const vdmTip=await page.$$eval('.rt-card-modal .rt-output-tips [data-card-feature]',els=>els.map(e=>e.dataset.cardFeature).join());
     await page.click('.rt-card-modal .rt-output-tips [data-card-feature="vdm-quadview"]');
@@ -702,7 +702,7 @@ const patchAmxLock=async()=>{
       const over=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
       check(`${id} 설정 명령 패널: ${steps.map(x=>x[1]).join(' · ')}${id==='qms-88ux'?' · 값 직접 입력 *255OSO04O08H09!':''} 가 만들어지고 가로 넘침 없음`,seen.every(x=>x[1])&&(id!=='qms-88ux'||edited.includes('*255OSO04O08H09!'))&&!over,JSON.stringify({seen,edited,over}).slice(0,260));
     }
-    // 0.244 VDM 시리즈 "07 쿼드뷰 시뮬레이터"(사용자 요청 2026-10-17 "VDM QOS4S-U 카드를 통해서 분할화면 연출이 가능한데 … 커맨드 제어와 화면 예시"): 레이아웃 8종 도해,
+    // 0.245 VDM 시리즈 "07 쿼드뷰 시뮬레이터"(사용자 요청 2026-10-17 "VDM QOS4S-U 카드를 통해서 분할화면 연출이 가능한데 … 커맨드 제어와 화면 예시"): 레이아웃 8종 도해,
     // 레이아웃을 고르면 칸 수와 OQ 명령이 바뀌고(L07 → 2칸·*255OQO01L07!), 출력 번호·타이밍을 바꾸면 명령이 따라가며, 입력 연결 명령을 끌 수 있고,
     // AMX 구성에 담으면 아래 08 카드 "내 AMX 구성"에 쌓인다. QOS4S-U 카드 상세 팝업과 02 신호 구성 칸에서 레이아웃 팝업이 열린다.
     {
@@ -734,7 +734,7 @@ const patchAmxLock=async()=>{
       const sigBtn=await page.locator('svg [data-card-feature="vdm-quadview"][role="button"]').count();
       check('VDM QOS4S-U 카드 상세·02 신호 구성에서 쿼드뷰 레이아웃 팝업(8종·도해 칸 18개·알티컴 확인 대기 안내)이 열리고 "커맨드 만들기"는 팝업을 닫고 시뮬레이터로 이동함',cta===1&&pop.title==='VDM-QOS4S-U 쿼드뷰 레이아웃'&&pop.layouts===8&&pop.figs===18&&pop.note&&pop.go&&closed===0&&sigBtn===1,JSON.stringify({cta,pop,closed,sigBtn}));
     }
-    // 0.244(사용자 요청 2026-10-17 "QMS-44UX 쿼드 뷰 입력 번호 표시 … 진행해줘"): QMS-44UX QUAD 카드에 칸 번호 안내 한 줄(출력 기준, 기본 입력 1~4번). 88UX·듀얼에는 이 줄이 없다.
+    // 0.245(사용자 요청 2026-10-17 "QMS-44UX 쿼드 뷰 입력 번호 표시 … 진행해줘"): QMS-44UX QUAD 카드에 칸 번호 안내 한 줄(출력 기준, 기본 입력 1~4번). 88UX·듀얼에는 이 줄이 없다.
     {
       await page.goto(`${home}#products/qms-44ux`,{waitUntil:'networkidle'});
       await page.waitForSelector('[data-layout-cellnote]');

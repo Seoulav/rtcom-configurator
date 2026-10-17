@@ -43,6 +43,7 @@ RTCOM 제품정보 사이트(XDM·SPX·VDM·QMS·HDS 제어 예시 포함)를 �
 | 16 | XDM-HOS100 `L13` | 가이드 25쪽 `*255OQOxxxMxxL13XxxxxYxxxxWxxxxHxxxxXxxxxYxxxxWxxxxHxxxx!`(1~4번 PIP 사용자 배치)에는 좌표 묶음이 2개만 적혀 있습니다. 창 2·3·4 각각의 좌표를 3묶음으로 보내는 것입니까, 다른 규칙입니까? | 시뮬레이터에서 L13을 뺐습니다. |
 | 27 | XDM-MR4S | 크기·무게·전원 어댑터 규격(전압·전류), POWER 1·2 **전원 이중화 여부**, 매뉴얼·카탈로그 PDF를 받을 수 있습니까? | 사진만으로 등록해 사양 칸이 비어 있습니다. |
 | 28 | FT101-U / FR101-U | 정정해 주신 매뉴얼 Ver.1.4의 4쪽 TX 입력이 "HDMI 2 Ports"로 남아 있습니다(사진·설명은 1개). 오기이면 정정본을 받을 수 있습니까? | 사이트는 카탈로그 기준(HDMI 입력 1개)으로 적었습니다. |
+| 29 | VDM-QOS4S-U | 쿼드뷰 카드의 ① C1~C4가 카드가 쓰는 출력 포트 4개(설정 화면의 "S2 : 5, 6, 7, 8")에 순서대로 대응합니까? 입력은 `C` 명령으로 그 포트에 연결합니까? ② `OQ` 명령의 출력 번호(`O01`)는 매트릭스 출력 포트 번호입니까, 카드의 HDMI 출력 번호(1·2)입니까? | 사이트(제품정보 VDM 07 쿼드뷰 시뮬레이터)는 카드 첫 출력 포트를 사용자가 정해 C1~C4를 순서대로 두는 예시로 만들고, 화면에 알티컴 확인 대기라고 적었습니다. |
 
 ## 2차 짧은 메일 (20~26번만, 2026-10-16)
 
@@ -94,6 +95,7 @@ RTCOM 제품정보 사이트(XDM·SPX·VDM·QMS·HDS 제어 예시 포함)를 �
 | 20 | 제품 JSON `controlExample.lan`, `src/control-example.js`의 IP 안내 |
 | 21~23 | `data/products/spx.json`·`vdm.json`·`xdm.json`의 `controlExample.builders`·`serial`, 테스트의 매뉴얼 예시 비교 |
 | 24·25 | `data/products/qms-44ux.json`·`qms-88ux.json` 설정 명령 |
+| 29 | `src/quad-view.js`의 `FIELD_NOTE`·입력 연결(C) 명령 출력 번호 계산, 제품정보 VDM "07 쿼드뷰 시뮬레이터" 안내 문구 |
 | 26 | `data/products/hds-42mu.json`·`hds-21u.json`의 `controlExample.volume`·`serial` |
 | 16 | HOS100 L13(`src/layout-sim.js`) |
 | 27·28 | `data/products/xdm-mr4s.json` 04 제품 사양, 문서 버튼, FT101-U 매뉴얼 PDF |

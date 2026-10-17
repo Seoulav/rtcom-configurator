@@ -121,7 +121,7 @@
     const cardFeatures={
       'XDM-WOS100':{key:'layer-compare',tag:'4레이어',name:'레이어',hint:'출력 1개에 4K/60 소스 4개를 겹치는 레이어 구성도와 비디오 프로세서 레이어 수 비교표',label:'레이어 구성도 · 비교표 보기'},
       'XDM-HOS100':{key:'hos-multiview',tag:'멀티뷰',name:'멀티뷰',hint:'4분할·2분할 등 레이어 구성과 구성별로 쓸 수 없게 되는 출력 포트',label:'멀티뷰 레이아웃 보기'},
-      // 0.244(사용자 요청 2026-10-17 "VDM QOS4S-U 카드를 통해서 분할화면 연출이 가능한데 그 부분도 커맨드 제어와 화면 예시가 있으면 좋겠어"): VDM 쿼드뷰 카드 레이아웃 8종 팝업
+      // 0.245(사용자 요청 2026-10-17 "VDM QOS4S-U 카드를 통해서 분할화면 연출이 가능한데 그 부분도 커맨드 제어와 화면 예시가 있으면 좋겠어"): VDM 쿼드뷰 카드 레이아웃 8종 팝업
       'QOS4S-U':{key:'vdm-quadview',tag:'쿼드뷰',name:'쿼드뷰',hint:'입력 4개를 한 화면에 합치는 레이아웃 8종(L01~L08)과 설정 커맨드',label:'쿼드뷰 레이아웃 보기'}
     };
     const featureIcon='<svg class="rt-feature-ico" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.8 14.5 5 8 8.2 1.5 5z" fill="currentColor"/><path d="M2.3 8.2 8 11l5.7-2.8M2.3 11 8 13.8l5.7-2.8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>';
@@ -231,7 +231,7 @@
       if(!slot)return '';
       const installed=state.placements[slot.id];
       const tips=slot.dir==='output'&&state.family==='XDM'?'<div class="rt-output-tips"><div class="rt-pro-tip rt-quad-tip"><span>최대 4분할</span><div><strong>XDM-HOS100 · 멀티뷰(4분할·2분할)</strong><p>일반 HDMI 4채널 출력 또는 원하는 레이어 구성에 활용합니다. 레이어 2개면 짝 포트(1번 분할 시 2번, 3번 분할 시 4번), 4개면 2~4번 포트를 쓸 수 없습니다. 출력 동기(싱크)가 맞지 않아 LED 화면에는 WOS100을 씁니다.</p>'+featureButton('XDM-HOS100','rt-feature-open-tip')+'</div></div><div class="rt-pro-tip"><span>활용 TIP</span><div><strong>XDM-WOS100 · 4레이어</strong><p>출력 1개에 4K/60 소스 4개를 레이어로 겹쳐 비디오 프로세서처럼 화면을 연출할 수 있습니다. 레이어를 1개만 써도 카드 4포트가 모두 같은 화면을 내므로 2~4번 포트를 따로 쓸 수 없습니다. 출력 동기(싱크)가 맞아 2~3장으로 LED S-BOX 1·2에 나눠 보낼 때도 동기가 맞습니다.</p>'+featureButton('XDM-WOS100','rt-feature-open-tip')+'</div></div></div>':'';
-      // 0.244 VDM 출력 카드 선택 팝업: QOS4S-U 쿼드뷰 안내와 레이아웃 팝업 버튼(XDM의 HOS100 TIP과 같은 방식).
+      // 0.245 VDM 출력 카드 선택 팝업: QOS4S-U 쿼드뷰 안내와 레이아웃 팝업 버튼(XDM의 HOS100 TIP과 같은 방식).
       const vdmTips=slot.dir==='output'&&state.family==='VDM'?'<div class="rt-output-tips"><div class="rt-pro-tip rt-quad-tip"><span>쿼드뷰</span><div><strong>VDM-QOS4S-U · 입력 4개를 한 화면에</strong><p>매트릭스 입력 4개를 4분할·좌우 2분할·1+3 분할 등 8가지 레이아웃으로 합쳐 HDMI 2포트로 냅니다(최대 3840x2160 @ 30Hz).</p>'+featureButton('QOS4S-U','rt-feature-open-tip')+'</div></div></div>':'';
       const dirWord=slot.dir==='input'?'입력':'출력';
       // 0.94 수량 UI가 사라지는 버그 수정(사용자 지적 "입력카드 다시 조정하려고 누르면 수량이 안보이고 장착됨이 보임", "출력카드는 수량선택이 안되는 버그"):
@@ -551,7 +551,7 @@
       root.appendChild(dialog);
       if(typeof dialog.showModal==='function'){dialog.showModal();dialog.querySelector('.rt-card-modal-close').focus()}else dialog.setAttribute('open','');
     }
-    // 0.244 VDM-QOS4S-U 쿼드뷰 레이아웃 팝업. 레이아웃 8종 도해는 매뉴얼 KV07 63쪽 설정 화면(Format C1~C4), 커맨드는 82·83쪽 OQ 커맨드를 따른다(src/quad-view.js).
+    // 0.245 VDM-QOS4S-U 쿼드뷰 레이아웃 팝업. 레이아웃 8종 도해는 매뉴얼 KV07 63쪽 설정 화면(Format C1~C4), 커맨드는 82·83쪽 OQ 커맨드를 따른다(src/quad-view.js).
     // 제품정보 VDM 시리즈 페이지의 "07 쿼드뷰 시뮬레이터"에서는 입력·타이밍을 정해 커맨드를 바로 만든다. 이 팝업은 모양 비교용이라 같은 도해 카드만 보여 준다.
     function openQuadView(){
       const QV=globalThis.RtQuadView;

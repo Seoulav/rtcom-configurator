@@ -1024,7 +1024,7 @@
       route.forEach((inp,o)=>{const x=mx,y=iy(o);outs+=`<rect x="${x}" y="${y}" width="${mw+6}" height="${mh+6}" rx="3" fill="#1f2532"/><rect class="rt-pg-cell" x="${x+3}" y="${y+3}" width="${mw}" height="${mh}" fill="${col(inp)}"/><path d="M${x+3} ${y+3+mh}V${y+3+mh*0.75}Q${x+3+mw*0.3} ${y+3+mh*0.55} ${x+3+mw*0.55} ${y+3+mh*0.72}T${x+3+mw} ${y+3+mh*0.66}V${y+3+mh}Z" fill="#fff" fill-opacity=".18"/><text x="${x+3+mw/2}" y="${y+3+mh/2}" font-size="${big?10:12}" font-weight="800" fill="#fff" text-anchor="middle" dominant-baseline="central">${inp}</text><text x="${x+mw+14}" y="${y+3+mh/2}" font-size="10" font-weight="800" fill="#6b7280" dominant-baseline="central">OUT ${o+1}</text>`});
       return `<div class="rt-pg-layout-preview rt-pg-matrix-preview"><svg class="rt-pg-layout-matrix" viewBox="0 0 ${W} ${H}" role="img" aria-label="입력 ${N} → 출력 ${N} 크로스포인트 예시">${lines}${ins}${outs}</svg></div>`;
     }
-    // 0.244(사용자 요청 2026-10-17 "QMS-44UX 쿼드 뷰 입력 번호 표시 … 진행해줘"): QMS-44UX 쿼드 뷰 도해의 칸 번호 안내 한 줄.
+    // 0.245(사용자 요청 2026-10-17 "QMS-44UX 쿼드 뷰 입력 번호 표시 … 진행해줘"): QMS-44UX 쿼드 뷰 도해의 칸 번호 안내 한 줄.
     // 매뉴얼 21쪽: QUAD 모드의 화면 구성은 출력 기준(1번 출력 좌측 상단·2번 우측 상단·3번 좌측 하단·4번 우측 하단)이고, 입력은 화면의 [QUAD IN: 1 2 3 4]가 기본이다.
     // 그래서 "칸 번호 = 입력 번호"는 기본 배정일 때만 맞고, 출력 n에 연결한 입력이 그 칸에 나온다(출력에 연결하는 입력 선택은 매트릭스 모드와 같은 방식, 매뉴얼 21쪽).
     function quadCellNote(productId,modeName){
@@ -1292,7 +1292,7 @@
       <p class="rt-pg-lead">출력 카드를 고르고 입력 영상 창을 끌어 놓으면, 그 위치·크기대로 영상을 띄우는 제어 커맨드가 아래에 바로 만들어집니다. WOS100은 디스플레이 월 위에 창을 겹치는 <code>OW</code>, HOS100은 디스플레이 1대 안에 창 1~4를 배치하는 <code>OQ</code> 커맨드입니다. 창의 오른쪽 아래 모서리를 끌면 크기가 바뀌고, 표에서 숫자로도 고칠 수 있습니다.</p>
       <div data-layout-sim-root></div></section>`;
     }
-    // 0.244 VDM 시리즈 "07 쿼드뷰 시뮬레이터"(VDM-QOS4S-U): 레이아웃 8종 도해(L01~L08)와 입력 연결·타이밍·레이아웃 OQ 커맨드 생성은 src/quad-view.js(RtQuadView)가 맡고,
+    // 0.245 VDM 시리즈 "07 쿼드뷰 시뮬레이터"(VDM-QOS4S-U): 레이아웃 8종 도해(L01~L08)와 입력 연결·타이밍·레이아웃 OQ 커맨드 생성은 src/quad-view.js(RtQuadView)가 맡고,
     // 여기서는 카드 틀만 둔다. show()가 화면을 그린 뒤 RtQuadView.mountAll(body)로 채운다. 근거: 사용자 요청 2026-10-17, VDM 국문 매뉴얼 KV07 63쪽·82·83쪽.
     function quadViewSection(family){
       if(family!=='VDM')return '';

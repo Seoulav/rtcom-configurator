@@ -1,4 +1,4 @@
-/* 0.244 VDM-QOS4S-U 쿼드뷰 시뮬레이터(제품정보 VDM 시리즈 "07 쿼드뷰 시뮬레이터" 카드와 카드 상세 팝업).
+/* 0.245 VDM-QOS4S-U 쿼드뷰 시뮬레이터(제품정보 VDM 시리즈 "07 쿼드뷰 시뮬레이터" 카드와 카드 상세 팝업).
    근거: VDM 국문 사용자 매뉴얼 KV07(output/design/assets/docs/vdm-manual.pdf)
      - 43쪽 VDM-QOS4S-U 사양: HDMI 2포트, 입력 신호 "VDM 매트릭스 입력 중 4개", 최대 3840x2160@30Hz
      - 63쪽 설정 화면 "7) Multiview": 출력 번호·Timing·화면 레이아웃(Format C1~C4 도해 8종)을 고르고 Enter
