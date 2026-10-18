@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.255.0 배포 기록**: `docs/qa/DEPLOYMENT_0.255_2026-10-18.md`(PR #403 → main 병합 `7800c79`, Pages 배포 run 39134178079 success, 공개 `CATALOG BASED · 0.255`·`layout-sim.js`·`styles.css`·`index.html`·`control-example.js` 해시 일치·`CLAUDE.md`와 `scripts/session-preflight.cjs` 404)
 - **0.254.0 배포 기록**: `docs/qa/DEPLOYMENT_0.254_2026-10-18.md`(PR #400 → main 병합 `7c2f445`, Pages 배포 run 39133244170 success, 공개 `CATALOG BASED · 0.254`·`control-example.js`·`layout-sim.js`·`index.html`·`styles.css` 해시 일치·`CLAUDE.md` 404, 번호를 0.253에서 0.254로 옮긴 경위)
 - **0.253.0 배포 기록**: `docs/qa/DEPLOYMENT_0.253_2026-10-18.md`(PR #401 → main 병합 `f6268d1`, Pages 배포 run 39132505345 success, 공개 `CATALOG BASED · 0.253`·`control-example.js`·`index.html`·`qms-88ux.json` 해시 일치·`CLAUDE.md` 404)
 - **0.252.0 배포 기록**: `docs/qa/DEPLOYMENT_0.252_2026-10-18.md`(PR #398 → main 병합 `e30ac3d`, Pages 배포 run 39093001989 success, 공개 `CATALOG BASED · 0.252`·`control-example.js`·`index.html`·`xdm.json` 해시 일치·`CLAUDE.md` 404)
