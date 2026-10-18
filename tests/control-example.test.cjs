@@ -519,14 +519,14 @@ test('0.239: lan 항목이 없는 제품은 포트 0과 확인 필요 주석, �
   const bare={amxDevice:'dvXDM',serial:{baud:115200}};
   const none=ce.amxCode(bare,[],{mode:'lan'});
   assert.match(none,/LONG nDevicePort = 0 +\/\/ TCP 포트 번호를 입력하세요\(이 제품은 매뉴얼에 없어 알티컴 확인 필요\)/);
-  assert.match(none,/'192\.168\.1\.100'.*예시/);
+  assert.match(none,/'192\.168\.1\.141'.*예시/);
   assert.doesNotMatch(none,/동시 접속 1개|자동으로 끊지 않음/);
   const own=ce.amxCode(bare,[],{mode:'lan',ip:'10.1.2.3',port:'4001'});
   assert.match(own,/'10\.1\.2\.3'/);assert.match(own,/LONG nDevicePort = 4001 +\/\/ TCP 포트 \(직접 입력한 값\)/);
   assert.match(ce.amxCode(xdm,[],{mode:'lan',port:'2323'}),/nDevicePort = 2323 +\/\/ TCP 포트 \(직접 입력한 값\)/);
   // 코드 주입·범위 밖 값 차단: 잘못된 포트는 제품 기본값(23)으로 돌아간다
   const bad=ce.amxCode(xdm,[],{mode:'lan',ip:"10.0.0.1'; evil",port:'99999'});
-  assert.doesNotMatch(bad,/evil/);assert.match(bad,/'192\.168\.1\.100'/);assert.match(bad,/nDevicePort = 23\b/);
+  assert.doesNotMatch(bad,/evil/);assert.match(bad,/'192\.168\.1\.141'/);assert.match(bad,/nDevicePort = 23\b/);
   assert.doesNotMatch(ce.amxCode(xdm,[],{mode:'lan',ip:'999.1.1.1'}),/999\.1\.1\.1/);
 });
 test('0.239: RS-232를 고르면 기존 직렬 코드(SET BAUD)가 나오고, 옵션이 없으면 LAN이 기본(0.251, HDS 두 제품만 직렬)',()=>{

@@ -73,14 +73,15 @@
   //   LAN: IP_CLIENT_OPEN(dev.PORT, IP, 포트, IP_TCP)로 장비에 TCP 연결한 뒤 같은 커맨드 문자열을 SEND_STRING으로 보낸다(NetLinx 표준 문법).
   //   포트는 매뉴얼에 적힌 값(spec.lan.port, SPX 매뉴얼 46쪽 Telnet 23)만 기본으로 쓰고, 없으면 0과 "확인 필요" 주석을 적는다. 값을 만들어 넣지 않는다.
   //   IP 설정(0.251, 사용자 확인 2026-10-18): 커맨드로는 바꿀 수 없고 장비에서 직접 설정하며 DHCP를 지원한다(lan.ipChange·lan.dhcp). XDM 가이드 67쪽의 LAN 항목(?SNA)은 조회 전용이다.
-  //   IP는 형식이 맞는 값만 쓰고(코드 주입 방지), 비어 있으면 예시 주소(192.168.1.100)를 적고 현장에서 바꾸도록 주석을 단다. 기본 대역은 192.168.1.xxx(사용자 확인 2026-10-16, SPX 매뉴얼 예시 192.168.1.72도 같은 대역).
+  //   IP는 형식이 맞는 값만 쓰고(코드 주입 방지), 비어 있으면 예시 주소(DEFAULT_IP, 0.252에서 192.168.1.100 → 192.168.1.141, 사용자 요청 2026-10-18 "AMX예시쪽에 192.168.1.141로 전부 반영했어?")를 적고 현장에서 바꾸도록 주석을 단다. 기본 대역은 192.168.1.xxx(사용자 확인 2026-10-16, SPX 매뉴얼 예시 192.168.1.72도 같은 대역).
   // 직렬은 데이터 비트·패리티가 매뉴얼에 없으면 일반값(8N1)으로 적고 현장 확인을 안내한다. 사용자가 확인한 제품(serial.confirmed가 있는 제품, 0.250에서 XDM·HDS 포함)은 그 근거 문구를 보여 주고 일반값 안내를 하지 않는다.
   const IPV4=/^(25[0-5]|2[0-4]\d|1?\d?\d)(\.(25[0-5]|2[0-4]\d|1?\d?\d)){3}$/;
   const portOf=(spec,opts)=>{const n=Number(String(opts?.port??'').trim());if(Number.isInteger(n)&&n>=1&&n<=65535)return n;const d=Number(spec.lan?.port);return Number.isInteger(d)&&d>=1&&d<=65535?d:0};
+  const DEFAULT_IP='192.168.1.141';
   function amxCode(spec,commands,opts={}){
     const dev=spec.amxDevice||'dvSwitcher',baud=spec.serial?.baud||9600,lan=opts.mode!=='serial'&&!spec.serialOnly;
     const lines=lan?(()=>{
-      const ip=IPV4.test(String(opts.ip||'').trim())?String(opts.ip).trim():'192.168.1.100',ipGiven=ip!=='192.168.1.100'||IPV4.test(String(opts.ip||'').trim());
+      const ip=IPV4.test(String(opts.ip||'').trim())?String(opts.ip).trim():DEFAULT_IP,ipGiven=ip!==DEFAULT_IP||IPV4.test(String(opts.ip||'').trim());
       const port=portOf(spec,opts),fromSpec=!String(opts.port??'').trim()&&port>0;
       return [
         `DEFINE_DEVICE`,
@@ -182,7 +183,7 @@
     // 직렬 제어만 되는 제품(HDS-42MU·HDS-21U, 사용자 확인 2026-10-16 "시리얼 제어만 가능해")은 통신 방식 선택 없이 RS-232 안내만 보인다.
     if(spec.serialOnly)return `<div class="rt-ce-comm" data-ce-commbar="${id}"><p class="rt-pg-hint">이 제품은 RS-232(직렬) 제어만 지원합니다. LAN 제어는 없습니다. 통신 속도 ${esc(spec.serial?.baud||9600)}bps.</p></div>`;
     const note=spec.lan?.port?`TCP 포트 ${spec.lan.port}: ${spec.lan.source||'매뉴얼'}`:'이 제품의 LAN(TCP) 포트는 매뉴얼에 없어 알티컴 확인이 필요합니다. 아는 포트 번호를 직접 넣으세요.';
-    return `<div class="rt-ce-comm" data-ce-commbar="${id}"><label>통신 방식<select data-ce-comm="mode"><option value="lan"${c.mode==='lan'?' selected':''}>LAN (TCP/IP)</option><option value="serial"${c.mode==='serial'?' selected':''}>RS-232 (직렬)</option></select></label><span class="rt-ce-comm-lan"${c.mode==='lan'?'':' hidden'}><label>장비 IP 주소<input type="text" inputmode="decimal" data-ce-comm="ip" value="${esc(c.ip)}" placeholder="192.168.1.xxx" autocomplete="off" maxlength="15"></label><label>TCP 포트<input type="text" inputmode="numeric" data-ce-comm="port" value="${esc(c.port)}" placeholder="${esc(spec.lan?.port||'확인 필요')}" autocomplete="off" maxlength="5"></label></span><p class="rt-pg-hint">${esc(note)} ${spec.lan?.confirmed?'LAN으로 보내는 커맨드 문자열은 RS-232와 같습니다. 장비는 동시 접속이 1개이고 연결을 자동으로 끊지 않습니다(알티컴 회신).':'LAN으로 보내는 커맨드 문자열은 RS-232와 같다고 보고 만든 예시이며, 제품별 확인 내용은 알티컴에 문의하세요.'}${spec.lan?.ipChange==='device'?` IP 주소는 커맨드로 바꿀 수 없고 장비에서 직접 설정합니다.${spec.lan.dhcp?' DHCP를 지원합니다.':''} (${esc(spec.lan.ipSource||'확인')})`:''}</p></div>`;
+    return `<div class="rt-ce-comm" data-ce-commbar="${id}"><label>통신 방식<select data-ce-comm="mode"><option value="lan"${c.mode==='lan'?' selected':''}>LAN (TCP/IP)</option><option value="serial"${c.mode==='serial'?' selected':''}>RS-232 (직렬)</option></select></label><span class="rt-ce-comm-lan"${c.mode==='lan'?'':' hidden'}><label>장비 IP 주소<input type="text" inputmode="decimal" data-ce-comm="ip" value="${esc(c.ip)}" placeholder="${DEFAULT_IP}" autocomplete="off" maxlength="15"></label><label>TCP 포트<input type="text" inputmode="numeric" data-ce-comm="port" value="${esc(c.port)}" placeholder="${esc(spec.lan?.port||'확인 필요')}" autocomplete="off" maxlength="5"></label></span><p class="rt-pg-hint">${esc(note)} ${spec.lan?.confirmed?'LAN으로 보내는 커맨드 문자열은 RS-232와 같습니다. 장비는 동시 접속이 1개이고 연결을 자동으로 끊지 않습니다(알티컴 회신).':'LAN으로 보내는 커맨드 문자열은 RS-232와 같다고 보고 만든 예시이며, 제품별 확인 내용은 알티컴에 문의하세요.'}${spec.lan?.ipChange==='device'?` IP 주소는 커맨드로 바꿀 수 없고 장비에서 직접 설정합니다.${spec.lan.dhcp?' DHCP를 지원합니다.':''} (${esc(spec.lan.ipSource||'확인')})`:''}</p></div>`;
   }
   // AMX 코드 <pre>: 항목 목록을 속성에 담아 두면 통신 방식·IP·포트가 바뀔 때 화면을 다시 그리지 않고 그 자리에서 글만 바꾼다(입력 칸 포커스 유지).
   function amxPre(spec,items,extra=''){
