@@ -301,3 +301,24 @@ test('0.255: 화면 소스에 입력 선택 목록·직접 입력 전환·이름
   const css=fs.readFileSync(require('node:path').join(__dirname,'../src/styles.css'),'utf8');
   for(const t of ['select.rt-ls-input-sel','.rt-ls-mini'])assert.ok(css.includes(t),t);
 });
+
+// 0.256 VDM 시뮬레이터에서도 같은 계산을 쓴다(사용자 요청 2026-10-18 "2번도 진행해"): 프레임 종류(family)를 받는다.
+test('0.256: savedInputChannels는 VDM 구성에서도 입력 카드 채널 목록을 만든다(XDM 기본 동작은 그대로)',()=>{
+  const cat=globalThis.RtCatalog;
+  const vdm={state:{family:'VDM',model:'VDM-16X',placements:{'in-1':'HIS4-U','in-2':'HIS4-U','in-3':'HIS4-U','in-4':'HIS4-U','out-1':'QOS4S-U'},
+    portAssignments:{'in-1:1':{assignedDevice:'PC'},'in-2:1':{assignedDevice:'CAM1'}}}};
+  const v=L.savedInputChannels(vdm,cat,'VDM');
+  assert.equal(v.model,'VDM-16X');assert.equal(v.count,16);assert.equal(v.text,'CH 1–16');
+  assert.equal(L.inputChoiceLabel(v.byN.get(1)),'입력 1 · IN 1 · HIS4-U · PC');
+  assert.equal(L.inputChoiceLabel(v.byN.get(5)),'입력 5 · IN 2 · HIS4-U · CAM1');
+  assert.equal(v.list.length,16,'출력 카드는 목록에 넣지 않는다');
+  // 다른 프레임 종류의 구성은 읽지 않는다
+  assert.equal(L.savedInputChannels(vdm,cat),null,'기본(XDM)으로 VDM 구성을 읽으면 null');
+  assert.equal(L.savedInputChannels({state:{family:'XDM',model:'XDM-12',placements:{'in-1':'XDM-HI100'}}},cat,'VDM'),null);
+  // 입력 카드는 프레임 종류별 카탈로그에서 찾는다(VDM에 없는 XDM 카드는 무시)
+  assert.equal(L.savedInputChannels({state:{family:'VDM',model:'VDM-16X',placements:{'in-1':'XDM-HI100'}}},cat,'VDM').count,0);
+  // 경고 문구의 이름(창 대신 C 칸)을 바꿀 수 있다
+  const p=L.inputProblems([{n:2,input:50}],v,n=>`C${n} 칸`);
+  assert.match(p[0].text,/^C2 칸\(입력 50\): 구성기에 저장된 VDM-16X 구성에는 입력 50번이 없습니다\. 입력 카드는 CH 1–16입니다\./);
+  assert.match(L.inputProblems([{n:2,input:50}],v)[0].text,/^창 2\(입력 50\)/,'이름을 안 주면 예전처럼 창');
+});
