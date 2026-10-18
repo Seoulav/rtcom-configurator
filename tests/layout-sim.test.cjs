@@ -54,7 +54,7 @@ test('0.224: 월 밖으로 나가는 창·크기 0·겹침·미지원 해상도�
   const r=L.commandFor({cols:2,rows:1,timing:10,startPort:1,windows:[{input:1,x:3000,y:0,w:1920,h:1080},{input:2,x:0,y:0,w:0,h:100},{input:3,x:0,y:0,w:1920,h:1080},{input:4,x:960,y:0,w:1920,h:1080}]});
   assert.ok(r.warnings.some(w=>/월 바깥/.test(w)));
   assert.ok(r.warnings.some(w=>/너비·높이가 0/.test(w)));
-  assert.ok(r.warnings.some(w=>/창 3과 창 4이 겹칩니다/.test(w)));
+  assert.ok(r.warnings.some(w=>/겹치는 창: 창 3, 창 4\./.test(w)));
   assert.ok(!r.command.includes('I002'),'크기 0인 창은 커맨드에 넣지 않는다');
   assert.ok(L.commandFor({cols:1,rows:1,timing:17,windows:[]}).warnings.some(w=>/Not support/.test(w)));
 });
@@ -211,4 +211,64 @@ test('0.237: 창 정렬은 월 전체·월 가운데(분할점 걸침)·디스�
   // 가로 1대 월에서는 가운데가 디스플레이 안쪽이라 분할점에 걸치지 않는다.
   const one=L.alignWindow(L.normalize({cols:1,rows:1,windows:[{input:1,x:0,y:0,w:100,h:100}]}),0,'center');
   assert.deepEqual([one.windows[0].x,one.windows[0].y,one.windows[0].w,one.windows[0].h],[0,0,3840,2160]);
+});
+
+// 0.253 입력 번호 확인·연결 한 줄·꺼진 창(사용자 요청 2026-10-18 "입력 칸이 입력포트인거야?", "제안대로 진행해줘")
+test('0.253: 구성기 저장 구성에서 입력 카드가 덮는 채널(CH)을 구성기 chRange와 같은 규칙으로 읽는다',()=>{
+  const catalog=require('../src/catalog.js')||globalThis.RtCatalog;
+  const cat=globalThis.RtCatalog;assert.ok(cat&&cat.XDM,'catalog.js가 RtCatalog를 전역에 둠');
+  void catalog;
+  const doc=(placements,family='XDM')=>({state:{family,model:'XDM-12',placements}});
+  const a=L.savedInputChannels(doc({'in-1':'XDM-HI100','in-2':'XDM-HIS100','out-1':'XDM-HOS100'}),cat);
+  assert.equal(a.text,'CH 1–8','입력 슬롯 1·2에 4채널 카드 → CH 1–8(이어지는 구간은 합침)');
+  assert.equal(a.count,8);assert.ok(a.set.has(5)&&a.set.has(8)&&!a.set.has(9));
+  // 빈 슬롯 사이는 구간이 나뉜다: 슬롯 3 = (3−1)×4+1 = CH 9–12
+  const b=L.savedInputChannels(doc({'in-1':'XDM-HI100','in-3':'XDM-HI100'}),cat);
+  assert.equal(b.text,'CH 1–4, CH 9–12');assert.ok(b.set.has(10)&&!b.set.has(5));
+  assert.equal(L.savedInputChannels(doc({}),cat).text,'');
+  assert.equal(L.savedInputChannels(doc({'in-1':'XDM-HI100'},'SPX'),cat),null,'XDM이 아니면 확인하지 않음');
+  assert.equal(L.savedInputChannels(null,cat),null);assert.equal(L.savedInputChannels(doc({}),null),null);
+  // src/app.js의 chRange와 같은 공식이라는 점을 소스에서도 확인한다
+  const app=fs.readFileSync(require('node:path').join(__dirname,'../src/app.js'),'utf8');
+  assert.match(app,/first=\(n-1\)\*Math\.max\(\.\.\.families\[state\.family\]\[slot\.dir\]\.map\(item=>item\[2\]\)\)\+1/);
+});
+
+test('0.253: 구성에 없는 입력 번호만 경고하고, 저장된 구성이 없으면 경고하지 않는다',()=>{
+  const cat=globalThis.RtCatalog;
+  const saved=L.savedInputChannels({state:{family:'XDM',model:'XDM-12',placements:{'in-1':'XDM-HI100','in-2':'XDM-HI100'}}},cat);
+  const p=L.inputProblems([{n:3,input:2},{n:4,input:10}],saved);
+  assert.equal(p.length,1);assert.equal(p[0].n,4);assert.equal(p[0].input,10);
+  assert.match(p[0].text,/창 4\(입력 10\): 구성기에 저장된 XDM-12 구성에는 입력 10번이 없습니다\. 입력 카드는 CH 1–8입니다\./);
+  assert.deepEqual(L.inputProblems([{n:1,input:99}],null),[]);
+  const none=L.savedInputChannels({state:{family:'XDM',model:'XDM-12',placements:{}}},cat);
+  assert.match(L.inputProblems([{n:1,input:1}],none)[0].text,/장착한 입력 카드가 없습니다/);
+});
+
+test('0.253: HOS100은 너비·높이가 0이거나 그 레이아웃이 쓰지 않는 창을 커맨드와 연결 줄에서 뺀다',()=>{
+  // 사용자 캡처(2026-10-18): 창 1·2는 W0 H0(꺼짐), 창 3은 입력 2, 창 4는 입력 10
+  const st=L.normalizeHos({layout:'L00',startPort:1,priority:'4321',windows:[{input:1,x:0,y:0,w:0,h:0},{input:2,x:1920,y:0,w:0,h:0},{input:2,x:1812,y:186,w:1368,h:1125},{input:10,x:82,y:216,w:1562,h:1188}]});
+  assert.deepEqual(L.hosUsed(st).map(w=>[w.n,w.input,w.port]),[[3,2,3],[4,10,4]]);
+  assert.equal(L.hosCommandFor(st).switching,'*255CI002O003,I010O004!','꺼진 창의 입력은 연결 커맨드에 들어가지 않는다');
+  const links=L.hosLinks(st);
+  assert.deepEqual(links.map(l=>[l.n,l.off,l.ports.join()]),[[1,true,''],[2,true,''],[3,false,'3'],[4,false,'4']]);
+  // 고정 레이아웃 L10(1·2번 PBP)은 창 1·2만 쓴다
+  const pbp=L.normalizeHos({layout:'L10',startPort:5,windows:[{input:7},{input:8},{input:9},{input:10}]});
+  assert.deepEqual(L.hosUsed(pbp).map(w=>[w.n,w.input,w.port]),[[1,7,5],[2,8,6]]);
+  assert.deepEqual(L.hosLinks(pbp).map(l=>l.off),[false,false,true,true]);
+  // 창 n = 카드 포트 n: 시작 포트 5이면 창 4는 포트 8
+  assert.equal(L.hosLinks(L.normalizeHos({layout:'L05',startPort:5}))[3].ports[0],8);
+});
+
+test('0.253: WOS100 연결 줄은 창이 받은 출력 포트 전부를 적는다',()=>{
+  const st=L.normalize({mapping:'card',cols:2,rows:2,timing:14,startPort:1,priority:'4321',clear:'list',windows:[{input:3,label:'PC',x:0,y:0,w:7680,h:4320}]});
+  const links=L.wosLinks(st);
+  assert.equal(links.length,1);assert.equal(links[0].input,3);assert.equal(links[0].label,'PC');
+  assert.deepEqual(links[0].ports,[1,5,9,13],'월 전체를 덮는 창은 카드 4장을 쓰고, 카드 1장 = 디스플레이 1대라 카드마다 첫 포트를 받는다(0.240)');
+});
+
+test('0.253: 화면 소스에 "꺼짐" 표시·입력 설명·연결 한눈에 보기·입력 확인이 연결되어 있다',()=>{
+  const src=fs.readFileSync(require('node:path').join(__dirname,'../src/layout-sim.js'),'utf8');
+  for(const t of ['rt-ls-offtag','is-off','is-missing','rt-ls-links','연결 한눈에 보기','savedHintHtml(saved)','linksHtml(hosLinks(hos))','linksHtml(wosLinks(state))','매트릭스 입력 포트 번호'])assert.ok(src.includes(t),t);
+  const css=fs.readFileSync(require('node:path').join(__dirname,'../src/styles.css'),'utf8');
+  for(const t of ['.rt-ls-offtag','.rt-ls-links','input.is-missing'])assert.ok(css.includes(t),t);
 });

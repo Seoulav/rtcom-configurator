@@ -876,6 +876,32 @@ const patchAmxLock=async()=>{
       await fresh.close();
       check('XDM 07 시뮬레이터: 처음 들어오면 HOS100이 선택되고 창 4개가 겹쳐 레이어 1~4가 보이며(창 4가 맨 위) 그 OQ 커맨드가 나오고, WOS100을 고르면 새로고침 뒤에도 유지됨',def.on==='HOS100'&&def.wins===4&&def.layers==='0:레이어 4,1:레이어 3,2:레이어 2,3:레이어 1'&&def.cmd.includes('*255OQO001M14L00P4321O001X0000Y0000W3840H2160O002X0480Y0270W1920H1080O003X1440Y0810W1920H1080O004X2880Y1620W0960H0540!')&&kept==='WOS100',JSON.stringify({def,kept}));
     }
+    // 0.253 XDM 07 시뮬레이터: 입력 칸 설명·연결 한 줄·꺼진 창 표시·구성기 입력 확인(사용자 요청 2026-10-18).
+    {
+      const ctx=await browser.newContext({viewport:{width:1280,height:900}});
+      const sp=await ctx.newPage();
+      await sp.goto(`${home}#products/xdm`,{waitUntil:'networkidle'});
+      await sp.waitForSelector('#rt-layout-sim [data-ls-card]');
+      const flat=t=>(t||'').replace(/\s+/g,' ').trim();
+      const base=await sp.evaluate(()=>({tip:document.querySelector('#rt-layout-sim .rt-ls-table th[title]')?.getAttribute('title')||'',hint:/매트릭스의 입력 포트 번호/.test(document.querySelector('#rt-layout-sim .rt-ls-inputhint')?.textContent||''),links:[...document.querySelectorAll('#rt-layout-sim .rt-ls-links li')].map(l=>l.textContent.replace(/\s+/g,' ').trim()),missing:document.querySelectorAll('#rt-layout-sim .is-missing').length}));
+      await sp.click('#rt-layout-sim [data-ls-hos-off="0"]');
+      const off=await sp.evaluate(()=>{const r=document.querySelector('#rt-layout-sim tr[data-ls-row="0"]');return {cls:r.className,tag:!!r.querySelector('.rt-ls-offtag'),top:!!r.querySelector('[data-ls-hos-top]'),li:(document.querySelector('#rt-layout-sim .rt-ls-links li.is-off')?.textContent||'').replace(/\s+/g,' ').trim(),cmd:(document.querySelector('#rt-layout-sim [data-ls-cmd]')?.textContent||'').replace(/\s+/g,'')}});
+      await sp.evaluate(()=>localStorage.setItem('rtcom.configuration.v1',JSON.stringify({schemaVersion:3,state:{family:'XDM',model:'XDM-12',placements:{'in-1':'XDM-HI100','in-2':'XDM-HI100'}}})));
+      await sp.fill('#rt-layout-sim [data-ls-hos-win="input"][data-ls-win-index="3"]','10');
+      await sp.press('#rt-layout-sim [data-ls-hos-win="input"][data-ls-win-index="3"]','Tab');
+      await sp.waitForSelector('#rt-layout-sim .is-missing');
+      const miss=await sp.evaluate(()=>({n:document.querySelectorAll('#rt-layout-sim .is-missing').length,warn:(document.querySelector('#rt-layout-sim .rt-ls-warn')?.textContent||'').replace(/\s+/g,' '),hint:(document.querySelector('#rt-layout-sim .rt-ls-inputhint')?.textContent||'').replace(/\s+/g,' ')}));
+      await sp.click('#rt-layout-sim [data-ls-card="WOS100"]');
+      const wos=await sp.evaluate(()=>({tip:!!document.querySelector('#rt-layout-sim .rt-ls-table th[title]'),links:document.querySelectorAll('#rt-layout-sim .rt-ls-links li').length,hint:!!document.querySelector('#rt-layout-sim .rt-ls-inputhint')}));
+      const over=await sp.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
+      await ctx.close();
+      check('XDM 07 시뮬레이터: 입력 칸 설명과 연결 한 줄(창 ← 입력 → 포트)이 보이고, 꺼진 창은 "꺼짐" 표시·맨 위로 버튼 없음·연결 커맨드에서 빠지며, 구성기 구성에 없는 입력 번호는 경고하고, WOS100 화면에도 같은 안내가 있다',
+        /매트릭스 입력 포트 번호/.test(base.tip)&&base.hint&&base.links.length===4&&base.links[0]==='창 1 ← 입력 1 → 포트 O001'&&base.missing===0&&
+        /is-off/.test(off.cls)&&off.tag&&!off.top&&/꺼짐/.test(off.li)&&!/I001O001/.test(off.cmd)&&/I002O002/.test(off.cmd)&&
+        miss.n===1&&/입력 10번이 없습니다/.test(miss.warn)&&/CH 1–8/.test(miss.warn)&&/XDM-12/.test(miss.hint)&&
+        wos.tip&&wos.links>=1&&wos.hint&&!over,
+        JSON.stringify({base,off,miss,wos,over}));
+    }
     // 0.239 XDM "내 AMX 구성": 07 시뮬레이터 커맨드와 08 설정 명령을 담아 한 개의 AMX 코드로 만들고, 순서 바꾸기·저장·파일 저장을 확인한다.
     {
       await page.goto(`${home}#products/xdm`,{waitUntil:'networkidle'});
