@@ -5,7 +5,7 @@
      - 입력 선택: *000CI02O02!+0x0D (입력 2번 → 출력 2번)
      - 볼륨: *000Vxx!+0x0D, 50이 0dB, 1 오르면 +0.5dB·1 내려가면 -0.5dB (예: *000V54! = 0dB에서 2dB)
    HDS-21U 매뉴얼 9쪽 표에는 0dB(50) 옆에 Mute(0) 칸이 있어 volume.muteCode가 있는 제품만 뮤트 커맨드(*000V00!)를 보여 준다.
-   매뉴얼에 없는 값(데이터 비트·패리티·스톱 비트, 뮤트 명령(muteCode가 없는 제품), 볼륨 허용 범위)은 만들어 넣지 않는다.
+   매뉴얼에 없는 값(뮤트 명령(muteCode가 없는 제품), 볼륨 허용 범위, 확인되지 않은 제품의 데이터 비트·패리티·스톱 비트)은 만들어 넣지 않는다. 직렬 8N1은 알티컴 제품 공통임을 사용자가 확인했다(2026-10-18, serial.confirmed).
    AMX NetLinx 코드는 위 문자열을 SEND_STRING으로 보내는 일반 문법 예시이며, 장치 번호(5001:1:0)와 버튼 번호는 현장에 맞게 바꿔야 한다.
    순수 함수(switchCommand·volumeCommand·volumeCode·toHex·amxCode)는 Node 테스트(tests/control-example.test.cjs)에서도 쓰므로 DOM을 건드리지 않는다.
    mountAll(body)는 제품정보 상세 화면 안의 [data-control-example] 자리에만 그린다(src/products.js, 데이터는 제품 JSON의 controlExample). */
@@ -73,7 +73,7 @@
   //   LAN: IP_CLIENT_OPEN(dev.PORT, IP, 포트, IP_TCP)로 장비에 TCP 연결한 뒤 같은 커맨드 문자열을 SEND_STRING으로 보낸다(NetLinx 표준 문법).
   //   포트는 매뉴얼에 적힌 값(spec.lan.port, SPX 매뉴얼 46쪽 Telnet 23)만 기본으로 쓰고, 없으면 0과 "확인 필요" 주석을 적는다. 값을 만들어 넣지 않는다.
   //   IP는 형식이 맞는 값만 쓰고(코드 주입 방지), 비어 있으면 예시 주소(192.168.1.100)를 적고 현장에서 바꾸도록 주석을 단다. 기본 대역은 192.168.1.xxx(사용자 확인 2026-10-16, SPX 매뉴얼 예시 192.168.1.72도 같은 대역).
-  // 직렬은 데이터 비트·패리티가 매뉴얼에 없으면 일반값(8N1)으로 적고 현장 확인을 안내한다.
+  // 직렬은 데이터 비트·패리티가 매뉴얼에 없으면 일반값(8N1)으로 적고 현장 확인을 안내한다. 사용자가 확인한 제품(serial.confirmed가 있는 제품, 0.250에서 XDM·HDS 포함)은 그 근거 문구를 보여 주고 일반값 안내를 하지 않는다.
   const IPV4=/^(25[0-5]|2[0-4]\d|1?\d?\d)(\.(25[0-5]|2[0-4]\d|1?\d?\d)){3}$/;
   const portOf=(spec,opts)=>{const n=Number(String(opts?.port??'').trim());if(Number.isInteger(n)&&n>=1&&n<=65535)return n;const d=Number(spec.lan?.port);return Number.isInteger(d)&&d>=1&&d<=65535?d:0};
   function amxCode(spec,commands,opts={}){
@@ -535,8 +535,8 @@
         <p class="rt-ce-hex">HEX <code>${esc(toHex(mute.text))}</code> · 매뉴얼 표의 Mute 칸 값(${mute.code})을 볼륨 자리에 넣은 값입니다. 뮤트 해제 방법은 매뉴얼에 없어 장비에서 확인이 필요합니다.</p></div>`:''}
       <div class="rt-ce-block">${gated('AMX NetLinx 예제',()=>`<div class="rt-ce-head"><h3>AMX NetLinx 예제 (${mute?'경로 · 볼륨 · 뮤트':'선택한 경로 + 볼륨'})</h3><button type="button" class="rt-pg-btn" data-ce-copy="amx">복사</button>${relockBtn}<span class="rt-ce-copied" data-ce-note="amx" aria-live="polite"></span></div>
         ${commBarHtml(spec)}${amxPre(spec,[{label:`IN ${sel.input} → OUT ${sel.output}`,text:sel.text},{label:dbText(vol.db),text:vol.text},...(mute?[{label:'뮤트',text:mute.text}]:[])],'data-ce-text="amx"')}`)}</div>
-      <p class="rt-pg-hint">※ 근거: ${esc(spec.source)}. 통신 속도 ${spec.serial?.baud||9600}bps, 문장 끝에 Enter(0x0D)를 붙입니다. 제품 ID는 매뉴얼 예시의 ${esc(spec.productId)}입니다. 표의 모든 칸은 매뉴얼 예시(<code>${esc(spec.manualExample||'*000CI02O02!')}</code>)에서 번호만 바꾼 값입니다.</p>
-      <p class="rt-pg-hint">※ 매뉴얼에 적혀 있지 않아 넣지 않은 것: 데이터 비트·패리티·스톱 비트(코드의 8N1은 일반값), ${mute?'':'뮤트 명령, '}볼륨 허용 범위(코드 ${pad2(v.min)}~${pad2(v.max)}는 두 자리 형식에서 계산한 값). AMX 장치 번호와 버튼 번호는 현장에 맞게 바꾸세요.</p>`;
+      <p class="rt-pg-hint">※ 근거: ${esc(spec.source)}. 통신 속도 ${spec.serial?.baud||9600}bps${spec.serial?.confirmed?`(${esc(spec.serial.confirmed)})`:''}, 문장 끝에 Enter(0x0D)를 붙입니다. 제품 ID는 매뉴얼 예시의 ${esc(spec.productId)}입니다. 표의 모든 칸은 매뉴얼 예시(<code>${esc(spec.manualExample||'*000CI02O02!')}</code>)에서 번호만 바꾼 값입니다.</p>
+      <p class="rt-pg-hint">※ 매뉴얼에 적혀 있지 않아 넣지 않은 것: ${spec.serial?.confirmed?'':'데이터 비트·패리티·스톱 비트(코드의 8N1은 일반값), '}${mute?'':'뮤트 명령, '}볼륨 허용 범위(코드 ${pad2(v.min)}~${pad2(v.max)}는 두 자리 형식에서 계산한 값). AMX 장치 번호와 버튼 번호는 현장에 맞게 바꾸세요.</p>`;
     }
     root.addEventListener('change',event=>{
       const field=event.target.closest('[data-ce-field]');if(!field)return;

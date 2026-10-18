@@ -102,6 +102,26 @@ test('QMS-44UX는 제품 ID 01, 한 입력 전체 출력은 A 명령, 해제·�
   assert.equal(ce.presetCommand(q44,'call',1),null);
 });
 
+test('알티컴 제품은 모두 직렬 8N1이고(사용자 확인 2026-10-18) XDM·HDS도 근거 문구와 함께 AMX 코드에 들어간다(0.250)',()=>{
+  const specs=['xdm','spx','vdm','qms-44ux','qms-88ux','hds-42mu','hds-21u'].map(id=>[id,JSON.parse(fs.readFileSync(`data/products/${id}.json`,'utf8')).controlExample]);
+  for(const [id,spec] of specs){
+    assert.equal(spec.serial.dataBits,8,`${id} 데이터 비트`);
+    assert.equal(spec.serial.parity,'N',`${id} 패리티`);
+    assert.equal(spec.serial.stopBits,1,`${id} 스톱 비트`);
+    assert.ok(spec.serial.confirmed,`${id} 근거 문구`);
+    assert.doesNotMatch(spec.serial.confirmed,/일반값|가이드에 없/,`${id}는 일반값 표기가 남지 않아야 한다`);
+    assert.match(ce.amxCode(spec,[{label:'x',text:'*0!'}]),/SET BAUD \d+,N,8,1 485 DISABLE/,`${id} AMX 통신 설정`);
+  }
+  const xdm=specs.find(x=>x[0]==='xdm')[1];
+  assert.match(xdm.serial.confirmed,/데이터 8비트는 사용자 확인/);
+  assert.match(xdm.serial.confirmed,/67쪽/,'패리티·스톱 근거(가이드 67쪽)는 유지');
+  for(const id of ['hds-42mu','hds-21u']){
+    const spec=specs.find(x=>x[0]===id)[1];
+    assert.equal(spec.serial.baud,9600,`${id} 통신 속도는 매뉴얼 값 그대로`);
+    assert.match(ce.amxCode(spec,[{label:'x',text:'*0!'}]),/9600bps 8N1은 알티컴 제품 공통/);
+  }
+});
+
 test('QMS 두 제품은 115200bps 8N1과 매뉴얼 쪽수 근거를 갖고 AMX 코드에 통신 설정이 들어간다',()=>{
   for(const q of [q88,q44]){
     assert.equal(q.serial.baud,115200);
