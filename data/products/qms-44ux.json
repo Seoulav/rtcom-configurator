@@ -457,7 +457,10 @@
       "connections": 1,
       "autoDisconnect": false,
       "confirmed": true,
-      "source": "알티컴 회신(사용자 전달 2026-10-16)"
+      "source": "알티컴 회신(사용자 전달 2026-10-16)",
+      "ipChange": "device",
+      "dhcp": true,
+      "ipSource": "사용자 확인 2026-10-18"
     },
     "amxDevice": "dvQMS44UX",
     "manualExample": "*01CI04O01, I02O02!",

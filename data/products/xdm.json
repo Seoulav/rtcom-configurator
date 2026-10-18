@@ -1013,7 +1013,10 @@
       "connections": 1,
       "autoDisconnect": false,
       "confirmed": true,
-      "source": "알티컴 회신(사용자 전달 2026-10-16)"
+      "source": "알티컴 회신(사용자 전달 2026-10-16)",
+      "ipChange": "device",
+      "dhcp": true,
+      "ipSource": "사용자 확인 2026-10-18"
     },
     "amxDevice": "dvXDM",
     "lead": "AMX 같은 통합 제어 시스템이 RS-232로 보내는 문자열 예시입니다. 연결·해제·프리셋, 입력·출력 설정, OSD 자막 같은 명령을 아래 \"설정 명령\"에서 값을 골라 만듭니다. 월 오버레이(OW)와 멀티뷰(OQ) 같은 화면 연출 명령은 바로 위 \"화면 연출 시뮬레이터\"에서 만듭니다.",
