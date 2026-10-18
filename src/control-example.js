@@ -81,7 +81,7 @@
   function amxCode(spec,commands,opts={}){
     const dev=spec.amxDevice||'dvSwitcher',baud=spec.serial?.baud||9600,lan=opts.mode!=='serial'&&!spec.serialOnly;
     const lines=lan?(()=>{
-      const ip=IPV4.test(String(opts.ip||'').trim())?String(opts.ip).trim():DEFAULT_IP,ipGiven=ip!==DEFAULT_IP||IPV4.test(String(opts.ip||'').trim());
+      const ip=IPV4.test(String(opts.ip||'').trim())?String(opts.ip).trim():DEFAULT_IP,ipGiven=ip!==DEFAULT_IP;
       const port=portOf(spec,opts),fromSpec=!String(opts.port??'').trim()&&port>0;
       return [
         `DEFINE_DEVICE`,
@@ -89,7 +89,7 @@
         `dvTP = 10001:1:0   // 터치 패널 장치 번호는 현장에 맞게 변경`,
         ``,
         `DEFINE_CONSTANT`,
-        `CHAR cDeviceIp[] = '${ip}'   // 장비 IP 주소${ipGiven?'':'(예시, 기본 대역은 192.168.1.xxx — 현장 IP로 변경)'}`,
+        `CHAR cDeviceIp[] = '${ip}'   // 장비 IP 주소${ipGiven?'':'(알티컴 장비 기본 IP, 현장에서 IP를 바꿨다면 변경)'}`,
         `LONG nDevicePort = ${port}   // TCP 포트${port?(fromSpec?` — ${spec.lan?.source||'매뉴얼 값'}`:' (직접 입력한 값)'):' 번호를 입력하세요(이 제품은 매뉴얼에 없어 알티컴 확인 필요)'}`,
         ``,
         `DEFINE_START`,
@@ -171,7 +171,7 @@
     const id=spec.id||'x';let v=commMemory[id];
     try{const raw=localStorage.getItem(commKey(id));if(raw)v=JSON.parse(raw)}catch{}
     v=v&&typeof v==='object'?v:{};
-    return {mode:spec.serialOnly||v.mode==='serial'?'serial':'lan',ip:String(v.ip||'').slice(0,40),port:String(v.port||'').slice(0,6)};
+    return {mode:spec.serialOnly||v.mode==='serial'?'serial':'lan',ip:String(v.ip||DEFAULT_IP).slice(0,40),port:String(v.port||'').slice(0,6)};
   }
   function setComm(spec,patch){
     const id=spec.id||'x',next={...commOf(spec),...patch};
