@@ -1,5 +1,7 @@
 ## Unreleased
 
+- **0.251.0 배포 기록**: `docs/qa/DEPLOYMENT_0.251_2026-10-18.md`(PR #396 → main 병합 `4f79b48`, Pages 배포 run 39092284463 success, 공개 `CATALOG BASED · 0.251`·`control-example.js`·`xdm.json`·`vdm.json`·`spx.json`·`qms-44ux.json`·`qms-88ux.json`·`ft101-u-fr101-u.json`·`index.html` 해시 일치·`CLAUDE.md` 404)
+- **알티컴 질의서 정리**(문서만): 사용자 결정(2026-10-18 "A-1 질문 빼고")으로 20번(A-1, 공장 기본 IP·게이트웨이)을 질문에서 빼고, 이미 보낸 7건과 보내지 않은 4건을 합친 통합 메일 최종본(11건)을 `docs/handoff/RTCOM_QUESTIONS_2026-10-16.md`에 저장하고 회신 대기 현황을 12건에서 11건으로 고치고, 사용자가 이 통합 메일을 2026-10-18에 보냈다는 발송 기록(회신 대기)을 남김
 - **0.250.0 배포 기록**: `docs/qa/DEPLOYMENT_0.250_2026-10-18.md`(PR #394 → main 병합 `374d479`, Pages 배포 run 39091171333 success, 공개 `CATALOG BASED · 0.250`·`xdm.json`·`hds-42mu.json`·`hds-21u.json`·`control-example.js`·`index.html` 해시 일치·`CLAUDE.md` 404, 첫 검사 알림이 이전 커밋 결과였던 경위)
 - **알티컴 질의서 정리**(문서만): `docs/handoff/RTCOM_QUESTIONS_2026-10-16.md`에 아직 보내지 않은 29~32번의 "3차 메일" 문안과 회신 대응표, 발송 10건·미발송 4건을 한 표로 모은 "전체 회신 대기 현황"을 더하고 `docs/handoff/OPEN_ITEMS.md`에 3차 메일 발송 대기 항목을 추가했습니다(사용자 요청 2026-10-17 "알티컴 보낼 질문지 다시 보여줘", 2026-10-18 "다음 단계 제안 진행해줘").
 - **0.249.0 배포 기록**: `docs/qa/DEPLOYMENT_0.249_2026-10-17.md`(PR #391 → main 병합 `c23918b`, Pages 배포 run 39037003794 success, 공개 `CATALOG BASED · 0.249`·`products.js`·`qms-88ux.json`·`index.html`·`control-example.js` 해시 일치·`CLAUDE.md` 404)
