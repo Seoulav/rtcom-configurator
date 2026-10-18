@@ -390,17 +390,23 @@
     if(!st||st.family!=='XDM'||!catalog||!catalog.XDM)return null;
     const list=catalog.XDM.input||[];
     const per=Math.max(1,...list.map(item=>Number(item[2])||1));
-    const set=new Set(),spans=[];
+    const set=new Set(),spans=[],entries=[];
+    const assigned=st.portAssignments&&typeof st.portAssignments==='object'?st.portAssignments:{};
     for(const [slot,id] of Object.entries(st.placements||{})){
       const m=/^in-(\d+)$/.exec(slot),c=m&&list.find(item=>item[0]===id);
       if(!c)continue;
       const first=(Number(m[1])-1)*per+1,n=Math.max(1,Number(c[2])||1);
-      spans.push([first,first+n-1]);for(let k=0;k<n;k++)set.add(first+k);
+      spans.push([first,first+n-1]);
+      // 0.255 입력 선택 목록: 채널마다 카드·슬롯과, 구성기 03 "신호 입력"에 적은 신호명(portAssignments의 assignedDevice)을 함께 둔다.
+      for(let k=0;k<n;k++){set.add(first+k);const a=assigned[`${slot}:${k+1}`];entries.push({n:first+k,slot:Number(m[1]),port:k+1,card:id,signal:String(c[3]||''),name:String(a&&typeof a.assignedDevice==='string'?a.assignedDevice:'').trim().slice(0,24)})}
     }
+    entries.sort((a,b)=>a.n-b.n);
     spans.sort((a,b)=>a[0]-b[0]);
     const merged=[];for(const sp of spans){const last=merged[merged.length-1];if(last&&sp[0]<=last[1]+1)last[1]=Math.max(last[1],sp[1]);else merged.push([...sp])}
-    return {model:String(st.model||'XDM'),set,count:set.size,text:merged.map(([a,b])=>a===b?`CH ${a}`:`CH ${a}–${b}`).join(', ')};
+    return {model:String(st.model||'XDM'),set,count:set.size,list:entries,byN:new Map(entries.map(e=>[e.n,e])),text:merged.map(([a,b])=>a===b?`CH ${a}`:`CH ${a}–${b}`).join(', ')};
   }
+  // 0.255 입력 선택 목록의 한 줄: "입력 5 · IN 2 · XDM-HI100 · PC"(신호명은 구성기 03에서 적었을 때만).
+  const inputChoiceLabel=e=>`입력 ${e.n} · IN ${e.slot} · ${e.card}${e.name?` · ${e.name}`:''}`;
   // items: 커맨드에 들어가는(켜진) 창 [{n,input}]. 구성에 없는 입력 번호만 골라 경고 문구를 만든다.
   function inputProblems(items,saved){
     if(!saved)return [];
@@ -460,10 +466,21 @@
     };
     const tokens=parts=>parts.map(p=>`<span class="rt-ls-tok rt-ls-tok-${p.kind}"${p.kind==='window'?` style="--rt-ls-color:${colorOf(p.window)}"`:''} title="${esc(p.title)}">${esc(p.text)}</span>`).join('');
     // ---- HOS100 화면 ----
+    // 0.255 입력 선택 목록(사용자 요청 2026-10-18 "1~2번 진행해줘"): 구성기에 저장된 XDM 입력 카드가 있으면 입력 칸을 채널 목록에서 고르게 한다.
+    // "직접 입력…"을 고른 행(manual*)은 숫자 칸으로 바꿔 구성에 없는 번호도 시험할 수 있게 하고, "목록" 버튼으로 되돌린다. 저장된 구성이 없으면 처음부터 숫자 칸이다.
+    const manualHos=new Set(),manualWos=new Set();
+    const inputControl=({attr,i,value,saved,manual,bad,live})=>{
+      const aria=`창 ${i+1} 입력 번호`,listed=!!(saved&&saved.list&&saved.list.length);
+      if(listed&&!manual){
+        const missing=!saved.byN.has(value);
+        return `<select data-ls-input-pick ${attr} data-ls-win-index="${i}" class="rt-ls-input-sel${bad?' is-missing':''}" aria-label="${aria}"${bad?' title="구성기에 저장된 구성에 없는 입력 번호입니다"':''}>${missing?`<option value="${value}" selected>입력 ${value} · 구성기에 없음</option>`:''}${saved.list.map(e=>`<option value="${e.n}"${e.n===value?' selected':''}>${esc(inputChoiceLabel(e))}</option>`).join('')}<option value="__manual__">직접 입력…</option></select>`;
+      }
+      return `<input type="number" min="1" max="999" ${attr} data-ls-win-index="${i}" value="${value}" aria-label="${aria}"${bad?' class="is-missing" title="구성기에 저장된 구성에 없는 입력 번호입니다"':live===false?' title="꺼진 창이라 커맨드에 들어가지 않습니다"':''}>${listed?` <button type="button" class="rt-ls-mini" data-ls-input-list="${i}" title="구성기 입력 목록에서 고르기">목록</button>`:''}`;
+    };
     // 0.254 입력 번호 안내·연결 한 줄·구성기 입력 확인(사용자 요청 2026-10-18). 저장된 구성은 그릴 때마다 읽는다(구성기에서 바꾼 직후에도 맞게).
     const readSaved=()=>{try{const raw=localStorage.getItem('rtcom.configuration.v1');return savedInputChannels(raw?JSON.parse(raw):null,globalThis.RtCatalog)}catch{return null}};
     const INPUT_TIP='매트릭스 입력 포트 번호입니다. 구성기 03 카드 슬롯의 CH 번호와 같고, 커맨드의 I005는 입력 5번입니다.';
-    const savedHintHtml=saved=>`<p class="rt-pg-hint rt-ls-inputhint">표의 <b>입력</b>은 매트릭스의 입력 포트 번호입니다(커맨드의 <code>I005</code>는 입력 5번).${saved?` 구성기에 저장된 <b>${esc(saved.model)}</b> 구성 기준으로 ${saved.text?`입력 카드는 <b>${esc(saved.text)}</b>입니다.`:'장착한 입력 카드가 아직 없습니다.'}`:' 구성기 03 카드 슬롯에서 XDM 프레임과 입력 카드를 정하면 입력 번호가 그 범위 안에 있는지 확인해 줍니다.'}</p>`;
+    const savedHintHtml=saved=>`<p class="rt-pg-hint rt-ls-inputhint">표의 <b>입력</b>은 매트릭스의 입력 포트 번호입니다(커맨드의 <code>I005</code>는 입력 5번).${saved?` 구성기에 저장된 <b>${esc(saved.model)}</b> 구성 기준으로 ${saved.text?`입력 카드는 <b>${esc(saved.text)}</b>입니다.${saved.list&&saved.list.length?' 입력 칸에서 목록으로 고르고, 목록에 없는 번호는 "직접 입력…"을 고르세요. 구성기 03에서 적은 신호명이 있으면 이름 칸이 비어 있을 때 자동으로 채워집니다.':''}`:'장착한 입력 카드가 아직 없습니다.'}`:' 구성기 03 카드 슬롯에서 XDM 프레임과 입력 카드를 정하면 입력 번호가 그 범위 안에 있는지 확인해 줍니다.'}</p>`;
     const linksHtml=lines=>`<div class="rt-ls-links" role="group" aria-label="창별 연결"><h4>연결 한눈에 보기</h4><ul>${lines.map(l=>`<li${l.off?' class="is-off"':''}><i class="rt-ls-dot" style="background:${colorOf(l.n-1)}"></i>${l.off?`<b>창 ${l.n}</b> 꺼짐 · 커맨드에 들어가지 않습니다`:`<b>창 ${l.n}</b> ← 입력 <b>${l.input}</b>${l.label?` (${esc(l.label)})`:''} → ${l.ports.length?`포트 <b>${l.ports.map(x=>`O${pad3(x)}`).join(' ')}</b>`:'받은 포트 없음'}`}</li>`).join('')}</ul></div>`;
     const renderHos=()=>{
       const r=hosCommandFor(hos),t=r.timing,L=r.layout;
@@ -490,7 +507,7 @@
       </div></div>
       <div class="rt-ls-table-wrap"><table class="rt-ls-table"><thead><tr><th>창</th><th>포트</th><th title="${INPUT_TIP}">입력</th><th>이름</th><th>X</th><th>Y</th><th>너비</th><th>높이</th><th>포트 상태</th>${L.code==='L00'?'<th>레이어(1 = 맨 위)</th>':''}${L.code==='L00'||L.code==='L09'?'<th></th>':''}</tr></thead><tbody>
         ${hos.windows.map((w,i)=>{const on=editable.includes(i)&&!(L.code==='L09'&&i===0);const shown=r.windows.find(x=>x.n===i+1);const topIdx=hos.priority==='4321'?3:0;const rank=hos.priority==='4321'?4-i:i+1;const live=used.some(x=>x.n===i+1),cls=[i===selected?'is-selected':'',live?'':'is-off'].filter(Boolean).join(' ');return `<tr data-ls-row="${i}"${cls?` class="${cls}"`:''}><td><i class="rt-ls-dot" style="background:${colorOf(i)}"></i>${i+1}</td><td class="rt-ls-ports">O${pad3(hos.startPort+i)}</td>
-          <td><input type="number" min="1" max="999" data-ls-hos-win="input" data-ls-win-index="${i}" value="${w.input}" aria-label="창 ${i+1} 입력 번호"${badWin.has(i+1)?' class="is-missing" title="구성기에 저장된 구성에 없는 입력 번호입니다"':live?'':' title="꺼진 창이라 커맨드에 들어가지 않습니다"'}>${live?'':'<span class="rt-ls-offtag">꺼짐</span>'}</td>
+          <td>${inputControl({attr:'data-ls-hos-win="input"',i,value:w.input,saved,manual:manualHos.has(i),bad:badWin.has(i+1),live})}${live?'':'<span class="rt-ls-offtag">꺼짐</span>'}</td>
           <td><input type="text" maxlength="24" placeholder="예: PC" data-ls-hos-win="label" data-ls-win-index="${i}" value="${esc(w.label)}" aria-label="창 ${i+1} 이름"></td>
           ${['x','y','w','h'].map(k=>`<td>${on?`<input type="number" min="0" step="10" data-ls-hos-win="${k}" data-ls-win-index="${i}" value="${w[k]}" aria-label="창 ${i+1} ${k.toUpperCase()}">`:`<span class="rt-ls-fixedval">${shown?shown[k]:'—'}</span>`}</td>`).join('')}
           <td class="rt-ls-portstat">${r.ports[i]}</td>${L.code==='L00'?(!live?`<td class="rt-ls-stack"><span class="rt-ls-offtag">꺼짐</span></td>`:`<td class="rt-ls-stack"><b>레이어 ${rank}</b>${i===topIdx?' · 맨 위':` <button type="button" class="rt-ls-top" data-ls-hos-top="${i}" title="이 창의 입력·좌표를 맨 위 자리(포트 ${hos.startPort+topIdx})로 옮깁니다">맨 위로</button>`}</td>`):''}${L.code==='L00'||L.code==='L09'?`<td>${w.w>0&&w.h>0&&(L.code==='L00'||i===1)?`<button type="button" class="rt-ls-del" data-ls-hos-off="${i}" title="창 ${i+1} 끄기(W0 H0). 너비·높이에 값을 넣으면 다시 켜집니다" aria-label="창 ${i+1} 끄기">×</button>`:''}</td>`:''}</tr>`}).join('')}
@@ -548,7 +565,7 @@
       </div>
       <div class="rt-ls-table-wrap"><table class="rt-ls-table"><thead><tr><th>창</th><th title="${INPUT_TIP}">입력</th><th>이름</th><th>X</th><th>Y</th><th>너비</th><th>높이</th><th>출력 포트</th><th>레이어(1 = 맨 위)</th><th></th></tr></thead><tbody>
         ${state.windows.length?(()=>{const order=stackOrder(state);return state.windows.map((win,i)=>`<tr data-ls-row="${i}"${i===selected?' class="is-selected"':''}><td><i class="rt-ls-dot" style="background:${colorOf(i)}"></i>${i+1}</td>
-          <td><input type="number" min="1" max="999" data-ls-win-field="input" data-ls-win-index="${i}" value="${win.input}" aria-label="창 ${i+1} 입력 번호"${badWin.has(i+1)?' class="is-missing" title="구성기에 저장된 구성에 없는 입력 번호입니다"':''}></td>
+          <td>${inputControl({attr:'data-ls-win-field="input"',i,value:win.input,saved,manual:manualWos.has(i),bad:badWin.has(i+1),live:true})}</td>
           <td><input type="text" maxlength="24" placeholder="예: PC" data-ls-win-field="label" data-ls-win-index="${i}" value="${esc(win.label)}" aria-label="창 ${i+1} 이름"></td>
           <td><input type="number" min="0" step="10" data-ls-win-field="x" data-ls-win-index="${i}" value="${win.x}" aria-label="창 ${i+1} X"></td>
           <td><input type="number" min="0" step="10" data-ls-win-field="y" data-ls-win-index="${i}" value="${win.y}" aria-label="창 ${i+1} Y"></td>
@@ -584,6 +601,14 @@
       return {...win,w:snapValue(win.x+win.w,stepX,th)-win.x,h:snapValue(win.y+win.h,stepY,th)-win.y};
     };
     root.addEventListener('change',event=>{
+      const pick=event.target.closest('[data-ls-input-pick]');
+      if(pick){
+        const i=Number(pick.dataset.lsWinIndex),isHos=pick.hasAttribute('data-ls-hos-win');
+        if(pick.value==='__manual__'){(isHos?manualHos:manualWos).add(i);render();return}
+        const n=Number(pick.value),entry=((readSaved()||{}).byN||new Map()).get(n),cur=isHos?hos.windows[i]:state.windows[i];
+        const patch={input:n};if(entry&&entry.name&&!(cur&&cur.label))patch.label=entry.name;
+        selected=i;if(isHos)setHosWindow(i,patch);else setWindow(i,patch);return;
+      }
       const incl=event.target.closest('[data-ls-include]');
       if(incl){include={...include,[incl.dataset.lsInclude]:incl.checked};saveKey(INCLUDE_KEY,include);render();return}
       const hctl=event.target.closest('[data-ls-hos]');
@@ -600,6 +625,8 @@
       if(field){const i=Number(field.dataset.lsWinIndex);selected=i;setWindow(i,{[field.dataset.lsWinField]:field.type==='number'?Number(field.value):field.value})}
     });
     root.addEventListener('click',event=>{
+      const listBtn=event.target.closest('[data-ls-input-list]');
+      if(listBtn){(card==='HOS100'?manualHos:manualWos).delete(Number(listBtn.dataset.lsInputList));render();return}
       const cardBtn=event.target.closest('[data-ls-card]');
       if(cardBtn){card=['HOS100','ALL'].includes(cardBtn.dataset.lsCard)?cardBtn.dataset.lsCard:'WOS100';saveKey(CARD_KEY,JSON.stringify(card));selected=0;render();return}
       const portBtn=event.target.closest('[data-ls-hos-port]');
@@ -698,5 +725,5 @@
   }
   function mountAll(scopeEl){(scopeEl||document).querySelectorAll('[data-layout-sim-root]').forEach(mount)}
 
-  return {TIMINGS,CLEAR_MODES,MAPPINGS,PRESETS,HOS_LAYOUTS,HOS_PRESETS,GUIDE_PDF,MAX_COLS,MAX_ROWS,MAX_WINDOWS,normalize,geometry,portMapFor,assignPorts,cardUsage,commandFor,coverageFor,stackOrder,bringToFront,alignWindow,normalizeHos,hosWindows,hosCommandFor,hosPortStatus,hosBringToFront,savedInputChannels,inputProblems,hosUsed,hosLinks,wosLinks,combinedCommands,amxItems,FIELD_NOTES,mount,mountAll};
+  return {TIMINGS,CLEAR_MODES,MAPPINGS,PRESETS,HOS_LAYOUTS,HOS_PRESETS,GUIDE_PDF,MAX_COLS,MAX_ROWS,MAX_WINDOWS,normalize,geometry,portMapFor,assignPorts,cardUsage,commandFor,coverageFor,stackOrder,bringToFront,alignWindow,normalizeHos,hosWindows,hosCommandFor,hosPortStatus,hosBringToFront,savedInputChannels,inputChoiceLabel,inputProblems,hosUsed,hosLinks,wosLinks,combinedCommands,amxItems,FIELD_NOTES,mount,mountAll};
 });

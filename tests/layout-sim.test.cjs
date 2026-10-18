@@ -272,3 +272,32 @@ test('0.254: 화면 소스에 "꺼짐" 표시·입력 설명·연결 한눈에 �
   const css=fs.readFileSync(require('node:path').join(__dirname,'../src/styles.css'),'utf8');
   for(const t of ['.rt-ls-offtag','.rt-ls-links','input.is-missing'])assert.ok(css.includes(t),t);
 });
+
+// 0.255 입력 선택 목록(사용자 요청 2026-10-18 "1~2번 진행해줘"): 구성기 저장 구성의 입력 카드 채널을 목록으로 만든다.
+test('0.255: 구성기 저장 구성에서 채널마다 슬롯·카드·신호명이 있는 입력 목록을 만든다',()=>{
+  const cat=globalThis.RtCatalog;
+  const doc={state:{family:'XDM',model:'XDM-12',placements:{'in-1':'XDM-HI100','in-2':'XDM-HIS100','out-1':'XDM-HOS100'},
+    portAssignments:{'in-1:1':{assignedDevice:'PC'},'in-2:2':{assignedDevice:' CAM1 '},'out-1:1':{assignedDevice:'TV'}}}};
+  const sv=L.savedInputChannels(doc,cat);
+  assert.equal(sv.list.length,8,'입력 카드 2장 × 4채널, 출력 카드는 목록에 넣지 않는다');
+  assert.deepEqual(sv.list.map(e=>e.n),[1,2,3,4,5,6,7,8]);
+  assert.equal(L.inputChoiceLabel(sv.byN.get(1)),'입력 1 · IN 1 · XDM-HI100 · PC');
+  assert.equal(L.inputChoiceLabel(sv.byN.get(6)),'입력 6 · IN 2 · XDM-HIS100 · CAM1','신호명 앞뒤 공백은 지운다');
+  assert.equal(L.inputChoiceLabel(sv.byN.get(2)),'입력 2 · IN 1 · XDM-HI100','신호명이 없으면 붙이지 않는다');
+  assert.equal(sv.byN.get(5).slot,2);assert.equal(sv.byN.get(5).port,1);
+  // 빈 슬롯 사이는 번호가 건너뛴다: 슬롯 3의 첫 채널 = (3−1)×4+1 = 9
+  const gap=L.savedInputChannels({state:{family:'XDM',model:'XDM-12',placements:{'in-1':'XDM-HI100','in-3':'XDM-HI100'}}},cat);
+  assert.deepEqual(gap.list.map(e=>e.n),[1,2,3,4,9,10,11,12]);
+  // 신호명이 24자를 넘으면 잘라 표 칸이 늘어나지 않게 한다
+  const long=L.savedInputChannels({state:{family:'XDM',model:'XDM-12',placements:{'in-1':'XDM-HI100'},portAssignments:{'in-1:1':{assignedDevice:'가'.repeat(40)}}}},cat);
+  assert.equal(long.byN.get(1).name.length,24);
+  assert.equal(L.savedInputChannels({state:{family:'XDM',model:'XDM-12',placements:{}}},cat).list.length,0);
+});
+
+test('0.255: 화면 소스에 입력 선택 목록·직접 입력 전환·이름 자동 채움이 연결되어 있다',()=>{
+  const src=fs.readFileSync(require('node:path').join(__dirname,'../src/layout-sim.js'),'utf8');
+  for(const t of ['data-ls-input-pick','__manual__','data-ls-input-list','manualHos','manualWos','inputControl(','inputChoiceLabel(e)','구성기에 없음','patch.label=entry.name'])assert.ok(src.includes(t),t);
+  assert.equal((src.match(/inputControl\(\{attr:/g)||[]).length,2,'HOS100·WOS100 표가 같은 함수를 쓴다');
+  const css=fs.readFileSync(require('node:path').join(__dirname,'../src/styles.css'),'utf8');
+  for(const t of ['select.rt-ls-input-sel','.rt-ls-mini'])assert.ok(css.includes(t),t);
+});

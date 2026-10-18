@@ -902,6 +902,40 @@ const patchAmxLock=async()=>{
         wos.tip&&wos.links>=1&&wos.hint&&!over,
         JSON.stringify({base,off,miss,wos,over}));
     }
+    // 0.255 XDM 07 시뮬레이터: 구성기 입력 카드 채널 목록에서 입력 고르기(이름 자동 채움), 직접 입력 전환, 구성이 없으면 숫자 칸(사용자 요청 2026-10-18).
+    {
+      const ctx=await browser.newContext({viewport:{width:1280,height:900}});
+      const sp=await ctx.newPage();
+      await sp.goto(`${home}#products/xdm`,{waitUntil:'networkidle'});
+      await sp.waitForSelector('#rt-layout-sim [data-ls-card]');
+      const plain=await sp.evaluate(()=>({selects:document.querySelectorAll('#rt-layout-sim select[data-ls-input-pick]').length,nums:document.querySelectorAll('#rt-layout-sim input[data-ls-hos-win="input"]').length}));
+      await sp.evaluate(()=>localStorage.setItem('rtcom.configuration.v1',JSON.stringify({schemaVersion:3,state:{family:'XDM',model:'XDM-12',placements:{'in-1':'XDM-HI100','in-2':'XDM-HIS100'},portAssignments:{'in-1:1':{assignedDevice:'PC'},'in-2:2':{assignedDevice:'CAM1'}}}})));
+      await sp.reload({waitUntil:'networkidle'});await sp.waitForSelector('#rt-layout-sim [data-ls-card]');
+      const listed=await sp.evaluate(()=>{const s=document.querySelector('#rt-layout-sim select[data-ls-input-pick][data-ls-win-index="0"]');return {n:document.querySelectorAll('#rt-layout-sim select[data-ls-input-pick]').length,opts:s?[...s.options].map(o=>o.textContent):[],val:s?s.value:'',nums:document.querySelectorAll('#rt-layout-sim input[data-ls-hos-win="input"]').length}});
+      await sp.selectOption('#rt-layout-sim select[data-ls-input-pick][data-ls-win-index="1"]','6');
+      const picked=await sp.evaluate(()=>({label:document.querySelector('#rt-layout-sim input[data-ls-hos-win="label"][data-ls-win-index="1"]')?.value,cmd:(document.querySelector('#rt-layout-sim [data-ls-cmd]')?.textContent||'').replace(/\s+/g,''),val:document.querySelector('#rt-layout-sim select[data-ls-input-pick][data-ls-win-index="1"]')?.value}));
+      await sp.selectOption('#rt-layout-sim select[data-ls-input-pick][data-ls-win-index="3"]','__manual__');
+      await sp.waitForSelector('#rt-layout-sim input[data-ls-hos-win="input"][data-ls-win-index="3"]');
+      const manual=await sp.evaluate(()=>({btn:!!document.querySelector('#rt-layout-sim [data-ls-input-list="3"]'),val:document.querySelector('#rt-layout-sim input[data-ls-hos-win="input"][data-ls-win-index="3"]')?.value}));
+      await sp.fill('#rt-layout-sim input[data-ls-hos-win="input"][data-ls-win-index="3"]','50');
+      await sp.press('#rt-layout-sim input[data-ls-hos-win="input"][data-ls-win-index="3"]','Tab');
+      await sp.waitForSelector('#rt-layout-sim input.is-missing');
+      await sp.click('#rt-layout-sim [data-ls-input-list="3"]');
+      await sp.waitForSelector('#rt-layout-sim select[data-ls-input-pick][data-ls-win-index="3"]');
+      const back=await sp.evaluate(()=>{const s=document.querySelector('#rt-layout-sim select[data-ls-input-pick][data-ls-win-index="3"]');return {cls:s.className,opt:[...s.options].map(o=>o.textContent).find(t=>/구성기에 없음/.test(t))||'',val:s.value}});
+      await sp.click('#rt-layout-sim [data-ls-card="WOS100"]');
+      const wos=await sp.evaluate(()=>document.querySelectorAll('#rt-layout-sim select[data-ls-input-pick][data-ls-win-field="input"]').length);
+      const over=await sp.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
+      await ctx.close();
+      check('XDM 07 시뮬레이터: 저장된 구성이 없으면 숫자 칸, 있으면 입력 카드 채널 목록(카드·신호명 포함)에서 고르고 이름이 비어 있으면 신호명이 채워지며 연결 커맨드가 바뀌고, 직접 입력·목록 전환과 구성에 없는 번호 표시, WOS100 목록이 된다',
+        plain.selects===0&&plain.nums===4&&
+        listed.n===4&&listed.nums===0&&listed.val==='1'&&listed.opts.length===9&&listed.opts[0]==='입력 1 · IN 1 · XDM-HI100 · PC'&&listed.opts[5]==='입력 6 · IN 2 · XDM-HIS100 · CAM1'&&listed.opts[8]==='직접 입력…'&&
+        picked.val==='6'&&picked.label==='CAM1'&&/I006O002/.test(picked.cmd)&&
+        manual.btn&&manual.val==='4'&&
+        /is-missing/.test(back.cls)&&/입력 50/.test(back.opt)&&back.val==='50'&&
+        wos>=1&&!over,
+        JSON.stringify({plain,listed,picked,manual,back,wos,over}));
+    }
     // 0.239 XDM "내 AMX 구성": 07 시뮬레이터 커맨드와 08 설정 명령을 담아 한 개의 AMX 코드로 만들고, 순서 바꾸기·저장·파일 저장을 확인한다.
     {
       await page.goto(`${home}#products/xdm`,{waitUntil:'networkidle'});

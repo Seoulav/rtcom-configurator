@@ -39,6 +39,12 @@
             "command": "node \"$CLAUDE_PROJECT_DIR/scripts/input-doc-status.cjs\"",
             "timeout": 15,
             "statusMessage": "input_doc 새 자료 확인"
+          },
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/scripts/session-preflight.cjs\"",
+            "timeout": 25,
+            "statusMessage": "main 최신 상태·다른 세션 작업 확인"
           }
         ]
       }

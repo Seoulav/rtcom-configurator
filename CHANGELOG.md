@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.254.0 배포 기록**: `docs/qa/DEPLOYMENT_0.254_2026-10-18.md`(PR #400 → main 병합 `7c2f445`, Pages 배포 run 39133244170 success, 공개 `CATALOG BASED · 0.254`·`control-example.js`·`layout-sim.js`·`index.html`·`styles.css` 해시 일치·`CLAUDE.md` 404, 번호를 0.253에서 0.254로 옮긴 경위)
 - **0.253.0 배포 기록**: `docs/qa/DEPLOYMENT_0.253_2026-10-18.md`(PR #401 → main 병합 `f6268d1`, Pages 배포 run 39132505345 success, 공개 `CATALOG BASED · 0.253`·`control-example.js`·`index.html`·`qms-88ux.json` 해시 일치·`CLAUDE.md` 404)
 - **0.252.0 배포 기록**: `docs/qa/DEPLOYMENT_0.252_2026-10-18.md`(PR #398 → main 병합 `e30ac3d`, Pages 배포 run 39093001989 success, 공개 `CATALOG BASED · 0.252`·`control-example.js`·`index.html`·`xdm.json` 해시 일치·`CLAUDE.md` 404)
 - **0.251.0 배포 기록**: `docs/qa/DEPLOYMENT_0.251_2026-10-18.md`(PR #396 → main 병합 `4f79b48`, Pages 배포 run 39092284463 success, 공개 `CATALOG BASED · 0.251`·`control-example.js`·`xdm.json`·`vdm.json`·`spx.json`·`qms-44ux.json`·`qms-88ux.json`·`ft101-u-fr101-u.json`·`index.html` 해시 일치·`CLAUDE.md` 404)
@@ -109,6 +110,14 @@
 - **0.146.0 배포 기록**: `docs/qa/DEPLOYMENT_0.146_2026-09-29.md`(PR #195 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.145.0 배포 기록**: `docs/qa/DEPLOYMENT_0.145_2026-09-29.md`(PR #194 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.144.0 배포 기록**: `docs/qa/DEPLOYMENT_0.144_2026-09-29.md`(PR #192 → main 병합, Pages 배포 run 162, 공개 파일 337/338 일치, `.nojekyll` 제외)
+
+## 0.255.0
+
+사용자 요청 2026-10-18("1~2번 진행해줘": 작업 충돌 줄이기, 구성기 연동 선택 목록)에 따른 묶음입니다.
+
+- **입력 선택 목록:** XDM 07 화면 연출 시뮬레이터(HOS100·WOS100)에서 구성기에 저장된 XDM 입력 카드가 있으면 "입력" 칸을 채널 목록(`입력 5 · IN 2 · XDM-HI100 · PC`)에서 고르게 했습니다. 구성기 03에 적은 신호명을 붙이고, 이름 칸이 비어 있으면 자동으로 채우며, "직접 입력…"으로 구성에 없는 번호도 쓸 수 있습니다. 저장된 구성이 없으면 지금처럼 숫자 칸입니다.
+- **세션 시작 점검:** `scripts/session-preflight.cjs`를 SessionStart 훅에 더해, 세션이 시작될 때 main이 앞선 정도·다른 세션이 먼저 병합한 작업·같은 파일을 바꾼 충돌 후보·다음 병합 번호를 알려 줍니다. `CLAUDE.md`에 "작업을 시작할 때" 규칙(열린 PR 확인, 기록 파일 충돌은 번호 이동으로 해결)을 더했습니다.
+- 근거·되돌리기: `docs/implementation/LAYOUT_SIM_INPUT_PICK_0.255.md`, `docs/implementation/SESSION_PREFLIGHT_0.255.md`
 
 ## 0.254.0
 
