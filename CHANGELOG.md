@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.253.0 배포 기록**: `docs/qa/DEPLOYMENT_0.253_2026-10-18.md`(PR #401 → main 병합 `f6268d1`, Pages 배포 run 39132505345 success, 공개 `CATALOG BASED · 0.253`·`control-example.js`·`index.html`·`qms-88ux.json` 해시 일치·`CLAUDE.md` 404)
 - **0.252.0 배포 기록**: `docs/qa/DEPLOYMENT_0.252_2026-10-18.md`(PR #398 → main 병합 `e30ac3d`, Pages 배포 run 39093001989 success, 공개 `CATALOG BASED · 0.252`·`control-example.js`·`index.html`·`xdm.json` 해시 일치·`CLAUDE.md` 404)
 - **0.251.0 배포 기록**: `docs/qa/DEPLOYMENT_0.251_2026-10-18.md`(PR #396 → main 병합 `4f79b48`, Pages 배포 run 39092284463 success, 공개 `CATALOG BASED · 0.251`·`control-example.js`·`xdm.json`·`vdm.json`·`spx.json`·`qms-44ux.json`·`qms-88ux.json`·`ft101-u-fr101-u.json`·`index.html` 해시 일치·`CLAUDE.md` 404)
 - **알티컴 질의서 정리**(문서만): 사용자 결정(2026-10-18 "A-1 질문 빼고")으로 20번(A-1, 공장 기본 IP·게이트웨이)을 질문에서 빼고, 이미 보낸 7건과 보내지 않은 4건을 합친 통합 메일 최종본(11건)을 `docs/handoff/RTCOM_QUESTIONS_2026-10-16.md`에 저장하고 회신 대기 현황을 12건에서 11건으로 고치고, 사용자가 이 통합 메일을 2026-10-18에 보냈다는 발송 기록(회신 대기)을 남김
