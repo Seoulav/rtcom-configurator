@@ -73,7 +73,7 @@ test('0.224: 시뮬레이터는 XDM 시리즈 화면의 07 카드에만 붙고, 
   assert.match(products,/<span class="rt-pg-idx">07<\/span>화면 연출 시뮬레이터/);
   assert.match(products,/window\.RtLayoutSim\?\.mountAll\(body\)/);
   assert.match(products,/data-scroll-to="rt-layout-sim"/);
-  assert.match(fs.readFileSync('index.html','utf8'),/<script src="src\/layout-sim\.js"><\/script>(<script src="src\/control-example\.js"><\/script>)?<script src="src\/products\.js">/);
+  assert.match(fs.readFileSync('index.html','utf8'),/<script src="src\/layout-sim\.js"><\/script>(<script src="src\/quad-view\.js"><\/script>)?(<script src="src\/vdm-wall\.js"><\/script>)?(<script src="src\/control-example\.js"><\/script>)?<script src="src\/products\.js">/);
   assert.match(fs.readFileSync('scripts/package-site.cjs','utf8'),/'src\/layout-sim\.js'/);
   assert.match(fs.readFileSync('src/styles.css','utf8'),/#rtcom-design \.rt-ls-canvas\{[^}]*touch-action:none/);
   assert.equal(L.GUIDE_PDF,'output/design/assets/docs/xdm-command-guide.pdf');

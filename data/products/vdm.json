@@ -978,7 +978,10 @@
       "connections": 1,
       "autoDisconnect": false,
       "confirmed": true,
-      "source": "알티컴 회신(사용자 전달 2026-10-16)"
+      "source": "알티컴 회신(사용자 전달 2026-10-16)",
+      "ipChange": "device",
+      "dhcp": true,
+      "ipSource": "사용자 확인 2026-10-18"
     },
     "amxDevice": "dvVDM",
     "lead": "AMX 같은 통합 제어 시스템이 RS-232로 보내는 문자열 예시입니다. 연결·해제·상태 확인, 입력·출력 설정, 테스트 패턴, 쿼드뷰, 오디오 매트릭스 볼륨 명령을 아래 \"설정 명령\"에서 값을 골라 만듭니다. 매뉴얼은 VDM-128X·256X만 번호를 세 자리로 쓰므로 번호 자릿수를 먼저 고르세요.",

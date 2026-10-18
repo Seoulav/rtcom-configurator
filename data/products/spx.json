@@ -566,7 +566,10 @@
       "connections": 1,
       "autoDisconnect": false,
       "confirmed": true,
-      "source": "알티컴 회신(사용자 전달 2026-10-16), SPX 매뉴얼 46쪽 Telnet 포트와 같음"
+      "source": "알티컴 회신(사용자 전달 2026-10-16), SPX 매뉴얼 46쪽 Telnet 포트와 같음",
+      "ipChange": "device",
+      "dhcp": true,
+      "ipSource": "사용자 확인 2026-10-18"
     },
     "amxDevice": "dvSPX",
     "lead": "AMX 같은 통합 제어 시스템이 RS-232로 보내는 문자열 예시입니다. SPX 매뉴얼에는 명령 방식이 두 가지(1: *255…! 형식, 2: s in 1 av out 2! 같은 문장형 API)라 둘 다 묶음으로 나눠 두었습니다. 명령을 고르고 값을 넣으면 매뉴얼 형식의 문자열이 만들어집니다.",

@@ -30,7 +30,7 @@ test('HEX는 문자열 바이트 뒤에 Enter(0D)를 붙인다',()=>{
 });
 
 test('AMX 코드는 9600bps 설정과 SEND_STRING 한 줄씩을 담는다',()=>{
-  const code=ce.amxCode(spec,['*000CI02O02!','*000V54!']);
+  const code=ce.amxCode(spec,['*000CI02O02!','*000V54!'],{mode:'serial'});
   assert.match(code,/SET BAUD 9600,N,8,1 485 DISABLE/);
   assert.match(code,/SEND_STRING dvHDS42MU,"'\*000CI02O02!',\$0D"/);
   assert.match(code,/SEND_STRING dvHDS42MU,"'\*000V54!',\$0D"/);
@@ -102,11 +102,49 @@ test('QMS-44UX는 제품 ID 01, 한 입력 전체 출력은 A 명령, 해제·�
   assert.equal(ce.presetCommand(q44,'call',1),null);
 });
 
+test('LAN 제품 5개는 IP를 커맨드로 바꿀 수 없고 DHCP를 지원한다는 사용자 확인(2026-10-18)을 통신 안내에 보여 준다(0.251)',()=>{
+  for(const id of ['xdm','vdm','spx','qms-44ux','qms-88ux']){
+    const spec=JSON.parse(fs.readFileSync(`data/products/${id}.json`,'utf8')).controlExample;
+    assert.equal(spec.lan.ipChange,'device',`${id} IP 변경 방식`);
+    assert.equal(spec.lan.dhcp,true,`${id} DHCP`);
+    assert.match(spec.lan.ipSource,/사용자 확인 2026-10-18/);
+    const html=ce.commBarHtml({...spec,id});
+    assert.match(html,/IP 주소는 커맨드로 바꿀 수 없고 장비에서 직접 설정합니다\. DHCP를 지원합니다\./,`${id} 안내 문구`);
+  }
+  // 직렬 전용 제품은 LAN 안내 자체가 없다
+  for(const id of ['hds-42mu','hds-21u']){
+    const spec=JSON.parse(fs.readFileSync(`data/products/${id}.json`,'utf8')).controlExample;
+    assert.doesNotMatch(ce.commBarHtml({...spec,id}),/DHCP/);
+  }
+  // LAN 정보가 없는 제품에는 IP 안내를 붙이지 않는다
+  assert.doesNotMatch(ce.commBarHtml({id:'t',lan:{port:23,confirmed:true}}),/DHCP|직접 설정/);
+});
+
+test('알티컴 제품은 모두 직렬 8N1이고(사용자 확인 2026-10-18) XDM·HDS도 근거 문구와 함께 AMX 코드에 들어간다(0.250)',()=>{
+  const specs=['xdm','spx','vdm','qms-44ux','qms-88ux','hds-42mu','hds-21u'].map(id=>[id,JSON.parse(fs.readFileSync(`data/products/${id}.json`,'utf8')).controlExample]);
+  for(const [id,spec] of specs){
+    assert.equal(spec.serial.dataBits,8,`${id} 데이터 비트`);
+    assert.equal(spec.serial.parity,'N',`${id} 패리티`);
+    assert.equal(spec.serial.stopBits,1,`${id} 스톱 비트`);
+    assert.ok(spec.serial.confirmed,`${id} 근거 문구`);
+    assert.doesNotMatch(spec.serial.confirmed,/일반값|가이드에 없/,`${id}는 일반값 표기가 남지 않아야 한다`);
+    assert.match(ce.amxCode(spec,[{label:'x',text:'*0!'}],{mode:'serial'}),/SET BAUD \d+,N,8,1 485 DISABLE/,`${id} AMX 통신 설정`);
+  }
+  const xdm=specs.find(x=>x[0]==='xdm')[1];
+  assert.match(xdm.serial.confirmed,/데이터 8비트는 사용자 확인/);
+  assert.match(xdm.serial.confirmed,/67쪽/,'패리티·스톱 근거(가이드 67쪽)는 유지');
+  for(const id of ['hds-42mu','hds-21u']){
+    const spec=specs.find(x=>x[0]===id)[1];
+    assert.equal(spec.serial.baud,9600,`${id} 통신 속도는 매뉴얼 값 그대로`);
+    assert.match(ce.amxCode(spec,[{label:'x',text:'*0!'}],{mode:'serial'}),/9600bps 8N1은 알티컴 제품 공통/);
+  }
+});
+
 test('QMS 두 제품은 115200bps 8N1과 매뉴얼 쪽수 근거를 갖고 AMX 코드에 통신 설정이 들어간다',()=>{
   for(const q of [q88,q44]){
     assert.equal(q.serial.baud,115200);
     assert.match(q.source,/쪽/);
-    assert.match(ce.amxCode(q,[{label:'x',text:'*0!'}]),/SET BAUD 115200,N,8,1 485 DISABLE/);
+    assert.match(ce.amxCode(q,[{label:'x',text:'*0!'}],{mode:'serial'}),/SET BAUD 115200,N,8,1 485 DISABLE/);
   }
 });
 
@@ -138,6 +176,49 @@ test('QMS-88UX 출력 해상도(OS)·테스트 패턴(OT·IT)·출력 초기화(
 test('QMS-88UX 비디오 월(OW)은 매뉴얼 35쪽 예시 2개와 같고 해상도를 생략할 수 있다',()=>{
   assert.equal(build(q88,'wall',{range:'1-6',res:'13',h:2,v:3,members:'1-6'}),'*255OWO01-06M13H02V03O01O02O03O04O05O06!');
   assert.equal(build(q88,'wall',{range:'1-6',res:'',h:2,v:3,members:'1-6'}),'*255OWO01-06H02V03O01O02O03O04O05O06!');
+});
+
+test('QMS-88UX 비디오 월(OW)은 월 2개를 한 줄로 이어 만들 수 있고 매뉴얼 35쪽 첫 예시와 같다(0.248)',()=>{
+  const wall=(values)=>ce.buildCommand(q88,B(q88,'wall'),values);
+  const two={range:'1-10',res:'13',h:2,v:2,members:'1-4',h2:3,v2:2,members2:'5-10'};
+  assert.equal(wall(two).text,'*255OWO01-10M13H02V02O01O02O03O04H03V02O05O06O07O08O09O10!');
+  assert.equal(wall(two).warn,'','매뉴얼 예시는 경고가 없어야 한다');
+  assert.equal(build(q88,'wall',{range:'1-8',res:'13',h:2,v:2,members:'1-4',h2:2,v2:2,members2:'5-8'}),'*255OWO01-08M13H02V02O01O02O03O04H02V02O05O06O07O08!');
+  // 월 2를 비우면 기존 월 1개 명령과 같다
+  assert.equal(wall({range:'1-6',res:'13',h:2,v:3,members:'1-6'}).text,'*255OWO01-06M13H02V03O01O02O03O04O05O06!');
+  assert.equal(wall({range:'1-6',res:'13',h:2,v:3,members:'1-6'}).warn,'');
+});
+
+test('QMS-88UX QD 오디오 입력 선택(IS)은 매뉴얼 43쪽 예시 2개와 같고 표(S0~S3)대로 입력을 안내한다(0.249)',()=>{
+  assert.equal(build(q88,'qd',{qd:'Q1Q2',sel:'0'}),'*255ISQ1Q2S0!');
+  assert.equal(build(q88,'qd',{qd:'Q2',sel:'3'}),'*255ISQ2S3!');
+  assert.equal(build(q88,'qd',{qd:'Q1',sel:'2'}),'*255ISQ1S2!');
+  const b=B(q88,'qd');
+  assert.equal(b.cmd,'IS');
+  const sel=b.params.find(p=>p.id==='sel').options;
+  assert.deepEqual(sel.map(o=>o[0]),['0','1','2','3']);
+  assert.match(sel[3][1],/QD1 = 입력 4 \/ QD2 = 입력 8/,'S3은 표 기준 QD2 입력 8번');
+  assert.match(q88.limits,/ISQ2S3.*입력 5번.*S3 = 입력 8번/,'매뉴얼 예시와 표가 다른 점을 화면에 남긴다');
+  assert.equal(new Set(q88.builders.map(x=>x.id)).size,q88.builders.length);
+});
+
+test('QMS-88UX 비디오 월(OW) 검사: 칸 수·범위·겹침 불일치는 경고, 월 2가 덜 채워지면 오류',()=>{
+  const wall=(values)=>ce.buildCommand(q88,B(q88,'wall'),values);
+  const cells=wall({range:'1-10',res:'13',h:2,v:2,members:'1-10'});
+  assert.ok(cells.text,'경고만 붙이고 명령은 만든다');
+  assert.match(cells.warn,/월 1: 가로 2 × 세로 2 = 4칸인데 포함 출력은 10개/);
+  const out=wall({range:'1-4',res:'13',h:2,v:2,members:'1-6'});
+  assert.match(out.warn,/출력 5·6번이 "월을 만들 출력 범위"에 없습니다/);
+  const idle=wall({range:'1-8',res:'13',h:2,v:2,members:'1-4'});
+  assert.match(idle.warn,/출력 5·6·7·8번이 어느 월에도 포함되지 않았습니다/);
+  const dup=wall({range:'1-8',res:'13',h:2,v:2,members:'1-6',h2:2,v2:2,members2:'5-8'});
+  assert.match(dup.warn,/출력 5·6번이 두 월에 모두 들어 있습니다/);
+  const part=wall({range:'1-8',res:'13',h:2,v:2,members:'1-4',h2:2,v2:'',members2:'5-8'});
+  assert.equal(part.text,undefined);
+  assert.match(part.error,/두 번째 월을 쓰려면 가로·세로 칸 수와 포함 출력을 모두 적고/);
+  // 9·10번이 들어간 월도 같은 규칙: 3×3 월(1~9번), 2×5 월(1~10번)
+  assert.equal(build(q88,'wall',{range:'1-9',res:'13',h:3,v:3,members:'1-9'}),'*255OWO01-09M13H03V03O01O02O03O04O05O06O07O08O09!');
+  assert.equal(wall({range:'1-10',res:'13',h:5,v:2,members:'1-10'}).warn,'');
 });
 
 test('QMS-88UX 멀티뷰(Q)는 매뉴얼 39쪽 예시 2개와 같다',()=>{
@@ -351,7 +432,7 @@ test('0.239: 장바구니는 같은 문자열을 한 번만 담고 담은 순서
   assert.equal(r.added,2);assert.equal(r.dup,0);
   r=ce.basketAdd(r.list,[items[0],{text:'*255CI002O002!'}]);
   assert.equal(r.added,1);assert.equal(r.dup,1);assert.equal(r.list.length,3);
-  const code=ce.basketCode(xdm,r.list);
+  const code=ce.basketCode(xdm,r.list,{mode:'serial'});
   assert.match(code,/BUTTON_EVENT\[dvTP,1\][\s\S]*SEND_STRING dvXDM,"'\*255OWO001!',\$0D"/);
   assert.match(code,/BUTTON_EVENT\[dvTP,3\][\s\S]*'\*255CI002O002!'/);
   assert.match(code,/SET BAUD 115200,N,8,1/);
@@ -368,7 +449,7 @@ test('0.239: 장바구니 상한(60개)을 넘기면 담지 않고 알린다, En
   const many=Array.from({length:ce.BASKET_MAX+3},(_,i)=>({text:`*255CI${String(i+1).padStart(3,'0')}O001!`}));
   const r=ce.basketAdd([],many);
   assert.equal(r.list.length,ce.BASKET_MAX);assert.equal(r.added,ce.BASKET_MAX);assert.equal(r.full,3);
-  const code=ce.basketCode(spx,[{label:'문장형',text:'s in 1 av out 2!',enter:false}]);
+  const code=ce.basketCode(spx,[{label:'문장형',text:'s in 1 av out 2!',enter:false}],{mode:'serial'});
   assert.match(code,/SEND_STRING dv\w+,"'s in 1 av out 2!'"/);
   assert.doesNotMatch(code.split('BUTTON_EVENT')[1],/\$0D/);
 });
@@ -438,24 +519,28 @@ test('0.239: lan 항목이 없는 제품은 포트 0과 확인 필요 주석, �
   const bare={amxDevice:'dvXDM',serial:{baud:115200}};
   const none=ce.amxCode(bare,[],{mode:'lan'});
   assert.match(none,/LONG nDevicePort = 0 +\/\/ TCP 포트 번호를 입력하세요\(이 제품은 매뉴얼에 없어 알티컴 확인 필요\)/);
-  assert.match(none,/'192\.168\.1\.100'.*예시/);
+  assert.match(none,/'192\.168\.1\.141'.*예시/);
   assert.doesNotMatch(none,/동시 접속 1개|자동으로 끊지 않음/);
   const own=ce.amxCode(bare,[],{mode:'lan',ip:'10.1.2.3',port:'4001'});
   assert.match(own,/'10\.1\.2\.3'/);assert.match(own,/LONG nDevicePort = 4001 +\/\/ TCP 포트 \(직접 입력한 값\)/);
   assert.match(ce.amxCode(xdm,[],{mode:'lan',port:'2323'}),/nDevicePort = 2323 +\/\/ TCP 포트 \(직접 입력한 값\)/);
   // 코드 주입·범위 밖 값 차단: 잘못된 포트는 제품 기본값(23)으로 돌아간다
   const bad=ce.amxCode(xdm,[],{mode:'lan',ip:"10.0.0.1'; evil",port:'99999'});
-  assert.doesNotMatch(bad,/evil/);assert.match(bad,/'192\.168\.1\.100'/);assert.match(bad,/nDevicePort = 23\b/);
+  assert.doesNotMatch(bad,/evil/);assert.match(bad,/'192\.168\.1\.141'/);assert.match(bad,/nDevicePort = 23\b/);
   assert.doesNotMatch(ce.amxCode(xdm,[],{mode:'lan',ip:'999.1.1.1'}),/999\.1\.1\.1/);
 });
-test('0.239: RS-232를 고르면 기존 직렬 코드(SET BAUD)가 나오고, 옵션이 없으면 직렬이 기본(기존 호출 호환)',()=>{
-  for(const opts of [undefined,{},{mode:'serial'}]){
+test('0.239: RS-232를 고르면 기존 직렬 코드(SET BAUD)가 나오고, 옵션이 없으면 LAN이 기본(0.251, HDS 두 제품만 직렬)',()=>{
+  for(const opts of [{mode:'serial'}]){
     const code=ce.amxCode(xdm,[{text:'*255CI001O001!'}],opts);
     assert.match(code,/dvXDM = 5001:1:0/);assert.match(code,/SET BAUD 115200,N,8,1 485 DISABLE/);assert.doesNotMatch(code,/IP_CLIENT_OPEN/);
     assert.match(code,/DEFINE_EVENT\s+\/\/ 터치 패널 버튼 1번/);
   }
   assert.match(ce.basketCode(xdm,[{text:'*255C!'}],{mode:'lan'}),/IP_CLIENT_OPEN/);
-  assert.match(ce.basketCode(xdm,[{text:'*255C!'}]),/SET BAUD/);
+  assert.match(ce.basketCode(xdm,[{text:'*255C!'}],{mode:'serial'}),/SET BAUD/);
+  // 0.251 사용자 확인 2026-10-18: 통합 제어는 HDS-42MU·21U를 빼고 IP 제어가 기본이다.
+  assert.match(ce.amxCode(xdm,[{text:'*255C!'}]),/IP_CLIENT_OPEN/);
+  assert.doesNotMatch(ce.amxCode(xdm,[{text:'*255C!'}]),/SET BAUD/);
+  assert.match(ce.amxCode(xdm,[{text:'*255C!'}],{}),/IP_CLIENT_OPEN/);
 });
 test('0.239: 통신 방식 상태는 기본 LAN이고 저장소가 없어도 메모리에 기억한다',()=>{
   const s={id:'comm-test'};

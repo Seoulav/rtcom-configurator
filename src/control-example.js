@@ -5,7 +5,7 @@
      - 입력 선택: *000CI02O02!+0x0D (입력 2번 → 출력 2번)
      - 볼륨: *000Vxx!+0x0D, 50이 0dB, 1 오르면 +0.5dB·1 내려가면 -0.5dB (예: *000V54! = 0dB에서 2dB)
    HDS-21U 매뉴얼 9쪽 표에는 0dB(50) 옆에 Mute(0) 칸이 있어 volume.muteCode가 있는 제품만 뮤트 커맨드(*000V00!)를 보여 준다.
-   매뉴얼에 없는 값(데이터 비트·패리티·스톱 비트, 뮤트 명령(muteCode가 없는 제품), 볼륨 허용 범위)은 만들어 넣지 않는다.
+   매뉴얼에 없는 값(뮤트 명령(muteCode가 없는 제품), 볼륨 허용 범위, 확인되지 않은 제품의 데이터 비트·패리티·스톱 비트)은 만들어 넣지 않는다. 직렬 8N1은 알티컴 제품 공통임을 사용자가 확인했다(2026-10-18, serial.confirmed).
    AMX NetLinx 코드는 위 문자열을 SEND_STRING으로 보내는 일반 문법 예시이며, 장치 번호(5001:1:0)와 버튼 번호는 현장에 맞게 바꿔야 한다.
    순수 함수(switchCommand·volumeCommand·volumeCode·toHex·amxCode)는 Node 테스트(tests/control-example.test.cjs)에서도 쓰므로 DOM을 건드리지 않는다.
    mountAll(body)는 제품정보 상세 화면 안의 [data-control-example] 자리에만 그린다(src/products.js, 데이터는 제품 JSON의 controlExample). */
@@ -69,17 +69,19 @@
     return (cr===false?bytes:bytes.concat('0D')).join(' ');
   }
   // AMX NetLinx: 통신 설정 + 명령마다 터치 패널 버튼 하나씩 SEND_STRING. commands는 문자열 또는 {label,text,enter}.
-  // opts.mode: 'serial'(RS-232, 기본) | 'lan'(TCP/IP). 0.239 사용자 확인 2026-10-16 "amx로 알티컴 제어시 rs232는 잘 사용안하고 lan제어를 많이해" → 화면은 LAN이 기본이다.
+  // opts.mode: 'lan'(TCP/IP, 기본) | 'serial'(RS-232). 0.239 사용자 확인 2026-10-16 "amx로 알티컴 제어시 rs232는 잘 사용안하고 lan제어를 많이해", 0.251 사용자 확인 2026-10-18 "통합제어시 HDS-42MU,21U제외하고는 무조건 IP제어를 기본으로" → 방식을 넘기지 않아도 LAN이 기본이고, 직렬 전용(serialOnly)인 HDS 두 제품만 RS-232다.
   //   LAN: IP_CLIENT_OPEN(dev.PORT, IP, 포트, IP_TCP)로 장비에 TCP 연결한 뒤 같은 커맨드 문자열을 SEND_STRING으로 보낸다(NetLinx 표준 문법).
   //   포트는 매뉴얼에 적힌 값(spec.lan.port, SPX 매뉴얼 46쪽 Telnet 23)만 기본으로 쓰고, 없으면 0과 "확인 필요" 주석을 적는다. 값을 만들어 넣지 않는다.
-  //   IP는 형식이 맞는 값만 쓰고(코드 주입 방지), 비어 있으면 예시 주소(192.168.1.100)를 적고 현장에서 바꾸도록 주석을 단다. 기본 대역은 192.168.1.xxx(사용자 확인 2026-10-16, SPX 매뉴얼 예시 192.168.1.72도 같은 대역).
-  // 직렬은 데이터 비트·패리티가 매뉴얼에 없으면 일반값(8N1)으로 적고 현장 확인을 안내한다.
+  //   IP 설정(0.251, 사용자 확인 2026-10-18): 커맨드로는 바꿀 수 없고 장비에서 직접 설정하며 DHCP를 지원한다(lan.ipChange·lan.dhcp). XDM 가이드 67쪽의 LAN 항목(?SNA)은 조회 전용이다.
+  //   IP는 형식이 맞는 값만 쓰고(코드 주입 방지), 비어 있으면 예시 주소(DEFAULT_IP, 0.252에서 192.168.1.100 → 192.168.1.141, 사용자 요청 2026-10-18 "AMX예시쪽에 192.168.1.141로 전부 반영했어?")를 적고 현장에서 바꾸도록 주석을 단다. 기본 대역은 192.168.1.xxx(사용자 확인 2026-10-16, SPX 매뉴얼 예시 192.168.1.72도 같은 대역).
+  // 직렬은 데이터 비트·패리티가 매뉴얼에 없으면 일반값(8N1)으로 적고 현장 확인을 안내한다. 사용자가 확인한 제품(serial.confirmed가 있는 제품, 0.250에서 XDM·HDS 포함)은 그 근거 문구를 보여 주고 일반값 안내를 하지 않는다.
   const IPV4=/^(25[0-5]|2[0-4]\d|1?\d?\d)(\.(25[0-5]|2[0-4]\d|1?\d?\d)){3}$/;
   const portOf=(spec,opts)=>{const n=Number(String(opts?.port??'').trim());if(Number.isInteger(n)&&n>=1&&n<=65535)return n;const d=Number(spec.lan?.port);return Number.isInteger(d)&&d>=1&&d<=65535?d:0};
+  const DEFAULT_IP='192.168.1.141';
   function amxCode(spec,commands,opts={}){
-    const dev=spec.amxDevice||'dvSwitcher',baud=spec.serial?.baud||9600,lan=opts.mode==='lan'&&!spec.serialOnly;
+    const dev=spec.amxDevice||'dvSwitcher',baud=spec.serial?.baud||9600,lan=opts.mode!=='serial'&&!spec.serialOnly;
     const lines=lan?(()=>{
-      const ip=IPV4.test(String(opts.ip||'').trim())?String(opts.ip).trim():'192.168.1.100',ipGiven=ip!=='192.168.1.100'||IPV4.test(String(opts.ip||'').trim());
+      const ip=IPV4.test(String(opts.ip||'').trim())?String(opts.ip).trim():DEFAULT_IP,ipGiven=ip!==DEFAULT_IP||IPV4.test(String(opts.ip||'').trim());
       const port=portOf(spec,opts),fromSpec=!String(opts.port??'').trim()&&port>0;
       return [
         `DEFINE_DEVICE`,
@@ -181,7 +183,7 @@
     // 직렬 제어만 되는 제품(HDS-42MU·HDS-21U, 사용자 확인 2026-10-16 "시리얼 제어만 가능해")은 통신 방식 선택 없이 RS-232 안내만 보인다.
     if(spec.serialOnly)return `<div class="rt-ce-comm" data-ce-commbar="${id}"><p class="rt-pg-hint">이 제품은 RS-232(직렬) 제어만 지원합니다. LAN 제어는 없습니다. 통신 속도 ${esc(spec.serial?.baud||9600)}bps.</p></div>`;
     const note=spec.lan?.port?`TCP 포트 ${spec.lan.port}: ${spec.lan.source||'매뉴얼'}`:'이 제품의 LAN(TCP) 포트는 매뉴얼에 없어 알티컴 확인이 필요합니다. 아는 포트 번호를 직접 넣으세요.';
-    return `<div class="rt-ce-comm" data-ce-commbar="${id}"><label>통신 방식<select data-ce-comm="mode"><option value="lan"${c.mode==='lan'?' selected':''}>LAN (TCP/IP)</option><option value="serial"${c.mode==='serial'?' selected':''}>RS-232 (직렬)</option></select></label><span class="rt-ce-comm-lan"${c.mode==='lan'?'':' hidden'}><label>장비 IP 주소<input type="text" inputmode="decimal" data-ce-comm="ip" value="${esc(c.ip)}" placeholder="192.168.1.xxx" autocomplete="off" maxlength="15"></label><label>TCP 포트<input type="text" inputmode="numeric" data-ce-comm="port" value="${esc(c.port)}" placeholder="${esc(spec.lan?.port||'확인 필요')}" autocomplete="off" maxlength="5"></label></span><p class="rt-pg-hint">${esc(note)} ${spec.lan?.confirmed?'LAN으로 보내는 커맨드 문자열은 RS-232와 같습니다. 장비는 동시 접속이 1개이고 연결을 자동으로 끊지 않습니다(알티컴 회신).':'LAN으로 보내는 커맨드 문자열은 RS-232와 같다고 보고 만든 예시이며, 제품별 확인 내용은 알티컴에 문의하세요.'}</p></div>`;
+    return `<div class="rt-ce-comm" data-ce-commbar="${id}"><label>통신 방식<select data-ce-comm="mode"><option value="lan"${c.mode==='lan'?' selected':''}>LAN (TCP/IP)</option><option value="serial"${c.mode==='serial'?' selected':''}>RS-232 (직렬)</option></select></label><span class="rt-ce-comm-lan"${c.mode==='lan'?'':' hidden'}><label>장비 IP 주소<input type="text" inputmode="decimal" data-ce-comm="ip" value="${esc(c.ip)}" placeholder="${DEFAULT_IP}" autocomplete="off" maxlength="15"></label><label>TCP 포트<input type="text" inputmode="numeric" data-ce-comm="port" value="${esc(c.port)}" placeholder="${esc(spec.lan?.port||'확인 필요')}" autocomplete="off" maxlength="5"></label></span><p class="rt-pg-hint">${esc(note)} ${spec.lan?.confirmed?'LAN으로 보내는 커맨드 문자열은 RS-232와 같습니다. 장비는 동시 접속이 1개이고 연결을 자동으로 끊지 않습니다(알티컴 회신).':'LAN으로 보내는 커맨드 문자열은 RS-232와 같다고 보고 만든 예시이며, 제품별 확인 내용은 알티컴에 문의하세요.'}${spec.lan?.ipChange==='device'?` IP 주소는 커맨드로 바꿀 수 없고 장비에서 직접 설정합니다.${spec.lan.dhcp?' DHCP를 지원합니다.':''} (${esc(spec.lan.ipSource||'확인')})`:''}</p></div>`;
   }
   // AMX 코드 <pre>: 항목 목록을 속성에 담아 두면 통신 방식·IP·포트가 바뀔 때 화면을 다시 그리지 않고 그 자리에서 글만 바꾼다(입력 칸 포커스 유지).
   function amxPre(spec,items,extra=''){
@@ -345,6 +347,8 @@
   //  - route: {cmd}가 있으면 입력 번호 1개와 출력 목록으로 연결 쌍(I001O001-007, I001O009)을 쉼표로 이은 연결·해제 명령을 만든다.
   //  - template: "s in {in} av out {out}!"처럼 * 제품 ID 없이 문장형으로 만드는 명령(SPX 커맨드 2). enter가 false이면 Enter(0x0D)를 붙이지 않는다.
   //  - productId: 이 명령만 쓰는 제품 ID(예: 펌웨어 확인 *999?version!).
+  //  - optional(number·list): 값을 비워 두면 그 매개변수를 명령에서 뺀다(QMS-88UX 월 2).
+  //  - walls·rangeParam: 비디오 월 명령의 일관성 검사. walls=[{h,v,members}] 매개변수 id, 둘째부터는 선택이며 셋 모두 적거나 모두 비워야 한다. 안 맞아도 명령은 만들고 경고(warn)만 붙인다(매뉴얼이 거부 규칙을 적지 않았다, 0.248).
   function parseNumList(text,min,max){
     const nums=new Set();
     for(const part of String(text??'').split(/[,\s]+/).filter(Boolean)){
@@ -368,12 +372,42 @@
   function builderDefaults(b){const v={};for(const p of b.params||[])v[p.id]=p.default??'';return v}
   const variantPad=(spec,ctx)=>ctx?.pad||spec.variants?.[0]?.pad||2;
   const padOf=(spec,p,ctx)=>p.padVar?variantPad(spec,ctx):(p.pad||2);
+  // 비디오 월 일관성 검사(QMS-88UX 월 2개까지). 오류(error)는 명령 자체가 어긋날 때, 경고(warn)는 매뉴얼이 거부 규칙을 적지 않은 불일치일 때.
+  function wallCheck(spec,b,vals){
+    const outMax=spec.outputCodes?.length||99;
+    const numOf=id=>{const t=String(vals[id]??'').trim();return t===''?null:Math.round(Number(t))};
+    const walls=(b.walls||[]).map((w,i)=>({n:i+1,h:numOf(w.h),v:numOf(w.v),members:parseNumList(vals[w.members],1,outMax),has:String(vals[w.members]??'').trim()!==''}));
+    for(const w of walls.slice(1)){
+      const given=[w.h!==null,w.v!==null,w.has].filter(Boolean).length;
+      if(given&&given<3)return {error:`${w.n===2?'두 번째':w.n+'번째'} 월을 쓰려면 가로·세로 칸 수와 포함 출력을 모두 적고, 쓰지 않으려면 모두 비워 두세요.`};
+    }
+    const used=walls.filter(w=>w.has);
+    const warns=[];
+    const list=a=>a.join('·');
+    for(const w of used){
+      if(w.h!==null&&w.v!==null&&w.h*w.v!==w.members.length)warns.push(`월 ${w.n}: 가로 ${w.h} × 세로 ${w.v} = ${w.h*w.v}칸인데 포함 출력은 ${w.members.length}개입니다.`);
+    }
+    const range=b.rangeParam?parseNumList(vals[b.rangeParam],1,outMax):[];
+    if(range.length){
+      const all=new Set(used.flatMap(w=>w.members));
+      const outside=[...all].filter(n=>!range.includes(n)),idle=range.filter(n=>!all.has(n));
+      if(outside.length)warns.push(`출력 ${list(outside)}번이 "월을 만들 출력 범위"에 없습니다.`);
+      if(idle.length)warns.push(`"월을 만들 출력 범위"의 출력 ${list(idle)}번이 어느 월에도 포함되지 않았습니다.`);
+    }
+    if(used.length>1){
+      const seen=new Map(),dup=new Set();
+      for(const w of used)for(const n of w.members){if(seen.has(n)&&seen.get(n)!==w.n)dup.add(n);seen.set(n,w.n)}
+      if(dup.size)warns.push(`출력 ${list([...dup].sort((x,y)=>x-y))}번이 두 월에 모두 들어 있습니다.`);
+    }
+    return {warn:warns.join(' ')};
+  }
   function buildCommand(spec,b,values,ctx){
     const vals={...builderDefaults(b),...(values||{})};
     const idText=b.productId||spec.productId;
     const idPart={kind:'id',text:idText,title:`Product ID · 제품 ID ${idText}`};
     const paramText=(p)=>{
       const raw=vals[p.id],prefix=p.prefix||'',kind=p.kind||'vol';
+      if(p.optional&&(p.type==='number'||p.type==='list'||p.type==='text'||p.type===undefined)&&String(raw??'').trim()==='')return {skip:true};
       if(p.type==='select'){
         if(raw===''||raw===undefined||raw===null){if(p.optional)return {skip:true};return {error:`${p.label}을(를) 고르세요.`}}
         const opt=(p.options||[]).find(o=>String(o[0])===String(raw));
@@ -460,7 +494,9 @@
       parts.push(...r.pieces);
     }
     parts.push(mEnd());
-    return {text:textOf(parts),parts,enter:b.enter!==false};
+    const wc=b.walls?wallCheck(spec,b,vals):null;
+    if(wc?.error)return {error:wc.error};
+    return {text:textOf(parts),parts,enter:b.enter!==false,warn:wc?.warn||''};
   }
   const tokens=parts=>parts.map(p=>`<span class="rt-ce-tok rt-ce-tok-${p.kind}" title="${esc(p.title)}">${esc(p.text)}</span>`).join('');
   const range=(n,from=1)=>Array.from({length:n},(_,i)=>from+i);
@@ -501,8 +537,8 @@
         <p class="rt-ce-hex">HEX <code>${esc(toHex(mute.text))}</code> · 매뉴얼 표의 Mute 칸 값(${mute.code})을 볼륨 자리에 넣은 값입니다. 뮤트 해제 방법은 매뉴얼에 없어 장비에서 확인이 필요합니다.</p></div>`:''}
       <div class="rt-ce-block">${gated('AMX NetLinx 예제',()=>`<div class="rt-ce-head"><h3>AMX NetLinx 예제 (${mute?'경로 · 볼륨 · 뮤트':'선택한 경로 + 볼륨'})</h3><button type="button" class="rt-pg-btn" data-ce-copy="amx">복사</button>${relockBtn}<span class="rt-ce-copied" data-ce-note="amx" aria-live="polite"></span></div>
         ${commBarHtml(spec)}${amxPre(spec,[{label:`IN ${sel.input} → OUT ${sel.output}`,text:sel.text},{label:dbText(vol.db),text:vol.text},...(mute?[{label:'뮤트',text:mute.text}]:[])],'data-ce-text="amx"')}`)}</div>
-      <p class="rt-pg-hint">※ 근거: ${esc(spec.source)}. 통신 속도 ${spec.serial?.baud||9600}bps, 문장 끝에 Enter(0x0D)를 붙입니다. 제품 ID는 매뉴얼 예시의 ${esc(spec.productId)}입니다. 표의 모든 칸은 매뉴얼 예시(<code>${esc(spec.manualExample||'*000CI02O02!')}</code>)에서 번호만 바꾼 값입니다.</p>
-      <p class="rt-pg-hint">※ 매뉴얼에 적혀 있지 않아 넣지 않은 것: 데이터 비트·패리티·스톱 비트(코드의 8N1은 일반값), ${mute?'':'뮤트 명령, '}볼륨 허용 범위(코드 ${pad2(v.min)}~${pad2(v.max)}는 두 자리 형식에서 계산한 값). AMX 장치 번호와 버튼 번호는 현장에 맞게 바꾸세요.</p>`;
+      <p class="rt-pg-hint">※ 근거: ${esc(spec.source)}. 통신 속도 ${spec.serial?.baud||9600}bps${spec.serial?.confirmed?`(${esc(spec.serial.confirmed)})`:''}, 문장 끝에 Enter(0x0D)를 붙입니다. 제품 ID는 매뉴얼 예시의 ${esc(spec.productId)}입니다. 표의 모든 칸은 매뉴얼 예시(<code>${esc(spec.manualExample||'*000CI02O02!')}</code>)에서 번호만 바꾼 값입니다.</p>
+      <p class="rt-pg-hint">※ 매뉴얼에 적혀 있지 않아 넣지 않은 것: ${spec.serial?.confirmed?'':'데이터 비트·패리티·스톱 비트(코드의 8N1은 일반값), '}${mute?'':'뮤트 명령, '}볼륨 허용 범위(코드 ${pad2(v.min)}~${pad2(v.max)}는 두 자리 형식에서 계산한 값). AMX 장치 번호와 버튼 번호는 현장에 맞게 바꾸세요.</p>`;
     }
     root.addEventListener('change',event=>{
       const field=event.target.closest('[data-ce-field]');if(!field)return;
@@ -559,6 +595,7 @@
       const dev=spec.amxDevice||'dvSwitcher';
       return `<div class="rt-ce-head"><h3>${esc(b.title)}${cmdOf(b)?` (${esc(cmdOf(b))})`:''}</h3><button type="button" class="rt-pg-btn" data-ce-bcopy>복사</button>${opts.basket?'<button type="button" class="rt-pg-btn rt-pg-primary" data-ce-badd title="이 명령을 아래 \"내 AMX 구성\"에 담습니다">+ 구성에 담기</button>':''}<span class="rt-ce-copied" data-ce-bnote aria-live="polite"></span></div>
         <pre class="rt-ce-cmd"><span class="rt-ce-line"><small>${esc(b.title)} · ${esc(spec.docLabel||'매뉴얼')} ${esc(b.page)}</small>${tokens(r.parts)}${r.enter===false?'':'<span class="rt-ce-cr" title="Enter · 0x0D">⏎</span>'}</span></pre>
+        ${r.warn?`<p class="rt-ce-warn" data-ce-warn role="status">${esc(r.warn)}</p>`:''}
         <p class="rt-ce-hex">HEX <code>${esc(toHex(r.text,r.enter!==false))}</code>${r.enter===false?' · 이 형식은 매뉴얼에 Enter가 적혀 있지 않아 붙이지 않았습니다':''}</p>
         ${gated('AMX 코드 한 줄',()=>`<pre class="rt-ce-cmd rt-ce-code rt-ce-oneline">SEND_STRING ${esc(dev)},"'${esc(r.text)}'${r.enter===false?'':',$0D'}"</pre>`)}`;
     }
@@ -752,5 +789,5 @@
       try{mount(el,JSON.parse(el.dataset.controlExample))}catch{el.textContent='커맨드 예시를 불러오지 못했습니다.'}
     });
   }
-  return {parseNumList,formatNumList,buildCommand,builderDefaults,routeCommand,presetCommand,switchCommand,volumeCommand,muteCommand,volumeCode,dbOf,toHex,amxCode,basketClean,basketAdd,basketRemove,basketMove,basketCode,basket,BASKET_MAX,commOf,setComm,AMX_LOCK,makeLock,verifyPassword,lock,mount,mountAll};
+  return {parseNumList,formatNumList,buildCommand,builderDefaults,routeCommand,presetCommand,switchCommand,volumeCommand,muteCommand,volumeCode,dbOf,toHex,amxCode,basketClean,basketAdd,basketRemove,basketMove,basketCode,basket,BASKET_MAX,commOf,setComm,commBarHtml,AMX_LOCK,makeLock,verifyPassword,lock,mount,mountAll};
 });

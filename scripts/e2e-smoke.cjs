@@ -57,6 +57,9 @@ const patchAmxLock=async()=>{
   const browser=await chromium.launch(options);
   try{
     const context=await browser.newContext({viewport:{width:390,height:844}});
+    // 0.245: 시뮬레이터의 처음 화면이 HOS100으로 바뀌었다. 아래 기존 검사(WOS100 월 오버레이가 기본이라고 가정한 것)는 저장된 카드를 WOS100으로 두고 돌리고,
+    // "처음 들어오면 HOS100" 검사는 이 설정이 없는 새 브라우저 창(freshSim)에서 따로 한다.
+    await context.addInitScript(()=>{try{if(!localStorage.getItem('rtcom.layoutSim.card.v2'))localStorage.setItem('rtcom.layoutSim.card.v2','"WOS100"')}catch(e){}});
     const page=await context.newPage();
     const failed=[],errors=[];
     page.on('response',response=>{if(response.status()>=400&&!response.url().includes('/no-such-page/'))failed.push(`${response.status()} ${response.url().replace(origin,'')}`)});
@@ -388,6 +391,15 @@ const patchAmxLock=async()=>{
     // 슬롯 판과 후면 사진이 다 그려지기 전에 세면 가끔 실패했다(2026-09-27 한 번 재현). 슬롯 8칸과 사진 로딩을 기다린 뒤 검사한다.
     await page.waitForFunction(()=>{const image=document.querySelector('.rt-rack-photo-image');return document.querySelectorAll('.rt-rack-photo .rt-rack-slot').length>=8&&image&&image.complete&&image.naturalWidth>0},null,{timeout:10000}).catch(()=>{});
     check('VDM-16X는 후면 그림(0.119, 카드 없는 빈 슬롯) 위에 입력 4·출력 4 슬롯이 모두 빈 슬롯으로 표시됨(블랭크 자동 없음)',await page.$eval('.rt-rack-photo-image',image=>image.getAttribute('src').endsWith('vdm-16x-rear-art.webp'))&&await page.locator('.rt-rack-photo .rt-rack-slot-empty').count()===8&&await page.locator('.rt-rack-photo .rt-rack-slot-blank').count()===0&&await page.$eval('.rt-rack-photo-image',image=>image.naturalWidth>0));
+    // 0.245 VDM 출력 카드 선택 팝업 팁의 QOS4S-U 쿼드뷰 버튼(XDM HOS100 팁과 같은 방식): 레이아웃 팝업이 열리고 닫아도 카드 선택 팝업은 그대로 남는다.
+    await page.locator('button[data-slot="out-1"]').click();
+    const vdmTip=await page.$$eval('.rt-card-modal .rt-output-tips [data-card-feature]',els=>els.map(e=>e.dataset.cardFeature).join());
+    await page.click('.rt-card-modal .rt-output-tips [data-card-feature="vdm-quadview"]');
+    const vdmQv=await page.evaluate(()=>({n:document.querySelectorAll('dialog.rt-qv-modal[open]').length,layouts:document.querySelectorAll('dialog.rt-qv-modal .rt-qv-grid .rt-hos-layout').length}));
+    await page.keyboard.press('Escape');
+    const cardModalKept=await page.locator('.rt-card-modal[open]').count();
+    await page.keyboard.press('Escape');
+    check('VDM 출력 카드 선택 팝업 팁에 QOS4S-U 쿼드뷰 버튼이 있고, 레이아웃 팝업(8종)을 닫으면 카드 선택 팝업이 남음',vdmTip==='vdm-quadview'&&vdmQv.n===1&&vdmQv.layouts===8&&cardModalKept===1,JSON.stringify({vdmTip,vdmQv,cardModalKept}));
     await page.locator('button[data-slot="in-1"]').click();
     await page.locator('.rt-card-modal .rt-card-choice[data-card="HIS4-U"]').click();
     check('VDM 보드를 장착하면 실물 판넬 사진이 표시됨',await page.$eval('button[data-slot="in-1"] img.rt-faceplate',image=>image.naturalWidth>0&&image.getAttribute('src').endsWith('HIS4-U.webp')));
@@ -584,6 +596,19 @@ const patchAmxLock=async()=>{
       const clipped=await page.evaluate(()=>{const svg=[...document.querySelectorAll('.rt-pg-svg-wrap svg')].find(s=>s.textContent.includes('HDMI IN'));if(!svg)return ['svg 없음'];const vb=svg.viewBox.baseVal;return [...svg.querySelectorAll('text,rect')].filter(el=>{const bb=el.getBBox();return bb.x<vb.x-1||bb.y<vb.y-1||bb.x+bb.width>vb.x+vb.width+1||bb.y+bb.height>vb.y+vb.height+1}).map(el=>(el.textContent||el.tagName).slice(0,20))});
       check(`${id} 신호 흐름 그림 요소가 틀 밖으로 잘리지 않음`,clipped.length===0,JSON.stringify(clipped));
     }
+    // 0.250 알티컴 제품 직렬 8N1 공통(사용자 확인 2026-10-18 "8비트 맞아 알티컴은 전부 동일해"): HDS 두 제품은 "일반값" 안내 대신 확인된 설정을 보여 주고,
+    // XDM 08 설정 명령의 근거 문구는 "가이드에 없어 일반값" 대신 사용자 확인을 적는다.
+    {
+      const readHint=async id=>{
+        await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
+        await page.waitForSelector('.rt-pg-control .rt-ce-cmd, #rt-control .rt-ce-cmd');
+        return page.evaluate(()=>document.querySelector('.rt-pg-control, #rt-control').textContent.replace(/\s+/g,' '));
+      };
+      const hds21=await readHint('hds-21u'),hds42=await readHint('hds-42mu'),xdm=await readHint('xdm');
+      const hdsOk=t=>/9600bps\(8N1은 알티컴 제품 공통\(사용자 확인 2026-10-18\)\)/.test(t)&&!/데이터 비트·패리티·스톱 비트\(코드의 8N1은 일반값\)/.test(t)&&/볼륨 허용 범위/.test(t);
+      check('HDS-21U·HDS-42MU AMX 카드: 직렬 8N1(알티컴 공통, 사용자 확인) 근거를 보여 주고 "코드의 8N1은 일반값" 안내는 없으며 볼륨 허용 범위 안내는 남음',hdsOk(hds21)&&hdsOk(hds42)&&/뮤트 명령/.test(hds42)&&!/뮤트 명령, 볼륨/.test(hds21),JSON.stringify({a:hds21.match(/통신 속도[^※]{0,90}/)?.[0],b:hds42.match(/넣지 않은 것[^※]{0,90}/)?.[0]}));
+      check('XDM 설정 명령 근거 문구에 데이터 8비트 사용자 확인과 가이드 67쪽(패리티·스톱)이 적히고 "일반값으로 적음"은 없음',/데이터 8비트는 사용자 확인 2026-10-18/.test(xdm)&&/67쪽/.test(xdm)&&!/일반값으로 적음/.test(xdm),xdm.match(/통신 115200bps[^※]{0,140}/)?.[0]||'문구 없음');
+    }
     // 0.239 AMX 코드 잠금: 잠겨 있을 때는 커맨드 문자열·HEX가 보이고 AMX 코드(SEND_STRING·NetLinx)는 없다. 틀린 비밀번호는 거절하고 맞으면 열리며 다시 잠글 수 있다.
     {
       await page.goto(`${home}#products/hds-42mu`,{waitUntil:'networkidle'});
@@ -674,7 +699,7 @@ const patchAmxLock=async()=>{
       check(`${id} AMX 커맨드 카드: 매뉴얼 예시 ${first}, 칸 추가 ${after}, 모든 출력에 ${allCmd}, 프리셋 ${presets}개, AMX 코드는 LAN이 기본이고 RS-232 선택 시 115200, 가로 넘침 없음`,r0.includes(first)&&r1.includes(after)&&r2.includes(allCmd)&&info.presets===presets&&(presets?info.pc.includes('*255PC01!'):true)&&/IP_CLIENT_OPEN/.test(info.amx)&&/SET BAUD 115200,N,8,1/.test(serialAmx)&&info.cells>=16&&!info.overflow,JSON.stringify({r0,r1,r2,...info,amx:undefined}).slice(0,320));
     }
     // 0.234 QMS 설정 명령 패널(명령 빌더): 명령을 고르고 값을 넣으면 매뉴얼 예시와 같은 명령이 만들어진다.
-    for(const [id,steps] of [['qms-88ux',[['res','*255OSO01-10H10!'],['wall','*255OWO01-06M13H02V03O01O02O03O04O05O06!'],['mv','*255QM13L01S00!'],['tp','*255OTO01-04M06!']]],['qms-44ux',[['wm','*01WM01!'],['wmw','*01WM02P21!'],['tc','*01TCO01S02!'],['baud','*01@05!']]]]){
+    for(const [id,steps] of [['qms-88ux',[['res','*255OSO01-10H10!'],['wall','*255OWO01-06M13H02V03O01O02O03O04O05O06!'],['mv','*255QM13L01S00!'],['tp','*255OTO01-04M06!'],['qd','*255ISQ1Q2S0!']]],['qms-44ux',[['wm','*01WM01!'],['wmw','*01WM02P21!'],['tc','*01TCO01S02!'],['baud','*01@05!']]]]){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
       await page.waitForSelector('.rt-pg-control [data-ce-bsel]');
       const seen=[];
@@ -693,11 +718,129 @@ const patchAmxLock=async()=>{
       const over=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
       check(`${id} 설정 명령 패널: ${steps.map(x=>x[1]).join(' · ')}${id==='qms-88ux'?' · 값 직접 입력 *255OSO04O08H09!':''} 가 만들어지고 가로 넘침 없음`,seen.every(x=>x[1])&&(id!=='qms-88ux'||edited.includes('*255OSO04O08H09!'))&&!over,JSON.stringify({seen,edited,over}).slice(0,260));
     }
+    // 0.248 QMS-88UX 비디오 월(OW): 월 2개 이어 쓰기(매뉴얼 35쪽 첫 예시)와 불일치 경고(사용자 요청 2026-10-17 "1번 진행해줘")
+    {
+      await page.goto(`${home}#products/qms-88ux`,{waitUntil:'networkidle'});
+      await page.waitForSelector('.rt-pg-control [data-ce-bsel]');
+      await page.selectOption('.rt-pg-control [data-ce-bsel]','wall');
+      const cmdText=async()=>(await page.locator('.rt-pg-control [data-ce-bout] .rt-ce-cmd').first().innerText()).replace(/\s+/g,' ');
+      const setP=async(id,v)=>{await page.fill(`.rt-pg-control [data-ce-bp="${id}"]`,String(v))};
+      const warnOf=async()=>(await page.locator('.rt-pg-control [data-ce-bout] [data-ce-warn]').allInnerTexts()).join(' ');
+      const base={range:'1-6',h:2,v:3,members:'1-6'};
+      const one=await cmdText(),oneWarn=await warnOf();
+      for(const [id,v] of Object.entries({range:'1-10',h:2,v:2,members:'1-4',h2:3,v2:2,members2:'5-10'}))await setP(id,v);
+      const two=await cmdText(),twoWarn=await warnOf();
+      await setP('members','1-10');await setP('members2','');await setP('h2','');await setP('v2','');
+      const mismatch=await warnOf();
+      await setP('h2','2');
+      const partial=(await page.locator('.rt-pg-control [data-ce-bout] .rt-ce-warn').innerText());
+      const over=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
+      check('QMS-88UX 월 설정: 월 1개 기본 명령·경고 없음, 월 2개 매뉴얼 35쪽 첫 예시 *255OWO01-10M13H02V02O01O02O03O04H03V02O05O06O07O08O09O10!·경고 없음, 칸 수 불일치 경고, 월 2가 덜 채워지면 안내, 가로 넘침 없음',
+        one.includes('*255OWO01-06M13H02V03O01O02O03O04O05O06!')&&oneWarn===''&&two.includes('*255OWO01-10M13H02V02O01O02O03O04H03V02O05O06O07O08O09O10!')&&twoWarn===''&&/가로 2 × 세로 2 = 4칸인데 포함 출력은 10개/.test(mismatch)&&/두 번째 월을 쓰려면/.test(partial)&&!over,
+        JSON.stringify({one,oneWarn,two,twoWarn,mismatch,partial,over}).slice(0,420));
+    }
+    // 0.245 VDM 시리즈 "07 쿼드뷰 시뮬레이터"(사용자 요청 2026-10-17 "VDM QOS4S-U 카드를 통해서 분할화면 연출이 가능한데 … 커맨드 제어와 화면 예시"): 레이아웃 8종 도해,
+    // 레이아웃을 고르면 칸 수와 OQ 명령이 바뀌고(L07 → 2칸·*255OQO01L07!), 출력 번호·타이밍을 바꾸면 명령이 따라가며, 입력 연결 명령을 끌 수 있고,
+    // AMX 구성에 담으면 아래 08 카드 "내 AMX 구성"에 쌓인다. QOS4S-U 카드 상세 팝업과 02 신호 구성 칸에서 레이아웃 팝업이 열린다.
+    {
+      await page.goto(`${home}#products/vdm`,{waitUntil:'networkidle'});
+      await page.waitForSelector('#rt-quad-sim [data-qv-layout]');
+      const text=()=>page.locator('#rt-quad-sim [data-qv-cmd]').innerText().then(t=>t.replace(/\s+/g,' '));
+      const cells=()=>page.locator('#rt-quad-sim .rt-qv-preview svg rect.rt-qv-cell').count();
+      const first={idx:await page.locator('#rt-quad-sim .rt-pg-idx').textContent(),n:await page.locator('#rt-quad-sim [data-qv-layout]').count(),cells:await cells(),cmd:await text(),btn:await page.locator('[data-scroll-to="rt-quad-sim"]').count()};
+      await page.click('#rt-quad-sim [data-qv-layout="L07"]');
+      const side={cells:await cells(),cmd:await text(),labels:await page.locator('#rt-quad-sim .rt-qv-preview svg text').allTextContents()};
+      const openAdvQ=async()=>{if(!await page.evaluate(()=>document.querySelector('#rt-quad-sim [data-qv-adv]').open))await page.click('#rt-quad-sim [data-qv-adv] summary')};
+      await openAdvQ();
+      await page.locator('#rt-quad-sim [data-qv="out"]').fill('2');await page.locator('#rt-quad-sim [data-qv="out"]').blur();await page.selectOption('#rt-quad-sim [data-qv="timing"]','T17');
+      const edited=await text();
+      await page.locator('#rt-quad-sim [data-qv-in="1"]').fill('7');await page.locator('#rt-quad-sim [data-qv-in="1"]').blur();
+      const inputs=await text();
+      await page.uncheck('#rt-quad-sim [data-qv="withRoute"]');
+      const noRoute=await text();
+      await page.click('#rt-quad-sim [data-qv-amx]');
+      const basketText=await page.locator('#rt-control [data-ce-basket]').innerText();
+      const over=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
+      check('VDM "07 쿼드뷰 시뮬레이터": 레이아웃 8종·기본 쿼드뷰 4칸과 입력 연결 4줄+타이밍+레이아웃 6줄, 상단 버튼',first.idx==='07'&&first.n===8&&first.cells===4&&first.btn===1&&first.cmd.includes('*255CI01O05!')&&first.cmd.includes('*255OQO01T00!')&&first.cmd.includes('*255OQO01L05!'),JSON.stringify(first));
+      check('쿼드뷰 시뮬레이터: L07(좌우)을 고르면 2칸·입력 2줄·L07 명령이 나오고, 출력 2·타이밍 T17·C2 입력 7을 따라가며, 입력 연결을 끄면 OQ 2줄만 남음',side.cells===2&&side.labels.join()==='IN1,IN2'&&side.cmd.includes('*255OQO01L07!')&&!side.cmd.includes('CI03')&&edited.includes('*255OQO02T17!')&&edited.includes('*255OQO02L07!')&&inputs.includes('*255CI07O06!')&&!noRoute.includes('CI0')&&noRoute.includes('*255OQO02L07!'),JSON.stringify({side,edited:edited.slice(0,120),inputs:inputs.slice(0,120),noRoute}));
+      check('쿼드뷰 시뮬레이터: AMX 구성에 담으면 아래 "내 AMX 구성"에 OQ 명령이 쌓이고 가로 넘침이 없음',basketText.includes('*255OQO02L07!')&&basketText.includes('*255OQO02T17!')&&!over,JSON.stringify({basket:basketText.slice(0,160),over}));
+      await page.click('[data-pg-card="QOS4S-U"]');
+      const cta=await page.locator('dialog[open] .rt-feature-cta [data-card-feature="vdm-quadview"]').count();
+      await page.click('dialog[open] [data-card-feature="vdm-quadview"]');
+      const pop=await page.evaluate(()=>{const d=[...document.querySelectorAll('dialog[open]')].pop();return {title:d.querySelector('h3').textContent,layouts:d.querySelectorAll('.rt-qv-grid .rt-hos-layout').length,figs:d.querySelectorAll('.rt-qv-grid svg rect.rt-qv-cell').length,note:/알티컴 확인 대기/.test(d.textContent),go:!!d.querySelector('[data-qv-go]')}});
+      await page.click('dialog[open] [data-qv-go]');
+      const closed=await page.locator('dialog[open]').count();
+      const sigBtn=await page.locator('svg [data-card-feature="vdm-quadview"][role="button"]').count();
+      check('VDM QOS4S-U 카드 상세·02 신호 구성에서 쿼드뷰 레이아웃 팝업(8종·도해 칸 18개·알티컴 확인 대기 안내)이 열리고 "커맨드 만들기"는 팝업을 닫고 시뮬레이터로 이동함',cta===1&&pop.title==='VDM-QOS4S-U 쿼드뷰 레이아웃'&&pop.layouts===8&&pop.figs===18&&pop.note&&pop.go&&closed===0&&sigBtn===1,JSON.stringify({cta,pop,closed,sigBtn}));
+    }
+    // 0.247(사용자 지적 2026-10-17 "07 부분은 좀 이해가 안되 xdm처럼 개선해줘"): 07 분할 화면 시뮬레이터가 ①②③ 단계형이고(쿼드뷰·월 모두), 고급 설정은 접혀 있으며,
+    // index.html에서 두 스크립트 태그가 빠진 오래된 캐시 상황에서도 products.js가 모듈을 다시 불러와 화면을 채운다.
+    {
+      const freshCtx=await browser.newContext({viewport:{width:416,height:900}});
+      const fpage=await freshCtx.newPage();
+      await fpage.goto(`${home}#products/vdm`,{waitUntil:'networkidle'});
+      await fpage.waitForSelector('#rt-quad-sim [data-qv-layout]');
+      const q=await fpage.evaluate(()=>({steps:document.querySelectorAll('[data-sim-panel="quad"] .rt-sim-steps li').length,heads:[...document.querySelectorAll('[data-sim-panel="quad"] .rt-sim-h span')].map(e=>e.textContent).join(),thumbs:document.querySelectorAll('[data-sim-panel="quad"] .rt-qv-thumb').length,advOpen:document.querySelector('[data-sim-panel="quad"] [data-qv-adv]').open,inputs:document.querySelectorAll('[data-sim-panel="quad"] .rt-qv-inrow input').length,previews:document.querySelectorAll('[data-sim-panel="quad"] .rt-qv-preview').length}));
+      await fpage.click('#rt-quad-sim [data-sim-tab="wall"]');
+      const w=await fpage.evaluate(()=>({steps:document.querySelectorAll('[data-sim-panel="wall"] .rt-sim-steps li').length,heads:[...document.querySelectorAll('[data-sim-panel="wall"] .rt-sim-h span')].map(e=>e.textContent).join(),advOpen:document.querySelector('[data-sim-panel="wall"] [data-vw-adv]').open}));
+      check('VDM 07 분할 화면 시뮬레이터: 쿼드뷰·월 탭 모두 사용 순서 3칸과 ①②③ 단계 제목이 있고, 레이아웃은 작은 그림 8개 + 큰 미리보기 1개이며 칸 입력 4개, 고급 설정은 접혀 있음',q.steps===3&&q.heads==='1,2,3'&&q.thumbs===8&&q.previews===1&&q.inputs===4&&q.advOpen===false&&w.steps===3&&w.heads==='1,2,3'&&w.advOpen===false,JSON.stringify({q,w}));
+      await freshCtx.close();
+      // 오래된 index.html(스크립트 태그 없음)을 흉내: 두 파일 요청을 막고 index.html에서 태그를 지운 채 열면 products.js가 직접 불러온다.
+      const stale=await context.newPage();
+      await stale.route('**/index.html',async route=>{const res=await route.fetch();const body=(await res.text()).replace('<script src="src/quad-view.js"></script>','').replace('<script src="src/vdm-wall.js"></script>','');await route.fulfill({response:res,body})});
+      await stale.goto(`${home}#products/vdm`,{waitUntil:'networkidle'});
+      await stale.waitForSelector('#rt-quad-sim [data-qv-layout]',{timeout:15000}).catch(()=>{});
+      const lateOk=await stale.evaluate(()=>({thumbs:document.querySelectorAll('#rt-quad-sim [data-qv-layout]').length,hasModule:typeof window.RtQuadView==='object'}));
+      await stale.close();
+      check('오래된 index.html(quad-view.js·vdm-wall.js 태그 없음)에서도 products.js가 두 모듈을 다시 불러와 07 시뮬레이터를 채움',lateOk.thumbs===8&&lateOk.hasModule,JSON.stringify(lateOk));
+    }
+    // 0.246(사용자 요청 2026-10-17 "VDM 월만"): VDM "07 분할 화면 시뮬레이터"의 비디오 월 탭. 매뉴얼 85~88쪽 예시(W11·W21·B01·B02)와 같은 명령, 프리셋, 베젤, AMX 구성 담기, 탭 전환.
+    {
+      await page.goto(`${home}#products/vdm`,{waitUntil:'networkidle'});
+      await page.waitForSelector('#rt-quad-sim [data-sim-tab="wall"]');
+      const tabs0=await page.evaluate(()=>({quadShown:!document.querySelector('[data-sim-panel="quad"]').hidden,wallHidden:document.querySelector('[data-sim-panel="wall"]').hidden,btn:document.querySelector('[data-scroll-to="rt-quad-sim"]').textContent}));
+      await page.click('#rt-quad-sim [data-sim-tab="wall"]');
+      await page.waitForSelector('#rt-quad-sim [data-vw-cmd="build"]');
+      const cmd=sel=>page.locator(`#rt-quad-sim [data-vw-cmd="${sel}"]`).innerText().then(t=>t.replace(/\s+/g,' '));
+      const cells=()=>page.locator('#rt-quad-sim .rt-vw-fig svg rect.rt-vw-cell').count();
+      const tabs1=await page.evaluate(()=>({quadHidden:document.querySelector('[data-sim-panel="quad"]').hidden,wallShown:!document.querySelector('[data-sim-panel="wall"]').hidden,on:document.querySelector('[data-sim-tab].rt-pg-on')?.dataset.simTab}));
+      const def={cells:await cells(),cmd:await cmd('build'),reset:await cmd('reset')};
+      await page.selectOption('#rt-quad-sim [data-vw-preset]','w3x2x2');
+      const three={cells:await cells(),cmd:await cmd('build')};
+      await page.selectOption('#rt-quad-sim [data-vw-preset]','w4x3');
+      const four={cells:await cells(),cmd:await cmd('build'),reset:await cmd('reset')};
+      if(!await page.evaluate(()=>document.querySelector('#rt-quad-sim [data-vw-adv]').open))await page.click('#rt-quad-sim [data-vw-adv] summary');
+      await page.check('#rt-quad-sim [data-vw="withBezel"]');
+      for(const k of ['l','r','u','d']){const f=page.locator(`#rt-quad-sim [data-vw-bz="${k}"]`);await f.fill('20');await f.blur()}
+      const bezel=await cmd('build');
+      await page.click('#rt-quad-sim [data-vw-amx="build"]');
+      const basket=await page.locator('#rt-control [data-ce-basket]').innerText();
+      const over=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
+      await page.locator('#rt-quad-sim [data-vw="walls"]').fill('4');await page.locator('#rt-quad-sim [data-vw="walls"]').blur();
+      await page.locator('#rt-quad-sim [data-vw="h"]').fill('16');await page.locator('#rt-quad-sim [data-vw="h"]').blur();await page.locator('#rt-quad-sim [data-vw="v"]').fill('16');await page.locator('#rt-quad-sim [data-vw="v"]').blur();
+      const errText=await page.locator('#rt-quad-sim .rt-vw-error').innerText();
+      await page.click('#rt-quad-sim [data-sim-tab="quad"]');
+      const back=await page.evaluate(()=>({quadShown:!document.querySelector('[data-sim-panel="quad"]').hidden,wallHidden:document.querySelector('[data-sim-panel="wall"]').hidden}));
+      check('VDM "07 분할 화면 시뮬레이터": 쿼드뷰·비디오 월 탭이 있고 처음엔 쿼드뷰, 월 탭을 누르면 월 패널만 보이며 다시 쿼드뷰로 돌아옴',tabs0.quadShown&&tabs0.wallHidden&&/분할 화면 시뮬레이터/.test(tabs0.btn)&&tabs1.quadHidden&&tabs1.wallShown&&tabs1.on==='wall'&&back.quadShown&&back.wallHidden,JSON.stringify({tabs0,tabs1,back}));
+      check('VDM 비디오 월: 기본 2×2는 4칸·*255W11O0104H02V02!·복원 *255W11O0104H01V01!, 프리셋 4×3은 12칸·매뉴얼 85쪽 명령, 월 3개는 12칸·매뉴얼 87쪽 W21 명령과 글자까지 같음',def.cells===4&&def.cmd.includes('*255W11O0104H02V02!')&&def.reset.includes('*255W11O0104H01V01!')&&three.cells===12&&three.cmd.includes('*255W21H02V02O0101O0202O0703O0804H02V02O0301O0402O0903O1004H02V02O0501O0602O1103O1204!')&&four.cells===12&&four.cmd.includes('*255W11O0112H04V03!')&&four.reset.includes('*255W11O0112H01V01!'),JSON.stringify({def,three:three.cells,four}).slice(0,420));
+      check('VDM 비디오 월: 베젤 보정은 *255B02O0112D20202020!(매뉴얼 88쪽)이고, AMX 구성에 담으면 아래 "내 AMX 구성"에 쌓이며 가로 넘침이 없고, 출력이 256을 넘으면 오류 문구가 나옴',bezel.includes('*255B02O0112D20202020!')&&basket.includes('*255W11O0112H04V03!')&&basket.includes('*255B02O0112D20202020!')&&!over&&/256번을 넘습니다/.test(errText),JSON.stringify({bezel,basket:basket.slice(0,200),over,errText}));
+    }
+    // 0.245(사용자 요청 2026-10-17 "QMS-44UX 쿼드 뷰 입력 번호 표시 … 진행해줘"): QMS-44UX QUAD 카드에 칸 번호 안내 한 줄(출력 기준, 기본 입력 1~4번). 88UX·듀얼에는 이 줄이 없다.
+    {
+      await page.goto(`${home}#products/qms-44ux`,{waitUntil:'networkidle'});
+      await page.waitForSelector('[data-layout-cellnote]');
+      const note=await page.evaluate(()=>({n:document.querySelectorAll('[data-layout-cellnote]').length,inQuad:!!document.querySelector('.rt-pg-vmode-card [data-layout-cellnote]')&&/QUAD/.test(document.querySelector('[data-layout-cellnote]').closest('.rt-pg-vmode-card').textContent),text:document.querySelector('[data-layout-cellnote]').textContent}));
+      await page.goto(`${home}#products/qms-88ux`,{waitUntil:'networkidle'});
+      await page.waitForSelector('[data-layout-chip]');
+      const none=await page.locator('[data-layout-cellnote]').count();
+      const note88=await page.evaluate(()=>[...document.querySelectorAll('[data-layout-cellnote]')].map(n=>n.closest('.rt-pg-vmode-card').textContent.includes('QUAD')?'QUAD':n.closest('.rt-pg-vmode-card').textContent.includes('DUAL')?'DUAL':'?').join()+'|'+document.querySelector('[data-layout-cellnote]').textContent);
+      check('QMS-44UX QUAD 카드에는 "칸 번호는 출력 번호 기준·기본 입력 1~4번", QMS-88UX QUAD·DUAL 카드에는 "칸 번호 = 입력 번호(Q1 1~4, Q2 5~8)" 안내 한 줄이 있음',note.n===1&&note.inQuad&&/출력 번호 기준/.test(note.text)&&/입력 1~4번/.test(note.text)&&note88.startsWith('QUAD,DUAL|칸 번호 = 입력 번호')&&/Q2는 입력 5~8번/.test(note88),JSON.stringify({note,note88}));
+    }
     // 0.235 모듈러 매트릭스 시리즈(XDM·SPX·VDM) AMX 커맨드 카드: 명령 묶음 선택, 예시 명령, VDM 번호 자릿수(2·3자리), SPX 문장형(Enter 없음).
     for(const [id,idx,steps] of [
       ['xdm','08',[['conn','*255CI002O001-005!'],['osdi','*255IDI001M01S"Camera 1"!'],['os','*255OSO001O002H11!'],['sys','*255?SID!']]],
       ['spx','07',[['conn','*255CI001O001-007!'],['ow','*255OWO001-004M09H02V02O001O002O003O004!'],['t_av','s in 1 av out 2!'],['t_wall','s wall 2 hdiv 3 vdiv 3 time 13 out 13!']]],
-      ['vdm','07',[['c','*255CI01O01-07!'],['stat','*255?O07!'],['ot','*255OTO01-09T05P05!'],['oz','*255OZO01,O02!']]]]){
+      ['vdm','08',[['c','*255CI01O01-07!'],['stat','*255?O07!'],['ot','*255OTO01-09T05P05!'],['oz','*255OZO01,O02!']]]]){
       await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
       await page.waitForSelector('#rt-control [data-ce-bsel]');
       const seen=[];
@@ -719,6 +862,19 @@ const patchAmxLock=async()=>{
       const info=await page.evaluate(()=>({idx:document.querySelector('#rt-control .rt-pg-idx').textContent,btn:!!document.querySelector('[data-scroll-to="rt-control"]'),sim:!!document.querySelector('#rt-layout-sim'),over:document.documentElement.scrollWidth>innerWidth,groups:document.querySelectorAll('#rt-control [data-ce-bsel] optgroup').length}));
       const extraOk=id==='vdm'?extra.includes('*255?O007!'):id==='spx'?/Enter가 적혀 있지 않아/.test(extra):true;
       check(`${id} AMX 커맨드 카드(${idx}): 명령 ${steps.map(x=>x[0]).join('·')} 예시 일치${id==='vdm'?' · 3자리 번호 *255?O007!':''}${id==='spx'?' · 문장형은 Enter 없음':''} · 묶음 선택·가로 넘침 없음`,seen.every(x=>x[1])&&extraOk&&info.idx===idx&&info.btn&&info.groups>=1&&!info.over&&(id!=='xdm'||info.sim),JSON.stringify({seen,extra:extra.slice(0,80),info}).slice(0,300));
+    }
+    // 0.245(사용자 요청 2026-10-17 "시뮬레이터 들어가면 디폴트로 hos100 선택되서 레이어 연출이 되게해줘"): 저장값이 없는 새 브라우저로 XDM 시뮬레이터에 들어가면
+    // HOS100이 골라져 있고, 창 4개가 겹친 사용자 배치(창 1 4K 배경 + 창 2·3·4가 차례로 겹침, 맨 위 창 4가 레이어 1)와 그 OQ 커맨드가 보인다.
+    {
+      const fresh=await browser.newContext({viewport:{width:1280,height:900}});
+      const fp=await fresh.newPage();
+      await fp.goto(`${home}#products/xdm`,{waitUntil:'networkidle'});
+      await fp.waitForSelector('#rt-layout-sim [data-ls-card]');
+      const def=await fp.evaluate(()=>({on:document.querySelector('#rt-layout-sim [data-ls-card][aria-pressed="true"]')?.dataset.lsCard,wins:document.querySelectorAll('#rt-layout-sim .rt-ls-win').length,layers:[...document.querySelectorAll('#rt-layout-sim .rt-ls-win')].map(w=>w.dataset.lsWin+':'+(w.querySelector('.rt-ls-win-layer')||{}).textContent).join(),cmd:document.querySelector('#rt-layout-sim [data-ls-cmd]').textContent.replace(/\s+/g,'')}));
+      await fp.click('#rt-layout-sim [data-ls-card="WOS100"]');await fp.reload({waitUntil:'networkidle'});await fp.waitForSelector('#rt-layout-sim [data-ls-card]');
+      const kept=await fp.evaluate(()=>document.querySelector('#rt-layout-sim [data-ls-card][aria-pressed="true"]')?.dataset.lsCard);
+      await fresh.close();
+      check('XDM 07 시뮬레이터: 처음 들어오면 HOS100이 선택되고 창 4개가 겹쳐 레이어 1~4가 보이며(창 4가 맨 위) 그 OQ 커맨드가 나오고, WOS100을 고르면 새로고침 뒤에도 유지됨',def.on==='HOS100'&&def.wins===4&&def.layers==='0:레이어 4,1:레이어 3,2:레이어 2,3:레이어 1'&&def.cmd.includes('*255OQO001M14L00P4321O001X0000Y0000W3840H2160O002X0480Y0270W1920H1080O003X1440Y0810W1920H1080O004X2880Y1620W0960H0540!')&&kept==='WOS100',JSON.stringify({def,kept}));
     }
     // 0.239 XDM "내 AMX 구성": 07 시뮬레이터 커맨드와 08 설정 명령을 담아 한 개의 AMX 코드로 만들고, 순서 바꾸기·저장·파일 저장을 확인한다.
     {
@@ -841,7 +997,7 @@ const patchAmxLock=async()=>{
     await page.click('#rt-layout-sim [data-ls-hos-off="0"]');
     const offHos=await page.evaluate(()=>({wins:document.querySelectorAll('#rt-layout-sim .rt-ls-win').length,cmd:document.querySelector('#rt-layout-sim [data-ls-cmd]').textContent}));
     check('XDM 07 시뮬레이터 HOS100 표 "×": 끈 창은 버튼이 없고, 창 1을 누르면 W0000H0000으로 꺼져 창 2개만 남음("포함" 체크박스는 전체 커맨드 보기에서만 보임)',!offBtn.has4&&offBtn.has1&&offBtn.incl===0&&offHos.wins===2&&/O001X\d{4}Y\d{4}W0000H0000/.test(offHos.cmd),JSON.stringify({offBtn,wins:offHos.wins,cmd:offHos.cmd.slice(-80)}));
-    await page.evaluate(()=>{try{localStorage.removeItem('rtcom.layoutSim.v1');localStorage.removeItem('rtcom.layoutSim.hos.v1');localStorage.removeItem('rtcom.layoutSim.card.v1')}catch(e){}});
+    await page.evaluate(()=>{try{localStorage.removeItem('rtcom.layoutSim.v1');localStorage.removeItem('rtcom.layoutSim.hos.v1');localStorage.setItem('rtcom.layoutSim.card.v2','"WOS100"')}catch(e){}});
     await page.reload({waitUntil:'networkidle'});
     await page.waitForSelector('#rt-layout-sim [data-ls-preset]');
     // 0.233 현장 메모 공개(사용자 결정 2026-10-16 "2안으로 전부 공개해"): 프리셋 원문과 참고 커맨드 접이식 칸.
@@ -856,7 +1012,7 @@ const patchAmxLock=async()=>{
     const hosLayers=await page.evaluate(()=>({badges:[...document.querySelectorAll('#rt-layout-sim .rt-ls-win-layer')].map(e=>e.textContent),cells:[...document.querySelectorAll('#rt-layout-sim td.rt-ls-stack b')].map(e=>e.textContent)}));
     await page.selectOption('#rt-layout-sim [data-ls-hos-preset]','hos-guide-pip');
     const hosPip=await page.evaluate(()=>({cmd:document.querySelector('#rt-layout-sim [data-ls-cmd]').textContent,fixed:document.querySelectorAll('#rt-layout-sim .rt-ls-win.is-fixed').length,free:document.querySelectorAll('#rt-layout-sim .rt-ls-win:not(.is-fixed)').length,overflow:document.documentElement.scrollWidth>innerWidth}));
-    check('XDM 07 시뮬레이터 HOS100 모드: 사용자 배치(L00) 커맨드와 스위칭 커맨드가 나오고 PIP 프리셋이 가이드 원문과 같음',/\*255CI001O001,I002O002,I003O003,I004O004!/.test(hosDefault)&&/\*255OQO001M14L00P4321O001X0000Y0000W1920H1080/.test(hosDefault)&&hosPip.cmd.includes('*255OQO001M14L09X1920Y1080W1920H1080!')&&hosPip.fixed===1&&hosPip.free===1&&hosLayers.badges.join(',')==='레이어 4,레이어 3,레이어 2,레이어 1'&&hosLayers.cells.join(',')==='레이어 4,레이어 3,레이어 2,레이어 1'&&!hosPip.overflow,JSON.stringify({hosDefault:hosDefault.slice(0,120),fixed:hosPip.fixed,free:hosPip.free,layers:hosLayers}));
+    check('XDM 07 시뮬레이터 HOS100 모드: 사용자 배치(L00) 커맨드와 스위칭 커맨드가 나오고 PIP 프리셋이 가이드 원문과 같음',/\*255CI001O001,I002O002,I003O003,I004O004!/.test(hosDefault)&&/\*255OQO001M14L00P4321O001X0000Y0000W3840H2160O002X0480Y0270W1920H1080/.test(hosDefault)&&hosPip.cmd.includes('*255OQO001M14L09X1920Y1080W1920H1080!')&&hosPip.fixed===1&&hosPip.free===1&&hosLayers.badges.join(',')==='레이어 4,레이어 3,레이어 2,레이어 1'&&hosLayers.cells.join(',')==='레이어 4,레이어 3,레이어 2,레이어 1'&&!hosPip.overflow,JSON.stringify({hosDefault:hosDefault.slice(0,120),fixed:hosPip.fixed,free:hosPip.free,layers:hosLayers}));
     // 0.226 전체 커맨드(두 카드): WOS100·HOS100 커맨드가 번호 순으로 모이고, 포트가 겹치면 경고와 "시작 포트를 17번으로" 버튼이 나오며 누르면 경고가 사라진다.
     await page.click('#rt-layout-sim [data-ls-card="ALL"]');
     await page.waitForSelector('#rt-layout-sim .rt-ls-allgrid');
@@ -864,7 +1020,7 @@ const patchAmxLock=async()=>{
     await page.click('#rt-layout-sim [data-ls-hos-port]');
     const allAfter=await page.evaluate(()=>({overlapBtn:!!document.querySelector('#rt-layout-sim [data-ls-hos-port]'),text:document.querySelector('#rt-layout-sim [data-ls-cmd]').textContent,overflow:document.documentElement.scrollWidth>innerWidth}));
     check('XDM 07 시뮬레이터 전체 커맨드: 두 카드 커맨드 3줄, 포트 겹침 경고 → 버튼으로 HOS100 시작 포트 17번',allBefore.lines===3&&allBefore.overlapBtn&&!allAfter.overlapBtn&&/\*255OQO017M14L09X1920Y1080W1920H1080!/.test(allAfter.text)&&/I001O017,I002O018!/.test(allAfter.text)&&!allAfter.overflow,JSON.stringify({before:allBefore,after:allAfter.text.slice(-80)}));
-    await page.evaluate(()=>{try{localStorage.removeItem('rtcom.layoutSim.v1');localStorage.removeItem('rtcom.layoutSim.hos.v1');localStorage.removeItem('rtcom.layoutSim.card.v1');localStorage.removeItem('rtcom.layoutSim.include.v1')}catch(e){}});
+    await page.evaluate(()=>{try{localStorage.removeItem('rtcom.layoutSim.v1');localStorage.removeItem('rtcom.layoutSim.hos.v1');localStorage.setItem('rtcom.layoutSim.card.v2','"WOS100"');localStorage.removeItem('rtcom.layoutSim.include.v1')}catch(e){}});
     await page.evaluate(()=>{try{localStorage.removeItem('rtcom.layoutSim.v1')}catch(e){}});
     // 0.64 OBUX-1C Tx Mode 딥 스위치(매뉴얼 Ver.2.2): 검은 몸체 4핀, 1번 오디오 + 2·3·4번 EDID 조합 5칸(Through-pass EDID Fix 포함).
     await page.goto(`${home}#products/obux-1c`,{waitUntil:'networkidle'});
@@ -1127,23 +1283,40 @@ const patchAmxLock=async()=>{
     const afterLayout=await quadCard88.evaluate(card=>({name:card.querySelector('[data-layout-name]').textContent,on:card.querySelector('.rt-pg-layout-chip.on')?.textContent,rects:card.querySelector('[data-layout-preview]').querySelectorAll('svg rect.rt-pg-cell').length}));
     check('QMS-88UX 06 화면 구성 모드에서 레이아웃 버튼을 누르면 미리보기 도해가 바뀜',beforeLayout==='QUAD'&&afterLayout.name==='3-SIDE RIGHT'&&afterLayout.on==='3-SIDE RIGHT'&&afterLayout.rects===4,JSON.stringify({beforeLayout,afterLayout}));
     // 0.66 — QMS-88UX 출력 9번에 매뉴얼 22~23쪽 Output Option 2·3(비율 유지 없이 그대로 8분할)을 레이아웃 목록 13번째로 추가(사용자 요청 2026-09-27 "출력9에 비율무시8분할도 추가해줘").
-    await quadCard88.locator('[data-layout-chip]',{hasText:'8분할(비율무시)'}).click();
-    const split8=await quadCard88.evaluate(card=>({name:card.querySelector('[data-layout-name]').textContent,rects:card.querySelector('[data-layout-preview]').querySelectorAll('svg rect.rt-pg-cell').length}));
-    check('QMS-88UX 06 화면 구성 모드에 "8분할(비율무시)" 레이아웃이 있고 8칸 도해로 미리보기됨',split8.name==='8분할(비율무시)'&&split8.rects===8,JSON.stringify(split8));
+    // 0.249 — 매뉴얼 23쪽 도해 재대조(사용자 요청 2026-10-17 "1·2번 진행해"): 옵션 2·5는 좌우(윗줄 1 2 5 6 / 아랫줄 3 4 7 8), 옵션 3·6은 상하(2열 4행 1 2 / 3 4 / 5 6 / 7 8)로 4종이 되었다.
+    const gridOrder=async name=>{
+      await quadCard88.locator('[data-layout-chip]',{hasText:name}).click();
+      return quadCard88.evaluate(card=>{
+        const pv=card.querySelector('[data-layout-preview]');
+        const texts=[...pv.querySelectorAll('svg text')].map(t=>{const r=t.getBoundingClientRect();return {n:t.textContent,x:r.x+r.width/2,y:r.y+r.height/2}});
+        texts.sort((a,b)=>Math.abs(a.y-b.y)>3?a.y-b.y:a.x-b.x);
+        const rows=[];for(const t of texts){const last=rows[rows.length-1];if(last&&Math.abs(last.y-t.y)<=3)last.v.push(t.n);else rows.push({y:t.y,v:[t.n]})}
+        return {name:pv.querySelector('[data-layout-name]').textContent,rects:pv.querySelectorAll('svg rect.rt-pg-cell').length,rows:rows.map(r=>r.v.join(' ')).join(' / '),opt:pv.querySelector('[data-layout-opt]')?.textContent||''};
+      });
+    };
+    const split8={};
+    for(const name of ['8분할 좌우(비율무시)','8분할 상하(비율무시)','8분할 좌우(16:9 비율)','8분할 상하(16:9 비율)'])split8[name]=await gridOrder(name);
+    const s8=split8;
+    const gridOk=(name,rows,optNo)=>s8[name].rows===rows&&s8[name].rects===8&&s8[name].opt.startsWith(`출력 옵션 ${optNo}`);
+    check('QMS-88UX 06 화면 구성 모드 8분할 4종(좌우·상하 × 비율무시·16:9)이 매뉴얼 23쪽 번호 배치(좌우 1 2 5 6 / 3 4 7 8, 상하 1 2 / 3 4 / 5 6 / 7 8)와 출력 옵션 2·3·5·6 안내로 8칸 도해 미리보기됨',
+      gridOk('8분할 좌우(비율무시)','1 2 5 6 / 3 4 7 8',2)&&gridOk('8분할 상하(비율무시)','1 2 / 3 4 / 5 6 / 7 8',3)&&gridOk('8분할 좌우(16:9 비율)','1 2 5 6 / 3 4 7 8',5)&&gridOk('8분할 상하(16:9 비율)','1 2 / 3 4 / 5 6 / 7 8',6),
+      JSON.stringify(s8));
+    const quadChips=await quadCard88.evaluate(card=>[...card.querySelectorAll('.rt-pg-vmode-chips [data-layout-chip]')].map(b=>b.textContent));
+    check('QMS-88UX 06 QUAD 카드 레이아웃이 16종(기존 12종 + 8분할 4종)이고 이전 이름 "8분할(비율무시)"는 없음',quadChips.length===16&&quadChips.slice(-4).join('|')==='8분할 좌우(비율무시)|8분할 상하(비율무시)|8분할 좌우(16:9 비율)|8분할 상하(16:9 비율)'&&!quadChips.includes('8분할(비율무시)'),JSON.stringify(quadChips));
     // 0.90 — QMS-88UX DUAL 카드가 "듀얼 모드" 한 마디뿐이었다(사용자 질문 2026-09-28 "QMS-88Ux도 듀얼 출력되지 않아??"). 매뉴얼 KV.04 20~21쪽 근거로 2분할(PBP)·PIP 레이아웃 3종을 넣고, 카드 안에서만 미리보기가 바뀌는지 확인.
     const dualCard=page.locator('.rt-pg-vmode-card',{hasText:'DUAL'});
     await dualCard.locator('[data-layout-chip]',{hasText:'Vertical PBP'}).click();
     const dual=await dualCard.evaluate(card=>({chips:[...card.querySelectorAll('[data-layout-chip]')].map(b=>b.textContent),name:card.querySelector('[data-layout-name]')?.textContent,rects:card.querySelectorAll('[data-layout-preview] svg rect.rt-pg-cell').length,text:card.querySelector('p')?.textContent||''}));
     const quadName=await page.locator('.rt-pg-vmode-card',{hasText:'QUAD'}).first().evaluate(card=>card.querySelector('[data-layout-name]')?.textContent);
-    check('QMS-88UX 06 DUAL 카드에 PBP·PIP 레이아웃 3종이 있고 Vertical PBP를 누르면 2칸 도해로 바뀌며 QUAD 카드 미리보기는 그대로임',dual.chips.join('|')==='Horizontal PBP|Vertical PBP|Quad PBP, PIP'&&dual.name==='Vertical PBP'&&dual.rects===2&&/출력 9·10번/.test(dual.text)&&quadName==='8분할(비율무시)',JSON.stringify({dual,quadName}));
+    check('QMS-88UX 06 DUAL 카드에 PBP·PIP 레이아웃 3종이 있고 Vertical PBP를 누르면 2칸 도해로 바뀌며 QUAD 카드 미리보기는 그대로임',dual.chips.join('|')==='Horizontal PBP|Vertical PBP|Quad PBP, PIP'&&dual.name==='Vertical PBP'&&dual.rects===2&&/출력 9·10번/.test(dual.text)&&quadName==='8분할 상하(16:9 비율)',JSON.stringify({dual,quadName}));
     // 0.243 — QMS-88UX 쿼드 뷰·듀얼 카드의 입력 그룹 전환(매뉴얼 KV.04 22쪽: Q1 = 입력 1~4번, Q2 = 입력 5~8번). Q2를 누르면 도해 칸 번호가 5~8로 바뀐다.
     const cellLabels=card=>[...card.querySelectorAll('[data-layout-preview] svg text')].map(t=>t.textContent).join(',');
     await quadCard88.locator('[data-layout-chip]',{hasText:/^QUAD$/}).click();
     const q1Labels=await quadCard88.evaluate(cellLabels);
     await quadCard88.locator('[data-layout-group-btn="2"]').click();
     const q2=await quadCard88.evaluate(card=>({labels:[...card.querySelectorAll('[data-layout-preview] svg text')].map(t=>t.textContent).join(','),note:card.querySelector('[data-layout-group-note]')?.textContent||'',pressed:card.querySelector('[data-layout-group-btn="2"]').getAttribute('aria-pressed'),on:card.querySelector('.rt-pg-vmode-chips .on')?.textContent}));
-    await quadCard88.locator('[data-layout-chip]',{hasText:'8분할(비율무시)'}).click();
-    const split8Group=await quadCard88.evaluate(card=>({hidden:card.querySelector('[data-layout-groups]').hidden,labels:[...card.querySelectorAll('[data-layout-preview] svg text')].map(t=>t.textContent).join(',')}));
+    await quadCard88.locator('[data-layout-chip]',{hasText:'8분할 좌우(비율무시)'}).click();
+    const split8Group=await quadCard88.evaluate(card=>({hidden:card.querySelector('[data-layout-groups]').hidden,labels:[...card.querySelectorAll('[data-layout-preview] svg text')].map(t=>Number(t.textContent)).sort((a,b)=>a-b).join(',')}));
     await quadCard88.locator('[data-layout-chip]',{hasText:'3-SIDE RIGHT'}).click();
     const keepQ2=await quadCard88.evaluate(card=>({hidden:card.querySelector('[data-layout-groups]').hidden,labels:[...card.querySelectorAll('[data-layout-preview] svg text')].map(t=>t.textContent).join(',')}));
     await quadCard88.locator('[data-layout-group-btn="1"]').click();
@@ -1151,7 +1324,7 @@ const patchAmxLock=async()=>{
     await dualCard.locator('[data-layout-group-btn="2"]').click();
     const dualQ2=await dualCard.evaluate(card=>[...card.querySelectorAll('[data-layout-preview] svg text')].map(t=>t.textContent).join(','));
     const wallHas=await page.locator('.rt-pg-vmode-card',{hasText:'WALL'}).first().evaluate(card=>!!card.querySelector('[data-layout-groups]'));
-    await quadCard88.locator('[data-layout-chip]',{hasText:'8분할(비율무시)'}).click();
+    await quadCard88.locator('[data-layout-chip]',{hasText:'8분할 좌우(비율무시)'}).click();
     check('QMS-88UX 쿼드 뷰·듀얼에서 Q2 버튼을 누르면 칸 번호가 입력 5~8번으로 바뀌고(8분할은 버튼 숨김·번호 1~8 그대로) Q1로 돌아오면 1~4이며 WALL 카드에는 버튼이 없음',
       q1Labels==='1,2,3,4'&&q2.labels==='5,6,7,8'&&/입력 5~8/.test(q2.note)&&q2.pressed==='true'&&q2.on==='QUAD'&&split8Group.hidden===true&&split8Group.labels==='1,2,3,4,5,6,7,8'&&keepQ2.hidden===false&&keepQ2.labels==='5,6,7,8'&&backQ1==='1,2,3,4'&&dualQ2==='5,6'&&wallHas===false,
       JSON.stringify({q1Labels,q2,split8Group,keepQ2,backQ1,dualQ2,wallHas}));

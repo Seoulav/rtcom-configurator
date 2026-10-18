@@ -6,7 +6,7 @@ const vm=require('node:vm');
 const {execFileSync}=require('node:child_process');
 
 const read=file=>fs.readFileSync(file,'utf8');
-const runtimeScripts=['src/catalog.js','src/card-specs.js','src/core.js','src/app.js','src/layout-sim.js','src/control-example.js','src/products.js'];
+const runtimeScripts=['src/catalog.js','src/card-specs.js','src/core.js','src/app.js','src/layout-sim.js','src/quad-view.js','src/vdm-wall.js','src/control-example.js','src/products.js'];
 const loadCatalog=()=>{const context={globalThis:{}};vm.runInNewContext(read('src/catalog.js'),context);return context.globalThis.RtCatalog};
 
 test('Pretendard Variable font and its OFL license are present and referenced by styles.css',()=>{
@@ -693,6 +693,15 @@ test('0.201: SPX-TX/RX 03 Signal Flow 범례의 실효 전송 거리에 Belden �
   const value=JSON.parse(read('data/products/spx-rx-tx.json')).specifications.find(spec=>spec.group==='Transmission').value;
   const legend=value.split('\n').map(line=>line.replace(/\s*\(([^)]*)\)/g,(all,inner)=>{const belden=inner.match(/Belden\s*[A-Z0-9]+/i);return belden?` (${belden[0]})`:''}).trim()).join(' · ');
   assert.equal(legend,'UTP CAT6 50m (Belden 7814A) · S/FTP CAT6A 70m (Belden 10GXE02)');
+});
+
+test('0.251: FT101-U/FR101-U HDMI 입력은 1개가 맞다는 사용자 확인(2026-10-18)이 출처 문구에 남고 "2 Ports"는 화면 사양에 없다',()=>{
+  const ft=JSON.parse(read('data/products/ft101-u-fr101-u.json'));
+  const m=ft.sources.find(s=>s.code==='M');
+  assert.match(m.scope,/"HDMI 2 Ports"는 오기이고 HDMI 입력은 1개가 맞음\(사용자 확인 2026-10-18/);
+  assert.doesNotMatch(m.scope,/오기로 보고 1개 유지/,'추정 문구는 확정 문구로 바뀜');
+  const visible=JSON.stringify({specifications:ft.specifications,features:ft.features,io:ft.io,overview:ft.overview});
+  assert.doesNotMatch(visible,/HDMI 2 Ports|2 Ports/,'화면에 보이는 사양·기능·단자에는 2 Ports가 없다');
 });
 
 test('0.220: FT101-U/FR101-U 정정 매뉴얼 기준 값과 구성기 전송기 전원 문구',()=>{
