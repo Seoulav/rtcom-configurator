@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.250.0 배포 기록**: `docs/qa/DEPLOYMENT_0.250_2026-10-18.md`(PR #394 → main 병합 `374d479`, Pages 배포 run 39091171333 success, 공개 `CATALOG BASED · 0.250`·`xdm.json`·`hds-42mu.json`·`hds-21u.json`·`control-example.js`·`index.html` 해시 일치·`CLAUDE.md` 404, 첫 검사 알림이 이전 커밋 결과였던 경위)
 - **알티컴 질의서 정리**(문서만): `docs/handoff/RTCOM_QUESTIONS_2026-10-16.md`에 아직 보내지 않은 29~32번의 "3차 메일" 문안과 회신 대응표, 발송 10건·미발송 4건을 한 표로 모은 "전체 회신 대기 현황"을 더하고 `docs/handoff/OPEN_ITEMS.md`에 3차 메일 발송 대기 항목을 추가했습니다(사용자 요청 2026-10-17 "알티컴 보낼 질문지 다시 보여줘", 2026-10-18 "다음 단계 제안 진행해줘").
 - **0.249.0 배포 기록**: `docs/qa/DEPLOYMENT_0.249_2026-10-17.md`(PR #391 → main 병합 `c23918b`, Pages 배포 run 39037003794 success, 공개 `CATALOG BASED · 0.249`·`products.js`·`qms-88ux.json`·`index.html`·`control-example.js` 해시 일치·`CLAUDE.md` 404)
 - **0.248.0 배포 기록**: `docs/qa/DEPLOYMENT_0.248_2026-10-17.md`(PR #389 → main 병합 `733f3fb`, Pages 배포 run 39035911370 success, 공개 `CATALOG BASED · 0.248`·`control-example.js`·`qms-88ux.json`·`index.html` 해시 일치·`CLAUDE.md` 404)
