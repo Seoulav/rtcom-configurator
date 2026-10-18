@@ -876,7 +876,7 @@ const patchAmxLock=async()=>{
       await fresh.close();
       check('XDM 07 시뮬레이터: 처음 들어오면 HOS100이 선택되고 창 4개가 겹쳐 레이어 1~4가 보이며(창 4가 맨 위) 그 OQ 커맨드가 나오고, WOS100을 고르면 새로고침 뒤에도 유지됨',def.on==='HOS100'&&def.wins===4&&def.layers==='0:레이어 4,1:레이어 3,2:레이어 2,3:레이어 1'&&def.cmd.includes('*255OQO001M14L00P4321O001X0000Y0000W3840H2160O002X0480Y0270W1920H1080O003X1440Y0810W1920H1080O004X2880Y1620W0960H0540!')&&kept==='WOS100',JSON.stringify({def,kept}));
     }
-    // 0.253 XDM 07 시뮬레이터: 입력 칸 설명·연결 한 줄·꺼진 창 표시·구성기 입력 확인(사용자 요청 2026-10-18).
+    // 0.254 XDM 07 시뮬레이터: 입력 칸 설명·연결 한 줄·꺼진 창 표시·구성기 입력 확인(사용자 요청 2026-10-18).
     {
       const ctx=await browser.newContext({viewport:{width:1280,height:900}});
       const sp=await ctx.newPage();

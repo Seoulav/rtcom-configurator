@@ -381,7 +381,7 @@
   // ---------------- 브라우저 UI ----------------
   const STORE_KEY='rtcom.layoutSim.v1';
   // 0.245: 카드 선택은 글자 그대로 저장되는데 loadKey가 JSON으로 읽어 새로고침 뒤에 유지되지 않던 문제를 JSON 문자열로 저장해 고쳤다(저장 형식이 달라져 키를 v2로 올림).
-  // ---- 0.253 입력 번호 확인·연결 한 줄·꺼진 창(사용자 요청 2026-10-18 "입력 칸이 입력포트인거야?" 뒤 "제안대로 진행해줘") ----
+  // ---- 0.254 입력 번호 확인·연결 한 줄·꺼진 창(사용자 요청 2026-10-18 "입력 칸이 입력포트인거야?" 뒤 "제안대로 진행해줘") ----
   // 표의 "입력"은 매트릭스 프레임의 입력 포트 번호(구성기 03 카드 슬롯의 CH 번호, 가이드의 I001 형식)이다. 시뮬레이터는 소스가 실제로 어디에 꽂혔는지 모르므로
   // 구성기에 저장된 XDM 구성(rtcom.configuration.v1)이 있으면 그 입력 카드가 덮는 채널(CH)만 읽어 번호가 범위 안인지 알려 준다. 계산은 구성기 chRange(src/app.js)와 같다:
   //   첫 채널 = (입력 슬롯 번호 − 1) × XDM 입력 카드의 최대 채널 수 + 1, 카드 채널 수만큼. 저장된 구성이 없거나 XDM이 아니면 null(경고 없음).
@@ -460,7 +460,7 @@
     };
     const tokens=parts=>parts.map(p=>`<span class="rt-ls-tok rt-ls-tok-${p.kind}"${p.kind==='window'?` style="--rt-ls-color:${colorOf(p.window)}"`:''} title="${esc(p.title)}">${esc(p.text)}</span>`).join('');
     // ---- HOS100 화면 ----
-    // 0.253 입력 번호 안내·연결 한 줄·구성기 입력 확인(사용자 요청 2026-10-18). 저장된 구성은 그릴 때마다 읽는다(구성기에서 바꾼 직후에도 맞게).
+    // 0.254 입력 번호 안내·연결 한 줄·구성기 입력 확인(사용자 요청 2026-10-18). 저장된 구성은 그릴 때마다 읽는다(구성기에서 바꾼 직후에도 맞게).
     const readSaved=()=>{try{const raw=localStorage.getItem('rtcom.configuration.v1');return savedInputChannels(raw?JSON.parse(raw):null,globalThis.RtCatalog)}catch{return null}};
     const INPUT_TIP='매트릭스 입력 포트 번호입니다. 구성기 03 카드 슬롯의 CH 번호와 같고, 커맨드의 I005는 입력 5번입니다.';
     const savedHintHtml=saved=>`<p class="rt-pg-hint rt-ls-inputhint">표의 <b>입력</b>은 매트릭스의 입력 포트 번호입니다(커맨드의 <code>I005</code>는 입력 5번).${saved?` 구성기에 저장된 <b>${esc(saved.model)}</b> 구성 기준으로 ${saved.text?`입력 카드는 <b>${esc(saved.text)}</b>입니다.`:'장착한 입력 카드가 아직 없습니다.'}`:' 구성기 03 카드 슬롯에서 XDM 프레임과 입력 카드를 정하면 입력 번호가 그 범위 안에 있는지 확인해 줍니다.'}</p>`;

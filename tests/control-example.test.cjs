@@ -519,7 +519,7 @@ test('0.239: lan 항목이 없는 제품은 포트 0과 확인 필요 주석, �
   const bare={amxDevice:'dvXDM',serial:{baud:115200}};
   const none=ce.amxCode(bare,[],{mode:'lan'});
   assert.match(none,/LONG nDevicePort = 0 +\/\/ TCP 포트 번호를 입력하세요\(이 제품은 매뉴얼에 없어 알티컴 확인 필요\)/);
-  assert.match(none,/'192\.168\.1\.141'.*예시/);
+  assert.match(none,/'192\.168\.1\.141'.*알티컴 장비 기본 IP/);
   assert.doesNotMatch(none,/동시 접속 1개|자동으로 끊지 않음/);
   const own=ce.amxCode(bare,[],{mode:'lan',ip:'10.1.2.3',port:'4001'});
   assert.match(own,/'10\.1\.2\.3'/);assert.match(own,/LONG nDevicePort = 4001 +\/\/ TCP 포트 \(직접 입력한 값\)/);
@@ -544,7 +544,7 @@ test('0.239: RS-232를 고르면 기존 직렬 코드(SET BAUD)가 나오고, �
 });
 test('0.239: 통신 방식 상태는 기본 LAN이고 저장소가 없어도 메모리에 기억한다',()=>{
   const s={id:'comm-test'};
-  assert.deepEqual(ce.commOf(s),{mode:'lan',ip:'',port:''});
+  assert.deepEqual(ce.commOf(s),{mode:'lan',ip:'192.168.1.141',port:''});
   ce.setComm(s,{mode:'serial',ip:'10.0.0.9',port:'23'});
   assert.deepEqual(ce.commOf(s),{mode:'serial',ip:'10.0.0.9',port:'23'});
   ce.setComm(s,{mode:'lan'});assert.equal(ce.commOf(s).mode,'lan');assert.equal(ce.commOf(s).ip,'10.0.0.9');
@@ -565,4 +565,15 @@ test('0.244: HDS-42MU·HDS-21U는 직렬 전용이라 lan 값이 없고 AMX 코�
   }
   // LAN 제품 5종은 serialOnly가 없다
   for(const s of [xdm,vdm,spx])assert.equal(s.serialOnly,undefined);
+});
+
+// 0.253 사용자 요청 2026-10-18 "제어시 디폴트 ip 192.168.1.141이 안되어 있어 알티컴 lan제어 전제품 동일하게 디폴트아이피 넣어줘": IP 칸이 안내 글(placeholder)이 아니라 실제 값으로 채워진다
+test('0.253: LAN 제어 제품 5종의 IP 입력 칸은 기본값 192.168.1.141이 실제 값으로 들어 있다',()=>{
+  for(const id of ['qms-88ux','qms-44ux','xdm','spx','vdm']){
+    const s=JSON.parse(fs.readFileSync(`data/products/${id}.json`,'utf8')).controlExample;
+    assert.ok(s.lan,id);
+    assert.equal(ce.commOf({...s,id:`default-ip-${id}`}).ip,'192.168.1.141',id);
+    const html=ce.commBarHtml({...s,id:`default-ip-html-${id}`});
+    assert.match(html,/data-ce-comm="ip" value="192\.168\.1\.141"/,id);
+  }
 });
