@@ -81,3 +81,15 @@ test('0.245: 화면에는 알티컴 확인 대기 안내와 출처 쪽을 남기
   assert.match(app,/'QOS4S-U':\{key:'vdm-quadview'/);
   assert.match(app,/'vdm-quadview':openQuadView/);
 });
+
+// 0.256 입력 선택 목록(사용자 요청 2026-10-18 "2번도 진행해"): 화면 소스에 선택·전환·경고가 연결되어 있다.
+test('0.256: 쿼드뷰 시뮬레이터 입력 칸은 구성기 VDM 입력 카드 목록 선택, 직접 입력 전환, 구성에 없는 번호 경고가 연결되어 있다',()=>{
+  const fs=require('node:fs'),path=require('node:path');
+  const src=fs.readFileSync(path.join(__dirname,'../src/quad-view.js'),'utf8');
+  for(const t of ['data-qv-in-pick','__manual__','data-qv-input-list','savedInputChannels(raw?JSON.parse(raw):null,globalThis.RtCatalog,\'VDM\')','inputChoiceLabel(e)','inputProblems(','구성기에 없음','const manual=new Set()'])assert.ok(src.includes(t),t);
+  const css=fs.readFileSync(path.join(__dirname,'../src/styles.css'),'utf8');
+  for(const t of ['select.rt-qv-in-sel','.rt-qv-inrow input.is-missing'])assert.ok(css.includes(t),t);
+  // 저장된 구성이 없는 Node 환경(전역 RtLayoutSim 없음)에서도 순수 함수는 그대로 동작한다
+  const Q=require('../src/quad-view.js');
+  assert.deepEqual(Q.normalize({}).inputs,[1,2,3,4]);
+});

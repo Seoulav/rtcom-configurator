@@ -936,6 +936,40 @@ const patchAmxLock=async()=>{
         wos>=1&&!over,
         JSON.stringify({plain,listed,picked,manual,back,wos,over}));
     }
+    // 0.256 VDM 07 쿼드뷰 시뮬레이터: 구성기 VDM 입력 카드 채널 목록에서 입력 고르기, 직접 입력 전환, 구성이 없으면 숫자 칸(사용자 요청 2026-10-18).
+    {
+      const ctx=await browser.newContext({viewport:{width:1280,height:900}});
+      const vp=await ctx.newPage();
+      await vp.goto(`${home}#products/vdm`,{waitUntil:'networkidle'});
+      await vp.waitForSelector('#rt-quad-sim [data-qv-layout]');
+      const plain=await vp.evaluate(()=>({selects:document.querySelectorAll('#rt-quad-sim select[data-qv-in-pick]').length,nums:document.querySelectorAll('#rt-quad-sim input[data-qv-in]').length}));
+      await vp.evaluate(()=>localStorage.setItem('rtcom.configuration.v1',JSON.stringify({schemaVersion:3,state:{family:'VDM',model:'VDM-16X',placements:{'in-1':'HIS4-U','in-2':'HIS4-U','in-3':'HIS4-U','in-4':'HIS4-U'},portAssignments:{'in-1:1':{assignedDevice:'PC'},'in-2:1':{assignedDevice:'CAM1'}}}})));
+      await vp.reload({waitUntil:'networkidle'});await vp.waitForSelector('#rt-quad-sim [data-qv-layout]');
+      const cmdText=()=>vp.locator('#rt-quad-sim [data-qv-cmd]').innerText().then(t=>t.replace(/\s+/g,' '));
+      const listed=await vp.evaluate(()=>{const s=document.querySelector('#rt-quad-sim select[data-qv-in-pick="0"]');return {n:document.querySelectorAll('#rt-quad-sim select[data-qv-in-pick]').length,nums:document.querySelectorAll('#rt-quad-sim input[data-qv-in]').length,opts:s?[...s.options].map(o=>o.textContent):[],val:s?s.value:'',hint:/구성기에 저장된 VDM-16X 구성 기준으로 입력 카드는 CH 1–16/.test(document.querySelector('#rt-quad-sim .rt-ls-inputhint')?.textContent||'')}});
+      await vp.selectOption('#rt-quad-sim select[data-qv-in-pick="1"]','5');
+      const picked=await cmdText();
+      const legend=await vp.locator('#rt-quad-sim .rt-qv-legend').innerText();
+      await vp.selectOption('#rt-quad-sim select[data-qv-in-pick="3"]','__manual__');
+      await vp.waitForSelector('#rt-quad-sim input[data-qv-in="3"]');
+      const manual=await vp.evaluate(()=>({btn:!!document.querySelector('#rt-quad-sim [data-qv-input-list="3"]'),val:document.querySelector('#rt-quad-sim input[data-qv-in="3"]')?.value}));
+      await vp.fill('#rt-quad-sim input[data-qv-in="3"]','50');
+      await vp.press('#rt-quad-sim input[data-qv-in="3"]','Tab');
+      await vp.waitForSelector('#rt-quad-sim input.is-missing');
+      const warn=await vp.evaluate(()=>(document.querySelector('#rt-quad-sim .rt-ls-warn')?.textContent||'').replace(/\s+/g,' '));
+      await vp.click('#rt-quad-sim [data-qv-input-list="3"]');
+      await vp.waitForSelector('#rt-quad-sim select[data-qv-in-pick="3"]');
+      const back=await vp.evaluate(()=>{const s=document.querySelector('#rt-quad-sim select[data-qv-in-pick="3"]');return {cls:s.className,opt:[...s.options].map(o=>o.textContent).find(t=>/구성기에 없음/.test(t))||'',val:s.value}});
+      const over=await vp.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
+      await ctx.close();
+      check('VDM 07 쿼드뷰 시뮬레이터: 저장된 구성이 없으면 숫자 칸, 있으면 입력 카드 채널 목록(카드·신호명 포함)에서 고르고 연결 커맨드가 바뀌며, 직접 입력·목록 전환과 구성에 없는 번호 경고가 된다',
+        plain.selects===0&&plain.nums===4&&
+        listed.n===4&&listed.nums===0&&listed.val==='1'&&listed.opts.length===17&&listed.opts[0]==='입력 1 · IN 1 · HIS4-U · PC'&&listed.opts[4]==='입력 5 · IN 2 · HIS4-U · CAM1'&&listed.opts[16]==='직접 입력…'&&listed.hint&&
+        /\*255CI05O06!/.test(picked)&&/C2 ← 입력 5/.test(legend)&&
+        manual.btn&&manual.val==='4'&&/C4 칸\(입력 50\): 구성기에 저장된 VDM-16X 구성에는 입력 50번이 없습니다/.test(warn)&&
+        /is-missing/.test(back.cls)&&/입력 50/.test(back.opt)&&back.val==='50'&&!over,
+        JSON.stringify({plain,listed,picked,legend,manual,warn,back,over}));
+    }
     // 0.239 XDM "내 AMX 구성": 07 시뮬레이터 커맨드와 08 설정 명령을 담아 한 개의 AMX 코드로 만들고, 순서 바꾸기·저장·파일 저장을 확인한다.
     {
       await page.goto(`${home}#products/xdm`,{waitUntil:'networkidle'});

@@ -385,10 +385,11 @@
   // 표의 "입력"은 매트릭스 프레임의 입력 포트 번호(구성기 03 카드 슬롯의 CH 번호, 가이드의 I001 형식)이다. 시뮬레이터는 소스가 실제로 어디에 꽂혔는지 모르므로
   // 구성기에 저장된 XDM 구성(rtcom.configuration.v1)이 있으면 그 입력 카드가 덮는 채널(CH)만 읽어 번호가 범위 안인지 알려 준다. 계산은 구성기 chRange(src/app.js)와 같다:
   //   첫 채널 = (입력 슬롯 번호 − 1) × XDM 입력 카드의 최대 채널 수 + 1, 카드 채널 수만큼. 저장된 구성이 없거나 XDM이 아니면 null(경고 없음).
-  function savedInputChannels(doc,catalog){
+  // 0.256 family: 'XDM'(기본) 또는 'VDM'. VDM 시뮬레이터(src/quad-view.js)도 같은 계산을 쓴다(구성기 chRange는 프레임 종류와 상관없이 같은 공식).
+  function savedInputChannels(doc,catalog,family='XDM'){
     const st=doc&&doc.state;
-    if(!st||st.family!=='XDM'||!catalog||!catalog.XDM)return null;
-    const list=catalog.XDM.input||[];
+    if(!st||st.family!==family||!catalog||!catalog[family])return null;
+    const list=catalog[family].input||[];
     const per=Math.max(1,...list.map(item=>Number(item[2])||1));
     const set=new Set(),spans=[],entries=[];
     const assigned=st.portAssignments&&typeof st.portAssignments==='object'?st.portAssignments:{};
@@ -403,15 +404,15 @@
     entries.sort((a,b)=>a.n-b.n);
     spans.sort((a,b)=>a[0]-b[0]);
     const merged=[];for(const sp of spans){const last=merged[merged.length-1];if(last&&sp[0]<=last[1]+1)last[1]=Math.max(last[1],sp[1]);else merged.push([...sp])}
-    return {model:String(st.model||'XDM'),set,count:set.size,list:entries,byN:new Map(entries.map(e=>[e.n,e])),text:merged.map(([a,b])=>a===b?`CH ${a}`:`CH ${a}–${b}`).join(', ')};
+    return {model:String(st.model||family),set,count:set.size,list:entries,byN:new Map(entries.map(e=>[e.n,e])),text:merged.map(([a,b])=>a===b?`CH ${a}`:`CH ${a}–${b}`).join(', ')};
   }
   // 0.255 입력 선택 목록의 한 줄: "입력 5 · IN 2 · XDM-HI100 · PC"(신호명은 구성기 03에서 적었을 때만).
   const inputChoiceLabel=e=>`입력 ${e.n} · IN ${e.slot} · ${e.card}${e.name?` · ${e.name}`:''}`;
   // items: 커맨드에 들어가는(켜진) 창 [{n,input}]. 구성에 없는 입력 번호만 골라 경고 문구를 만든다.
-  function inputProblems(items,saved){
+  function inputProblems(items,saved,label=n=>`창 ${n}`){
     if(!saved)return [];
     return items.filter(w=>!saved.set.has(w.input)).map(w=>({n:w.n,input:w.input,
-      text:`창 ${w.n}(입력 ${w.input}): 구성기에 저장된 ${saved.model} 구성에는 입력 ${w.input}번이 없습니다. ${saved.text?`입력 카드는 ${saved.text}입니다.`:'장착한 입력 카드가 없습니다.'} 다른 구성으로 시험하는 중이면 무시해도 됩니다.`}));
+      text:`${label(w.n)}(입력 ${w.input}): 구성기에 저장된 ${saved.model} 구성에는 입력 ${w.input}번이 없습니다. ${saved.text?`입력 카드는 ${saved.text}입니다.`:'장착한 입력 카드가 없습니다.'} 다른 구성으로 시험하는 중이면 무시해도 됩니다.`}));
   }
   // HOS100에서 커맨드에 들어가는 창(너비·높이가 0이거나 그 레이아웃이 쓰지 않는 창은 뺀다). 창 n = 카드 포트 n.
   function hosUsed(state){
