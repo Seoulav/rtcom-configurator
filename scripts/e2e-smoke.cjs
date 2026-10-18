@@ -596,6 +596,19 @@ const patchAmxLock=async()=>{
       const clipped=await page.evaluate(()=>{const svg=[...document.querySelectorAll('.rt-pg-svg-wrap svg')].find(s=>s.textContent.includes('HDMI IN'));if(!svg)return ['svg 없음'];const vb=svg.viewBox.baseVal;return [...svg.querySelectorAll('text,rect')].filter(el=>{const bb=el.getBBox();return bb.x<vb.x-1||bb.y<vb.y-1||bb.x+bb.width>vb.x+vb.width+1||bb.y+bb.height>vb.y+vb.height+1}).map(el=>(el.textContent||el.tagName).slice(0,20))});
       check(`${id} 신호 흐름 그림 요소가 틀 밖으로 잘리지 않음`,clipped.length===0,JSON.stringify(clipped));
     }
+    // 0.250 알티컴 제품 직렬 8N1 공통(사용자 확인 2026-10-18 "8비트 맞아 알티컴은 전부 동일해"): HDS 두 제품은 "일반값" 안내 대신 확인된 설정을 보여 주고,
+    // XDM 08 설정 명령의 근거 문구는 "가이드에 없어 일반값" 대신 사용자 확인을 적는다.
+    {
+      const readHint=async id=>{
+        await page.goto(`${home}#products/${id}`,{waitUntil:'networkidle'});
+        await page.waitForSelector('.rt-pg-control .rt-ce-cmd, #rt-control .rt-ce-cmd');
+        return page.evaluate(()=>document.querySelector('.rt-pg-control, #rt-control').textContent.replace(/\s+/g,' '));
+      };
+      const hds21=await readHint('hds-21u'),hds42=await readHint('hds-42mu'),xdm=await readHint('xdm');
+      const hdsOk=t=>/9600bps\(8N1은 알티컴 제품 공통\(사용자 확인 2026-10-18\)\)/.test(t)&&!/데이터 비트·패리티·스톱 비트\(코드의 8N1은 일반값\)/.test(t)&&/볼륨 허용 범위/.test(t);
+      check('HDS-21U·HDS-42MU AMX 카드: 직렬 8N1(알티컴 공통, 사용자 확인) 근거를 보여 주고 "코드의 8N1은 일반값" 안내는 없으며 볼륨 허용 범위 안내는 남음',hdsOk(hds21)&&hdsOk(hds42)&&/뮤트 명령/.test(hds42)&&!/뮤트 명령, 볼륨/.test(hds21),JSON.stringify({a:hds21.match(/통신 속도[^※]{0,90}/)?.[0],b:hds42.match(/넣지 않은 것[^※]{0,90}/)?.[0]}));
+      check('XDM 설정 명령 근거 문구에 데이터 8비트 사용자 확인과 가이드 67쪽(패리티·스톱)이 적히고 "일반값으로 적음"은 없음',/데이터 8비트는 사용자 확인 2026-10-18/.test(xdm)&&/67쪽/.test(xdm)&&!/일반값으로 적음/.test(xdm),xdm.match(/통신 115200bps[^※]{0,140}/)?.[0]||'문구 없음');
+    }
     // 0.239 AMX 코드 잠금: 잠겨 있을 때는 커맨드 문자열·HEX가 보이고 AMX 코드(SEND_STRING·NetLinx)는 없다. 틀린 비밀번호는 거절하고 맞으면 열리며 다시 잠글 수 있다.
     {
       await page.goto(`${home}#products/hds-42mu`,{waitUntil:'networkidle'});

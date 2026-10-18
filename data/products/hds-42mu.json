@@ -538,7 +538,11 @@
       "maxCode": 99
     },
     "serial": {
-      "baud": 9600
+      "baud": 9600,
+      "parity": "N",
+      "dataBits": 8,
+      "stopBits": 1,
+      "confirmed": "8N1은 알티컴 제품 공통(사용자 확인 2026-10-18)"
     },
     "serialOnly": true,
     "amxDevice": "dvHDS42MU",
