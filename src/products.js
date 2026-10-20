@@ -623,7 +623,8 @@
           bodyMarkup+=`<text x="${(txX+boxW+rxX)/2}" y="${y+32}" text-anchor="middle" font-size="11" font-weight="700" fill="#b86e00">${svgEsc(row.tx?'같은 케이블로 전원 → 수신기':'같은 케이블로 전원 → 송신기')}</text>`;
           bodyMarkup+=arrow(rxX+boxW+6,y,dstX-24,y,COLOR_OUT)+monitorIcon(dstX,y,'디스플레이');
         });
-        bodyMarkup+=`<text x="${width/2}" y="${height-26}" text-anchor="middle" font-size="11" fill="#687386">어댑터는 송신기·수신기 중 한쪽에만 연결하면 됩니다(PoC) · SPX-COS12 카드에 연결한 SPX-RX는 매트릭스에서 전원을 받습니다</text>`;
+        bodyMarkup+=`<text x="${width/2}" y="${height-40}" text-anchor="middle" font-size="11" fill="#687386">어댑터는 송신기·수신기 중 한쪽에만 연결하면 됩니다(PoC) · 양쪽 모두 연결해도 상관없습니다</text>`;
+        bodyMarkup+=`<text x="${width/2}" y="${height-22}" text-anchor="middle" font-size="11" fill="#687386">SPX-COS12 카드에 연결한 SPX-RX는 매트릭스에서 전원을 받습니다</text>`;
         captions=[[COLOR_IN,'입력(소스 → TX)'],[cableColor,`${cableName} 신호`],[COLOR_POWER,'전원(PoC)'],[COLOR_OUT,'출력(RX → 디스플레이)']];
       } else {
         width=980;height=220;
@@ -662,7 +663,7 @@
         steps.push(`입력: 소스 기기 → ${txLabel} HDMI IN${isTransceiver?'(송신 모드)':''}${videoSpec?` · ${videoSpec}`:''}`);
         steps.push(`전송: ${cableName}${transmission.connector?` · ${shortConnector(transmission.connector)}`:''}`);
         steps.push(`출력: ${rxLabel} HDMI OUT${isTransceiver?'(수신 모드)':''} → 디스플레이`);
-        if(pocPair)steps.push('전원(PoC): 송신기 또는 수신기 한쪽에만 DC 12V 1A 이상 어댑터를 연결하면 CATx 케이블로 상대 기기에 전원이 공급됩니다. SPX-COS12 카드에 연결한 SPX-RX는 매트릭스에서 전원을 받습니다.');
+        if(pocPair)steps.push('전원(PoC): 송신기 또는 수신기 한쪽에만 DC 12V 1A 이상 어댑터를 연결하면 CATx 케이블로 상대 기기에 전원이 공급됩니다. 양쪽 모두 연결해도 상관없습니다. SPX-COS12 카드에 연결한 SPX-RX는 매트릭스에서 전원을 받습니다.');
       }
       if(distanceLines.length)steps.push(/전송\s?거리/.test(distanceText)?distanceText:`최대 전송 거리: ${distanceText}`);
       if(extras.length)steps.push(`그 외 신호: ${[...new Set(extras)].join(', ')}(입출력 표 참고)`);
