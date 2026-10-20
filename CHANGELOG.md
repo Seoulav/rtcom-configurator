@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.259.0 배포 기록**: `docs/qa/DEPLOYMENT_0.259_2026-10-20.md`(PR #411 → main 병합 `90c7352`, Pages 배포 run 39418516300 success, 공개 `CATALOG BASED · 0.259`·`products.js`·`spx-rx-tx.json`·`index.html` 해시 일치·PoC 그림 코드 확인·`CLAUDE.md` 404)
 - **0.258.0 배포 기록**: `docs/qa/DEPLOYMENT_0.258_2026-10-20.md`(PR #409 → main 병합 `78b37d7`, Pages 배포 run 39378541296 success, 공개 `CATALOG BASED · 0.258`·`styles.css`·`index.html`·`layout-sim.js` 해시 일치·`CLAUDE.md` 404)
 - **0.257.0 배포 기록**: `docs/qa/DEPLOYMENT_0.257_2026-10-20.md`(PR #407 → main 병합 `a9e4687`, Pages 배포 run 39358296275 success, 공개 `CATALOG BASED · 0.257`·`control-example.js`·`index.html` 해시 일치·공개 잠금이 새 비밀번호와 일치·`CLAUDE.md` 404)
 - **0.256.0 배포 기록**: `docs/qa/DEPLOYMENT_0.256_2026-10-18.md`(PR #405 → main 병합 `a30f131`, Pages 배포 run 39135980231 success, 공개 `CATALOG BASED · 0.256`·`quad-view.js`·`layout-sim.js`·`styles.css`·`index.html` 해시 일치·`CLAUDE.md`와 `scripts/session-preflight.cjs` 404)
