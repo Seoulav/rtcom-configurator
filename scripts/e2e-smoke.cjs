@@ -970,6 +970,53 @@ const patchAmxLock=async()=>{
         /is-missing/.test(back.cls)&&/입력 50/.test(back.opt)&&back.val==='50'&&!over,
         JSON.stringify({plain,listed,picked,legend,manual,warn,back,over}));
     }
+    // 0.260 사진 확대 팝업(B안): 상세 머리·Port Map 사진 칸 버튼으로 열고, 정면·후면 탭과 원형 돋보기(마우스 180px, 터치 130px)·확대 단계·Esc 닫기를 확인한다.
+    {
+      const ctx=await browser.newContext({viewport:{width:1280,height:900}});
+      const pz=await ctx.newPage();
+      await pz.goto(`${home}#products/qms-88ux`,{waitUntil:'networkidle'});
+      await pz.waitForSelector('.rt-pg-toolbar [data-photo-zoom=""]');
+      const btns=await pz.evaluate(()=>({head:document.querySelectorAll('.rt-pg-toolbar [data-photo-zoom=""]').length,panel:document.querySelectorAll('.rt-pg-photo-zoom-btn').length}));
+      await pz.click('.rt-pg-toolbar [data-photo-zoom=""]');
+      await pz.waitForSelector('dialog.rt-photo-zoom[open] [data-photo-img]');
+      const loaded=()=>pz.waitForFunction(()=>{const i=document.querySelector('dialog.rt-photo-zoom [data-photo-img]');return i&&i.complete&&i.naturalWidth>0});
+      await loaded();
+      const tabs=await pz.evaluate(()=>[...document.querySelectorAll('dialog.rt-photo-zoom [data-photo-tab] span')].map(s=>s.textContent));
+      const box=await pz.locator('dialog.rt-photo-zoom [data-photo-img]').boundingBox();
+      await pz.mouse.move(box.x+box.width*0.6,box.y+box.height*0.5);
+      const lens=await pz.evaluate(()=>{const l=document.querySelector('dialog.rt-photo-zoom .rt-photo-lens');return {hidden:l.hidden,w:l.style.width,bg:/qms-88ux/.test(l.style.backgroundImage)}});
+      await pz.click('dialog.rt-photo-zoom [data-photo-step="1"]');
+      const level=await pz.evaluate(()=>({text:document.querySelector('dialog.rt-photo-zoom [data-photo-level]').textContent,minus:document.querySelector('dialog.rt-photo-zoom [data-photo-step="-1"]').disabled}));
+      await pz.click('dialog.rt-photo-zoom [data-photo-lens]');
+      const off=await pz.evaluate(()=>({pressed:document.querySelector('dialog.rt-photo-zoom [data-photo-lens]').getAttribute('aria-pressed'),hint:document.querySelector('dialog.rt-photo-zoom [data-photo-hint]').textContent}));
+      await pz.keyboard.press('Escape');
+      const closed=await pz.evaluate(()=>!document.querySelector('dialog.rt-photo-zoom').open);
+      await pz.locator('.rt-pg-photo-zoom-btn').first().click();
+      await pz.waitForSelector('dialog.rt-photo-zoom[open]');
+      const start=await pz.evaluate(()=>({tab:document.querySelector('dialog.rt-photo-zoom [data-photo-tab][aria-selected="true"] span')?.textContent,level:document.querySelector('dialog.rt-photo-zoom [data-photo-level]').textContent,lens:document.querySelector('dialog.rt-photo-zoom [data-photo-lens]').getAttribute('aria-pressed')}));
+      await pz.keyboard.press('Escape');
+      await ctx.close();
+      const mctx=await browser.newContext({viewport:{width:390,height:844},hasTouch:true,isMobile:true});
+      const mz=await mctx.newPage();
+      await mz.goto(`${home}#products/hd-13u`,{waitUntil:'networkidle'});
+      await mz.waitForSelector('.rt-pg-toolbar [data-photo-zoom=""]');
+      await mz.tap('.rt-pg-toolbar [data-photo-zoom=""]');
+      await mz.waitForSelector('dialog.rt-photo-zoom[open] [data-photo-img]');
+      await mz.waitForFunction(()=>{const i=document.querySelector('dialog.rt-photo-zoom [data-photo-img]');return i&&i.complete&&i.naturalWidth>0});
+      const mb=await mz.locator('dialog.rt-photo-zoom [data-photo-img]').boundingBox();
+      await mz.evaluate(({x,y})=>{const img=document.querySelector('dialog.rt-photo-zoom [data-photo-img]');const o={bubbles:true,clientX:x,clientY:y,pointerType:'touch',pointerId:7,isPrimary:true};img.dispatchEvent(new PointerEvent('pointerdown',o));img.dispatchEvent(new PointerEvent('pointermove',o))},{x:mb.x+mb.width*0.5,y:mb.y+mb.height*0.5});
+      const mlens=await mz.evaluate(()=>{const l=document.querySelector('dialog.rt-photo-zoom .rt-photo-lens'),a=document.querySelector('dialog.rt-photo-zoom .rt-photo-body').getBoundingClientRect(),r=l.getBoundingClientRect();return {hidden:l.hidden,w:l.style.width,inside:r.top>=a.top-1}});
+      await mz.evaluate(()=>document.querySelector('dialog.rt-photo-zoom [data-photo-img]').dispatchEvent(new PointerEvent('pointerup',{bubbles:true,pointerType:'touch',pointerId:7})));
+      const mhide=await mz.evaluate(()=>document.querySelector('dialog.rt-photo-zoom .rt-photo-lens').hidden);
+      const mover=await mz.evaluate(()=>document.documentElement.scrollWidth>innerWidth);
+      await mctx.close();
+      check('사진 확대 팝업(B안): 머리·Port Map 버튼으로 열고 정면·후면 탭, 마우스 돋보기 180px, 확대 단계, 돋보기 끄기, Esc 닫기, Port Map에서 연 사진 탭, 휴대폰 돋보기 130px(잘리지 않음·손 떼면 숨김)',
+        btns.head===1&&btns.panel>=1&&tabs.join(',')==='정면,후면'&&!lens.hidden&&lens.w==='180px'&&lens.bg&&
+        level.text==='150%'&&!level.minus&&off.pressed==='false'&&/돋보기가 꺼져 있습니다/.test(off.hint)&&closed&&
+        start.tab==='후면'&&start.level==='100%'&&start.lens==='true'&&
+        !mlens.hidden&&mlens.w==='130px'&&mlens.inside&&mhide&&!mover,
+        JSON.stringify({btns,tabs,lens,level,off:off.pressed,closed,start,mlens,mhide,mover}));
+    }
     // 0.239 XDM "내 AMX 구성": 07 시뮬레이터 커맨드와 08 설정 명령을 담아 한 개의 AMX 코드로 만들고, 순서 바꾸기·저장·파일 저장을 확인한다.
     {
       await page.goto(`${home}#products/xdm`,{waitUntil:'networkidle'});

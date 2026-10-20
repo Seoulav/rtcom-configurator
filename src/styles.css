@@ -1358,6 +1358,24 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-flow-zoom-tools button{width:38px;height:38px;border:0;border-radius:50%;background:var(--rt-bg-f0f4fa);color:var(--rt-fg-415069);font-size:20px;line-height:1;cursor:pointer}
 #rtcom-design .rt-flow-zoom-tools button:disabled{opacity:.35;cursor:default}
 #rtcom-design .rt-flow-zoom-tools span{min-width:46px;text-align:center;font-size:13px;font-weight:700;color:var(--rt-fg-415069)}
+/* 0.260 사진 확대 팝업·돋보기(B안, 사용자 선택 2026-10-20): 팝업 틀·머리 버튼은 Signal Flow 크게 보기(rt-flow-zoom)와 같다. 사진 바탕은 다크에서도 밝게(--rt-photo). */
+#rtcom-design .rt-pg-photo-zoom-bar{display:flex;justify-content:flex-end;margin:-4px 0 4px}
+#rtcom-design .rt-pg-photo-zoom-btn{border:1px solid var(--pg-line);background:var(--rt-bg-fff);color:var(--pg-accent);font:700 12px/1 var(--pg-sans);padding:6px 10px;border-radius:var(--pg-r-pill);cursor:pointer}
+#rtcom-design .rt-photo-tabs{flex:0 0 auto;display:flex;gap:8px;overflow-x:auto;padding:10px 16px;border-bottom:1px solid var(--rt-ln-e8edf5)}
+#rtcom-design .rt-photo-tabs button{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px;border:2px solid transparent;border-radius:12px;background:var(--rt-bg-f0f4fa);color:var(--rt-fg-415069);font:700 12px/1.2 var(--pg-sans);cursor:pointer}
+#rtcom-design .rt-photo-tabs button[aria-selected="true"]{border-color:var(--pg-accent);color:var(--pg-ink)}
+#rtcom-design .rt-photo-tabs img{display:block;height:44px;max-width:120px;object-fit:contain;background:var(--rt-photo);border-radius:6px}
+#rtcom-design .rt-photo-hint{flex:0 0 auto;margin:0;padding:8px 20px 0;font-size:12px;color:var(--pg-muted)}
+#rtcom-design .rt-photo-body{flex:1 1 auto;min-height:0;overflow:auto;padding:12px 16px}
+#rtcom-design .rt-photo-stage{position:relative;margin:0 auto;background:var(--rt-photo);border-radius:10px}
+#rtcom-design .rt-photo-stage img{display:block;width:100%;height:auto;user-select:none;-webkit-user-select:none;-webkit-user-drag:none}
+#rtcom-design .rt-photo-stage.is-lens img{cursor:zoom-in;touch-action:none}
+#rtcom-design .rt-photo-lens{position:absolute;z-index:2;border-radius:50%;border:3px solid var(--rt-bg-fff);box-shadow:0 6px 22px #0f172a66,0 0 0 1px #0f172a33;background-color:var(--rt-photo);background-repeat:no-repeat;pointer-events:none}
+#rtcom-design .rt-photo-cap{flex:0 0 auto;margin:0;padding:6px 20px 12px;font-size:12px;color:var(--pg-muted);text-align:center}
+#rtcom-design .rt-flow-zoom-tools .rt-photo-lens-btn{font-size:17px}
+#rtcom-design .rt-flow-zoom-tools .rt-photo-lens-btn.is-on{background:var(--pg-accent);color:var(--rt-bg-fff)}
+#rtcom-design .rt-photo-zoom .rt-flow-zoom-head b{min-width:0;word-break:keep-all}
+@media(max-width:560px){#rtcom-design .rt-photo-zoom .rt-flow-zoom-head{flex-wrap:wrap;row-gap:8px;padding:10px 12px}#rtcom-design .rt-photo-zoom .rt-flow-zoom-head b{flex:1 1 100%}#rtcom-design .rt-photo-zoom .rt-flow-zoom-tools{margin-left:auto}#rtcom-design .rt-photo-tabs img{height:36px}#rtcom-design .rt-photo-body{padding:8px}#rtcom-design .rt-photo-hint{padding:6px 12px 0}}
 #rtcom-design .rt-flow-zoom-legend{flex:0 0 auto;padding:8px 20px;border-bottom:1px solid var(--rt-ln-e8edf5)}
 #rtcom-design .rt-flow-zoom-legend .rt-pg-legend{margin-top:0}
 #rtcom-design .rt-flow-zoom-body{flex:1;overflow:auto;padding:12px;-webkit-overflow-scrolling:touch}
