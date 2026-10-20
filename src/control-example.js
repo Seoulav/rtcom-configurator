@@ -214,7 +214,7 @@
   // 이 잠금은 브라우저에서 비밀번호를 비교하는 "잠금 스티커"다. 사이트가 정적(GitHub Pages)이라 코드 파일이 공개되어 있어 개발자 도구를 아는 사람은 우회할 수 있다.
   //   (사용자 결정 2026-10-16: 브라우저 잠금 선택. 서버 잠금은 Cloudflare Worker가 필요해 하지 않음.) 비밀번호 원문은 저장소에 없고 PBKDF2-SHA256 변환값만 둔다.
   // 설정: node scripts/tools/set-amx-password.cjs <비밀번호> 가 아래 AMX_LOCK 한 줄을 바꿔 쓴다. null이면 아무도 열 수 없다.
-  const AMX_LOCK={"v":1,"iterations":200000,"salt":"216c09ed2ee11e85f7f9e90f887488a5","hash":"259ae7728578565932341d2a0aaee1a08892d584e390bf6665c217641f9c4938"};
+  const AMX_LOCK={"v":1,"iterations":200000,"salt":"84a2a43ceb281539fcbf4cbd70d0f3bf","hash":"36383b62b0ce09d7fd9f2a91e9bdd1ecfbaab1c1b49db6f2f6196e05c1d89fca"};
   const UNLOCK_KEY='rtcom.amxUnlock.v1';
   const hexOf=buf=>[...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
   const bytesOf=hex=>Uint8Array.from((hex.match(/../g)||[]).map(h=>parseInt(h,16)));
