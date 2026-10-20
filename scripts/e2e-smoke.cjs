@@ -1081,6 +1081,16 @@ const patchAmxLock=async()=>{
     const delWos=await page.evaluate(()=>({wins:document.querySelectorAll('#rt-layout-sim .rt-ls-win').length,cmd:document.querySelector('#rt-layout-sim [data-ls-cmd]').textContent}));
     await page.click('#rt-layout-sim [data-ls-card="HOS100"]');
     await page.waitForSelector('#rt-layout-sim [data-ls-win="3"]');
+    // 0.258 출력 카드 선택 버튼 색: HOS100을 고른 상태에서 HOS100은 주황 채움·WOS100은 파랑 글자(옅은 배경), WOS100을 고르면 반대. 두 카드의 선택 색이 서로 다르다.
+    const segColors=async()=>page.evaluate(()=>{const f=sel=>{const b=document.querySelector(`#rt-layout-sim .rt-ls-cardseg [data-ls-card="${sel}"]`),s=getComputedStyle(b);return {bg:s.backgroundColor,fg:s.color,on:b.classList.contains('rt-pg-on')}};return {wos:f('WOS100'),hos:f('HOS100')}});
+    const rgb=c=>(c.match(/\d+(\.\d+)?/g)||[]).slice(0,3).map(Number);
+    const hosOn=await segColors();
+    await page.click('#rt-layout-sim [data-ls-card="WOS100"]');
+    const wosOn=await segColors();
+    await page.click('#rt-layout-sim [data-ls-card="HOS100"]');
+    await page.waitForSelector('#rt-layout-sim [data-ls-win="3"]');
+    const hr=rgb(hosOn.hos.bg),wr=rgb(wosOn.wos.bg);
+    check('XDM 07 출력 카드 선택 버튼 색: WOS100 선택 = 파랑 채움, HOS100 선택 = 주황 채움(서로 다름), 선택하지 않은 쪽도 자기 색 글자',hosOn.hos.on&&wosOn.wos.on&&wr[2]>wr[0]+100&&hr[0]>hr[2]+100&&hosOn.hos.bg!==wosOn.wos.bg&&hosOn.wos.fg!==wosOn.hos.fg&&hosOn.wos.fg!==wosOn.wos.fg&&rgb(hosOn.wos.fg)[2]>rgb(hosOn.wos.fg)[0]&&rgb(wosOn.hos.fg)[0]>rgb(wosOn.hos.fg)[2],JSON.stringify({hosOn,wosOn}));
     await page.locator('#rt-layout-sim [data-ls-win="3"]').scrollIntoViewIfNeeded();
     await page.locator('#rt-layout-sim [data-ls-win="3"]').click();
     await page.keyboard.press('Delete');
