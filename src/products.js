@@ -543,6 +543,8 @@
       const pseCombo=item.id==='xdm-ctr100';
       // 0.47: XDM-CTR100 PSE를 별도 제품(xdm-ctr100-pse)으로 나눴다. PSE는 매트릭스 카드에 직결할 수 없으므로 PSE 조합만 그린다.
       const pseOnly=item.id==='xdm-ctr100-pse';
+      // 0.259: SPX-TX/RX는 PoC(Power over Cable)로 송신기·수신기 중 한쪽에만 DC 어댑터를 연결하면 CATx 케이블로 상대에 전원이 간다(사용자 확인 2026-10-20). 두 가지 연결 방법을 위아래로 그린다.
+      const pocPair=item.id==='spx-rx-tx';
       let bodyMarkup,width,height,captions;
       if(pseOnly){
         width=980;
@@ -582,6 +584,26 @@
         bodyMarkup+=arrow(cardX+boxW+6,combo2Y,dstX-24,combo2Y,COLOR_OUT)+monitorIcon(dstX,combo2Y,'디스플레이');
         bodyMarkup+=`<text x="${width/2}" y="${combo2Y+boxH/2+22}" text-anchor="middle" font-size="10" fill="#687386">TX/RX는 각 기기 딥 스위치로 선택 · CIS100·COS100 카드에 직결할 때는 이 조합 대신 XDM-PSU로 전원 공급</text>`;
         captions=[[COLOR_IN,'입력'],[cableColor,cableName],[COLOR_OUT,'출력']];
+      } else if(pocPair){
+        width=980;
+        const boxW=190,boxH=76,srcX=60,txX=190,rxX=width-190-boxW,dstX=width-60,rowYs=[150,345];
+        height=rowYs[1]+boxH/2+64;
+        bodyMarkup='';
+        [{tx:true,title:'방법 ① 송신기(TX)에만 어댑터 연결'},{tx:false,title:'방법 ② 수신기(RX)에만 어댑터 연결'}].forEach((row,i)=>{
+          const y=rowYs[i],boxTop=y-boxH/2,adX=(row.tx?txX:rxX)+boxW/2,adY=boxTop-60;
+          bodyMarkup+=`<text x="${width/2}" y="${adY-12}" text-anchor="middle" font-size="12" font-weight="800" fill="#1f2532">${svgEsc(row.title)}</text>`;
+          bodyMarkup+=`<rect x="${adX-82}" y="${adY}" width="164" height="28" rx="14" fill="#fff4e5" stroke="${COLOR_POWER}" stroke-width="1.6"/><text x="${adX}" y="${adY+18}" text-anchor="middle" font-size="11" font-weight="750" fill="#9a5a00">DC 12V 1A 이상 어댑터</text>`;
+          bodyMarkup+=arrow(adX,adY+28,adX,boxTop-3,COLOR_POWER);
+          bodyMarkup+=monitorIcon(srcX,y,'소스 기기')+arrow(srcX+24,y,txX-6,y,COLOR_IN);
+          bodyMarkup+=deviceBox(txX,boxTop,boxW,boxH,txLabel,row.tx?'어댑터 연결':'전원 케이블 불필요(PoC)');
+          bodyMarkup+=deviceBox(rxX,boxTop,boxW,boxH,rxLabel,row.tx?'전원 케이블 불필요(PoC)':'어댑터 연결');
+          bodyMarkup+=`<path d="M${txX+boxW} ${y-5}L${rxX} ${y-5}" stroke="${cableColor}" stroke-width="2.5" stroke-dasharray="7 6" fill="none"/><text x="${(txX+boxW+rxX)/2}" y="${y-18}" text-anchor="middle" font-size="11" font-weight="700" fill="${cableColor}">${svgEsc(cableName)} · 신호</text>`;
+          bodyMarkup+=row.tx?arrow(txX+boxW+4,y+12,rxX-4,y+12,COLOR_POWER):arrow(rxX-4,y+12,txX+boxW+4,y+12,COLOR_POWER);
+          bodyMarkup+=`<text x="${(txX+boxW+rxX)/2}" y="${y+32}" text-anchor="middle" font-size="11" font-weight="700" fill="#b86e00">${svgEsc(row.tx?'같은 케이블로 전원 → 수신기':'같은 케이블로 전원 → 송신기')}</text>`;
+          bodyMarkup+=arrow(rxX+boxW+6,y,dstX-24,y,COLOR_OUT)+monitorIcon(dstX,y,'디스플레이');
+        });
+        bodyMarkup+=`<text x="${width/2}" y="${height-26}" text-anchor="middle" font-size="11" fill="#687386">어댑터는 송신기·수신기 중 한쪽에만 연결하면 됩니다(PoC) · SPX-COS12 카드에 연결한 SPX-RX는 매트릭스에서 전원을 받습니다</text>`;
+        captions=[[COLOR_IN,'입력(소스 → TX)'],[cableColor,`${cableName} 신호`],[COLOR_POWER,'전원(PoC)'],[COLOR_OUT,'출력(RX → 디스플레이)']];
       } else {
         width=980;height=220;
         const midY=110,boxW=170,boxH=76;
@@ -619,6 +641,7 @@
         steps.push(`입력: 소스 기기 → ${txLabel} HDMI IN${isTransceiver?'(송신 모드)':''}${videoSpec?` · ${videoSpec}`:''}`);
         steps.push(`전송: ${cableName}${transmission.connector?` · ${shortConnector(transmission.connector)}`:''}`);
         steps.push(`출력: ${rxLabel} HDMI OUT${isTransceiver?'(수신 모드)':''} → 디스플레이`);
+        if(pocPair)steps.push('전원(PoC): 송신기 또는 수신기 한쪽에만 DC 12V 1A 이상 어댑터를 연결하면 CATx 케이블로 상대 기기에 전원이 공급됩니다. SPX-COS12 카드에 연결한 SPX-RX는 매트릭스에서 전원을 받습니다.');
       }
       if(distanceLines.length)steps.push(/전송\s?거리/.test(distanceText)?distanceText:`최대 전송 거리: ${distanceText}`);
       if(extras.length)steps.push(`그 외 신호: ${[...new Set(extras)].join(', ')}(입출력 표 참고)`);
