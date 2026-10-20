@@ -16,6 +16,27 @@
     // lead 필드는 "**한 곳까지**" 굵게만 허용한다(명세 3장). 나머지는 그대로 이스케이프한다.
     const md=text=>esc(text||'').replace(/\*\*(.+?)\*\*/,'<b>$1</b>');
     const image=file=>`output/design/assets/products/${encodeURIComponent(file)}`;
+    // 0.260 사진 확대 팝업과 돋보기(사용자 요청 2026-10-20 "알티컴 전 제품에 적당한 크기의 돋보기", 선택 "B안으로 진행해줘"):
+    // 확대 버튼을 누르면 팝업이 열리고 팝업 안의 사진에서 원형 돋보기가 나온다. 제품 사진(images) 중 연결 다이어그램(Diagram)을 뺀 것을
+    // 정면 → 후면 → 대표 → 사선 → 기타 순으로, 같은 파일은 한 번만 보여 준다. 모델이 둘 이상인 제품(송·수신기 세트)은 탭 이름에 모델명을 붙인다.
+    const PHOTO_ROLE_LABEL={Front:'정면',Rear:'후면',Main:'대표',Perspective:'사선',Other:'기타'};
+    const PHOTO_ROLE_ORDER=['Front','Rear','Main','Perspective','Other'];
+    function zoomPhotos(item){
+      const seen=new Set();
+      const list=(item&&item.images||[]).filter(img=>img&&img.file&&img.role!=='Diagram'&&!seen.has(img.file)&&seen.add(img.file));
+      const models=new Set(list.map(img=>img.model).filter(Boolean));
+      const rank=role=>{const i=PHOTO_ROLE_ORDER.indexOf(role);return i<0?PHOTO_ROLE_ORDER.length:i};
+      const sorted=list.map((img,i)=>({img,i})).sort((a,b)=>rank(a.img.role)-rank(b.img.role)||a.i-b.i).map(x=>x.img);
+      const used={};
+      return sorted.map(img=>{
+        let label=(PHOTO_ROLE_LABEL[img.role]||'사진')+(models.size>1&&img.model?` · ${img.model}`:'');
+        used[label]=(used[label]||0)+1;
+        if(used[label]>1)label+=` ${used[label]}`;
+        const [w,h]=String(img.resolution||'').split(/[×x]/).map(Number);
+        return {file:img.file,alt:img.alt||'',label,width:w||0,height:h||0};
+      });
+    }
+    const photoZoomButton=item=>zoomPhotos(item).length?'<button type="button" class="rt-pg-btn" data-photo-zoom="" title="제품 사진을 크게 보고 돋보기로 확인합니다">🔍 사진 확대</button>':'';
     let index=null,filter='all',query='';
     const details=new Map();
     const load=url=>fetch(url).then(response=>{if(!response.ok)throw new Error(`${response.status} ${url}`);return response.json()});
@@ -803,7 +824,7 @@
       const sideCap=withFront&&!tall?`<p class="rt-pg-face-cap">${sideLabel} · 포트 연결</p>`:'';
       const ports=`<div class="rt-pg-ports">${[...map.items].sort((a,b)=>a.n-b.n).map(it=>`<div class="rt-pg-port"><b><span class="rt-pg-n">${it.n}</span>${esc(it.label)}</b>${esc(it.desc)}</div>`).join('')}</div>`;
       const note=map.note?`<p class="rt-pg-hint">${esc(map.note)}</p>`:'';
-      return `${seg}${tall?'':frontFigure}${sideCap}${tall?frontFigure+'<div data-pm-face="rear">':''}<div class="rt-pg-panel"><div class="rt-pg-svg-wrap"><svg viewBox="0 0 ${W+X0*2} ${H}" width="100%"${map.displayWidth?` style="display:block;max-width:${map.displayWidth}px;margin:0 auto"`:''} role="img" aria-label="${esc(map.title||'')} 단자 지도">${svgBody}</svg></div></div>${ports}${note}${tall?'</div>':''}`;
+      return `${seg}${tall?'':frontFigure}${sideCap}${tall?frontFigure+'<div data-pm-face="rear">':''}<div class="rt-pg-panel"><div class="rt-pg-photo-zoom-bar"><button type="button" class="rt-pg-photo-zoom-btn" data-photo-zoom="${esc(photo.file)}" aria-label="이 사진 확대(돋보기)">🔍 확대</button></div><div class="rt-pg-svg-wrap"><svg viewBox="0 0 ${W+X0*2} ${H}" width="100%"${map.displayWidth?` style="display:block;max-width:${map.displayWidth}px;margin:0 auto"`:''} role="img" aria-label="${esc(map.title||'')} 단자 지도">${svgBody}</svg></div></div>${ports}${note}${tall?'</div>':''}`;
     }
     function portCards(item){
       const io=item.io||[];
@@ -857,9 +878,9 @@
       if(links.length===1)return `<span class="rt-pg-doc" data-doc="official">${a(links[0],'rt-pg-doc-open rt-pg-official-one',word)}</span>`;
       return `<span class="rt-pg-doc" data-doc="official">${a(links[0],'rt-pg-doc-open',`${word} · ${esc(links[0].label)}`)}${links.slice(1).map(link=>a(link,'rt-pg-doc-save rt-pg-official-more',esc(link.label))).join('')}</span>`;
     }
-    function headerBlock({icon,title,subtitle,back,diagram,cta,docs='',official='',print=true}){
+    function headerBlock({icon,title,subtitle,back,diagram,cta,docs='',official='',photos='',print=true}){
       return `<header class="rt-pg-top"><div class="rt-pg-brandmark"><div class="rt-pg-swatch">${icon}</div><div class="rt-pg-title"><h1 id="rt-pg-title">${title}</h1><p class="rt-pg-sub">${subtitle}</p></div></div>
-      <div class="rt-pg-toolbar">${back?`<a class="rt-pg-btn" href="#products">← 제품 목록</a>`:''}${docs}${diagram?`<button type="button" class="rt-pg-btn" data-open-diagram>제조사 원본 다이어그램</button>`:''}${official}${print?`<button type="button" class="rt-pg-btn" data-print>인쇄 / PDF</button>`:''}${cta||''}</div></header>`;
+      <div class="rt-pg-toolbar">${back?`<a class="rt-pg-btn" href="#products">← 제품 목록</a>`:''}${photos}${docs}${diagram?`<button type="button" class="rt-pg-btn" data-open-diagram>제조사 원본 다이어그램</button>`:''}${official}${print?`<button type="button" class="rt-pg-btn" data-print>인쇄 / PDF</button>`:''}${cta||''}</div></header>`;
     }
     function listView(){
       const items=index.products.filter(matches);
@@ -1258,7 +1279,7 @@
       belowCards+=controlExampleSection(item);
       // 휴대폰(1000px 이하)에서는 .rt-pg-col이 사라지고 rt-pg-col-mobile-N 순서로만 쌓이므로, sideCard도 순서 클래스가 있어야 05 다음(01~05, 06, 07 기록)으로 나온다(없으면 order:0이라 맨 앞으로 감).
       if(sideCard)sideCard=sideCard.replace('class="rt-pg-card', 'class="rt-pg-card rt-pg-col-mobile-6');
-      return `${headerBlock({icon:PRODUCT_ICON[item.id]||GROUP_ICON[item.group],title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,docs:docButtons(item),official:officialButton(item),diagram:!!photo})}
+      return `${headerBlock({icon:PRODUCT_ICON[item.id]||GROUP_ICON[item.group],title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,photos:photoZoomButton(item),docs:docButtons(item),official:officialButton(item),diagram:!!photo})}
       <div class="rt-pg-cols">
         <div class="rt-pg-col">
           <section class="rt-pg-card rt-pg-col-mobile-1"><h2><span class="rt-pg-idx">01</span>한눈에 보기</h2>
@@ -1302,7 +1323,7 @@
       const legendKeys=[...new Set([...inCards,...outCards].map(card=>card[3]))];
       const featureCards=outCards.filter(card=>globalThis.RtCardFeature?.cards?.[card[0]]); // 0.205 02 신호 구성에서 눌러 기능 팝업을 여는 카드(WOS100·HOS100)
       const arch=seriesSignalSvg(item.name||family,inCards,outCards,SIG_COLOR);
-      return `${headerBlock({icon:GROUP_ICON.series,title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,docs:docButtons(item),official:officialButton(item),cta:`${family==='XDM'?'<button type="button" class="rt-pg-btn" data-scroll-to="rt-layout-sim">화면 연출 시뮬레이터</button>':''}${family==='VDM'?'<button type="button" class="rt-pg-btn" data-scroll-to="rt-quad-sim">분할 화면 시뮬레이터</button>':''}${item.controlExample?'<button type="button" class="rt-pg-btn" data-scroll-to="rt-control">AMX 커맨드 예시</button>':''}<a class="rt-pg-btn rt-pg-primary" href="#matrix-configurator" data-configure-family="${esc(family)}">${esc(family)} 구성기에서 구성하기 →</a>`})}
+      return `${headerBlock({icon:GROUP_ICON.series,title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,photos:photoZoomButton(item),docs:docButtons(item),official:officialButton(item),cta:`${family==='XDM'?'<button type="button" class="rt-pg-btn" data-scroll-to="rt-layout-sim">화면 연출 시뮬레이터</button>':''}${family==='VDM'?'<button type="button" class="rt-pg-btn" data-scroll-to="rt-quad-sim">분할 화면 시뮬레이터</button>':''}${item.controlExample?'<button type="button" class="rt-pg-btn" data-scroll-to="rt-control">AMX 커맨드 예시</button>':''}<a class="rt-pg-btn rt-pg-primary" href="#matrix-configurator" data-configure-family="${esc(family)}">${esc(family)} 구성기에서 구성하기 →</a>`})}
       <div class="rt-pg-cols">
         <div class="rt-pg-col">
           <section class="rt-pg-card rt-pg-col-mobile-1"><h2><span class="rt-pg-idx">01</span>한눈에 보기</h2><p class="rt-pg-lead">${leadFor(item)}</p>${factsList(facts)}</section>
@@ -1385,6 +1406,7 @@
       });
     }
     window.addEventListener('resize',()=>initDiagramScroll(body));
+    let currentItem=null; // 0.260 사진 확대 팝업이 지금 보는 제품의 사진을 쓴다.
     function show(state){
       view.hidden=!state.products;configurator.hidden=state.products;
       document.documentElement.classList.toggle('rt-print-products',state.products); // 0.147: 제품정보 화면에서 인쇄/PDF를 누르면 구성기 검토 시트가 아니라 지금 보는 제품 화면을 인쇄한다(src/styles.css 끝의 print 규칙).
@@ -1399,6 +1421,7 @@
         }
       }).then(()=>state.id?loadDetail(state.id).then(item=>{
         if(route().id!==state.id)return;
+        currentItem=item;
         body.innerHTML=`<div class="rt-pg-orbs"></div><div class="rt-pg-wrap">${detailView(item)}</div>`;
         body.querySelector('#rt-pg-title')?.setAttribute('tabindex','-1');
         body.querySelector('#rt-pg-title')?.focus({preventScroll:true});
@@ -1504,6 +1527,14 @@
       if(sideBtn){const seg=sideBtn.closest('.rt-pg-seg'),scope=seg?.parentElement;if(scope){seg.querySelectorAll('[data-pm-side]').forEach(btn=>{const on=btn===sideBtn;btn.classList.toggle('rt-pg-on',on);btn.setAttribute('aria-pressed',String(on))});scope.querySelectorAll('[data-pm-face]').forEach(el=>{el.hidden=el.dataset.pmFace!==sideBtn.dataset.pmSide})}return}
       const diagramBtn=event.target.closest('[data-open-diagram]');
       if(diagramBtn){const record=body.querySelector('.rt-pg-record');if(record){record.open=true;record.querySelector('#rt-pg-diagram-photo')?.scrollIntoView({behavior:'smooth',block:'start'})}return}
+      const photoBtn=event.target.closest('[data-photo-zoom]');
+      if(photoBtn){openPhotoZoom(photoBtn.dataset.photoZoom);return}
+      const photoTab=event.target.closest('[data-photo-tab]');
+      if(photoTab){const dlg=photoTab.closest('dialog');if(dlg?.rtPhoto){dlg.rtPhoto.idx=Number(photoTab.dataset.photoTab);dlg.rtPhoto.zoom=0;renderPhoto(dlg)}return}
+      const photoStep=event.target.closest('[data-photo-step]');
+      if(photoStep){const dlg=photoStep.closest('dialog');if(dlg?.rtPhoto){dlg.rtPhoto.zoom=Math.max(0,Math.min(PHOTO_ZOOMS.length-1,dlg.rtPhoto.zoom+Number(photoStep.dataset.photoStep)));renderPhoto(dlg)}return}
+      const photoLens=event.target.closest('[data-photo-lens]');
+      if(photoLens){const dlg=photoLens.closest('dialog');if(dlg?.rtPhoto){dlg.rtPhoto.lens=!dlg.rtPhoto.lens;renderPhoto(dlg)}return}
       const docPreviewBtn=event.target.closest('[data-doc-preview]');
       if(docPreviewBtn){const d=docPreviewBtn.dataset;openDocPreview(d.docPreview,d.docTitle,d.docKind,d.docImages?d.docImages.split('|'):[]);return}
       // 0.99 XDM-PSU Signal Flow 확대 창: 그림을 복사해 전체 화면 창에 넣고 100%(화면 폭 맞춤)~300%로 키운다. 창 안에서 스크롤·손가락으로 옮겨 본다.
@@ -1538,6 +1569,75 @@
         return;
       }
     });
+    // 0.260 사진 확대 팝업(B안): 사진을 창 폭에 맞춰 보여 주고(100~300%, 원본의 3배까지만 키움) 원형 돋보기로 작은 실크 글씨를 읽는다.
+    // 돋보기: 마우스는 지름 180px로 커서를 따라가고, 휴대폰·펜은 지름 130px로 손가락에 가리지 않게 손가락 위쪽에 띄운다(누른 채 움직임). 배율은 2.5배.
+    // 사진 원본 해상도보다 크게 확대하면 흐려지므로 배율을 과거(0.49의 3.1배)보다 낮췄다. 돋보기를 끄면 휴대폰에서 손가락으로 사진을 옮겨 볼 수 있다.
+    const PHOTO_ZOOMS=[1,1.5,2,3];
+    const PHOTO_LENS={mouse:{size:180,mag:2.5,lift:0},touch:{size:130,mag:2.5,lift:28}};
+    function openPhotoZoom(startFile){
+      const item=currentItem;if(!item)return;
+      const photos=zoomPhotos(item);if(!photos.length)return;
+      let dlg=body.querySelector('dialog.rt-photo-zoom');
+      if(!dlg){
+        dlg=document.createElement('dialog');dlg.className='rt-flow-zoom rt-photo-zoom';dlg.setAttribute('aria-label','사진 확대');
+        dlg.addEventListener('click',event=>{if(event.target===dlg)dlg.close()});
+        const move=event=>photoLensAt(dlg,event);
+        dlg.addEventListener('pointermove',move);
+        dlg.addEventListener('pointerdown',event=>{if(event.target.matches?.('[data-photo-img]')&&event.pointerType!=='mouse'){event.target.setPointerCapture?.(event.pointerId);move(event)}});
+        const hide=()=>{const lens=dlg.querySelector('.rt-photo-lens');if(lens)lens.hidden=true};
+        dlg.addEventListener('pointerup',event=>{if(event.pointerType!=='mouse')hide()});
+        dlg.addEventListener('pointercancel',hide);
+        dlg.addEventListener('pointerleave',hide);
+        body.appendChild(dlg);
+      }
+      const idx=Math.max(0,photos.findIndex(p=>p.file===startFile));
+      dlg.rtPhoto={photos,idx,zoom:0,lens:true};
+      dlg.innerHTML=`<div class="rt-flow-zoom-head"><b>${esc(item.productName)} · 사진 확대</b><div class="rt-flow-zoom-tools"><button type="button" class="rt-photo-lens-btn" data-photo-lens aria-pressed="true" title="돋보기 켜기·끄기">🔍</button><button type="button" data-photo-step="-1" aria-label="축소">−</button><span data-photo-level aria-live="polite">100%</span><button type="button" data-photo-step="1" aria-label="확대">+</button><button type="button" class="rt-flow-zoom-close" data-zoom-close aria-label="닫기">×</button></div></div>
+        ${photos.length>1?`<div class="rt-photo-tabs" role="tablist" aria-label="사진 선택">${photos.map((p,i)=>`<button type="button" role="tab" data-photo-tab="${i}" aria-selected="${i===idx}" title="${esc(p.alt||p.label)}"><img src="${image(p.file)}" alt="" loading="lazy"><span>${esc(p.label)}</span></button>`).join('')}</div>`:''}
+        <p class="rt-photo-hint" data-photo-hint></p>
+        <div class="rt-photo-body"><div class="rt-photo-stage"><img data-photo-img alt="" draggable="false"><div class="rt-photo-lens" hidden aria-hidden="true"></div></div></div>
+        <p class="rt-photo-cap" data-photo-cap></p>`;
+      renderPhoto(dlg);
+      if(typeof dlg.showModal==='function')dlg.showModal();else dlg.setAttribute('open','');
+      dlg.querySelector('[data-zoom-close]').focus();
+    }
+    function renderPhoto(dlg){
+      const st=dlg.rtPhoto,p=st.photos[st.idx],zoom=PHOTO_ZOOMS[st.zoom];
+      const img=dlg.querySelector('[data-photo-img]'),stage=dlg.querySelector('.rt-photo-stage');
+      if(img.dataset.file!==p.file){img.src=image(p.file);img.dataset.file=p.file}
+      img.alt=p.alt||p.label;
+      stage.style.width=`${zoom*100}%`;
+      stage.style.maxWidth=p.width?`${p.width*3}px`:'';
+      stage.classList.toggle('is-lens',st.lens);
+      dlg.querySelector('.rt-photo-lens').hidden=true;
+      dlg.querySelector('[data-photo-level]').textContent=`${zoom*100}%`;
+      dlg.querySelector('[data-photo-step="-1"]').disabled=st.zoom===0;
+      dlg.querySelector('[data-photo-step="1"]').disabled=st.zoom===PHOTO_ZOOMS.length-1;
+      const lensBtn=dlg.querySelector('[data-photo-lens]');lensBtn.setAttribute('aria-pressed',String(st.lens));lensBtn.classList.toggle('is-on',st.lens);
+      dlg.querySelectorAll('[data-photo-tab]').forEach(tab=>tab.setAttribute('aria-selected',String(Number(tab.dataset.photoTab)===st.idx)));
+      dlg.querySelector('[data-photo-hint]').textContent=st.lens?'사진 위에 마우스를 올리면 돋보기로 크게 보입니다. 휴대폰은 사진을 누른 채 움직이세요. − / + 로 사진 전체를 키웁니다.':'돋보기가 꺼져 있습니다. 휴대폰은 손가락으로 사진을 옮겨 볼 수 있습니다. 🔍를 누르면 다시 켜집니다.';
+      dlg.querySelector('[data-photo-cap]').textContent=p.alt||'';
+    }
+    function photoLensAt(dlg,event){
+      const st=dlg.rtPhoto,lens=dlg.querySelector('.rt-photo-lens'),img=dlg.querySelector('[data-photo-img]');
+      if(!st||!lens||!img)return;
+      if(!st.lens||!img.complete||!img.naturalWidth){lens.hidden=true;return}
+      if(event.pointerType!=='mouse'&&event.type==='pointermove'&&!event.target.hasPointerCapture?.(event.pointerId)&&event.target!==img){return}
+      const r=img.getBoundingClientRect(),x=event.clientX-r.left,y=event.clientY-r.top;
+      if(x<0||y<0||x>r.width||y>r.height){lens.hidden=true;return}
+      const cfg=event.pointerType==='mouse'?PHOTO_LENS.mouse:PHOTO_LENS.touch;
+      lens.style.width=lens.style.height=`${cfg.size}px`;
+      lens.style.left=`${x-cfg.size/2}px`;
+      // 휴대폰: 손가락 위로 띄우되, 팝업 사진 칸 위쪽 공간이 모자라면 잘리지 않게 손가락 아래로 띄운다.
+      let shift=cfg.lift?-(cfg.size/2+cfg.lift):0;
+      const area=dlg.querySelector('.rt-photo-body')?.getBoundingClientRect();
+      if(shift&&area&&event.clientY+shift-cfg.size/2<area.top)shift=-shift;
+      lens.style.top=`${y-cfg.size/2+shift}px`;
+      lens.style.backgroundImage=`url("${img.currentSrc||img.src}")`;
+      lens.style.backgroundSize=`${r.width*cfg.mag}px ${r.height*cfg.mag}px`;
+      lens.style.backgroundPosition=`${cfg.size/2-x*cfg.mag}px ${cfg.size/2-y*cfg.mag}px`;
+      lens.hidden=false;
+    }
     const FLOW_ZOOMS=[1,1.5,2,3];
     function setFlowZoom(dlg,index){
       const i=Math.max(0,Math.min(FLOW_ZOOMS.length-1,index));

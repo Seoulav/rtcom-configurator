@@ -746,3 +746,25 @@ test('0.227: XDM-MR4S는 원격 전원 공급 불가, MR-4S는 슬롯 카드로 
   assert.match(read('src/products.js'),/if\(item\.id==='xdm-mr4s'\)return mr4sDiagram\(item\);/);
   assert.match(read('src/app.js'),/data-mr4s-toggle role="switch"/);
 });
+
+test('0.260: 전 제품 사진 확대 팝업(B안)과 원형 돋보기',()=>{
+  const src=read('src/products.js'),css=read('src/styles.css');
+  // 상세 머리(단일·시리즈)와 Port Map 사진 칸 모두에서 팝업을 연다.
+  assert.match(src,/photos:photoZoomButton\(item\)[^]*photos:photoZoomButton\(item\)/);
+  assert.match(src,/class="rt-pg-photo-zoom-btn" data-photo-zoom="\$\{esc\(photo\.file\)\}"/);
+  assert.match(src,/const PHOTO_LENS=\{mouse:\{size:180,mag:2\.5,lift:0\},touch:\{size:130,mag:2\.5,lift:28\}\};/);
+  assert.match(src,/const PHOTO_ZOOMS=\[1,1\.5,2,3\];/);
+  assert.match(src,/function openPhotoZoom\(startFile\)/);
+  assert.match(src,/rt-flow-zoom rt-photo-zoom/,'팝업 틀은 Signal Flow 크게 보기와 같다');
+  assert.match(src,/function zoomPhotos\(item\)[^]*?img\.role!=='Diagram'&&!seen\.has\(img\.file\)/,'연결 다이어그램과 같은 파일은 사진 확대에서 뺀다');
+  for(const cls of ['rt-pg-photo-zoom-bar','rt-pg-photo-zoom-btn','rt-photo-tabs','rt-photo-stage','rt-photo-lens','rt-photo-cap','rt-photo-lens-btn'])assert.match(css,new RegExp(`\\.${cls}\\b`),cls);
+  assert.match(css,/\.rt-photo-stage\{[^}]*background:var\(--rt-photo\)/,'다크 모드에서도 사진 바탕은 밝게');
+  // 33개 제품 모두 확대할 실물·그림 사진(다이어그램 제외)이 있고 파일이 있다.
+  const ids=JSON.parse(read('data/products/index.json')).products.map(p=>p.id);
+  assert.equal(ids.length,33);
+  for(const id of ids){
+    const photos=JSON.parse(read(`data/products/${id}.json`)).images.filter(image=>image.role!=='Diagram');
+    assert.ok(photos.length>0,id);
+    for(const image of photos)assert.ok(fs.existsSync(`output/design/assets/products/${image.file}`),`${id} ${image.file}`);
+  }
+});
