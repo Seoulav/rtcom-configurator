@@ -7,8 +7,10 @@
          *999W21H02V02O0101O0202O0703O0804H02V02O0301O0402O0903O1004H02V02O0501O0602O1103O1204!
        O 뒤 숫자는 "출력 번호 + 월 안의 칸 번호(왼쪽 위부터 가로 순서)"이고, 출력은 월 N개를 가로로 나란히 놓은 디스플레이 배열을 왼쪽 위부터 가로로 센 번호다.
      - 88쪽 Wall Bezel Correction: *255B02O0112D20202020!(출력 1~12, 좌·우·상·하 20) · *255B01O04D08080808!(출력 4만 8)
-   매뉴얼에 없는 것: 제품 ID(매뉴얼 예는 999, 이 사이트의 VDM 명령은 255), W 데이터 2의 "0 = Wall Off" 형식 예, 3자리 번호(VDM-128X·256X) 형식.
-   그래서 월 풀기는 매뉴얼 예(85쪽)대로 1:1 복원(H01V01) 명령만 만들고, 3자리 번호는 같은 규칙으로 이은 예시로만 둔다(화면에도 알티컴 확인 대기로 적는다).
+   알티컴 회신(사용자 전달 2026-10-26, 질의서 30번): 제품 ID 255는 기본값으로 장비 터치 화면에서 바꿀 수 있고 ID가 같아야 명령을 받으며, 999는 모든 장비가 받는 공용 ID다.
+   W 데이터 2의 0은 월 끄기(W10)다. VDM-128X 이상은 번호를 3자리로 적는다(O001, O128).
+   알티컴이 W10 외에 끄기 전체 형식은 알려 주지 않아, 월 끄기 줄은 월 만들기 줄에서 W11(W21)을 W10(W20)으로만 바꾼 예시로 둔다.
+   월 풀기는 매뉴얼 예(85쪽)대로 1:1 복원(H01V01) 명령을 따로 둔다.
    순수 함수(normalize·commandsFor)는 Node 테스트(tests/vdm-wall.test.cjs)에서도 쓰므로 DOM을 건드리지 않는다.
    mountAll(scopeEl)은 [data-vdm-wall-root] 자리에만 그리고, 같은 카드의 탭 버튼([data-sim-tab])도 연결한다. */
 (function(scope,factory){
@@ -23,7 +25,7 @@
   const KEY='rtcom.vdmWall.v1';
   const DEFAULT_ID='255';
   const MAX_OUT=256;
-  const FIELD_NOTE='매뉴얼의 월 명령 예시는 제품 ID를 999로 적었지만 이 사이트의 VDM 명령은 255를 쓰므로 같은 255로 만들었습니다. "월 끄기"(W 데이터 2의 0)는 형식 예시가 없어 만들지 않고 매뉴얼 예(85쪽)대로 1:1 복원 명령(H01V01)만 보여 줍니다. 3자리 번호(VDM-128X·256X)는 매뉴얼에 월 명령 예가 없어 같은 규칙으로 이은 예시입니다. 모두 알티컴 확인 대기 중입니다.';
+  const FIELD_NOTE='알티컴 회신(사용자 전달 2026-10-26): 제품 ID 255는 기본값으로 장비 터치 화면에서 바꿀 수 있고, 장비 ID와 같아야 명령을 받습니다. 매뉴얼 예시의 999는 모든 장비가 받는 공용 ID입니다. W 데이터 2가 0이면 월 끄기(W10)이고, VDM-128X 이상은 번호를 3자리(O001, O128)로 적습니다. 다만 알티컴이 W10 외의 끄기 형식은 알려 주지 않아, "월 끄기" 줄은 월 만들기 줄의 W11을 W10(월이 둘 이상이면 W21을 W20)으로만 바꾼 예시이니 장비에서 확인하세요.';
   // 매뉴얼 예제를 그대로 불러오는 프리셋: 2x2 월(출력 1~4, 86쪽) · 4x3 월(출력 1~12, 85·86쪽) · 2x2 월 3개(출력 1~12, 87쪽)
   const PRESETS=[
     {id:'w2x2',name:'2×2 월 · 출력 1~4(매뉴얼 86쪽)',state:{walls:1,h:2,v:2,start:1}},
@@ -56,16 +58,18 @@
   function commandsFor(raw){
     const s=normalize(raw),w=s.pad,N=s.walls,H=s.h,V=s.v;
     const total=N*H*V,end=s.start+total-1;
-    const warnings=[],lines=[],reset=[];
-    if(end>MAX_OUT)return {state:s,total,end,lines,reset,warnings,error:`출력이 ${MAX_OUT}번을 넘습니다(시작 ${s.start}번 + ${total}개 = ${end}번). 월 개수·칸 수나 시작 출력을 줄이세요.`};
-    if(w===2&&end>99)warnings.push('출력 번호가 99를 넘으면 "번호 자릿수"를 3자리로 바꾸세요(VDM-128X·256X).');
-    if(w===3)warnings.push('3자리 번호의 월 명령 형식은 매뉴얼에 예가 없어 같은 규칙으로 이은 예시입니다.');
+    const warnings=[],lines=[],reset=[],off=[];
+    if(end>MAX_OUT)return {state:s,total,end,lines,reset,off,warnings,error:`출력이 ${MAX_OUT}번을 넘습니다(시작 ${s.start}번 + ${total}개 = ${end}번). 월 개수·칸 수나 시작 출력을 줄이세요.`};
+    if(w===2&&end>99)warnings.push('출력 번호가 99를 넘으면 "번호 자릿수"를 3자리로 바꾸세요(VDM-128X·180X·256X).');
+    if(N>1)warnings.push('월이 둘 이상일 때의 끄기(W20)는 알티컴이 W10만 확인해 같은 규칙으로 이은 예시입니다.');
     const o=n=>padN(n,w),hv=`H${padN(H,2)}V${padN(V,2)}`;
     if(N===1){
       lines.push({kind:'wall',label:`월 만들기 · ${H}×${V}(출력 ${s.start}~${end}번)`,text:`*${s.id}W11O${o(s.start)}${o(end)}${hv}!`});
+      off.push({kind:'off',label:`월 끄기 · 출력 ${s.start}~${end}번`,text:`*${s.id}W10O${o(s.start)}${o(end)}${hv}!`});
     }else{
       const body=cellsOf(s).map(cells=>hv+cells.map(([out,pos])=>`O${o(out)}${padN(pos,w)}`).join('')).join('');
       lines.push({kind:'wall',label:`월 ${N}개 만들기 · 각 ${H}×${V}(출력 ${s.start}~${end}번)`,text:`*${s.id}W21${body}!`});
+      off.push({kind:'off',label:`월 ${N}개 끄기 · 출력 ${s.start}~${end}번`,text:`*${s.id}W20${body}!`});
     }
     if(s.withBezel){
       const b=s.bezel,d=`D${padN(b.l,2)}${padN(b.r,2)}${padN(b.u,2)}${padN(b.d,2)}`;
@@ -74,7 +78,7 @@
         :{kind:'bezel',label:`베젤 보정 · 출력 ${s.start}번(좌 ${b.l} · 우 ${b.r} · 상 ${b.u} · 하 ${b.d})`,text:`*${s.id}B01O${o(s.start)}${d}!`});
     }
     reset.push({kind:'reset',label:`월 풀기 · 출력 ${s.start}~${end}번 1:1 복원`,text:`*${s.id}W11O${o(s.start)}${o(end)}H01V01!`});
-    return {state:s,total,end,lines,reset,warnings};
+    return {state:s,total,end,lines,reset,off,warnings};
   }
   let svgSeq=0;
   // 디스플레이 배열 그림: 월마다 영상 한 장(하늘·산)이 베젤을 건너 이어지고, 칸마다 출력 번호를 적는다. QMS 06 비디오 월 그림과 같은 모양이다.
@@ -122,7 +126,7 @@
     let st={...load(),id:info.id};
     const option=(v,label,cur)=>`<option value="${esc(v)}"${String(v)===String(cur)?' selected':''}>${esc(label)}</option>`;
     const canBasket=()=>!!(globalThis.RtControlExample&&globalThis.RtControlExample.basket);
-    let last={lines:[],reset:[]};
+    let last={lines:[],reset:[],off:[]};
     const block=(title,list,which,extra='')=>`<div class="rt-ls-cmd-head"><h3>${esc(title)}</h3><button type="button" class="rt-pg-btn" data-vw-copy="${which}">복사</button>${canBasket()?`<button type="button" class="rt-pg-btn${which==='build'?' rt-pg-primary':''}" data-vw-amx="${which}" title="이 커맨드를 아래 AMX 통합 제어 카드의 &quot;내 AMX 구성&quot;에 담습니다">AMX 구성에 담기</button>`:''}${extra}</div>
       <pre class="rt-ls-cmd" data-vw-cmd="${which}">${list.map((l,i)=>`<span class="rt-ls-cmdline"><small>${i+1}. ${esc(l.label)}</small>${esc(l.text)}</span>`).join('\n')}</pre>`;
     let advOpen=false; // "고급 설정" 펼침 상태(화면을 다시 그려도 유지)
@@ -131,7 +135,7 @@
       // 다시 그리기 직전에 화면의 실제 펼침 상태를 읽는다(toggle 이벤트는 늦게 오므로 그것만 믿으면 방금 연 상자가 닫힌 채로 다시 그려질 수 있다).
       const curAdv=root.querySelector('[data-vw-adv]');if(curAdv)advOpen=curAdv.open;
       const r=commandsFor(st);
-      last={lines:r.lines,reset:r.reset};
+      last={lines:r.lines,reset:r.reset,off:r.off||[]};
       const walls=st.walls;
       root.innerHTML=`<ol class="rt-sim-steps" aria-label="사용 순서"><li><b>1</b>월 크기 정하기</li><li><b>2</b>디스플레이 배열 확인</li><li><b>3</b>커맨드 복사 또는 AMX 구성에 담기</li></ol>
       <h4 class="rt-sim-h"><span>1</span>월 크기를 정하세요 <small>프리셋을 고르면 매뉴얼 예제가 채워집니다</small></h4>
@@ -144,15 +148,16 @@
       </div>
       <details class="rt-qv-adv" data-vw-adv${advOpen?' open':''}><summary>고급 설정 <small>번호 자릿수 · 베젤 보정</small></summary>
         <div class="rt-ls-controls rt-vw-controls">
-          <label>번호 자릿수<select data-vw="pad">${option(2,'2자리(대부분의 VDM)',st.pad)}${option(3,'3자리(VDM-128X·256X)',st.pad)}</select></label>
+          <label>번호 자릿수<select data-vw="pad">${option(2,'2자리(대부분의 VDM)',st.pad)}${option(3,'3자리(VDM-128X·180X·256X)',st.pad)}</select></label>
           <label class="rt-ls-check"><input type="checkbox" data-vw="withBezel"${st.withBezel?' checked':''}> 베젤 보정(B) 명령도 만들기</label>
           ${st.withBezel?['l','r','u','d'].map((k,i)=>`<label>베젤 ${['좌','우','상','하'][i]}<input type="number" min="0" max="99" data-vw-bz="${k}" value="${st.bezel[k]}"></label>`).join(''):''}
         </div></details>
       ${r.error?`<p class="rt-ls-warn rt-vw-error" role="alert">${esc(r.error)}</p>`:`<h4 class="rt-sim-h"><span>2</span>디스플레이 배열 <small>${walls===1?`가로 ${st.h} × 세로 ${st.v} 월 1개`:`가로 ${st.h} × 세로 ${st.v} 월 ${walls}개를 가로로 나란히`} · 출력 ${st.start}~${r.end}번 ${r.total}대 · 숫자는 출력 번호(왼쪽 위부터 가로로 차례)</small></h4>
       <div class="rt-vw-fig" aria-live="polite">${wallSvg(st)}</div>
-      <h4 class="rt-sim-h"><span>3</span>커맨드 <small>월 만들기 ${r.lines.length}줄 · 풀기 1줄</small></h4>
+      <h4 class="rt-sim-h"><span>3</span>커맨드 <small>월 만들기 ${r.lines.length}줄 · 풀기 1줄 · 끄기 1줄</small></h4>
       ${block('월 만들기',r.lines,'build')}
       ${block('월 풀기 · 1:1 복원',r.reset,'reset')}
+      ${block('월 끄기 · Wall Off(W10)',r.off,'off')}
       <p class="rt-ls-copied rt-vw-note" data-vw-note aria-live="polite"></p>
       <p class="rt-pg-hint">한 줄씩 보내고 각 줄 끝에 Enter(0x0D)를 붙입니다. 비디오 월은 VDM-HOS4S-UW 출력 카드(HDMI 4포트, 최대 1920x1080 @ 60Hz, 매뉴얼 44쪽)를 쓰며, 월 하나의 가로·세로 칸 수는 2~16이고 1은 1:1 복원에 씁니다. 제품 ID(${esc(st.id)})는 아래 AMX 카드와 같고, 번호 자릿수는 고급 설정에서 따로 고릅니다.</p>
       ${r.warnings.length?`<ul class="rt-ls-warn">${r.warnings.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}`}
@@ -162,13 +167,13 @@
     root.addEventListener('click',event=>{
       const cp=event.target.closest('[data-vw-copy]'),am=event.target.closest('[data-vw-amx]');
       if(cp){
-        const list=last[cp.dataset.vwCopy==='reset'?'reset':'lines'],text=list.map(l=>l.text).join('\n');
+        const list=last[cp.dataset.vwCopy==='reset'?'reset':cp.dataset.vwCopy==='off'?'off':'lines'],text=list.map(l=>l.text).join('\n');
         if(navigator.clipboard?.writeText)navigator.clipboard.writeText(text).then(()=>flash('복사했습니다'),()=>flash('복사하지 못했습니다. 직접 선택해 복사하세요.'));
         else{const pre=root.querySelector(`[data-vw-cmd="${cp.dataset.vwCopy}"]`);const rg=document.createRange();rg.selectNodeContents(pre);const sl=getSelection();sl.removeAllRanges();sl.addRange(rg);flash('선택했습니다. 복사하세요.')}
         return;
       }
       if(am&&canBasket()){
-        const list=last[am.dataset.vwAmx==='reset'?'reset':'lines'];
+        const list=last[am.dataset.vwAmx==='reset'?'reset':am.dataset.vwAmx==='off'?'off':'lines'];
         const res=globalThis.RtControlExample.basket.add(info.basketId,list.map(l=>({label:l.label.slice(0,80),text:l.text,enter:true,source:'비디오 월'})));
         flash(res.added?`구성에 ${res.added}줄을 담았습니다(지금 ${res.list.length}개)`:res.full?'구성이 가득 찼습니다(최대 60개)':'이미 담겨 있습니다');
       }
