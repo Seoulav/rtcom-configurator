@@ -73,6 +73,7 @@
   //   LAN: IP_CLIENT_OPEN(dev.PORT, IP, 포트, IP_TCP)로 장비에 TCP 연결한 뒤 같은 커맨드 문자열을 SEND_STRING으로 보낸다(NetLinx 표준 문법).
   //   포트는 매뉴얼에 적힌 값(spec.lan.port, SPX 매뉴얼 46쪽 Telnet 23)만 기본으로 쓰고, 없으면 0과 "확인 필요" 주석을 적는다. 값을 만들어 넣지 않는다.
   //   IP 설정(0.251, 사용자 확인 2026-10-18): 커맨드로는 바꿀 수 없고 장비에서 직접 설정하며 DHCP를 지원한다(lan.ipChange·lan.dhcp). XDM 가이드 67쪽의 LAN 항목(?SNA)은 조회 전용이다.
+  //   QMS-44UX만 예외(0.262, 알티컴 회신 2026-10-26): IP·게이트웨이·서브넷을 네트워크 명령(N)으로 설정할 수 있다(lan.ipChange 'command'). QMS-88UX는 전면 터치 화면에서만 설정한다.
   //   IP는 형식이 맞는 값만 쓰고(코드 주입 방지), 비어 있으면 예시 주소(DEFAULT_IP, 0.252에서 192.168.1.100 → 192.168.1.141, 사용자 요청 2026-10-18 "AMX예시쪽에 192.168.1.141로 전부 반영했어?")를 적고 현장에서 바꾸도록 주석을 단다. 기본 대역은 192.168.1.xxx(사용자 확인 2026-10-16, SPX 매뉴얼 예시 192.168.1.72도 같은 대역).
   // 직렬은 데이터 비트·패리티가 매뉴얼에 없으면 일반값(8N1)으로 적고 현장 확인을 안내한다. 사용자가 확인한 제품(serial.confirmed가 있는 제품, 0.250에서 XDM·HDS 포함)은 그 근거 문구를 보여 주고 일반값 안내를 하지 않는다.
   const IPV4=/^(25[0-5]|2[0-4]\d|1?\d?\d)(\.(25[0-5]|2[0-4]\d|1?\d?\d)){3}$/;
@@ -183,7 +184,7 @@
     // 직렬 제어만 되는 제품(HDS-42MU·HDS-21U, 사용자 확인 2026-10-16 "시리얼 제어만 가능해")은 통신 방식 선택 없이 RS-232 안내만 보인다.
     if(spec.serialOnly)return `<div class="rt-ce-comm" data-ce-commbar="${id}"><p class="rt-pg-hint">이 제품은 RS-232(직렬) 제어만 지원합니다. LAN 제어는 없습니다. 통신 속도 ${esc(spec.serial?.baud||9600)}bps.</p></div>`;
     const note=spec.lan?.port?`TCP 포트 ${spec.lan.port}: ${spec.lan.source||'매뉴얼'}`:'이 제품의 LAN(TCP) 포트는 매뉴얼에 없어 알티컴 확인이 필요합니다. 아는 포트 번호를 직접 넣으세요.';
-    return `<div class="rt-ce-comm" data-ce-commbar="${id}"><label>통신 방식<select data-ce-comm="mode"><option value="lan"${c.mode==='lan'?' selected':''}>LAN (TCP/IP)</option><option value="serial"${c.mode==='serial'?' selected':''}>RS-232 (직렬)</option></select></label><span class="rt-ce-comm-lan"${c.mode==='lan'?'':' hidden'}><label>장비 IP 주소<input type="text" inputmode="decimal" data-ce-comm="ip" value="${esc(c.ip)}" placeholder="${DEFAULT_IP}" autocomplete="off" maxlength="15"></label><label>TCP 포트<input type="text" inputmode="numeric" data-ce-comm="port" value="${esc(c.port)}" placeholder="${esc(spec.lan?.port||'확인 필요')}" autocomplete="off" maxlength="5"></label></span><p class="rt-pg-hint">${esc(note)} ${spec.lan?.confirmed?'LAN으로 보내는 커맨드 문자열은 RS-232와 같습니다. 장비는 동시 접속이 1개이고 연결을 자동으로 끊지 않습니다(알티컴 회신).':'LAN으로 보내는 커맨드 문자열은 RS-232와 같다고 보고 만든 예시이며, 제품별 확인 내용은 알티컴에 문의하세요.'}${spec.lan?.ipChange==='device'?` IP 주소는 커맨드로 바꿀 수 없고 장비에서 직접 설정합니다.${spec.lan.dhcp?' DHCP를 지원합니다.':''} (${esc(spec.lan.ipSource||'확인')})`:''}</p></div>`;
+    return `<div class="rt-ce-comm" data-ce-commbar="${id}"><label>통신 방식<select data-ce-comm="mode"><option value="lan"${c.mode==='lan'?' selected':''}>LAN (TCP/IP)</option><option value="serial"${c.mode==='serial'?' selected':''}>RS-232 (직렬)</option></select></label><span class="rt-ce-comm-lan"${c.mode==='lan'?'':' hidden'}><label>장비 IP 주소<input type="text" inputmode="decimal" data-ce-comm="ip" value="${esc(c.ip)}" placeholder="${DEFAULT_IP}" autocomplete="off" maxlength="15"></label><label>TCP 포트<input type="text" inputmode="numeric" data-ce-comm="port" value="${esc(c.port)}" placeholder="${esc(spec.lan?.port||'확인 필요')}" autocomplete="off" maxlength="5"></label></span><p class="rt-pg-hint">${esc(note)} ${spec.lan?.confirmed?'LAN으로 보내는 커맨드 문자열은 RS-232와 같습니다. 장비는 동시 접속이 1개이고 연결을 자동으로 끊지 않습니다(알티컴 회신).':'LAN으로 보내는 커맨드 문자열은 RS-232와 같다고 보고 만든 예시이며, 제품별 확인 내용은 알티컴에 문의하세요.'}${spec.lan?.ipChange==='device'?` IP 주소는 커맨드로 바꿀 수 없고 장비에서 직접 설정합니다.${spec.lan.dhcp?' DHCP를 지원합니다.':''} (${esc(spec.lan.ipSource||'확인')})`:spec.lan?.ipChange==='command'?` IP 주소·게이트웨이·서브넷은 아래 설정 명령(N)으로 바꿀 수 있습니다.${spec.lan.dhcp?' DHCP를 지원합니다.':''} (${esc(spec.lan.ipSource||'확인')})`:''}</p></div>`;
   }
   // AMX 코드 <pre>: 항목 목록을 속성에 담아 두면 통신 방식·IP·포트가 바뀔 때 화면을 다시 그리지 않고 그 자리에서 글만 바꾼다(입력 칸 포커스 유지).
   function amxPre(spec,items,extra=''){
@@ -342,7 +343,8 @@
   //  - select: 옵션 값 앞에 prefix를 붙인다(예: H + 09). optional이면 빈 값("생략")을 고를 수 있다.
   //  - number: min~max 정수, pad 자리 0 채움(예: V + 03). padVar이면 제품의 자릿수 선택(spec.variants, VDM 2·3자리)을 따른다.
   //  - list: "1-4,8" 같은 번호 목록. style 'range'는 3개 이상 이어진 번호를 범위(O01-04)로, 'explicit'은 번호마다(O01O02O03), 'comma'는 번호마다 쉼표로(O01,O02) 적는다.
-  //  - text: 따옴표로 감싸는 문자열(OSD 자막, prefix S + "…"), maxLen까지.
+  //  - text: 따옴표로 감싸는 문자열(OSD 자막, prefix S + "…"), maxLen까지. quote:false이면 따옴표 없이(QMS-88UX 자막 ST).
+  //  - allOrNone: [{label,ids}] 매개변수 묶음은 모두 적거나 모두 비워야 한다(QMS-88UX 사용자 레이어 창 2~4).
   //  - lit: 고정 글자(예: 멀티뷰의 S). num이 있으면 그 숫자를 자릿수에 맞춰 붙인다(예: I + 000).
   //  - route: {cmd}가 있으면 입력 번호 1개와 출력 목록으로 연결 쌍(I001O001-007, I001O009)을 쉼표로 이은 연결·해제 명령을 만든다.
   //  - template: "s in {in} av out {out}!"처럼 * 제품 ID 없이 문장형으로 만드는 명령(SPX 커맨드 2). enter가 false이면 Enter(0x0D)를 붙이지 않는다.
@@ -421,9 +423,10 @@
         return {pieces:[{kind,text:`${prefix}${String(v).padStart(padOf(spec,p,ctx),'0')}`,title:`${p.label} · ${v}`}],num:v};
       }
       if(p.type==='text'){
-        const t=String(raw??'').replace(/"/g,'').slice(0,p.maxLen||20);
+        // quote:false이면 따옴표 없이 글자만 붙인다(QMS-88UX 자막 ST). 명령 끝 글자 !·줄바꿈은 넣지 않는다.
+        const t=String(raw??'').replace(p.quote===false?/["!\r\n]/g:/"/g,'').slice(0,p.maxLen||20);
         if(!t)return {error:`${p.label}을(를) 입력하세요(최대 ${p.maxLen||20}자).`};
-        return {pieces:[{kind,text:`${prefix}"${t}"`,title:`${p.label} · ${t}`}]};
+        return {pieces:[{kind,text:p.quote===false?`${prefix}${t}`:`${prefix}"${t}"`,title:`${p.label} · ${t}`}]};
       }
       const pad=padOf(spec,p,ctx);
       const nums=parseNumList(raw,p.min??1,p.max??99);
@@ -462,6 +465,11 @@
         }
       }
       return {text:textOf(parts),parts,enter:b.enter!==false};
+    }
+    // allOrNone: [{label,ids}] 묶음은 모두 적거나 모두 비워야 한다(QMS-88UX 사용자 레이어 창 2~4).
+    for(const g of b.allOrNone||[]){
+      const given=g.ids.filter(id=>String(vals[id]??'').trim()!=='').length;
+      if(given&&given<g.ids.length)return {error:`${g.label}을(를) 쓰려면 입력·크기·위치 칸을 모두 적고, 쓰지 않으려면 모두 비워 두세요.`};
     }
     const parts=[mStart(),idPart];
     // 연결·해제 쌍 명령: 입력 1개 × 출력 목록 → I001O001-007,I001O009
@@ -594,12 +602,14 @@
       lastText=r.text;lastEnter=r.enter!==false;
       const dev=spec.amxDevice||'dvSwitcher';
       return `<div class="rt-ce-head"><h3>${esc(b.title)}${cmdOf(b)?` (${esc(cmdOf(b))})`:''}</h3><button type="button" class="rt-pg-btn" data-ce-bcopy>복사</button>${opts.basket?'<button type="button" class="rt-pg-btn rt-pg-primary" data-ce-badd title="이 명령을 아래 \"내 AMX 구성\"에 담습니다">+ 구성에 담기</button>':''}<span class="rt-ce-copied" data-ce-bnote aria-live="polite"></span></div>
-        <pre class="rt-ce-cmd"><span class="rt-ce-line"><small>${esc(b.title)} · ${esc(spec.docLabel||'매뉴얼')} ${esc(b.page)}</small>${tokens(r.parts)}${r.enter===false?'':'<span class="rt-ce-cr" title="Enter · 0x0D">⏎</span>'}</span></pre>
+        <pre class="rt-ce-cmd"><span class="rt-ce-line"><small>${esc(b.title)} · ${esc(pageLabel(b))}</small>${tokens(r.parts)}${r.enter===false?'':'<span class="rt-ce-cr" title="Enter · 0x0D">⏎</span>'}</span></pre>
         ${r.warn?`<p class="rt-ce-warn" data-ce-warn role="status">${esc(r.warn)}</p>`:''}
         <p class="rt-ce-hex">HEX <code>${esc(toHex(r.text,r.enter!==false))}</code>${r.enter===false?' · 이 형식은 매뉴얼에 Enter가 적혀 있지 않아 붙이지 않았습니다':''}</p>
         ${gated('AMX 코드 한 줄',()=>`<pre class="rt-ce-cmd rt-ce-code rt-ce-oneline">SEND_STRING ${esc(dev)},"'${esc(r.text)}'${r.enter===false?'':',$0D'}"</pre>`)}`;
     }
     const cmdOf=x=>x.cmd||x.route?.cmd||'';
+    // 근거가 매뉴얼 쪽 번호이면 "매뉴얼 35쪽"처럼, 알티컴 회신처럼 쪽이 없으면 그 글자만 보여 준다(0.262).
+    const pageLabel=x=>/쪽/.test(x.page||'')?`${spec.docLabel||'매뉴얼'} ${x.page}`:String(x.page||'');
     const optHtml=(x,b)=>`<option value="${esc(x.id)}"${x.id===b.id?' selected':''}>${esc(x.title)}${cmdOf(x)?` (${esc(cmdOf(x))})`:''}</option>`;
     function selectOptions(b){
       if(!list.some(x=>x.group))return list.map(x=>optHtml(x,b)).join('');
@@ -612,7 +622,7 @@
       const v=valuesOf(b);
       el.innerHTML=`<div class="rt-ce-block"><div class="rt-ce-head"><h3>설정 명령 · ${list.length}종</h3></div>
         <div class="rt-ce-controls">${spec.variants?`<label>${esc(spec.variantLabel||'번호 자릿수')}<select data-ce-bvariant>${spec.variants.map(x=>`<option value="${esc(x.id)}"${x.id===st.variant?' selected':''}>${esc(x.label)}</option>`).join('')}</select></label>`:''}<label>명령<select data-ce-bsel>${selectOptions(b)}</select></label></div>
-        <p class="rt-ce-hint-inline">${esc(b.summary||'')} <span class="rt-ce-page">${esc(spec.docLabel||'매뉴얼')} ${esc(b.page)}</span></p>
+        <p class="rt-ce-hint-inline">${esc(b.summary||'')} <span class="rt-ce-page">${esc(pageLabel(b))}</span></p>
         <div class="rt-ce-controls">${(b.params||[]).map(p=>control(b,p,v)).join('')}</div>
         <div data-ce-bout>${output(b)}</div></div>`;
     }
