@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.263.0 배포 기록**: `docs/qa/DEPLOYMENT_0.263_2026-10-28.md`(PR #419 → main 병합 `a298fa3`, Pages 배포 run 40663571867 success, 공개 `CATALOG BASED · 0.263`·`index.html`·`products.js`·`styles.css`·`hds-42mu.json`·`hds-21u.json` 해시 일치·오토 셀렉팅 카드 코드 확인·`CLAUDE.md` 404)
 - **0.262.0 배포 기록**: `docs/qa/DEPLOYMENT_0.262_2026-10-26.md`(PR #417 → main 병합 `c17dc27`, Pages 배포 run 40282427691 success, 공개 `CATALOG BASED · 0.262`·`control-example.js`·`vdm-wall.js`·`quad-view.js`·`products.js`·제품 JSON 3종 해시 일치·`CLAUDE.md` 404)
 - **0.261.0 배포 기록**: `docs/qa/DEPLOYMENT_0.261_2026-10-20.md`(PR #414 → main 병합 `7a67561`, Pages 배포 run 39422303914 success, 공개 `CATALOG BASED · 0.261`·`index.html`·`products.js`·`spx-rx-tx.json` 해시 일치·양쪽 연결 문구 확인·`CLAUDE.md` 404)
 - **0.260.0 배포 기록**: `docs/qa/DEPLOYMENT_0.260_2026-10-20.md`(PR #413 → main 병합 `84266c6`, Pages 배포 run 39420986975 success, 공개 `CATALOG BASED · 0.260`·`index.html`·`products.js`·`styles.css` 해시 일치·돋보기 코드 확인·`CLAUDE.md` 404)
