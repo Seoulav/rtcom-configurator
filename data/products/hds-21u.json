@@ -14,7 +14,7 @@
   "english": "2x1 HDMI 2.0 4K/60 switcher with audio extraction/insertion, priority and EDID minder",
   "korean": "오디오 병합·추출, Priority, EDID 마인더 기능을 갖춘 2입력 1출력 HDMI 2.0 4K 선택기다.",
   "subtitle": "2×1 HDMI 2.0 Switcher · 오디오 병합·추출",
-  "lead": "두 개의 HDMI 입력 중 **하나를 선택해 출력**합니다. Priority 오토셀렉팅과 아날로그 오디오 병합·추출을 지원합니다.",
+  "lead": "두 개의 HDMI 입력 중 **하나를 선택해 출력**합니다. 새로 꽂은 HDMI로 바로 바뀌는 오토 셀렉팅·Priority와 아날로그 오디오 병합·추출을 지원합니다.",
   "catalogPages": "32",
   "verificationSummary": "알티컴 종합 카탈로그(2026-03) 34쪽의 소개·주요기능·제품사양·크기 및 무게·제품 이미지에서 확인했다.",
   "packageStatus": "VERIFIED",
@@ -138,6 +138,10 @@
     {
       "text": "오디오 추출 기능: RS-232로 음량 조절 지원",
       "source": "C"
+    },
+    {
+      "text": "오토 셀렉팅 지원(새로 꽂은 HDMI 입력으로 자동 전환, 빼면 이전 입력으로 복귀)",
+      "source": "T"
     },
     {
       "text": "Priority 기능 지원(입력 1번 우선, 신호 없으면 자동 절체)",
@@ -460,6 +464,12 @@
       "name": "서울영상테크 SI사업본부 확인",
       "page": "",
       "scope": "사용자 확인(2026-09-27) — 오디오 병합(MUX)·추출(DEMUX)은 둘 중 하나만 동작하고 딥 스위치로 선택, HDS-21U·HDS-42MU 같은 방식, 딥 스위치 1~3번은 HDS-42MU와 동일"
+    },
+    {
+      "code": "T",
+      "name": "서울영상테크 SI사업본부 오토 셀렉팅 동작 시험",
+      "page": "",
+      "scope": "알티컴 펌웨어 개선 후 자사 시험(2026-10-28) — HDMI를 꽂으면 꽂은 입력으로, 빼면 이전 입력으로 자동 전환 확인."
     }
   ],
   "dipSwitch": {
@@ -500,6 +510,49 @@
     ],
     "apply": "스위치를 바꾼 뒤 전원 케이블을 한 번 뺐다 꽂아야 적용된다.",
     "note": "3번 스위치는 기능이 없다(사용자 매뉴얼 Ver.1.0에 안내 없음, HDS-21U는 HDMI 출력이 1개라 HDS-42MU의 분배 기능이 적용되지 않는다). 나가는 소리의 볼륨은 RS-232 명령으로 0.5dB 단위로 조절하거나 뮤트할 수 있다(매뉴얼 9쪽, 예: *000V54! = 0dB에서 2dB로)."
+  },
+  "autoSelect": {
+    "source": "T",
+    "inputs": 2,
+    "title": "오토 셀렉팅",
+    "when": "딥 스위치 설정과 관계없이 동작",
+    "lead": "HDMI를 새로 꽂으면 그 입력으로 바로 바뀌고, 빼면 바로 전에 보던 입력으로 돌아갑니다. 버튼이나 리모컨을 누르지 않아도 됩니다.",
+    "steps": [
+      {
+        "title": "① 평소",
+        "text": "입력 1번에 꽂힌 소스 화면이 나옵니다.",
+        "plugged": [
+          1
+        ],
+        "show": 1
+      },
+      {
+        "title": "② HDMI를 꽂으면",
+        "text": "입력 2번에 노트북을 꽂으면 바로 2번 화면으로 바뀝니다.",
+        "plugged": [
+          1,
+          2
+        ],
+        "show": 2,
+        "event": "plug",
+        "port": 2,
+        "changed": true
+      },
+      {
+        "title": "③ HDMI를 빼면",
+        "text": "2번 케이블을 빼면 바로 전에 보던 1번 화면으로 돌아갑니다.",
+        "plugged": [
+          1
+        ],
+        "show": 1,
+        "event": "unplug",
+        "port": 2,
+        "changed": true
+      }
+    ],
+    "notes": [
+      "알티컴 펌웨어 개선 후 서울영상테크 SI사업본부 시험(2026-10-28)으로 확인한 동작입니다."
+    ]
   },
   "audioMux": {
     "mode": "select",

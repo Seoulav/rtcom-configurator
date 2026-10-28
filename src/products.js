@@ -1189,6 +1189,47 @@
       }
       return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="딥 스위치 ${Object.entries(states).map(([n,v])=>`${n}번 ${v?'ON':'OFF'}`).join(' · ')}">${body}</svg>`;
     }
+    // 0.263 오토 셀렉팅 3단계 그림(HDS-42MU·HDS-21U, 알티컴 펌웨어 개선 후 자사 시험 2026-10-28, 사용자 요청 "오토 스위칭 모드에 대해서 조금 손쉽게 표현해 줄 수 있으면 좋겠어").
+    // 단계마다 장비 입력 단자에 꽂힌 HDMI 케이블과 화면에 나오는 입력 번호를 그린다. event: plug(새로 꽂음, 초록) · unplug(뺌, 회색 점선).
+    // SVG 안에 흰 바탕을 그려 다크 모드에서도 밝게 보인다.
+    function autoSelectGraphic(inputs,step){
+      const W=240,H=118,bx=62,bw=74,top=14,gap=Math.min(22,(H-34)/inputs),y0=top+(H-28-gap*(inputs-1))/2;
+      const plugged=new Set(step.plugged||[]),port=step.port,ev=step.event;
+      let g=`<rect x="0" y="0" width="${W}" height="${H}" rx="12" fill="#fff"/><rect x="${bx}" y="${top}" width="${bw}" height="${H-28}" rx="8" fill="#2C2C2E"/><text x="${bx+bw/2}" y="${H-4}" text-anchor="middle" font-size="10" font-weight="700" fill="#6A6A6F">HDMI IN</text>`;
+      for(let i=1;i<=inputs;i++){
+        const y=y0+(i-1)*gap,on=plugged.has(i),isEv=i===port;
+        if(on)g+=`<path d="M6 ${y}H${bx}" stroke="${isEv&&ev==='plug'?'#00B050':'#E5242B'}" stroke-width="${isEv?5:4}" stroke-linecap="round"/>`;
+        else if(isEv&&ev==='unplug')g+=`<path d="M6 ${y}H${bx-22}" stroke="#A1A1A6" stroke-width="4" stroke-linecap="round" stroke-dasharray="5 4"/><text x="${bx-12}" y="${y+4}" text-anchor="middle" font-size="13" font-weight="800" fill="#D70015">×</text>`;
+        g+=`<rect x="${bx+6}" y="${y-7}" width="20" height="14" rx="3" fill="${i===step.show?'#007AFF':on?'#636366':'#48484A'}"/><text x="${bx+16}" y="${y+4}" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">${i}</text>`;
+      }
+      const my=top+8,mh=H-44;
+      g+=`<path d="M${bx+bw+2} ${my+mh/2}H${bx+bw+16}M${bx+bw+12} ${my+mh/2-4}l4 4-4 4" fill="none" stroke="#3A3A3C" stroke-width="2"/>`;
+      g+=`<rect x="${bx+bw+20}" y="${my}" width="${W-bx-bw-26}" height="${mh}" rx="6" fill="${step.changed?'#0057D8':'#1C1C1E'}"/><rect x="${bx+bw+20+(W-bx-bw-26)/2-8}" y="${my+mh}" width="16" height="8" fill="#3A3A3C"/>`;
+      g+=`<text x="${bx+bw+20+(W-bx-bw-26)/2}" y="${my+mh/2-2}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">입력</text><text x="${bx+bw+20+(W-bx-bw-26)/2}" y="${my+mh/2+18}" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">${step.show}</text>`;
+      return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(step.title)}: 화면에 입력 ${step.show}번">${g}</svg>`;
+    }
+    // outputs(HDS-42MU): 다른 딥 스위치 설정에 따라 자동으로 바뀌는 출력이 다를 때, 설정마다 출력 모니터를 그린다. 바뀌는 출력은 파랑, 그대로인 출력은 검정.
+    function autoOutputsGraphic(total,outs,from,to){
+      const W=240,H=96,mw=82,gapX=(W-total*mw)/(total+1);
+      let g=`<rect x="0" y="0" width="${W}" height="${H}" rx="12" fill="#fff"/>`;
+      for(let i=1;i<=total;i++){
+        const x=gapX+(i-1)*(mw+gapX),on=outs.includes(i);
+        g+=`<rect x="${x}" y="10" width="${mw}" height="54" rx="6" fill="${on?'#0057D8':'#1C1C1E'}"/><rect x="${x+mw/2-8}" y="64" width="16" height="7" fill="#3A3A3C"/>`;
+        g+=`<text x="${x+mw/2}" y="30" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">입력</text><text x="${x+mw/2}" y="54" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">${on?to:from}</text>`;
+        g+=`<text x="${x+mw/2}" y="88" text-anchor="middle" font-size="11" font-weight="800" fill="${on?'#0057D8':'#6A6A6F'}">OUT ${i}${on?' · 자동 전환':' · 그대로'}</text>`;
+      }
+      return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${outs.map(n=>`OUT ${n}`).join('·')} 자동 전환">${g}</svg>`;
+    }
+    // 0.263 오토 셀렉팅 카드: 딥 스위치 설정과 관계없이 동작하므로(사용자 확인 2026-10-28 "딥스위치와 상관없이 오토셀렉팅이야") 딥 스위치 카드 다음 별도 카드로 둔다.
+    function autoSelectSection(item){
+      const as=item.autoSelect;
+      if(!as||!as.steps?.length)return '';
+      const idx=String(6+(item.videoModes?1:0)+(item.edidSwitch?.table?.length?1:0)+(item.audioMux?.modes?.length?1:0)+(item.dipSwitch?.rows?.length?1:0)).padStart(2,'0');
+      const steps=as.steps.map((st,i)=>`${i?'<span class="rt-pg-auto-arrow" aria-hidden="true">→</span>':''}<figure class="rt-pg-auto-step">${autoSelectGraphic(as.inputs,st)}<figcaption><b>${esc(st.title)}</b>${esc(st.text)}</figcaption></figure>`).join('');
+      const ex=as.steps.find(st=>st.event==='plug');
+      const outs=as.outputs?`<div class="rt-pg-auto-outs-wrap"><h4>${esc(as.outputs.title)}</h4><div class="rt-pg-auto-outs">${as.outputs.modes.map(m=>`<figure class="rt-pg-auto-step">${autoOutputsGraphic(as.outputs.total,m.outs,as.steps[0].show,ex?ex.show:as.steps[0].show)}<figcaption><b>${esc(m.set)} · ${esc(m.name)}</b>${esc(m.text)}</figcaption></figure>`).join('')}</div></div>`:'';
+      return `<section class="rt-pg-card rt-pg-auto-card" style="margin-top:18px"><h2><span class="rt-pg-idx">${idx}</span>${esc(as.title||'오토 셀렉팅')}${as.when?` <span class="rt-pg-note">— ${esc(as.when)}</span>`:''}</h2>${as.lead?`<p class="rt-pg-lead">${esc(as.lead)}</p>`:''}<div class="rt-pg-auto"><div class="rt-pg-auto-steps">${steps}</div>${outs}</div>${(as.notes||[]).map(n=>`<p class="rt-pg-hint">※ ${esc(n)}</p>`).join('')}</section>`;
+    }
     // dipSwitch.order: ["on","off"]이면 ON 칸을 왼쪽에 둔다(HDS-21U·HDS-42MU, 사용자 요청 2026-09-27 "딥스위치 값 서로 좌우 위치 변경해줘"). 없으면 OFF → ON.
     function dipSwitchSection(item){
       const ds=item.dipSwitch;
@@ -1207,7 +1248,7 @@
     function controlExampleSection(item,idxOverride){
       const ce=item.controlExample;
       if(!ce)return '';
-      const idx=idxOverride||String(6+(item.videoModes?1:0)+(item.edidSwitch?.table?.length?1:0)+(item.audioMux?.modes?.length?1:0)+(item.dipSwitch?.rows?.length?1:0)).padStart(2,'0');
+      const idx=idxOverride||String(6+(item.videoModes?1:0)+(item.edidSwitch?.table?.length?1:0)+(item.audioMux?.modes?.length?1:0)+(item.dipSwitch?.rows?.length?1:0)+(item.autoSelect?.steps?.length?1:0)).padStart(2,'0');
       const spec={...ce,id:item.id};
       return `<section class="rt-pg-card rt-pg-control" id="rt-control" style="margin-top:18px"><h2><span class="rt-pg-idx">${idx}</span>AMX 통합 제어 커맨드 예시 <span class="rt-pg-note">— ${ce.serialOnly?`RS-232 ${esc(ce.serial?.baud||9600)}bps · LAN 제어 없음`:`커맨드는 RS-232 ${esc(ce.serial?.baud||9600)}bps 기준 · AMX 코드는 LAN(TCP)·RS-232 선택`} · ${ce.kind==='builders'?'명령을 고르고 값을 넣으면 커맨드가 만들어집니다':'입력·출력을 고르면 커맨드가 바뀝니다'}</span></h2>${ce.lead?`<p class="rt-pg-lead">${esc(ce.lead)}</p>`:''}<div data-control-example="${esc(JSON.stringify(spec))}"></div></section>`;
     }
@@ -1278,6 +1319,7 @@
       else if(hasAudioMux){belowCards=`${edidSwitchSection(item)}${audioMuxSection(item)}`}
       else{belowCards=edidSwitchSection(item)}
       belowCards+=dipSwitchSection(item);
+      belowCards+=autoSelectSection(item);
       belowCards+=controlExampleSection(item);
       // 휴대폰(1000px 이하)에서는 .rt-pg-col이 사라지고 rt-pg-col-mobile-N 순서로만 쌓이므로, sideCard도 순서 클래스가 있어야 05 다음(01~05, 06, 07 기록)으로 나온다(없으면 order:0이라 맨 앞으로 감).
       if(sideCard)sideCard=sideCard.replace('class="rt-pg-card', 'class="rt-pg-card rt-pg-col-mobile-6');
