@@ -102,8 +102,8 @@ test('QMS-44UX는 제품 ID 01, 한 입력 전체 출력은 A 명령, 해제·�
   assert.equal(ce.presetCommand(q44,'call',1),null);
 });
 
-test('LAN 제품 5개는 IP를 커맨드로 바꿀 수 없고 DHCP를 지원한다는 사용자 확인(2026-10-18)을 통신 안내에 보여 준다(0.251)',()=>{
-  for(const id of ['xdm','vdm','spx','qms-44ux','qms-88ux']){
+test('LAN 제품 4개는 IP를 커맨드로 바꿀 수 없고 DHCP를 지원한다는 사용자 확인(2026-10-18)을 통신 안내에 보여 준다(0.251, QMS-44UX는 0.262에서 제외)',()=>{
+  for(const id of ['xdm','vdm','spx','qms-88ux']){
     const spec=JSON.parse(fs.readFileSync(`data/products/${id}.json`,'utf8')).controlExample;
     assert.equal(spec.lan.ipChange,'device',`${id} IP 변경 방식`);
     assert.equal(spec.lan.dhcp,true,`${id} DHCP`);
@@ -178,15 +178,19 @@ test('QMS-88UX 비디오 월(OW)은 매뉴얼 35쪽 예시 2개와 같고 해상
   assert.equal(build(q88,'wall',{range:'1-6',res:'',h:2,v:3,members:'1-6'}),'*255OWO01-06H02V03O01O02O03O04O05O06!');
 });
 
-test('QMS-88UX 비디오 월(OW)은 월 2개를 한 줄로 이어 만들 수 있고 매뉴얼 35쪽 첫 예시와 같다(0.248)',()=>{
+test('0.262: QMS-88UX 비디오 월(OW)은 월마다 명령을 따로 보낸다(알티컴 회신: 월 2개를 한 줄로 잇지 않음)',()=>{
   const wall=(values)=>ce.buildCommand(q88,B(q88,'wall'),values);
-  const two={range:'1-10',res:'13',h:2,v:2,members:'1-4',h2:3,v2:2,members2:'5-10'};
-  assert.equal(wall(two).text,'*255OWO01-10M13H02V02O01O02O03O04H03V02O05O06O07O08O09O10!');
-  assert.equal(wall(two).warn,'','매뉴얼 예시는 경고가 없어야 한다');
-  assert.equal(build(q88,'wall',{range:'1-8',res:'13',h:2,v:2,members:'1-4',h2:2,v2:2,members2:'5-8'}),'*255OWO01-08M13H02V02O01O02O03O04H02V02O05O06O07O08!');
-  // 월 2를 비우면 기존 월 1개 명령과 같다
+  // 알티컴 회신 예: 2×2 월(출력 1~4번)과 3×2 월(출력 5~10번)을 각각 따로 설정
+  const w1=wall({range:'1-4',res:'13',h:2,v:2,members:'1-4'}),w2=wall({range:'5-10',res:'13',h:3,v:2,members:'5-10'});
+  assert.equal(w1.text,'*255OWO01-04M13H02V02O01O02O03O04!');
+  assert.equal(w2.text,'*255OWO05-10M13H03V02O05O06O07O08O09O10!');
+  assert.equal(w1.warn,'');assert.equal(w2.warn,'');
+  // 월 2 매개변수는 없어졌다
+  const ids=B(q88,'wall').params.map(p=>p.id);
+  assert.deepEqual(ids,['range','res','h','v','members']);
+  assert.equal(B(q88,'wall').walls.length,1);
+  assert.match(B(q88,'wall').summary,/월마다 이 명령을 따로 한 번씩 보냅니다/);
   assert.equal(wall({range:'1-6',res:'13',h:2,v:3,members:'1-6'}).text,'*255OWO01-06M13H02V03O01O02O03O04O05O06!');
-  assert.equal(wall({range:'1-6',res:'13',h:2,v:3,members:'1-6'}).warn,'');
 });
 
 test('QMS-88UX QD 오디오 입력 선택(IS)은 매뉴얼 43쪽 예시 2개와 같고 표(S0~S3)대로 입력을 안내한다(0.249)',()=>{
@@ -198,11 +202,14 @@ test('QMS-88UX QD 오디오 입력 선택(IS)은 매뉴얼 43쪽 예시 2개와 
   const sel=b.params.find(p=>p.id==='sel').options;
   assert.deepEqual(sel.map(o=>o[0]),['0','1','2','3']);
   assert.match(sel[3][1],/QD1 = 입력 4 \/ QD2 = 입력 8/,'S3은 표 기준 QD2 입력 8번');
-  assert.match(q88.limits,/ISQ2S3.*입력 5번.*S3 = 입력 8번/,'매뉴얼 예시와 표가 다른 점을 화면에 남긴다');
+  assert.match(q88.limits,/ISQ2S3.*입력 5번.*오기.*S3 = 입력 8번/,'알티컴 회신: 예시의 "입력 5번" 설명이 오기이고 표가 맞다');
+  assert.match(q88.limits,/Q1·Q2는 QD 단자 번호가 아니라 멀티뷰 입력 그룹/);
+  assert.doesNotMatch(q88.limits,/확인 대기/);
+  assert.match(b.summary,/멀티뷰 입력 그룹/);
   assert.equal(new Set(q88.builders.map(x=>x.id)).size,q88.builders.length);
 });
 
-test('QMS-88UX 비디오 월(OW) 검사: 칸 수·범위·겹침 불일치는 경고, 월 2가 덜 채워지면 오류',()=>{
+test('QMS-88UX 비디오 월(OW) 검사: 칸 수·범위 불일치는 경고(명령은 만든다)',()=>{
   const wall=(values)=>ce.buildCommand(q88,B(q88,'wall'),values);
   const cells=wall({range:'1-10',res:'13',h:2,v:2,members:'1-10'});
   assert.ok(cells.text,'경고만 붙이고 명령은 만든다');
@@ -211,14 +218,68 @@ test('QMS-88UX 비디오 월(OW) 검사: 칸 수·범위·겹침 불일치는 �
   assert.match(out.warn,/출력 5·6번이 "월을 만들 출력 범위"에 없습니다/);
   const idle=wall({range:'1-8',res:'13',h:2,v:2,members:'1-4'});
   assert.match(idle.warn,/출력 5·6·7·8번이 어느 월에도 포함되지 않았습니다/);
-  const dup=wall({range:'1-8',res:'13',h:2,v:2,members:'1-6',h2:2,v2:2,members2:'5-8'});
-  assert.match(dup.warn,/출력 5·6번이 두 월에 모두 들어 있습니다/);
-  const part=wall({range:'1-8',res:'13',h:2,v:2,members:'1-4',h2:2,v2:'',members2:'5-8'});
-  assert.equal(part.text,undefined);
-  assert.match(part.error,/두 번째 월을 쓰려면 가로·세로 칸 수와 포함 출력을 모두 적고/);
   // 9·10번이 들어간 월도 같은 규칙: 3×3 월(1~9번), 2×5 월(1~10번)
   assert.equal(build(q88,'wall',{range:'1-9',res:'13',h:3,v:3,members:'1-9'}),'*255OWO01-09M13H03V03O01O02O03O04O05O06O07O08O09!');
   assert.equal(wall({range:'1-10',res:'13',h:5,v:2,members:'1-10'}).warn,'');
+});
+
+test('0.262: QMS-88UX 출력 테스트 패턴(OT)은 9·10번에도 쓸 수 있다(알티컴 회신)',()=>{
+  assert.equal(build(q88,'tp',{out:'9-10',pat:'01'}),'*255OTO09O10M01!','두 번호는 범위(3개 미만)가 아니라 번호마다 적는다');
+  assert.equal(build(q88,'tp',{out:'1-10',pat:'06'}),'*255OTO01-10M06!');
+  assert.equal(B(q88,'tp').params.find(p=>p.id==='out').max,10);
+});
+
+test('0.262: QMS-88UX 사용자 레이어(M)와 자막(S·ST)은 알티컴 회신 예시와 글자까지 같다',()=>{
+  const ul=(values)=>ce.buildCommand(q88,B(q88,'ul'),values);
+  // 회신 예 1: 사용자 레이어 13에 입력 1 전체 화면
+  assert.equal(ul({layer:'0'}).text,'*255M0P1W1920H1080X0Y0!');
+  // 회신 예 2: 사용자 레이어 15에 입력 1~4를 4분할(W1920 H1080)
+  const four={layer:'2',p:'1',w:1920,h:1080,x:0,y:0,p2:'2',w2:1920,h2:1080,x2:1920,y2:0,p3:'3',w3:1920,h3:1080,x3:0,y3:1080,p4:'4',w4:1920,h4:1080,x4:1920,y4:1080};
+  assert.equal(ul(four).text,'*255M2P1W1920H1080X0Y0P2W1920H1080X1920Y0P3W1920H1080X0Y1080P4W1920H1080X1920Y1080!');
+  // 창 2~4는 입력·크기·위치를 모두 적거나 모두 비워야 한다
+  const half=ul({layer:'1',p2:'2',w2:960});
+  assert.equal(half.text,undefined);assert.match(half.error,/창 2을\(를\) 쓰려면/);
+  // 회신 예: 자막 켜기·끄기, 문구 입력
+  assert.equal(build(q88,'sub',{tgt:'ALL',on:'1',size:0,color:0}),'*255SALLS100!');
+  assert.equal(build(q88,'sub',{tgt:'I04',on:'1',size:1,color:0}),'*255SI04S110!');
+  assert.equal(build(q88,'sub',{tgt:'ALL',on:'0',size:0,color:0}),'*255SALLS000!');
+  assert.equal(build(q88,'txt',{inp:'I02',text:'Port2 Osd test'}),'*255STI02TPort2 Osd test!');
+  assert.equal(build(q88,'txt',{inp:'I02',text:'a!b"c'}),'*255STI02Tabc!','명령을 끝내는 ! 와 따옴표는 문구에 넣지 않는다');
+  assert.equal(build(q88,'txt',{inp:'I08',text:'0123456789012345678901234'}),'*255STI08T01234567890123456789!','20자까지');
+  assert.match(ce.buildCommand(q88,B(q88,'txt'),{inp:'I02',text:''}).error,/자막 문구/);
+});
+
+test('0.262: QMS-88UX 연결 명령에는 공백이 들어가지 않는다(알티컴 회신: 공백이 있으면 안 됨)',()=>{
+  const r=ce.routeCommand(q88,[[4,1],[2,2]]);
+  assert.equal(r.text,'*255CI04O01,I02O02!');
+  assert.doesNotMatch(r.text,/\s/);
+  assert.equal(q88.manualExample,'*255CI04O01,I02O02!');
+  assert.match(q88.limits,/명령에 공백을 넣으면 안 되며/);
+});
+
+test('0.262: QMS-44UX 네트워크 설정(N)은 알티컴 회신 예시와 글자까지 같다',()=>{
+  assert.equal(build(q44,'nip',{a:192,b:168,c:2,d:15}),'*01NIP192.168.002.015!');
+  assert.equal(build(q44,'ngw',{a:192,b:168,c:5,d:1}),'*01NGW192.168.005.001!');
+  assert.equal(build(q44,'nsm',{a:255,b:255,c:255,d:0}),'*01NSM255.255.255.000!');
+  assert.equal(build(q44,'ni',{}),'*01NNI000!');
+  // 기본값은 장비 기본 IP 192.168.1.141
+  assert.equal(ce.buildCommand(q44,B(q44,'nip'),ce.builderDefaults(B(q44,'nip'))).text,'*01NIP192.168.001.141!');
+  // 범위 밖 숫자는 0~255로 맞춘다
+  assert.equal(build(q44,'nip',{a:300,b:168,c:1,d:-5}),'*01NIP255.168.001.000!');
+});
+
+test('0.262: QMS-44UX Wall·Dual 레이아웃 번호는 알티컴 회신의 이름과 대응하고 연결 해제·프리셋 명령은 없다',()=>{
+  const wall=B(q44,'wmw').params.find(p=>p.id==='lay').options;
+  assert.deepEqual(wall.map(o=>o[1]),['0 · 1×1','1 · 2×2','2 · 2×1','3 · 1×2','4 · 3×1','5 · 1×3','6 · 4×1','7 · 1×4']);
+  const dual=B(q44,'wmd').params.find(p=>p.id==='top').options;
+  assert.deepEqual(dual.map(o=>o[1]),['0 · PBP','1 · PBP-Full','2 · PIP']);
+  assert.equal(q44.commands.disconnect,undefined);assert.equal(q44.commands.preset,undefined);
+  assert.match(q44.limits,/연결 해제와 프리셋 명령은 없다는 점/);
+  assert.doesNotMatch(q44.limits,/대응은 매뉴얼에 적혀 있지 않아/);
+  assert.equal(q44.lan.ipChange,'command');
+  const html=ce.commBarHtml({...q44,id:'qms-44ux'});
+  assert.match(html,/IP 주소·게이트웨이·서브넷은 아래 설정 명령\(N\)으로 바꿀 수 있습니다\. DHCP를 지원합니다\./);
+  assert.doesNotMatch(html,/IP 주소는 커맨드로 바꿀 수 없고/);
 });
 
 test('QMS-88UX 멀티뷰(Q)는 매뉴얼 39쪽 예시 2개와 같다',()=>{
@@ -246,11 +307,11 @@ test('빌더 입력이 비었거나 틀리면 명령을 만들지 않고 안내 
   assert.match(ce.buildCommand(q88,B(q88,'res'),{out:'1',res:'99'}).error,/해상도/);
 });
 
-test('빌더 정의는 모두 기본값으로 명령이 만들어지고 매뉴얼 쪽 근거를 갖는다',()=>{
+test('빌더 정의는 모두 기본값으로 명령이 만들어지고 매뉴얼 쪽 또는 알티컴 회신 근거를 갖는다',()=>{
   for(const q of [q88,q44])for(const b of q.builders){
     const r=ce.buildCommand(q,b,ce.builderDefaults(b));
     assert.ok(r.text&&r.text.startsWith('*'+q.productId)&&r.text.endsWith('!'),`${b.id}: ${r.error||r.text}`);
-    assert.match(b.page,/쪽/);
+    assert.match(b.page,/쪽|^알티컴 회신\(\d{4}-\d{2}-\d{2}\)$/,`${b.id}: 근거는 매뉴얼 쪽 번호 또는 알티컴 회신 날짜`);
   }
 });
 

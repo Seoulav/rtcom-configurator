@@ -68,8 +68,8 @@ test('0.245: 3자리 번호와 범위 보정, 99를 넘는 번호 경고',()=>{
   assert.deepEqual(bad.inputs,[1,2,256,4]);assert.equal(bad.firstPort,253);assert.equal(bad.pad,2);
 });
 
-test('0.245: 화면에는 알티컴 확인 대기 안내와 출처 쪽을 남기고, 사이트 번들·배포 목록·제품 화면에 연결한다',()=>{
-  assert.match(Q.FIELD_NOTE,/알티컴 확인 대기/);
+test('0.245·0.262: 화면에는 알티컴 회신(출력 포트 대응)과 출처 쪽을 남기고, 사이트 번들·배포 목록·제품 화면에 연결한다',()=>{
+  assert.match(Q.FIELD_NOTE,/알티컴 회신/);assert.match(Q.FIELD_NOTE,/프레임 출력 포트 번호/);assert.doesNotMatch(Q.FIELD_NOTE,/확인 대기/);
   assert.match(Q.FIELD_NOTE,/카드 첫 출력 포트/);
   const src=read('src/quad-view.js');
   assert.match(src,/KV07/);assert.match(src,/63쪽/);assert.match(src,/82·83쪽/);

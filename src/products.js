@@ -623,7 +623,8 @@
           bodyMarkup+=`<text x="${(txX+boxW+rxX)/2}" y="${y+32}" text-anchor="middle" font-size="11" font-weight="700" fill="#b86e00">${svgEsc(row.tx?'같은 케이블로 전원 → 수신기':'같은 케이블로 전원 → 송신기')}</text>`;
           bodyMarkup+=arrow(rxX+boxW+6,y,dstX-24,y,COLOR_OUT)+monitorIcon(dstX,y,'디스플레이');
         });
-        bodyMarkup+=`<text x="${width/2}" y="${height-26}" text-anchor="middle" font-size="11" fill="#687386">어댑터는 송신기·수신기 중 한쪽에만 연결하면 됩니다(PoC) · SPX-COS12 카드에 연결한 SPX-RX는 매트릭스에서 전원을 받습니다</text>`;
+        bodyMarkup+=`<text x="${width/2}" y="${height-40}" text-anchor="middle" font-size="11" fill="#687386">어댑터는 송신기·수신기 중 한쪽에만 연결하면 됩니다(PoC) · 양쪽 모두 연결해도 상관없습니다</text>`;
+        bodyMarkup+=`<text x="${width/2}" y="${height-22}" text-anchor="middle" font-size="11" fill="#687386">SPX-COS12 카드에 연결한 SPX-RX는 매트릭스에서 전원을 받습니다</text>`;
         captions=[[COLOR_IN,'입력(소스 → TX)'],[cableColor,`${cableName} 신호`],[COLOR_POWER,'전원(PoC)'],[COLOR_OUT,'출력(RX → 디스플레이)']];
       } else {
         width=980;height=220;
@@ -662,7 +663,7 @@
         steps.push(`입력: 소스 기기 → ${txLabel} HDMI IN${isTransceiver?'(송신 모드)':''}${videoSpec?` · ${videoSpec}`:''}`);
         steps.push(`전송: ${cableName}${transmission.connector?` · ${shortConnector(transmission.connector)}`:''}`);
         steps.push(`출력: ${rxLabel} HDMI OUT${isTransceiver?'(수신 모드)':''} → 디스플레이`);
-        if(pocPair)steps.push('전원(PoC): 송신기 또는 수신기 한쪽에만 DC 12V 1A 이상 어댑터를 연결하면 CATx 케이블로 상대 기기에 전원이 공급됩니다. SPX-COS12 카드에 연결한 SPX-RX는 매트릭스에서 전원을 받습니다.');
+        if(pocPair)steps.push('전원(PoC): 송신기 또는 수신기 한쪽에만 DC 12V 1A 이상 어댑터를 연결하면 CATx 케이블로 상대 기기에 전원이 공급됩니다. 양쪽 모두 연결해도 상관없습니다. SPX-COS12 카드에 연결한 SPX-RX는 매트릭스에서 전원을 받습니다.');
       }
       if(distanceLines.length)steps.push(/전송\s?거리/.test(distanceText)?distanceText:`최대 전송 거리: ${distanceText}`);
       if(extras.length)steps.push(`그 외 신호: ${[...new Set(extras)].join(', ')}(입출력 표 참고)`);
@@ -979,9 +980,11 @@
     // 0.155(사용자 요청 2026-09-29 "QMS-44 비디오월 기능을 88에도 동일한 컨셉으로 만들어줘", "메뉴얼 읽어보고 작업해줘"): QMS-88UX 매뉴얼 KV.04 19쪽 6) Wall Mode.
     // Wall 1·Wall 2를 각각 가로(H)×세로(V)와 시작(Start)·끝(End) 출력 포트로 정한다. 2×2 월은 2개까지, 월 1개면 최대 3×3 또는 2×5(매뉴얼 H×V 표기 그대로 가로 2 × 세로 5).
     // 출력 9·10번(M1·M2)은 평소 멀티뷰 포트지만 Wall 모드로 설정하면 월에 넣을 수 있다. 값: [[가로, 세로, 시작 출력 번호], …].
+    // 0.262(알티컴 회신 2026-10-26 "출력10개이므로 Wall 조합 H×V 10개까지", 예 2×2 월(출력 1~4번) + 3×2 월(출력 5~10번)): 출력 10개 안에서 월 크기·개수 조합이 자유라, 회신의 예를 칩으로 더했다.
     const WALL_SPECS={'qms-88ux':{
       '2×2':[[2,2,1]],
       '2×2 + 2×2':[[2,2,1],[2,2,5]],
+      '2×2 + 3×2':[[2,2,1],[3,2,5]],
       '3×3':[[3,3,1]],
       '2×5':[[2,5,1]]
     }};

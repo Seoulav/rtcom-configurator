@@ -121,7 +121,7 @@
       "source": "M1"
     },
     {
-      "text": "PoC(Power over Cable) 지원(송·수신기 중 한쪽만 전원 연결)",
+      "text": "PoC(Power over Cable) 지원(송·수신기 중 한쪽만 전원 연결, 양쪽 연결도 무관)",
       "source": "M1"
     },
     {
@@ -188,7 +188,7 @@
       "name": "전원",
       "value": "DC +12V 1A 이상",
       "unit": "",
-      "condition": "PoC: 송신기 또는 수신기 한쪽에만 연결",
+      "condition": "PoC: 송신기 또는 수신기 한쪽에만 연결(양쪽 연결도 무관)",
       "source": "M1",
       "verification": "VERIFIED"
     },
@@ -447,7 +447,7 @@
         {
           "n": 7,
           "label": "DC IN",
-          "desc": "DC 12V 1A 이상 · 송·수신기 중 한쪽에만 연결(PoC)",
+          "desc": "DC 12V 1A 이상 · 송·수신기 중 한쪽에만 연결(PoC), 양쪽 연결도 무관",
           "x1": 568,
           "x2": 614,
           "side": "top",
@@ -507,7 +507,7 @@
         {
           "n": 6,
           "label": "DC IN",
-          "desc": "DC 12V 1A 이상 · 송·수신기 중 한쪽에만 연결(PoC) · SPX-COS12 연결 시 매트릭스에서 PoC 공급",
+          "desc": "DC 12V 1A 이상 · 송·수신기 중 한쪽에만 연결(PoC), 양쪽 연결도 무관 · SPX-COS12 연결 시 매트릭스에서 PoC 공급",
           "x1": 620,
           "x2": 668,
           "side": "top",

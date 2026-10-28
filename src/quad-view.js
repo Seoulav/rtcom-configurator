@@ -4,9 +4,10 @@
      - 63쪽 설정 화면 "7) Multiview": 출력 번호·Timing·화면 레이아웃(Format C1~C4 도해 8종)을 고르고 Enter
      - 82·83쪽 OQ 커맨드: *255OQO01T00!(타이밍), *255OQO01L05!(레이아웃), L1~L4 채널 1~4 단독 · L5 쿼드뷰 · L6 왼쪽 1+오른쪽 3 · L7 좌우 · L8 위 1+아래 3
    레이아웃 도해 비율은 63쪽 화면의 Format 그림을 따른다(L6은 C1이 가로 약 75%, L8은 C1이 세로 약 75%, L7은 좌우 반반).
-   매뉴얼에 없는 것: C1~C4가 카드의 어느 출력 포트에 대응하는지, OQ 출력 번호가 카드 포트와 어떻게 대응하는지.
-   63쪽 설정 화면은 카드가 쓰는 포트를 "S2 : 5, 6, 7, 8"처럼 4개로 보여 줄 뿐이라, 입력 연결(C) 명령의 출력 번호는
-   사용자가 정한 "카드 첫 출력 포트"부터 C1~C4를 순서대로 둔 예시로만 만든다(화면에도 같은 안내를 적고 알티컴 확인 대기로 둔다).
+   알티컴 회신(사용자 전달 2026-10-26, 질의서 29번): C1~C4는 카드가 쓰는 출력 포트 4개에 순서대로 대응하고 각 칸의 입력은 C 명령으로 그 포트에 연결한다.
+   OQ 출력 번호는 매트릭스 프레임의 출력 포트 번호이며, 카드의 HDMI 출력 번호는 카드를 꽂은 위치에 따라 프레임 출력 포트 번호를 따라간다.
+   63쪽 설정 화면은 카드가 쓰는 포트를 "S2 : 5, 6, 7, 8"처럼 4개로 보여 주므로, 입력 연결(C) 명령의 출력 번호는
+   사용자가 정한 "카드 첫 출력 포트"부터 C1~C4를 순서대로 둔다(카드를 어느 슬롯에 꽂았는지는 현장마다 달라 사용자가 입력한다).
    순수 함수(layoutOf·commandsFor 등)는 Node 테스트(tests/quad-view.test.cjs)에서도 쓰므로 DOM을 건드리지 않는다.
    mountAll(scopeEl)은 [data-quad-view-root] 자리에만 그린다. 그림은 src/products.js의 globalThis.RtMonitorLayoutSvg(QMS 화면 구성 모드와 같은 모니터 그림)를 쓴다. */
 (function(scope,factory){
@@ -35,7 +36,7 @@
   ].map(l=>({...l,code:`L${padN(l.n,2)}`,channels:[...new Set(l.cells.map(c=>c[0]))].sort((a,b)=>a-b)}));
   // 매뉴얼 82쪽 OQ 타이밍 표 T00~T24.
   const TIMINGS=[['T00','Auto'],['T01','480p (60Hz)'],['T02','576p (50Hz)'],['T03','720p (50Hz)'],['T04','720p (59Hz)'],['T05','720p (60Hz)'],['T06','1080i (50Hz)'],['T07','1080i (59Hz)'],['T08','1080i (60Hz)'],['T09','1080p (50Hz)'],['T10','1080p (59Hz)'],['T11','1080p (60Hz)'],['T12','SVGA (800x600@60Hz)'],['T13','SVGA (800x600@75Hz)'],['T14','XGA (1024x768@60Hz)'],['T15','XGA (1024x768@75Hz)'],['T16','XGA (1024x768@85Hz)'],['T17','SXGA (1280x1024@60Hz)'],['T18','SXGA (1280x1024@75Hz)'],['T19','SXGA (1280x1024@85Hz)'],['T20','UXGA (1600x1200@60Hz)'],['T21','1360x768@60Hz'],['T22','1366x768@60Hz'],['T23','1440x900@60Hz'],['T24','1920x1200@60Hz']].map(([code,label])=>({code,label}));
-  const FIELD_NOTE='C1~C4가 연결되는 출력 포트 번호와 OQ 출력 번호가 카드 포트와 어떻게 대응하는지는 매뉴얼에 적혀 있지 않아 알티컴 확인 대기 중입니다. 입력 연결(C) 명령은 "카드 첫 출력 포트"부터 C1~C4를 순서대로 둔 예시이니, 현장 설정 화면(매뉴얼 63쪽의 "슬롯 S2 : 5, 6, 7, 8" 표시)의 포트에 맞춰 바꾸세요.';
+  const FIELD_NOTE='알티컴 회신(사용자 전달 2026-10-26): C1~C4는 카드가 쓰는 출력 포트 4개에 순서대로 대응하고, 각 칸에 나올 입력은 입력 연결(C) 명령으로 그 포트에 연결합니다. OQ 출력 번호는 매트릭스 프레임의 출력 포트 번호이고, 카드의 HDMI 출력은 카드를 꽂은 위치에 따라 프레임 출력 포트 번호를 따라갑니다. 카드를 꽂은 슬롯(매뉴얼 63쪽 설정 화면의 "슬롯 S2 : 5, 6, 7, 8" 표시)은 현장마다 달라서 "카드 첫 출력 포트"와 쿼드뷰 출력 번호는 직접 입력합니다.';
 
   const layoutOf=code=>LAYOUTS.find(l=>l.code===code||l.n===Number(code))||LAYOUTS[4];
   const timingOf=code=>TIMINGS.find(t=>t.code===code)||TIMINGS[0];
@@ -59,7 +60,7 @@
     const s=normalize(raw),L=layoutOf(s.layout),T=timingOf(s.timing),w=s.pad;
     const lines=[],warnings=[];
     const over=[s.out,...(s.withRoute?[...L.channels.map(c=>s.inputs[c-1]),s.firstPort+L.channels.length-1]:[])].some(n=>n>99);
-    if(w===2&&over)warnings.push('번호가 99를 넘으면 "번호 자릿수"를 3자리로 바꾸세요(VDM-128X·256X).');
+    if(w===2&&over)warnings.push('번호가 99를 넘으면 "번호 자릿수"를 3자리로 바꾸세요(VDM-128X·180X·256X).');
     if(s.withRoute){
       for(const c of L.channels){
         const inp=s.inputs[c-1],port=s.firstPort+c-1;
@@ -140,8 +141,8 @@
         <div class="rt-ls-controls rt-qv-controls"><label>출력 해상도(타이밍)<select data-qv="timing">${TIMINGS.map(t=>option(t.code,`${t.code} · ${t.label}`,st.timing)).join('')}</select></label></div>
         <details class="rt-qv-adv" data-qv-adv${advOpen?' open':''}><summary>고급 설정 <small>출력 번호 · 번호 자릿수 · 입력 연결 명령</small></summary>
           <div class="rt-ls-controls rt-qv-controls">
-            <label>쿼드뷰 출력 번호<input type="number" min="1" max="256" data-qv="out" value="${st.out}"></label>
-            <label>번호 자릿수<select data-qv="pad">${option(2,'2자리(대부분의 VDM)',st.pad)}${option(3,'3자리(VDM-128X·256X)',st.pad)}</select></label>
+            <label>쿼드뷰 출력 번호(프레임 출력 포트)<input type="number" min="1" max="256" data-qv="out" value="${st.out}"></label>
+            <label>번호 자릿수<select data-qv="pad">${option(2,'2자리(대부분의 VDM)',st.pad)}${option(3,'3자리(VDM-128X·180X·256X)',st.pad)}</select></label>
             <label class="rt-ls-check"><input type="checkbox" data-qv="withRoute"${st.withRoute?' checked':''}> 입력 연결(C) 명령도 만들기</label>
             ${st.withRoute?`<label>카드 첫 출력 포트<input type="number" min="1" max="253" data-qv="firstPort" value="${st.firstPort}"></label>`:''}
           </div></details>

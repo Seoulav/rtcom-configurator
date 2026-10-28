@@ -1,5 +1,7 @@
 ## Unreleased
 
+- **0.262.0 배포 기록**: `docs/qa/DEPLOYMENT_0.262_2026-10-26.md`(PR #417 → main 병합 `c17dc27`, Pages 배포 run 40282427691 success, 공개 `CATALOG BASED · 0.262`·`control-example.js`·`vdm-wall.js`·`quad-view.js`·`products.js`·제품 JSON 3종 해시 일치·`CLAUDE.md` 404)
+- **0.261.0 배포 기록**: `docs/qa/DEPLOYMENT_0.261_2026-10-20.md`(PR #414 → main 병합 `7a67561`, Pages 배포 run 39422303914 success, 공개 `CATALOG BASED · 0.261`·`index.html`·`products.js`·`spx-rx-tx.json` 해시 일치·양쪽 연결 문구 확인·`CLAUDE.md` 404)
 - **0.260.0 배포 기록**: `docs/qa/DEPLOYMENT_0.260_2026-10-20.md`(PR #413 → main 병합 `84266c6`, Pages 배포 run 39420986975 success, 공개 `CATALOG BASED · 0.260`·`index.html`·`products.js`·`styles.css` 해시 일치·돋보기 코드 확인·`CLAUDE.md` 404)
 - **0.259.0 배포 기록**: `docs/qa/DEPLOYMENT_0.259_2026-10-20.md`(PR #411 → main 병합 `90c7352`, Pages 배포 run 39418516300 success, 공개 `CATALOG BASED · 0.259`·`products.js`·`spx-rx-tx.json`·`index.html` 해시 일치·PoC 그림 코드 확인·`CLAUDE.md` 404)
 - **0.258.0 배포 기록**: `docs/qa/DEPLOYMENT_0.258_2026-10-20.md`(PR #409 → main 병합 `78b37d7`, Pages 배포 run 39378541296 success, 공개 `CATALOG BASED · 0.258`·`styles.css`·`index.html`·`layout-sim.js` 해시 일치·`CLAUDE.md` 404)
@@ -116,6 +118,23 @@
 - **0.146.0 배포 기록**: `docs/qa/DEPLOYMENT_0.146_2026-09-29.md`(PR #195 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.145.0 배포 기록**: `docs/qa/DEPLOYMENT_0.145_2026-09-29.md`(PR #194 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.144.0 배포 기록**: `docs/qa/DEPLOYMENT_0.144_2026-09-29.md`(PR #192 → main 병합, Pages 배포 run 162, 공개 파일 337/338 일치, `.nojekyll` 제외)
+
+## 0.262.0
+
+사용자가 전달한 알티컴 통합 메일 회신(2026-10-26)에 답이 온 질문(22번 ②③, 24·25·29·30·31·32번)을 사이트에 반영한 묶음입니다. 답이 없는 질문(16·21·22 ①·26·27번)은 대기로 남겼습니다.
+
+- **VDM 쿼드뷰·비디오 월:** 쿼드뷰의 `OQ` 출력 번호는 매트릭스 프레임의 출력 포트 번호이고 C1~C4는 카드 출력 포트 4개에 순서대로 대응한다는 회신으로 "알티컴 확인 대기" 안내를 확정 안내로 바꿨습니다. 비디오 월에는 "월 끄기"(`W10`, 월이 여러 개면 `W20`) 줄을 더했고, 제품 ID(255 기본값·999 공용)와 3자리 번호(`O001`·`O128`) 안내를 확정으로 바꿨습니다. VDM-180X도 3자리로 안내합니다(`~`는 설명용 표기이고 범위는 `-`만 씁니다).
+- **QMS-88UX:** 비디오 월(`OW`)을 월마다 따로 보내는 방식으로 바꿨습니다(0.248의 월 2개 한 줄 이어 쓰기 대체). 출력 테스트 패턴(`OT`)을 9·10번까지 열고, QD 오디오 선택(`IS`) 설명을 확정했으며(예시 `ISQ2S3`의 "입력 5번"은 오기), 설정 명령에 멀티뷰 사용자 레이어(`M0`~`M2`)·자막 켜기·끄기(`S`)·자막 문구(`ST`)를 더했습니다. 06 화면 구성 모드 WALL 요약을 "출력 10개 안에서 월 조합 가능"으로 고치고 "2×2 + 3×2" 칩을 더했습니다.
+- **QMS-44UX:** Wall(0~7)·Dual(0~2) 번호에 레이아웃 이름을 붙이고(Wall 0 1×1 … 7 1×4, Dual 0 PBP·1 PBP-Full·2 PIP), 네트워크 설정 명령 4종(IP·게이트웨이·서브넷 설정, 정보 확인)을 더했습니다. 연결 해제·프리셋 명령은 없다는 점을 적었고, 사용자 확인(2026-10-18)의 "IP는 커맨드로 못 바꿈"은 QMS-44UX에서만 제조사 회신으로 정정했습니다.
+- 근거·되돌리기: `docs/implementation/RTCOM_REPLY_0.262.md`
+
+## 0.261.0
+
+사용자 확인 2026-10-20("spx tx,rx 모두 전원연결해도 상관없어")에 따라 SPX-TX/RX PoC 안내에 "양쪽 모두 연결해도 무방"을 더한 묶음입니다.
+
+- **03 Signal Flow:** 그림 아래 안내를 두 줄로 나눠 "어댑터는 송신기·수신기 중 한쪽에만 연결하면 됩니다(PoC) · 양쪽 모두 연결해도 상관없습니다"를 적었습니다. 그림 설명(펼침)의 전원(PoC) 줄에도 같은 문구를 더했습니다.
+- **제품 데이터(`data/products/spx-rx-tx.json`):** 05 주요 기능 PoC 항목, 04 제품 사양 전원 조건, 단자 지도 DC IN(TX·RX) 설명에 "양쪽 연결도 무관"을 더했습니다.
+- 근거·되돌리기: `docs/implementation/SPX_TXRX_POC_FLOW_0.259.md` §6
 
 ## 0.260.0
 
