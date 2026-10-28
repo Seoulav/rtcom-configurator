@@ -972,6 +972,28 @@ const patchAmxLock=async()=>{
         /is-missing/.test(back.cls)&&/입력 50/.test(back.opt)&&back.val==='50'&&!over,
         JSON.stringify({plain,listed,picked,legend,manual,warn,back,over}));
     }
+    // 0.263 HDS-42MU·HDS-21U 오토 셀렉팅 3단계 그림: 딥 스위치 카드 안에 그림 3장(꽂음 → 화면 바뀜 → 빼면 복귀)이 있고 휴대폰에서 넘치지 않는다.
+    {
+      const ctx=await browser.newContext({viewport:{width:1280,height:900}});
+      const ap=await ctx.newPage();
+      const read=()=>ap.evaluate(()=>{const box=document.querySelector('.rt-pg-dip .rt-pg-auto');const labels=[...(box?.querySelectorAll('.rt-pg-auto-steps .rt-pg-auto-step svg')||[])].map(s=>s.getAttribute('aria-label'));return {ok:!!box,when:box?.querySelector('h3 span')?.textContent||'',labels,notes:[...(box?.querySelectorAll('.rt-pg-auto-note')||[])].map(n=>n.textContent).join(' '),outs:[...(box?.querySelectorAll('.rt-pg-auto-outs figure')||[])].map(f=>f.querySelector('svg').getAttribute('aria-label')+' / '+f.querySelector('b').textContent),feature:[...document.querySelectorAll('li,p')].some(e=>/오토 셀렉팅 지원\(새로 꽂은 HDMI 입력으로 자동 전환/.test(e.textContent)),over:document.documentElement.scrollWidth>innerWidth}});
+      await ap.goto(`${home}#products/hds-42mu`,{waitUntil:'networkidle'});
+      await ap.waitForSelector('.rt-pg-auto');
+      const m42=await read();
+      await ap.goto(`${home}#products/hds-21u`,{waitUntil:'networkidle'});
+      await ap.waitForSelector('.rt-pg-auto');
+      const m21=await read();
+      await ap.setViewportSize({width:390,height:844});
+      await ap.goto(`${home}#products/hds-42mu`,{waitUntil:'networkidle'});
+      await ap.waitForSelector('.rt-pg-auto');
+      const mob=await read();
+      await ctx.close();
+      check('HDS-42MU·HDS-21U 딥 스위치 카드에 오토 셀렉팅 3단계 그림(1 → 꽂은 입력 → 1)과 05 주요 기능 줄이 있고, 42MU는 3번 ON 출력 미러(OUT1·2)·OFF 별도 스위칭(OUT1만) 그림, 휴대폰은 넘치지 않음',
+        m42.ok&&m42.when==='딥 스위치 2번 OFF'&&m42.labels.join('|')==='① 평소: 화면에 입력 1번|② HDMI를 꽂으면: 화면에 입력 3번|③ HDMI를 빼면: 화면에 입력 1번'&&m42.outs.join('|')==='OUT 1·OUT 2 자동 전환 / 3번 ON · 출력 미러 모드|OUT 1 자동 전환 / 3번 OFF · 출력 별도 스위칭 모드'&&m42.feature&&
+        m21.ok&&m21.labels.join('|')==='① 평소: 화면에 입력 1번|② HDMI를 꽂으면: 화면에 입력 2번|③ HDMI를 빼면: 화면에 입력 1번'&&!m21.outs.length&&m21.feature&&
+        mob.ok&&!mob.over&&!m42.over,
+        JSON.stringify({m42,m21:{labels:m21.labels,outs:m21.outs},mobOver:mob.over}));
+    }
     // 0.260 사진 확대 팝업(B안): 상세 머리·Port Map 사진 칸 버튼으로 열고, 정면·후면 탭과 원형 돋보기(마우스 180px, 터치 130px)·확대 단계·Esc 닫기를 확인한다.
     {
       const ctx=await browser.newContext({viewport:{width:1280,height:900}});

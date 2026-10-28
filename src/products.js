@@ -1189,6 +1189,44 @@
       }
       return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="딥 스위치 ${Object.entries(states).map(([n,v])=>`${n}번 ${v?'ON':'OFF'}`).join(' · ')}">${body}</svg>`;
     }
+    // 0.263 오토 셀렉팅 3단계 그림(HDS-42MU·HDS-21U, 알티컴 펌웨어 개선 후 자사 시험 2026-10-28, 사용자 요청 "오토 스위칭 모드에 대해서 조금 손쉽게 표현해 줄 수 있으면 좋겠어").
+    // 단계마다 장비 입력 단자에 꽂힌 HDMI 케이블과 화면에 나오는 입력 번호를 그린다. event: plug(새로 꽂음, 초록) · unplug(뺌, 회색 점선).
+    // SVG 안에 흰 바탕을 그려 다크 모드에서도 밝게 보인다.
+    function autoSelectGraphic(inputs,step){
+      const W=240,H=118,bx=62,bw=74,top=14,gap=Math.min(22,(H-34)/inputs),y0=top+(H-28-gap*(inputs-1))/2;
+      const plugged=new Set(step.plugged||[]),port=step.port,ev=step.event;
+      let g=`<rect x="0" y="0" width="${W}" height="${H}" rx="12" fill="#fff"/><rect x="${bx}" y="${top}" width="${bw}" height="${H-28}" rx="8" fill="#2C2C2E"/><text x="${bx+bw/2}" y="${H-4}" text-anchor="middle" font-size="10" font-weight="700" fill="#6A6A6F">HDMI IN</text>`;
+      for(let i=1;i<=inputs;i++){
+        const y=y0+(i-1)*gap,on=plugged.has(i),isEv=i===port;
+        if(on)g+=`<path d="M6 ${y}H${bx}" stroke="${isEv&&ev==='plug'?'#00B050':'#E5242B'}" stroke-width="${isEv?5:4}" stroke-linecap="round"/>`;
+        else if(isEv&&ev==='unplug')g+=`<path d="M6 ${y}H${bx-22}" stroke="#A1A1A6" stroke-width="4" stroke-linecap="round" stroke-dasharray="5 4"/><text x="${bx-12}" y="${y+4}" text-anchor="middle" font-size="13" font-weight="800" fill="#D70015">×</text>`;
+        g+=`<rect x="${bx+6}" y="${y-7}" width="20" height="14" rx="3" fill="${i===step.show?'#007AFF':on?'#636366':'#48484A'}"/><text x="${bx+16}" y="${y+4}" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">${i}</text>`;
+      }
+      const my=top+8,mh=H-44;
+      g+=`<path d="M${bx+bw+2} ${my+mh/2}H${bx+bw+16}M${bx+bw+12} ${my+mh/2-4}l4 4-4 4" fill="none" stroke="#3A3A3C" stroke-width="2"/>`;
+      g+=`<rect x="${bx+bw+20}" y="${my}" width="${W-bx-bw-26}" height="${mh}" rx="6" fill="${step.changed?'#0057D8':'#1C1C1E'}"/><rect x="${bx+bw+20+(W-bx-bw-26)/2-8}" y="${my+mh}" width="16" height="8" fill="#3A3A3C"/>`;
+      g+=`<text x="${bx+bw+20+(W-bx-bw-26)/2}" y="${my+mh/2-2}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">입력</text><text x="${bx+bw+20+(W-bx-bw-26)/2}" y="${my+mh/2+18}" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">${step.show}</text>`;
+      return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(step.title)}: 화면에 입력 ${step.show}번">${g}</svg>`;
+    }
+    // outputs(HDS-42MU): 다른 딥 스위치 설정에 따라 자동으로 바뀌는 출력이 다를 때, 설정마다 출력 모니터를 그린다. 바뀌는 출력은 파랑, 그대로인 출력은 검정.
+    function autoOutputsGraphic(total,outs,from,to){
+      const W=240,H=96,mw=82,gapX=(W-total*mw)/(total+1);
+      let g=`<rect x="0" y="0" width="${W}" height="${H}" rx="12" fill="#fff"/>`;
+      for(let i=1;i<=total;i++){
+        const x=gapX+(i-1)*(mw+gapX),on=outs.includes(i);
+        g+=`<rect x="${x}" y="10" width="${mw}" height="54" rx="6" fill="${on?'#0057D8':'#1C1C1E'}"/><rect x="${x+mw/2-8}" y="64" width="16" height="7" fill="#3A3A3C"/>`;
+        g+=`<text x="${x+mw/2}" y="30" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">입력</text><text x="${x+mw/2}" y="54" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">${on?to:from}</text>`;
+        g+=`<text x="${x+mw/2}" y="88" text-anchor="middle" font-size="11" font-weight="800" fill="${on?'#0057D8':'#6A6A6F'}">OUT ${i}${on?' · 자동 전환':' · 그대로'}</text>`;
+      }
+      return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${outs.map(n=>`OUT ${n}`).join('·')} 자동 전환">${g}</svg>`;
+    }
+    function autoSelectBlock(as){
+      if(!as||!as.steps?.length)return '';
+      const steps=as.steps.map((st,i)=>`${i?'<span class="rt-pg-auto-arrow" aria-hidden="true">→</span>':''}<figure class="rt-pg-auto-step">${autoSelectGraphic(as.inputs,st)}<figcaption><b>${esc(st.title)}</b>${esc(st.text)}</figcaption></figure>`).join('');
+      const ex=as.steps.find(st=>st.event==='plug');
+      const outs=as.outputs?`<div class="rt-pg-auto-outs-wrap"><h4>${esc(as.outputs.title)}</h4><div class="rt-pg-auto-outs">${as.outputs.modes.map(m=>`<figure class="rt-pg-auto-step">${autoOutputsGraphic(as.outputs.total,m.outs,as.steps[0].show,ex?ex.show:as.steps[0].show)}<figcaption><b>${esc(m.set)} · ${esc(m.name)}</b>${esc(m.text)}</figcaption></figure>`).join('')}</div></div>`:'';
+      return `<div class="rt-pg-auto"><h3>${esc(as.title||'오토 셀렉팅은 이렇게 동작합니다')}${as.when?` <span>${esc(as.when)}</span>`:''}</h3><div class="rt-pg-auto-steps">${steps}</div>${outs}${(as.notes||[]).map(n=>`<p class="rt-pg-auto-note">${esc(n)}</p>`).join('')}</div>`;
+    }
     // dipSwitch.order: ["on","off"]이면 ON 칸을 왼쪽에 둔다(HDS-21U·HDS-42MU, 사용자 요청 2026-09-27 "딥스위치 값 서로 좌우 위치 변경해줘"). 없으면 OFF → ON.
     function dipSwitchSection(item){
       const ds=item.dipSwitch;
@@ -1200,7 +1238,7 @@
       const rows=ds.rows.map(row=>[row.n,`<div class="rt-pg-dip-row"><div class="rt-pg-dip-head"><b>${row.n}번</b><span>${esc(row.title)}</span></div><div class="rt-pg-dip-states">${(ds.order?.[0]==='on'?[['ON',true,row.on],['OFF',false,row.off]]:[['OFF',false,row.off],['ON',true,row.on]]).map(([label,on,st])=>state(label,on,st,row.n)).join('')}</div>${row.note?`<p class="rt-pg-dip-note">${esc(row.note)}</p>`:''}</div>`]);
       // 0.65 번호 한 개 행과 여러 번호 조합을 가장 작은 스위치 번호 순으로 섞어 둔다(XDM-CTR100: 1·2번 TX/RX → 3번 전송 거리).
       const sorted=[...rows,...combos].sort((x,y)=>x[0]-y[0]).map(entry=>entry[1]).join('');
-      return `<section class="rt-pg-card rt-pg-dip" style="margin-top:18px"><h2><span class="rt-pg-idx">${idx}</span>딥 스위치 설정 <span class="rt-pg-note">— ${esc(ds.place||'전면')} ${esc(ds.label||'딥 스위치')} · ${ds.onUp!==false?'위쪽':'아래쪽'}이 ON</span></h2><div class="rt-pg-dip-rows">${sorted}</div>${ds.apply?`<p class="rt-pg-hint">※ ${esc(ds.apply)}</p>`:''}${ds.note?`<p class="rt-pg-hint">※ ${esc(ds.note)}</p>`:''}</section>`;
+      return `<section class="rt-pg-card rt-pg-dip" style="margin-top:18px"><h2><span class="rt-pg-idx">${idx}</span>딥 스위치 설정 <span class="rt-pg-note">— ${esc(ds.place||'전면')} ${esc(ds.label||'딥 스위치')} · ${ds.onUp!==false?'위쪽':'아래쪽'}이 ON</span></h2><div class="rt-pg-dip-rows">${sorted}</div>${autoSelectBlock(ds.autoSelect)}${ds.apply?`<p class="rt-pg-hint">※ ${esc(ds.apply)}</p>`:''}${ds.note?`<p class="rt-pg-hint">※ ${esc(ds.note)}</p>`:''}</section>`;
     }
     // 0.229 "AMX 통합 제어 커맨드 예시" 카드(제품 JSON의 controlExample, 그리기·문자열 생성은 src/control-example.js). 번호는 딥 스위치 카드 다음이다.
     // idxOverride: 시리즈 페이지(XDM·SPX·VDM)는 위 카드 번호가 정해져 있어 번호를 직접 넘긴다(XDM은 07 시뮬레이터 다음 08, SPX·VDM은 07).

@@ -220,6 +220,26 @@ function validate(product,file,ids){
           if('note' in row&&(typeof row.note!=='string'||!row.note))fail(`dipSwitch.rows[].note는 비어 있지 않은 문자열이어야 함(${row.n}번)`);
         }
       }
+      // 0.263 dipSwitch.autoSelect: 오토 셀렉팅 3단계 그림(HDS-42MU·HDS-21U). inputs는 입력 수, steps마다 꽂힌 입력·화면 입력·바뀐 단자.
+      if('autoSelect' in ds){
+        const as=ds.autoSelect;
+        if(!as||!Number.isInteger(as.inputs)||as.inputs<2||as.inputs>8)fail('dipSwitch.autoSelect.inputs는 2~8 정수여야 함');
+        else if(!codes.has(as.source))fail(`dipSwitch.autoSelect.source(${as.source})가 sources에 없음`);
+        else if(!Array.isArray(as.steps)||as.steps.length<2)fail('dipSwitch.autoSelect.steps는 2단계 이상이어야 함');
+        else for(const st of as.steps){
+          const inRange=n=>Number.isInteger(n)&&n>=1&&n<=as.inputs;
+          if(typeof st.title!=='string'||!st.title||typeof st.text!=='string'||!st.text)fail('dipSwitch.autoSelect.steps[]는 title·text를 갖춰야 함');
+          if(!Array.isArray(st.plugged)||!st.plugged.every(inRange))fail(`dipSwitch.autoSelect.steps[].plugged는 1~${as.inputs} 번호 배열이어야 함`);
+          if(!inRange(st.show)||!(st.plugged||[]).includes(st.show))fail('dipSwitch.autoSelect.steps[].show는 꽂힌 입력 중 하나여야 함');
+          if('event' in st&&(!['plug','unplug'].includes(st.event)||!inRange(st.port)))fail('dipSwitch.autoSelect.steps[].event는 plug·unplug, port는 입력 번호여야 함');
+        }
+        if(as&&'outputs' in as){
+          const o=as.outputs;
+          if(!o||!Number.isInteger(o.total)||o.total<2||typeof o.title!=='string'||!o.title||!Array.isArray(o.modes)||!o.modes.length)fail('dipSwitch.autoSelect.outputs는 total(2 이상)·title·modes를 갖춰야 함');
+          else for(const m of o.modes)if(typeof m.set!=='string'||!m.set||typeof m.name!=='string'||!m.name||typeof m.text!=='string'||!m.text||!Array.isArray(m.outs)||!m.outs.length||m.outs.some(n=>!Number.isInteger(n)||n<1||n>o.total))fail(`dipSwitch.autoSelect.outputs.modes[]는 set·name·text와 1~${o.total} 출력 번호 outs를 갖춰야 함`);
+        }
+        if(as&&'notes' in as&&(!Array.isArray(as.notes)||as.notes.some(n=>typeof n!=='string'||!n)))fail('dipSwitch.autoSelect.notes는 비어 있지 않은 문자열 배열이어야 함');
+      }
     }
   }
   // audioMux: 오디오 병합(MUX)·추출(DEMUX)을 동시에 쓰지 않고 하나를 골라 쓰는 제품(HD-13U, 사용자 확인 2026-09-27)

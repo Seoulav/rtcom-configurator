@@ -768,3 +768,29 @@ test('0.260: 전 제품 사진 확대 팝업(B안)과 원형 돋보기',()=>{
     for(const image of photos)assert.ok(fs.existsSync(`output/design/assets/products/${image.file}`),`${id} ${image.file}`);
   }
 });
+
+test('0.263: HDS-42MU·HDS-21U 오토 셀렉팅(펌웨어 개선 후 자사 시험)을 3단계 그림과 기능 줄로 보여 준다',()=>{
+  for(const [id,inputs] of [['hds-42mu',4],['hds-21u',2]]){
+    const p=JSON.parse(read(`data/products/${id}.json`));
+    const t=p.sources.find(s=>s.code==='T');
+    assert.ok(t&&/2026-10-28/.test(t.scope)&&/펌웨어 개선/.test(t.scope),`${id} 출처 T`);
+    assert.ok(p.features.some(f=>f.source==='T'&&/^오토 셀렉팅 지원/.test(f.text)),`${id} 05 주요 기능`);
+    const row=p.dipSwitch.rows.find(r=>r.n===2);
+    assert.equal(row.off.name,'오토 셀렉팅');
+    assert.match(row.off.text,/새로 HDMI를 꽂은 입력으로 바로 바뀌고, 그 케이블을 빼면 바로 전에 보던 입력으로 돌아간다/);
+    const as=p.dipSwitch.autoSelect;
+    assert.equal(as.inputs,inputs);assert.equal(as.when,'딥 스위치 2번 OFF');
+    assert.deepEqual(as.steps.map(s=>[s.show,s.event||'']),[[1,''],[inputs===4?3:2,'plug'],[1,'unplug']]);
+  }
+  // HDS-42MU 딥 스위치 3번(사용자 전달 2026-10-28): ON 출력 미러 모드 = OUT1·OUT2 동시 전환, OFF 출력 별도 스위칭 모드 = OUT1만 자동 전환.
+  const ds42=JSON.parse(read('data/products/hds-42mu.json')).dipSwitch;
+  assert.deepEqual(ds42.autoSelect.outputs.modes.map(m=>[m.set,m.name,m.outs]),[['3번 ON','출력 미러 모드',[1,2]],['3번 OFF','출력 별도 스위칭 모드',[1]]]);
+  const row3=ds42.rows.find(r=>r.n===3);
+  assert.match(row3.on.text,/출력 미러 모드\)\. 오토 셀렉팅도 OUT 1·OUT 2가 함께 바뀐다/);
+  assert.match(row3.off.text,/출력 별도 스위칭 모드\)\. 오토 셀렉팅은 OUT 1만 바뀐다/);
+  assert.equal(JSON.parse(read('data/products/hds-21u.json')).dipSwitch.autoSelect.outputs,undefined);
+  const src=read('src/products.js');
+  assert.match(src,/function autoSelectGraphic\(inputs,step\)/);
+  assert.match(src,/\$\{autoSelectBlock\(ds\.autoSelect\)\}/);
+  assert.match(read('src/styles.css'),/\.rt-pg-auto-steps\{display:grid;grid-template-columns:1fr auto 1fr auto 1fr/);
+});
