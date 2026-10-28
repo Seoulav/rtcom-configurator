@@ -1220,12 +1220,15 @@
       }
       return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${outs.map(n=>`OUT ${n}`).join('·')} 자동 전환">${g}</svg>`;
     }
-    function autoSelectBlock(as){
+    // 0.263 오토 셀렉팅 카드: 딥 스위치 설정과 관계없이 동작하므로(사용자 확인 2026-10-28 "딥스위치와 상관없이 오토셀렉팅이야") 딥 스위치 카드 다음 별도 카드로 둔다.
+    function autoSelectSection(item){
+      const as=item.autoSelect;
       if(!as||!as.steps?.length)return '';
+      const idx=String(6+(item.videoModes?1:0)+(item.edidSwitch?.table?.length?1:0)+(item.audioMux?.modes?.length?1:0)+(item.dipSwitch?.rows?.length?1:0)).padStart(2,'0');
       const steps=as.steps.map((st,i)=>`${i?'<span class="rt-pg-auto-arrow" aria-hidden="true">→</span>':''}<figure class="rt-pg-auto-step">${autoSelectGraphic(as.inputs,st)}<figcaption><b>${esc(st.title)}</b>${esc(st.text)}</figcaption></figure>`).join('');
       const ex=as.steps.find(st=>st.event==='plug');
       const outs=as.outputs?`<div class="rt-pg-auto-outs-wrap"><h4>${esc(as.outputs.title)}</h4><div class="rt-pg-auto-outs">${as.outputs.modes.map(m=>`<figure class="rt-pg-auto-step">${autoOutputsGraphic(as.outputs.total,m.outs,as.steps[0].show,ex?ex.show:as.steps[0].show)}<figcaption><b>${esc(m.set)} · ${esc(m.name)}</b>${esc(m.text)}</figcaption></figure>`).join('')}</div></div>`:'';
-      return `<div class="rt-pg-auto"><h3>${esc(as.title||'오토 셀렉팅은 이렇게 동작합니다')}${as.when?` <span>${esc(as.when)}</span>`:''}</h3><div class="rt-pg-auto-steps">${steps}</div>${outs}${(as.notes||[]).map(n=>`<p class="rt-pg-auto-note">${esc(n)}</p>`).join('')}</div>`;
+      return `<section class="rt-pg-card rt-pg-auto-card" style="margin-top:18px"><h2><span class="rt-pg-idx">${idx}</span>${esc(as.title||'오토 셀렉팅')}${as.when?` <span class="rt-pg-note">— ${esc(as.when)}</span>`:''}</h2>${as.lead?`<p class="rt-pg-lead">${esc(as.lead)}</p>`:''}<div class="rt-pg-auto"><div class="rt-pg-auto-steps">${steps}</div>${outs}</div>${(as.notes||[]).map(n=>`<p class="rt-pg-hint">※ ${esc(n)}</p>`).join('')}</section>`;
     }
     // dipSwitch.order: ["on","off"]이면 ON 칸을 왼쪽에 둔다(HDS-21U·HDS-42MU, 사용자 요청 2026-09-27 "딥스위치 값 서로 좌우 위치 변경해줘"). 없으면 OFF → ON.
     function dipSwitchSection(item){
@@ -1238,14 +1241,14 @@
       const rows=ds.rows.map(row=>[row.n,`<div class="rt-pg-dip-row"><div class="rt-pg-dip-head"><b>${row.n}번</b><span>${esc(row.title)}</span></div><div class="rt-pg-dip-states">${(ds.order?.[0]==='on'?[['ON',true,row.on],['OFF',false,row.off]]:[['OFF',false,row.off],['ON',true,row.on]]).map(([label,on,st])=>state(label,on,st,row.n)).join('')}</div>${row.note?`<p class="rt-pg-dip-note">${esc(row.note)}</p>`:''}</div>`]);
       // 0.65 번호 한 개 행과 여러 번호 조합을 가장 작은 스위치 번호 순으로 섞어 둔다(XDM-CTR100: 1·2번 TX/RX → 3번 전송 거리).
       const sorted=[...rows,...combos].sort((x,y)=>x[0]-y[0]).map(entry=>entry[1]).join('');
-      return `<section class="rt-pg-card rt-pg-dip" style="margin-top:18px"><h2><span class="rt-pg-idx">${idx}</span>딥 스위치 설정 <span class="rt-pg-note">— ${esc(ds.place||'전면')} ${esc(ds.label||'딥 스위치')} · ${ds.onUp!==false?'위쪽':'아래쪽'}이 ON</span></h2><div class="rt-pg-dip-rows">${sorted}</div>${autoSelectBlock(ds.autoSelect)}${ds.apply?`<p class="rt-pg-hint">※ ${esc(ds.apply)}</p>`:''}${ds.note?`<p class="rt-pg-hint">※ ${esc(ds.note)}</p>`:''}</section>`;
+      return `<section class="rt-pg-card rt-pg-dip" style="margin-top:18px"><h2><span class="rt-pg-idx">${idx}</span>딥 스위치 설정 <span class="rt-pg-note">— ${esc(ds.place||'전면')} ${esc(ds.label||'딥 스위치')} · ${ds.onUp!==false?'위쪽':'아래쪽'}이 ON</span></h2><div class="rt-pg-dip-rows">${sorted}</div>${ds.apply?`<p class="rt-pg-hint">※ ${esc(ds.apply)}</p>`:''}${ds.note?`<p class="rt-pg-hint">※ ${esc(ds.note)}</p>`:''}</section>`;
     }
     // 0.229 "AMX 통합 제어 커맨드 예시" 카드(제품 JSON의 controlExample, 그리기·문자열 생성은 src/control-example.js). 번호는 딥 스위치 카드 다음이다.
     // idxOverride: 시리즈 페이지(XDM·SPX·VDM)는 위 카드 번호가 정해져 있어 번호를 직접 넘긴다(XDM은 07 시뮬레이터 다음 08, SPX·VDM은 07).
     function controlExampleSection(item,idxOverride){
       const ce=item.controlExample;
       if(!ce)return '';
-      const idx=idxOverride||String(6+(item.videoModes?1:0)+(item.edidSwitch?.table?.length?1:0)+(item.audioMux?.modes?.length?1:0)+(item.dipSwitch?.rows?.length?1:0)).padStart(2,'0');
+      const idx=idxOverride||String(6+(item.videoModes?1:0)+(item.edidSwitch?.table?.length?1:0)+(item.audioMux?.modes?.length?1:0)+(item.dipSwitch?.rows?.length?1:0)+(item.autoSelect?.steps?.length?1:0)).padStart(2,'0');
       const spec={...ce,id:item.id};
       return `<section class="rt-pg-card rt-pg-control" id="rt-control" style="margin-top:18px"><h2><span class="rt-pg-idx">${idx}</span>AMX 통합 제어 커맨드 예시 <span class="rt-pg-note">— ${ce.serialOnly?`RS-232 ${esc(ce.serial?.baud||9600)}bps · LAN 제어 없음`:`커맨드는 RS-232 ${esc(ce.serial?.baud||9600)}bps 기준 · AMX 코드는 LAN(TCP)·RS-232 선택`} · ${ce.kind==='builders'?'명령을 고르고 값을 넣으면 커맨드가 만들어집니다':'입력·출력을 고르면 커맨드가 바뀝니다'}</span></h2>${ce.lead?`<p class="rt-pg-lead">${esc(ce.lead)}</p>`:''}<div data-control-example="${esc(JSON.stringify(spec))}"></div></section>`;
     }
@@ -1316,6 +1319,7 @@
       else if(hasAudioMux){belowCards=`${edidSwitchSection(item)}${audioMuxSection(item)}`}
       else{belowCards=edidSwitchSection(item)}
       belowCards+=dipSwitchSection(item);
+      belowCards+=autoSelectSection(item);
       belowCards+=controlExampleSection(item);
       // 휴대폰(1000px 이하)에서는 .rt-pg-col이 사라지고 rt-pg-col-mobile-N 순서로만 쌓이므로, sideCard도 순서 클래스가 있어야 05 다음(01~05, 06, 07 기록)으로 나온다(없으면 order:0이라 맨 앞으로 감).
       if(sideCard)sideCard=sideCard.replace('class="rt-pg-card', 'class="rt-pg-card rt-pg-col-mobile-6');
