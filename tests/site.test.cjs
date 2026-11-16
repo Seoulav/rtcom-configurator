@@ -117,7 +117,7 @@ test('rear photo slot zones stay inside each photo and match the card faceplate 
   }
 });
 
-test('0.267: 공개 배포본의 어떤 텍스트 파일에도 AV Portal·포털·포탈 언급이 없다(경쟁업체에도 공개할 계획, 사용자 요청 2026-11-16)',()=>{
+test('0.268: 공개 배포본의 어떤 텍스트 파일에도 AV Portal·포털·포탈 언급이 없다(경쟁업체에도 공개할 계획, 사용자 요청 2026-11-16)',()=>{
   execFileSync(process.execPath,['scripts/package-site.cjs'],{stdio:'ignore'});
   const found=[];
   const walk=dir=>{for(const entry of fs.readdirSync(dir,{withFileTypes:true})){
@@ -831,4 +831,11 @@ test('0.265: Signal Flow 크게 보기를 CAD처럼(끌어서 이동·휠 확대
   assert.match(src,/dialog\.rt-flow-zoom:not\(\.rt-photo-zoom\):not\(\.rt-doc-zoom\)/,'사진 확대 창을 Signal Flow 창으로 잘못 집지 않는다');
   assert.match(css,/\.rt-flow-zoom:not\(\.rt-photo-zoom\):not\(\.rt-doc-zoom\) \.rt-flow-zoom-body\{[^}]*cursor:grab;touch-action:none/);
   assert.match(css,/\.rt-flow-zoom-body\.is-panning\{cursor:grabbing\}/);
+});
+
+test('0.267: XDM-MR4S 03 Signal Flow도 크게 보기(CAD식 이동·확대 창)',()=>{
+  const src=read('src/products.js');
+  const fn=src.slice(src.indexOf('function mr4sDiagram(item){'),src.indexOf('function connectionDiagram(item){'));
+  assert.match(fn,/<div class="rt-flow-zoom-bar"><button type="button" class="rt-pg-btn" data-flow-zoom>⤢ 크게 보기<\/button><\/div>/,'XDM-PSU·PSE와 같은 버튼 줄');
+  assert.match(fn,/diagramWrap\(`<g class="rt-psu-anim">\$\{body\}<\/g>`/,'그림을 눌러도 열리도록 rt-psu-anim으로 묶는다');
 });

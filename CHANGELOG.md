@@ -124,7 +124,7 @@
 - **0.144.0 배포 기록**: `docs/qa/DEPLOYMENT_0.144_2026-09-29.md`(PR #192 → main 병합, Pages 배포 run 162, 공개 파일 337/338 일치, `.nojekyll` 제외)
 
 
-## 0.267.0
+## 0.268.0
 
 사용자 요청 2026-11-16("알티컴 사이트에서 av포탈 연결되거나 언급되지 않게 전부 지워줘, 알티컴 사이트를 경쟁업체까지 오픈할 계획이야")에 따라 공개 사이트에서 AV Portal 언급을 모두 지운 묶음입니다.
 
@@ -132,7 +132,15 @@
 - **공개 소스 주석:** 브라우저에서 그대로 열리는 `src/app.js`·`src/products.js`·`src/styles.css`의 "AV Portal 검토안", "비공개 AV Portal은 이 파일을 읽기만 한다" 같은 주석과 CSS 주석 "portal shell"을 일반 표현으로 바꿨습니다.
 - **재발 방지:** 배포본(`dist/`) 전체 텍스트 파일에 AV Portal·portal·포털·포탈이 없는지 확인하는 시험(`tests/site.test.cjs`)과 CLAUDE.md 규칙을 더했습니다.
 - 제품 데이터 형식(`rtcom.products.v1`)과 JSON 값은 바꾸지 않았습니다. 저장소 안의 내부 문서(`docs/`, `CLAUDE.md` 등)는 공개 사이트에 올라가지 않아 이번 범위가 아닙니다.
-- 근거·되돌리기: `docs/implementation/REMOVE_PORTAL_MENTIONS_0.267.md`
+- 근거·되돌리기: `docs/implementation/REMOVE_PORTAL_MENTIONS_0.268.md`
+
+## 0.267.0
+
+사용자 요청 2026-11-16("XDM-MR4S Singal Flow도 크게 보기 넣어줘")에 따라 XDM-MR4S 03 Signal Flow에 "크게 보기"를 더한 묶음입니다.
+
+- **XDM-MR4S 크게 보기:** 그림 오른쪽 위 `⤢ 크게 보기` 버튼이나 그림을 누르면 XDM-PSU·XDM-CTR100 PSE와 같은 확대 창(0.265 CAD식: 끌어서 이동, 휠로 마우스 위치 기준 확대 100~600%, 두 번 누르면 맞춤, 휴대폰 두 손가락 확대)이 열립니다. 범례도 함께 옮겨 옵니다.
+- 그림 내용·제품 데이터는 그대로입니다.
+- 근거·되돌리기: `docs/implementation/MR4S_FLOW_ZOOM_0.267.md`
 
 ## 0.266.0
 
