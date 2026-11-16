@@ -839,3 +839,11 @@ test('0.267: XDM-MR4S 03 Signal Flow도 크게 보기(CAD식 이동·확대 창)
   assert.match(fn,/<div class="rt-flow-zoom-bar"><button type="button" class="rt-pg-btn" data-flow-zoom>⤢ 크게 보기<\/button><\/div>/,'XDM-PSU·PSE와 같은 버튼 줄');
   assert.match(fn,/diagramWrap\(`<g class="rt-psu-anim">\$\{body\}<\/g>`/,'그림을 눌러도 열리도록 rt-psu-anim으로 묶는다');
 });
+
+test('0.269: Signal Flow가 있는 모든 단일 제품에 크게 보기, 확대 창은 보이는 그림(SPX-R6 TX/RX)을 복사',()=>{
+  const src=read('src/products.js');
+  assert.match(src,/const withFlowZoom=diagram=>!diagram\|\|diagram\.includes\('data-flow-zoom'\)\|\|!diagram\.includes\('rt-pg-svg-wrap'\)\?diagram:FLOW_ZOOM_BAR\+diagram;/,'이미 버튼이 있는 그림(PSU·PSE·MR4S)은 한 번만');
+  assert.match(src,/<span class="rt-pg-idx">03<\/span>Signal Flow<\/h2>\$\{withFlowZoom\(diagram\)\}/);
+  assert.match(src,/const svg=\[\.\.\.\(section\?\.querySelectorAll\('\.rt-pg-svg-wrap svg'\)\|\|\[\]\)\]\.find\(shown\);/,'숨긴 쪽(hidden) 그림은 건너뛴다');
+  assert.match(src,/const legend=\[\.\.\.\(section\?\.querySelectorAll\('\.rt-pg-legend'\)\|\|\[\]\)\]\.find\(shown\);/);
+});

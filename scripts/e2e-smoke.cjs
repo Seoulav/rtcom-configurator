@@ -1359,7 +1359,25 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await page.goto(`${home}#products/xdm-ctr100`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-toolbar');
     const otherZoom=await page.$$eval('[data-flow-zoom]',els=>els.length);
-    check('XDM-PSU Signal Flow: COS100 피닉스에 전원선 연결, "크게 보기" 창이 + 한 번에 125%로 커지고 Esc로 닫힘, XDM-CTR100에는 확대 버튼 없음(0.196부터 PSE, 0.267부터 MR4S에는 있음)',cosPin===1&&zoom.level==='125%'&&zoom.svg&&zoom.wider&&zoomClosed&&otherZoom===0,JSON.stringify({cosPin,zoom,zoomClosed,otherZoom}));
+    check('XDM-PSU Signal Flow: COS100 피닉스에 전원선 연결, "크게 보기" 창이 + 한 번에 125%로 커지고 Esc로 닫힘, XDM-CTR100에도 확대 버튼 1개(0.269부터 Signal Flow가 있는 모든 제품)',cosPin===1&&zoom.level==='125%'&&zoom.svg&&zoom.wider&&zoomClosed&&otherZoom===1,JSON.stringify({cosPin,zoom,zoomClosed,otherZoom}));
+    // 0.269 Signal Flow가 있는 모든 단일 제품에 "크게 보기"(사용자 요청 2026-11-16 "다음 단계 모두 진행해줘"). QMS-88UX는 버튼으로 열고, SPX-R6은 RX 구성으로 바꾼 뒤 열면 RX 그림이 확대된다.
+    const allZoom=await (async()=>{
+      const dlgSel='dialog.rt-flow-zoom:not(.rt-photo-zoom):not(.rt-doc-zoom)';
+      await page.goto(`${home}#products/qms-88ux`,{waitUntil:'networkidle'});
+      await page.waitForSelector('section [data-flow-zoom]');
+      const qBtn=await page.$$eval('section [data-flow-zoom]',els=>els.length);
+      await page.click('section [data-flow-zoom]');await page.waitForSelector(`${dlgSel}[open]`);
+      const q=await page.$eval(dlgSel,d=>({level:d.querySelector('[data-zoom-level]').textContent,svg:!!d.querySelector('svg'),legend:!!d.querySelector('.rt-pg-legend')}));
+      await page.keyboard.press('Escape');
+      await page.goto(`${home}#products/spx-r6`,{waitUntil:'networkidle'});
+      await page.waitForSelector('[data-pm-side="rx"]');
+      await page.click('[data-pm-side="rx"]');
+      await page.click('section [data-flow-zoom]');await page.waitForSelector(`${dlgSel}[open]`);
+      const r6=await page.$eval(dlgSel,d=>({rx:/RX 구성/.test(d.querySelector('svg')?.getAttribute('aria-label')||d.querySelector('[aria-label*="Signal Flow"]')?.getAttribute('aria-label')||d.textContent),catIn:/CAT IN → HDMI OUT/.test(d.textContent)}));
+      await page.keyboard.press('Escape');
+      return {qBtn,q,r6};
+    })();
+    check('Signal Flow가 있는 모든 제품에 "크게 보기": QMS-88UX 버튼 1개로 100% 창(그림·범례), SPX-R6은 RX 구성으로 바꾼 뒤 열면 RX 그림이 확대됨',allZoom.qBtn===1&&allZoom.q.level==='100%'&&allZoom.q.svg&&allZoom.q.legend&&allZoom.r6.rx&&allZoom.r6.catIn,JSON.stringify(allZoom));
     // 0.196 XDM-CTR100 PSE 03 Signal Flow: XDM-PSU와 같은 장비 그림·흐르는 케이블(조합 1·2, 조합 2의 전원은 역방향)·크게 보기, PSU 05 주요 기능 첫 줄은 "개별 전원 어댑터 불필요"(사용자 요청 2026-10-02).
     await page.goto(`${home}#products/xdm-ctr100-pse`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-psu-anim');
