@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.264.0 배포 기록**: `docs/qa/DEPLOYMENT_0.264_2026-11-16.md`(PR #422 → main 병합 `55d2f3f`, Pages 배포 run 43805064802 success, 공개 `CATALOG BASED · 0.264`·`index.html`·`styles.css` 해시 일치·"AV Portal에서 제품 찾기" 0건·`CLAUDE.md` 404)
 - **0.263.0 배포 기록**: `docs/qa/DEPLOYMENT_0.263_2026-10-28.md`(PR #419 → main 병합 `a298fa3`, Pages 배포 run 40663571867 success, 공개 `CATALOG BASED · 0.263`·`index.html`·`products.js`·`styles.css`·`hds-42mu.json`·`hds-21u.json` 해시 일치·오토 셀렉팅 카드 코드 확인·`CLAUDE.md` 404)
 - **0.262.0 배포 기록**: `docs/qa/DEPLOYMENT_0.262_2026-10-26.md`(PR #417 → main 병합 `c17dc27`, Pages 배포 run 40282427691 success, 공개 `CATALOG BASED · 0.262`·`control-example.js`·`vdm-wall.js`·`quad-view.js`·`products.js`·제품 JSON 3종 해시 일치·`CLAUDE.md` 404)
 - **0.261.0 배포 기록**: `docs/qa/DEPLOYMENT_0.261_2026-10-20.md`(PR #414 → main 병합 `7a67561`, Pages 배포 run 39422303914 success, 공개 `CATALOG BASED · 0.261`·`index.html`·`products.js`·`spx-rx-tx.json` 해시 일치·양쪽 연결 문구 확인·`CLAUDE.md` 404)
@@ -120,6 +121,17 @@
 - **0.145.0 배포 기록**: `docs/qa/DEPLOYMENT_0.145_2026-09-29.md`(PR #194 → main 병합, 공개 확인은 0.147.0 배포에 포함)
 - **0.144.0 배포 기록**: `docs/qa/DEPLOYMENT_0.144_2026-09-29.md`(PR #192 → main 병합, Pages 배포 run 162, 공개 파일 337/338 일치, `.nojekyll` 제외)
 
+
+## 0.265.0
+
+사용자 요청 2026-11-16("XDM PSU에서 03 시그널 플로우를 확대했을 때 … 화면을 이동하는 게 좀 불편한데", "캐드처럼 가능할까?")에 따라 Signal Flow "크게 보기" 창을 CAD처럼 다루게 한 묶음입니다.
+
+- **끌어서 이동·휠 확대:** 마우스로 끌면 화면이 따라 움직이고(손 모양 커서), 휠은 마우스가 가리키는 지점을 고정한 채 한 칸에 약 15%씩 확대·축소합니다(100~600%).
+- **맞춤:** 두 번 누르기·"맞춤" 버튼·키보드 `0`으로 그림 전체를 창에 맞춥니다. 100%는 그림 전체가 창 안에 들어가는 크기입니다.
+- **휴대폰:** 한 손가락으로 이동하고 두 손가락으로 확대·축소합니다.
+- **작업판:** 그림 둘레에 연한 회색 여백을 두어 그림 가장자리도 화면 가운데까지 끌어올 수 있습니다. 머리 아래에 조작 안내 줄을 두었습니다.
+- 사진 확대 창을 Signal Flow 창으로 잘못 집을 수 있던 문제를 함께 고쳤습니다.
+- 근거·되돌리기: `docs/implementation/FLOW_ZOOM_CAD_0.265.md`
 
 ## 0.264.0
 

@@ -1388,6 +1388,14 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-flow-zoom-legend .rt-pg-legend{margin-top:0}
 #rtcom-design .rt-flow-zoom-body{flex:1;overflow:auto;padding:12px;-webkit-overflow-scrolling:touch}
 #rtcom-design .rt-flow-zoom-canvas svg{display:block;width:100%;height:auto}
+/* 0.264 CAD식 이동·확대(Signal Flow 크게 보기만, 사진 팝업 제외): 끌면 손 모양, 그림 둘레에 창 절반 크기의 작업판 여백(stage, 크기는 script가 정함), 터치는 직접 처리(touch-action:none). */
+#rtcom-design .rt-flow-zoom:not(.rt-photo-zoom):not(.rt-doc-zoom) .rt-flow-zoom-body{min-height:0;padding:0;background:var(--rt-bg-f3f6fa);cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;overscroll-behavior:contain}
+#rtcom-design .rt-flow-zoom:not(.rt-photo-zoom):not(.rt-doc-zoom) .rt-flow-zoom-body.is-panning{cursor:grabbing}
+#rtcom-design .rt-flow-zoom-stage{display:inline-block;vertical-align:top}
+#rtcom-design .rt-flow-zoom-stage .rt-flow-zoom-canvas{box-shadow:0 2px 14px #0f172a1f;border-radius:10px}
+#rtcom-design .rt-flow-zoom-hint{flex:0 0 auto;margin:0;padding:6px 20px;font-size:12px;color:var(--pg-muted);border-bottom:1px solid var(--rt-ln-e8edf5)}
+#rtcom-design .rt-flow-zoom-tools .rt-flow-zoom-fit{width:auto;padding:0 12px;border-radius:999px;font-size:13px;font-weight:800}
+@media(max-width:560px){#rtcom-design .rt-flow-zoom-hint{padding:6px 12px}}
 @media print{#rtcom-design .rt-flow-zoom-bar{display:none}}
 /* 0.117 카드 팝업 연동 전송기: 카드 버튼 아래 칩 줄. 고른 칩은 파란 테두리. */
 #rtcom-design .rt-card-choice-ext{margin:0 12px;padding:10px 0 2px;border-top:1px dashed #e0e7f1}

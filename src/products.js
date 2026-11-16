@@ -1589,7 +1589,8 @@
       const docZoom=event.target.closest('[data-doc-zoom-step]');
       if(docZoom){const dlg=docZoom.closest('dialog');if(dlg?.rtDoc?.ready){dlg.rtDoc.zoom=Math.max(0,Math.min(DOC_ZOOMS.length-1,dlg.rtDoc.zoom+Number(docZoom.dataset.docZoomStep)));renderDocPages(dlg)}return}
       const zoomStep=event.target.closest('[data-zoom-step]');
-      if(zoomStep){const dlg=zoomStep.closest('dialog');setFlowZoom(dlg,Number(dlg.dataset.zoom)+Number(zoomStep.dataset.zoomStep));return}
+      if(zoomStep){const dlg=zoomStep.closest('dialog');const z=Number(dlg.dataset.zoom)||1;setFlowZoom(dlg,Number(zoomStep.dataset.zoomStep)>0?z*FLOW_ZOOM.step:z/FLOW_ZOOM.step);return}
+      if(event.target.closest('[data-zoom-fit]')){flowZoomFit(event.target.closest('dialog'));return}
       if(event.target.closest('[data-zoom-close]')){event.target.closest('dialog').close();return}
       const moreBtn=event.target.closest('[data-more-features]');
       if(moreBtn){const more=body.querySelector('[data-feature-more]');if(more){more.hidden=false;moreBtn.hidden=true}return}
@@ -1682,14 +1683,72 @@
       lens.style.backgroundPosition=`${cfg.size/2-x*cfg.mag}px ${cfg.size/2-y*cfg.mag}px`;
       lens.hidden=false;
     }
-    const FLOW_ZOOMS=[1,1.5,2,3];
-    function setFlowZoom(dlg,index){
-      const i=Math.max(0,Math.min(FLOW_ZOOMS.length-1,index));
-      dlg.dataset.zoom=String(i);
-      dlg.querySelector('.rt-flow-zoom-canvas').style.width=`${FLOW_ZOOMS[i]*100}%`;
-      dlg.querySelector('[data-zoom-level]').textContent=`${FLOW_ZOOMS[i]*100}%`;
-      dlg.querySelector('[data-zoom-step="-1"]').disabled=i===0;
-      dlg.querySelector('[data-zoom-step="1"]').disabled=i===FLOW_ZOOMS.length-1;
+    // 0.264 Signal Flow 크게 보기를 CAD처럼(사용자 요청 2026-11-16 "확대한 상태에서 화면을 이동하는 게 좀 불편한데", "캐드처럼 가능할까?"):
+    // 마우스는 끌어서 이동(왼쪽·가운데 버튼), 휠은 커서 위치를 중심으로 확대·축소, 두 번 누르면 맞춤. 휴대폰은 한 손가락 이동·두 손가락 확대.
+    // 배율 1(100%)은 그림 전체가 창 안에 들어가는 크기이고 최대 6배까지 키운다. −/+ 버튼은 화면 가운데를 기준으로 1.25배씩.
+    const FLOW_ZOOM={min:1,max:6,step:1.25};
+    function flowFitWidth(dlg){
+      const box=dlg.querySelector('.rt-flow-zoom-body'),svg=dlg.querySelector('.rt-flow-zoom-canvas svg');
+      const vb=svg?.viewBox?.baseVal,ratio=vb&&vb.width?vb.height/vb.width:0.5;
+      return Math.max(120,Math.min(box.clientWidth-24,(box.clientHeight-24)/ratio));
+    }
+    // anchor: 창(본문) 안의 좌표. 이 지점 아래에 있던 그림 위치가 확대 뒤에도 같은 자리에 오도록 스크롤을 맞춘다.
+    // 그림 둘레에 창 크기 절반만큼 여백(작업판)을 두어, CAD처럼 그림 가장자리도 화면 가운데까지 끌어올 수 있고 확대 기준점이 밀리지 않는다.
+    function setFlowZoom(dlg,zoom,anchor){
+      const box=dlg.querySelector('.rt-flow-zoom-body'),canvas=dlg.querySelector('.rt-flow-zoom-canvas');
+      dlg.querySelector('.rt-flow-zoom-stage').style.padding=`${Math.round(box.clientHeight/2)}px ${Math.round(box.clientWidth/2)}px`;
+      const z=Math.max(FLOW_ZOOM.min,Math.min(FLOW_ZOOM.max,Number(zoom)||1));
+      const r=box.getBoundingClientRect(),ax=anchor?anchor.x:box.clientWidth/2,ay=anchor?anchor.y:box.clientHeight/2;
+      const before=canvas.getBoundingClientRect(),fx=before.width?(r.left+ax-before.left)/before.width:0.5,fy=before.height?(r.top+ay-before.top)/before.height:0.5;
+      canvas.style.width=`${flowFitWidth(dlg)*z}px`;
+      dlg.dataset.zoom=String(z);
+      const after=canvas.getBoundingClientRect();
+      box.scrollLeft+=after.left+fx*after.width-(r.left+ax);
+      box.scrollTop+=after.top+fy*after.height-(r.top+ay);
+      dlg.querySelector('[data-zoom-level]').textContent=`${Math.round(z*100)}%`;
+      dlg.querySelector('[data-zoom-step="-1"]').disabled=z<=FLOW_ZOOM.min+1e-6;
+      dlg.querySelector('[data-zoom-step="1"]').disabled=z>=FLOW_ZOOM.max-1e-6;
+    }
+    // 맞춤: 100%로 돌리고 그림을 창 가운데에 둔다(작업판 여백이 창의 절반이라 스크롤 = 그림 크기의 절반).
+    function flowZoomFit(dlg){setFlowZoom(dlg,1);const box=dlg.querySelector('.rt-flow-zoom-body'),canvas=dlg.querySelector('.rt-flow-zoom-canvas');box.scrollLeft=canvas.offsetWidth/2;box.scrollTop=canvas.offsetHeight/2}
+    // 끌기·두 손가락·휠·두 번 누르기. 창은 한 번 만들어 다시 쓰므로 이벤트도 처음 한 번만 붙인다.
+    function bindFlowPan(dlg){
+      const pts=new Map();let pinch=null;
+      const box=()=>dlg.querySelector('.rt-flow-zoom-body');
+      const local=e=>{const r=box().getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top}};
+      dlg.addEventListener('pointerdown',e=>{
+        const b=e.target.closest('.rt-flow-zoom-body');if(!b)return;
+        if(e.pointerType==='mouse'&&e.button!==0&&e.button!==1)return;
+        if(e.button===1)e.preventDefault();
+        pts.set(e.pointerId,{x:e.clientX,y:e.clientY});try{b.setPointerCapture?.(e.pointerId)}catch{}b.classList.add('is-panning');
+        if(pts.size===2){const [p,q]=[...pts.values()];pinch={d:Math.hypot(p.x-q.x,p.y-q.y)||1,z:Number(dlg.dataset.zoom)||1}}
+      });
+      dlg.addEventListener('pointermove',e=>{
+        const prev=pts.get(e.pointerId);if(!prev)return;
+        const b=box(),cur={x:e.clientX,y:e.clientY};pts.set(e.pointerId,cur);
+        if(pts.size===1){b.scrollLeft-=cur.x-prev.x;b.scrollTop-=cur.y-prev.y;return}
+        if(pts.size===2&&pinch){
+          const [p,q]=[...pts.values()],r=b.getBoundingClientRect(),mid={x:(p.x+q.x)/2-r.left,y:(p.y+q.y)/2-r.top};
+          b.scrollLeft-=(cur.x-prev.x)/2;b.scrollTop-=(cur.y-prev.y)/2;
+          setFlowZoom(dlg,pinch.z*(Math.hypot(p.x-q.x,p.y-q.y)/pinch.d),mid);
+        }
+      });
+      const end=e=>{if(!pts.delete(e.pointerId))return;if(pts.size<2)pinch=null;if(!pts.size)box()?.classList.remove('is-panning')};
+      dlg.addEventListener('pointerup',end);dlg.addEventListener('pointercancel',end);
+      dlg.addEventListener('wheel',e=>{
+        if(!e.target.closest('.rt-flow-zoom-body'))return;
+        e.preventDefault();
+        // 휠 한 칸(약 100)에 15% 안팎. 트랙패드처럼 작은 값이 이어져도 부드럽게 따라간다.
+        const dy=Math.max(-200,Math.min(200,e.deltaMode===1?e.deltaY*40:e.deltaY));
+        setFlowZoom(dlg,(Number(dlg.dataset.zoom)||1)*Math.exp(-dy*0.0014),local(e));
+      },{passive:false});
+      dlg.addEventListener('dblclick',e=>{if(e.target.closest('.rt-flow-zoom-body'))flowZoomFit(dlg)});
+      dlg.addEventListener('keydown',e=>{
+        if(e.key==='+'||e.key==='='){e.preventDefault();setFlowZoom(dlg,(Number(dlg.dataset.zoom)||1)*FLOW_ZOOM.step)}
+        else if(e.key==='-'||e.key==='_'){e.preventDefault();setFlowZoom(dlg,(Number(dlg.dataset.zoom)||1)/FLOW_ZOOM.step)}
+        else if(e.key==='0'){e.preventDefault();flowZoomFit(dlg)}
+      });
+      if(typeof ResizeObserver==='function')new ResizeObserver(()=>{if(dlg.open)setFlowZoom(dlg,Number(dlg.dataset.zoom)||1)}).observe(dlg);
     }
     function openFlowZoom(section){
       const svg=section?.querySelector('.rt-pg-svg-wrap svg');
@@ -1697,16 +1756,17 @@
       // 0.101(사용자 지적 "확대시 범례가 안보인다 같이 확대되게해줘"): 범례(rt-pg-legend)는 svg 바깥의 형제 요소라 확대 창에 svg만 복사하면 통째로 빠졌다.
       // 확대 배율과 무관하게 항상 읽을 수 있도록 확대 창 머리글 아래에 고정 줄로 넣는다(그림 캔버스 자체를 확대·축소해도 범례 글자 크기는 유지됨).
       const legend=section?.querySelector('.rt-pg-legend');
-      let dlg=body.querySelector('dialog.rt-flow-zoom');
+      let dlg=body.querySelector('dialog.rt-flow-zoom:not(.rt-photo-zoom):not(.rt-doc-zoom)');
       if(!dlg){
         dlg=document.createElement('dialog');dlg.className='rt-flow-zoom';dlg.setAttribute('aria-label','Signal Flow 크게 보기');
         dlg.addEventListener('click',event=>{if(event.target===dlg)dlg.close()});
+        bindFlowPan(dlg);
         body.appendChild(dlg);
       }
       const title=body.querySelector('#rt-pg-title')?.textContent||'';
-      dlg.innerHTML=`<div class="rt-flow-zoom-head"><b>${esc(title)} · 03 Signal Flow</b><div class="rt-flow-zoom-tools"><button type="button" data-zoom-step="-1" aria-label="축소">−</button><span data-zoom-level aria-live="polite">100%</span><button type="button" data-zoom-step="1" aria-label="확대">+</button><button type="button" class="rt-flow-zoom-close" data-zoom-close aria-label="닫기">×</button></div></div>${legend?`<div class="rt-flow-zoom-legend">${legend.outerHTML}</div>`:''}<div class="rt-flow-zoom-body"><div class="rt-flow-zoom-canvas">${svg.outerHTML}</div></div>`;
-      setFlowZoom(dlg,0);
+      dlg.innerHTML=`<div class="rt-flow-zoom-head"><b>${esc(title)} · 03 Signal Flow</b><div class="rt-flow-zoom-tools"><button type="button" data-zoom-step="-1" aria-label="축소">−</button><span data-zoom-level aria-live="polite">100%</span><button type="button" data-zoom-step="1" aria-label="확대">+</button><button type="button" class="rt-flow-zoom-fit" data-zoom-fit aria-label="전체 맞춤">맞춤</button><button type="button" class="rt-flow-zoom-close" data-zoom-close aria-label="닫기">×</button></div></div>${legend?`<div class="rt-flow-zoom-legend">${legend.outerHTML}</div>`:''}<p class="rt-flow-zoom-hint" data-flow-hint>끌어서 이동 · 휠로 확대·축소(마우스 위치 기준) · 두 번 누르면 맞춤 · 휴대폰은 두 손가락으로 확대</p><div class="rt-flow-zoom-body"><div class="rt-flow-zoom-stage"><div class="rt-flow-zoom-canvas">${svg.outerHTML}</div></div></div>`;
       if(typeof dlg.showModal==='function')dlg.showModal();else dlg.setAttribute('open','');
+      flowZoomFit(dlg);
       dlg.querySelector('[data-zoom-step="1"]').focus();
     }
     // 제조사 문서 팝업 미리보기(0.124부터 전 제품: 카탈로그는 미리 그린 쪽 그림, 매뉴얼은 PDF.js). 0.112: iframe은 PDF 보기 기능이 없는 브라우저(휴대폰 크롬, 카카오톡 인앱 등)에서
