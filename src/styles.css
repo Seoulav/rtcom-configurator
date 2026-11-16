@@ -246,14 +246,14 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-mr4s-notice{display:grid;grid-template-columns:auto 1fr;gap:13px;align-items:center;margin-top:14px;padding:14px 16px;border-radius:17px;background:linear-gradient(135deg,#eaf3ff,#e4ecff);box-shadow:inset 0 0 0 1px #b9cff3}#rtcom-design .rt-mr4s-switch{display:inline-flex;align-items:center;gap:9px;padding:6px 12px 6px 6px;border:0;border-radius:999px;background:var(--rt-bg-fff);box-shadow:0 1px 3px rgba(20,50,110,.18);color:var(--rt-fg-183a6b);font:inherit;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}#rtcom-design .rt-mr4s-switch b{color:var(--rt-fg-2563c9)}#rtcom-design .rt-mr4s-switch[aria-checked="false"] b{color:var(--rt-fg-7b8799)}#rtcom-design .rt-mr4s-track{position:relative;width:34px;height:20px;border-radius:999px;background:var(--rt-bg-c5cfdd);transition:background .15s}#rtcom-design .rt-mr4s-track span{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--rt-bg-fff);box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .15s}#rtcom-design .rt-mr4s-switch[aria-checked="true"] .rt-mr4s-track{background:#2563c9}#rtcom-design .rt-mr4s-switch[aria-checked="true"] .rt-mr4s-track span{transform:translateX(14px)}#rtcom-design .rt-mr4s-switch:focus-visible{outline:2px solid #2563c9;outline-offset:2px}#rtcom-design .rt-mr4s-notice p{margin:0;color:var(--rt-fg-3a4f70);font-size:12px;line-height:1.55}#rtcom-design .rt-mr4s-notice a{color:var(--rt-fg-2563c9);font-weight:700}
 @media(max-width:620px){#rtcom-design .rt-configurator-anchor{margin-left:10px;margin-right:10px}#rtcom-design .rt-output-tips{grid-template-columns:1fr}#rtcom-design .rt-power-notice,#rtcom-design .rt-mr4s-notice{grid-template-columns:1fr}}
 
-/* PHASE 1 portal shell */
+/* PHASE 1 app shell */
 #rtcom-design .rt-brand-lockup{display:flex;align-items:center;gap:12px;min-width:0;max-width:100%;color:inherit;text-decoration:none;border-radius:14px}#rtcom-design .rt-brand-lockup:focus-visible{outline:3px solid var(--rt-accent);outline-offset:3px}#rtcom-design .rt-brand-lockup>span:last-child{display:block;min-width:0}#rtcom-design .rt-brand-lockup .rt-brand,#rtcom-design .rt-brand-lockup .rt-brand-sub{display:block}
 
 @media(max-width:1050px){#rtcom-design .rt-top{flex-wrap:wrap}}
 
 @media(max-width:380px){#rtcom-design .rt-top{padding:18px}#rtcom-design .rt-brand{font-size:18px;letter-spacing:-.5px}#rtcom-design .rt-brand-sub{font-size:12px;letter-spacing:.9px}}
 
-/* 0.7 머리 오른쪽 묶음(버전 표기). 0.264에서 AV Portal 링크를 지움(사용자 요청 2026-11-16 "AV 포탈에서 제품 찾기 링크는 이번에 지워줘"). */
+/* 0.7 머리 오른쪽 묶음(버전 표기). 0.264에서 외부 링크를 지움(사용자 요청 2026-11-16). */
 #rtcom-design .rt-top-links{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
 #rtcom-design .rt-visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 @media(max-width:1050px){#rtcom-design .rt-top-links{width:100%;justify-content:space-between}#rtcom-design .rt-top-links .rt-meta{width:auto;flex:1}}
