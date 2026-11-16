@@ -523,36 +523,15 @@ test('0.239: 브라우저 저장소가 없어도(Node) 메모리에 담고 꺼�
   assert.equal(ce.basket.get('xdm-test').length,0);
 });
 
-// 0.239 AMX 코드 잠금: 비밀번호 변환값 확인(PBKDF2-SHA256), 상태 유지, 원문 미저장
-test('0.239: 잠금 변환값은 맞는 비밀번호만 통과시키고 원문을 담지 않는다',async()=>{
-  const cfg=await ce.makeLock('test-pass-1234',{iterations:1000});
-  assert.equal(cfg.v,1);assert.equal(cfg.iterations,1000);assert.match(cfg.salt,/^[0-9a-f]{32}$/);assert.match(cfg.hash,/^[0-9a-f]{64}$/);
-  assert.ok(!JSON.stringify(cfg).includes('test-pass-1234'));
-  assert.equal(await ce.verifyPassword('test-pass-1234',cfg),true);
-  assert.equal(await ce.verifyPassword('test-pass-1235',cfg),false);
-  assert.equal(await ce.verifyPassword('',cfg),false);
-  assert.equal(await ce.verifyPassword('test-pass-1234',null),false,'설정이 없으면 열리지 않는다');
-  const again=await ce.makeLock('test-pass-1234',{iterations:1000});
-  assert.notEqual(again.salt,cfg.salt);assert.notEqual(again.hash,cfg.hash,'같은 비밀번호도 salt가 달라 변환값이 다르다');
-});
-test('0.239: 잠금 상태는 설정에 맞을 때만 열리고 다시 잠글 수 있다(Node에서는 메모리)',async()=>{
-  const cfg=await ce.makeLock('open-sesame-77',{iterations:1000});
-  ce.lock.relock();
-  assert.equal(ce.lock.isUnlocked(cfg),false);
-  assert.equal(await ce.lock.unlock('wrong-password',cfg),false);
-  assert.equal(ce.lock.isUnlocked(cfg),false);
-  assert.equal(await ce.lock.unlock('open-sesame-77',cfg),true);
-  assert.equal(ce.lock.isUnlocked(cfg),true);
-  const other=await ce.makeLock('other-pass-99',{iterations:1000});
-  assert.equal(ce.lock.isUnlocked(other),false,'다른 비밀번호 설정이면 열린 상태가 이어지지 않는다');
-  ce.lock.relock();
-  assert.equal(ce.lock.isUnlocked(cfg),false);
-});
-test('0.239: 저장소의 AMX_LOCK은 비밀번호 원문 없이 변환값 또는 null이다',()=>{
-  const src=require('node:fs').readFileSync(require('node:path').join(__dirname,'..','src','control-example.js'),'utf8');
-  const m=src.match(/^\s*const AMX_LOCK=(.*);$/m);
-  assert.ok(m,'AMX_LOCK 줄이 있어야 한다');
-  if(m[1]!=='null'){const cfg=JSON.parse(m[1]);assert.deepEqual(Object.keys(cfg).sort(),['hash','iterations','salt','v']);assert.ok(cfg.iterations>=100000)}
+// 0.266 AMX 코드 잠금 제거(사용자 요청 2026-11-16 "AMX 관련돼서 비밀번호 잠겨 있는데 그 비밀번호 그냥 없이 다 풀어서 보여줘"):
+// 비밀번호 변환값·잠금 상자·다시 잠그기·비밀번호 설정 도구가 다시 생기지 않는지 확인한다.
+test('0.266: AMX 코드는 비밀번호 없이 바로 보인다(잠금 코드·잠금 스타일·비밀번호 도구 없음)',()=>{
+  const src=fs.readFileSync('src/control-example.js','utf8'),css=fs.readFileSync('src/styles.css','utf8');
+  assert.doesNotMatch(src,/AMX_LOCK|makeLock|verifyPassword|isUnlocked|data-ce-lockbox|data-ce-lockform|data-ce-relock|rt-amx-lock|gated\(/);
+  assert.doesNotMatch(css,/\.rt-ce-lock/);
+  assert.equal(fs.existsSync('scripts/tools/set-amx-password.cjs'),false);
+  for(const k of ['AMX_LOCK','makeLock','verifyPassword','lock'])assert.equal(k in ce,false,k);
+  assert.match(src,/data-ce-bk="copy">AMX 코드 복사<\/button><button type="button" class="rt-pg-btn" data-ce-bk="download">파일로 저장\(\.axs\)<\/button>/,'내 AMX 구성 복사·파일 저장은 늘 보인다');
 });
 
 // 0.239 AMX 통신 방식: LAN(TCP) 기본 화면, RS-232 선택. 포트는 매뉴얼 값만 쓰고 없으면 0과 "확인 필요"
