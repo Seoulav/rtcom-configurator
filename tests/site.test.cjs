@@ -815,6 +815,7 @@ test('0.263: HDS-42MU·HDS-21U 오토 셀렉팅(펌웨어 개선 후 자사 시�
     const p=JSON.parse(read(`data/products/${id}.json`));
     const t=p.sources.find(s=>s.code==='T');
     assert.ok(t&&/2026-10-28/.test(t.scope)&&/펌웨어 개선/.test(t.scope),`${id} 출처 T`);
+    assert.ok(/Priority\)은 개선 펌웨어에서도 매뉴얼 Ver\.1\.0과 같게/.test(t.scope)&&/2026-11-16/.test(t.scope),`${id} 0.270 Priority 확인`);
     assert.ok(p.features.some(f=>f.source==='T'&&/^오토 셀렉팅 지원/.test(f.text)),`${id} 05 주요 기능`);
     // 사용자 확인(2026-10-28 "딥스위치와 상관없이 오토셀렉팅이야"): 딥 스위치 카드가 아닌 별도 카드, 2번 OFF 설명은 매뉴얼 문장 그대로.
     assert.equal(p.dipSwitch.autoSelect,undefined);
