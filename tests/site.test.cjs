@@ -22,7 +22,10 @@ test('index.html is a configurator-only page that keeps the legacy anchors',()=>
   // 0.142 AI 검색(사내 베타) 스크립트는 라우터보다 먼저 #ai-token을 읽도록 맨 앞에 둔다(docs/implementation/AI_SEARCH_BETA.md).
   assert.deepEqual([...html.matchAll(/<script src="([^"]+)"/g)].map(match=>match[1]),['src/ai-search.js',...runtimeScripts]);
   assert.doesNotMatch(html,/data-route-view|data-route-link|equipment-library|\.pdf/);
-  assert.match(html,/<a class="rt-portal-link" href="https:\/\/seoulav\.github\.io\/AV-Portal\/" target="_blank" rel="noopener">/);
+  // 0.264 머리의 "AV Portal에서 제품 찾기" 링크를 지웠다(사용자 요청 2026-11-16). 링크와 전용 스타일이 다시 생기지 않게 확인한다.
+  assert.doesNotMatch(html,/rt-portal-link|AV-Portal|AV Portal에서 제품 찾기/);
+  assert.doesNotMatch(read('src/styles.css'),/rt-portal-link/);
+  assert.match(html,/<div class="rt-top-links"><div class="rt-meta">/);
 });
 
 test('runtime code has no in-app navigation that would break relative asset paths',()=>{
