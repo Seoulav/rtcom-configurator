@@ -812,3 +812,10 @@ test('0.265: Signal Flow 크게 보기를 CAD처럼(끌어서 이동·휠 확대
   assert.match(css,/\.rt-flow-zoom:not\(\.rt-photo-zoom\):not\(\.rt-doc-zoom\) \.rt-flow-zoom-body\{[^}]*cursor:grab;touch-action:none/);
   assert.match(css,/\.rt-flow-zoom-body\.is-panning\{cursor:grabbing\}/);
 });
+
+test('0.267: XDM-MR4S 03 Signal Flow도 크게 보기(CAD식 이동·확대 창)',()=>{
+  const src=read('src/products.js');
+  const fn=src.slice(src.indexOf('function mr4sDiagram(item){'),src.indexOf('function connectionDiagram(item){'));
+  assert.match(fn,/<div class="rt-flow-zoom-bar"><button type="button" class="rt-pg-btn" data-flow-zoom>⤢ 크게 보기<\/button><\/div>/,'XDM-PSU·PSE와 같은 버튼 줄');
+  assert.match(fn,/diagramWrap\(`<g class="rt-psu-anim">\$\{body\}<\/g>`/,'그림을 눌러도 열리도록 rt-psu-anim으로 묶는다');
+});

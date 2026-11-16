@@ -760,7 +760,8 @@
         '수신: XDM-FOS100 → 광 전송 → XDM-FR101 → 디스플레이, 또는 XDM-COS100 → HDBaseT 전송 → XDM-CTR100(RX 모드) → 디스플레이',
         '전원: 프레임 POWER 1·2에서 카드 4장에 공급합니다. MR4S에 꽂은 XDM-CTR100은 원격 전원 공급이 되지 않습니다.'
       ];
-      return diagramWrap(body,width,height,captions,{label:`${item.model} Signal Flow`,steps});
+      // 0.267: XDM-PSU·PSE와 같은 "크게 보기"(CAD식 이동·확대 창). 그림을 눌러도 열린다(rt-psu-anim 표시).
+      return `<div class="rt-flow-zoom-bar"><button type="button" class="rt-pg-btn" data-flow-zoom>⤢ 크게 보기</button></div>`+diagramWrap(`<g class="rt-psu-anim">${body}</g>`,width,height,captions,{label:`${item.model} Signal Flow`,steps});
     }
     function connectionDiagram(item){
       if(item.group==='cable')return cableDiagram(item);

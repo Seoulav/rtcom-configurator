@@ -1064,6 +1064,19 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     // 0.227 XDM-MR4S 03 Signal Flow(매트릭스 카드 ↔ MR4S 카드 4장)와 구성기 04 전송기 "XDM-MR4S 랙 장착" 스위치(사용자 결정 2026-10-16).
     const mr4Flow=await page.evaluate(()=>{const w=document.querySelector('.rt-pg-svg-wrap[aria-label^="XDM-MR4S Signal Flow"]');const t=w?.textContent||'';return {svg:!!w,cards:['XDM-FIS100','XDM-FOS100','XDM-CIS100','XDM-COS100'].every(c=>t.includes(c)),power:/원격 전원 공급 불가/.test(t)}});
     check('XDM-MR4S 03 Signal Flow에 매트릭스 카드 4종과 MR4S 카드 줄, 원격 전원 공급 불가 안내가 나옴',mr4Flow.svg&&mr4Flow.cards&&mr4Flow.power,JSON.stringify(mr4Flow));
+    // 0.267 XDM-MR4S 03 Signal Flow도 "크게 보기"(CAD식 이동·확대 창). 버튼과 그림 누르기 둘 다 열린다(사용자 요청 2026-11-16).
+    const mr4Zoom=await (async()=>{
+      const btn=await page.$$eval('[data-flow-zoom]',els=>els.length);
+      await page.click('.rt-pg-svg-wrap[aria-label^="XDM-MR4S Signal Flow"] svg');
+      await page.waitForSelector('dialog.rt-flow-zoom:not(.rt-photo-zoom):not(.rt-doc-zoom)[open]');
+      const d=await page.$eval('dialog.rt-flow-zoom:not(.rt-photo-zoom):not(.rt-doc-zoom)',d=>({level:d.querySelector('[data-zoom-level]')?.textContent,svg:!!d.querySelector('.rt-psu-anim'),cards:['XDM-FIS100','XDM-COS100'].every(c=>d.textContent.includes(c)),fit:!!d.querySelector('[data-zoom-fit]')}));
+      await page.click('dialog.rt-flow-zoom:not(.rt-photo-zoom):not(.rt-doc-zoom) [data-zoom-step="1"]');
+      const up=await page.$eval('dialog.rt-flow-zoom:not(.rt-photo-zoom):not(.rt-doc-zoom) [data-zoom-level]',e=>e.textContent);
+      await page.keyboard.press('Escape');
+      const closed=await page.$eval('dialog.rt-flow-zoom:not(.rt-photo-zoom):not(.rt-doc-zoom)',d=>!d.open);
+      return {btn,...d,up,closed};
+    })();
+    check('XDM-MR4S 03 Signal Flow에 "크게 보기" 버튼이 있고 그림을 누르면 확대 창이 100%로 열려(카드 이름 보임) + 한 번에 125%, Esc로 닫힘',mr4Zoom.btn===1&&mr4Zoom.level==='100%'&&mr4Zoom.svg&&mr4Zoom.cards&&mr4Zoom.fit&&mr4Zoom.up==='125%'&&mr4Zoom.closed,JSON.stringify(mr4Zoom));
     {
       const st={step:3,maxStep:3,family:'XDM',model:'XDM-12',requirements:{inputs:[],outputs:[]},placements:{'in-1':'XDM-CIS100','out-1':'XDM-COS100'},physicalSlots:{status:'unknown',slots:[]},portAssignments:{},links:{'in-1':{device:'XDM-CTR100 · TX',count:4,distance:'30'},'out-1':{device:'XDM-CTR100 · RX',count:4,distance:'30'}},slot:'in-1',format:'PDF'};
       await page.goto(home,{waitUntil:'networkidle'});
@@ -1346,7 +1359,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await page.goto(`${home}#products/xdm-ctr100`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-toolbar');
     const otherZoom=await page.$$eval('[data-flow-zoom]',els=>els.length);
-    check('XDM-PSU Signal Flow: COS100 피닉스에 전원선 연결, "크게 보기" 창이 + 한 번에 125%로 커지고 Esc로 닫힘, XDM-CTR100에는 확대 버튼 없음(0.196부터 PSE에는 있음)',cosPin===1&&zoom.level==='125%'&&zoom.svg&&zoom.wider&&zoomClosed&&otherZoom===0,JSON.stringify({cosPin,zoom,zoomClosed,otherZoom}));
+    check('XDM-PSU Signal Flow: COS100 피닉스에 전원선 연결, "크게 보기" 창이 + 한 번에 125%로 커지고 Esc로 닫힘, XDM-CTR100에는 확대 버튼 없음(0.196부터 PSE, 0.267부터 MR4S에는 있음)',cosPin===1&&zoom.level==='125%'&&zoom.svg&&zoom.wider&&zoomClosed&&otherZoom===0,JSON.stringify({cosPin,zoom,zoomClosed,otherZoom}));
     // 0.196 XDM-CTR100 PSE 03 Signal Flow: XDM-PSU와 같은 장비 그림·흐르는 케이블(조합 1·2, 조합 2의 전원은 역방향)·크게 보기, PSU 05 주요 기능 첫 줄은 "개별 전원 어댑터 불필요"(사용자 요청 2026-10-02).
     await page.goto(`${home}#products/xdm-ctr100-pse`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-psu-anim');
