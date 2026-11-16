@@ -117,6 +117,26 @@ test('rear photo slot zones stay inside each photo and match the card faceplate 
   }
 });
 
+test('0.267: 공개 배포본의 어떤 텍스트 파일에도 AV Portal·포털·포탈 언급이 없다(경쟁업체에도 공개할 계획, 사용자 요청 2026-11-16)',()=>{
+  execFileSync(process.execPath,['scripts/package-site.cjs'],{stdio:'ignore'});
+  const found=[];
+  const walk=dir=>{for(const entry of fs.readdirSync(dir,{withFileTypes:true})){
+    const full=path.join(dir,entry.name);
+    if(entry.isDirectory()){walk(full);continue}
+    if(!/\.(html|js|mjs|css|json|svg|txt|md|xml|webmanifest)$/i.test(entry.name))continue;
+    if(/\.min\./.test(entry.name))continue;
+    const text=fs.readFileSync(full,'utf8');
+    const m=text.match(/.{0,30}(?:portal|포탈|포털).{0,30}/i);
+    if(m)found.push(`${path.relative('dist',full).split(path.sep).join('/')}: ${m[0].replace(/\s+/g,' ')}`);
+  }};
+  walk('dist');
+  assert.deepEqual(found,[],'공개 파일에 AV Portal 관련 문구가 남아 있다');
+  // 화면에 보이는 XDM 레이어 비교 표의 출처 칸은 제조사 데이터시트로 적는다.
+  const app=read('src/app.js');
+  assert.match(app,/'제조사 데이터시트'\],/);
+  assert.match(app,/각 제조사 데이터시트\(Analog Way·NovaStar·Colorlight·Magnimage\)/);
+});
+
 test('static package ships only configurator files and redirects legacy portal URLs',()=>{
   // 0.24: 이전 빌드에서 삭제·이름이 바뀐 파일이 dist에 남아 옛 제품 상세가 계속 열리지 않도록, 매번 dist를 비우고 다시 만든다.
   fs.mkdirSync('dist',{recursive:true});

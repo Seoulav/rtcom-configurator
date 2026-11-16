@@ -1,5 +1,5 @@
   // 0.19 — 알티컴 공개 제품정보. 구성기와 같은 한 화면 안에서 #products 주소 조각(hash)으로만 전환한다(페이지 이동 없음 → 상대 경로·404 문제 없음).
-  // 데이터: data/products/index.json(목록)과 data/products/<id>.json(상세, AV Portal 상세 JSON 호환). 비공개 AV Portal은 이 파일을 읽기만 한다.
+  // 데이터: data/products/index.json(목록)과 data/products/<id>.json(상세, rtcom.products.v1 형식).
   // 0.33 — 화면 디자인을 사용자 LED 구성기 계승 글래스 스타일로 바꿨다(docs/handoff/PRODUCT_GLASS_REDESIGN_SPEC.md 6-A).
   // 새 클래스는 모두 rt-pg-* 접두사를 쓰고 CSS는 #rtcom-design .rt-products-view 범위 안에서만 선언한다(src/styles.css).
   (()=>{
@@ -232,7 +232,7 @@
           const colX=j=>boxX+(boxW-(matrixPorts.length-1)*xpSx)/2+j*xpSx,rowY=i=>chipYs[i]+chipH/2;
           matrixBottom=boxY+boxH;
           bodyMarkup+=`<rect x="${boxX}" y="${boxY}" width="${boxW}" height="${boxH}" rx="14" fill="#fff" stroke="${A}" stroke-width="3"/>`;
-          // 0.194: 입력선 끝에 화살촉을 달아 "입력 → 매트릭스" 방향을 보이고, 상자 아래쪽 안에 "출력마다 입력 선택"을 적는다(AV Portal 검토안).
+          // 0.194: 입력선 끝에 화살촉을 달아 "입력 → 매트릭스" 방향을 보이고, 상자 아래쪽 안에 "출력마다 입력 선택"을 적는다.
           chipYs.forEach((y,i)=>{bodyMarkup+=`<path d="M${leftX+chipW} ${rowY(i)}H${boxX-7}" stroke="${A}" stroke-width="3"/><path d="M${boxX-9} ${rowY(i)-5}L${boxX} ${rowY(i)}L${boxX-9} ${rowY(i)+5}z" fill="${A}"/><path d="M${boxX+6} ${rowY(i)}H${boxX+boxW-6}" stroke="${A}" stroke-width="1.2" opacity=".35"/>`;});
           bodyMarkup+=`<text x="${nodeX}" y="${boxY+boxH-9}" text-anchor="middle" font-size="10.5" font-weight="700" fill="${M}">출력마다 입력 선택</text>`;
           const sel=matrixPorts.map((_,j)=>(j*5+1)%inN);
@@ -300,7 +300,7 @@
         modeBottom=tileY+tileH+22;
       }
 
-      // 0.194 출력 쪽(AV Portal 공통 렌더러 검토안 반영, 사용자 요청 2026-10-01): 출력을 "주 출력 → 멀티뷰 → 오디오 추출" 순서의 제목 달린 묶음으로
+      // 0.194 출력 쪽(사용자 요청 2026-10-01): 출력을 "주 출력 → 멀티뷰 → 오디오 추출" 순서의 제목 달린 묶음으로
       // 한 줄에 세로로 쌓는다. 주 출력은 대역폭 띠에서 실선으로, 멀티뷰·오디오 추출은 보조 경로(점선)로 갈라진다. 모니터 아이콘과 멀티뷰 4분할 표시는 그대로 둔다.
       const cellW=32,cellH=23,cellGap=8,panelPad=14,titleH=24,capH=18,groupGap=16;
       const textW=(text,size)=>[...text].reduce((sum,ch)=>sum+(/[ㄱ-힣]/.test(ch)?size*.98:/[ ·.,:/()]/.test(ch)?size*.36:size*.62),0);

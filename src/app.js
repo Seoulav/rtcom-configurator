@@ -330,21 +330,21 @@
     }
     // 0.203 XDM-WOS100 레이어 구성도 + 비디오 프로세서 레이어 비교 팝업(02 프레임 선택 XDM). 카드 상세 팝업(openCardInfo)과 같은 dialog 방식.
     // 0.204(사용자 지적 2026-10-12 03 카드 슬롯의 WOS100 카드 상세 팝업을 보며 "안보여"): 같은 팝업을 WOS100 카드 상세 팝업과 출력 카드 선택 팝업의 활용 TIP에서도 연다. 카드 상세 dialog 위에 겹쳐 열리는 두 번째 dialog다.
-    // 표의 값은 AV Portal 상세 페이지(제조사 데이터시트 근거)와 사용자가 제공한 Aquilon RS4 데이터시트(AQL-RS4-EN-20260401)에서 옮겼다. 제조사마다 "레이어" 정의가 달라 비고를 함께 적는다.
+    // 표의 값은 각 제조사 데이터시트와 사용자가 제공한 Aquilon RS4 데이터시트(AQL-RS4-EN-20260401)에서 옮겼다. 제조사마다 "레이어" 정의가 달라 비고를 함께 적는다.
     // WOS100의 4레이어는 구성기 카드 설명(cardTips)과 같은 값이다. 0.207부터 "출력 1개에 4K/60 소스 4개"는 서울영상테크 확인(2026-10-12)이며,
     // 0.210: 레이어를 쓰면(1개라도) WOS100 카드 4포트가 모두 같은 화면을 낸다(알티컴 확인, 사용자 전달 2026-10-13). HOS100의 짝 포트 규칙과 다르다.
     const layerCompareRows=[
-      ['Analog Way','Aquilon RS4','24','16','12','24','믹싱 레이어 최대 · 분할 레이어 사용 시 24 / 48 · 구성기·AV Portal 미등록','RS4 데이터시트'],
-      ['Analog Way','Aquilon RS2','16','12','8','16','믹싱 레이어 최대 · 분할 레이어 사용 시 16 / 32','AV Portal'],
-      ['Analog Way','Aquilon RS1','16','8','4','8','믹싱 레이어 최대 · 분할 레이어 사용 시 8 / 16','AV Portal'],
-      ['Analog Way','Zenith 200','14 + 2K 2','6','4 믹싱 / 8 분할','—','4K 레이어만 명시 · PGM 4K/60 ×4','AV Portal'],
-      ['Analog Way','Zenith 100','11 + 2K 2','4','3 믹싱 / 6 분할','—','4K 레이어만 명시 · PGM 4K/60 ×3','AV Portal'],
-      ['Analog Way','Pulse 4K · Eikos 4K','8 + 2K 2','2','2 믹싱 / 4 분할','—','라이브 배경 + 4K 레이어 + 4K 정지영상 전경 1','AV Portal'],
-      ['NovaStar','H5','40 ch','12 ch','4 / 출력 카드','16 / 출력 카드','출력 카드 1매당 2K 16 · DL 8 · 4K 4 · 섀시 상한 48','AV Portal'],
-      ['NovaStar','H2','16 ch','8 ch','4 / 출력 카드','16 / 출력 카드','출력 카드 1매당 2K 16 · DL 8 · 4K 4 · 섀시 상한 32','AV Portal'],
-      ['Colorlight','X100 Pro-7U','8','8','64 (2K/4K 구분 없음)','','사양서가 레이어를 해상도로 나누지 않음 · 최대 로드 52 MP','AV Portal'],
-      ['Colorlight','X100 Pro-4U · 2U','4 · 2','4','32 (2K/4K 구분 없음)','','최대 로드 26 MP','AV Portal'],
-      ['Magnimage','LED-780H','—','—','—','4 / 출력','입력이 2K급(DVI·HDMI 1.3·DP 1.2·3G-SDI) · 비스플라이싱 모드','AV Portal'],
+      ['Analog Way','Aquilon RS4','24','16','12','24','믹싱 레이어 최대 · 분할 레이어 사용 시 24 / 48','RS4 데이터시트'],
+      ['Analog Way','Aquilon RS2','16','12','8','16','믹싱 레이어 최대 · 분할 레이어 사용 시 16 / 32','제조사 데이터시트'],
+      ['Analog Way','Aquilon RS1','16','8','4','8','믹싱 레이어 최대 · 분할 레이어 사용 시 8 / 16','제조사 데이터시트'],
+      ['Analog Way','Zenith 200','14 + 2K 2','6','4 믹싱 / 8 분할','—','4K 레이어만 명시 · PGM 4K/60 ×4','제조사 데이터시트'],
+      ['Analog Way','Zenith 100','11 + 2K 2','4','3 믹싱 / 6 분할','—','4K 레이어만 명시 · PGM 4K/60 ×3','제조사 데이터시트'],
+      ['Analog Way','Pulse 4K · Eikos 4K','8 + 2K 2','2','2 믹싱 / 4 분할','—','라이브 배경 + 4K 레이어 + 4K 정지영상 전경 1','제조사 데이터시트'],
+      ['NovaStar','H5','40 ch','12 ch','4 / 출력 카드','16 / 출력 카드','출력 카드 1매당 2K 16 · DL 8 · 4K 4 · 섀시 상한 48','제조사 데이터시트'],
+      ['NovaStar','H2','16 ch','8 ch','4 / 출력 카드','16 / 출력 카드','출력 카드 1매당 2K 16 · DL 8 · 4K 4 · 섀시 상한 32','제조사 데이터시트'],
+      ['Colorlight','X100 Pro-7U','8','8','64 (2K/4K 구분 없음)','','사양서가 레이어를 해상도로 나누지 않음 · 최대 로드 52 MP','제조사 데이터시트'],
+      ['Colorlight','X100 Pro-4U · 2U','4 · 2','4','32 (2K/4K 구분 없음)','','최대 로드 26 MP','제조사 데이터시트'],
+      ['Magnimage','LED-780H','—','—','—','4 / 출력','입력이 2K급(DVI·HDMI 1.3·DP 1.2·3G-SDI) · 비스플라이싱 모드','제조사 데이터시트'],
       ['RTCOM','XDM-WOS100','매트릭스 입력','4 / 카드','4 / 출력 1개','—','출력 1개에 4K/60 소스 4개를 레이어로 합성 · 커맨드 설정 · 레이어를 쓰면 카드 4포트가 같은 화면','카탈로그 9쪽 · 서울영상테크 확인']
     ];
     // 0.207(사용자 요청 2026-10-12 "wos 출력1개에 4K60 소스.4개를 VP처럼 레이어링 할 수 있게 변경해그리고 선도 꼬여 있어"):
@@ -499,7 +499,7 @@
         +cmdGuideLinks(44,'Wall Overlay 커맨드')
         +'<h4 class="rt-layer-h">비디오 프로세서 레이어 비교 · 2K / 4K 믹싱 레이어 수</h4><div class="rt-layer-scroll"><table class="rt-card-info-table rt-layer-table"><thead><tr><th scope="col">제조사</th><th scope="col">모델</th><th scope="col">4K/60p 입력</th><th scope="col">4K/60p 출력</th><th scope="col">4K 레이어</th><th scope="col">2K/DL 레이어</th><th scope="col">레이어 정의 · 비고</th><th scope="col">근거</th></tr></thead><tbody>'+rows+'</tbody></table></div>'
         +'<ul class="rt-layer-notes"><li>Aquilon의 4K 레이어 하나는 2K(DL) 레이어 둘과 같고, 분할(split) 레이어로 쓰면 다시 2배가 됩니다.</li><li>NovaStar H의 값은 출력 카드 1매 기준이며 전역 합산이 아닙니다. 섀시 상한과 카드당 자원 중 작은 쪽이 실제 한도입니다.</li><li>Colorlight X100 Pro 사양서는 레이어를 해상도로 나누지 않아 4K와 2K 칸을 합쳐 적었습니다.</li></ul>'
-        +'<p class="rt-card-info-src">알티컴 종합 카탈로그 2026 (국문) 9쪽 · 출력 1개 4레이어 구성은 서울영상테크 확인(2026-10-12) · 포트 조건(레이어를 쓰면 카드 4포트 같은 화면)은 알티컴 확인(2026-10-13) · 커맨드 구조는 알티컴 회신(2026-10-13)·XDM 커맨드 가이드(1013판) 43~57쪽 · Analog Way Aquilon RS4 Technical Datasheet (AQL-RS4-EN-20260401) · AV Portal 제품 상세(Analog Way·NovaStar·Colorlight·Magnimage)</p></div>'
+        +'<p class="rt-card-info-src">알티컴 종합 카탈로그 2026 (국문) 9쪽 · 출력 1개 4레이어 구성은 서울영상테크 확인(2026-10-12) · 포트 조건(레이어를 쓰면 카드 4포트 같은 화면)은 알티컴 확인(2026-10-13) · 커맨드 구조는 알티컴 회신(2026-10-13)·XDM 커맨드 가이드(1013판) 43~57쪽 · Analog Way Aquilon RS4 Technical Datasheet (AQL-RS4-EN-20260401) · 각 제조사 데이터시트(Analog Way·NovaStar·Colorlight·Magnimage)</p></div>'
         +'<div class="rt-card-modal-foot"><button type="button" class="rt-button" data-layer-close>닫기</button></div>';
       const opener=document.activeElement;
       const finish=()=>{if(dialog.open)dialog.close();dialog.remove();opener?.focus?.({preventScroll:true})};
