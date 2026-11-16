@@ -1855,24 +1855,9 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
         const focused=await s.evaluate(()=>document.activeElement?.dataset.signalPort);
         const saved=await s.evaluate(()=>{const p=JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.portAssignments;return [p['in-1:1'].assignedDevice,p['in-1:2'].assignedDevice]});
         const count=await s.locator('[data-signal-count] b').textContent();
-        const [avbDownload]=await Promise.all([s.waitForEvent('download'),s.click('[data-action="av-builder"]')]);
-        const avb=JSON.parse(require('node:fs').readFileSync(await avbDownload.path(),'utf8'));
-        const avbOk=avbDownload.suggestedFilename()==='RTCOM-XDM-12-av-builder.json'&&avb.nodes.some(n=>n.id==='rtcom_matrix'&&n.data.inputs.length===8&&n.data.inputs[0].label==='HDMI #1-1 PC')&&Array.isArray(avb.edges);
-        check('03 ② 신호 입력의 "AV 빌더용 파일 내려받기"가 AV 빌더 구성도 JSON(매트릭스 입력 8포트, 첫 포트 "HDMI #1-1 PC")을 내려받음',avbOk,JSON.stringify({file:avbDownload.suggestedFilename(),nodes:avb.nodes.length,edges:avb.edges.length}));
-        // 0.174 B안(사용자 결정 "B가 내가 원하는거야"): "AV 빌더에서 바로 열기"는 AV 빌더를 새 탭(?import=rtcom)으로 열고 창 사이 메시지로 구성도를 넘긴다.
-        // AV 빌더 주소 요청을 가짜 화면으로 바꿔(1) 준비→구성도→완료 흐름과 (2) 준비 신호가 없을 때 10초 뒤 파일 내려받기를 확인한다.
-        let fakeMode='handshake';
-        await s.context().route('https://seoul-visual-tech.github.io/**',route=>route.fulfill({contentType:'text/html',body:fakeMode==='handshake'?"<!doctype html><script>const o=window.opener;addEventListener('message',e=>{const m=e.data;if(m&&m.type==='rtcom:diagram'){window.__got={origin:e.origin,version:m.version,nodes:m.diagram.nodes.length,edges:m.diagram.edges.length,first:m.diagram.nodes.find(n=>n.id==='rtcom_matrix').data.inputs[0].label};o.postMessage({type:'av-builder:imported',nodes:m.diagram.nodes.length,edges:m.diagram.edges.length},'*')}});o.postMessage({type:'av-builder:ready'},'*');</script>":'<!doctype html><title>old builder</title>'}));
-        const [pop]=await Promise.all([s.waitForEvent('popup'),s.click('[data-action="av-builder-open"]')]);
-        await s.waitForFunction(()=>/AV 빌더에 구성을 넣었습니다/.test(document.querySelector('#save-status')?.textContent||''),null,{timeout:10000}).catch(()=>{});
-        const got=await pop.evaluate(()=>({search:location.search,got:window.__got||null}));
-        const doneText=await s.evaluate(()=>document.querySelector('#save-status')?.textContent||'');
-        await pop.close();
-        fakeMode='old';
-        const [oldPop,fallback]=await Promise.all([s.waitForEvent('popup'),s.waitForEvent('download',{timeout:16000}),s.click('[data-action="av-builder-open"]')]);
-        const fallbackText=await s.evaluate(()=>document.querySelector('#save-status')?.textContent||'');
-        await oldPop.close();await s.context().unroute('https://seoul-visual-tech.github.io/**');
-        check('03 ② "AV 빌더에서 바로 열기": 새 탭(?import=rtcom)에 준비 신호가 오면 구성도(version 1, 첫 포트 "HDMI #1-1 PC")를 보내고 완료를 표시하며, 준비 신호가 없으면 10초 뒤 같은 파일을 내려받음',got.search==='?import=rtcom'&&got.got&&got.got.version===1&&got.got.first==='HDMI #1-1 PC'&&got.got.nodes>0&&/AV 빌더에 구성을 넣었습니다 · 장비 \d+대/.test(doneText)&&fallback.suggestedFilename()==='RTCOM-XDM-12-av-builder.json'&&/자동 받기를 지원하지 않아 파일로 다운로드했습니다/.test(fallbackText),JSON.stringify({got,doneText,fallback:fallback.suggestedFilename(),fallbackText}));
+        // 0.269(사용자 요청 2026-11-16 "AV System Builder연동도 전부 삭제해줘"): 03 ② 신호 입력 아래의 "AV 빌더로 보내기" 안내 상자와 두 버튼을 지웠다.
+        const avbSignals=await s.evaluate(()=>({panel:document.querySelectorAll('.rt-avb,[data-action^="av-builder"]').length,text:/AV 빌더|AV System Builder/i.test(document.body.textContent||'')}));
+        check('03 ② 신호 입력 화면에 AV 빌더 연동(안내 상자·버튼·문구)이 없음',avbSignals.panel===0&&!avbSignals.text,JSON.stringify(avbSignals));
         await s.click('[data-tool="undo"]');
         const afterUndo=await s.evaluate(()=>[...document.querySelectorAll('.rt-signal-input')].slice(0,2).map(i=>i.value));
         await s.click('[data-action="back"]');const backToSlots=await s.locator('.rt-rack-slot').count()>0&&await s.locator('.rt-signal-input').count()===0;
@@ -1929,6 +1914,8 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       await ep.reload({waitUntil:'networkidle'});
       const view=await ep.evaluate(()=>({formats:[...document.querySelectorAll('.rt-format')].map(b=>b.dataset.format).join(','),pressed:document.querySelector('.rt-format[aria-pressed="true"]')?.dataset.format,backup:!!document.querySelector('.rt-export-save [data-tool="backup"]'),pre:document.querySelectorAll('.rt-export pre').length,rack:document.querySelectorAll('.rt-report-paper .rt-rack-photo .rt-rack-slot-filled').length,buttons:document.querySelectorAll('.rt-report-paper button').length,slots:document.querySelectorAll('.rt-report-paper .rt-rp-page2 tbody tr').length}));
       check('06 내보내기: 형식은 PDF·CSV 둘(예전 JSON 선택은 PDF로 보임), JSON은 작업 저장 버튼, 코드 미리보기 없음, 보고서 미리보기에 누를 수 없는 후면 그림(카드 2장)과 슬롯 6행',view.formats==='PDF,CSV'&&view.pressed==='PDF'&&view.backup&&view.pre===0&&view.rack===2&&view.buttons===0&&view.slots===6,JSON.stringify(view));
+      const avbExport=await ep.evaluate(()=>({panel:document.querySelectorAll('.rt-avb,[data-action^="av-builder"]').length,text:/AV 빌더|AV System Builder/i.test(document.body.textContent||'')}));
+      check('06 내보내기 화면에 AV 빌더 연동(안내 상자·버튼·문구)이 없음',avbExport.panel===0&&!avbExport.text,JSON.stringify(avbExport));
       await ep.fill('input[data-report-field="project"]','테스트 프로젝트');
       const meta=await ep.evaluate(()=>({saved:JSON.parse(localStorage.getItem('rtcom.report.v1')).project,shown:document.querySelector('.rt-rp-meta b')?.textContent,focus:document.activeElement?.dataset.reportField,undo:document.querySelector('[data-tool=undo]').disabled}));
       check('보고서 표지 칸에 입력하면 이 브라우저에 저장되고 미리보기에 바로 보이며 입력 칸 커서가 유지됨(실행 취소 기록에는 쌓이지 않음)',meta.saved==='테스트 프로젝트'&&meta.shown==='테스트 프로젝트'&&meta.focus==='project'&&meta.undo,JSON.stringify(meta));

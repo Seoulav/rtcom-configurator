@@ -137,6 +137,24 @@ test('0.268: 공개 배포본의 어떤 텍스트 파일에도 AV Portal·포털
   assert.match(app,/각 제조사 데이터시트\(Analog Way·NovaStar·Colorlight·Magnimage\)/);
 });
 
+test('0.269: 공개 배포본에 AV System Builder 연동(주소·버튼·메시지 코드·문구)이 없다(사용자 요청 2026-11-16 "AV System Builder연동도 전부 삭제해줘")',()=>{
+  execFileSync(process.execPath,['scripts/package-site.cjs'],{stdio:'ignore'});
+  const found=[];
+  const walk=dir=>{for(const entry of fs.readdirSync(dir,{withFileTypes:true})){
+    const full=path.join(dir,entry.name);
+    if(entry.isDirectory()){walk(full);continue}
+    if(!/\.(html|js|mjs|css|json|svg|txt|md|xml|webmanifest)$/i.test(entry.name))continue;
+    const text=fs.readFileSync(full,'utf8');
+    const m=text.match(/.{0,30}(?:av[ _-]*builder|av[ _-]*system[ _-]*builder|av 빌더|av빌더|seoul-visual-tech|rt-avb|avbSession).{0,30}/i);
+    if(m)found.push(`${path.relative('dist',full).split(path.sep).join('/')}: ${m[0].replace(/\s+/g,' ')}`);
+  }};
+  walk('dist');
+  assert.deepEqual(found,[],'공개 파일에 AV Builder 연동 흔적이 남아 있다');
+  // 화면에 두 버튼이 다시 생기지 않는다(03 신호 입력·06 내보내기)
+  const app=read('src/app.js');
+  assert.doesNotMatch(app,/data-action="av-builder|data-action==='av-builder|addEventListener\('message'/);
+});
+
 test('static package ships only configurator files and redirects legacy portal URLs',()=>{
   // 0.24: 이전 빌드에서 삭제·이름이 바뀐 파일이 dist에 남아 옛 제품 상세가 계속 열리지 않도록, 매번 dist를 비우고 다시 만든다.
   fs.mkdirSync('dist',{recursive:true});

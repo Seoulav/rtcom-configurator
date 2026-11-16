@@ -1572,14 +1572,6 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
 #rtcom-design .rt-signal-name input:focus{outline:none;border-color:var(--rt-accent);box-shadow:0 0 0 3px #0057d833}
 #rtcom-design .rt-signal-name input:not(:placeholder-shown){border-color:#b9c7dd;background:var(--rt-bg-f7faff);font-weight:700}
 @media(max-width:560px){#rtcom-design .rt-signal-side{padding:10px}#rtcom-design .rt-signal-name input{font-size:16px}}
-/* 0.173 AV 빌더로 보내기(사용자 결정 2026-09-29 "A로 전송기 포함해서 진행해줘") */
-#rtcom-design .rt-avb{display:flex;flex-wrap:wrap;gap:14px 24px;align-items:center;justify-content:space-between;margin-top:18px;padding:16px 18px;border:1px solid #c9d8f5;border-radius:16px;background:#f3f7ff}
-#rtcom-design .rt-avb strong{font-size:14px;color:var(--rt-ink)}
-#rtcom-design .rt-avb p{margin:4px 0 6px;font-size:13px;color:var(--rt-muted)}
-#rtcom-design .rt-avb ol{margin:0;padding-left:18px;font-size:13px;color:var(--rt-ink);line-height:1.7}
-#rtcom-design .rt-avb a{color:var(--rt-accent)}
-#rtcom-design .rt-avb-actions{display:flex;flex-wrap:wrap;gap:8px}
-#rtcom-design .rt-avb-actions .rt-button{text-decoration:none}
 /* 0.172 06 내보내기 개편: 구성 보고서(PDF) — 06 미리보기와 인쇄물(#print-report)이 같은 규칙을 쓴다. 글꼴은 사이트와 같은 Pretendard Variable(애플 SD 산돌고딕 계열 모양, fonts/PretendardVariable.woff2). */
 #rtcom-design .rt-export{grid-template-columns:minmax(260px,.8fr) minmax(0,1.5fr);align-items:start}
 #rtcom-design .rt-export-options{position:sticky;top:12px}
@@ -2109,7 +2101,7 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
     --rt-ln-fff:#38383A;
     --rt-ln-ffffff59:rgba(255,255,255,.12);
   }
-  /* 직접 적힌 색 덮어쓰기(자동, 선언 43개) */
+  /* 직접 적힌 색 덮어쓰기(자동, 선언 41개) */
   #rtcom-design .rt-mr4s-notice{background:linear-gradient(135deg,#18263A,#18223A)}
   #rtcom-design .rt-config-summary li{background:#2C2C2E}
   #rtcom-design .rt-card-qty{background:#2C2C2E}
@@ -2141,7 +2133,6 @@ html{background:#f3f3ef}body{margin:0;padding:24px 16px;font-family:Arial,'Malgu
   #rtcom-design .rt-card-choice-foot{border-top:1px dashed #38383A}
   #rtcom-design .rt-card-choice-ext{border-top:1px dashed #38383A}
   #rtcom-design .rt-signal-name input:not(:placeholder-shown){border-color:#374862}
-  #rtcom-design .rt-avb{border:1px solid #374662;background:#2C2C2E}
   #rtcom-design .rt-cmd-guide{color:#D1D1D6}
   #rtcom-design .rt-wos-feats p.rt-wos-sync{color:#80AFE5}
   #rtcom-design .rt-completion-slots i.rt-seg-blank{background:#3A3A3C}

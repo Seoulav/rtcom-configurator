@@ -368,23 +368,12 @@ test('신호명은 구성 파일 저장·불러오기에 남고, 카드를 옮�
   assert.throws(()=>core.parse(JSON.stringify(tooLong)));
 });
 
-// 0.173 AV 빌더(seoul-visual-tech.github.io/av-system-builder) "가져오기 → 구성도 JSON" 형식: nodes(type 'equipment', data 장비)·edges(출력 포트 id → 입력 포트 id).
-test('AV 빌더용 구성도는 매트릭스 1대와 04에서 연결한 채널마다 전송기 상자·연결선을 만들고, 포트 이름에 신호명을 넣는다',()=>{
-  const state={...core.initial(),model:'XDM-12',slot:'in-1',placements:{'in-1':'XDM-CIS100','in-2':'XDM-HIS100','out-1':'XDM-COS100','out-2':'BLANK'},links:{'in-1':{device:'XDM-CTR100 · TX',count:2,distance:'30'},'in-2':{device:'XDM-CTR100 PSE + XDM-CTR100',count:1,distance:'30'},'out-1':{device:'XDM-CTR100 · RX',count:1,distance:'30'}}};
-  state.portAssignments=core.syncPorts(state);
-  state.portAssignments['in-1:1'].assignedDevice='PC';state.portAssignments['out-1:1'].assignedDevice='프로젝터 1';
-  const d=core.avBuilder(state),matrix=d.nodes.find(n=>n.id==='rtcom_matrix').data;
-  assert.equal(matrix.model,'XDM-12');
-  assert.equal(matrix.inputs.length,8);assert.equal(matrix.outputs.length,4);
-  assert.equal(matrix.inputs[0].label,'HDBT #1-1 PC');assert.equal(matrix.inputs[4].label,'HDMI #2-1');assert.equal(matrix.outputs[0].label,'HDBT #1-1 프로젝터 1');
-  assert.deepEqual(matrix.inputs[0].type,'network');assert.equal(matrix.inputs[4].type,'video');
-  // CIS100 2채널 → 송신기 2대, HIS100 PSE 1채널 → CTR100(TX)+PSE(RX) 2대, COS100 1채널 → 수신기 1대
-  assert.equal(d.nodes.length,1+2+2+1);assert.equal(d.edges.length,2+2+1);
-  for(const e of d.edges){const s=d.nodes.find(n=>n.id===e.source),t=d.nodes.find(n=>n.id===e.target);assert.ok(s&&t,'연결선 양 끝 상자');assert.ok(s.data.outputs.some(p=>p.id===e.sourceHandle),'출력 포트');assert.ok(t.data.inputs.some(p=>p.id===e.targetHandle),'입력 포트');assert.ok(['video','network'].includes(e.data.lineTypeId))}
-  assert.ok(d.nodes.every(n=>n.type==='equipment'&&n.data.id.startsWith('rtcom-')));
-  assert.equal(new Set(d.nodes.map(n=>n.id)).size,d.nodes.length,'상자 id는 겹치지 않음');
-  assert.equal(d.nodes.find(n=>n.id==='rtcom_in-1_1_tx').data.inputs[0].label,'HDMI In · PC');
-  assert.deepEqual(core.avBuilder({...core.initial(),model:'XDM-12',slot:'in-1'}).nodes,[]);
+// 0.269(사용자 요청 2026-11-16 "AV System Builder연동도 전부 삭제해줘"): AV 빌더용 구성도(core.avBuilder)와 내보내기를 지웠다. 다시 생기지 않게 확인한다.
+test('0.269: AV 빌더 연동 함수(avBuilder)는 RtCore에 없고, 신호명(portAssignments)·구성 파일 저장은 그대로다',()=>{
+  assert.equal(typeof core.avBuilder,'undefined');
+  assert.equal(typeof core.syncPorts,'function');
+  assert.equal(typeof core.parse,'function');
+  assert.equal(typeof core.csv,'function');
 });
 
 test('0.226: XDM-MR4S 랙 장착을 켜면 CTR100·FT101·FR101 4대당 MR4S 1대를 넣고 XDM-PSU는 세지 않는다',()=>{
