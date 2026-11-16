@@ -1343,15 +1343,38 @@ const patchAmxLock=async()=>{
     await page.waitForSelector('dialog.rt-flow-zoom[open]');
     await page.click('dialog.rt-flow-zoom [data-zoom-step="1"]');
     const zoom=await page.$eval('dialog.rt-flow-zoom',d=>({level:d.querySelector('[data-zoom-level]').textContent,svg:!!d.querySelector('.rt-psu-anim'),wider:d.querySelector('.rt-flow-zoom-body').scrollWidth>d.querySelector('.rt-flow-zoom-body').clientWidth}));
+    // 0.265 CAD식 이동·확대: 휠은 마우스 아래 지점을 고정한 채 확대, 끌면 그만큼 이동, 두 번 누르면 맞춤(100%), 두 손가락 벌리면 확대.
+    const cad=await (async()=>{
+      await page.click('dialog.rt-flow-zoom [data-zoom-fit]');
+      const bx=await page.locator('dialog.rt-flow-zoom .rt-flow-zoom-body').boundingBox();
+      const ax=bx.x+bx.width*0.7,ay=bx.y+bx.height*0.6;
+      const frac=()=>page.evaluate(([x,y])=>{const c=document.querySelector('dialog.rt-flow-zoom .rt-flow-zoom-canvas').getBoundingClientRect();return [(x-c.left)/c.width,(y-c.top)/c.height]},[ax,ay]);
+      const st=()=>page.evaluate(()=>{const d=document.querySelector('dialog.rt-flow-zoom'),b=d.querySelector('.rt-flow-zoom-body');return {lv:d.querySelector('[data-zoom-level]').textContent,sl:b.scrollLeft,stp:b.scrollTop}});
+      await page.mouse.move(ax,ay);const f0=await frac();
+      for(let i=0;i<4;i++){await page.mouse.wheel(0,-100);await page.waitForTimeout(30)}
+      const f1=await frac(),wheel=await st();
+      await page.mouse.down();await page.mouse.move(ax+150,ay+60,{steps:6});await page.mouse.up();
+      const drag=await st();
+      await page.mouse.dblclick(ax,ay);const fit=await st();
+      await page.evaluate(()=>{const b=document.querySelector('dialog.rt-flow-zoom .rt-flow-zoom-body'),r=b.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+        const ev=(type,id,x,y)=>b.dispatchEvent(new PointerEvent(type,{bubbles:true,pointerId:id,pointerType:'touch',clientX:x,clientY:y}));
+        ev('pointerdown',11,cx-40,cy);ev('pointerdown',12,cx+40,cy);for(let i=1;i<=6;i++){ev('pointermove',11,cx-40-i*10,cy);ev('pointermove',12,cx+40+i*10,cy)}ev('pointerup',11,cx,cy);ev('pointerup',12,cx,cy)});
+      const pinch=await st();
+      const hint=await page.$eval('dialog.rt-flow-zoom [data-flow-hint]',e=>e.textContent);
+      return {f0,f1,wheel,drag,fit,pinch,hint};
+    })();
     await page.keyboard.press('Escape');
     const zoomClosed=await page.$eval('dialog.rt-flow-zoom',d=>!d.open);
+    check('XDM-PSU 크게 보기 CAD식 이동·확대: 휠은 마우스 아래 지점 고정(네 칸 175%), 끌면 이동, 두 번 누르면 맞춤 100%, 두 손가락 벌리면 확대, 안내 줄',
+      cad.wheel.lv==='175%'&&Math.abs(cad.f0[0]-cad.f1[0])<0.01&&Math.abs(cad.f0[1]-cad.f1[1])<0.01&&Math.round(cad.wheel.sl-cad.drag.sl)===150&&Math.round(cad.wheel.stp-cad.drag.stp)===60&&cad.fit.lv==='100%'&&parseInt(cad.pinch.lv,10)>200&&/끌어서 이동/.test(cad.hint),
+      JSON.stringify(cad));
     // 0.105 XDM-PSU: 머리 아이콘은 전원(번개) 모양, 02 Port Map은 Signal Flow와 같은 평면 그림(앞면·뒷면)에 번호 3개, 기준 문구는 "제조사 도면 기준 그림".
     const psuPanel=await page.evaluate(()=>{const s=[...document.querySelectorAll('section')].find(x=>/Port Map/.test(x.querySelector('h2')?.textContent||''));return {icon:!!document.querySelector('.rt-pg-swatch svg path[d^="M16.5 3"]'),rear:!!s?.innerHTML.includes('xdm-psu-rear-art.webp'),front:!!s?.innerHTML.includes('xdm-psu-front-art.webp'),pins:s?.querySelector('.rt-pg-ports')?.children.length,basis:/제조사 도면 기준 그림/.test(s?.querySelector('h2')?.textContent||'')}});
     check('XDM-PSU 머리 아이콘이 전원 모양이고 02 Port Map이 앞면·뒷면 평면 그림(번호 3개, "제조사 도면 기준 그림")으로 나옴',psuPanel.icon&&psuPanel.rear&&psuPanel.front&&psuPanel.pins===3&&psuPanel.basis,JSON.stringify(psuPanel));
     await page.goto(`${home}#products/xdm-ctr100`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-toolbar');
     const otherZoom=await page.$$eval('[data-flow-zoom]',els=>els.length);
-    check('XDM-PSU Signal Flow: COS100 피닉스에 전원선 연결, "크게 보기" 창이 150%로 커지고 Esc로 닫힘, XDM-CTR100에는 확대 버튼 없음(0.196부터 PSE에는 있음)',cosPin===1&&zoom.level==='150%'&&zoom.svg&&zoom.wider&&zoomClosed&&otherZoom===0,JSON.stringify({cosPin,zoom,zoomClosed,otherZoom}));
+    check('XDM-PSU Signal Flow: COS100 피닉스에 전원선 연결, "크게 보기" 창이 + 한 번에 125%로 커지고 Esc로 닫힘, XDM-CTR100에는 확대 버튼 없음(0.196부터 PSE에는 있음)',cosPin===1&&zoom.level==='125%'&&zoom.svg&&zoom.wider&&zoomClosed&&otherZoom===0,JSON.stringify({cosPin,zoom,zoomClosed,otherZoom}));
     // 0.196 XDM-CTR100 PSE 03 Signal Flow: XDM-PSU와 같은 장비 그림·흐르는 케이블(조합 1·2, 조합 2의 전원은 역방향)·크게 보기, PSU 05 주요 기능 첫 줄은 "개별 전원 어댑터 불필요"(사용자 요청 2026-10-02).
     await page.goto(`${home}#products/xdm-ctr100-pse`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-psu-anim');

@@ -798,3 +798,17 @@ test('0.263: HDS-42MU·HDS-21U 오토 셀렉팅(펌웨어 개선 후 자사 시�
   assert.match(src,/\+\(item\.autoSelect\?\.steps\?\.length\?1:0\)\)\.padStart\(2,'0'\);\n      const spec=/,'AMX 카드 번호는 오토 셀렉팅 카드 다음');
   assert.match(read('src/styles.css'),/\.rt-pg-auto-steps\{display:grid;grid-template-columns:1fr auto 1fr auto 1fr/);
 });
+
+test('0.265: Signal Flow 크게 보기를 CAD처럼(끌어서 이동·휠 확대 기준점·두 번 누르면 맞춤·두 손가락 확대)',()=>{
+  const src=read('src/products.js'),css=read('src/styles.css');
+  assert.match(src,/const FLOW_ZOOM=\{min:1,max:6,step:1\.25\};/);
+  assert.match(src,/function bindFlowPan\(dlg\)/);
+  assert.match(src,/dlg\.addEventListener\('wheel',e=>\{[^]*?e\.preventDefault\(\);[^]*?Math\.exp\(-dy\*0\.0014\),local\(e\)\);/,'휠은 마우스 위치 기준');
+  assert.match(src,/dlg\.addEventListener\('dblclick',e=>\{if\(e\.target\.closest\('\.rt-flow-zoom-body'\)\)flowZoomFit\(dlg\)\}\);/);
+  assert.match(src,/try\{b\.setPointerCapture\?\.\(e\.pointerId\)\}catch\{\}/,'포인터 잡기가 실패해도 두 손가락 확대가 이어진다');
+  assert.match(src,/data-zoom-fit aria-label="전체 맞춤">맞춤<\/button>/);
+  assert.match(src,/<div class="rt-flow-zoom-stage"><div class="rt-flow-zoom-canvas">/);
+  assert.match(src,/dialog\.rt-flow-zoom:not\(\.rt-photo-zoom\):not\(\.rt-doc-zoom\)/,'사진 확대 창을 Signal Flow 창으로 잘못 집지 않는다');
+  assert.match(css,/\.rt-flow-zoom:not\(\.rt-photo-zoom\):not\(\.rt-doc-zoom\) \.rt-flow-zoom-body\{[^}]*cursor:grab;touch-action:none/);
+  assert.match(css,/\.rt-flow-zoom-body\.is-panning\{cursor:grabbing\}/);
+});
