@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.268.0 배포 기록**: `docs/qa/DEPLOYMENT_0.268_2026-11-16.md`(PR #428 → main 병합 `387b06c`, Pages 배포 run 43854160853 success, 공개 `CATALOG BASED · 0.268`·주요 소스 6개 해시 일치·공개 텍스트 파일 54개에서 AV Portal·포털·포탈 언급 0개·`CLAUDE.md` 404)
 - **0.266.0 배포 기록**: `docs/qa/DEPLOYMENT_0.266_2026-11-16.md`(PR #425 → main 병합 `19fbe5c`, Pages 배포 run 43831001437 success, 공개 `CATALOG BASED · 0.266`·`index.html`·`control-example.js`·`styles.css` 해시 일치·잠금 코드 0건·`CLAUDE.md` 404)
 - **0.265.0 배포 기록**: `docs/qa/DEPLOYMENT_0.265_2026-11-16.md`(PR #423 → main 병합 `66d19a6`, Pages 배포 run 43806042362 success, 공개 `CATALOG BASED · 0.265`·`index.html`·`products.js`·`styles.css` 해시 일치·CAD식 조작 코드 확인·`CLAUDE.md` 404)
 - **0.264.0 배포 기록**: `docs/qa/DEPLOYMENT_0.264_2026-11-16.md`(PR #422 → main 병합 `55d2f3f`, Pages 배포 run 43805064802 success, 공개 `CATALOG BASED · 0.264`·`index.html`·`styles.css` 해시 일치·"AV Portal에서 제품 찾기" 0건·`CLAUDE.md` 404)
