@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.270.0 배포 기록**: `docs/qa/DEPLOYMENT_0.270_2026-11-16.md`(PR #435 → main 병합 `527a579`, Pages 배포 success, 공개 `CATALOG BASED · 0.270`·HDS 두 제품 JSON·`index.html` 해시 일치·`CLAUDE.md` 404)
 - **알티컴 재요청 문안 준비(문서만, 버전 변경 없음)**: `docs/handoff/RTCOM_QUESTIONS_2026-10-16.md`에 "재요청 메일(8건)" 구역을 더했습니다(미회신 5건 C-1·B-1·B-2 ①·B-6·C-2와 새 확인 3건 E-1 VDM 월 끄기 형식·E-2 QMS-88UX 사용자 레이어·자막·E-3 HDS 개선 펌웨어). 아직 보내지 않았고 `docs/handoff/OPEN_ITEMS.md`에 표시했습니다.
 - **0.269.0 배포 기록**: `docs/qa/DEPLOYMENT_0.269_2026-11-16.md`(PR #432 → main 병합 `9b9c8d0`, Pages 배포 run 43856236034 success, 공개 `CATALOG BASED · 0.269`·주요 소스 6개 해시 일치·공개 텍스트 파일 54개에서 AV 빌더·AV Portal·포털·포탈 언급 0개·`CLAUDE.md` 404)
 - **0.268.0 배포 기록**: `docs/qa/DEPLOYMENT_0.268_2026-11-16.md`(PR #428 → main 병합 `387b06c`, Pages 배포 run 43854160853 success, 공개 `CATALOG BASED · 0.268`·주요 소스 6개 해시 일치·공개 텍스트 파일 54개에서 AV Portal·포털·포탈 언급 0개·`CLAUDE.md` 404)
