@@ -866,6 +866,8 @@ test('0.271: HD-108U·HD-104U 제품명은 새 실크 이름이 앞, 카탈로�
     assert.equal(p.productName,name,`${id} 제품명`);
     assert.equal(p.model,model,`${id} model은 카탈로그 모델명 그대로`);
     assert.deepEqual(p.aliases,[alias],`${id} 옛 주소 이동용 별칭`);
+    const n1=p.issues.find(i=>i.code==='N1');
+    assert.ok(n1&&n1.title==='실크 표기 변경'&&/바뀌었습니다/.test(n1.detail)&&!/예정/.test(n1.title+n1.detail),`${id} N1은 실크 표기가 이미 바뀐 것으로 적음`);
     const item=index.products.find(x=>x.id===id);
     assert.equal(item.productName,name,`${id} 색인 제품명`);
   }
