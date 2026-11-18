@@ -39,8 +39,8 @@
 | CT104-U / CR104-U | `ct104-u-cr104-u-catalog.pdf` | `ct104-u-cr104-u-manual.pdf` |
 | FT101-U / FR101-U | `ft101-u-fr101-u-catalog.pdf` | `ft101-u-fr101-u-manual.pdf` |
 | FT103-U-H / FR103-U | `ft103-u-h-fr103-u-catalog.pdf` | `ft103-u-h-fr103-u-manual.pdf` |
-| HD-104U (HD-14U) | `hd-104u-catalog.pdf` | `hd-104u-manual.pdf` |
-| HD-108U (HD-18U) | `hd-108u-catalog.pdf` | `hd-108u-manual.pdf` |
+| HD-14U(104U) | `hd-104u-catalog.pdf` | `hd-104u-manual.pdf` |
+| HD-18U(108U) | `hd-108u-catalog.pdf` | `hd-108u-manual.pdf` |
 | HD-13U | `hd-13u-catalog.pdf` | `hd-13u-manual.pdf` |
 | HD-210U | `hd-210u-catalog.pdf` | `hd-210u-manual.pdf` |
 | HD-D102U | `hd-d102u-catalog.pdf` | `hd-d102u-manual.pdf` |

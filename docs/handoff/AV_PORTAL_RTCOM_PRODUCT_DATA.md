@@ -180,7 +180,7 @@ rtcom-configurator 머리글의 "AV Portal에서 제품 찾기" 링크는 AV Por
 
 - 같은 제품의 다른 모델명입니다. 예: `hd-104u`의 `aliases: ["HD-14U"]`(새 실크 표기), `hd-108u`의 `aliases: ["HD-18U"]`
 - 정식 키는 계속 `model`(HD-104U·HD-108U)입니다. AV Portal에서 검색할 때 aliases도 함께 찾으면 두 이름 모두로 검색됩니다.
-- `productName`은 화면용으로 두 이름을 함께 적습니다("HD-104U (HD-14U)"). 없어도 동작합니다.
+- `productName`은 화면용으로 두 이름을 함께 적습니다(0.271부터 새 실크 이름이 앞, 카탈로그 모델명이 괄호 안: "HD-14U(104U)", "HD-18U(108U)". 0.270까지는 "HD-104U (HD-14U)"). 없어도 동작합니다. `model`(카탈로그 모델명 HD-104U·HD-108U)과 `id`·`aliases`는 바뀌지 않았으니 모델명으로 제품을 찾는 쪽은 `model`을 쓰세요.
 
 ## XDM-CTR100 PSE 분리 (0.47 이후)
 
