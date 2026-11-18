@@ -858,3 +858,17 @@ test('0.267: XDM-MR4S 03 Signal Flow도 크게 보기(CAD식 이동·확대 창)
   assert.match(fn,/<div class="rt-flow-zoom-bar"><button type="button" class="rt-pg-btn" data-flow-zoom>⤢ 크게 보기<\/button><\/div>/,'XDM-PSU·PSE와 같은 버튼 줄');
   assert.match(fn,/diagramWrap\(`<g class="rt-psu-anim">\$\{body\}<\/g>`/,'그림을 눌러도 열리도록 rt-psu-anim으로 묶는다');
 });
+
+test('0.271: HD-108U·HD-104U 제품명은 새 실크 이름이 앞, 카탈로그 모델명이 괄호 안(HD-18U(108U)·HD-14U(104U))이고 옛 주소·검색용 이름은 그대로다',()=>{
+  const index=JSON.parse(read('data/products/index.json'));
+  for(const [id,name,model,alias] of [['hd-108u','HD-18U(108U)','HD-108U','HD-18U'],['hd-104u','HD-14U(104U)','HD-104U','HD-14U']]){
+    const p=JSON.parse(read(`data/products/${id}.json`));
+    assert.equal(p.productName,name,`${id} 제품명`);
+    assert.equal(p.model,model,`${id} model은 카탈로그 모델명 그대로`);
+    assert.deepEqual(p.aliases,[alias],`${id} 옛 주소 이동용 별칭`);
+    const n1=p.issues.find(i=>i.code==='N1');
+    assert.ok(n1&&n1.title==='실크 표기 변경'&&/바뀌었습니다/.test(n1.detail)&&!/예정/.test(n1.title+n1.detail),`${id} N1은 실크 표기가 이미 바뀐 것으로 적음`);
+    const item=index.products.find(x=>x.id===id);
+    assert.equal(item.productName,name,`${id} 색인 제품명`);
+  }
+});

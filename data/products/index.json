@@ -152,7 +152,7 @@
     {
       "id": "hd-104u",
       "group": "distribution",
-      "productName": "HD-104U (HD-14U)",
+      "productName": "HD-14U(104U)",
       "model": "HD-104U",
       "aliases": [
         "HD-14U"
@@ -172,7 +172,7 @@
     {
       "id": "hd-108u",
       "group": "distribution",
-      "productName": "HD-108U (HD-18U)",
+      "productName": "HD-18U(108U)",
       "model": "HD-108U",
       "aliases": [
         "HD-18U"
