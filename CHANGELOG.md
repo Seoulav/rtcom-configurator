@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.272.0 배포 기록**: `docs/qa/DEPLOYMENT_0.272_2026-11-23.md`(PR #440 → main 병합 `91afcb8`, Pages 배포 success, 공개 `CATALOG BASED · 0.272`·제품 33종 공유 페이지와 미리보기 이미지 33/33 정상(카카오톡 수집기와 비슷하게 자바스크립트 없이 확인)·HD-108U 제목 `HD-18U(108U) | RTCOM 제품정보`·`CLAUDE.md` 404)
 - **0.271.0 배포 기록**: `docs/qa/DEPLOYMENT_0.271_2026-11-18.md`(PR #438 → main 병합 `3debac7`, Pages 배포 success, 공개 `CATALOG BASED · 0.271`·HD-108U·HD-104U 제품 JSON과 색인 해시 일치·공개 제품명 `HD-18U(108U)`·`HD-14U(104U)`·`CLAUDE.md` 404)
 - **공개 저장소의 내부 문서 AV Portal·AV 빌더 언급 결정(문서만, 버전 변경 없음)**: 저장소가 공개(public)임을 확인하고 사용자가 "그대로 둠"(C)으로 결정해(2026-11-16 "C로 결정할께") `docs/handoff/OPEN_ITEMS.md`에 "다시 묻지 않음"으로 기록했습니다. 공개 데이터 `slots`·`io` 필드의 유지·삭제는 아직 결정 대기입니다.
 - **0.270.0 배포 기록**: `docs/qa/DEPLOYMENT_0.270_2026-11-16.md`(PR #435 → main 병합 `527a579`, Pages 배포 success, 공개 `CATALOG BASED · 0.270`·HDS 두 제품 JSON·`index.html` 해시 일치·`CLAUDE.md` 404)
