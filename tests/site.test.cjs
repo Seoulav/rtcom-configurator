@@ -30,10 +30,19 @@ test('index.html is a configurator-only page that keeps the legacy anchors',()=>
 
 test('runtime code has no in-app navigation that would break relative asset paths',()=>{
   // 뒤로가기용 방문 기록(0.14)은 허용하되, 주소는 항상 현재 주소(location.href) 그대로여야 한다.
+  // 0.273 예외 한 곳: src/products.js의 syncProductAddress는 제품 상세를 열 때 주소의 "파일 이름"만 product-<id>.html로 바꾼다.
+  // 폴더(location.pathname에서 파일 이름을 뺀 부분)는 그대로이므로 src/·data/·output/ 같은 상대 경로가 깨지지 않는다. 아래에서 그 조건을 따로 확인한다.
+  const productAddressCall=/^window\.history\.state,'',`\$\{wanted\}\$\{location\.search\}\$\{location\.hash\}`$/;
   for(const file of runtimeScripts){
     const calls=[...read(file).matchAll(/(pushState|replaceState)\(([^)]*)\)/g)];
-    for(const call of calls)assert.match(call[2],/,'',location\.href$/,`${file} must keep the document URL (${call[0]})`);
+    for(const call of calls){
+      if(file==='src/products.js'&&productAddressCall.test(call[2]))continue;
+      assert.match(call[2],/,'',location\.href$/,`${file} must keep the document URL (${call[0]})`);
+    }
   }
+  const products=read('src/products.js');
+  assert.equal([...products.matchAll(/(pushState|replaceState)\(/g)].length,1,'src/products.js에는 주소를 바꾸는 호출이 syncProductAddress 한 곳뿐이어야 함');
+  assert.match(products,/const dir=location\.pathname\.replace\(\/\[\^\/\]\*\$\/,''\);\s*const wanted=productId\?`\$\{dir\}product-\$\{productId\}\.html`:dir;/,'바뀌는 주소는 항상 같은 폴더(dir)의 파일 이름이어야 함');
   // 0.142 AI 검색은 ?ai=beta·#ai-token=을 지울 때 경로(location.pathname)는 그대로 둔다(상대 경로 자산이 깨지지 않게).
   for(const call of read('src/ai-search.js').matchAll(/replaceState\(([^;]*?)\);/g))assert.match(call[1],/^null,'',location\.pathname\+/,call[0]);
   assert.doesNotMatch(read('src/ai-search.js'),/pushState/);
@@ -924,11 +933,50 @@ test('0.272: 첫 화면(index.html)에도 기본 링크 미리보기와 이미�
   assert.deepEqual(jpegSize('dist/output/design/assets/share/site.jpg'),{width:1200,height:630});
 });
 
-test('0.272: 제품 상세·시리즈 상세 머리에 "링크 공유" 버튼이 있고 공유 주소(share/<id>/)를 복사한다',()=>{
+test('0.272: 제품 상세·시리즈 상세 머리에 "링크 공유" 버튼이 있고 공유 주소(0.273부터 product-<id>.html)를 복사한다',()=>{
   const source=read('src/products.js');
   assert.match(source,/data-share-link="\$\{esc\(item\.id\)\}"/,'링크 공유 버튼');
   assert.equal((source.match(/share:shareButton\(item\)/g)||[]).length,2,'제품 상세와 시리즈 상세 두 곳');
-  assert.match(source,/new URL\(`share\/\$\{id\}\/`,document\.baseURI\)/,'공유 주소는 share/<id>/');
+  assert.match(source,/new URL\(`product-\$\{id\}\.html`,document\.baseURI\)/,'공유 주소는 product-<id>.html');
   assert.match(source,/function shareProductLink\(/);
   assert.match(source,/navigator\.share/,'휴대폰은 기기 공유 창을 연다');
+});
+
+test('0.273: 제품마다 product-<id>.html(구성기·제품정보 앱 전체 + 그 제품의 미리보기 정보)이 있어 주소창 주소를 붙여도 제품 미리보기가 나온다',()=>{
+  execFileSync(process.execPath,['scripts/package-site.cjs'],{stdio:'ignore'});
+  const site='https://seoulav.github.io/rtcom-configurator/';
+  const index=JSON.parse(read('data/products/index.json'));
+  const template=read('dist/index.html');
+  const bodyOf=html=>html.slice(html.indexOf('</head>'));
+  for(const item of index.products){
+    const html=read(`dist/product-${item.id}.html`);
+    const meta=key=>{const found=html.match(new RegExp(`<meta (?:property|name)="${key}" content="([^"]*)"`));assert.ok(found,`${item.id} ${key} 없음`);return unescapeHtml(found[1])};
+    assert.equal((html.match(/<title>/g)||[]).length,1,`${item.id} title은 하나`);
+    assert.equal((html.match(/property="og:title"/g)||[]).length,1,`${item.id} og:title은 하나(첫 화면 태그가 남으면 안 됨)`);
+    assert.equal(html.match(/<title>([^<]*)<\/title>/)[1],`${item.productName} | RTCOM 제품정보`.replace(/&/g,'&amp;'));
+    assert.equal(meta('og:title'),`${item.productName} | RTCOM 제품정보`);
+    assert.equal(meta('og:url'),`${site}product-${item.id}.html`,`${item.id} og:url은 이 페이지 주소`);
+    assert.equal(meta('og:image'),`${site}output/design/assets/share/${item.id}.jpg`);
+    assert.ok(meta('og:description').length>=10);
+    // 앱은 그대로: 본문(스크립트·화면 뼈대)이 첫 화면과 같고, # 없이 열면 제품 상세가 열리도록 해시를 붙이는 한 줄만 head에 더해진다.
+    assert.equal(bodyOf(html),bodyOf(template),`${item.id} 본문이 index.html과 같아야 함`);
+    assert.ok(html.includes(`if(!location.hash)history.replaceState(null,"",location.pathname+location.search+"#products/${item.id}")`));
+    // 같은 폴더(dist 바로 아래)에 있어야 src/·data/ 같은 상대 경로가 그대로 풀린다.
+    assert.ok(fs.existsSync('dist/src/app.js')&&fs.existsSync('dist/src/products.js')&&fs.existsSync(`dist/product-${item.id}.html`));
+  }
+  // 첫 화면 index.html은 사이트 기본 미리보기를 유지한다.
+  assert.match(template,/property="og:title" content="RTCOM Configurator \| 알티컴 제품정보"/);
+  // 요청한 제품: 주소창 주소를 붙여도 HD-18U(108U)로 보여야 한다.
+  assert.match(read('dist/product-hd-108u.html'),/<meta property="og:title" content="HD-18U\(108U\) \| RTCOM 제품정보">/);
+});
+
+test('0.273: 제품 상세를 열면 주소창을 product-<id>.html로 맞추고 다른 화면이면 첫 화면 주소로 되돌리며, index.html 모양이 바뀌면 빌드가 멈춘다',()=>{
+  const source=read('src/products.js');
+  assert.match(source,/function syncProductAddress\(productId\)/);
+  assert.match(source,/history\.replaceState\(window\.history\.state,'',`\$\{wanted\}\$\{location\.search\}\$\{location\.hash\}`\)/,'# 뒤와 기존 기록 상태를 그대로 둔다');
+  assert.match(source,/if\(!state\.products\|\|!state\.id\)syncProductAddress\(null\)/,'제품 상세가 아니면 첫 화면 주소로');
+  assert.match(source,/if\(route\(\)\.id!==state\.id\)return;\n\s*syncProductAddress\(state\.id\)/,'제품 정보를 불러온 뒤(유효한 id일 때만) 제품 주소로');
+  assert.match(source,/window\.addEventListener\('popstate',\(\)=>setTimeout\(\(\)=>\{if\(location\.hash!==lastShownHash\)show\(route\(\)\)\},0\)\)/,'파일 이름까지 달라지는 뒤로·앞으로 가기는 popstate로 화면을 맞춘다(hashchange가 오지 않음)');
+  const {productPageHtml}=require('../scripts/build-share-pages.cjs');
+  assert.throws(()=>productPageHtml('<html><head></head><body></body></html>',{id:'x',productName:'X',description:'설명 설명 설명 설명'}),/head 형식/);
 });

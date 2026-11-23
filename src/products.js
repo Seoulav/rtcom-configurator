@@ -38,8 +38,9 @@
     }
     const photoZoomButton=item=>zoomPhotos(item).length?'<button type="button" class="rt-pg-btn" data-photo-zoom="" title="제품 사진을 크게 보고 돋보기로 확인합니다">🔍 사진 확대</button>':'';
     // 0.272 링크 공유: 사이트 주소의 # 뒤(#products/…)는 링크 미리보기 수집기에 전달되지 않아 미리보기에 제품이 나오지 않는다.
-    // 그래서 제품 이름·설명·사진이 미리보기로 나오는 공유 주소(share/<id>/, scripts/build-share-pages.cjs)를 복사하게 한다.
-    const shareLinkFor=id=>new URL(`share/${id}/`,document.baseURI).href;
+    // 그래서 제품 이름·설명·사진이 미리보기로 나오는 공유 주소(product-<id>.html, scripts/build-share-pages.cjs)를 복사하게 한다.
+    // 0.273: 제품 상세를 열면 주소창도 이 주소(product-<id>.html#products/<id>)로 바뀌어, 주소창 주소를 그대로 붙여도 그 제품 미리보기가 나온다(syncProductAddress).
+    const shareLinkFor=id=>new URL(`product-${id}.html`,document.baseURI).href;
     const shareButton=item=>`<button type="button" class="rt-pg-btn" data-share-link="${esc(item.id)}" title="링크 미리보기에 제품 이름과 사진이 나오는 공유 주소를 복사합니다">🔗 링크 공유</button>`;
     let index=null,filter='all',query='';
     const details=new Map();
@@ -1456,7 +1457,22 @@
     }
     window.addEventListener('resize',()=>initDiagramScroll(body));
     let currentItem=null; // 0.260 사진 확대 팝업이 지금 보는 제품의 사진을 쓴다.
+    // 0.273 주소창 맞춤: 제품 상세를 열면 주소의 파일 이름을 product-<id>.html로, 그 밖의 화면이면 첫 화면 주소(폴더)로 되돌린다.
+    // product-<id>.html은 index.html과 같은 폴더에 있는 전체 앱 페이지라 상대 경로(src/·data/·output/)가 그대로 풀리고, # 뒤(화면 이동)는 그대로 둔다.
+    // 카카오톡 같은 미리보기 수집기는 # 앞의 주소만 읽으므로, 이렇게 해야 주소창 주소를 붙여도 제품 이름·사진이 미리보기로 나온다.
+    // 주소를 바꾸지 못하는 환경(주소 변경이 막힌 인앱 브라우저 등)에서는 조용히 넘어가며, 이때는 "링크 공유" 버튼의 주소를 쓰면 된다.
+    function syncProductAddress(productId){
+      try{
+        const dir=location.pathname.replace(/[^/]*$/,'');
+        const wanted=productId?`${dir}product-${productId}.html`:dir;
+        if(location.pathname!==wanted)window.history.replaceState(window.history.state,'',`${wanted}${location.search}${location.hash}`);
+      }catch(error){/* 주소를 바꾸지 못해도 화면은 그대로 동작한다. */}
+    }
+    let lastShownHash=null; // 0.273 마지막으로 화면을 그린 # 값. popstate가 hashchange와 겹쳐 같은 화면을 두 번 그리지 않게 한다.
     function show(state){
+      lastShownHash=location.hash;
+      // 제품 상세가 아닌 화면(구성기·제품 목록)이면 바로 첫 화면 주소로 되돌린다. 제품 상세는 제품 정보를 불러온 뒤(유효한 id일 때만) 맞춘다.
+      if(!state.products||!state.id)syncProductAddress(null);
       view.hidden=!state.products;configurator.hidden=state.products;
       document.documentElement.classList.toggle('rt-print-products',state.products); // 0.147: 제품정보 화면에서 인쇄/PDF를 누르면 구성기 검토 시트가 아니라 지금 보는 제품 화면을 인쇄한다(src/styles.css 끝의 print 규칙).
       for(const tab of tabs){const active=(tab.dataset.viewTab==='products')===state.products;tab.setAttribute('aria-current',active?'page':'false')}
@@ -1470,6 +1486,7 @@
         }
       }).then(()=>state.id?loadDetail(state.id).then(item=>{
         if(route().id!==state.id)return;
+        syncProductAddress(state.id);
         currentItem=item;
         body.innerHTML=`<div class="rt-pg-orbs"></div><div class="rt-pg-wrap">${detailView(item)}</div>`;
         body.querySelector('#rt-pg-title')?.setAttribute('tabindex','-1');
@@ -1991,5 +2008,8 @@
       event.preventDefault();event.stopImmediatePropagation();location.hash='#matrix-configurator';
     },true);
     window.addEventListener('hashchange',()=>show(route()));
+    // 0.273 뒤로·앞으로 가기로 주소의 파일 이름까지 달라지면(product-<id>.html ↔ 첫 화면) 브라우저는 hashchange 없이 popstate만 보낸다.
+    // 그때도 화면을 맞춘다. hashchange가 함께 오면 그쪽이 먼저 화면을 그리므로(같은 작업 안에서 이어서 발생) 한 틱 뒤에 이미 그린 화면이면 건너뛴다.
+    window.addEventListener('popstate',()=>setTimeout(()=>{if(location.hash!==lastShownHash)show(route())},0));
     show(route());
   })();
