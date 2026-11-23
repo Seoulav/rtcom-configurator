@@ -1665,7 +1665,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       await sharePage.click('[data-share-link="hd-108u"]');
       await sharePage.waitForFunction(()=>document.querySelector('[data-share-link="hd-108u"]').textContent.includes('복사했습니다'));
       const copied=await sharePage.evaluate(()=>navigator.clipboard.readText());
-      check('링크 공유 버튼이 share/hd-108u/ 주소를 복사한다(# 주소가 아님)',copied===`${origin}${BASE}share/hd-108u/`,copied);
+      check('링크 공유 버튼이 product-hd-108u.html 주소를 복사한다(# 주소가 아님)',copied===`${origin}${BASE}product-hd-108u.html`,copied);
       await sharePage.waitForFunction(()=>document.querySelector('[data-share-link="hd-108u"]').textContent.includes('링크 공유'),null,{timeout:5000});
       check('복사 안내 글이 잠시 뒤 원래 글자로 돌아온다',true);
       // 시리즈 상세(XDM)에도 같은 버튼이 있다.
@@ -1681,6 +1681,53 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       await sharePage.waitForFunction(()=>location.hash==='#products/hd-108u'&&document.querySelector('#rt-pg-title'));
       check('공유 주소로 들어오면 HD-18U(108U) 제품 상세로 이동한다',(await sharePage.$eval('#rt-pg-title',el=>el.textContent)).includes('HD-18U(108U)'));
       await shareCtx.close();
+    }
+    // 0.273 주소창 주소: 제품 상세를 열면 주소가 product-<id>.html#products/<id>로 바뀌어, 그 주소를 붙여도 제품 미리보기가 나온다.
+    {
+      const ctx=await browser.newContext({viewport:{width:1280,height:900}});
+      const pg=await ctx.newPage();const failedAddr=[],errorsAddr=[];
+      pg.on('response',response=>{if(response.status()>=400)failedAddr.push(`${response.status()} ${response.url().replace(origin,'')}`)});
+      pg.on('pageerror',error=>errorsAddr.push(error.message));
+      const where=()=>pg.evaluate(()=>({path:location.pathname,hash:location.hash,title:document.querySelector('#rt-pg-title')?.textContent||''}));
+      const brokenAddr=()=>pg.$$eval('img',images=>images.filter(image=>image.complete&&image.naturalWidth===0&&image.loading!=='lazy').map(image=>image.getAttribute('src')));
+      await pg.goto(`${home}#products/hd-108u`,{waitUntil:'networkidle'});
+      await pg.waitForFunction(()=>location.pathname.endsWith('/product-hd-108u.html')&&document.querySelector('#rt-pg-title'));
+      let now=await where();
+      check('제품 상세를 열면 주소창이 product-hd-108u.html로 바뀌고 # 뒤는 그대로다',now.path===`${BASE}product-hd-108u.html`&&now.hash==='#products/hd-108u'&&now.title.includes('HD-18U(108U)'),JSON.stringify(now));
+      await pg.click('a.rt-pg-btn[href="#products"]');
+      await pg.waitForFunction(base=>location.pathname===base&&location.hash==='#products'&&document.querySelector('.rt-pg-gridcard'),BASE);
+      check('제품 목록으로 가면 주소창이 첫 화면 주소로 돌아온다',(await where()).path===BASE);
+      await pg.click('a.rt-pg-gridcard[href="#products/hd-13u"]');
+      await pg.waitForFunction(()=>location.pathname.endsWith('/product-hd-13u.html')&&document.querySelector('#rt-pg-title')?.textContent.includes('HD-13U'));
+      await pg.waitForLoadState('networkidle');
+      check('목록에서 다른 제품(HD-13U)을 열면 주소가 product-hd-13u.html로 바뀌고 사진이 깨지지 않는다',(await brokenAddr()).length===0,JSON.stringify(await brokenAddr()));
+      await pg.goBack();
+      await pg.waitForFunction(base=>location.pathname===base&&location.hash==='#products',BASE);
+      check('뒤로 가기: 제품 목록과 첫 화면 주소로 돌아온다',(await where()).path===BASE);
+      await pg.goBack();
+      await pg.waitForFunction(()=>location.pathname.endsWith('/product-hd-108u.html')&&document.querySelector('#rt-pg-title')?.textContent.includes('HD-18U(108U)'));
+      check('한 번 더 뒤로 가기: HD-18U(108U) 상세와 product-hd-108u.html 주소로 돌아온다',(await where()).path===`${BASE}product-hd-108u.html`);
+      await pg.goForward();await pg.goForward();
+      await pg.waitForFunction(()=>location.pathname.endsWith('/product-hd-13u.html')&&document.querySelector('#rt-pg-title')?.textContent.includes('HD-13U'));
+      check('앞으로 가기: HD-13U 상세와 product-hd-13u.html 주소로 다시 간다',(await where()).hash==='#products/hd-13u');
+      await pg.reload({waitUntil:'networkidle'});
+      await pg.waitForFunction(()=>document.querySelector('#rt-pg-title')?.textContent.includes('HD-13U'));
+      now=await where();
+      check('제품 주소에서 새로고침해도 같은 제품 상세가 열린다(전체 앱 페이지)',now.path===`${BASE}product-hd-13u.html`&&now.title.includes('HD-13U')&&(await brokenAddr()).length===0,JSON.stringify(now));
+      await pg.click('[data-view-tab="configurator"]');
+      await pg.waitForFunction(base=>location.pathname===base&&location.hash==='#matrix-configurator',BASE);
+      check('매트릭스 구성기 탭으로 가면 주소창이 첫 화면 주소로 돌아오고 구성기가 보인다',await pg.locator('[data-action="next"], .rt-configurator, #rtcom-design').first().isVisible());
+      // # 없이 제품 파일 주소로 직접 들어와도 그 제품 상세가 열린다(링크 공유 버튼이 복사하는 주소).
+      await pg.goto(`${origin}${BASE}product-hd-210u.html`,{waitUntil:'networkidle'});
+      await pg.waitForFunction(()=>location.hash==='#products/hd-210u'&&document.querySelector('#rt-pg-title')?.textContent.includes('HD-210U'));
+      now=await where();
+      check('# 없는 제품 파일 주소(product-hd-210u.html)로 들어오면 HD-210U 상세가 열린다',now.path===`${BASE}product-hd-210u.html`&&now.title.includes('HD-210U')&&(await brokenAddr()).length===0,JSON.stringify(now));
+      // 옛 별칭 주소는 정식 id의 제품 주소로 이어진다.
+      await pg.goto(`${home}#products/hd-14u`,{waitUntil:'networkidle'});
+      await pg.waitForFunction(()=>location.pathname.endsWith('/product-hd-104u.html')&&location.hash==='#products/hd-104u');
+      check('옛 별칭 주소(#products/hd-14u)는 product-hd-104u.html 주소의 HD-14U(104U) 상세로 이어진다',(await where()).title.includes('HD-14U(104U)'));
+      check('주소 맞춤 중 실패한 요청과 스크립트 오류가 없다',failedAddr.length===0&&errorsAddr.length===0,JSON.stringify({failedAddr,errorsAddr}));
+      await ctx.close();
     }
     // 카드 자체가 화면 밖으로 밀려나면 페이지 가로 스크롤 없이 오른쪽이 잘린다(0.33 검수에서 발견: 휴대폰 규칙이 PC 격자의 align-items:start를 물려받음).
     // 넓은 그림은 카드 안(.rt-pg-svg-wrap 등)에서만 좌우로 밀려야 한다. 6-B에서 새로 생긴 케이블(hoc-ux)·QMS 화면 구성 모드(qms-44ux) 템플릿과
