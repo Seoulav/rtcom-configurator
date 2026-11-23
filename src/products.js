@@ -37,6 +37,10 @@
       });
     }
     const photoZoomButton=item=>zoomPhotos(item).length?'<button type="button" class="rt-pg-btn" data-photo-zoom="" title="제품 사진을 크게 보고 돋보기로 확인합니다">🔍 사진 확대</button>':'';
+    // 0.272 링크 공유: 사이트 주소의 # 뒤(#products/…)는 링크 미리보기 수집기에 전달되지 않아 미리보기에 제품이 나오지 않는다.
+    // 그래서 제품 이름·설명·사진이 미리보기로 나오는 공유 주소(share/<id>/, scripts/build-share-pages.cjs)를 복사하게 한다.
+    const shareLinkFor=id=>new URL(`share/${id}/`,document.baseURI).href;
+    const shareButton=item=>`<button type="button" class="rt-pg-btn" data-share-link="${esc(item.id)}" title="링크 미리보기에 제품 이름과 사진이 나오는 공유 주소를 복사합니다">🔗 링크 공유</button>`;
     let index=null,filter='all',query='';
     const details=new Map();
     const load=url=>fetch(url).then(response=>{if(!response.ok)throw new Error(`${response.status} ${url}`);return response.json()});
@@ -879,9 +883,9 @@
       if(links.length===1)return `<span class="rt-pg-doc" data-doc="official">${a(links[0],'rt-pg-doc-open rt-pg-official-one',word)}</span>`;
       return `<span class="rt-pg-doc" data-doc="official">${a(links[0],'rt-pg-doc-open',`${word} · ${esc(links[0].label)}`)}${links.slice(1).map(link=>a(link,'rt-pg-doc-save rt-pg-official-more',esc(link.label))).join('')}</span>`;
     }
-    function headerBlock({icon,title,subtitle,back,diagram,cta,docs='',official='',photos='',print=true}){
+    function headerBlock({icon,title,subtitle,back,diagram,cta,docs='',official='',photos='',share='',print=true}){
       return `<header class="rt-pg-top"><div class="rt-pg-brandmark"><div class="rt-pg-swatch">${icon}</div><div class="rt-pg-title"><h1 id="rt-pg-title">${title}</h1><p class="rt-pg-sub">${subtitle}</p></div></div>
-      <div class="rt-pg-toolbar">${back?`<a class="rt-pg-btn" href="#products">← 제품 목록</a>`:''}${photos}${docs}${diagram?`<button type="button" class="rt-pg-btn" data-open-diagram>제조사 원본 다이어그램</button>`:''}${official}${print?`<button type="button" class="rt-pg-btn" data-print>인쇄 / PDF</button>`:''}${cta||''}</div></header>`;
+      <div class="rt-pg-toolbar">${back?`<a class="rt-pg-btn" href="#products">← 제품 목록</a>`:''}${photos}${docs}${diagram?`<button type="button" class="rt-pg-btn" data-open-diagram>제조사 원본 다이어그램</button>`:''}${official}${share}${print?`<button type="button" class="rt-pg-btn" data-print>인쇄 / PDF</button>`:''}${cta||''}</div></header>`;
     }
     function listView(){
       const items=index.products.filter(matches);
@@ -1324,7 +1328,7 @@
       belowCards+=controlExampleSection(item);
       // 휴대폰(1000px 이하)에서는 .rt-pg-col이 사라지고 rt-pg-col-mobile-N 순서로만 쌓이므로, sideCard도 순서 클래스가 있어야 05 다음(01~05, 06, 07 기록)으로 나온다(없으면 order:0이라 맨 앞으로 감).
       if(sideCard)sideCard=sideCard.replace('class="rt-pg-card', 'class="rt-pg-card rt-pg-col-mobile-6');
-      return `${headerBlock({icon:PRODUCT_ICON[item.id]||GROUP_ICON[item.group],title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,photos:photoZoomButton(item),docs:docButtons(item),official:officialButton(item),diagram:!!photo})}
+      return `${headerBlock({icon:PRODUCT_ICON[item.id]||GROUP_ICON[item.group],title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,photos:photoZoomButton(item),docs:docButtons(item),official:officialButton(item),share:shareButton(item),diagram:!!photo})}
       <div class="rt-pg-cols">
         <div class="rt-pg-col">
           <section class="rt-pg-card rt-pg-col-mobile-1"><h2><span class="rt-pg-idx">01</span>한눈에 보기</h2>
@@ -1368,7 +1372,7 @@
       const legendKeys=[...new Set([...inCards,...outCards].map(card=>card[3]))];
       const featureCards=outCards.filter(card=>globalThis.RtCardFeature?.cards?.[card[0]]); // 0.205 02 신호 구성에서 눌러 기능 팝업을 여는 카드(WOS100·HOS100)
       const arch=seriesSignalSvg(item.name||family,inCards,outCards,SIG_COLOR);
-      return `${headerBlock({icon:GROUP_ICON.series,title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,photos:photoZoomButton(item),docs:docButtons(item),official:officialButton(item),cta:`${family==='XDM'?'<button type="button" class="rt-pg-btn" data-scroll-to="rt-layout-sim">화면 연출 시뮬레이터</button>':''}${family==='VDM'?'<button type="button" class="rt-pg-btn" data-scroll-to="rt-quad-sim">분할 화면 시뮬레이터</button>':''}${item.controlExample?'<button type="button" class="rt-pg-btn" data-scroll-to="rt-control">AMX 커맨드 예시</button>':''}<a class="rt-pg-btn rt-pg-primary" href="#matrix-configurator" data-configure-family="${esc(family)}">${esc(family)} 구성기에서 구성하기 →</a>`})}
+      return `${headerBlock({icon:GROUP_ICON.series,title:noBreak(item.productName),subtitle:`${esc(subtitleFor(item))} · RTCOM`,back:true,photos:photoZoomButton(item),docs:docButtons(item),official:officialButton(item),share:shareButton(item),cta:`${family==='XDM'?'<button type="button" class="rt-pg-btn" data-scroll-to="rt-layout-sim">화면 연출 시뮬레이터</button>':''}${family==='VDM'?'<button type="button" class="rt-pg-btn" data-scroll-to="rt-quad-sim">분할 화면 시뮬레이터</button>':''}${item.controlExample?'<button type="button" class="rt-pg-btn" data-scroll-to="rt-control">AMX 커맨드 예시</button>':''}<a class="rt-pg-btn rt-pg-primary" href="#matrix-configurator" data-configure-family="${esc(family)}">${esc(family)} 구성기에서 구성하기 →</a>`})}
       <div class="rt-pg-cols">
         <div class="rt-pg-col">
           <section class="rt-pg-card rt-pg-col-mobile-1"><h2><span class="rt-pg-idx">01</span>한눈에 보기</h2><p class="rt-pg-lead">${leadFor(item)}</p>${factsList(facts)}</section>
@@ -1494,6 +1498,23 @@
       });
     }
     // 0.143 제품정보 04 카드 라인업 카드 상세 팝업: 사양은 src/card-specs.js(RtCardSpecs), 용도 설명은 src/app.js(RtCardTips)를 읽는다. 연동 전송기 표기는 넣지 않는다.
+    // 0.272 "링크 공유" 버튼: 휴대폰(터치 화면)은 기기 공유 창(카카오톡 등)을 열고, PC는 공유 주소를 복사한다.
+    function shareProductLink(button){
+      const url=shareLinkFor(button.dataset.shareLink),label=button.textContent;
+      const title=body.querySelector('#rt-pg-title')?.textContent||button.dataset.shareLink;
+      const flash=text=>{button.textContent=text;setTimeout(()=>{button.textContent=label},2400)};
+      if(navigator.share&&window.matchMedia?.('(pointer: coarse)').matches){navigator.share({title,url}).catch(()=>{});return}
+      const done=()=>flash('✓ 링크를 복사했습니다');
+      // 클립보드 쓰기가 막힌 브라우저(인앱 브라우저 등)는 임시 입력칸으로 복사를 시도하고, 그것도 안 되면 주소를 보여 주는 창을 연다.
+      const fallback=()=>{
+        const field=document.createElement('textarea');field.value=url;field.setAttribute('readonly','');field.style.cssText='position:fixed;left:-9999px;top:0';
+        document.body.appendChild(field);field.select();
+        let copied=false;try{copied=document.execCommand('copy')}catch(error){copied=false}
+        field.remove();
+        if(copied)done();else window.prompt('아래 주소를 복사해서 공유하세요.',url);
+      };
+      if(navigator.clipboard?.writeText)navigator.clipboard.writeText(url).then(done,fallback);else fallback();
+    }
     function openProductCardInfo(id,dir,family){
       const specsAll=globalThis.RtCardSpecs||{},tips=globalThis.RtCardTips||{},info=specsAll[id]||{};
       const cat=(globalThis.RtCatalog||{})[family]||{},all=[...(cat.input||[]),...(cat.output||[])],c=all.find(item=>item[0]===id)||[id,'',''];
@@ -1563,6 +1584,8 @@
       if(filterBtn){filter=filterBtn.dataset.productFilter;body.querySelector('.rt-pg-wrap').innerHTML=listView();body.querySelector(`[data-product-filter="${filter}"]`)?.focus();return}
       const configure=event.target.closest('[data-configure-family]');
       if(configure){event.preventDefault();location.hash='#matrix-configurator';root.dispatchEvent(new CustomEvent('rt-configure-family',{detail:configure.dataset.configureFamily}));return}
+      const shareBtn=event.target.closest('[data-share-link]');
+      if(shareBtn){shareProductLink(shareBtn);return}
       const printBtn=event.target.closest('[data-print]');
       if(printBtn){window.print();return}
       const scrollBtn=event.target.closest('[data-scroll-to]');

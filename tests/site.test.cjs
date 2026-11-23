@@ -872,3 +872,63 @@ test('0.271: HD-108U·HD-104U 제품명은 새 실크 이름이 앞, 카탈로�
     assert.equal(item.productName,name,`${id} 색인 제품명`);
   }
 });
+
+// JPEG 파일의 가로·세로(SOF 표식)를 읽는다. 공유 미리보기 이미지가 1200×630인지 확인하는 데 쓴다.
+function jpegSize(file){
+  const buffer=fs.readFileSync(file);
+  assert.equal(buffer[0],0xff);assert.equal(buffer[1],0xd8,`${file}은 JPEG가 아님`);
+  let offset=2;
+  while(offset<buffer.length){
+    if(buffer[offset]!==0xff){offset++;continue}
+    const marker=buffer[offset+1];
+    if(marker>=0xc0&&marker<=0xcf&&![0xc4,0xc8,0xcc].includes(marker))return {height:buffer.readUInt16BE(offset+5),width:buffer.readUInt16BE(offset+7)};
+    offset+=2+buffer.readUInt16BE(offset+2);
+  }
+  throw new Error(`${file}에서 JPEG 크기를 찾지 못함`);
+}
+const unescapeHtml=text=>text.replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&');
+
+test('0.272: 제품마다 공유 주소 페이지(share/<id>/)가 있고 미리보기용 제품 이름·설명·1200×630 사진을 절대 주소로 담는다',()=>{
+  execFileSync(process.execPath,['scripts/package-site.cjs'],{stdio:'ignore'});
+  const site='https://seoulav.github.io/rtcom-configurator/';
+  const index=JSON.parse(read('data/products/index.json'));
+  assert.equal(index.products.length,33);
+  for(const item of index.products){
+    const html=read(`dist/share/${item.id}/index.html`);
+    const meta=key=>{const found=html.match(new RegExp(`<meta (?:property|name)="${key}" content="([^"]*)"`));assert.ok(found,`${item.id} ${key} 없음`);return unescapeHtml(found[1])};
+    assert.equal(meta('og:title'),`${item.productName} | RTCOM 제품정보`,`${item.id} 제목에 제품 이름이 들어가야 함`);
+    const description=meta('og:description');
+    assert.ok(description.length>=10&&!description.includes('**'),`${item.id} 설명은 표시 기호 없는 문장이어야 함`);
+    assert.equal(meta('og:url'),`${site}share/${item.id}/`);
+    assert.equal(meta('og:image'),`${site}output/design/assets/share/${item.id}.jpg`,`${item.id} 사진은 절대 주소여야 함`);
+    assert.equal(meta('og:image:width'),'1200');assert.equal(meta('og:image:height'),'630');
+    assert.equal(meta('twitter:card'),'summary_large_image');assert.equal(meta('twitter:image'),meta('og:image'));
+    // 미리보기 수집기가 자바스크립트를 실행하지 않아도 이 페이지의 정보를 읽도록, 이동은 자바스크립트로만 한다(meta refresh는 수집기가 따라가 첫 화면 정보를 읽을 수 있다).
+    assert.ok(html.includes(`location.replace("../../#products/${item.id}")`),`${item.id} 제품 상세로 이동`);
+    assert.ok(!/http-equiv="refresh"/i.test(html),`${item.id}에 meta refresh를 쓰지 않음`);
+    const imageFile=`dist/output/design/assets/share/${item.id}.jpg`;
+    assert.ok(fs.existsSync(imageFile),`${item.id} 미리보기 이미지가 배포본에 없음`);
+    assert.deepEqual(jpegSize(imageFile),{width:1200,height:630},`${item.id} 미리보기 이미지 크기`);
+    assert.ok(fs.statSync(imageFile).size<500*1024,`${item.id} 미리보기 이미지가 너무 큼(카카오톡 등은 큰 이미지를 건너뜀)`);
+  }
+  // 요청한 제품: 링크를 보내면 HD-18U(108U)로 보여야 한다.
+  assert.match(read('dist/share/hd-108u/index.html'),/<meta property="og:title" content="HD-18U\(108U\) \| RTCOM 제품정보">/);
+});
+
+test('0.272: 첫 화면(index.html)에도 기본 링크 미리보기와 이미지가 있다',()=>{
+  execFileSync(process.execPath,['scripts/package-site.cjs'],{stdio:'ignore'});
+  const html=read('dist/index.html');
+  const site='https://seoulav.github.io/rtcom-configurator/';
+  for(const key of ['og:title','og:description','og:image','og:url','twitter:card'])assert.ok(html.includes(`"${key}"`),`첫 화면에 ${key} 없음`);
+  assert.ok(html.includes(`content="${site}output/design/assets/share/site.jpg"`));
+  assert.deepEqual(jpegSize('dist/output/design/assets/share/site.jpg'),{width:1200,height:630});
+});
+
+test('0.272: 제품 상세·시리즈 상세 머리에 "링크 공유" 버튼이 있고 공유 주소(share/<id>/)를 복사한다',()=>{
+  const source=read('src/products.js');
+  assert.match(source,/data-share-link="\$\{esc\(item\.id\)\}"/,'링크 공유 버튼');
+  assert.equal((source.match(/share:shareButton\(item\)/g)||[]).length,2,'제품 상세와 시리즈 상세 두 곳');
+  assert.match(source,/new URL\(`share\/\$\{id\}\/`,document\.baseURI\)/,'공유 주소는 share/<id>/');
+  assert.match(source,/function shareProductLink\(/);
+  assert.match(source,/navigator\.share/,'휴대폰은 기기 공유 창을 연다');
+});

@@ -1655,6 +1655,33 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await mobile.goto(`${home}#products/hd-14u`,{waitUntil:'networkidle'});
     await mobile.waitForFunction(()=>location.hash==='#products/hd-104u'&&document.querySelector('#rt-pg-title'));
     check('옛 주소 #products/hd-14u가 HD-14U(104U) 상세로 이동',(await mobile.$eval('#rt-pg-title',el=>el.textContent)).includes('HD-14U(104U)'));
+    // 0.272 링크 공유: 주소의 # 뒤는 카카오톡 같은 미리보기에 전달되지 않으므로, 제품 이름·사진이 미리보기로 나오는 공유 주소(share/<id>/)를 복사한다.
+    {
+      const shareCtx=await browser.newContext({viewport:{width:1280,height:900},permissions:['clipboard-read','clipboard-write']});
+      const sharePage=await shareCtx.newPage();
+      await sharePage.goto(`${home}#products/hd-108u`,{waitUntil:'networkidle'});
+      await sharePage.waitForSelector('[data-share-link="hd-108u"]');
+      check('제품 상세에 "링크 공유" 버튼이 있다',(await sharePage.locator('[data-share-link="hd-108u"]').textContent()).includes('링크 공유'));
+      await sharePage.click('[data-share-link="hd-108u"]');
+      await sharePage.waitForFunction(()=>document.querySelector('[data-share-link="hd-108u"]').textContent.includes('복사했습니다'));
+      const copied=await sharePage.evaluate(()=>navigator.clipboard.readText());
+      check('링크 공유 버튼이 share/hd-108u/ 주소를 복사한다(# 주소가 아님)',copied===`${origin}${BASE}share/hd-108u/`,copied);
+      await sharePage.waitForFunction(()=>document.querySelector('[data-share-link="hd-108u"]').textContent.includes('링크 공유'),null,{timeout:5000});
+      check('복사 안내 글이 잠시 뒤 원래 글자로 돌아온다',true);
+      // 시리즈 상세(XDM)에도 같은 버튼이 있다.
+      await sharePage.goto(`${home}#products/xdm`,{waitUntil:'networkidle'});
+      await sharePage.waitForSelector('[data-share-link="xdm"]');
+      check('시리즈 상세(XDM)에도 "링크 공유" 버튼이 있다',await sharePage.locator('[data-share-link="xdm"]').count()===1);
+      // 공유 주소로 들어오면 제품 상세로 이동하고, 미리보기용 정보(제목·사진 주소)가 그 페이지에 들어 있다.
+      const shareHtml=await (await fetch(`${origin}${BASE}share/hd-108u/`)).text();
+      check('공유 주소 페이지에 제품 이름·사진 미리보기 정보가 있다',shareHtml.includes('og:title" content="HD-18U(108U) | RTCOM 제품정보"')&&shareHtml.includes('share/hd-108u.jpg'));
+      const image=await fetch(`${origin}${BASE}output/design/assets/share/hd-108u.jpg`);
+      check('공유 미리보기 이미지가 열린다(JPEG)',image.status===200&&(image.headers.get('content-type')||'').includes('image/jpeg'));
+      await sharePage.goto(`${origin}${BASE}share/hd-108u/`,{waitUntil:'networkidle'});
+      await sharePage.waitForFunction(()=>location.hash==='#products/hd-108u'&&document.querySelector('#rt-pg-title'));
+      check('공유 주소로 들어오면 HD-18U(108U) 제품 상세로 이동한다',(await sharePage.$eval('#rt-pg-title',el=>el.textContent)).includes('HD-18U(108U)'));
+      await shareCtx.close();
+    }
     // 카드 자체가 화면 밖으로 밀려나면 페이지 가로 스크롤 없이 오른쪽이 잘린다(0.33 검수에서 발견: 휴대폰 규칙이 PC 격자의 align-items:start를 물려받음).
     // 넓은 그림은 카드 안(.rt-pg-svg-wrap 등)에서만 좌우로 밀려야 한다. 6-B에서 새로 생긴 케이블(hoc-ux)·QMS 화면 구성 모드(qms-44ux) 템플릿과
     // EDID 로터리 스위치 카드(hd-13u)도 검사한다.

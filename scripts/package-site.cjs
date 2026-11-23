@@ -12,11 +12,13 @@ const extenderAssets=fs.readdirSync('output/design/assets/extenders').map(name=>
 // 0.19 공개 제품정보: 목록·상세 JSON과 제품 이미지. 비공개 AV Portal이 이 공개 파일을 읽는다.
 const productData=fs.readdirSync('data/products').filter(name=>name.endsWith('.json')).map(name=>`data/products/${name}`);
 const productAssets=fs.readdirSync('output/design/assets/products').map(name=>`output/design/assets/products/${name}`);
+// 0.272 공유 미리보기 이미지(제품마다 1200×630 JPEG + 첫 화면용 site.jpg). scripts/tools/make_share_cards.cjs로 만들어 저장소에 둔 파일을 복사한다.
+const shareAssets=fs.readdirSync('output/design/assets/share').map(name=>`output/design/assets/share/${name}`);
 // 제조사 문서 PDF(사용자 결정 2026-09-28): 폴더 전체가 아니라 data/products/*.json의 documents[].file에 등록된 PDF만 공개한다.
 // 폴더에 있어도 등록되지 않은 PDF와 docs/RTcom_catalogue_2026_46p.pdf(전체 카탈로그 원본)는 배포하지 않는다.
 // 0.97: 제품 상세 카탈로그 버튼은 제품별 발췌본(<id>-catalog.pdf)을 쓰므로, 제품 목록의 "전체 카탈로그" 버튼용 46쪽 공용 파일은 따로 넣는다.
 const productDocs=[...new Set(['rtcom-catalog-2026.pdf',...productData.flatMap(file=>(JSON.parse(fs.readFileSync(file,'utf8')).documents||[]).map(doc=>doc.file).filter(Boolean))])].map(name=>`output/design/assets/docs/${name}`);
-for(const file of ['index.html','src/ai-search.js','src/catalog.js','src/card-specs.js','src/core.js','src/app.js','src/layout-sim.js','src/quad-view.js','src/vdm-wall.js','src/control-example.js','src/products.js','src/styles.css','src/vendor/pdfjs/pdf.min.mjs','src/vendor/pdfjs/pdf.worker.min.mjs','src/vendor/pdfjs/LICENSE','fonts/PretendardVariable.woff2','fonts/OFL.txt','output/design/assets/xdm.jpg','output/design/assets/spx.jpg','output/design/assets/vdm.jpg',...cardAssets,...frameAssets,...extenderAssets,...productData,...productAssets,...productDocs,'docs/evidence/RTCOM_MATRIX_EVIDENCE_AND_GAPS.md']){
+for(const file of ['index.html','src/ai-search.js','src/catalog.js','src/card-specs.js','src/core.js','src/app.js','src/layout-sim.js','src/quad-view.js','src/vdm-wall.js','src/control-example.js','src/products.js','src/styles.css','src/vendor/pdfjs/pdf.min.mjs','src/vendor/pdfjs/pdf.worker.min.mjs','src/vendor/pdfjs/LICENSE','fonts/PretendardVariable.woff2','fonts/OFL.txt','output/design/assets/xdm.jpg','output/design/assets/spx.jpg','output/design/assets/vdm.jpg',...cardAssets,...frameAssets,...extenderAssets,...productData,...productAssets,...shareAssets,...productDocs,'docs/evidence/RTCOM_MATRIX_EVIDENCE_AND_GAPS.md']){
  const target=path.join(output,file);fs.mkdirSync(path.dirname(target),{recursive:true});fs.copyFileSync(file,target);
 }
 // 0.6의 포털 주소(/products, /tools/matrix-configurator)로 들어온 방문자를 구성기 첫 화면으로 보낸다.
@@ -28,6 +30,8 @@ for(const [route,base] of legacyRoutes){
 <body><p>매트릭스 구성기가 첫 화면으로 옮겨졌습니다. <a href="${base}">매트릭스 구성기로 이동</a></p></body></html>
 `);
 }
+// 0.272 제품 공유 주소(share/<id>/): 링크 미리보기에 제품 이름·설명·사진이 나오게 하고, 사람이 열면 제품 상세로 보낸다(scripts/build-share-pages.cjs).
+require('./build-share-pages.cjs').writeSharePages(output);
 // 사이트 안의 없는 주소(예전 링크, 뒤로가기로 돌아간 옛 경로)는 GitHub Pages가 404.html을 보여 준다. 구성기 첫 화면으로 보낸다.
 fs.writeFileSync(path.join(output,'404.html'),`<!doctype html>
 <html lang="ko"><head><meta charset="utf-8"><meta name="robots" content="noindex"><title>RTCOM 매트릭스 구성기로 이동</title><script>(function(){var base=['/rtcom-configurator/','/rtcom-av-design/'].find(function(item){return location.pathname.indexOf(item)===0})||'/';location.replace(base+location.hash)})()</script></head>
