@@ -173,6 +173,7 @@
     // 0.194 opts: label(그림 이름)·steps(펼치는 "그림 설명" 목록, 그림 대체 설명으로도 씀)·minWidth(휴대폰에서 글자가 너무 작아지지 않게 하는 최소 폭).
     // 범례 항목의 셋째 값이 'dash'이면 보조 경로(점선)로 그린다. 그림 칸은 키보드로 초점을 받아 좌우 방향키로 밀 수 있다.
     // 0.275 다크 모드 ③ 1차: Signal Flow 그림 svg에 rt-pg-flow-svg를 붙여, 다크에서 흰 판 대신 그림 색 바꿈표(scripts/tools/dark_tokens.cjs FLOW_DARK)를 적용한다.
+    // 0.277 다크 모드 ③ 3차: QMS MATRIX 교차점 그림·시리즈 02 신호 구성 그림·WOS100 레이어 구성도(src/app.js)에도 rt-pg-dark-svg를 붙인다.
     // 0.276 다크 모드 ③ 2차: 06 EDID 로터리·07 딥 스위치·오디오 설정 칸·08 오토 셀렉팅 그림 svg에는 rt-pg-dark-svg를 붙여 같은 바꿈표를 적용한다.
     const diagramWrap=(body,width,height,legendItems,opts={})=>{
       const desc=opts.steps?.length?opts.steps.join(' / '):'';
@@ -1088,7 +1089,7 @@
       route.forEach((inp,o)=>{const y1=iy(inp-1)+14,y2=iy(o)+3+mh/2;lines+=`<path d="M58 ${y1}C140 ${y1},190 ${y2},${mx} ${y2}" stroke="${col(inp)}" stroke-width="2.4" fill="none" opacity=".92"/>`});
       for(let i=0;i<N;i++){const y=iy(i);ins+=`<rect x="12" y="${y}" width="46" height="28" rx="4" fill="${col(i+1)}"/><rect x="15" y="${y+3}" width="40" height="18" rx="2" fill="#fff" fill-opacity=".25"/><text x="35" y="${y+14}" font-size="11" font-weight="800" fill="#fff" text-anchor="middle" dominant-baseline="central">IN ${i+1}</text>`}
       route.forEach((inp,o)=>{const x=mx,y=iy(o);outs+=`<rect x="${x}" y="${y}" width="${mw+6}" height="${mh+6}" rx="3" fill="#1f2532"/><rect class="rt-pg-cell" x="${x+3}" y="${y+3}" width="${mw}" height="${mh}" fill="${col(inp)}"/><path d="M${x+3} ${y+3+mh}V${y+3+mh*0.75}Q${x+3+mw*0.3} ${y+3+mh*0.55} ${x+3+mw*0.55} ${y+3+mh*0.72}T${x+3+mw} ${y+3+mh*0.66}V${y+3+mh}Z" fill="#fff" fill-opacity=".18"/><text x="${x+3+mw/2}" y="${y+3+mh/2}" font-size="${big?10:12}" font-weight="800" fill="#fff" text-anchor="middle" dominant-baseline="central">${inp}</text><text x="${x+mw+14}" y="${y+3+mh/2}" font-size="10" font-weight="800" fill="#6b7280" dominant-baseline="central">OUT ${o+1}</text>`});
-      return `<div class="rt-pg-layout-preview rt-pg-matrix-preview"><svg class="rt-pg-layout-matrix" viewBox="0 0 ${W} ${H}" role="img" aria-label="입력 ${N} → 출력 ${N} 크로스포인트 예시">${lines}${ins}${outs}</svg></div>`;
+      return `<div class="rt-pg-layout-preview rt-pg-matrix-preview"><svg class="rt-pg-layout-matrix rt-pg-dark-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="입력 ${N} → 출력 ${N} 크로스포인트 예시">${lines}${ins}${outs}</svg></div>`;
     }
     // 0.245(사용자 요청 2026-10-17 "QMS-44UX 쿼드 뷰 입력 번호 표시 … 진행해줘"): QMS-44UX 쿼드 뷰 도해의 칸 번호 안내 한 줄.
     // 매뉴얼 21쪽: QUAD 모드의 화면 구성은 출력 기준(1번 출력 좌측 상단·2번 우측 상단·3번 좌측 하단·4번 우측 하단)이고, 입력은 화면의 [QUAD IN: 1 2 3 4]가 기본이다.
@@ -1438,7 +1439,7 @@
         h+=`<path d="M${mx+mw} ${H/2+(y-H/2)*.6}C${x-24} ${H/2+(y-H/2)*.6} ${x-24} ${y} ${x} ${y}" fill="none" stroke="${col}" stroke-width="2"/>`+(feature?`<g class="rt-pg-sig-feature" data-card-feature="${feature.key}" role="button" tabindex="0" aria-label="${svgEsc(c[0])} ${svgEsc(feature.label)}"><title>${svgEsc(feature.label)}</title>${pill}<circle cx="${x+144}" cy="${y}" r="8.5" fill="${col}"/><path d="M${x+142} ${y-3.6}l3.6 3.6-3.6 3.6" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>`:pill);
         if(linked)h+=`<path d="M${x+140} ${y}H${x+156}" stroke="#8A8A8E" stroke-width="1.5" stroke-dasharray="3 3"/><rect x="${x+156}" y="${y-12}" width="92" height="24" rx="12" fill="none" stroke="#8A8A8E" stroke-dasharray="4 3"/><text x="${x+202}" y="${y+4}" text-anchor="middle" font-size="10.5" font-weight="600" fill="#3A3A3C">${svgEsc(linked.split(' · ')[0])}</text>`;
       });
-      return `<div class="rt-pg-svg-wrap"><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="신호 구성"><defs><linearGradient id="rt-pg-mf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0A84FF"/><stop offset=".55" stop-color="#5E5CE6"/><stop offset="1" stop-color="#BF5AF2"/></linearGradient></defs>${h}</svg></div>`;
+      return `<div class="rt-pg-svg-wrap"><svg class="rt-pg-dark-svg" viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="신호 구성"><defs><linearGradient id="rt-pg-mf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0A84FF"/><stop offset=".55" stop-color="#5E5CE6"/><stop offset="1" stop-color="#BF5AF2"/></linearGradient></defs>${h}</svg></div>`;
     }
 
     function detailView(item){
