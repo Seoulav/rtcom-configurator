@@ -1,5 +1,7 @@
 # AV 빌더 "rtcom 구성 받기" 작업 안내 (B안)
 
+> **0.269에서 rtcom 쪽 연동을 지웠습니다**(사용자 요청 2026-11-16 "AV System Builder연동도 전부 삭제해줘", `docs/implementation/REMOVE_AV_BUILDER_0.269.md`). 이 문서는 0.174 당시 기록으로만 남기며, AV 빌더 쪽 받기 코드는 더 이상 필요하지 않습니다.
+
 사용자 결정 2026-09-29: "포트명 기입이 끝나면은 링크av 빌더에 똑같은 구성으로 자동 생성되게 해줘" → "B가 내가 원하는거야"(한 번에 열기).
 
 rtcom 구성기(`Seoulav/rtcom-configurator`, 0.174부터)는 이미 준비되어 있습니다. 이 문서는 **AV 빌더 저장소(`seoul-visual-tech/av-system-builder`)에서 해야 할 일**입니다. 그 저장소는 rtcom 작업 세션에서 권한이 없어 직접 고치지 못했습니다.

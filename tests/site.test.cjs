@@ -30,10 +30,19 @@ test('index.html is a configurator-only page that keeps the legacy anchors',()=>
 
 test('runtime code has no in-app navigation that would break relative asset paths',()=>{
   // 뒤로가기용 방문 기록(0.14)은 허용하되, 주소는 항상 현재 주소(location.href) 그대로여야 한다.
+  // 0.273 예외 한 곳: src/products.js의 syncProductAddress는 제품 상세를 열 때 주소의 "파일 이름"만 product-<id>.html로 바꾼다.
+  // 폴더(location.pathname에서 파일 이름을 뺀 부분)는 그대로이므로 src/·data/·output/ 같은 상대 경로가 깨지지 않는다. 아래에서 그 조건을 따로 확인한다.
+  const productAddressCall=/^window\.history\.state,'',`\$\{wanted\}\$\{location\.search\}\$\{location\.hash\}`$/;
   for(const file of runtimeScripts){
     const calls=[...read(file).matchAll(/(pushState|replaceState)\(([^)]*)\)/g)];
-    for(const call of calls)assert.match(call[2],/,'',location\.href$/,`${file} must keep the document URL (${call[0]})`);
+    for(const call of calls){
+      if(file==='src/products.js'&&productAddressCall.test(call[2]))continue;
+      assert.match(call[2],/,'',location\.href$/,`${file} must keep the document URL (${call[0]})`);
+    }
   }
+  const products=read('src/products.js');
+  assert.equal([...products.matchAll(/(pushState|replaceState)\(/g)].length,1,'src/products.js에는 주소를 바꾸는 호출이 syncProductAddress 한 곳뿐이어야 함');
+  assert.match(products,/const dir=location\.pathname\.replace\(\/\[\^\/\]\*\$\/,''\);\s*const wanted=productId\?`\$\{dir\}product-\$\{productId\}\.html`:dir;/,'바뀌는 주소는 항상 같은 폴더(dir)의 파일 이름이어야 함');
   // 0.142 AI 검색은 ?ai=beta·#ai-token=을 지울 때 경로(location.pathname)는 그대로 둔다(상대 경로 자산이 깨지지 않게).
   for(const call of read('src/ai-search.js').matchAll(/replaceState\(([^;]*?)\);/g))assert.match(call[1],/^null,'',location\.pathname\+/,call[0]);
   assert.doesNotMatch(read('src/ai-search.js'),/pushState/);
@@ -135,6 +144,24 @@ test('0.268: 공개 배포본의 어떤 텍스트 파일에도 AV Portal·포털
   const app=read('src/app.js');
   assert.match(app,/'제조사 데이터시트'\],/);
   assert.match(app,/각 제조사 데이터시트\(Analog Way·NovaStar·Colorlight·Magnimage\)/);
+});
+
+test('0.269: 공개 배포본에 AV System Builder 연동(주소·버튼·메시지 코드·문구)이 없다(사용자 요청 2026-11-16 "AV System Builder연동도 전부 삭제해줘")',()=>{
+  execFileSync(process.execPath,['scripts/package-site.cjs'],{stdio:'ignore'});
+  const found=[];
+  const walk=dir=>{for(const entry of fs.readdirSync(dir,{withFileTypes:true})){
+    const full=path.join(dir,entry.name);
+    if(entry.isDirectory()){walk(full);continue}
+    if(!/\.(html|js|mjs|css|json|svg|txt|md|xml|webmanifest)$/i.test(entry.name))continue;
+    const text=fs.readFileSync(full,'utf8');
+    const m=text.match(/.{0,30}(?:av[ _-]*builder|av[ _-]*system[ _-]*builder|av 빌더|av빌더|seoul-visual-tech|rt-avb|avbSession).{0,30}/i);
+    if(m)found.push(`${path.relative('dist',full).split(path.sep).join('/')}: ${m[0].replace(/\s+/g,' ')}`);
+  }};
+  walk('dist');
+  assert.deepEqual(found,[],'공개 파일에 AV Builder 연동 흔적이 남아 있다');
+  // 화면에 두 버튼이 다시 생기지 않는다(03 신호 입력·06 내보내기)
+  const app=read('src/app.js');
+  assert.doesNotMatch(app,/data-action="av-builder|data-action==='av-builder|addEventListener\('message'/);
 });
 
 test('static package ships only configurator files and redirects legacy portal URLs',()=>{
@@ -797,6 +824,7 @@ test('0.263: HDS-42MU·HDS-21U 오토 셀렉팅(펌웨어 개선 후 자사 시�
     const p=JSON.parse(read(`data/products/${id}.json`));
     const t=p.sources.find(s=>s.code==='T');
     assert.ok(t&&/2026-10-28/.test(t.scope)&&/펌웨어 개선/.test(t.scope),`${id} 출처 T`);
+    assert.ok(/Priority\)은 개선 펌웨어에서도 매뉴얼 Ver\.1\.0과 같게/.test(t.scope)&&/2026-11-16/.test(t.scope),`${id} 0.270 Priority 확인`);
     assert.ok(p.features.some(f=>f.source==='T'&&/^오토 셀렉팅 지원/.test(f.text)),`${id} 05 주요 기능`);
     // 사용자 확인(2026-10-28 "딥스위치와 상관없이 오토셀렉팅이야"): 딥 스위치 카드가 아닌 별도 카드, 2번 OFF 설명은 매뉴얼 문장 그대로.
     assert.equal(p.dipSwitch.autoSelect,undefined);
@@ -840,7 +868,120 @@ test('0.267: XDM-MR4S 03 Signal Flow도 크게 보기(CAD식 이동·확대 창)
   assert.match(fn,/diagramWrap\(`<g class="rt-psu-anim">\$\{body\}<\/g>`/,'그림을 눌러도 열리도록 rt-psu-anim으로 묶는다');
 });
 
-test('0.269: Signal Flow가 있는 모든 단일 제품에 크게 보기, 확대 창은 보이는 그림(SPX-R6 TX/RX)을 복사',()=>{
+test('0.271: HD-108U·HD-104U 제품명은 새 실크 이름이 앞, 카탈로그 모델명이 괄호 안(HD-18U(108U)·HD-14U(104U))이고 옛 주소·검색용 이름은 그대로다',()=>{
+  const index=JSON.parse(read('data/products/index.json'));
+  for(const [id,name,model,alias] of [['hd-108u','HD-18U(108U)','HD-108U','HD-18U'],['hd-104u','HD-14U(104U)','HD-104U','HD-14U']]){
+    const p=JSON.parse(read(`data/products/${id}.json`));
+    assert.equal(p.productName,name,`${id} 제품명`);
+    assert.equal(p.model,model,`${id} model은 카탈로그 모델명 그대로`);
+    assert.deepEqual(p.aliases,[alias],`${id} 옛 주소 이동용 별칭`);
+    const n1=p.issues.find(i=>i.code==='N1');
+    assert.ok(n1&&n1.title==='실크 표기 변경'&&/바뀌었습니다/.test(n1.detail)&&!/예정/.test(n1.title+n1.detail),`${id} N1은 실크 표기가 이미 바뀐 것으로 적음`);
+    const item=index.products.find(x=>x.id===id);
+    assert.equal(item.productName,name,`${id} 색인 제품명`);
+  }
+});
+
+// JPEG 파일의 가로·세로(SOF 표식)를 읽는다. 공유 미리보기 이미지가 1200×630인지 확인하는 데 쓴다.
+function jpegSize(file){
+  const buffer=fs.readFileSync(file);
+  assert.equal(buffer[0],0xff);assert.equal(buffer[1],0xd8,`${file}은 JPEG가 아님`);
+  let offset=2;
+  while(offset<buffer.length){
+    if(buffer[offset]!==0xff){offset++;continue}
+    const marker=buffer[offset+1];
+    if(marker>=0xc0&&marker<=0xcf&&![0xc4,0xc8,0xcc].includes(marker))return {height:buffer.readUInt16BE(offset+5),width:buffer.readUInt16BE(offset+7)};
+    offset+=2+buffer.readUInt16BE(offset+2);
+  }
+  throw new Error(`${file}에서 JPEG 크기를 찾지 못함`);
+}
+const unescapeHtml=text=>text.replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&');
+
+test('0.272: 제품마다 공유 주소 페이지(share/<id>/)가 있고 미리보기용 제품 이름·설명·1200×630 사진을 절대 주소로 담는다',()=>{
+  execFileSync(process.execPath,['scripts/package-site.cjs'],{stdio:'ignore'});
+  const site='https://seoulav.github.io/rtcom-configurator/';
+  const index=JSON.parse(read('data/products/index.json'));
+  assert.equal(index.products.length,33);
+  for(const item of index.products){
+    const html=read(`dist/share/${item.id}/index.html`);
+    const meta=key=>{const found=html.match(new RegExp(`<meta (?:property|name)="${key}" content="([^"]*)"`));assert.ok(found,`${item.id} ${key} 없음`);return unescapeHtml(found[1])};
+    assert.equal(meta('og:title'),`${item.productName} | RTCOM 제품정보`,`${item.id} 제목에 제품 이름이 들어가야 함`);
+    const description=meta('og:description');
+    assert.ok(description.length>=10&&!description.includes('**'),`${item.id} 설명은 표시 기호 없는 문장이어야 함`);
+    assert.equal(meta('og:url'),`${site}share/${item.id}/`);
+    assert.equal(meta('og:image'),`${site}output/design/assets/share/${item.id}.jpg`,`${item.id} 사진은 절대 주소여야 함`);
+    assert.equal(meta('og:image:width'),'1200');assert.equal(meta('og:image:height'),'630');
+    assert.equal(meta('twitter:card'),'summary_large_image');assert.equal(meta('twitter:image'),meta('og:image'));
+    // 미리보기 수집기가 자바스크립트를 실행하지 않아도 이 페이지의 정보를 읽도록, 이동은 자바스크립트로만 한다(meta refresh는 수집기가 따라가 첫 화면 정보를 읽을 수 있다).
+    assert.ok(html.includes(`location.replace("../../#products/${item.id}")`),`${item.id} 제품 상세로 이동`);
+    assert.ok(!/http-equiv="refresh"/i.test(html),`${item.id}에 meta refresh를 쓰지 않음`);
+    const imageFile=`dist/output/design/assets/share/${item.id}.jpg`;
+    assert.ok(fs.existsSync(imageFile),`${item.id} 미리보기 이미지가 배포본에 없음`);
+    assert.deepEqual(jpegSize(imageFile),{width:1200,height:630},`${item.id} 미리보기 이미지 크기`);
+    assert.ok(fs.statSync(imageFile).size<500*1024,`${item.id} 미리보기 이미지가 너무 큼(카카오톡 등은 큰 이미지를 건너뜀)`);
+  }
+  // 요청한 제품: 링크를 보내면 HD-18U(108U)로 보여야 한다.
+  assert.match(read('dist/share/hd-108u/index.html'),/<meta property="og:title" content="HD-18U\(108U\) \| RTCOM 제품정보">/);
+});
+
+test('0.272: 첫 화면(index.html)에도 기본 링크 미리보기와 이미지가 있다',()=>{
+  execFileSync(process.execPath,['scripts/package-site.cjs'],{stdio:'ignore'});
+  const html=read('dist/index.html');
+  const site='https://seoulav.github.io/rtcom-configurator/';
+  for(const key of ['og:title','og:description','og:image','og:url','twitter:card'])assert.ok(html.includes(`"${key}"`),`첫 화면에 ${key} 없음`);
+  assert.ok(html.includes(`content="${site}output/design/assets/share/site.jpg"`));
+  assert.deepEqual(jpegSize('dist/output/design/assets/share/site.jpg'),{width:1200,height:630});
+});
+
+test('0.272: 제품 상세·시리즈 상세 머리에 "링크 공유" 버튼이 있고 공유 주소(0.273부터 product-<id>.html)를 복사한다',()=>{
+  const source=read('src/products.js');
+  assert.match(source,/data-share-link="\$\{esc\(item\.id\)\}"/,'링크 공유 버튼');
+  assert.equal((source.match(/share:shareButton\(item\)/g)||[]).length,2,'제품 상세와 시리즈 상세 두 곳');
+  assert.match(source,/new URL\(`product-\$\{id\}\.html`,document\.baseURI\)/,'공유 주소는 product-<id>.html');
+  assert.match(source,/function shareProductLink\(/);
+  assert.match(source,/navigator\.share/,'휴대폰은 기기 공유 창을 연다');
+});
+
+test('0.273: 제품마다 product-<id>.html(구성기·제품정보 앱 전체 + 그 제품의 미리보기 정보)이 있어 주소창 주소를 붙여도 제품 미리보기가 나온다',()=>{
+  execFileSync(process.execPath,['scripts/package-site.cjs'],{stdio:'ignore'});
+  const site='https://seoulav.github.io/rtcom-configurator/';
+  const index=JSON.parse(read('data/products/index.json'));
+  const template=read('dist/index.html');
+  const bodyOf=html=>html.slice(html.indexOf('</head>'));
+  for(const item of index.products){
+    const html=read(`dist/product-${item.id}.html`);
+    const meta=key=>{const found=html.match(new RegExp(`<meta (?:property|name)="${key}" content="([^"]*)"`));assert.ok(found,`${item.id} ${key} 없음`);return unescapeHtml(found[1])};
+    assert.equal((html.match(/<title>/g)||[]).length,1,`${item.id} title은 하나`);
+    assert.equal((html.match(/property="og:title"/g)||[]).length,1,`${item.id} og:title은 하나(첫 화면 태그가 남으면 안 됨)`);
+    assert.equal(html.match(/<title>([^<]*)<\/title>/)[1],`${item.productName} | RTCOM 제품정보`.replace(/&/g,'&amp;'));
+    assert.equal(meta('og:title'),`${item.productName} | RTCOM 제품정보`);
+    assert.equal(meta('og:url'),`${site}product-${item.id}.html`,`${item.id} og:url은 이 페이지 주소`);
+    assert.equal(meta('og:image'),`${site}output/design/assets/share/${item.id}.jpg`);
+    assert.ok(meta('og:description').length>=10);
+    // 앱은 그대로: 본문(스크립트·화면 뼈대)이 첫 화면과 같고, # 없이 열면 제품 상세가 열리도록 해시를 붙이는 한 줄만 head에 더해진다.
+    assert.equal(bodyOf(html),bodyOf(template),`${item.id} 본문이 index.html과 같아야 함`);
+    assert.ok(html.includes(`if(!location.hash)history.replaceState(null,"",location.pathname+location.search+"#products/${item.id}")`));
+    // 같은 폴더(dist 바로 아래)에 있어야 src/·data/ 같은 상대 경로가 그대로 풀린다.
+    assert.ok(fs.existsSync('dist/src/app.js')&&fs.existsSync('dist/src/products.js')&&fs.existsSync(`dist/product-${item.id}.html`));
+  }
+  // 첫 화면 index.html은 사이트 기본 미리보기를 유지한다.
+  assert.match(template,/property="og:title" content="RTCOM Configurator \| 알티컴 제품정보"/);
+  // 요청한 제품: 주소창 주소를 붙여도 HD-18U(108U)로 보여야 한다.
+  assert.match(read('dist/product-hd-108u.html'),/<meta property="og:title" content="HD-18U\(108U\) \| RTCOM 제품정보">/);
+});
+
+test('0.273: 제품 상세를 열면 주소창을 product-<id>.html로 맞추고 다른 화면이면 첫 화면 주소로 되돌리며, index.html 모양이 바뀌면 빌드가 멈춘다',()=>{
+  const source=read('src/products.js');
+  assert.match(source,/function syncProductAddress\(productId\)/);
+  assert.match(source,/history\.replaceState\(window\.history\.state,'',`\$\{wanted\}\$\{location\.search\}\$\{location\.hash\}`\)/,'# 뒤와 기존 기록 상태를 그대로 둔다');
+  assert.match(source,/if\(!state\.products\|\|!state\.id\)syncProductAddress\(null\)/,'제품 상세가 아니면 첫 화면 주소로');
+  assert.match(source,/if\(route\(\)\.id!==state\.id\)return;\n\s*syncProductAddress\(state\.id\)/,'제품 정보를 불러온 뒤(유효한 id일 때만) 제품 주소로');
+  assert.match(source,/window\.addEventListener\('popstate',\(\)=>setTimeout\(\(\)=>\{if\(location\.hash!==lastShownHash\)show\(route\(\)\)\},0\)\)/,'파일 이름까지 달라지는 뒤로·앞으로 가기는 popstate로 화면을 맞춘다(hashchange가 오지 않음)');
+  const {productPageHtml}=require('../scripts/build-share-pages.cjs');
+  assert.throws(()=>productPageHtml('<html><head></head><body></body></html>',{id:'x',productName:'X',description:'설명 설명 설명 설명'}),/head 형식/);
+});
+
+test('0.274: Signal Flow가 있는 모든 단일 제품에 크게 보기, 확대 창은 보이는 그림(SPX-R6 TX/RX)을 복사',()=>{
   const src=read('src/products.js');
   assert.match(src,/const withFlowZoom=diagram=>!diagram\|\|diagram\.includes\('data-flow-zoom'\)\|\|!diagram\.includes\('rt-pg-svg-wrap'\)\?diagram:FLOW_ZOOM_BAR\+diagram;/,'이미 버튼이 있는 그림(PSU·PSE·MR4S)은 한 번만');
   assert.match(src,/<span class="rt-pg-idx">03<\/span>Signal Flow<\/h2>\$\{withFlowZoom\(diagram\)\}/);

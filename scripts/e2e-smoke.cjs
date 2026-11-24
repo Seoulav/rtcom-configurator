@@ -1359,8 +1359,8 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await page.goto(`${home}#products/xdm-ctr100`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-pg-toolbar');
     const otherZoom=await page.$$eval('[data-flow-zoom]',els=>els.length);
-    check('XDM-PSU Signal Flow: COS100 피닉스에 전원선 연결, "크게 보기" 창이 + 한 번에 125%로 커지고 Esc로 닫힘, XDM-CTR100에도 확대 버튼 1개(0.269부터 Signal Flow가 있는 모든 제품)',cosPin===1&&zoom.level==='125%'&&zoom.svg&&zoom.wider&&zoomClosed&&otherZoom===1,JSON.stringify({cosPin,zoom,zoomClosed,otherZoom}));
-    // 0.269 Signal Flow가 있는 모든 단일 제품에 "크게 보기"(사용자 요청 2026-11-16 "다음 단계 모두 진행해줘"). QMS-88UX는 버튼으로 열고, SPX-R6은 RX 구성으로 바꾼 뒤 열면 RX 그림이 확대된다.
+    check('XDM-PSU Signal Flow: COS100 피닉스에 전원선 연결, "크게 보기" 창이 + 한 번에 125%로 커지고 Esc로 닫힘, XDM-CTR100에도 확대 버튼 1개(0.274부터 Signal Flow가 있는 모든 제품)',cosPin===1&&zoom.level==='125%'&&zoom.svg&&zoom.wider&&zoomClosed&&otherZoom===1,JSON.stringify({cosPin,zoom,zoomClosed,otherZoom}));
+    // 0.274 Signal Flow가 있는 모든 단일 제품에 "크게 보기"(사용자 요청 2026-11-16 "다음 단계 모두 진행해줘"). QMS-88UX는 버튼으로 열고, SPX-R6은 RX 구성으로 바꾼 뒤 열면 RX 그림이 확대된다.
     const allZoom=await (async()=>{
       const dlgSel='dialog.rt-flow-zoom:not(.rt-photo-zoom):not(.rt-doc-zoom)';
       await page.goto(`${home}#products/qms-88ux`,{waitUntil:'networkidle'});
@@ -1669,10 +1669,84 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await mobile.click('.rt-pg-record summary');
     await mobile.waitForSelector('.rt-pg-record[open]');
     check('휴대폰에서 자료 출처·검토 기록이 화면 폭을 넘지 않음',(await mobile.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth))===0);
-    // 0.36 — HD-104U(새 실크 HD-14U)처럼 같은 제품의 다른 이름: 옛 주소가 정식 id로 이동하고 제품명에 두 이름이 함께 보인다.
+    // 0.36 — HD-104U(새 실크 HD-14U)처럼 같은 제품의 다른 이름: 옛 주소가 정식 id로 이동하고 제품명에 두 이름이 함께 보인다(0.271부터 새 실크 이름이 앞, 카탈로그 모델명이 괄호 안: HD-14U(104U)).
     await mobile.goto(`${home}#products/hd-14u`,{waitUntil:'networkidle'});
     await mobile.waitForFunction(()=>location.hash==='#products/hd-104u'&&document.querySelector('#rt-pg-title'));
-    check('옛 주소 #products/hd-14u가 HD-104U (HD-14U) 상세로 이동',(await mobile.$eval('#rt-pg-title',el=>el.textContent)).includes('HD-104U (HD-14U)'));
+    check('옛 주소 #products/hd-14u가 HD-14U(104U) 상세로 이동',(await mobile.$eval('#rt-pg-title',el=>el.textContent)).includes('HD-14U(104U)'));
+    // 0.272 링크 공유: 주소의 # 뒤는 카카오톡 같은 미리보기에 전달되지 않으므로, 제품 이름·사진이 미리보기로 나오는 공유 주소(share/<id>/)를 복사한다.
+    {
+      const shareCtx=await browser.newContext({viewport:{width:1280,height:900},permissions:['clipboard-read','clipboard-write']});
+      const sharePage=await shareCtx.newPage();
+      await sharePage.goto(`${home}#products/hd-108u`,{waitUntil:'networkidle'});
+      await sharePage.waitForSelector('[data-share-link="hd-108u"]');
+      check('제품 상세에 "링크 공유" 버튼이 있다',(await sharePage.locator('[data-share-link="hd-108u"]').textContent()).includes('링크 공유'));
+      await sharePage.click('[data-share-link="hd-108u"]');
+      await sharePage.waitForFunction(()=>document.querySelector('[data-share-link="hd-108u"]').textContent.includes('복사했습니다'));
+      const copied=await sharePage.evaluate(()=>navigator.clipboard.readText());
+      check('링크 공유 버튼이 product-hd-108u.html 주소를 복사한다(# 주소가 아님)',copied===`${origin}${BASE}product-hd-108u.html`,copied);
+      await sharePage.waitForFunction(()=>document.querySelector('[data-share-link="hd-108u"]').textContent.includes('링크 공유'),null,{timeout:5000});
+      check('복사 안내 글이 잠시 뒤 원래 글자로 돌아온다',true);
+      // 시리즈 상세(XDM)에도 같은 버튼이 있다.
+      await sharePage.goto(`${home}#products/xdm`,{waitUntil:'networkidle'});
+      await sharePage.waitForSelector('[data-share-link="xdm"]');
+      check('시리즈 상세(XDM)에도 "링크 공유" 버튼이 있다',await sharePage.locator('[data-share-link="xdm"]').count()===1);
+      // 공유 주소로 들어오면 제품 상세로 이동하고, 미리보기용 정보(제목·사진 주소)가 그 페이지에 들어 있다.
+      const shareHtml=await (await fetch(`${origin}${BASE}share/hd-108u/`)).text();
+      check('공유 주소 페이지에 제품 이름·사진 미리보기 정보가 있다',shareHtml.includes('og:title" content="HD-18U(108U) | RTCOM 제품정보"')&&shareHtml.includes('share/hd-108u.jpg'));
+      const image=await fetch(`${origin}${BASE}output/design/assets/share/hd-108u.jpg`);
+      check('공유 미리보기 이미지가 열린다(JPEG)',image.status===200&&(image.headers.get('content-type')||'').includes('image/jpeg'));
+      await sharePage.goto(`${origin}${BASE}share/hd-108u/`,{waitUntil:'networkidle'});
+      await sharePage.waitForFunction(()=>location.hash==='#products/hd-108u'&&document.querySelector('#rt-pg-title'));
+      check('공유 주소로 들어오면 HD-18U(108U) 제품 상세로 이동한다',(await sharePage.$eval('#rt-pg-title',el=>el.textContent)).includes('HD-18U(108U)'));
+      await shareCtx.close();
+    }
+    // 0.273 주소창 주소: 제품 상세를 열면 주소가 product-<id>.html#products/<id>로 바뀌어, 그 주소를 붙여도 제품 미리보기가 나온다.
+    {
+      const ctx=await browser.newContext({viewport:{width:1280,height:900}});
+      const pg=await ctx.newPage();const failedAddr=[],errorsAddr=[];
+      pg.on('response',response=>{if(response.status()>=400)failedAddr.push(`${response.status()} ${response.url().replace(origin,'')}`)});
+      pg.on('pageerror',error=>errorsAddr.push(error.message));
+      const where=()=>pg.evaluate(()=>({path:location.pathname,hash:location.hash,title:document.querySelector('#rt-pg-title')?.textContent||''}));
+      const brokenAddr=()=>pg.$$eval('img',images=>images.filter(image=>image.complete&&image.naturalWidth===0&&image.loading!=='lazy').map(image=>image.getAttribute('src')));
+      await pg.goto(`${home}#products/hd-108u`,{waitUntil:'networkidle'});
+      await pg.waitForFunction(()=>location.pathname.endsWith('/product-hd-108u.html')&&document.querySelector('#rt-pg-title'));
+      let now=await where();
+      check('제품 상세를 열면 주소창이 product-hd-108u.html로 바뀌고 # 뒤는 그대로다',now.path===`${BASE}product-hd-108u.html`&&now.hash==='#products/hd-108u'&&now.title.includes('HD-18U(108U)'),JSON.stringify(now));
+      await pg.click('a.rt-pg-btn[href="#products"]');
+      await pg.waitForFunction(base=>location.pathname===base&&location.hash==='#products'&&document.querySelector('.rt-pg-gridcard'),BASE);
+      check('제품 목록으로 가면 주소창이 첫 화면 주소로 돌아온다',(await where()).path===BASE);
+      await pg.click('a.rt-pg-gridcard[href="#products/hd-13u"]');
+      await pg.waitForFunction(()=>location.pathname.endsWith('/product-hd-13u.html')&&document.querySelector('#rt-pg-title')?.textContent.includes('HD-13U'));
+      await pg.waitForLoadState('networkidle');
+      check('목록에서 다른 제품(HD-13U)을 열면 주소가 product-hd-13u.html로 바뀌고 사진이 깨지지 않는다',(await brokenAddr()).length===0,JSON.stringify(await brokenAddr()));
+      await pg.goBack();
+      await pg.waitForFunction(base=>location.pathname===base&&location.hash==='#products',BASE);
+      check('뒤로 가기: 제품 목록과 첫 화면 주소로 돌아온다',(await where()).path===BASE);
+      await pg.goBack();
+      await pg.waitForFunction(()=>location.pathname.endsWith('/product-hd-108u.html')&&document.querySelector('#rt-pg-title')?.textContent.includes('HD-18U(108U)'));
+      check('한 번 더 뒤로 가기: HD-18U(108U) 상세와 product-hd-108u.html 주소로 돌아온다',(await where()).path===`${BASE}product-hd-108u.html`);
+      await pg.goForward();await pg.goForward();
+      await pg.waitForFunction(()=>location.pathname.endsWith('/product-hd-13u.html')&&document.querySelector('#rt-pg-title')?.textContent.includes('HD-13U'));
+      check('앞으로 가기: HD-13U 상세와 product-hd-13u.html 주소로 다시 간다',(await where()).hash==='#products/hd-13u');
+      await pg.reload({waitUntil:'networkidle'});
+      await pg.waitForFunction(()=>document.querySelector('#rt-pg-title')?.textContent.includes('HD-13U'));
+      now=await where();
+      check('제품 주소에서 새로고침해도 같은 제품 상세가 열린다(전체 앱 페이지)',now.path===`${BASE}product-hd-13u.html`&&now.title.includes('HD-13U')&&(await brokenAddr()).length===0,JSON.stringify(now));
+      await pg.click('[data-view-tab="configurator"]');
+      await pg.waitForFunction(base=>location.pathname===base&&location.hash==='#matrix-configurator',BASE);
+      check('매트릭스 구성기 탭으로 가면 주소창이 첫 화면 주소로 돌아오고 구성기가 보인다',await pg.locator('[data-action="next"], .rt-configurator, #rtcom-design').first().isVisible());
+      // # 없이 제품 파일 주소로 직접 들어와도 그 제품 상세가 열린다(링크 공유 버튼이 복사하는 주소).
+      await pg.goto(`${origin}${BASE}product-hd-210u.html`,{waitUntil:'networkidle'});
+      await pg.waitForFunction(()=>location.hash==='#products/hd-210u'&&document.querySelector('#rt-pg-title')?.textContent.includes('HD-210U'));
+      now=await where();
+      check('# 없는 제품 파일 주소(product-hd-210u.html)로 들어오면 HD-210U 상세가 열린다',now.path===`${BASE}product-hd-210u.html`&&now.title.includes('HD-210U')&&(await brokenAddr()).length===0,JSON.stringify(now));
+      // 옛 별칭 주소는 정식 id의 제품 주소로 이어진다.
+      await pg.goto(`${home}#products/hd-14u`,{waitUntil:'networkidle'});
+      await pg.waitForFunction(()=>location.pathname.endsWith('/product-hd-104u.html')&&location.hash==='#products/hd-104u');
+      check('옛 별칭 주소(#products/hd-14u)는 product-hd-104u.html 주소의 HD-14U(104U) 상세로 이어진다',(await where()).title.includes('HD-14U(104U)'));
+      check('주소 맞춤 중 실패한 요청과 스크립트 오류가 없다',failedAddr.length===0&&errorsAddr.length===0,JSON.stringify({failedAddr,errorsAddr}));
+      await ctx.close();
+    }
     // 카드 자체가 화면 밖으로 밀려나면 페이지 가로 스크롤 없이 오른쪽이 잘린다(0.33 검수에서 발견: 휴대폰 규칙이 PC 격자의 align-items:start를 물려받음).
     // 넓은 그림은 카드 안(.rt-pg-svg-wrap 등)에서만 좌우로 밀려야 한다. 6-B에서 새로 생긴 케이블(hoc-ux)·QMS 화면 구성 모드(qms-44ux) 템플릿과
     // EDID 로터리 스위치 카드(hd-13u)도 검사한다.
@@ -1873,24 +1947,9 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
         const focused=await s.evaluate(()=>document.activeElement?.dataset.signalPort);
         const saved=await s.evaluate(()=>{const p=JSON.parse(localStorage.getItem('rtcom.configuration.v1')).state.portAssignments;return [p['in-1:1'].assignedDevice,p['in-1:2'].assignedDevice]});
         const count=await s.locator('[data-signal-count] b').textContent();
-        const [avbDownload]=await Promise.all([s.waitForEvent('download'),s.click('[data-action="av-builder"]')]);
-        const avb=JSON.parse(require('node:fs').readFileSync(await avbDownload.path(),'utf8'));
-        const avbOk=avbDownload.suggestedFilename()==='RTCOM-XDM-12-av-builder.json'&&avb.nodes.some(n=>n.id==='rtcom_matrix'&&n.data.inputs.length===8&&n.data.inputs[0].label==='HDMI #1-1 PC')&&Array.isArray(avb.edges);
-        check('03 ② 신호 입력의 "AV 빌더용 파일 내려받기"가 AV 빌더 구성도 JSON(매트릭스 입력 8포트, 첫 포트 "HDMI #1-1 PC")을 내려받음',avbOk,JSON.stringify({file:avbDownload.suggestedFilename(),nodes:avb.nodes.length,edges:avb.edges.length}));
-        // 0.174 B안(사용자 결정 "B가 내가 원하는거야"): "AV 빌더에서 바로 열기"는 AV 빌더를 새 탭(?import=rtcom)으로 열고 창 사이 메시지로 구성도를 넘긴다.
-        // AV 빌더 주소 요청을 가짜 화면으로 바꿔(1) 준비→구성도→완료 흐름과 (2) 준비 신호가 없을 때 10초 뒤 파일 내려받기를 확인한다.
-        let fakeMode='handshake';
-        await s.context().route('https://seoul-visual-tech.github.io/**',route=>route.fulfill({contentType:'text/html',body:fakeMode==='handshake'?"<!doctype html><script>const o=window.opener;addEventListener('message',e=>{const m=e.data;if(m&&m.type==='rtcom:diagram'){window.__got={origin:e.origin,version:m.version,nodes:m.diagram.nodes.length,edges:m.diagram.edges.length,first:m.diagram.nodes.find(n=>n.id==='rtcom_matrix').data.inputs[0].label};o.postMessage({type:'av-builder:imported',nodes:m.diagram.nodes.length,edges:m.diagram.edges.length},'*')}});o.postMessage({type:'av-builder:ready'},'*');</script>":'<!doctype html><title>old builder</title>'}));
-        const [pop]=await Promise.all([s.waitForEvent('popup'),s.click('[data-action="av-builder-open"]')]);
-        await s.waitForFunction(()=>/AV 빌더에 구성을 넣었습니다/.test(document.querySelector('#save-status')?.textContent||''),null,{timeout:10000}).catch(()=>{});
-        const got=await pop.evaluate(()=>({search:location.search,got:window.__got||null}));
-        const doneText=await s.evaluate(()=>document.querySelector('#save-status')?.textContent||'');
-        await pop.close();
-        fakeMode='old';
-        const [oldPop,fallback]=await Promise.all([s.waitForEvent('popup'),s.waitForEvent('download',{timeout:16000}),s.click('[data-action="av-builder-open"]')]);
-        const fallbackText=await s.evaluate(()=>document.querySelector('#save-status')?.textContent||'');
-        await oldPop.close();await s.context().unroute('https://seoul-visual-tech.github.io/**');
-        check('03 ② "AV 빌더에서 바로 열기": 새 탭(?import=rtcom)에 준비 신호가 오면 구성도(version 1, 첫 포트 "HDMI #1-1 PC")를 보내고 완료를 표시하며, 준비 신호가 없으면 10초 뒤 같은 파일을 내려받음',got.search==='?import=rtcom'&&got.got&&got.got.version===1&&got.got.first==='HDMI #1-1 PC'&&got.got.nodes>0&&/AV 빌더에 구성을 넣었습니다 · 장비 \d+대/.test(doneText)&&fallback.suggestedFilename()==='RTCOM-XDM-12-av-builder.json'&&/자동 받기를 지원하지 않아 파일로 다운로드했습니다/.test(fallbackText),JSON.stringify({got,doneText,fallback:fallback.suggestedFilename(),fallbackText}));
+        // 0.269(사용자 요청 2026-11-16 "AV System Builder연동도 전부 삭제해줘"): 03 ② 신호 입력 아래의 "AV 빌더로 보내기" 안내 상자와 두 버튼을 지웠다.
+        const avbSignals=await s.evaluate(()=>({panel:document.querySelectorAll('.rt-avb,[data-action^="av-builder"]').length,text:/AV 빌더|AV System Builder/i.test(document.body.textContent||'')}));
+        check('03 ② 신호 입력 화면에 AV 빌더 연동(안내 상자·버튼·문구)이 없음',avbSignals.panel===0&&!avbSignals.text,JSON.stringify(avbSignals));
         await s.click('[data-tool="undo"]');
         const afterUndo=await s.evaluate(()=>[...document.querySelectorAll('.rt-signal-input')].slice(0,2).map(i=>i.value));
         await s.click('[data-action="back"]');const backToSlots=await s.locator('.rt-rack-slot').count()>0&&await s.locator('.rt-signal-input').count()===0;
@@ -1947,6 +2006,8 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       await ep.reload({waitUntil:'networkidle'});
       const view=await ep.evaluate(()=>({formats:[...document.querySelectorAll('.rt-format')].map(b=>b.dataset.format).join(','),pressed:document.querySelector('.rt-format[aria-pressed="true"]')?.dataset.format,backup:!!document.querySelector('.rt-export-save [data-tool="backup"]'),pre:document.querySelectorAll('.rt-export pre').length,rack:document.querySelectorAll('.rt-report-paper .rt-rack-photo .rt-rack-slot-filled').length,buttons:document.querySelectorAll('.rt-report-paper button').length,slots:document.querySelectorAll('.rt-report-paper .rt-rp-page2 tbody tr').length}));
       check('06 내보내기: 형식은 PDF·CSV 둘(예전 JSON 선택은 PDF로 보임), JSON은 작업 저장 버튼, 코드 미리보기 없음, 보고서 미리보기에 누를 수 없는 후면 그림(카드 2장)과 슬롯 6행',view.formats==='PDF,CSV'&&view.pressed==='PDF'&&view.backup&&view.pre===0&&view.rack===2&&view.buttons===0&&view.slots===6,JSON.stringify(view));
+      const avbExport=await ep.evaluate(()=>({panel:document.querySelectorAll('.rt-avb,[data-action^="av-builder"]').length,text:/AV 빌더|AV System Builder/i.test(document.body.textContent||'')}));
+      check('06 내보내기 화면에 AV 빌더 연동(안내 상자·버튼·문구)이 없음',avbExport.panel===0&&!avbExport.text,JSON.stringify(avbExport));
       await ep.fill('input[data-report-field="project"]','테스트 프로젝트');
       const meta=await ep.evaluate(()=>({saved:JSON.parse(localStorage.getItem('rtcom.report.v1')).project,shown:document.querySelector('.rt-rp-meta b')?.textContent,focus:document.activeElement?.dataset.reportField,undo:document.querySelector('[data-tool=undo]').disabled}));
       check('보고서 표지 칸에 입력하면 이 브라우저에 저장되고 미리보기에 바로 보이며 입력 칸 커서가 유지됨(실행 취소 기록에는 쌓이지 않음)',meta.saved==='테스트 프로젝트'&&meta.shown==='테스트 프로젝트'&&meta.focus==='project'&&meta.undo,JSON.stringify(meta));

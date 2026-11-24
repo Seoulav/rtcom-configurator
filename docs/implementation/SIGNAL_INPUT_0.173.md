@@ -45,6 +45,8 @@
 
 ## 5. AV 빌더로 보내기 (A안)
 
+> 0.269에서 이 기능(AV 빌더로 보내기)을 모두 지웠습니다(사용자 요청 2026-11-16, `docs/implementation/REMOVE_AV_BUILDER_0.269.md`). 아래는 0.173 당시 기록입니다. 신호 입력(§1~4)은 그대로입니다.
+
 사용자 결정 2026-09-29: "포트명 기입이 끝나면은 링크av 빌더에 똑같은 구성으로 자동 생성되게 해줘" → 선택지 A(파일)·B(한 번에 열기) 중 "시안 그대로, A로 전송기 포함해서 진행해줘".
 
 - AV 빌더(https://seoul-visual-tech.github.io/av-system-builder/, v1.19.1)가 외부 구성을 받는 입구는 파일 가져오기(Share → 가져오기 → 구성도 JSON)와 자체 서버 공유 링크(`?share=`)뿐입니다. AV 빌더 저장소(seoul-visual-tech/av-system-builder)는 이 세션에서 접근할 수 없어, rtcom 쪽에서 그 파일 형식을 만듭니다.
