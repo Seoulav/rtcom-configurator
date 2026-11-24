@@ -61,6 +61,16 @@
 - 3차: 06 화면 구성 모드, 시리즈 02 신호 구성, WOS100 레이어 팝업, 구성기 그림(`src/app.js`)
 - Port Map 실물 사진 그림은 사진 배경이 흰색이라 흰 판을 유지합니다.
 
+## 함께 고친 것: Pages 배포 작업(0.274 배포 실패)
+
+- 0.274 병합 뒤 `Deploy RTCOM to GitHub Pages` run 410이 두 번 연속 실패했습니다(1차 01:38, 재실행 01:50 UTC).
+  - 사이트 묶음 업로드는 두 번 모두 성공했습니다(약 67MB, 묶음 ID 14879974506·14881712864).
+  - 업로드 0.4초 뒤 `deploy-pages`가 묶음을 조회하자 "Found 0 artifact(s)"가 나왔습니다.
+  - 같은 시각 GitHub 상태 페이지는 Actions·Pages·API 모두 정상이었고, 묶음은 실행 기록에 정상으로 남아 있었습니다. 같은 작업 안에서 업로드 직후 조회하면 GitHub 쪽 목록 반영이 늦는 것으로 봅니다.
+- 고친 내용: `.github/workflows/pages.yml`을 GitHub 공식 Pages 예시처럼 `build`(시험·패키징·업로드) → `deploy`(`needs: build`, 배포만) 두 작업으로 나눴습니다. 작업 사이 간격 동안 묶음 목록이 반영됩니다.
+- 시험: `tests/site.test.cjs` "0.275: Pages 배포는 만들기(build)와 배포(deploy) 두 작업으로 나눈다…"
+- 이 PR이 병합된 뒤 배포가 성공하면 0.274·0.275가 함께 공개됩니다. 결과는 배포 기록 문서에 남깁니다.
+
 ## 되돌리기
 
 - 이 PR의 squash 커밋을 `git revert`합니다.
