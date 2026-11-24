@@ -146,7 +146,7 @@ const lits=literalOverrides(base);
 
 // 밝은 판으로 남기는 그림(B③에서 그림별로 다크 색을 정하기 전까지): 직접 적힌 SVG 색이 밝은 면을 전제로 하므로
 // 다크에서도 흰 판을 깔고, 판 안에서는 색 변수를 라이트 값으로 되돌린다.
-const PLATES=['#rtcom-design .rt-pg-svg-wrap>svg','#rtcom-design svg.rt-pg-layout-matrix','#rtcom-design .rt-pg-dip-state svg','#rtcom-design .rt-pg-rotary svg','#rtcom-design svg.rt-layer-svg-wide','#rtcom-design svg.rt-layer-svg-tall','#rtcom-design .rt-flow-zoom-canvas svg'];
+const PLATES=['#rtcom-design .rt-pg-svg-wrap>svg:not(.rt-pg-flow-svg)','#rtcom-design svg.rt-pg-layout-matrix','#rtcom-design .rt-pg-dip-state svg','#rtcom-design .rt-pg-rotary svg','#rtcom-design svg.rt-layer-svg-wide','#rtcom-design svg.rt-layer-svg-tall','#rtcom-design .rt-flow-zoom-canvas svg:not(.rt-pg-flow-svg)'];
 const LIGHT_BASE='--rt-bg:#fff;--rt-soft:#f3f6fb;--rt-ink:#1f2532;--rt-muted:#687386;--rt-line:#dfe6f0;--rt-accent:#0057D8;--rt-tint:#edf4ff;'+
   '--pg-paper:#EEF1F6;--pg-ink:#1C1C1E;--pg-ink-2:#3A3A3C;--pg-muted:#6A6A6F;--pg-line:rgba(60,60,67,.12);--pg-line-2:rgba(60,60,67,.20);'+
   '--pg-accent:#007AFF;--pg-accent-2:#0057D8;--pg-accent-tint:rgba(0,122,255,.12);--pg-purple-ink:#8944AB;--pg-purple-tint:rgba(137,68,171,.09);'+
@@ -155,6 +155,39 @@ const lightTokens=pairs.map(([k,h])=>`--rt-${k}-${h}:#${h};`).join('');
 // 구성 보고서 미리보기는 인쇄물과 같아야 하므로 종이 판 전체를 라이트로 둔다(모서리 모양은 원래대로).
 const PAPERS=['#rtcom-design .rt-report-paper'];
 const plateCss=`  ${PLATES.join(',')}{color-scheme:light;background:#fff;border-radius:12px;${LIGHT_BASE}${lightTokens}}\n  ${PAPERS.join(',')}{color-scheme:light;background:#fff;color:#1d2433;${LIGHT_BASE}${lightTokens}}`;
+
+// 0.275 다크 모드 ③ 1차(사용자 결정 2026-11-24 "a로 진행해줘"): Signal Flow 그림(svg.rt-pg-flow-svg)은 흰 판을 깔지 않고
+// 그림에 직접 적힌 색을 다크 색으로 바꿔 칠한다. CSS 규칙은 SVG 속성 색보다 우선하므로 라이트·인쇄 화면은 그대로다.
+// 같은 색이라도 요소마다 역할이 달라(흰 rect = 상자 바탕, 흰 text = 색 배지 위 글자) 요소 이름과 함께 정한다.
+// 신호 색(HDMI 입력 파랑·출력 보라·CAT 초록·광 하늘색·전원 주황)은 어두운 면에서도 잘 보여 그대로 둔다.
+const FLOW_DARK=[
+  // [요소, 속성, 라이트 색들, 다크 색, 설명]
+  ['rect','fill',['#fff','#ffffff'],'#3A3A3C','칩·카드 바탕'],
+  ['rect','fill',['#eef2f8','#eceff4','#f7f8fa','#f4f6f9'],'#2C2C2E','장비 상자·금속 몸체'],
+  ['path','fill',['#fff','#f4f6f9'],'#2C2C2E','장비 몸체(경로)'],
+  ['circle','fill',['#fff'],'#2C2C2E','흰 원'],
+  ['rect','fill',['#c9d3e6','#cfd5de'],'#48484A','단자·몸체 테두리 면'],
+  ['rect','stroke',['#c8d3e6','#b9c3d6','#b8bfcb'],'#545458','상자 테두리'],
+  ['rect','fill',['#e3edff','#dfeaff','#f3eeff'],'#1E2A44','옅은 파랑·보라 면'],
+  ['rect','fill',['#fff4e5'],'#3A2A12','옅은 주황 면'],
+  ['circle','fill',['#c7c7cc','#b8bfcb'],'#636366','꺼진 교차점·나사'],
+  ['circle','fill',['#8944ab'],'#BF5AF2','켜진 교차점'],
+  ['rect','stroke',['#8944ab'],'#BF5AF2','보라 테두리'],
+  ['path','stroke',['#8944ab'],'#BF5AF2','보라 선'],
+  ['path','stroke',['#2c2c2e'],'#8E8E93','짙은 케이블'],
+  ['path','stroke',['#aeb6c3','#9aa3b2'],'#636366','회색 케이블·테두리'],
+  ['text','fill',['#1f2532','#1c1c1e'],'#F5F5F7','본문 글자'],
+  ['text','fill',['#687386','#8a8a8e'],'#AEAEB2','보조 글자'],
+  ['text','fill',['#0057d8','#007aff'],'#409CFF','파랑 글자'],
+  ['text','fill',['#1f3b8f'],'#8FB4FF','짙은 파랑 글자'],
+  ['text','fill',['#7669ef'],'#A29BFF','남보라 글자'],
+  ['text','fill',['#9a5a00','#b86e00','#b25e00'],'#FFB340','주황 글자'],
+  ['text','stroke',['#fff'],'#1C1C1E','글자 테두리(배경색과 같게)'],
+  ['text','fill',['#8944ab'],'#DA8FFF','보라 글자'],
+  ['tspan','fill',['#8944ab'],'#DA8FFF','보라 글자(tspan)'],
+];
+const flowCss=()=>FLOW_DARK.map(([tag,prop,froms,to,note])=>
+  `/* ${note} */ ${froms.map(c=>`#rtcom-design svg.rt-pg-flow-svg ${tag}[${prop}="${c}" i]`).join(',')}{${prop}:${to}}`);
 
 const block=`${START}
 /* 기기 설정이 다크일 때만 적용한다(screen 한정: 인쇄는 항상 라이트). 라이트 화면은 이 블록의 영향을 받지 않는다.
@@ -189,6 +222,9 @@ function EXTRA(){
     '/* 손 규칙: 카드 판넬 사진(검은 몸체) 받침은 0.178 결정대로 옅은 회색을 유지한다. */',
     '#rtcom-design .rt-palette-tile img,#rtcom-design .rt-link-flow-node img[src*="assets/cards/"]{background:#eef1f5}',
     '#rtcom-design .rt-card-info-plate{background:#f2f5fa}',
+    '/* 손 규칙(0.275): Signal Flow 그림 색 바꿈표. 표는 이 도구의 FLOW_DARK. 크게 보기 창의 그림 칸은 카드색 작업판으로 구분한다. */',
+    '#rtcom-design .rt-flow-zoom-canvas:has(svg.rt-pg-flow-svg){background:#1C1C1E}',
+    ...flowCss(),
   ].map(l=>'  '+l).join('\n');
 }
 

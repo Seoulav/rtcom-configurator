@@ -172,10 +172,11 @@
     // 0.195 범례 셋째 값 'none'은 표시 없이 글만 적는다(전송기 "최대 전송 거리" 안내 등).
     // 0.194 opts: label(그림 이름)·steps(펼치는 "그림 설명" 목록, 그림 대체 설명으로도 씀)·minWidth(휴대폰에서 글자가 너무 작아지지 않게 하는 최소 폭).
     // 범례 항목의 셋째 값이 'dash'이면 보조 경로(점선)로 그린다. 그림 칸은 키보드로 초점을 받아 좌우 방향키로 밀 수 있다.
+    // 0.275 다크 모드 ③ 1차: Signal Flow 그림 svg에 rt-pg-flow-svg를 붙여, 다크에서 흰 판 대신 그림 색 바꿈표(scripts/tools/dark_tokens.cjs FLOW_DARK)를 적용한다.
     const diagramWrap=(body,width,height,legendItems,opts={})=>{
       const desc=opts.steps?.length?opts.steps.join(' / '):'';
       const ariaLabel=[opts.label||'연결 다이어그램',desc].filter(Boolean).join(': ');
-      return `<div class="rt-pg-svg-wrap" tabindex="0" aria-label="${svgEsc(opts.label||'연결 다이어그램')} (좌우 방향키로 이동)"><svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${svgEsc(ariaLabel)}" preserveAspectRatio="xMidYMid meet"${opts.minWidth?` style="--rt-svg-min:${opts.minWidth}px"`:''}>${body}</svg></div>
+      return `<div class="rt-pg-svg-wrap" tabindex="0" aria-label="${svgEsc(opts.label||'연결 다이어그램')} (좌우 방향키로 이동)"><svg class="rt-pg-flow-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="${svgEsc(ariaLabel)}" preserveAspectRatio="xMidYMid meet"${opts.minWidth?` style="--rt-svg-min:${opts.minWidth}px"`:''}>${body}</svg></div>
       <p class="rt-pg-svg-hint">좌우로 밀어서 볼 수 있습니다.</p>
       ${legendItems.length?`<ul class="rt-pg-legend">${legendItems.map(([color,label,style])=>`<li>${style==='dash'?`<i class="rt-pg-legend-dash" style="border-top-color:${color}"></i>`:style==='none'?'':`<i style="background:${color}"></i>`}${svgEsc(label)}</li>`).join('')}</ul>`:''}${opts.steps?.length?`<details class="rt-pg-flow-desc"><summary>그림 설명</summary><ul>${opts.steps.map(step=>`<li>${svgEsc(step)}</li>`).join('')}</ul></details>`:''}`;
     };
