@@ -146,7 +146,7 @@ const lits=literalOverrides(base);
 
 // 밝은 판으로 남기는 그림(B③에서 그림별로 다크 색을 정하기 전까지): 직접 적힌 SVG 색이 밝은 면을 전제로 하므로
 // 다크에서도 흰 판을 깔고, 판 안에서는 색 변수를 라이트 값으로 되돌린다.
-const PLATES=['#rtcom-design .rt-pg-svg-wrap>svg:not(.rt-pg-flow-svg)','#rtcom-design svg.rt-pg-layout-matrix','#rtcom-design .rt-pg-dip-state svg:not(.rt-pg-dark-svg)','#rtcom-design .rt-pg-rotary svg:not(.rt-pg-dark-svg)','#rtcom-design svg.rt-layer-svg-wide','#rtcom-design svg.rt-layer-svg-tall','#rtcom-design .rt-flow-zoom-canvas svg:not(.rt-pg-flow-svg)'];
+const PLATES=['#rtcom-design .rt-pg-svg-wrap>svg:not(.rt-pg-flow-svg):not(.rt-pg-dark-svg)','#rtcom-design svg.rt-pg-layout-matrix:not(.rt-pg-dark-svg)','#rtcom-design .rt-pg-dip-state svg:not(.rt-pg-dark-svg)','#rtcom-design .rt-pg-rotary svg:not(.rt-pg-dark-svg)','#rtcom-design svg.rt-layer-svg-wide:not(.rt-pg-dark-svg)','#rtcom-design svg.rt-layer-svg-tall:not(.rt-pg-dark-svg)','#rtcom-design .rt-flow-zoom-canvas svg:not(.rt-pg-flow-svg):not(.rt-pg-dark-svg)'];
 const LIGHT_BASE='--rt-bg:#fff;--rt-soft:#f3f6fb;--rt-ink:#1f2532;--rt-muted:#687386;--rt-line:#dfe6f0;--rt-accent:#0057D8;--rt-tint:#edf4ff;'+
   '--pg-paper:#EEF1F6;--pg-ink:#1C1C1E;--pg-ink-2:#3A3A3C;--pg-muted:#6A6A6F;--pg-line:rgba(60,60,67,.12);--pg-line-2:rgba(60,60,67,.20);'+
   '--pg-accent:#007AFF;--pg-accent-2:#0057D8;--pg-accent-tint:rgba(0,122,255,.12);--pg-purple-ink:#8944AB;--pg-purple-tint:rgba(137,68,171,.09);'+
@@ -192,6 +192,10 @@ const DARK_SCOPES=['svg.rt-pg-flow-svg','svg.rt-pg-dark-svg'];
 const DARK_PARTS=[
   ['text','fill',['#d70015'],'#FF6961','빨간 × 표시(오토 셀렉팅 뺀 케이블)'],
   ['text','fill',['#6a6a6f'],'#AEAEB2','회색 이름표(오토 셀렉팅 HDMI IN 등)'],
+  // 0.277 3차: 시리즈 02 신호 구성의 연동 전송기 점선 칩 이름(CTR100 TX 등)
+  ['text','fill',['#3a3a3c'],'#AEAEB2','연동 전송기 점선 칩 이름(시리즈 02 신호 구성)'],
+  ['text','fill',['#56627a'],'#AEAEB2','WOS100 레이어 구성도 상자 밖 회색 설명'],
+  ['text','fill',['#1c4f8a'],'#8FB4FF','WOS100 레이어 구성도 카드 출력 동기 안내'],
   // EDID 로터리 가운데 손잡이(#e9f2ff)는 실물처럼 밝게 둔다(바늘이 잘 보이게). 표에 넣지 않는다.
 ];
 // 딥 스위치 그림에만: 검은 몸체(#2c2c2e)가 짙은 카드와 같은 색이 되어 윤곽이 사라지므로 한 단계 밝힌다(오토 셀렉팅 장비 그림의 같은 색은 그대로).

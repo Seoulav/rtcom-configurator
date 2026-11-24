@@ -64,7 +64,8 @@ test('0.275 다크 모드 ③ 1차: Signal Flow 그림은 흰 판에서 빼고 �
 
 test('0.276 다크 모드 ③ 2차: EDID 로터리·딥 스위치·오디오 설정·오토 셀렉팅 그림도 흰 판 대신 바꿈표',()=>{
   const src=fs.readFileSync(path.join(root,'src','products.js'),'utf8');
-  assert.equal((src.match(/<svg class="rt-pg-dark-svg" /g)||[]).length,6,'rotary·SET·LED·딥 스위치·오토 셀렉팅 단계·출력 그림 6곳');
+  // 0.277 3차에서 시리즈 02 신호 구성(<svg class="rt-pg-dark-svg" viewBox)이 더해져 7곳이 된다.
+  assert.equal((src.match(/<svg class="rt-pg-dark-svg" /g)||[]).length,7,'rotary·SET·LED·딥 스위치·오토 셀렉팅 단계·출력 그림 6곳 + 시리즈 신호 구성(0.277)');
   for(const sel of ['.rt-pg-dip-state svg:not(.rt-pg-dark-svg)','.rt-pg-rotary svg:not(.rt-pg-dark-svg)'])assert.ok(block.includes(sel),sel);
   for(const rule of [
     'svg.rt-pg-dark-svg text[fill="#8a8a8e" i]','svg.rt-pg-dark-svg rect[fill="#fff" i]',
@@ -74,4 +75,18 @@ test('0.276 다크 모드 ③ 2차: EDID 로터리·딥 스위치·오디오 설
   // 로터리 가운데 손잡이(#e9f2ff)는 실물처럼 밝게 둔다.
   assert.ok(!block.includes('circle[fill="#e9f2ff" i]'));
   assert.ok(!css.replace(block,'').includes('rt-pg-dark-svg'),'다크 블록 밖에 rt-pg-dark-svg 규칙이 없어야 함');
+});
+
+test('0.277 다크 모드 ③ 3차: 06 화면 구성 모드·시리즈 02 신호 구성·WOS100 레이어 그림도 흰 판 대신 바꿈표',()=>{
+  const src=fs.readFileSync(path.join(root,'src','products.js'),'utf8');
+  const app=fs.readFileSync(path.join(root,'src','app.js'),'utf8');
+  assert.ok(src.includes('<svg class="rt-pg-layout-matrix rt-pg-dark-svg" '),'06 화면 구성 모드 크로스포인트 그림');
+  assert.ok(/<svg class="rt-pg-dark-svg" viewBox="0 0 \$\{W\} \$\{H\}" width="100%" role="img" aria-label="신호 구성">/.test(src),'시리즈 02 신호 구성 그림');
+  for(const cls of ['rt-layer-svg-wide','rt-layer-svg-tall'])assert.ok(app.includes(`<svg class="${cls} rt-pg-dark-svg" `),cls);
+  // 흰 판(PLATES)은 rt-pg-dark-svg가 아닌 그림에만 남는다(Port Map 실물 사진 그림 등).
+  for(const sel of ['.rt-pg-svg-wrap>svg:not(.rt-pg-flow-svg):not(.rt-pg-dark-svg)','svg.rt-pg-layout-matrix:not(.rt-pg-dark-svg)','svg.rt-layer-svg-wide:not(.rt-pg-dark-svg)','svg.rt-layer-svg-tall:not(.rt-pg-dark-svg)'])assert.ok(block.includes(sel),sel);
+  assert.ok(block.includes('svg.rt-pg-dark-svg text[fill="#3a3a3c" i]{fill:#AEAEB2}'),'연동 전송기 점선 칩 이름');
+  assert.ok(block.includes('svg.rt-pg-dark-svg text[fill="#56627a" i]{fill:#AEAEB2}'),'WOS100 레이어 회색 설명');
+  assert.ok(block.includes('svg.rt-pg-dark-svg text[fill="#1c4f8a" i]{fill:#8FB4FF}'),'WOS100 레이어 동기 안내');
+  assert.ok(!block.includes('svg.rt-pg-dark-svg rect[fill="#3a3a3c" i]'),'점선 칩 이름 규칙은 글자에만');
 });
