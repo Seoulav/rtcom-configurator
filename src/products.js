@@ -768,6 +768,10 @@
       // 0.267: XDM-PSU·PSE와 같은 "크게 보기"(CAD식 이동·확대 창). 그림을 눌러도 열린다(rt-psu-anim 표시).
       return `<div class="rt-flow-zoom-bar"><button type="button" class="rt-pg-btn" data-flow-zoom>⤢ 크게 보기</button></div>`+diagramWrap(`<g class="rt-psu-anim">${body}</g>`,width,height,captions,{label:`${item.model} Signal Flow`,steps});
     }
+    // 0.274(사용자 요청 2026-11-16 "다음 단계 모두 진행해줘" = 0.267 보고의 제안 2): 03 Signal Flow가 있는 모든 단일 제품에 "크게 보기" 버튼 줄을 붙인다.
+    // XDM-PSU·PSE·MR4S는 그림 함수가 이미 버튼 줄을 넣으므로(그림을 눌러도 열림) 그대로 두고, 나머지는 버튼으로만 연다(휴대폰 가로 스크롤 그림을 눌러도 창이 뜨지 않게).
+    const FLOW_ZOOM_BAR='<div class="rt-flow-zoom-bar"><button type="button" class="rt-pg-btn" data-flow-zoom>⤢ 크게 보기</button></div>';
+    const withFlowZoom=diagram=>!diagram||diagram.includes('data-flow-zoom')||!diagram.includes('rt-pg-svg-wrap')?diagram:FLOW_ZOOM_BAR+diagram;
     function connectionDiagram(item){
       if(item.group==='cable')return cableDiagram(item);
       if(item.group==='distribution'||item.group==='integrated')return ioFlowDiagram(item);
@@ -1343,7 +1347,7 @@
         </div>
         <div class="rt-pg-col">
           ${portSection?`<section class="rt-pg-card rt-pg-col-mobile-2"><h2><span class="rt-pg-idx">02</span>Port Map <span class="rt-pg-note">— ${item.portMap?([].concat(item.portMap)[0].basis||'실제 제품 사진 기준'):'입출력 표 기준'}</span></h2>${portSection}</section>`:''}
-          ${diagram?`<section class="rt-pg-card rt-pg-col-mobile-3"><h2><span class="rt-pg-idx">03</span>Signal Flow</h2>${diagram}</section>`:''}
+          ${diagram?`<section class="rt-pg-card rt-pg-col-mobile-3"><h2><span class="rt-pg-idx">03</span>Signal Flow</h2>${withFlowZoom(diagram)}</section>`:''}
           ${recordSection(item,diagram,photo)}
         </div>
       </div>
@@ -1792,11 +1796,13 @@
       if(typeof ResizeObserver==='function')new ResizeObserver(()=>{if(dlg.open)setFlowZoom(dlg,Number(dlg.dataset.zoom)||1)}).observe(dlg);
     }
     function openFlowZoom(section){
-      const svg=section?.querySelector('.rt-pg-svg-wrap svg');
+      // 0.274: SPX-R6처럼 TX/RX 구성을 바꿔 보는 그림은 숨긴 쪽(hidden)이 함께 있으므로, 지금 보이는 그림과 그 범례를 복사한다.
+      const shown=el=>!el.closest('[hidden]');
+      const svg=[...(section?.querySelectorAll('.rt-pg-svg-wrap svg')||[])].find(shown);
       if(!svg)return;
       // 0.101(사용자 지적 "확대시 범례가 안보인다 같이 확대되게해줘"): 범례(rt-pg-legend)는 svg 바깥의 형제 요소라 확대 창에 svg만 복사하면 통째로 빠졌다.
       // 확대 배율과 무관하게 항상 읽을 수 있도록 확대 창 머리글 아래에 고정 줄로 넣는다(그림 캔버스 자체를 확대·축소해도 범례 글자 크기는 유지됨).
-      const legend=section?.querySelector('.rt-pg-legend');
+      const legend=[...(section?.querySelectorAll('.rt-pg-legend')||[])].find(shown);
       let dlg=body.querySelector('dialog.rt-flow-zoom:not(.rt-photo-zoom):not(.rt-doc-zoom)');
       if(!dlg){
         dlg=document.createElement('dialog');dlg.className='rt-flow-zoom';dlg.setAttribute('aria-label','Signal Flow 크게 보기');

@@ -980,3 +980,11 @@ test('0.273: 제품 상세를 열면 주소창을 product-<id>.html로 맞추고
   const {productPageHtml}=require('../scripts/build-share-pages.cjs');
   assert.throws(()=>productPageHtml('<html><head></head><body></body></html>',{id:'x',productName:'X',description:'설명 설명 설명 설명'}),/head 형식/);
 });
+
+test('0.274: Signal Flow가 있는 모든 단일 제품에 크게 보기, 확대 창은 보이는 그림(SPX-R6 TX/RX)을 복사',()=>{
+  const src=read('src/products.js');
+  assert.match(src,/const withFlowZoom=diagram=>!diagram\|\|diagram\.includes\('data-flow-zoom'\)\|\|!diagram\.includes\('rt-pg-svg-wrap'\)\?diagram:FLOW_ZOOM_BAR\+diagram;/,'이미 버튼이 있는 그림(PSU·PSE·MR4S)은 한 번만');
+  assert.match(src,/<span class="rt-pg-idx">03<\/span>Signal Flow<\/h2>\$\{withFlowZoom\(diagram\)\}/);
+  assert.match(src,/const svg=\[\.\.\.\(section\?\.querySelectorAll\('\.rt-pg-svg-wrap svg'\)\|\|\[\]\)\]\.find\(shown\);/,'숨긴 쪽(hidden) 그림은 건너뛴다');
+  assert.match(src,/const legend=\[\.\.\.\(section\?\.querySelectorAll\('\.rt-pg-legend'\)\|\|\[\]\)\]\.find\(shown\);/);
+});
