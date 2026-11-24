@@ -42,3 +42,22 @@ test('사진 판넬·그림 판·보고서 미리보기는 다크에서도 밝�
   for(const sel of ['.rt-pg-svg-wrap>svg','svg.rt-layer-svg-wide','.rt-flow-zoom-canvas svg','.rt-report-paper','.rt-card-info-plate{background:#f2f5fa}'])assert.ok(block.includes(sel),sel);
   assert.match(block,/\.rt-report-paper\{color-scheme:light;background:#fff;/);
 });
+
+test('0.275 다크 모드 ③ 1차: Signal Flow 그림은 흰 판에서 빼고 그림 색 바꿈표로 칠한다',()=>{
+  const src=fs.readFileSync(path.join(root,'src','products.js'),'utf8');
+  assert.match(src,/<svg class="rt-pg-flow-svg" viewBox=/,'diagramWrap이 Signal Flow 그림에 표시 클래스를 붙인다');
+  assert.ok(block.includes('.rt-pg-svg-wrap>svg:not(.rt-pg-flow-svg)'),'Port Map 등 나머지 그림은 흰 판 유지');
+  assert.ok(block.includes('.rt-flow-zoom-canvas svg:not(.rt-pg-flow-svg)'));
+  for(const rule of [
+    'svg.rt-pg-flow-svg rect[fill="#fff" i]','{fill:#3A3A3C}',
+    'svg.rt-pg-flow-svg text[fill="#1f2532" i]','{fill:#F5F5F7}',
+    'svg.rt-pg-flow-svg text[fill="#687386" i]','{fill:#AEAEB2}',
+    'svg.rt-pg-flow-svg rect[fill="#eef2f8" i]','{fill:#2C2C2E}',
+    '.rt-flow-zoom-canvas:has(svg.rt-pg-flow-svg){background:#1C1C1E}',
+  ])assert.ok(block.includes(rule),rule);
+  // 흰 글자(색 배지 위)는 바꾸지 않는다.
+  assert.ok(!block.includes('svg.rt-pg-flow-svg text[fill="#fff" i]'));
+  // 라이트 화면에는 이 클래스를 쓰는 규칙이 없다(다크 블록 밖).
+  const outside=css.replace(block,'');
+  assert.ok(!outside.includes('rt-pg-flow-svg'),'다크 블록 밖에 rt-pg-flow-svg 규칙이 없어야 함');
+});

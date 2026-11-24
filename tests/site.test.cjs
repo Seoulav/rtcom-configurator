@@ -988,3 +988,12 @@ test('0.274: Signal Flow가 있는 모든 단일 제품에 크게 보기, 확대
   assert.match(src,/const svg=\[\.\.\.\(section\?\.querySelectorAll\('\.rt-pg-svg-wrap svg'\)\|\|\[\]\)\]\.find\(shown\);/,'숨긴 쪽(hidden) 그림은 건너뛴다');
   assert.match(src,/const legend=\[\.\.\.\(section\?\.querySelectorAll\('\.rt-pg-legend'\)\|\|\[\]\)\]\.find\(shown\);/);
 });
+
+test('0.275: Pages 배포는 만들기(build)와 배포(deploy) 두 작업으로 나눈다(업로드 직후 조회 0개 실패 방지)',()=>{
+  const wf=read('.github/workflows/pages.yml');
+  assert.match(wf,/\n  build:\n/);
+  assert.match(wf,/\n  deploy:\n    needs: build\n/);
+  const build=wf.slice(wf.indexOf('\n  build:'),wf.indexOf('\n  deploy:'));
+  assert.ok(build.includes('actions/upload-pages-artifact@')&&!build.includes('actions/deploy-pages@'),'업로드는 build 작업에만');
+  assert.ok(wf.slice(wf.indexOf('\n  deploy:')).includes('actions/deploy-pages@'),'배포는 deploy 작업에만');
+});
