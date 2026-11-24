@@ -1424,6 +1424,21 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     check('다크 모드에서 XDM 시리즈 02 신호 구성·QMS-88UX 06 크로스포인트 그림은 흰 판 없음, 연동 전송기 점선 칩 이름은 밝게(AEAEB2), 라이트는 원래 색(3A3A3C)',
       restDark.dark.bg==='rgba(0, 0, 0, 0)'&&restDark.dark.chip==='rgb(174, 174, 178)'&&restDark.light.chip==='rgb(58, 58, 60)'&&restDark.matrixBg==='rgba(0, 0, 0, 0)',
       JSON.stringify(restDark));
+    // 0.278 제품 실물 사진(다크: 받침 옅은 회색 #E6E6E6·사진 밝기 90%, 라이트: 그대로)과 목록 썸네일 넘침 없음, 공통 토큰(src/svt-tokens.css) 적용.
+    const photoDark=await (async()=>{
+      const read=()=>page.evaluate(()=>{const tile=document.querySelector('.rt-pg-gridcard .rt-pg-photo'),img=tile.querySelector('img');
+        const over=[...document.querySelectorAll('.rt-pg-gridcard .rt-pg-photo img')].filter(i=>{const r=i.getBoundingClientRect(),t=i.parentElement.getBoundingClientRect();return r.bottom>t.bottom+1||r.top<t.top-1}).length;
+        const root=getComputedStyle(document.documentElement),tab=document.querySelector('.rt-view-tabs a[aria-current=page]');
+        return {tile:getComputedStyle(tile).backgroundColor,filter:getComputedStyle(img).filter,over,accent:root.getPropertyValue('--svt-accent').trim(),tab:tab?getComputedStyle(tab).backgroundImage:''}});
+      await page.goto(`${home}#products`,{waitUntil:'networkidle'});await page.waitForSelector('.rt-pg-gridcard .rt-pg-photo img');
+      await page.emulateMedia({colorScheme:'dark'});const dark=await read();
+      await page.emulateMedia({colorScheme:'light'});const light=await read();
+      await page.emulateMedia({colorScheme:null});
+      return {dark,light};
+    })();
+    check('다크 모드에서 제품 목록 사진은 옅은 회색 받침(E6E6E6)·밝기 90%, 라이트는 그대로이고 썸네일이 칸 밖으로 넘치지 않으며 공통 토큰(--svt-accent·주요 버튼 그라데이션)이 적용됨',
+      photoDark.dark.tile==='rgb(230, 230, 230)'&&photoDark.dark.filter==='brightness(0.9)'&&photoDark.light.filter==='none'&&photoDark.light.tile!=='rgb(230, 230, 230)'&&photoDark.dark.over===0&&photoDark.light.over===0&&photoDark.light.accent==='#0057D8'&&/rgb\(51, 112, 230\)/.test(photoDark.light.tab),
+      JSON.stringify(photoDark));
     // 0.196 XDM-CTR100 PSE 03 Signal Flow: XDM-PSU와 같은 장비 그림·흐르는 케이블(조합 1·2, 조합 2의 전원은 역방향)·크게 보기, PSU 05 주요 기능 첫 줄은 "개별 전원 어댑터 불필요"(사용자 요청 2026-10-02).
     await page.goto(`${home}#products/xdm-ctr100-pse`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-psu-anim');
