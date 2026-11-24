@@ -1378,7 +1378,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       return {qBtn,q,r6};
     })();
     check('Signal Flow가 있는 모든 제품에 "크게 보기": QMS-88UX 버튼 1개로 100% 창(그림·범례), SPX-R6은 RX 구성으로 바꾼 뒤 열면 RX 그림이 확대됨',allZoom.qBtn===1&&allZoom.q.level==='100%'&&allZoom.q.svg&&allZoom.q.legend&&allZoom.r6.rx&&allZoom.r6.catIn,JSON.stringify(allZoom));
-    // 0.275 다크 모드 ③ 1차(사용자 결정 2026-11-24 "a로 진행해줘"): 다크에서 Signal Flow 그림은 흰 판 없이 밝은 글자·짙은 상자로, Port Map 사진 그림은 흰 판 유지, 라이트로 돌아오면 원래 색.
+    // 0.275 다크 모드 ③ 1차(사용자 결정 2026-11-24 "a로 진행해줘"): 다크에서 Signal Flow 그림은 흰 판 없이 밝은 글자·짙은 상자로, Port Map 사진 그림은 밝은 판 유지(0.278부터 옅은 회색 E6E6E6), 라이트로 돌아오면 원래 색.
     const flowDark=await (async()=>{
       await page.goto(`${home}#products/qms-88ux`,{waitUntil:'networkidle'});
       await page.waitForSelector('svg.rt-pg-flow-svg');
@@ -1389,8 +1389,8 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       await page.emulateMedia({colorScheme:null});
       return {dark,light};
     })();
-    check('다크 모드에서 Signal Flow 그림은 흰 판 없이 밝은 글자(F5F5F7)·짙은 칩(3A3A3C), Port Map 사진 그림은 흰 판 유지, 라이트는 원래 색(1C1C1E 글자·흰 칩·Port Map 투명 바탕)',
-      flowDark.dark.bg==='rgba(0, 0, 0, 0)'&&flowDark.dark.text==='rgb(245, 245, 247)'&&flowDark.dark.chip==='rgb(58, 58, 60)'&&flowDark.dark.port==='rgb(255, 255, 255)'&&flowDark.light.text==='rgb(28, 28, 30)'&&flowDark.light.chip==='rgb(255, 255, 255)'&&flowDark.light.port==='rgba(0, 0, 0, 0)',
+    check('다크 모드에서 Signal Flow 그림은 흰 판 없이 밝은 글자(F5F5F7)·짙은 칩(3A3A3C), Port Map 사진 그림은 밝은 판 유지(0.278부터 옅은 회색 E6E6E6), 라이트는 원래 색(1C1C1E 글자·흰 칩·Port Map 투명 바탕)',
+      flowDark.dark.bg==='rgba(0, 0, 0, 0)'&&flowDark.dark.text==='rgb(245, 245, 247)'&&flowDark.dark.chip==='rgb(58, 58, 60)'&&flowDark.dark.port==='rgb(230, 230, 230)'&&flowDark.light.text==='rgb(28, 28, 30)'&&flowDark.light.chip==='rgb(255, 255, 255)'&&flowDark.light.port==='rgba(0, 0, 0, 0)',
       JSON.stringify(flowDark));
     // 0.276 다크 모드 ③ 2차: HDS-42MU EDID 로터리·딥 스위치·오토 셀렉팅 그림이 다크에서 흰 판 없이 밝은 글자, 라이트로 돌아오면 원래 색.
     const partsDark=await (async()=>{
