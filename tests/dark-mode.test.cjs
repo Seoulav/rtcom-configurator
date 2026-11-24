@@ -61,3 +61,17 @@ test('0.275 다크 모드 ③ 1차: Signal Flow 그림은 흰 판에서 빼고 �
   const outside=css.replace(block,'');
   assert.ok(!outside.includes('rt-pg-flow-svg'),'다크 블록 밖에 rt-pg-flow-svg 규칙이 없어야 함');
 });
+
+test('0.276 다크 모드 ③ 2차: EDID 로터리·딥 스위치·오디오 설정·오토 셀렉팅 그림도 흰 판 대신 바꿈표',()=>{
+  const src=fs.readFileSync(path.join(root,'src','products.js'),'utf8');
+  assert.equal((src.match(/<svg class="rt-pg-dark-svg" /g)||[]).length,6,'rotary·SET·LED·딥 스위치·오토 셀렉팅 단계·출력 그림 6곳');
+  for(const sel of ['.rt-pg-dip-state svg:not(.rt-pg-dark-svg)','.rt-pg-rotary svg:not(.rt-pg-dark-svg)'])assert.ok(block.includes(sel),sel);
+  for(const rule of [
+    'svg.rt-pg-dark-svg text[fill="#8a8a8e" i]','svg.rt-pg-dark-svg rect[fill="#fff" i]',
+    '.rt-pg-dip-state svg.rt-pg-dark-svg rect[fill="#2c2c2e" i]{fill:#48484A}',
+    'svg.rt-pg-dark-svg text[fill="#d70015" i]{fill:#FF6961}','svg.rt-pg-dark-svg text[fill="#6a6a6f" i]{fill:#AEAEB2}',
+  ])assert.ok(block.includes(rule),rule);
+  // 로터리 가운데 손잡이(#e9f2ff)는 실물처럼 밝게 둔다.
+  assert.ok(!block.includes('circle[fill="#e9f2ff" i]'));
+  assert.ok(!css.replace(block,'').includes('rt-pg-dark-svg'),'다크 블록 밖에 rt-pg-dark-svg 규칙이 없어야 함');
+});

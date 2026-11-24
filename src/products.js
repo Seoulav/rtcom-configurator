@@ -173,6 +173,7 @@
     // 0.194 opts: label(그림 이름)·steps(펼치는 "그림 설명" 목록, 그림 대체 설명으로도 씀)·minWidth(휴대폰에서 글자가 너무 작아지지 않게 하는 최소 폭).
     // 범례 항목의 셋째 값이 'dash'이면 보조 경로(점선)로 그린다. 그림 칸은 키보드로 초점을 받아 좌우 방향키로 밀 수 있다.
     // 0.275 다크 모드 ③ 1차: Signal Flow 그림 svg에 rt-pg-flow-svg를 붙여, 다크에서 흰 판 대신 그림 색 바꿈표(scripts/tools/dark_tokens.cjs FLOW_DARK)를 적용한다.
+    // 0.276 다크 모드 ③ 2차: 06 EDID 로터리·07 딥 스위치·오디오 설정 칸·08 오토 셀렉팅 그림 svg에는 rt-pg-dark-svg를 붙여 같은 바꿈표를 적용한다.
     const diagramWrap=(body,width,height,legendItems,opts={})=>{
       const desc=opts.steps?.length?opts.steps.join(' / '):'';
       const ariaLabel=[opts.label||'연결 다이어그램',desc].filter(Boolean).join(': ');
@@ -1134,7 +1135,7 @@
       const deg=idx*22.5;
       body+=`<g transform="rotate(${deg} ${c} ${c})"><rect x="${c-3}" y="${c-16}" width="6" height="32" rx="2" fill="#1C1C1E"/><path d="M${c} ${c-27}l-6 9h12z" fill="#1C1C1E"/></g>`;
       labels.forEach((label,i)=>{const [x,y]=at(i,47);const on=i===idx;body+=on?`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="8" fill="#007AFF"/><text x="${x.toFixed(1)}" y="${(y+3.5).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">${label}</text>`:`<text x="${x.toFixed(1)}" y="${(y+3.2).toFixed(1)}" text-anchor="middle" font-size="9" font-weight="600" fill="#8A8A8E">${label}</text>`;});
-      return `<svg viewBox="0 0 ${S} ${S}" width="${S}" height="${S}" role="img" aria-label="${esc(opts.name||'EDID 로터리')} ${esc(code)}번">${body}</svg>`;
+      return `<svg class="rt-pg-dark-svg" viewBox="0 0 ${S} ${S}" width="${S}" height="${S}" role="img" aria-label="${esc(opts.name||'EDID 로터리')} ${esc(code)}번">${body}</svg>`;
     }
     // 대표 설정: 기본값 코드(edidSwitch.default의 "0 = …" 앞 글자)와 자주 쓰는 코드(table[].highlight)를 코드 순으로 최대 4개 보여준다.
     // examples "all": 표의 모든 코드를 그림으로 보여주고, table[].group이 있으면 묶음마다 제목을 붙여 한 줄씩 둔다(XDM-FT101: Source 0~3 / Analog 8~11, 사용자 요청 2026-09-27).
@@ -1198,7 +1199,7 @@
         if(active)body+=`<rect x="${x+2}" y="${up?y0+2:y0+h-20}" width="${sw-4}" height="18" rx="2" fill="#fff" stroke="#007AFF" stroke-width="2"/>`;
         body+=`<text x="${x+sw/2}" y="${y0+h+17}" text-anchor="middle" font-size="12" font-weight="${active?800:600}" fill="${active?'#1c1c1e':'#a1a1a6'}">${i}</text>`;
       }
-      return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="딥 스위치 ${Object.entries(states).map(([n,v])=>`${n}번 ${v?'ON':'OFF'}`).join(' · ')}">${body}</svg>`;
+      return `<svg class="rt-pg-dark-svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="딥 스위치 ${Object.entries(states).map(([n,v])=>`${n}번 ${v?'ON':'OFF'}`).join(' · ')}">${body}</svg>`;
     }
     // 0.263 오토 셀렉팅 3단계 그림(HDS-42MU·HDS-21U, 알티컴 펌웨어 개선 후 자사 시험 2026-10-28, 사용자 요청 "오토 스위칭 모드에 대해서 조금 손쉽게 표현해 줄 수 있으면 좋겠어").
     // 단계마다 장비 입력 단자에 꽂힌 HDMI 케이블과 화면에 나오는 입력 번호를 그린다. event: plug(새로 꽂음, 초록) · unplug(뺌, 회색 점선).
@@ -1217,7 +1218,7 @@
       g+=`<path d="M${bx+bw+2} ${my+mh/2}H${bx+bw+16}M${bx+bw+12} ${my+mh/2-4}l4 4-4 4" fill="none" stroke="#3A3A3C" stroke-width="2"/>`;
       g+=`<rect x="${bx+bw+20}" y="${my}" width="${W-bx-bw-26}" height="${mh}" rx="6" fill="${step.changed?'#0057D8':'#1C1C1E'}"/><rect x="${bx+bw+20+(W-bx-bw-26)/2-8}" y="${my+mh}" width="16" height="8" fill="#3A3A3C"/>`;
       g+=`<text x="${bx+bw+20+(W-bx-bw-26)/2}" y="${my+mh/2-2}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">입력</text><text x="${bx+bw+20+(W-bx-bw-26)/2}" y="${my+mh/2+18}" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">${step.show}</text>`;
-      return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(step.title)}: 화면에 입력 ${step.show}번">${g}</svg>`;
+      return `<svg class="rt-pg-dark-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(step.title)}: 화면에 입력 ${step.show}번">${g}</svg>`;
     }
     // outputs(HDS-42MU): 다른 딥 스위치 설정에 따라 자동으로 바뀌는 출력이 다를 때, 설정마다 출력 모니터를 그린다. 바뀌는 출력은 파랑, 그대로인 출력은 검정.
     function autoOutputsGraphic(total,outs,from,to){
@@ -1229,7 +1230,7 @@
         g+=`<text x="${x+mw/2}" y="30" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">입력</text><text x="${x+mw/2}" y="54" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">${on?to:from}</text>`;
         g+=`<text x="${x+mw/2}" y="88" text-anchor="middle" font-size="11" font-weight="800" fill="${on?'#0057D8':'#6A6A6F'}">OUT ${i}${on?' · 자동 전환':' · 그대로'}</text>`;
       }
-      return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${outs.map(n=>`OUT ${n}`).join('·')} 자동 전환">${g}</svg>`;
+      return `<svg class="rt-pg-dark-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${outs.map(n=>`OUT ${n}`).join('·')} 자동 전환">${g}</svg>`;
     }
     // 0.263 오토 셀렉팅 카드: 딥 스위치 설정과 관계없이 동작하므로(사용자 확인 2026-10-28 "딥스위치와 상관없이 오토셀렉팅이야") 딥 스위치 카드 다음 별도 카드로 둔다.
     function autoSelectSection(item){
@@ -1272,14 +1273,14 @@
     function setButtonGraphic(label){
       const S=112,c=S/2;
       const body=`<circle cx="${c}" cy="${c-4}" r="30" fill="#1C1C1E"/><circle cx="${c}" cy="${c-4}" r="15" fill="#48484A" stroke="#8E8E93" stroke-width="1.5"/><circle cx="${c}" cy="${c-4}" r="21" fill="none" stroke="#007AFF" stroke-width="3"/><path d="M${c} ${c-50}v12M${c-6} ${c-44}l6 6 6-6" fill="none" stroke="#007AFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><text x="${c}" y="${c+42}" text-anchor="middle" font-size="11" font-weight="800" fill="#1C1C1E">${esc(label)}</text>`;
-      return `<svg viewBox="0 0 ${S} ${S}" width="${S}" height="${S}" role="img" aria-label="${esc(label)} 버튼 누름">${body}</svg>`;
+      return `<svg class="rt-pg-dark-svg" viewBox="0 0 ${S} ${S}" width="${S}" height="${S}" role="img" aria-label="${esc(label)} 버튼 누름">${body}</svg>`;
     }
     function ledGraphic(label,blink){
       const S=112,c=S/2,cy=c-4;
       let body=`<circle cx="${c}" cy="${cy}" r="30" fill="#1C1C1E"/><circle cx="${c}" cy="${cy}" r="18" fill="#34C759" opacity=".25"/>`;
       if(blink)body+=`<g stroke="#34C759" stroke-width="2.2" stroke-linecap="round">${[0,45,90,135,180,225,270,315].map(a=>{const r1=14,r2=22,rad=a*Math.PI/180;return `<path d="M${(c+r1*Math.cos(rad)).toFixed(1)} ${(cy+r1*Math.sin(rad)).toFixed(1)}L${(c+r2*Math.cos(rad)).toFixed(1)} ${(cy+r2*Math.sin(rad)).toFixed(1)}"/>`}).join('')}</g>`;
       body+=`<circle cx="${c}" cy="${cy}" r="8" fill="#34C759"${blink?' class="rt-pg-led-blink"':''}/><text x="${c}" y="${c+42}" text-anchor="middle" font-size="11" font-weight="800" fill="#1C1C1E">${esc(label)}</text>`;
-      return `<svg viewBox="0 0 ${S} ${S}" width="${S}" height="${S}" role="img" aria-label="${esc(label)} LED ${blink?'깜빡임':'깜빡이지 않음'}">${body}</svg>`;
+      return `<svg class="rt-pg-dark-svg" viewBox="0 0 ${S} ${S}" width="${S}" height="${S}" role="img" aria-label="${esc(label)} LED ${blink?'깜빡임':'깜빡이지 않음'}">${body}</svg>`;
     }
     function audioStepsRow(am){
       const pn=am.panel;
