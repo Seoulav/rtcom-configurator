@@ -1378,7 +1378,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       return {qBtn,q,r6};
     })();
     check('Signal Flow가 있는 모든 제품에 "크게 보기": QMS-88UX 버튼 1개로 100% 창(그림·범례), SPX-R6은 RX 구성으로 바꾼 뒤 열면 RX 그림이 확대됨',allZoom.qBtn===1&&allZoom.q.level==='100%'&&allZoom.q.svg&&allZoom.q.legend&&allZoom.r6.rx&&allZoom.r6.catIn,JSON.stringify(allZoom));
-    // 0.275 다크 모드 ③ 1차(사용자 결정 2026-11-24 "a로 진행해줘"): 다크에서 Signal Flow 그림은 흰 판 없이 밝은 글자·짙은 상자로, Port Map 사진 그림은 흰 판 유지, 라이트로 돌아오면 원래 색.
+    // 0.275 다크 모드 ③ 1차(사용자 결정 2026-11-24 "a로 진행해줘"): 다크에서 Signal Flow 그림은 흰 판 없이 밝은 글자·짙은 상자로, Port Map 사진 그림은 밝은 판 유지(0.278부터 옅은 회색 E6E6E6), 라이트로 돌아오면 원래 색.
     const flowDark=await (async()=>{
       await page.goto(`${home}#products/qms-88ux`,{waitUntil:'networkidle'});
       await page.waitForSelector('svg.rt-pg-flow-svg');
@@ -1389,8 +1389,8 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       await page.emulateMedia({colorScheme:null});
       return {dark,light};
     })();
-    check('다크 모드에서 Signal Flow 그림은 흰 판 없이 밝은 글자(F5F5F7)·짙은 칩(3A3A3C), Port Map 사진 그림은 흰 판 유지, 라이트는 원래 색(1C1C1E 글자·흰 칩·Port Map 투명 바탕)',
-      flowDark.dark.bg==='rgba(0, 0, 0, 0)'&&flowDark.dark.text==='rgb(245, 245, 247)'&&flowDark.dark.chip==='rgb(58, 58, 60)'&&flowDark.dark.port==='rgb(255, 255, 255)'&&flowDark.light.text==='rgb(28, 28, 30)'&&flowDark.light.chip==='rgb(255, 255, 255)'&&flowDark.light.port==='rgba(0, 0, 0, 0)',
+    check('다크 모드에서 Signal Flow 그림은 흰 판 없이 밝은 글자(F5F5F7)·짙은 칩(3A3A3C), Port Map 사진 그림은 밝은 판 유지(0.278부터 옅은 회색 E6E6E6), 라이트는 원래 색(1C1C1E 글자·흰 칩·Port Map 투명 바탕)',
+      flowDark.dark.bg==='rgba(0, 0, 0, 0)'&&flowDark.dark.text==='rgb(245, 245, 247)'&&flowDark.dark.chip==='rgb(58, 58, 60)'&&flowDark.dark.port==='rgb(230, 230, 230)'&&flowDark.light.text==='rgb(28, 28, 30)'&&flowDark.light.chip==='rgb(255, 255, 255)'&&flowDark.light.port==='rgba(0, 0, 0, 0)',
       JSON.stringify(flowDark));
     // 0.276 다크 모드 ③ 2차: HDS-42MU EDID 로터리·딥 스위치·오토 셀렉팅 그림이 다크에서 흰 판 없이 밝은 글자, 라이트로 돌아오면 원래 색.
     const partsDark=await (async()=>{
@@ -1424,6 +1424,21 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     check('다크 모드에서 XDM 시리즈 02 신호 구성·QMS-88UX 06 크로스포인트 그림은 흰 판 없음, 연동 전송기 점선 칩 이름은 밝게(AEAEB2), 라이트는 원래 색(3A3A3C)',
       restDark.dark.bg==='rgba(0, 0, 0, 0)'&&restDark.dark.chip==='rgb(174, 174, 178)'&&restDark.light.chip==='rgb(58, 58, 60)'&&restDark.matrixBg==='rgba(0, 0, 0, 0)',
       JSON.stringify(restDark));
+    // 0.278 제품 실물 사진(다크: 받침 옅은 회색 #E6E6E6·사진 밝기 90%, 라이트: 그대로)과 목록 썸네일 넘침 없음, 공통 토큰(src/svt-tokens.css) 적용.
+    const photoDark=await (async()=>{
+      const read=()=>page.evaluate(()=>{const tile=document.querySelector('.rt-pg-gridcard .rt-pg-photo'),img=tile.querySelector('img');
+        const over=[...document.querySelectorAll('.rt-pg-gridcard .rt-pg-photo img')].filter(i=>{const r=i.getBoundingClientRect(),t=i.parentElement.getBoundingClientRect();return r.bottom>t.bottom+1||r.top<t.top-1}).length;
+        const root=getComputedStyle(document.documentElement),tab=document.querySelector('.rt-view-tabs a[aria-current=page]');
+        return {tile:getComputedStyle(tile).backgroundColor,filter:getComputedStyle(img).filter,over,accent:root.getPropertyValue('--svt-accent').trim(),tab:tab?getComputedStyle(tab).backgroundImage:''}});
+      await page.goto(`${home}#products`,{waitUntil:'networkidle'});await page.waitForSelector('.rt-pg-gridcard .rt-pg-photo img');
+      await page.emulateMedia({colorScheme:'dark'});const dark=await read();
+      await page.emulateMedia({colorScheme:'light'});const light=await read();
+      await page.emulateMedia({colorScheme:null});
+      return {dark,light};
+    })();
+    check('다크 모드에서 제품 목록 사진은 옅은 회색 받침(E6E6E6)·밝기 90%, 라이트는 그대로이고 썸네일이 칸 밖으로 넘치지 않으며 공통 토큰(--svt-accent·주요 버튼 그라데이션)이 적용됨',
+      photoDark.dark.tile==='rgb(230, 230, 230)'&&photoDark.dark.filter==='brightness(0.9)'&&photoDark.light.filter==='none'&&photoDark.light.tile!=='rgb(230, 230, 230)'&&photoDark.dark.over===0&&photoDark.light.over===0&&photoDark.light.accent==='#0057D8'&&/rgb\(51, 112, 230\)/.test(photoDark.light.tab),
+      JSON.stringify(photoDark));
     // 0.196 XDM-CTR100 PSE 03 Signal Flow: XDM-PSU와 같은 장비 그림·흐르는 케이블(조합 1·2, 조합 2의 전원은 역방향)·크게 보기, PSU 05 주요 기능 첫 줄은 "개별 전원 어댑터 불필요"(사용자 요청 2026-10-02).
     await page.goto(`${home}#products/xdm-ctr100-pse`,{waitUntil:'networkidle'});
     await page.waitForSelector('.rt-psu-anim');

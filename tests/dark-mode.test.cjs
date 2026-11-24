@@ -33,12 +33,16 @@ test('0.232 색 변수의 라이트 값은 이름과 같은 원래 색 그대로
 });
 
 test('다크 기준값: 카드 #1C1C1E, 글자 #F5F5F7, 보조 #8E8E93, 강조 글자 #409CFF, 페이지 #000',()=>{
-  for(const v of ['--rt-bg:#1C1C1E','--rt-ink:#F5F5F7','--rt-muted:#8E8E93','--rt-accent:#409CFF','--pg-paper:#000','--pg-glass-fill:rgba(44,44,46,.58)','--rt-bg-fff:#1C1C1E','--rt-fg-0057d8:#409CFF'])assert.ok(block.includes(v),v);
-  assert.ok(block.includes('html{background:#000}'));
+  // 0.278: 손으로 정한 다크 기준값은 공통 토큰(src/svt-tokens.css)의 --svt-dark-*를 읽는다.
+  const tokens=fs.readFileSync(path.join(root,'src','svt-tokens.css'),'utf8');
+  for(const [name,value] of [['dark-card','#1C1C1E'],['dark-ink','#F5F5F7'],['dark-muted','#8E8E93'],['dark-accent','#409CFF'],['dark-page','#000']])assert.ok(tokens.includes(`--svt-${name}:${value};`),name);
+  for(const v of ['--rt-bg:var(--svt-dark-card)','--rt-ink:var(--svt-dark-ink)','--rt-muted:var(--svt-dark-muted)','--rt-accent:var(--svt-dark-accent)','--pg-paper:var(--svt-dark-page)','--pg-glass-fill:rgba(44,44,46,.58)','--rt-bg-fff:#1C1C1E','--rt-fg-0057d8:#409CFF'])assert.ok(block.includes(v),v);
+  assert.ok(block.includes('html{background:var(--svt-dark-page)}'));
 });
 
 test('사진 판넬·그림 판·보고서 미리보기는 다크에서도 밝게 유지',()=>{
-  assert.ok(!/--rt-photo:/.test(block),'--rt-photo(사진 판넬)는 다크 값을 두지 않음');
+  // 0.278부터 제품 실물 사진 받침(--rt-photo)은 다크에서 옅은 회색(--svt-dark-photo #E6E6E6)이고 사진 밝기는 90%다(사용자 요청 2026-11-24).
+  assert.ok(block.includes('--rt-photo:var(--svt-dark-photo)'),'--rt-photo 다크 값');
   for(const sel of ['.rt-pg-svg-wrap>svg','svg.rt-layer-svg-wide','.rt-flow-zoom-canvas svg','.rt-report-paper','.rt-card-info-plate{background:#f2f5fa}'])assert.ok(block.includes(sel),sel);
   assert.match(block,/\.rt-report-paper\{color-scheme:light;background:#fff;/);
 });
@@ -89,4 +93,15 @@ test('0.277 다크 모드 ③ 3차: 06 화면 구성 모드·시리즈 02 신호
   assert.ok(block.includes('svg.rt-pg-dark-svg text[fill="#56627a" i]{fill:#AEAEB2}'),'WOS100 레이어 회색 설명');
   assert.ok(block.includes('svg.rt-pg-dark-svg text[fill="#1c4f8a" i]{fill:#8FB4FF}'),'WOS100 레이어 동기 안내');
   assert.ok(!block.includes('svg.rt-pg-dark-svg rect[fill="#3a3a3c" i]'),'점선 칩 이름 규칙은 글자에만');
+});
+
+test('0.278 제품 실물 사진: 다크에서 받침은 옅은 회색(--svt-dark-photo), 사진은 밝기 90%. 목록 썸네일은 사진 칸 안에 맞춘다',()=>{
+  const port='.rt-pg-svg-wrap>svg:not(.rt-pg-flow-svg):not(.rt-pg-dark-svg)';
+  assert.ok(block.includes(`#rtcom-design .rt-pg-gridcard .rt-pg-photo,#rtcom-design .rt-pg-diagram-photo,#rtcom-design ${port}{background:var(--svt-dark-photo)}`));
+  for(const sel of ['.rt-pg-gridcard .rt-pg-photo img','.rt-pg-diagram-photo img','.rt-pg-face img','.rt-pg-edid-photo img',`${port} image`,'.rt-photo-stage img','.rt-photo-tabs img','.rt-photo-lens'])assert.ok(block.includes(`#rtcom-design ${sel}`),sel);
+  assert.match(block,/\.rt-photo-lens\{filter:brightness\(\.9\)\}/);
+  assert.ok(!css.replace(block,'').includes('brightness(.9)'),'사진 밝기 조정은 다크 블록 안에만');
+  assert.ok(css.includes('#rtcom-design .rt-pg-gridcard .rt-pg-photo img{width:100%;height:100%;min-height:0;object-fit:contain}'),'썸네일이 칸 밖으로 넘치지 않음');
+  // 카드 판넬 사진(0.178)은 그대로
+  assert.ok(block.includes('.rt-palette-tile img,#rtcom-design .rt-link-flow-node img[src*="assets/cards/"]{background:#eef1f5}'));
 });

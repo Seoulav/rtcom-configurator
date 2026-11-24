@@ -1,0 +1,40 @@
+/* SVT 공통 디자인 토큰 v2 (0.278)
+   여러 사이트가 같은 색·글꼴 기준을 쓰도록 공통 값을 이 파일 하나에 모았다.
+   이 사이트의 src/styles.css와 다크 블록(scripts/tools/dark_tokens.cjs가 만듦)은 아래 값을 var(--svt-*)로만 읽는다.
+   다른 사이트에 쓸 때는 이 파일을 그대로 복사해 사이트 CSS보다 먼저 불러오고, 사이트 CSS에서 var(--svt-*)로 참조한다.
+   값을 바꾸면 이 사이트의 라이트·다크 화면이 함께 바뀌므로 화면 비교 검증을 거친다. */
+:root{
+  /* 글꼴: Pretendard(애플 시스템 글꼴과 호환), 화면 글자는 12px 이상(인쇄·보고서 제외, 0.228) */
+  --svt-font-sans:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"SF Pro Display","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  --svt-font-min:12px;
+
+  /* 라이트 */
+  --svt-paper:#EEF1F6;      /* 페이지 바탕 */
+  --svt-ink:#1C1C1E;        /* 본문 글자 */
+  --svt-ink-2:#3A3A3C;      /* 보조 본문 글자 */
+  --svt-muted:#6A6A6F;      /* 설명·캡션 글자(바탕 대비 4.75:1) */
+  --svt-accent:#0057D8;     /* 강조 글자·링크(흰 바탕 대비 6.26:1) */
+  --svt-accent-ui:#007AFF;  /* 선택 표시·아이콘 강조 */
+  --svt-cta:linear-gradient(135deg,#3370e6,#6d5cf0);  /* 주요 버튼 */
+  --svt-cta-ink:#fff;       /* 주요 버튼 글자 */
+  --svt-cta-shadow:#4f62ea33;
+  --svt-brand-mark:linear-gradient(150deg,#0A84FF,#5E5CE6 55%,#BF5AF2);  /* 앱 아이콘 */
+
+  /* 다크(기기 설정이 다크일 때 사이트가 고른다) */
+  --svt-dark-page:#000;
+  --svt-dark-card:#1C1C1E;
+  --svt-dark-card-2:#2C2C2E;
+  --svt-dark-ink:#F5F5F7;
+  --svt-dark-ink-2:#D1D1D6;
+  --svt-dark-muted:#8E8E93;
+  --svt-dark-accent:#409CFF;
+  --svt-dark-accent-ui:#0A84FF;
+  --svt-dark-photo:#E6E6E6; /* 제품 실물 사진 받침(사진 밝기 90%와 맞춤, 0.278) */
+
+  /* 신호 색(구성도 범례, 0.242): 신호 배지·범례·연결선 */
+  --svt-sig-hdmi:#E5242B;
+  --svt-sig-dp:#C55A11;
+  --svt-sig-sdi:#000000;
+  --svt-sig-cat:#00B050;
+  --svt-sig-fiber:#00B0F0;
+}
