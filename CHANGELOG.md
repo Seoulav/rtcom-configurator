@@ -1,5 +1,6 @@
 ## Unreleased
 
+- **0.279.0 배포 기록**: `docs/qa/DEPLOYMENT_0.279_2026-11-25.md`(PR #452 → main 병합 `8761cde`, Pages 배포 run 45576050461 success, 공개 `CATALOG BASED · 0.279`·카드 링크 `product-obhd-2c.html#products/obhd-2c`·카드 클릭 시 같은 화면 이동과 탭 제목 `OBHD-2C | RTCOM 제품정보`·카카오톡 수집기 접속 정보로 `og:title` 확인·`CLAUDE.md` 404)
 - **0.273.0 배포 기록**: `docs/qa/DEPLOYMENT_0.273_2026-11-23.md`(PR #442 → main 병합 `a8b49ac`, Pages 배포 run 45177493126 success, 공개 `CATALOG BASED · 0.273`·제품 33종 `product-<id>.html`·`share/<id>/`·미리보기 이미지 33/33 정상(카카오톡 수집기와 비슷하게 자바스크립트 없이 확인)·HD-108U 제목 `HD-18U(108U) | RTCOM 제품정보`·`CLAUDE.md` 404)
 - **0.272.0 배포 기록**: `docs/qa/DEPLOYMENT_0.272_2026-11-23.md`(PR #440 → main 병합 `91afcb8`, Pages 배포 success, 공개 `CATALOG BASED · 0.272`·제품 33종 공유 페이지와 미리보기 이미지 33/33 정상(카카오톡 수집기와 비슷하게 자바스크립트 없이 확인)·HD-108U 제목 `HD-18U(108U) | RTCOM 제품정보`·`CLAUDE.md` 404)
 - **0.271.0 배포 기록**: `docs/qa/DEPLOYMENT_0.271_2026-11-18.md`(PR #438 → main 병합 `3debac7`, Pages 배포 success, 공개 `CATALOG BASED · 0.271`·HD-108U·HD-104U 제품 JSON과 색인 해시 일치·공개 제품명 `HD-18U(108U)`·`HD-14U(104U)`·`CLAUDE.md` 404)
