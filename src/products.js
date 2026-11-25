@@ -901,7 +901,7 @@
       return `${headerBlock({icon:GROUP_ICON.series,title:'알티컴 제품정보',subtitle:'RTCOM PRODUCTS · 매트릭스·분배기·전송기·케이블',back:false,print:false,docs:docButtons({documents:[FULL_CATALOG]})})}
       <section class="rt-pg-card"><div class="rt-pg-tools"><div class="rt-pg-seg" role="group" aria-label="제품 분류">${groups.map(([id,label])=>`<span data-product-filter="${id}" role="button" tabindex="0" aria-pressed="${filter===id}" class="${filter===id?'rt-pg-on':''}">${label} (${counts[id]})</span>`).join('')}</div><label class="rt-pg-search"><span class="rt-visually-hidden">제품 검색</span><input type="search" data-product-search placeholder="모델명·기능 검색 (예: HDMI, 광, 4K)" value="${esc(query)}"></label></div>
       <p class="rt-pg-count" role="status">${items.length}개 제품</p>
-      ${items.length?`<ul class="rt-pg-grid">${items.map(item=>`<li><a class="rt-pg-gridcard" href="#products/${item.id}"><span class="rt-pg-photo">${item.cardImage?`<img src="${image(item.cardImage)}" alt="" loading="lazy">`:'<span aria-hidden="true">RTCOM</span>'}</span><span class="rt-pg-body"><span class="rt-pg-group">${esc(groupLabel[item.group])}</span><strong>${noBreak(item.productName)}</strong><span class="rt-pg-card-lead">${esc(item.lead?firstSentence(item.lead).replace(/\*\*/g,''):item.korean)}</span>${reviewBadge(item)}</span></a></li>`).join('')}</ul>`:'<p class="rt-pg-empty">조건에 맞는 제품이 없습니다. 검색어를 지우거나 다른 분류를 선택하세요.</p>'}</section>`;
+      ${items.length?`<ul class="rt-pg-grid">${items.map(item=>`<li><a class="rt-pg-gridcard" href="product-${item.id}.html#products/${item.id}" data-product-link="${item.id}"><span class="rt-pg-photo">${item.cardImage?`<img src="${image(item.cardImage)}" alt="" loading="lazy">`:'<span aria-hidden="true">RTCOM</span>'}</span><span class="rt-pg-body"><span class="rt-pg-group">${esc(groupLabel[item.group])}</span><strong>${noBreak(item.productName)}</strong><span class="rt-pg-card-lead">${esc(item.lead?firstSentence(item.lead).replace(/\*\*/g,''):item.korean)}</span>${reviewBadge(item)}</span></a></li>`).join('')}</ul>`:'<p class="rt-pg-empty">조건에 맞는 제품이 없습니다. 검색어를 지우거나 다른 분류를 선택하세요.</p>'}</section>`;
     }
 
     // ---- 기록·원본 영역(2-6) ----
@@ -1342,7 +1342,7 @@
           <section class="rt-pg-card rt-pg-col-mobile-1"><h2><span class="rt-pg-idx">01</span>한눈에 보기</h2>
             <p class="rt-pg-lead">${leadFor(item)}</p>
             ${factsList(facts)}
-            ${related.length?`<p class="rt-pg-hint"><b>관련 제품</b> ${related.map(link=>`<a href="#products/${link.target}">${noBreak(byId[link.target].productName)}</a>`).join(' · ')}</p>`:''}
+            ${related.length?`<p class="rt-pg-hint"><b>관련 제품</b> ${related.map(link=>`<a href="product-${link.target}.html#products/${link.target}" data-product-link="${link.target}">${noBreak(byId[link.target].productName)}</a>`).join(' · ')}</p>`:''}
           </section>
           <section class="rt-pg-card rt-pg-col-mobile-4"><h2><span class="rt-pg-idx">04</span>제품 사양</h2>${specTable(orderedSpecs)}</section>
           ${(item.features||[]).length?`<section class="rt-pg-card rt-pg-col-mobile-5"><h2><span class="rt-pg-idx">05</span>주요 기능</h2><ul class="rt-pg-checks">${item.features.map(feature=>`<li><i><svg width="11" height="11" viewBox="0 0 12 12"><path d="M2 6.3l2.6 2.5L10 3.4" fill="none" stroke="#fff" stroke-width="2"/></svg></i><span>${esc(feature.text)}</span></li>`).join('')}</ul></section>`:''}
@@ -1468,6 +1468,9 @@
     // product-<id>.html은 index.html과 같은 폴더에 있는 전체 앱 페이지라 상대 경로(src/·data/·output/)가 그대로 풀리고, # 뒤(화면 이동)는 그대로 둔다.
     // 카카오톡 같은 미리보기 수집기는 # 앞의 주소만 읽으므로, 이렇게 해야 주소창 주소를 붙여도 제품 이름·사진이 미리보기로 나온다.
     // 주소를 바꾸지 못하는 환경(주소 변경이 막힌 인앱 브라우저 등)에서는 조용히 넘어가며, 이때는 "링크 공유" 버튼의 주소를 쓰면 된다.
+    // 0.279 탭 제목·방문 기록·즐겨찾기에도 제품 이름이 나오게 한다(# 주소로 들어오면 첫 화면 제목이 남아 있었다).
+    const homeTitle=/product-[a-z0-9-]+\.html$/.test(location.pathname)?'RTCOM 매트릭스 구성기':document.title;
+    const productTitle=name=>`${name} | RTCOM 제품정보`;
     function syncProductAddress(productId){
       try{
         const dir=location.pathname.replace(/[^/]*$/,'');
@@ -1479,7 +1482,7 @@
     function show(state){
       lastShownHash=location.hash;
       // 제품 상세가 아닌 화면(구성기·제품 목록)이면 바로 첫 화면 주소로 되돌린다. 제품 상세는 제품 정보를 불러온 뒤(유효한 id일 때만) 맞춘다.
-      if(!state.products||!state.id)syncProductAddress(null);
+      if(!state.products||!state.id){syncProductAddress(null);document.title=homeTitle}
       view.hidden=!state.products;configurator.hidden=state.products;
       document.documentElement.classList.toggle('rt-print-products',state.products); // 0.147: 제품정보 화면에서 인쇄/PDF를 누르면 구성기 검토 시트가 아니라 지금 보는 제품 화면을 인쇄한다(src/styles.css 끝의 print 규칙).
       for(const tab of tabs){const active=(tab.dataset.viewTab==='products')===state.products;tab.setAttribute('aria-current',active?'page':'false')}
@@ -1494,6 +1497,7 @@
       }).then(()=>state.id?loadDetail(state.id).then(item=>{
         if(route().id!==state.id)return;
         syncProductAddress(state.id);
+        document.title=productTitle(item.productName||item.model||state.id);
         currentItem=item;
         body.innerHTML=`<div class="rt-pg-orbs"></div><div class="rt-pg-wrap">${detailView(item)}</div>`;
         body.querySelector('#rt-pg-title')?.setAttribute('tabindex','-1');
@@ -2016,6 +2020,13 @@
       if(!route().products||!event.target.closest('.rt-brand-lockup'))return;
       event.preventDefault();event.stopImmediatePropagation();location.hash='#matrix-configurator';
     },true);
+    // 0.279 제품 링크(카드·관련 제품·AI 답변)의 주소는 product-<id>.html#products/<id>라서, 길게 눌러 "링크 주소 복사"를 하거나 새 탭으로 열어도
+    // 카카오톡 미리보기에 제품 이름·사진이 나온다. 그냥 누르면 페이지를 새로 읽지 않고 예전처럼 같은 화면 안에서 제품 상세로 이동한다.
+    document.addEventListener('click',event=>{
+      const link=event.target.closest?.('a[data-product-link]');
+      if(!link||event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey||(link.target&&link.target!=='_self'))return;
+      event.preventDefault();location.hash=`#products/${link.dataset.productLink}`;
+    });
     window.addEventListener('hashchange',()=>show(route()));
     // 0.273 뒤로·앞으로 가기로 주소의 파일 이름까지 달라지면(product-<id>.html ↔ 첫 화면) 브라우저는 hashchange 없이 popstate만 보낸다.
     // 그때도 화면을 맞춘다. hashchange가 함께 오면 그쪽이 먼저 화면을 그리므로(같은 작업 안에서 이어서 발생) 한 틱 뒤에 이미 그린 화면이면 건너뛴다.

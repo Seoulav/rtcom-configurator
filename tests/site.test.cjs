@@ -581,7 +581,7 @@ test('0.180: 03 메인프레임 타일은 슬롯 수 줄을 보여 주고 03 카
   assert.match(products,/const frameSlotText=summary=>/);
   assert.match(products,/rt-pg-frame-slots/);
   assert.ok(!read('data/products/spx.json').includes('8x10~'),'"8x10~" 범위 표기는 쓰지 않는다');
-  assert.match(app,/class="rt-button rt-frame-info-link" href="#products\/\$\{state\.family\.toLowerCase\(\)\}" target="_blank" rel="noopener"/);
+  assert.match(app,/class="rt-button rt-frame-info-link" href="product-\$\{state\.family\.toLowerCase\(\)\}\.html#products\/\$\{state\.family\.toLowerCase\(\)\}" target="_blank" rel="noopener"/);
   for(const id of ['xdm','spx','vdm'])assert.ok(fs.existsSync(`data/products/${id}.json`),`${id} 시리즈 제품정보가 있어야 링크가 열린다`);
 });
 
@@ -974,7 +974,7 @@ test('0.273: 제품 상세를 열면 주소창을 product-<id>.html로 맞추고
   const source=read('src/products.js');
   assert.match(source,/function syncProductAddress\(productId\)/);
   assert.match(source,/history\.replaceState\(window\.history\.state,'',`\$\{wanted\}\$\{location\.search\}\$\{location\.hash\}`\)/,'# 뒤와 기존 기록 상태를 그대로 둔다');
-  assert.match(source,/if\(!state\.products\|\|!state\.id\)syncProductAddress\(null\)/,'제품 상세가 아니면 첫 화면 주소로');
+  assert.match(source,/if\(!state\.products\|\|!state\.id\)\{syncProductAddress\(null\);document\.title=homeTitle\}/,'제품 상세가 아니면 첫 화면 주소로');
   assert.match(source,/if\(route\(\)\.id!==state\.id\)return;\n\s*syncProductAddress\(state\.id\)/,'제품 정보를 불러온 뒤(유효한 id일 때만) 제품 주소로');
   assert.match(source,/window\.addEventListener\('popstate',\(\)=>setTimeout\(\(\)=>\{if\(location\.hash!==lastShownHash\)show\(route\(\)\)\},0\)\)/,'파일 이름까지 달라지는 뒤로·앞으로 가기는 popstate로 화면을 맞춘다(hashchange가 오지 않음)');
   const {productPageHtml}=require('../scripts/build-share-pages.cjs');
@@ -996,4 +996,27 @@ test('0.275: Pages 배포는 만들기(build)와 배포(deploy) 두 작업으로
   const build=wf.slice(wf.indexOf('\n  build:'),wf.indexOf('\n  deploy:'));
   assert.ok(build.includes('actions/upload-pages-artifact@')&&!build.includes('actions/deploy-pages@'),'업로드는 build 작업에만');
   assert.ok(wf.slice(wf.indexOf('\n  deploy:')).includes('actions/deploy-pages@'),'배포는 deploy 작업에만');
+});
+
+test('0.279 제품 링크 주소는 product-<id>.html#products/<id>이고 눌러서 이동·탭 제목이 제품 이름이다', () => {
+  const products = read('src/products.js'), app = read('src/app.js'), ai = read('src/ai-search.js'), index = read('index.html');
+  // 길게 눌러 복사·새 탭 열기 때도 카카오톡 미리보기에 제품이 나오도록 href가 제품 파일 주소여야 한다(# 뒤만 있는 주소는 수집기에 전달되지 않는다).
+  assert.match(products, /class="rt-pg-gridcard" href="product-\$\{item\.id\}\.html#products\/\$\{item\.id\}" data-product-link="\$\{item\.id\}"/);
+  assert.match(products, /<a href="product-\$\{link\.target\}\.html#products\/\$\{link\.target\}" data-product-link="\$\{link\.target\}">/);
+  assert.match(app, /class="rt-rel-card" href="product-\$\{esc\(item\.id\)\}\.html#products\/\$\{esc\(item\.id\)\}" data-product-link="\$\{esc\(item\.id\)\}"/);
+  assert.match(ai, /class="rt-ai-product" href="product-\$\{id\}\.html#products\/\$\{id\}" data-product-link="\$\{id\}"/);
+  // 그냥 누르면 같은 화면 안에서 이동(보조키·가운데 버튼·새 탭 대상은 브라우저 기본 동작).
+  assert.match(products, /closest\?\.\('a\[data-product-link\]'\)/);
+  assert.match(products, /event\.button!==0\|\|event\.metaKey\|\|event\.ctrlKey\|\|event\.shiftKey\|\|event\.altKey/);
+  assert.match(products, /location\.hash=`#products\/\$\{link\.dataset\.productLink\}`/);
+  // 어디에도 # 뒤만 있는 제품 링크(href="#products/<id>")를 새로 만들지 않는다(시리즈 안내 링크 #products/vdm·xdm 등은 제외).
+  for (const [name, source] of [['products', products], ['app', app], ['ai', ai]]) {
+    const bare = [...source.matchAll(/href="#products\/(\$\{[^}]*\}|[a-z0-9-]+)"/g)].map(match => match[1]);
+    assert.deepEqual(bare.filter(id => id.startsWith('${')), [], `${name}: 제품 링크가 # 주소만 쓰면 카카오톡 미리보기에 제품이 나오지 않음`);
+  }
+  // 탭 제목: 상세는 "제품명 | RTCOM 제품정보", 그 밖은 첫 화면 제목(index.html의 제목과 같은 값).
+  assert.match(products, /const productTitle=name=>`\$\{name\} \| RTCOM 제품정보`/);
+  assert.match(products, /document\.title=productTitle\(item\.productName\|\|item\.model\|\|state\.id\)/);
+  const homeTitle = products.match(/\?'([^']+)':document\.title;/)[1];
+  assert.equal(index.match(/<title>([^<]*)<\/title>/)[1], homeTitle, '첫 화면 제목과 복귀 제목이 같아야 함');
 });

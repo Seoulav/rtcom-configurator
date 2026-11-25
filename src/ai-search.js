@@ -24,7 +24,7 @@
   let products=null;
   const loadProducts=()=>products||(products=fetch('data/products/index.json').then(r=>r.json()).then(data=>Object.fromEntries(data.products.map(item=>[item.id,item.model]))).catch(()=>({})));
   let known={};
-  const inline=text=>escape(text).replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/\[\[([a-z0-9-]+)\]\]/g,(all,id)=>known[id]?`<a class="rt-ai-product" href="#products/${id}">${escape(known[id])}</a>`:escape(id));
+  const inline=text=>escape(text).replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/\[\[([a-z0-9-]+)\]\]/g,(all,id)=>known[id]?`<a class="rt-ai-product" href="product-${id}.html#products/${id}" data-product-link="${id}">${escape(known[id])}</a>`:escape(id));
   // 답을 안전하게 그린다: 모든 글자를 먼저 이스케이프하고, 제목·목록·표·굵게·제품 링크만 허용한다.
   function render(markdown){
     const out=[],lines=markdown.replace(/\r/g,'').split('\n');let list=null,para=[];

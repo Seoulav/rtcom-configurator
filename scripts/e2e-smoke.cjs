@@ -417,7 +417,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     await page.fill('[data-product-search]','QMS');
     check('검색어 QMS로 일체형 매트릭스 2종이 남음',await page.locator('.rt-pg-gridcard').count()===2);
     await page.fill('[data-product-search]','');
-    await page.click('a.rt-pg-gridcard[href="#products/ct104-u-cr104-u"]');
+    await page.click('a.rt-pg-gridcard[data-product-link="ct104-u-cr104-u"]');
     await page.waitForSelector('.rt-pg-tablewrap');
     check('제품 카드를 누르면 상세(사양 표·입출력)를 표시',(await page.locator('#rt-pg-title').textContent()).includes('CT104-U')&&await page.locator('.rt-pg-tablewrap table tbody tr').count()>3);
     await page.click('.rt-pg-record summary');
@@ -436,7 +436,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     check('가로 스크롤 그림은 모두 바깥 틀(.rt-pg-svg-frame) 안에 있고 스크롤 칸에는 그러데이션 표시가 없음(0.178)',await page.evaluate(()=>{const w=[...document.querySelectorAll('.rt-pg-svg-wrap')];return w.length>0&&w.every(e=>e.parentElement.classList.contains('rt-pg-svg-frame')&&!e.classList.contains('rt-has-more'))}));
     await page.goBack();
     await page.waitForSelector('.rt-pg-gridcard');
-    check('제품정보 목록의 첫 카드는 XDM(0.125, 사용자 요청 "XDM이 처음으로 나오게해")',(await page.locator('.rt-pg-gridcard').first().getAttribute('href'))==='#products/xdm');
+    check('제품정보 목록의 첫 카드는 XDM(0.125, 사용자 요청 "XDM이 처음으로 나오게해")',(await page.locator('.rt-pg-gridcard').first().getAttribute('href'))==='product-xdm.html#products/xdm');
     check('뒤로가기로 상세에서 제품 목록으로 돌아감',new URL(page.url()).hash==='#products'&&await page.locator('.rt-pg-gridcard').count()===33);
     // 0.154 제품정보 프레임 정면·후면 팝업: 위아래로 쌓일 때 두 그림의 가로폭이 같아야 한다(사용자 요청 2026-09-29).
     await page.goto(`${home}#products/spx`,{waitUntil:'networkidle'});
@@ -456,7 +456,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
     // 0.121·0.123·0.130 HD-D102U Rack마운트: 02 Port Map은 XDM-PSU 그림 방식의 정면 그래픽 이미지 1장만 두고(윗면·옆면은 삭제, 사용자 요청 2026-09-29) 실도면(치수 도면) 카드는 없다. HD-D102U와 관련 제품 링크.
     await page.goto(`${home}#products/hd-d102u-rack`,{waitUntil:'networkidle'});
     await page.waitForSelector('#rt-pg-title');
-    const rack=await page.evaluate(()=>({maps:document.querySelectorAll('.rt-pg-panel svg[aria-label$="단자 지도"]').length,drawing:!!document.querySelector('.rt-pg-drawing'),link:[...document.querySelectorAll('.rt-pg-hint a')].some(a=>a.getAttribute('href')==='#products/hd-d102u')}));
+    const rack=await page.evaluate(()=>({maps:document.querySelectorAll('.rt-pg-panel svg[aria-label$="단자 지도"]').length,drawing:!!document.querySelector('.rt-pg-drawing'),link:[...document.querySelectorAll('.rt-pg-hint a')].some(a=>a.getAttribute('href')==='product-hd-d102u.html#products/hd-d102u')}));
     check('HD-D102U Rack마운트 상세에 정면 그래픽 이미지 1장(윗면·옆면 없음)과 HD-D102U 관련 제품 링크가 보이고 실도면 카드는 없음',rack.maps===1&&!rack.drawing&&rack.link,JSON.stringify(rack));
     // 0.132 02 프레임 선택 미리보기 그림 크기는 랙 높이(U) 순서를 따른다(사용자 요청 2026-09-29 "VDM-8X는 다소 크다 … 나머지 VDM프레임 크기는 다소 작아서 … 적정한 크기 판단해서", "SPX, XDM도 비슷한 컨셉으로").
     // 제품군 목록은 작은 프레임부터 큰 프레임 순서라서, 그림 높이가 목록 순서대로 줄어들지 않아야 한다(예전에는 가장 작은 VDM-8X·SPX-M810·XDM-12가 패널 폭을 채워 가장 크게 보였다).
@@ -1495,7 +1495,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       if(await page.locator('.rt-cg-preview [data-action="preview-next"]').isEnabled())await page.click('.rt-cg-preview [data-action="preview-next"]');
       await page.waitForSelector('.rt-rel-card');
       const rel=await page.evaluate(()=>({eyebrow:document.querySelector('.rt-main .rt-eyebrow')?.textContent,cards:[...document.querySelectorAll('.rt-rel-card')].map(a=>a.getAttribute('href')),noChassis:!document.body.innerText.includes('섀시')}));
-      check(`${fam} 02 프레임 선택 아래 "함께 보면 좋은 제품" ${related}개(시리즈 상세 포함)가 제품정보로 연결되고, 화면에 "섀시" 표기가 없음`,rel.eyebrow==='02 / 프레임 선택'&&rel.cards.length===related&&rel.cards[0]===`#products/${fam.toLowerCase()}`&&rel.noChassis,JSON.stringify(rel));
+      check(`${fam} 02 프레임 선택 아래 "함께 보면 좋은 제품" ${related}개(시리즈 상세 포함)가 제품정보로 연결되고, 화면에 "섀시" 표기가 없음`,rel.eyebrow==='02 / 프레임 선택'&&rel.cards.length===related&&rel.cards[0]===`product-${fam.toLowerCase()}.html#products/${fam.toLowerCase()}`&&rel.noChassis,JSON.stringify(rel));
       await page.click('[data-jump="0"]');
     }
     await page.click('.rt-cg-preview [data-action="preview-next"]');
@@ -1775,9 +1775,13 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       check('제품 상세를 열면 주소창이 product-hd-108u.html로 바뀌고 # 뒤는 그대로다',now.path===`${BASE}product-hd-108u.html`&&now.hash==='#products/hd-108u'&&now.title.includes('HD-18U(108U)'),JSON.stringify(now));
       await pg.click('a.rt-pg-btn[href="#products"]');
       await pg.waitForFunction(base=>location.pathname===base&&location.hash==='#products'&&document.querySelector('.rt-pg-gridcard'),BASE);
-      check('제품 목록으로 가면 주소창이 첫 화면 주소로 돌아온다',(await where()).path===BASE);
-      await pg.click('a.rt-pg-gridcard[href="#products/hd-13u"]');
+      check('제품 목록으로 가면 주소창이 첫 화면 주소로, 탭 제목도 첫 화면 제목으로 돌아온다',(await where()).path===BASE&&(await pg.title())==='RTCOM 매트릭스 구성기',await pg.title());
+      // 0.279 제품 카드 링크의 주소는 product-<id>.html#products/<id>(길게 눌러 복사·새 탭 열기용)이고, 그냥 누르면 페이지를 새로 읽지 않고 같은 화면에서 상세로 간다.
+      check('목록 제품 카드의 링크 주소가 product-hd-13u.html#products/hd-13u이고 목록 탭 제목은 첫 화면 제목이다',(await pg.getAttribute('a.rt-pg-gridcard[data-product-link="hd-13u"]','href'))==='product-hd-13u.html#products/hd-13u'&&(await pg.title())==='RTCOM 매트릭스 구성기',await pg.title());
+      await pg.evaluate(()=>{window.__noReload=1});
+      await pg.click('a.rt-pg-gridcard[data-product-link="hd-13u"]');
       await pg.waitForFunction(()=>location.pathname.endsWith('/product-hd-13u.html')&&document.querySelector('#rt-pg-title')?.textContent.includes('HD-13U'));
+      check('카드를 그냥 누르면 페이지를 새로 읽지 않고(같은 화면) 탭 제목이 "HD-13U | RTCOM 제품정보"로 바뀐다',(await pg.evaluate(()=>window.__noReload))===1&&(await pg.title())==='HD-13U | RTCOM 제품정보',await pg.title());
       await pg.waitForLoadState('networkidle');
       check('목록에서 다른 제품(HD-13U)을 열면 주소가 product-hd-13u.html로 바뀌고 사진이 깨지지 않는다',(await brokenAddr()).length===0,JSON.stringify(await brokenAddr()));
       await pg.goBack();
@@ -1900,7 +1904,7 @@ const nextToLinks=async pg=>{await pg.click('[data-action="next"]');if(await pg.
       await ai.click('.rt-ai-form .rt-ai-send');
       await ai.waitForSelector('.rt-ai-assistant table');
       const rendered=await ai.evaluate(()=>{const answer=document.querySelector('.rt-ai-assistant'),links=[...answer.querySelectorAll('a.rt-ai-product')];return {links:links.map(link=>`${link.getAttribute('href')}=${link.textContent}`),h4:answer.querySelector('h4')?.textContent,strong:answer.querySelector('td strong')?.textContent,img:answer.querySelectorAll('img').length,raw:answer.textContent.includes('<img')}});
-      check('AI 검색: 답의 [[제품id]]는 제품 상세 링크, 제목·표·굵게를 그리고 HTML은 글자로만 보임',rendered.links.join()==='#products/hd-13u=HD-13U,#products/qms-88ux=QMS-88UX'&&rendered.h4==='추천'&&rendered.strong==='3'&&rendered.img===0&&rendered.raw,JSON.stringify(rendered));
+      check('AI 검색: 답의 [[제품id]]는 제품 상세 링크, 제목·표·굵게를 그리고 HTML은 글자로만 보임',rendered.links.join()==='product-hd-13u.html#products/hd-13u=HD-13U,product-qms-88ux.html#products/qms-88ux=QMS-88UX'&&rendered.h4==='추천'&&rendered.strong==='3'&&rendered.img===0&&rendered.raw,JSON.stringify(rendered));
       check('AI 검색: 질문은 선택한 요청 유형(사양 비교)과 함께 전송',asked.length===1&&asked[0].mode==='compare'&&asked[0].question==='HD-13U와 QMS-88UX 출력 수 비교'&&Array.isArray(asked[0].history),JSON.stringify(asked));
       const panelBox=await ai.evaluate(()=>{const rect=document.querySelector('.rt-ai-panel').getBoundingClientRect();return {width:Math.round(rect.width),viewport:innerWidth,scroll:document.documentElement.scrollWidth}});
       check('AI 검색: 휴대폰에서 창이 화면 폭에 맞고 가로 스크롤 없음',Math.abs(panelBox.width-panelBox.viewport)<2&&panelBox.scroll<=panelBox.viewport,JSON.stringify(panelBox));
