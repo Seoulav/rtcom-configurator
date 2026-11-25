@@ -8,11 +8,10 @@ permissions:
 concurrency:
   group: pages
   cancel-in-progress: true
+# 0.275: 만들기(build)와 배포(deploy)를 두 작업으로 나눈다(GitHub 공식 Pages 예시와 같은 구조).
+# 한 작업 안에서 업로드 직후 배포하면 묶음 조회가 0개로 나와 실패했다(run 410, 2026-11-24 두 번 연속).
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -25,6 +24,13 @@ jobs:
       - uses: actions/upload-pages-artifact@v4
         with:
           path: dist
+  deploy:
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4

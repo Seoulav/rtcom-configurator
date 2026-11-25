@@ -146,28 +146,88 @@ const lits=literalOverrides(base);
 
 // 밝은 판으로 남기는 그림(B③에서 그림별로 다크 색을 정하기 전까지): 직접 적힌 SVG 색이 밝은 면을 전제로 하므로
 // 다크에서도 흰 판을 깔고, 판 안에서는 색 변수를 라이트 값으로 되돌린다.
-const PLATES=['#rtcom-design .rt-pg-svg-wrap>svg','#rtcom-design svg.rt-pg-layout-matrix','#rtcom-design .rt-pg-dip-state svg','#rtcom-design .rt-pg-rotary svg','#rtcom-design svg.rt-layer-svg-wide','#rtcom-design svg.rt-layer-svg-tall','#rtcom-design .rt-flow-zoom-canvas svg'];
-const LIGHT_BASE='--rt-bg:#fff;--rt-soft:#f3f6fb;--rt-ink:#1f2532;--rt-muted:#687386;--rt-line:#dfe6f0;--rt-accent:#0057D8;--rt-tint:#edf4ff;'+
-  '--pg-paper:#EEF1F6;--pg-ink:#1C1C1E;--pg-ink-2:#3A3A3C;--pg-muted:#6A6A6F;--pg-line:rgba(60,60,67,.12);--pg-line-2:rgba(60,60,67,.20);'+
-  '--pg-accent:#007AFF;--pg-accent-2:#0057D8;--pg-accent-tint:rgba(0,122,255,.12);--pg-purple-ink:#8944AB;--pg-purple-tint:rgba(137,68,171,.09);'+
+const PLATES=['#rtcom-design .rt-pg-svg-wrap>svg:not(.rt-pg-flow-svg):not(.rt-pg-dark-svg)','#rtcom-design svg.rt-pg-layout-matrix:not(.rt-pg-dark-svg)','#rtcom-design .rt-pg-dip-state svg:not(.rt-pg-dark-svg)','#rtcom-design .rt-pg-rotary svg:not(.rt-pg-dark-svg)','#rtcom-design svg.rt-layer-svg-wide:not(.rt-pg-dark-svg)','#rtcom-design svg.rt-layer-svg-tall:not(.rt-pg-dark-svg)','#rtcom-design .rt-flow-zoom-canvas svg:not(.rt-pg-flow-svg):not(.rt-pg-dark-svg)'];
+const LIGHT_BASE='--rt-bg:#fff;--rt-soft:#f3f6fb;--rt-ink:#1f2532;--rt-muted:#687386;--rt-line:#dfe6f0;--rt-accent:var(--svt-accent);--rt-tint:#edf4ff;'+
+  '--pg-paper:var(--svt-paper);--pg-ink:var(--svt-ink);--pg-ink-2:var(--svt-ink-2);--pg-muted:var(--svt-muted);--pg-line:rgba(60,60,67,.12);--pg-line-2:rgba(60,60,67,.20);'+
+  '--pg-accent:var(--svt-accent-ui);--pg-accent-2:var(--svt-accent);--pg-accent-tint:rgba(0,122,255,.12);--pg-purple-ink:#8944AB;--pg-purple-tint:rgba(137,68,171,.09);'+
   '--pg-glass-fill:rgba(255,255,255,.62);--pg-glass-stroke:rgba(255,255,255,.7);--pg-field-fill:rgba(118,118,128,.10);--pg-seg-track:rgba(118,118,128,.14);';
 const lightTokens=pairs.map(([k,h])=>`--rt-${k}-${h}:#${h};`).join('');
 // 구성 보고서 미리보기는 인쇄물과 같아야 하므로 종이 판 전체를 라이트로 둔다(모서리 모양은 원래대로).
 const PAPERS=['#rtcom-design .rt-report-paper'];
 const plateCss=`  ${PLATES.join(',')}{color-scheme:light;background:#fff;border-radius:12px;${LIGHT_BASE}${lightTokens}}\n  ${PAPERS.join(',')}{color-scheme:light;background:#fff;color:#1d2433;${LIGHT_BASE}${lightTokens}}`;
 
+// 0.275 다크 모드 ③ 1차(사용자 결정 2026-11-24 "a로 진행해줘"): Signal Flow 그림(svg.rt-pg-flow-svg)은 흰 판을 깔지 않고
+// 그림에 직접 적힌 색을 다크 색으로 바꿔 칠한다. CSS 규칙은 SVG 속성 색보다 우선하므로 라이트·인쇄 화면은 그대로다.
+// 같은 색이라도 요소마다 역할이 달라(흰 rect = 상자 바탕, 흰 text = 색 배지 위 글자) 요소 이름과 함께 정한다.
+// 신호 색(HDMI 입력 파랑·출력 보라·CAT 초록·광 하늘색·전원 주황)은 어두운 면에서도 잘 보여 그대로 둔다.
+const FLOW_DARK=[
+  // [요소, 속성, 라이트 색들, 다크 색, 설명]
+  ['rect','fill',['#fff','#ffffff'],'#3A3A3C','칩·카드 바탕'],
+  ['rect','fill',['#eef2f8','#eceff4','#f7f8fa','#f4f6f9'],'#2C2C2E','장비 상자·금속 몸체'],
+  ['path','fill',['#fff','#f4f6f9'],'#2C2C2E','장비 몸체(경로)'],
+  ['circle','fill',['#fff'],'#2C2C2E','흰 원'],
+  ['rect','fill',['#c9d3e6','#cfd5de'],'#48484A','단자·몸체 테두리 면'],
+  ['rect','stroke',['#c8d3e6','#b9c3d6','#b8bfcb'],'#545458','상자 테두리'],
+  ['rect','fill',['#e3edff','#dfeaff','#f3eeff'],'#1E2A44','옅은 파랑·보라 면'],
+  ['rect','fill',['#fff4e5'],'#3A2A12','옅은 주황 면'],
+  ['circle','fill',['#c7c7cc','#b8bfcb'],'#636366','꺼진 교차점·나사'],
+  ['circle','fill',['#8944ab'],'#BF5AF2','켜진 교차점'],
+  ['rect','stroke',['#8944ab'],'#BF5AF2','보라 테두리'],
+  ['path','stroke',['#8944ab'],'#BF5AF2','보라 선'],
+  ['path','stroke',['#2c2c2e'],'#8E8E93','짙은 케이블'],
+  ['path','stroke',['#aeb6c3','#9aa3b2'],'#636366','회색 케이블·테두리'],
+  ['text','fill',['#1f2532','#1c1c1e'],'#F5F5F7','본문 글자'],
+  ['text','fill',['#687386','#8a8a8e'],'#AEAEB2','보조 글자'],
+  ['text','fill',['#0057d8','#007aff'],'#409CFF','파랑 글자'],
+  ['text','fill',['#1f3b8f'],'#8FB4FF','짙은 파랑 글자'],
+  ['text','fill',['#7669ef'],'#A29BFF','남보라 글자'],
+  ['text','fill',['#9a5a00','#b86e00','#b25e00'],'#FFB340','주황 글자'],
+  ['text','stroke',['#fff'],'#1C1C1E','글자 테두리(배경색과 같게)'],
+  ['text','fill',['#8944ab'],'#DA8FFF','보라 글자'],
+  ['tspan','fill',['#8944ab'],'#DA8FFF','보라 글자(tspan)'],
+];
+// 0.276 2차: 06 EDID 로터리·07 딥 스위치·오디오 설정 칸·08 오토 셀렉팅 그림(svg.rt-pg-dark-svg)에도 같은 표를 쓰고,
+// 이 그림들에만 있는 색(DARK_PARTS)을 더한다.
+const DARK_SCOPES=['svg.rt-pg-flow-svg','svg.rt-pg-dark-svg'];
+const DARK_PARTS=[
+  ['text','fill',['#d70015'],'#FF6961','빨간 × 표시(오토 셀렉팅 뺀 케이블)'],
+  ['text','fill',['#6a6a6f'],'#AEAEB2','회색 이름표(오토 셀렉팅 HDMI IN 등)'],
+  // 0.277 3차: 시리즈 02 신호 구성의 연동 전송기 점선 칩 이름(CTR100 TX 등)
+  ['text','fill',['#3a3a3c'],'#AEAEB2','연동 전송기 점선 칩 이름(시리즈 02 신호 구성)'],
+  ['text','fill',['#56627a'],'#AEAEB2','WOS100 레이어 구성도 상자 밖 회색 설명'],
+  ['text','fill',['#1c4f8a'],'#8FB4FF','WOS100 레이어 구성도 카드 출력 동기 안내'],
+  // EDID 로터리 가운데 손잡이(#e9f2ff)는 실물처럼 밝게 둔다(바늘이 잘 보이게). 표에 넣지 않는다.
+];
+// 딥 스위치 그림에만: 검은 몸체(#2c2c2e)가 짙은 카드와 같은 색이 되어 윤곽이 사라지므로 한 단계 밝힌다(오토 셀렉팅 장비 그림의 같은 색은 그대로).
+const DIP_BODY_RULE='#rtcom-design .rt-pg-dip-state svg.rt-pg-dark-svg rect[fill="#2c2c2e" i]{fill:#48484A}';
+const tableCss=(rows,scopes)=>rows.map(([tag,prop,froms,to,note])=>
+  `/* ${note} */ ${scopes.flatMap(sc=>froms.map(c=>`#rtcom-design ${sc} ${tag}[${prop}="${c}" i]`)).join(',')}{${prop}:${to}}`);
+const flowCss=()=>[...tableCss(FLOW_DARK,DARK_SCOPES),...tableCss(DARK_PARTS,['svg.rt-pg-dark-svg']),'/* 딥 스위치 검은 몸체 */ '+DIP_BODY_RULE];
+// 0.278 제품 실물 사진(사용자 요청 2026-11-24 "2번 3번 진행해", 0.277 보고의 다음 단계 제안 2번):
+// 다크에서 사진 밝기를 90%로 낮추고(색은 그대로, 밝기만) 사진 받침을 같은 밝기의 옅은 회색으로 맞춰 눈부심을 줄인다.
+// 사진 파일의 흰 배경(255 × 0.9 ≈ 230)과 받침(#E6E6E6 = 230)이 같아져 경계가 보이지 않는다. 카드 판넬 사진(0.178)·프레임 그림은 그대로 둔다.
+const PHOTO_PLATE='var(--svt-dark-photo)',PHOTO_DIM='brightness(.9)';
+const PORT_MAP_SVG='#rtcom-design .rt-pg-svg-wrap>svg:not(.rt-pg-flow-svg):not(.rt-pg-dark-svg)';
+const photoCss=()=>[
+  '/* 손 규칙(0.278): 제품 실물 사진 — 받침은 옅은 회색, 사진은 밝기 90%(목록 썸네일·Port Map·원본 다이어그램·정면/후면·EDID·확대 팝업) */',
+  `#rtcom-design .rt-pg-gridcard .rt-pg-photo,#rtcom-design .rt-pg-diagram-photo,${PORT_MAP_SVG}{background:${PHOTO_PLATE}}`,
+  '#rtcom-design .rt-pg-gridcard .rt-pg-photo>span{color:#6A6A6F}',
+  `#rtcom-design .rt-pg-gridcard .rt-pg-photo img,#rtcom-design .rt-pg-diagram-photo img,#rtcom-design .rt-pg-face img,#rtcom-design .rt-pg-edid-photo img,${PORT_MAP_SVG} image,#rtcom-design .rt-photo-stage img,#rtcom-design .rt-photo-tabs img,#rtcom-design .rt-photo-lens{filter:${PHOTO_DIM}}`,
+];
+
+
 const block=`${START}
 /* 기기 설정이 다크일 때만 적용한다(screen 한정: 인쇄는 항상 라이트). 라이트 화면은 이 블록의 영향을 받지 않는다.
    사진 판넬(--rt-photo, 카드 판넬 사진 받침)과 그림 판·보고서 미리보기는 밝게 유지한다. 손으로 정한 값은 이 도구에 있다. */
 @media screen and (prefers-color-scheme:dark){
   :root{color-scheme:dark}
-  html{background:#000}
+  html{background:var(--svt-dark-page)}
   body{background:radial-gradient(circle at 8% 0,#0b1a33 0,transparent 34%),radial-gradient(circle at 92% 4%,#1f1433 0,transparent 32%),linear-gradient(135deg,#000,#07070a);background-attachment:fixed}
   #rtcom-design{
     color-scheme:dark;
-    --rt-bg:#1C1C1E;--rt-soft:#2C2C2E;--rt-ink:#F5F5F7;--rt-muted:#8E8E93;--rt-line:rgba(84,84,88,.42);--rt-accent:#409CFF;--rt-tint:rgba(10,132,255,.18);--rt-cta-ink:#fff;
-    --pg-paper:#000;--pg-ink:#F5F5F7;--pg-ink-2:#D1D1D6;--pg-muted:#8E8E93;--pg-line:rgba(84,84,88,.42);--pg-line-2:rgba(84,84,88,.65);
-    --pg-accent:#0A84FF;--pg-accent-2:#409CFF;--pg-accent-tint:rgba(10,132,255,.18);--pg-purple-ink:#DA8FFF;--pg-purple-tint:rgba(191,90,242,.16);
+    --rt-bg:var(--svt-dark-card);--rt-soft:var(--svt-dark-card-2);--rt-ink:var(--svt-dark-ink);--rt-muted:var(--svt-dark-muted);--rt-line:rgba(84,84,88,.42);--rt-accent:var(--svt-dark-accent);--rt-tint:rgba(10,132,255,.18);--rt-cta-ink:var(--svt-cta-ink);--rt-photo:var(--svt-dark-photo);
+    --pg-paper:var(--svt-dark-page);--pg-ink:var(--svt-dark-ink);--pg-ink-2:var(--svt-dark-ink-2);--pg-muted:var(--svt-dark-muted);--pg-line:rgba(84,84,88,.42);--pg-line-2:rgba(84,84,88,.65);
+    --pg-accent:var(--svt-dark-accent-ui);--pg-accent-2:var(--svt-dark-accent);--pg-accent-tint:rgba(10,132,255,.18);--pg-purple-ink:#DA8FFF;--pg-purple-tint:rgba(191,90,242,.16);
     --pg-glass-fill:rgba(44,44,46,.58);--pg-glass-stroke:rgba(255,255,255,.08);--pg-field-fill:rgba(118,118,128,.24);--pg-seg-track:rgba(118,118,128,.32);
     --pg-shadow-card:0 1px 2px rgba(0,0,0,.4),0 18px 48px -20px rgba(0,0,0,.7);
 ${decl.join('\n')}
@@ -189,6 +249,10 @@ function EXTRA(){
     '/* 손 규칙: 카드 판넬 사진(검은 몸체) 받침은 0.178 결정대로 옅은 회색을 유지한다. */',
     '#rtcom-design .rt-palette-tile img,#rtcom-design .rt-link-flow-node img[src*="assets/cards/"]{background:#eef1f5}',
     '#rtcom-design .rt-card-info-plate{background:#f2f5fa}',
+    '/* 손 규칙(0.275·0.276): Signal Flow 그림과 EDID 로터리·딥 스위치·오디오 설정·오토 셀렉팅 그림 색 바꿈표. 표는 이 도구의 FLOW_DARK·DIP_BODY_RULE. 크게 보기 창의 그림 칸은 카드색 작업판으로 구분한다. */',
+    '#rtcom-design .rt-flow-zoom-canvas:has(svg.rt-pg-flow-svg){background:#1C1C1E}',
+    ...flowCss(),
+    ...photoCss(),
   ].map(l=>'  '+l).join('\n');
 }
 

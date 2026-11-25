@@ -403,7 +403,7 @@
         +t(408,y-6,`XDM-WOS100 #${n}`,'fill="#fff" font-weight="700" font-size="10.5"')+wosChips(408,y+2,14)+t(478,y+12,'레이어 합성','fill="#c9d6e8" font-size="9"')
         +`<rect x="540" y="${y-12}" width="42" height="24" rx="3" fill="#0f2238" stroke="#2aa3dc" stroke-width="1.5"/>`+t(561,y+4,'OUT 1','fill="#fff" font-weight="700" font-size="10" text-anchor="middle"')
         +route(`M582 ${y} H648`,'#2aa3dc',true,3)+t(615,y-6,`화면 ${n}`,'fill="#1c86b8" font-weight="700" font-size="9.5" text-anchor="middle"')}).join('');
-      return `<svg class="rt-layer-svg-wide" viewBox="0 0 980 414" role="img" ${LAYER_ARIA}>`+layerDefs(p)
+      return `<svg class="rt-layer-svg-wide rt-pg-dark-svg" viewBox="0 0 980 414" role="img" ${LAYER_ARIA}>`+layerDefs(p)
         +t(490,28,'XDM-WOS100 4장 · 4K 디스플레이 4대(2×2)에 4K/60 소스 4개를 비디오 프로세서처럼 레이어로 합성','text-anchor="middle" font-weight="700" font-size="15" fill="#1f2532"')
         +t(20,104,'입력 소스 · 4K/60 ×4','font-weight="700" font-size="12" fill="#1f2532"')
         +'<rect x="214" y="50" width="380" height="288" rx="8" fill="#17304f"/>'+t(230,73,'XDM 메인프레임','fill="#fff" font-weight="700" font-size="13"')+t(580,73,'XDM-12 … XDM-216','fill="#c9d6e8" font-size="10" text-anchor="end"')
@@ -437,7 +437,7 @@
         +wosChips(x-26,272,11)
         +`<rect x="${x-20}" y="287" width="40" height="16" rx="3" fill="#0f2238" stroke="#2aa3dc"/>`+t(x,298.5,'OUT 1','fill="#fff" font-weight="700" font-size="8.5" text-anchor="middle"')
         +route(`M${x} 308 V438`,'#2aa3dc',true,3)+t(x+5,392,`화면 ${n}`,'fill="#1c86b8" font-weight="700" font-size="9"')}).join('');
-      return `<svg class="rt-layer-svg-tall" viewBox="0 0 420 790" role="img" ${LAYER_ARIA}>`+layerDefs(p)
+      return `<svg class="rt-layer-svg-tall rt-pg-dark-svg" viewBox="0 0 420 790" role="img" ${LAYER_ARIA}>`+layerDefs(p)
         +t(210,24,'XDM-WOS100 4장 · 4K 디스플레이 4대(2×2)에','text-anchor="middle" font-weight="700" font-size="14" fill="#1f2532"')+t(210,44,'4K/60 소스 4개를 레이어로 합성','text-anchor="middle" font-weight="700" font-size="14" fill="#1f2532"')
         +t(16,100,'입력 소스','font-weight="700" font-size="11" fill="#1f2532"')+t(16,114,'4K/60 ×4','font-size="10" fill="#56627a"')
         +'<rect x="8" y="140" width="404" height="206" rx="8" fill="#17304f"/>'+t(16,160,'XDM 메인프레임','fill="#fff" font-weight="700" font-size="12"')
